@@ -1,0 +1,87 @@
+@push('styles')
+    @vite('resources/css/views/dashboard.css')
+@endpush
+<x-admin-layout>
+    <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="targeta shadow-lg">
+            <div class="flex gap-4">
+                @if (auth()->user()->has_local_photo)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="{{ auth()->user()->name }}"
+                        class="dashboard-user-avatar">
+                @else
+                    <div class="dashboard-user-avatar" style="background-color: {{ auth()->user()->avatar_colors['background'] }};
+                                   color: {{ auth()->user()->avatar_colors['color'] }};
+                                   border-color: {{ auth()->user()->avatar_colors['color'] }};">
+                        {{ auth()->user()->initials }}
+                    </div>
+                @endif
+
+                <div class="dashboard-user-info">
+                    <h2 class="dashboard-name">Buen día, {{ auth()->user()->name }}</h2>
+                    <p>
+                        Eres <strong>{{ auth()->user()->roles->pluck('name')->join(', ') }}.</strong> <br>
+                        Puedes gestionar el sitio desde este panel de administración.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="targeta rounded-lg shadow-lg">
+            <h2>Constantine</h2>
+            <form action="{{ route('logout') }}" method="post">
+                @csrf
+                <button class="boton-cerrar-sesion">
+                    <i class="ri-logout-box-line mr-2"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 dashboard-cards">
+
+        <!-- Tarjeta: Categorías -->
+        <a href="" class="dashboard-card">
+            <div class="card-icon">
+                <i class="ri-apps-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">24</h1>
+                <p class="card-label">Categorías</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta: Marcas -->
+        <a href="" class="dashboard-card">
+            <div class="card-icon">
+                <i class="ri-price-tag-3-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">12</h1>
+                <p class="card-label">Marcas</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta: Productos -->
+        <a href="" class="dashboard-card">
+            <div class="card-icon">
+                <i class="ri-box-3-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">154</h1>
+                <p class="card-label">Productos</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta: Usuarios -->
+        <a href="" class="dashboard-card">
+            <div class="card-icon">
+                <i class="ri-user-3-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">8</h1>
+                <p class="card-label">Usuarios</p>
+            </div>
+        </a>
+
+    </div>
+</x-admin-layout>

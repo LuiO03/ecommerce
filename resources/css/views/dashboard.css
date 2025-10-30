@@ -1,0 +1,142 @@
+.targeta {
+    background-color: var(--color-card-bg);
+    padding: 15px;
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--radius-card);
+}
+
+.dashboard-user-avatar {
+    width: 140px;
+    height: 100%;
+    border-radius: var(--radius-card);
+    object-fit: cover;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-secondary);
+    font-size: 70px;
+    font-weight: bolder;
+}
+
+.dashboard-user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.dashboard-name {
+    font-family: var(--font-secondary);
+    font-weight: bolder;
+    color: var(--color-accent);
+}
+
+.boton-cerrar-sesion {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: var(--font-size-p);
+}
+
+.dashboard-cards {
+    margin-top: 1rem;
+}
+
+/* === Estilo general de las tarjetas === */
+.dashboard-card {
+    background-color: var(--color-card-bg);
+    border-radius: var(--radius-card);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    background-color: var(--color-accent);
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card:hover .card-icon i {
+    transform: rotate(15deg);
+}
+
+/* === Ícono === */
+.card-icon {
+    background-color: var(--color-info-pastel);
+    color: var(--color-info);
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-card);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 56px;
+    transition: transform 0.3s ease;
+}
+
+.card-icon i {
+    transition: transform 0.2s ease-in-out;
+}
+/* === Contenido (número y texto) === */
+.card-content {
+    display: flex;
+    justify-content: center;
+    height: max-content;
+    flex-direction: column;
+    gap: 0px;
+    line-height: 1;
+    gap: 5px;
+}
+
+.card-count {
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+}
+
+.card-label {
+    font-size: var(--font-size-p);
+}
+
+/* === Responsivo === */
+@media (max-width: 640px) {
+    .dashboard-user-avatar {
+        font-size: 50px;
+    }
+
+    .card-count {
+        font-size: 1.5rem;
+    }
+    .dashboard-card {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .card-icon {
+        width: 100%;
+        height: 90px;
+        font-size: 55px;
+    }
+
+    .card-content {
+        align-items: center;
+        gap: 5px;
+    }
+}
