@@ -1,10 +1,11 @@
 /* ==== Tema global del sidebar-usuario ==== */
 :root {
     --color-bg: #ffffff;
-    --color-sidebar-bg: #f9f9f9;
+    /*--color-sidebar-bg: #f9f9f9;*/
+    --color-sidebar-bg: #FFFFFF;
     --color-main-bg: #ffffff;
-    --color-sub-menu-bg: #e5e5e5;
-    --color-sub-menu-button-bg: #d3d3d3;
+    --color-sub-menu-bg: #e7e7e7;
+    --color-sub-menu-button-bg: #f9f9f9;
     --color-bg-transparent: rgba(0, 0, 0, 0.1);
 
     --color-card-bg: #fdfdfd;
@@ -12,11 +13,12 @@
     --color-text: #342e37;
     --color-text-bw: #111111;
     --color-border: #e5e7eb;
-    --color-accent: #d11e4b;
-    --color-hover: #e5e5e5;
+    --color-muted: #6c757d;
+    --color-accent: #3D31B2;
+    --color-hover: #f9f9f9;
 
     /* Scrollbar */
-    --scrollbar-track: #f1f1f1;
+    --scrollbar-track: #ffffff;
     --scrollbar-thumb: #cccccc;
     --scrollbar-hover: #5a5a5a;
 }
@@ -35,6 +37,7 @@
     --color-text-bw: #eeeeee;
     --color-secondary: #bbbbbb;
     --color-border: #212121;
+    --color-muted: #aaaaaa;
     --color-accent: #d11e4b;
     --color-hover: #212121;
 

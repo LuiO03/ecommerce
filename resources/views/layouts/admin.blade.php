@@ -22,7 +22,7 @@
 
 
     <!-- CSS base del dashboard -->
-    @vite(['resources/css/layout-admin.css'])
+    @vite(['resources/css/layout-admin.css', 'resources/css/components/breadcrumb.css'])
     <!-- CSS de Tailwind y JS global -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/view-transition.js', 'resources/js/dashboard/index.js'])
     @stack('styles')
@@ -50,8 +50,9 @@
     @include('partials.admin.sidebar-left')
     @include('partials.admin.sidebar-right')
 
-    <main id="mainContent" class="content-area">
-        <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-neutral-700 dark:bg-neutral-900 ">
+    <main id="mainContent" class="main-container">
+        @include('partials.admin.breadcrumb')
+        <div class="slot-container">
             {{ $slot }}
         </div>
     </main>

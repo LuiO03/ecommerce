@@ -82,6 +82,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.families.index') }}" class="sidebar-link" data-tooltip="Familias">
+                    <i class="ri-group-line sidebar-icon"></i>
+                    <span>Familias</span>
+                </a>
+            </li>
+            <li>
                 <a href="#" class="sidebar-link" data-tooltip="Kanban">
                     <i class="ri-stack-line sidebar-icon"></i>
                     <span>Kanban</span>

@@ -9,8 +9,16 @@
     border-radius: var(--radius-card);
 }
 
+.targeta-usuario{
+    display: flex;
+    gap: 15px;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+}
+
 .dashboard-user-avatar {
-    width: 140px;
+    min-width: 130px;
     height: 100%;
     border-radius: var(--radius-card);
     object-fit: cover;
@@ -70,7 +78,7 @@
 }
 
 .dashboard-card:hover .card-icon i {
-    transform: rotate(15deg);
+    transform: rotate(-15deg) scale(1.2);
 }
 
 /* === Ícono === */
@@ -89,7 +97,7 @@
 }
 
 .card-icon i {
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.3s ease-in-out;
 }
 /* === Contenido (número y texto) === */
 .card-content {
@@ -139,4 +147,50 @@
         align-items: center;
         gap: 5px;
     }
+}
+
+/* === Colores personalizados para íconos del dashboard === */
+.card-primary {
+    background-color: var(--color-primary-pastel);
+    color: var(--color-primary);
+}
+
+.card-secondary {
+    background-color: var(--color-secondary-pastel);
+    color: var(--color-secondary);
+}
+
+.card-success {
+    background-color: var(--color-success-pastel);
+    color: var(--color-success);
+}
+
+.card-danger {
+    background-color: var(--color-danger-pastel);
+    color: var(--color-danger);
+}
+
+.card-warning {
+    background-color: var(--color-warning-pastel);
+    color: var(--color-warning);
+}
+
+.card-info {
+    background-color: var(--color-info-pastel);
+    color: var(--color-info);
+}
+
+.card-orange {
+    background-color: var(--color-orange-pastel);
+    color: var(--color-orange);
+}
+
+.card-purple {
+    background-color: var(--color-purple-pastel);
+    color: var(--color-purple);
+}
+
+.card-pink {
+    background-color: var(--color-pink-pastel);
+    color: var(--color-pink);
 }

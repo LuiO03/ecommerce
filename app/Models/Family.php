@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Family extends Model
 {
     use HasFactory;
+    public $timestamps = true;
     // asignacion masiva, $fillable define los campos que se pueden asignar masivamente
     protected $fillable = ['name', 'slug', 'description', 'image', 'status', 'created_by', 'updated_by'];
 
