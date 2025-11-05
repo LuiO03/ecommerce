@@ -2,7 +2,7 @@
   	<img src="public/logo.png" alt="Logo del Proyecto" width="150">
 </p>
 
-<h1 align="center"><strong>Gecko</strong>merce</h1>
+<h1 align="center"><strong>Gecko</strong><i>merce</i></h1>
 
 <p align="center">Tu tienda virtual inteligente en Laravel</p>
 
@@ -14,7 +14,7 @@
 
 # 🛍️ Ecommerce Laravel
 
-Proyecto de **Ecommerce** desarrollado con **Laravel 11**, pensado para ofrecer una base sólida de tienda en línea, con un panel de administración moderno y una estructura escalable.
+Proyecto de **Ecommerce** desarrollado con **Laravel 12**, pensado para ofrecer una base sólida de tienda en línea, con un panel de administración moderno y una estructura escalable.
 
 ---
 
@@ -112,7 +112,7 @@ ecommerce/
 
 **Luis Alberto Quispe O.**
 💼 Diseñador y programador web
-📧 [luis@example.com] *(puedes poner tu correo real si deseas)*
+📧 70098517@institutocajas.info
 🌐 [https://github.com/LuiO03](https://github.com/LuiO03)
 
 ---
