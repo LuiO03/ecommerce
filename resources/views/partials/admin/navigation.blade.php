@@ -34,7 +34,6 @@
                     </div>
                 @endif
             </div>
-
         </div>
 
         <div class="topbar-user-menu">

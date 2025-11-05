@@ -1,0 +1,653 @@
+/* =======================================================
+   📦 CONTENEDOR PRINCIPAL
+======================================================= */
+.familias-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-size: var(--font-size-p);
+}
+
+/* =======================================================
+   🎛️ CONTROLES DE TABLA
+======================================================= */
+.tabla-controles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ----------------------------
+   🔍 BUSCADOR
+---------------------------- */
+.tabla-buscador {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 200px;
+}
+
+.tabla-buscador i {
+    position: absolute;
+    left: 1px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-text);
+    font-size: var(--font-size-h3);
+    transition: color 0.2s ease;
+}
+
+.tabla-buscador input {
+    width: 100%;
+    padding: 6px 10px 6px 40px;
+    border: 2px solid var(--color-input-border);
+    border-radius: var(--radius-element);
+    background-color: var(--color-input-bg);
+    font-size: var(--font-size-xs);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tabla-buscador input:focus {
+    border-color: var(--color-accent) !important;
+    outline: none;
+    box-shadow: var(--shadow-material);
+}
+
+.tabla-buscador input:hover {
+    border-color: var(--color-input-border-hover);
+}
+
+.tabla-buscador input::placeholder {
+    color: var(--color-input-placeholder);
+    font-size: var(--font-size-xs);
+}
+
+.tabla-buscador:has(input:focus) i {
+    color: var(--color-accent);
+}
+
+/* ----------------------------
+   📄 SELECT DE FILAS POR PÁGINA
+---------------------------- */
+.tabla-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 200px;
+}
+
+.tabla-select-wrapper select {
+    width: 100%;
+    padding: 6px 30px 6px 10px;
+    border: 2px solid var(--color-input-border);
+    border-radius: var(--radius-element);
+    background-color: var(--color-input-bg);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+}
+
+.tabla-select-wrapper i {
+    position: absolute;
+    right: 1px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-input-bg);
+    pointer-events: none;
+    color: var(--color-text);
+    font-size: var(--font-size-h3);
+    transition: color 0.2s ease;
+}
+
+.tabla-select-wrapper select:hover {
+    border-color: var(--color-input-border-hover);
+}
+
+.tabla-select-wrapper select:focus {
+    border-color: var(--color-accent) !important;
+    outline: none;
+    box-shadow: var(--shadow-material);
+}
+
+.tabla-select-wrapper:has(select:focus) i {
+    color: var(--color-accent);
+}
+
+/* =======================================================
+   📊 TABLA
+======================================================= */
+.tabla-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--color-border-secondary);
+}
+
+.tabla-general {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius-element);
+}
+
+.tabla-general th,
+.tabla-general td {
+    border: 1px solid var(--color-border);
+}
+
+.tabla-general td {
+    padding: 0px 5px;
+}
+
+.tabla-general th {
+    background-color: var(--color-table-header-bg);
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    height: 40px;
+}
+
+.tabla-general .dtr-title {
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
+.tabla-general th:hover {
+    color: var(--color-inverse);
+}
+
+.tabla-general tbody tr:hover {
+    background-color: var(--color-hover);
+}
+
+/* =======================================================
+   🧭 ICONOS DE ORDEN / CONTROL
+======================================================= */
+.dt-column-order {
+    vertical-align: middle;
+}
+
+.orden-icon,
+.orden-icon-none {
+    font-size: var(--font-size-p);
+    transition: color 0.2s ease;
+}
+
+.orden-icon {
+    color: var(--color-accent);
+}
+
+.orden-icon-none {
+    color: var(--color-muted);
+}
+
+.tabla-general thead th .dt-column-order:before,
+.tabla-general thead th .dt-column-order:after {
+    display: none !important;
+    content: none !important;
+}
+
+th.control,
+td.control {
+    width: 40px;
+    text-align: center;
+}
+
+.control-icon {
+    color: var(--color-accent);
+    font-size: var(--font-size-h2);
+    font-weight: bold;
+}
+
+/* Oculta el icono responsive nativo de DataTables */
+table.dataTable.dtr-inline.collapsed td.control::before {
+    display: none !important;
+}
+
+/* =======================================================
+   ✅ CHECKBOXES
+======================================================= */
+input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--radius-element);
+    background-color: var(--color-input-bg);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-h3);
+}
+
+input[type="checkbox"]:hover {
+    background-color: var(--color-hover);
+    border-color: var(--color-accent);
+}
+
+input[type="checkbox"]:checked {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+/* =======================================================
+   🎨 BOTONES DE TABLA
+======================================================= */
+.tabla-botones {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    max-width: 100%;
+}
+
+
+.tabla-general .boton {
+    flex: 1 1 80px;
+}
+
+
+/* =======================================================
+   🟢 ESTADOS / BADGES
+======================================================= */
+.badge {
+    display: flex;
+    gap: 5px;
+    width: fit-content;
+    padding: 3px 10px;
+    border: none;
+    border-radius: var(--radius-card);
+    font-size: 12px;
+    color: white;
+}
+
+/* =======================================================
+   📄 FOOTER / PAGINACIÓN
+======================================================= */
+.tabla-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.tabla-info {
+    font-weight: normal;
+}
+
+.tabla-paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagina-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--radius-element);
+    background-color: var(--color-input-bg);
+    font-weight: bold;
+    font-size: var(--font-size-xs);
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.pagina-btn:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.pagina-btn:hover {
+    background-color: var(--color-hover);
+    border-color: var(--color-accent);
+}
+
+.pagina-btn.activo {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+    box-shadow: var(--shadow-material);
+}
+
+.pagina-btn .btn-text {
+    display: inline;
+}
+
+.dots {
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* =======================================================
+   ✔️ FILAS Y COLUMNAS
+======================================================= */
+.column-check-th,
+.column-check-td {
+    cursor: pointer;
+    width: 40px;
+}
+
+.column-check-th div,
+.column-check-td div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Fila seleccionada */
+.tabla-general tbody tr.row-selected {
+    background-color: var(--color-inverse);
+    color: var(--color-normal);
+    box-shadow: var(--shadow-material);
+    transition: background-color 0.3s ease, color 0.3s ease,
+        box-shadow 0.2s ease;
+}
+
+.tabla-general tbody tr.row-selected td {
+    transition: border-color 0.3s ease;
+    border-color: var(--color-inverse);
+}
+
+/* Estilo del borde activo */
+.tabla-general td.active-cell {
+    outline: 2px dashed var(--color-accent);
+    outline-offset: -2px;
+    box-sizing: content-box;
+    position: relative;
+    width: inherit;
+    z-index: 2;
+}
+.tabla-general td.column-check-td.active-cell,
+.tabla-general td.control.active-cell,
+.tabla-general td.column-actions-td.active-cell {
+    outline: none;
+    border-radius: none;
+}
+
+/* =======================================================
+   🚫 SIN DATOS
+======================================================= */
+.tabla-no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.tabla-no-data i {
+    font-size: 40px;
+}
+
+/* =======================================================
+   💫 ANIMACIONES
+======================================================= */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* =============================
+   SWITCH EN TABLA
+============================= */
+
+.column-status-td{
+    text-align: center;
+}
+.switch-tabla {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch-tabla input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: background-color 0.4s ease;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 34px;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--color-card-bg);
+  transition: transform 0.4s ease;
+  border-radius: 50%;
+}
+
+.switch-tabla input:checked + .slider {
+  background-color: var(--color-accent);
+}
+
+.switch-tabla input:checked + .slider::before {
+  transform: translateX(24px);
+}
+
+
+/* =======================================================
+   📱 RESPONSIVIDAD
+======================================================= */
+@media (max-width: 900px) {
+    .tabla-footer {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .pagina-btn .btn-text {
+        display: none;
+    }
+
+    .tabla-buscador input,
+    .tabla-select-wrapper select {
+        width: 100%;
+    }
+
+    .tabla-select-wrapper select {
+        padding-left: 28px;
+    }
+}
+
+/* =======================================================
+   🧩 DETALLES RESPONSIVOS DE DATATABLES
+======================================================= */
+table.dataTable tbody tr.child ul.dtr-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+table.dataTable tbody tr.child ul.dtr-details li {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+table.dataTable tbody tr.child ul.dtr-details li:last-child {
+    border-bottom: none;
+}
+
+@media (min-width: 490px) and (max-width: 768px) {
+    .tabla-botones .boton .boton-icon {
+        background-color: transparent;
+    }
+
+    .tabla-botones .boton-text {
+        display: none;
+    }
+
+    .tabla-botones .boton {
+        flex: 1 1 40px;
+        max-width: 40px;
+        padding: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .tabla-general td.active-cell {
+        outline: none;
+    }
+    .tabla-wrapper {
+        border: none;
+        font-size: var(--font-size-xs);
+    }
+
+    td.control,
+    th.control {
+        display: none !important;
+    }
+
+    .column-check-th,
+    .column-check-td,
+    .column-id-th,
+    .column-id-td,
+    .column-img-th,
+    .column-img-td,
+    .column-telefono-th,
+    .column-telefono-td,
+    .column-apellido-th,
+    .column-apellido-td,
+    .column-user-th,
+    .column-user-td,
+    .column-autor-th,
+    .column-autor-td,
+    .column-fecha-th,
+    .column-fecha-td,
+    .column-fecha-hidden-th,
+    .column-fecha-hidden-td,
+    .column-result-td,
+    .column-result-th {
+        display: none !important;
+    }
+
+    .column-name-td {
+        font-weight: bolder;
+        font-size: var(--font-size-h3);
+        font-family: var(--font-secondary);
+    }
+
+    .tabla-general {
+        background-color: var(--color-bg);
+    }
+    .tabla-general thead {
+        display: none;
+    }
+
+    .tabla-general tbody {
+        flex-wrap: wrap;
+        display: flex;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .tabla-general,
+    .tabla-general td {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        text-align: left;
+        border: none;
+    }
+
+    .tabla-general tbody tr,
+    table.dataTable tbody tr {
+        flex: 1 1 200px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        position: relative;
+        border-radius: var(--radius-card);
+        background-color: var(--color-card-bg);
+        gap: 5px;
+        padding: 15px;
+    }
+
+    .tabla-general tbody tr.row-selected,
+    table.dataTable tbody tr.row-selected {
+        background-color: var(--color-inverse) !important;
+        color: var(--color-normal);
+    }
+
+    .tabla-general tbody tr:hover,
+    table.dataTable tbody tr:hover {
+        background-color: var(--color-hover);
+    }
+
+    .tabla-general tbody tr:nth-child(odd),
+    .tabla-general tbody tr:nth-child(even) {
+        background-color: var(--color-card-bg);
+    }
+
+    .tabla-general td[data-label] {
+        display: flex;
+        align-items: flex-start;
+        border: none;
+    }
+    .tabla-general td {
+        border: none;
+        padding: 0px !important;
+    }
+    /* Para las filas del cuerpo */
+    .tabla-general tbody tr td:last-child {
+        width: 100%;
+        text-align: center;
+    }
+
+    table.dataTable,
+    table.dataTable tbody tr,
+    table.dataTable tbody td {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Algunos temas añaden líneas sutiles */
+    table.dataTable.no-footer {
+        border-bottom: none !important;
+    }
+}
+@media (max-width: 490px){
+    .tabla-general tbody {
+        gap: 10px;
+    }
+}

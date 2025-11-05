@@ -2,20 +2,33 @@
 :root {
     --color-bg: #ffffff;
     /*--color-sidebar-bg: #f9f9f9;*/
-    --color-sidebar-bg: #FFFFFF;
+    --color-sidebar-bg: #ffffff;
     --color-main-bg: #ffffff;
     --color-sub-menu-bg: #e7e7e7;
     --color-sub-menu-button-bg: #f9f9f9;
     --color-bg-transparent: rgba(0, 0, 0, 0.1);
 
-    --color-card-bg: #fdfdfd;
+    --color-card-bg: #fcfcfc;
 
     --color-text: #342e37;
-    --color-text-bw: #111111;
     --color-border: #e5e7eb;
+    --color-border-secondary: #342e37;
     --color-muted: #6c757d;
-    --color-accent: #3D31B2;
+    --color-accent: #3d31b2;
+    --shadow-accent: rgba(61, 49, 178, 0.25);
     --color-hover: #f9f9f9;
+
+    --color-inverse: #111111;
+    --color-normal: #ffffff;
+
+    --color-input-bg: #ffffff;
+    --color-input-border: #342e37;
+    /* --color-input-border: #ced4da; */
+    --color-input-border-hover: #a8a8a8;
+    --color-input-placeholder: #6c757d;
+
+    --color-table-header-bg: #ffffff;
+    --color-table-stripet-bg: #eeeeee;
 
     /* Scrollbar */
     --scrollbar-track: #ffffff;
@@ -34,12 +47,25 @@
     --color-card-bg: #1a1a1a;
 
     --color-text: #e9e9e9;
-    --color-text-bw: #eeeeee;
     --color-secondary: #bbbbbb;
     --color-border: #212121;
+    --color-border-secondary: #aaaaaa;
     --color-muted: #aaaaaa;
     --color-accent: #d11e4b;
+    --shadow-accent: rgba(209, 30, 75, 0.3);
     --color-hover: #212121;
+
+    --color-inverse: #eeeeee;
+    --color-normal: #181818;
+
+    --color-input-bg: #2a2a2a;
+    /*--color-input-bg: #e2e2e2;*/
+    --color-input-border: #444;
+    --color-input-border-hover: #666;
+    --color-input-placeholder: #aaaaaa;
+
+    --color-table-header-bg: #181818;
+    --color-table-stripet-bg: #181818;
 
     /* Scrollbar */
     --scrollbar-track: #181818;
@@ -106,6 +132,9 @@
 
     --navbar-height: 60px;
     --transition-sidebar-base: 0.2s ease-in-out;
+
+    --shadow-material: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
 
 /* ==== Bordes radius ==== */
@@ -129,19 +158,11 @@
 
 /* ==== Estructura base ==== */
 
-.text-primary {
-    color: var(--color-text);
-}
-
-.text-secondary {
-    color: var(--color-secondary);
-}
-
 .border-default {
     border-color: var(--color-border);
 }
 
-.text-bolder{
+.text-bolder {
     font-weight: bolder;
     font-family: var(--font-secondary);
 }
@@ -151,22 +172,32 @@
    ========================================== */
 
 :root {
-    /* Tipografías base para escritorio (≥ 992px) */
-    --font-size-h1: 2.4rem;
     /* Títulos grandes */
-    --font-size-h2: 1.625rem;
+    --font-size-h1: clamp(1.5rem, 2.5vw, 2.4rem);
     /* Títulos secundarios */
-    --font-size-h3: 1.28rem;
+    --font-size-h2: clamp(1.25rem, 2vw, 1.625rem);
     /* Subtítulos / paneles */
-    --font-size-p: 0.89rem;
+    --font-size-h3: clamp(1.125rem, 1.7vw, 1.28rem);
     /* Texto general */
-    --font-size-sm: 0.86rem;
+    --font-size-p: clamp(0.88rem, 1.5vw, 0.89rem);
     /* Texto secundario (inputs, etc.) */
-    --font-size-xs: 0.82rem;
+    --font-size-sm: clamp(0.85rem, 1.2vw, 0.86rem);
     /* Ayuda, tooltips */
+    --font-size-xs: clamp(0.75rem, 1vw, 0.82rem);
 }
 
-/* Tablets (768px – 991px) */
+/* Tipografías base para escritorio (≥ 992px) 
+:root {
+    --font-size-h1: 2.4rem;
+    --font-size-h2: 1.625rem;
+    --font-size-h3: 1.28rem;
+    --font-size-p: 0.89rem;
+    --font-size-sm: 0.86rem;
+    --font-size-xs: 0.82rem;
+}
+*/
+
+/* Tablets (768px – 991px)
 @media (max-width: 991px) {
     :root {
         --font-size-h1: 1.95rem;
@@ -178,7 +209,7 @@
     }
 }
 
-/* Móviles pequeños (≤ 576px) */
+/* Móviles pequeños (≤ 576px)
 @media (max-width: 576px) {
     :root {
         --font-size-h1: 1.5rem;
@@ -190,7 +221,7 @@
         --sombra-material: 0px;
     }
 }
-
+*/
 /* ==========================================
    TIPOGRAFÍA ELEMENTOS
    ========================================== */
@@ -205,6 +236,7 @@
         text-decoration: none;
         color: var(--color-text);
     }
+
     body {
         background-color: var(--color-sidebar-bg);
         color: var(--color-text);
@@ -243,9 +275,8 @@
         font-size: var(--font-size-xs);
         display: inline-block;
     }
-    strong{
+    strong {
         font-weight: bolder;
-        font-family: var(--font-secondary);
     }
 }
 
@@ -273,6 +304,53 @@
 .text-lg {
     font-size: var(--font-size-h2);
 }
+
+/* === Colores personalizados para íconos del dashboard === */
+.card-primary {
+    background-color: var(--color-primary-pastel);
+    color: var(--color-primary);
+}
+
+.card-secondary {
+    background-color: var(--color-secondary-pastel);
+    color: var(--color-secondary);
+}
+
+.card-success {
+    background-color: var(--color-success-pastel);
+    color: var(--color-success);
+}
+
+.card-danger {
+    background-color: var(--color-danger-pastel);
+    color: var(--color-danger);
+}
+
+.card-warning {
+    background-color: var(--color-warning-pastel);
+    color: var(--color-warning);
+}
+
+.card-info {
+    background-color: var(--color-info-pastel);
+    color: var(--color-info);
+}
+
+.card-orange {
+    background-color: var(--color-orange-pastel);
+    color: var(--color-orange);
+}
+
+.card-purple {
+    background-color: var(--color-purple-pastel);
+    color: var(--color-purple);
+}
+
+.card-pink {
+    background-color: var(--color-pink-pastel);
+    color: var(--color-pink);
+}
+
 
 /* ==========================================
    COLORES DE BOTONES Y FONDOS
@@ -405,72 +483,58 @@
 
 .text-base {
     color: var(--color-text);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-base-inverted {
     color: var(--color-bw-inverted);
-    transition: color 0.3s ease-in-out;
 }
 
-.text-primario {
-    color: var(--color-primario);
-    transition: color 0.3s ease-in-out;
+.text-accent {
+    color: var(--color-accent);
 }
 
 .text-secundario {
     color: var(--color-secundario);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-primary {
     color: var(--color-primary);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-success {
     color: var(--color-success);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-danger {
     color: var(--color-danger);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-warning {
     color: var(--color-warning);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-info {
     color: var(--color-info);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-purple {
     color: var(--color-purple);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-orange {
     color: var(--color-orange);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-pink {
     color: var(--color-pink);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-black {
     color: var(--color-bw);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-muted {
     color: var(--color-muted);
-    transition: color 0.3s ease-in-out;
 }
 
 .text-link {

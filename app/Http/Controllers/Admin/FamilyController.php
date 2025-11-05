@@ -13,8 +13,8 @@ class FamilyController extends Controller
      */
     public function index()
     {
-        $families = Family::paginate();
-        return view('admin.families.index');
+        $families = Family::select(['id', 'name', 'slug', 'description', 'status', 'created_at'])->get();
+        return view('admin.families.index', compact('families'));
     }
 
     /**
@@ -22,7 +22,7 @@ class FamilyController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.families.create');
     }
 
     /**
@@ -30,7 +30,8 @@ class FamilyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // $request->all(); sirve para
+        return $request->all();
     }
 
     /**

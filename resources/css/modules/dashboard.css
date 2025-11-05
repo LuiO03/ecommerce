@@ -7,6 +7,7 @@
     justify-content: center;
     align-items: center;
     border-radius: var(--radius-card);
+    box-shadow: var(--shadow-material);
 }
 
 .targeta-usuario{
@@ -62,7 +63,7 @@
 .dashboard-card {
     background-color: var(--color-card-bg);
     border-radius: var(--radius-card);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-material);
     padding: 10px;
     display: flex;
     align-items: center;
@@ -83,8 +84,6 @@
 
 /* === Ícono === */
 .card-icon {
-    background-color: var(--color-info-pastel);
-    color: var(--color-info);
     flex-shrink: 0;
     width: 80px;
     height: 80px;
@@ -147,50 +146,4 @@
         align-items: center;
         gap: 5px;
     }
-}
-
-/* === Colores personalizados para íconos del dashboard === */
-.card-primary {
-    background-color: var(--color-primary-pastel);
-    color: var(--color-primary);
-}
-
-.card-secondary {
-    background-color: var(--color-secondary-pastel);
-    color: var(--color-secondary);
-}
-
-.card-success {
-    background-color: var(--color-success-pastel);
-    color: var(--color-success);
-}
-
-.card-danger {
-    background-color: var(--color-danger-pastel);
-    color: var(--color-danger);
-}
-
-.card-warning {
-    background-color: var(--color-warning-pastel);
-    color: var(--color-warning);
-}
-
-.card-info {
-    background-color: var(--color-info-pastel);
-    color: var(--color-info);
-}
-
-.card-orange {
-    background-color: var(--color-orange-pastel);
-    color: var(--color-orange);
-}
-
-.card-purple {
-    background-color: var(--color-purple-pastel);
-    color: var(--color-purple);
-}
-
-.card-pink {
-    background-color: var(--color-pink-pastel);
-    color: var(--color-pink);
 }

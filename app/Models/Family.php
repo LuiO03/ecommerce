@@ -12,6 +12,17 @@ class Family extends Model
     // asignacion masiva, $fillable define los campos que se pueden asignar masivamente
     protected $fillable = ['name', 'slug', 'description', 'image', 'status', 'created_by', 'updated_by'];
 
+    public function scopeForSelect($query)
+    {
+        return $query->select('id', 'name')->orderBy('name');
+    }
+
+    public function scopeForTable($query)
+    {
+        return $query->select('id', 'name', 'description', 'status', 'created_at')->orderByDesc('id');
+    }
+
+
     //relacion uno a muchos
     public function categories()
     {
@@ -28,4 +39,3 @@ class Family extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 }
-

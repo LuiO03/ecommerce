@@ -1,0 +1,116 @@
+.form-container {
+    width: 100%;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* === Grupo contenedor === */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* === Ícono === */
+.input-icon {
+    position: absolute;
+    left: 2px;
+    top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    transform: translateY(-50%);
+    font-size: 1.3rem;
+    color: var(--color-input-placeholder);
+    pointer-events: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* === Input / Textarea === */
+.input-group input,
+.input-group textarea {
+    width: 100%;
+    border-radius: var(--radius-element);
+    font-size: var(--font-size-sm);
+    background: transparent;
+    border: 2px solid var(--color-input-border);
+    transition: border 0.2s ease;
+    padding: 10px 12px 10px 40px; /* espacio para el icono */
+    display: block;
+}
+
+.input-group input {
+    height: 50px;
+}
+
+.input-group textarea {
+    resize: none;
+    min-height: 100px;
+    line-height: 1.5;
+    field-sizing: content;
+}
+
+/* === Focus === */
+.input-group input:focus,
+.input-group textarea:focus {
+    border-color: var(--color-accent);
+    outline: none;
+}
+
+.input-group:focus-within .input-icon,
+.input-group:focus-within .label-form {
+    color: var(--color-accent);
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* === Label === */
+.label-form {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-input-placeholder);
+    pointer-events: none;
+    font-size: var(--font-size-p);
+    font-family: var(--font-secondary);
+    font-weight: bolder;
+    background: transparent;
+    transition: transform 0.2s ease, color 0.2s ease, padding 0.2s ease, top 0.2s ease;
+}
+
+.label-textarea {
+    top: 25px;
+}
+
+/* === Estado flotante === */
+.input-form:focus ~ .label-form,
+.input-form:not(:placeholder-shown) ~ .label-form,
+.textarea-form:focus ~ .label-form,
+.textarea-form:not(:placeholder-shown) ~ .label-form {
+    top: 0;
+    left: 32px;
+    transform: translateY(-50%) scale(0.9);
+    background-color: var(--color-sidebar-bg);
+    padding: 0 6px;
+    color: var(--color-accent);
+}
+
+/* === Label sin foco pero con contenido === */
+.input-form:not(:focus):not(:placeholder-shown) ~ .label-form,
+.textarea-form:not(:focus):not(:placeholder-shown) ~ .label-form {
+    color: var(--color-input-placeholder);
+}
+
+
+
+@media (max-width: 768px) {
+    .input-form:focus ~ .label-form,
+    .input-form:not(:placeholder-shown) ~ .label-form,
+    .textarea-form:focus ~ .label-form,
+    .textarea-form:not(:placeholder-shown) ~ .label-form {
+        background-color: var(--color-bg) !important;
+    }
+}

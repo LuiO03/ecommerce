@@ -3,7 +3,7 @@
 @endpush
 <x-admin-layout>
     <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="targeta shadow-lg">
+        <div class="targeta">
             <div class="targeta-usuario">
                 @if (auth()->user()->has_local_photo)
                     <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}"
@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="targeta rounded-lg shadow-lg">
+        <div class="targeta">
             <h2>Constantine</h2>
             <form action="{{ route('logout') }}" method="post">
                 @csrf

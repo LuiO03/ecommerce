@@ -1,18 +1,18 @@
-/* resources/css/app.css */
-
 /* === Variables globales y estilos base === */
 @import "./base.css";
 
+/* === Librerías y componentes personalizados === */
+@import "./estilos.css";
 
 /* === Tailwind === */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "./layout-admin.css";
-@import "./modules/dashboard.css";
-@import "./components/breadcrumb.css";
+@layer components {
+    @import "flowbite";
+}
 
-/* === Librerías y componentes personalizados === */
-
-@import "flowbite";
+[x-cloak]{
+    display: none;
+}

@@ -1,7 +1,7 @@
 .breadcrumb-nav {
-    padding: 10px 0;
-    font-size: var(--font-size-p);
-    font-family: var(--font-secondary);
+    padding: 0;
+    width: 100%;
+    font-size: var(--font-size-sm);
 }
 
 .breadcrumb-list {
@@ -26,23 +26,17 @@
     color: var(--color-text, #333);
     text-decoration: none;
     font-weight: 500;
-    transition: transform 0.2s ease;
+    transition: color 0.3s ease;
 }
 
 .breadcrumb-link:hover {
     color: var(--color-accent, #007bff);
-    transform: translateY(-1px);
-}
-
-.breadcrumb-icon {
-    font-size: 18px;
 }
 
 .breadcrumb-separator {
     color: var(--color-accent, #aaa);
     font-size: 25px;
     margin: 0 2px;
-    
 }
 
 .breadcrumb-current {

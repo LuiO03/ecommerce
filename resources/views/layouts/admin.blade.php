@@ -16,13 +16,15 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-
     <!-- Remix Icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
 
 
     <!-- CSS base del dashboard -->
-    @vite(['resources/css/layout-admin.css', 'resources/css/components/breadcrumb.css'])
+    @vite(['resources/css/estilos.css'])
     <!-- CSS de Tailwind y JS global -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/view-transition.js', 'resources/js/dashboard/index.js'])
     @stack('styles')
@@ -40,6 +42,7 @@
         }
     })();
 </script>
+
 <body>
     <!-- OVERLAY -->
     <div id="overlay"
@@ -49,15 +52,34 @@
     @include('partials.admin.navigation')
     @include('partials.admin.sidebar-left')
     @include('partials.admin.sidebar-right')
+    @include('partials.admin.mobile-dropdown')
 
     <main id="mainContent" class="main-container">
-        @include('partials.admin.breadcrumb')
         <div class="slot-container">
+            <div class="w-full mb-4">
+                <h1 class="text-bolder">
+                    {{ $title ?? 'Sin título' }}
+                </h1>
+                <div class="page-header">
+                    @include('partials.admin.breadcrumb')
+                    @isset($action)
+                        <div>
+                            {{ $action }}
+                        </div>
+                    @endisset
+                </div>
+            </div>
+
             {{ $slot }}
         </div>
     </main>
 
 
+    <!-- ✅ DataTables v2.3.4 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
+    @stack('scripts')
     @livewireScripts
 </body>
 

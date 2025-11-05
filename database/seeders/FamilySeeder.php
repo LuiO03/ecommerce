@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Models\Family;
 
 class FamilySeeder extends Seeder
 {
@@ -13,6 +14,7 @@ class FamilySeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('families')->delete();
         $families = [
             [
                 'name' => 'Ropa Hombre',
@@ -45,5 +47,8 @@ class FamilySeeder extends Seeder
         ];
 
         DB::table('families')->insert($families);
+
+        // Genera 30 familias aleatorias adicionales
+        Family::factory()->count(30)->create();
     }
 }

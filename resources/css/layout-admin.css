@@ -148,7 +148,7 @@
     flex: 1;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 10px 5px;
+    padding: 10px 5px 10px 10px;
 }
 
 /* === Enlaces del sidebar === */
@@ -450,13 +450,28 @@
     */
 }
 
+.page-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .slot-container{
-    padding: 1rem;
+    padding: 16px;
     border: 2px dashed var(--color-border);
     border-radius: var(--radius-card);
-    background-color: var(--color-bg);
+    background-color: var(--color-sidebar-bg);
     max-width: var(--max-width);
     width: 100%;
+}
+
+@media (max-width: 768px){
+    .slot-container{
+        padding: 0px;
+        border: none;
+        background-color: transparent;
+    }
 }
 
 /* === Scrollbars === */
@@ -493,8 +508,6 @@
     transition: opacity var(--transition-sidebar-base), transform var(--transition-sidebar-base);
     position: relative;
 }
-
-
 
 /* ============================================================
    🔹 SIDEBAR COLAPSADO (Desktop)
@@ -620,59 +633,71 @@
    🔹 BOTÓN HAMBURGUESA ANIMADO
    ============================================================ */
 .topbar-user-menu {
-    padding: 13px 10px;
-    border-radius: 0.5rem;
+    padding: 8px 8px;
+    border-radius: var(--radius-element);
 }
 
 .topbar-user-menu:hover {
     background-color: var(--color-hover);
 }
 
+/* === Nuevo estilo para el botón hamburguesa === */
 .hamburger-btn {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    width: 26px;
-    height: 20px;
-    border: none;
+    gap: 7px;
+    width: 32px;
+    height: 32px;
     background: none;
+    border: none;
     cursor: pointer;
-    padding: 0;
-    margin: 0;
-    position: relative;
+    z-index: 70;
+    transition: transform 0.3s ease;
 }
 
 .hamburger-line {
-    position: absolute;
-    left: 0;
-    right: 0;
+    display: block;
     height: 3px;
-    background-color: var(--color-text, #333);
-    border-radius: 2px;
-    transform-origin: center;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.2s ease,
-                background-color 0.2s ease;
+    background-color: var(--color-text, #000);
+    border-radius: 12px;
+    transition: transform 0.3s ease, width 0.3s ease;
 }
 
-.hamburger-line:nth-child(1) { top: 0; }
-.hamburger-line:nth-child(2) { top: 50%; transform: translateY(-50%); }
-.hamburger-line:nth-child(3) { bottom: 0; }
+/* Línea 1: mitad izquierda, gira desde la derecha */
+.hamburger-line:nth-child(1) {
+    width: 50%;
+    transform-origin: right;
+    align-self: flex-start;
+}
 
+/* Línea 2: línea completa */
+.hamburger-line:nth-child(2) {
+    width: 100%;
+}
+
+/* Línea 3: mitad derecha, gira desde la izquierda */
+.hamburger-line:nth-child(3) {
+    width: 50%;
+    align-self: flex-end;
+    transform-origin: left;
+}
+
+/* === Estado activo (menú abierto) === */
 .hamburger-btn.active .hamburger-line:nth-child(1) {
-    top: 50%;
-    transform: translateY(-50%) rotate(45deg);
+    transform: rotate(225deg) translate(-7px, -7px);
+    width: 50%;
 }
 
 .hamburger-btn.active .hamburger-line:nth-child(2) {
-    opacity: 0;
-    transform: translateY(-50%) scaleX(0.8);
+    transform: rotate(-45deg);
+    width: 100%;
 }
 
 .hamburger-btn.active .hamburger-line:nth-child(3) {
-    top: 50%;
-    transform: translateY(-50%) rotate(-45deg);
+    transform: rotate(225deg) translate(7px, 7px);
+    width: 50%;
 }
 
 /* ============================================================

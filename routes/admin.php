@@ -15,4 +15,8 @@ Route::get('/users', function () {
 
 Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 Route::get('/families', [FamilyController::class, 'index'])->name('admin.families.index');
-
+Route::get('/families/create', [FamilyController::class, 'create'])->name('admin.families.create');
+Route::post('/families', [FamilyController::class, 'store'])->name('admin.families.store');
+Route::get('/families/{family}/edit', [FamilyController::class, 'edit'])->name('admin.families.edit');
+Route::put('/families/{family}', [FamilyController::class, 'update'])->name('admin.families.update');
+Route::delete('/families/{family}', [FamilyController::class, 'destroy'])->name('admin.families.destroy');
