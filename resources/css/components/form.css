@@ -1,9 +1,9 @@
 .form-container {
     width: 100%;
-    padding: 20px 10px;
+    padding: 0px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 
 /* === Grupo contenedor === */
@@ -24,7 +24,7 @@
     width: 40px;
     transform: translateY(-50%);
     font-size: 1.3rem;
-    color: var(--color-input-placeholder);
+    color: var(--color-text);
     pointer-events: none;
     transition: color 0.2s ease, transform 0.2s ease;
 }
@@ -40,6 +40,7 @@
     transition: border 0.2s ease;
     padding: 10px 12px 10px 40px; /* espacio para el icono */
     display: block;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-group input {
@@ -58,6 +59,7 @@
 .input-group textarea:focus {
     border-color: var(--color-accent);
     outline: none;
+    box-shadow: var(--shadow-material);
 }
 
 .input-group:focus-within .input-icon,
@@ -75,8 +77,8 @@
     color: var(--color-input-placeholder);
     pointer-events: none;
     font-size: var(--font-size-p);
-    font-family: var(--font-secondary);
-    font-weight: bolder;
+    font-family: var(--font-primary);
+    
     background: transparent;
     transition: transform 0.2s ease, color 0.2s ease, padding 0.2s ease, top 0.2s ease;
 }
@@ -93,18 +95,25 @@
     top: 0;
     left: 32px;
     transform: translateY(-50%) scale(0.9);
+    /* background: linear-gradient(to bottom, var(--color-sidebar-bg), var(--color-input-bg)); */
     background-color: var(--color-sidebar-bg);
     padding: 0 6px;
     color: var(--color-accent);
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+}
+
+/* === Input sin foco pero con contenido === */
+.input-form:not(:focus):not(:placeholder-shown) ,
+.textarea-form:not(:focus):not(:placeholder-shown)  {
+    border-color: var(--color-warning); /* Amarillo */
 }
 
 /* === Label sin foco pero con contenido === */
 .input-form:not(:focus):not(:placeholder-shown) ~ .label-form,
-.textarea-form:not(:focus):not(:placeholder-shown) ~ .label-form {
-    color: var(--color-input-placeholder);
+.textarea-form:not(:focus):not(:placeholder-shown) ~ .label-form{
+    color: var(--color-text);
 }
-
-
 
 @media (max-width: 768px) {
     .input-form:focus ~ .label-form,
@@ -113,4 +122,169 @@
     .textarea-form:not(:placeholder-shown) ~ .label-form {
         background-color: var(--color-bg) !important;
     }
+}
+
+/* === Select === */
+.select-group {
+    position: relative;
+}
+
+.select-form {
+    width: 100%;
+    height: 50px;
+    border-radius: var(--radius-element);
+    font-size: var(--font-size-sm);
+    background: transparent;
+    border: 2px solid var(--color-input-border);
+    padding: 10px 35px 10px 40px; /* icono izquierda + flecha derecha */
+    appearance: none; /* quita el estilo nativo del select */
+    color: var(--color-text);
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* === Flecha personalizada === */
+.select-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--color-input-border);
+    pointer-events: none;
+    background-color: var(--color-sidebar-bg);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* === Focus === */
+.select-form:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-material);
+}
+
+.select-group:focus-within .select-arrow,
+.select-group:focus-within .input-icon,
+.select-group:focus-within .label-form {
+    color: var(--color-accent);
+}
+
+/* === Label flotante === */
+.select-form:focus ~ .label-form,
+.select-form:valid ~ .label-form {
+    top: 0;
+    left: 32px;
+    transform: translateY(-50%) scale(0.9);
+    background-color: var(--color-sidebar-bg);
+    padding: 0 6px;
+    color: var(--color-accent);
+}
+
+/* === Select sin foco pero con valor === */
+.select-form:not(:focus):valid {
+    border-color: var(--color-warning); /* Amarillo */
+}
+
+/* === Label cuando no está en foco pero con valor === */
+.select-form:not(:focus):valid ~ .label-form {
+    color: var(--color-text);
+}
+
+/* === Animación de la flecha === */
+.select-form:focus ~ .select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--color-accent);
+}
+
+/* === Placeholder oculto (para simular estado vacío) === */
+.select-form option[value=""][disabled] {
+    display: none;
+}
+
+.select-form option {
+    background-color: var(--color-sidebar-bg); /* Fondo del menú */
+    color: var(--color-text); /* Color del texto */
+}
+
+.select-form option:hover,
+.select-form option:checked,
+.select-form option:focus {
+    background-color: var(--color-accent) !important;
+    color: #fff;
+}
+
+/* === Grupo archivo === */
+
+.file-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Oculta el input nativo */
+.file-input {
+    display: none;
+}
+
+/* Label que simula el botón */
+.file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed var(--color-input-border);
+    border-radius: var(--radius-element);
+    padding: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    color: var(--color-input-placeholder);
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    background-color: var(--color-sidebar-bg);
+}
+
+.file-label:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background-color: var(--color-bg-light);
+}
+
+/* Ícono dentro del botón */
+.upload-icon {
+    font-size: 1.3rem;
+    margin-left: 8px;
+    color: var(--color-input-border);
+    transition: color 0.2s ease;
+}
+
+.file-label:hover .upload-icon {
+    color: var(--color-accent);
+}
+
+/* Texto cuando se selecciona un archivo */
+.file-label.selected {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+/* Mostrar nombre del archivo */
+.file-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.form-footer-delete{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
 }

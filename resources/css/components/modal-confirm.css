@@ -1,0 +1,149 @@
+.confirm-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.confirm-modal.flex {
+    display: flex;
+}
+
+.confirm-dialog {
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25);
+    background-color: var(--color-sidebar-bg);
+    width: 90%;
+    max-width: 490px;
+    text-align: center;
+    transform-origin: center;
+}
+
+/* 🔹 Animación de entrada tipo SweetAlert */
+@keyframes sweetIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    45% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 🔹 Animación de salida tipo SweetAlert */
+@keyframes sweetOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+}
+
+.animate-in {
+    animation: sweetIn 0.35s ease forwards;
+}
+
+.animate-out {
+    animation: sweetOut 0.25s ease forwards;
+}
+
+/* === Header y contenido === */
+.confirm-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+    color: #fff;
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+}
+
+.confirm-actions {
+    color: white;
+}
+
+.confirm-header.bg-warning, .boton.bg-warning {
+    color: black;
+}
+
+.confirm-close {
+    border: none;
+    color: inherit;
+    font-size: 25px;
+    padding: 0px 6px;
+    cursor: pointer;
+    transition: ease opacity 0.2s;
+}
+
+.confirm-close:hover {
+    opacity: 0.8;
+}
+
+.confirm-body {
+    display: flex;
+    padding: 15px;
+    gap: 5px;
+    text-align: start;
+}
+
+.confirm-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.confirm-actions-info{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding: 15px;
+}
+
+.confirm-info .confirm-message{
+    padding-inline: 20px;
+}
+
+.confirm-info .confirm-icon {
+    font-size: 70px;
+}
+
+.confirm-title{
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+}
+
+.confirm-message{
+    color: var(---color-text-soft);
+}
+
+.confirm-icon {
+    font-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === Acciones === */
+.confirm-actions {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    padding: 0px 15px 15px 15px;
+}

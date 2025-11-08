@@ -8,5 +8,9 @@
 @import "./components/table.css";
 @import "./components/form.css";
 @import "./components/button.css";
+@import "./components/modal-confirm.css";
+@import "./components/modal-info.css";
 
 @import "./components/mobile-dropdown.css";
+
+@import "./visuals/material-design.css"

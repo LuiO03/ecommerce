@@ -1,47 +1,58 @@
 .breadcrumb-nav {
-    padding: 0;
     width: 100%;
     font-size: var(--font-size-sm);
+    padding: 0;
+    margin: 0;
+    height: auto; /* Deja que el contenido defina el alto */
 }
 
 .breadcrumb-list {
     display: flex;
-    align-items: center;
+    align-items: stretch; /* Hace que cada hijo (breadcrumb) ocupe el mismo alto */
     flex-wrap: wrap;
-    gap: 0px;
     list-style: none;
+    padding: 0px;
+    margin: 0px;
+    gap: 0px;
 }
 
 .breadcrumb {
     display: flex;
-    gap: 0px;
+    align-items: stretch; /* Hace que el enlace o span dentro ocupe el alto completo */
+    height: auto;
+}
+
+.breadcrumb-link,
+.breadcrumb-current {
+    display: flex;
     align-items: center;
-    color: var(--color-text, #666);
+    justify-content: center;
+    gap: 5px;
+    text-decoration: none;
+    border-radius: var(--radius-element);
+    padding: 0px 10px; /* Solo horizontal, sin afectar el alto */
+    height: 100%; /* Ocupará todo el alto del padre */
+    transition: color 0.3s ease;
 }
 
 .breadcrumb-link {
-    display: flex;
-    align-items: center;
-    gap: 4px;
     color: var(--color-text, #333);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
 }
 
 .breadcrumb-link:hover {
     color: var(--color-accent, #007bff);
 }
 
-.breadcrumb-separator {
-    color: var(--color-accent, #aaa);
-    font-size: 25px;
-    margin: 0 2px;
-}
-
 .breadcrumb-current {
     color: var(--color-muted, #222);
     text-transform: capitalize;
-    transition: color 0.3s ease;
 }
 
+.breadcrumb-separator {
+    color: var(--color-accent, #aaa);
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+}

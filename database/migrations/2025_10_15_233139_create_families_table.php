@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('image')->nullable();    // opcional
 
             // Estado (activo/inactivo)
-            $table->boolean('status')->default(true)->index();; // obligatorio, con valor por defecto
+            $table->boolean('status')->default(false)->index();; // obligatorio, con valor por defecto
 
             // Auditoría
             $table->unsignedBigInteger('created_by')->nullable();

@@ -1,11 +1,14 @@
 <x-admin-layout>
     <x-slot name="title">
+        <div class="page-icon card-success">
+            <i class="ri-apps-line"></i>
+        </div>
         Lista de Familias
     </x-slot>
     <x-slot name="action">
-        <a href="{{ route('admin.families.create') }}" class="boton bg-primary">
-            <span class="boton-icon"><i class="ri-add-circle-fill"></i></span>
-            <span class="boton-text">Crear</span>
+        <a href="{{ route('admin.families.create') }}" class="boton boton-primary">
+            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-text">Crear Familia</span>
         </a>
     </x-slot>
     <div class="familias-container">
@@ -34,7 +37,7 @@
                         <th class="control"></th>
                         <th class="column-check-th">
                             <div>
-                                <input type="checkbox" id="checkAll">
+                                <input type="checkbox" id="checkAll" name="checkAll">
                             </div>
                         </th>
                         <th class="column-id-th">ID</th>
@@ -52,7 +55,8 @@
                             </td>
                             <td class="column-check-td">
                                 <div>
-                                    <input type="checkbox" class="check-row" value="{{ $family->id }}">
+                                    <input type="checkbox" class="check-row" id="check-row-{{ $family->id }}"
+                                        name="families[]" value="{{ $family->id }}">
                                 </div>
                             </td>
                             <td class="column-id-td">
@@ -71,20 +75,25 @@
 
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton btn-info" data-id="" title="Ver Familia">
+                                    <button class="boton boton-info" data-id="" title="Ver Familia">
                                         <span class="boton-text">Ver</span>
                                         <span class="boton-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
-                                    <a href="{{ route('admin.families.edit', $family->id) }}" title="Editar Familia"
-                                        class="boton btn-warning">
+                                    <a href="{{ route('admin.families.edit', $family) }}" title="Editar Familia"
+                                        class="boton boton-warning">
                                         <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                                        <span class="boton-text text-gray-900">Editar</span>
+                                        <span class="boton-text">Editar</span>
                                     </a>
-                                    <button type="button" title="Eliminar Familia" class="boton btn-danger"
-                                        data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="">
-                                        <span class="boton-text">Borrar</span>
-                                        <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
-                                    </button>
+                                    <form action="{{ route('admin.families.destroy', $family) }}" method="POST"
+                                        class="delete-form" data-entity="familia">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" title="Eliminar Familia" class="boton boton-danger">
+                                            <span class="boton-text">Borrar</span>
+                                            <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                        </button>
+                                    </form>
+
                                 </div>
                             </td>
                         </tr>
@@ -100,6 +109,14 @@
         </div>
     </div>
 
+    @if (Session::has('info'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const info = @json(Session::get('info'));
+                window.showInfoModal(info);
+            });
+        </script>
+    @endif
     @push('scripts')
         <script>
             $(document).ready(function() {
@@ -132,7 +149,7 @@
                     pageLength: 10,
                     lengthMenu: [5, 10, 25, 50],
                     order: [
-                        [indiceColumnaId, 'asc']
+                        [indiceColumnaId, 'desc']
                     ],
                     language: language_es,
                     initComplete: function() {

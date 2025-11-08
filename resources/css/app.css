@@ -2,7 +2,7 @@
 @import "./base.css";
 
 /* === Librerías y componentes personalizados === */
-@import "./estilos.css";
+@import "./main.css";
 
 /* === Tailwind === */
 @tailwind base;

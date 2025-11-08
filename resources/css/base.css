@@ -1,76 +1,112 @@
 /* ==== Tema global del sidebar-usuario ==== */
 :root {
+    /* === Fondo y estructura === */
     --color-bg: #ffffff;
-    /*--color-sidebar-bg: #f9f9f9;*/
     --color-sidebar-bg: #ffffff;
     --color-main-bg: #ffffff;
+    --color-card-bg: #fcfcfc;
     --color-sub-menu-bg: #e7e7e7;
     --color-sub-menu-button-bg: #f9f9f9;
     --color-bg-transparent: rgba(0, 0, 0, 0.1);
 
-    --color-card-bg: #fcfcfc;
-
+    /* === Texto y colores principales === */
     --color-text: #342e37;
+    --color-text-soft: rgba(52, 46, 55, 0.6);
+    --color-muted: #6c757d;
     --color-border: #e5e7eb;
     --color-border-secondary: #342e37;
-    --color-muted: #6c757d;
+
+    /* === Colores de acento y efectos === */
     --color-accent: #3d31b2;
     --shadow-accent: rgba(61, 49, 178, 0.25);
     --color-hover: #f9f9f9;
+    --color-hover-degraded: #e5e5e5;
 
+    /* === Inversos / alternativos === */
     --color-inverse: #111111;
     --color-normal: #ffffff;
+    --color-dark-inverse: #2b242e;
 
+    /* === Tablas / Celdas === */
+    --color-cell-border: #e5e7eb;
+
+    /* === Inputs === */
     --color-input-bg: #ffffff;
     --color-input-border: #342e37;
     /* --color-input-border: #ced4da; */
     --color-input-border-hover: #a8a8a8;
     --color-input-placeholder: #6c757d;
 
+    /* === Tablas === */
     --color-table-header-bg: #ffffff;
     --color-table-stripet-bg: #eeeeee;
 
-    /* Scrollbar */
+    /* === Scrollbar === */
     --scrollbar-track: #ffffff;
     --scrollbar-thumb: #cccccc;
     --scrollbar-hover: #5a5a5a;
+
+    /* === Ripple === */
+    --ripple-color-btn: rgba(0, 0, 0, 0.15);
+    --ripple-color-card: rgba(255, 150, 255, 0.15);
+
 }
 
 .dark {
+    /* === Fondo y estructura === */
     --color-bg: #111110;
     --color-sidebar-bg: #181818;
     --color-main-bg: #121212;
+    /* 
+    --color-sidebar-bg: #0F0F0F;
+    --color-main-bg: #000000;
+    */
+    --color-card-bg: #1a1a1a;
     --color-sub-menu-bg: #111111;
     --color-sub-menu-button-bg: #212121;
     --color-bg-transparent: rgba(255, 255, 255, 0.2);
 
-    --color-card-bg: #1a1a1a;
-
+    /* === Texto y colores principales === */
     --color-text: #e9e9e9;
+    --color-text-soft: rgba(233, 233, 233, 0.6);
     --color-secondary: #bbbbbb;
     --color-border: #212121;
     --color-border-secondary: #aaaaaa;
     --color-muted: #aaaaaa;
+
+    /* === Colores de acento y efectos === */
     --color-accent: #d11e4b;
     --shadow-accent: rgba(209, 30, 75, 0.3);
     --color-hover: #212121;
+    --color-hover-degraded: #2a2a2a;
 
+    /* === Inversos / alternativos === */
     --color-inverse: #eeeeee;
-    --color-normal: #181818;
+    --color-normal: #111111;
+    --color-dark-inverse: #e9e9e9;
 
+    /* === Tablas / Celdas === */
+    --color-cell-border: #242424;
+
+    /* === Inputs === */
     --color-input-bg: #2a2a2a;
     /*--color-input-bg: #e2e2e2;*/
     --color-input-border: #444;
     --color-input-border-hover: #666;
     --color-input-placeholder: #aaaaaa;
 
+    /* === Tablas === */
     --color-table-header-bg: #181818;
     --color-table-stripet-bg: #181818;
 
-    /* Scrollbar */
+    /* === Scrollbar === */
     --scrollbar-track: #181818;
     --scrollbar-thumb: #444;
     --scrollbar-hover: #c1c1c1;
+
+    /* === Ripple === */
+    --ripple-color-btn: rgba(255, 255, 255, 0.1);
+    --ripple-color-card: rgba(0, 0, 0, 0.2);
 }
 
 /* ==== Colores Estados ==== */
@@ -355,130 +391,140 @@
 /* ==========================================
    COLORES DE BOTONES Y FONDOS
    ========================================== */
-
-.btn-primario,
-.bg-primario {
-    background-color: var(--color-primario);
-    transition: var(--transition-general);
+.boton-accent, .boton-danger, .boton-primary, .boton-secondary,
+.boton-success, .boton-info, .boton-purple, .boton-pink, .boton-orange,
+.boton-dark{
+    color: white;
 }
 
-.btn-secundario,
+.boton-warning {
+    color: black;
+}
+
+.boton-accent,
+.bg-accent {
+    background-color: var(--color-accent);
+}
+
+.bg-dashboard {
+    background-color: var(--color-sidebar-bg);
+}
+
+.boton-secundario,
 .bg-secundario {
     background-color: var(--color-secundario);
-    transition: var(--transition-general);
 }
 
-.btn-danger,
+.boton-danger,
 .bg-danger {
     background-color: var(--color-danger);
 }
 
-.btn-primary,
+.boton-primary,
 .bg-primary {
     background-color: var(--color-primary);
 }
 
-.btn-secondary,
+.boton-secondary,
 .bg-secondary {
     background-color: var(--color-secondary);
 }
 
-.btn-success,
+.boton-success,
 .bg-success {
     background-color: var(--color-success);
 }
 
-.btn-warning,
+.boton-warning,
 .bg-warning {
     background-color: var(--color-warning);
-    color: var(--color-text);
+    color: black;
 }
 
-.btn-info,
+.boton-info,
 .bg-info {
     background-color: var(--color-info);
     border-color: var(--color-info);
 }
 
-.btn-purple,
+.boton-purple,
 .bg-purple {
     background-color: var(--color-purple);
 }
 
-.btn-pink,
+.boton-pink,
 .bg-pink {
     background-color: var(--color-pink);
 }
 
-.btn-orange,
+.boton-orange,
 .bg-orange {
     background-color: var(--color-orange);
 }
 
-.btn-light,
+.boton-light,
 .bg-light {
     background-color: var(--color-light);
     color: var(--color-text);
 }
 
-.btn-dark,
+.boton-dark,
 .bg-dark {
     background-color: var(--color-dark);
 }
 
 /* HOVERS SOLO PARA BOTONES */
-.btn-primary:hover {
+.boton-primary:hover {
     background-color: var(--color-primary-hover);
 }
 
-.btn-secondary:hover {
+.boton-secondary:hover {
     background-color: var(--color-secondary-hover);
 }
 
-.btn-success:hover {
+.boton-success:hover {
     background-color: var(--color-success-hover);
 }
 
-.btn-danger:hover {
+.boton-danger:hover {
     background-color: var(--color-danger-hover);
 }
 
-.btn-purple:hover {
+.boton-purple:hover {
     background-color: var(--color-purple-hover);
 }
 
-.btn-pink:hover {
+.boton-pink:hover {
     background-color: var(--color-pink-hover);
 }
 
-.btn-orange:hover {
+.boton-orange:hover {
     background-color: var(--color-orange-hover);
 }
 
-.btn-warning:hover {
+.boton-warning:hover {
     background-color: var(--color-warning-hover);
     color: var(--color-text);
     /* se mantiene legible */
 }
 
-.btn-info:hover {
+.boton-info:hover {
     background-color: var(--color-info-hover);
     border-color: var(--color-info-hover);
 }
 
-.btn-light:hover {
+.boton-light:hover {
     background-color: var(--color-light-hover);
     color: var(--color-text);
 }
 
-.btn-dark:hover {
+.boton-dark:hover {
     background-color: var(--color-dark-hover);
 }
 
-.btn-modal-close,
-.bg-modal-close {
-    background-color: var(--color-close);
-    color: var(--color-bw-inverted);
+.boton-modal-close{
+    background-color: var(--color-dark-inverse);
+    color: var(--color-normal);
 }
 
 .text-base {

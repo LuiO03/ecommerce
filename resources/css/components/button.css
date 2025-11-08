@@ -1,9 +1,9 @@
 .boton {
-    max-width: 95px;
     min-width: 40px;
     min-height: 35px;
     margin: 2px 0;
     border: none;
+    text-wrap: nowrap;
     border-radius: var(--radius-element);
     cursor: pointer;
     display: flex;
@@ -11,8 +11,8 @@
     overflow: hidden;
     position: relative;
     padding: 0;
-    color: whitesmoke;
     font-size: var(--font-size-xs);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .boton .boton-text {
@@ -35,16 +35,16 @@
     align-items: center;
     background-color: rgba(0, 0, 0, 0.2);
     font-size: 16px;
-    color: white;
+    color: inherit;
     transition: width 0.2s ease;
 }
 
-.boton .boton-icon i{
+.boton .boton-icon i {
     transition: transform 0.2s ease;
 }
 
 /* Hover */
-.boton:hover{
+.boton:hover {
     box-shadow: var(--shadow-material);
 }
 .boton:hover .boton-text {
@@ -55,11 +55,74 @@
     width: 100%;
 }
 
-.boton:hover .boton-icon i{
+.boton:hover .boton-icon i {
     transform: scale(1.1);
 }
 
 /* Active */
-.boton:active .boton-icon i {
-    transform: scale(0.9);
+.boton:active {
+    transform: scale(0.95);
+}
+
+.boton-form {
+    flex: 1 1 150px;
+    display: inline-flex;
+    max-width: fit-content;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    z-index: 1;
+    border-radius: var(--radius-element);
+    overflow: hidden;
+    padding: 5px 15px;
+    cursor: pointer;
+    position: relative;
+    border: 2px solid transparent;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.boton-form .boton-form-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.boton-form .boton-form-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-secondary);
+    font-weight: 600;
+}
+
+.boton-form:hover {
+    color: var(--color-normal);
+}
+
+.boton-form:active {
+    transform: scale(0.95);
+}
+
+.boton-form::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -210%;
+    width: 200%;
+    height: 100%;
+    background-color: var(--color-inverse);
+    transform: skewX(-20deg);
+    z-index: -1;
+    transition: left 0.6s ease-in-out;
+}
+
+.boton-form:hover::after {
+    left: -40%;
+}
+
+.boton-volver {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }

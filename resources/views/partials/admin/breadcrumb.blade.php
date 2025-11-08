@@ -2,7 +2,7 @@
     use Illuminate\Support\Facades\Route;
 
     $routeName = Route::currentRouteName(); // Ej: admin.families.create
-    $segments = explode('.', $routeName);   // ["admin", "families", "create"]
+    $segments = explode('.', $routeName); // ["admin", "families", "create"]
 
     // Configuración de módulos (puedes agregar más)
     $modules = [
@@ -15,7 +15,7 @@
     // Traducciones de acciones
     $actions = [
         'create' => ['label' => 'Crear', 'icon' => 'ri-add-box-fill'],
-        'edit' => ['label' => 'Editar', 'icon' => 'ri-edit-2-fill'],
+        'edit' => ['label' => 'Editar', 'icon' => 'ri-edit-circle-fill'],
         'show' => ['label' => 'Ver', 'icon' => 'ri-eye-fill'],
     ];
 
@@ -31,30 +31,41 @@
 
 <nav class="breadcrumb-nav">
     <ol class="breadcrumb-list">
+        <i class="ri-arrow-right-s-line breadcrumb-separator"></i>
         {{-- Inicio --}}
         <li class="breadcrumb">
-            <a href="{{ route('admin.dashboard') }}" class="breadcrumb-link">
+            <a href="{{ route('admin.dashboard') }}" class="breadcrumb-link ripple-btn">
                 <i class="ri-home-heart-fill breadcrumb-icon"></i>
                 <span>Dashboard</span>
             </a>
         </li>
-
         {{-- Módulo principal --}}
-        @if ($module)
+        @if ($module && $module !== 'dashboard')
+            <i class="ri-arrow-right-s-line breadcrumb-separator"></i>
             <li class="breadcrumb">
-                <i class="ri-arrow-right-s-line breadcrumb-separator"></i>
-                <a href="{{ route('admin.' . $module . '.index') }}" class="breadcrumb-link">
-                    <i class="{{ $moduleIcon }} breadcrumb-icon"></i>
-                    <span>{{ $moduleLabel }}</span>
-                </a>
+                @if ($action === null || $action === 'index')
+                    {{-- Si ya estamos en la vista principal, no mostrar enlace --}}
+                    <span class="breadcrumb-current ripple-btn">
+                        <i class="{{ $moduleIcon }} breadcrumb-icon"></i>
+                        {{ $moduleLabel }}
+                    </span>
+                @else
+                    {{-- Si estamos en otra acción (create, edit, etc.), mostrar enlace --}}
+                    <a href="{{ route('admin.' . $module . '.index') }}" class="breadcrumb-link ripple-btn">
+                        <i class="{{ $moduleIcon }} breadcrumb-icon"></i>
+                        <span>{{ $moduleLabel }}</span>
+                    </a>
+                @endif
             </li>
         @endif
-
         {{-- Acción (crear, editar, ver) --}}
         @if ($actionLabel)
+            <i class="ri-arrow-right-s-line breadcrumb-separator"></i>
             <li class="breadcrumb">
-                <i class="ri-arrow-right-s-line breadcrumb-separator"></i>
-                <span class="breadcrumb-current"><i class="{{ $actionIcon }} breadcrumb-icon"></i> {{ $actionLabel }}</span>
+                <span class="breadcrumb-current ripple-btn">
+                    <i class="{{ $actionIcon }} breadcrumb-icon"></i>
+                    <span>{{ $actionLabel }}</span>
+                </span>
             </li>
         @endif
     </ol>

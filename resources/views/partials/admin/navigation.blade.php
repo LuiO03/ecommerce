@@ -1,5 +1,5 @@
 <nav class="navbar">
-    <button id="toggleSidebarWidth" class="hidden sm:flex navbar-boton">
+    <button id="toggleSidebarWidth" class="hidden sm:flex navbar-boton ripple-btn">
         <i class="ri-arrow-left-double-fill"></i>
     </button>
     <div class="sm:hidden">

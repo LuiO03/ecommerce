@@ -63,6 +63,10 @@
     transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
 }
 
+.fab-buttons:active, .fab-main-btn:active{
+  transform: scale(0.87);
+}
+
 .fab-buttons.show {
     opacity: 1;
     visibility: visible;

@@ -24,9 +24,9 @@
 
 
     <!-- CSS base del dashboard -->
-    @vite(['resources/css/estilos.css'])
+    @vite(['resources/css/main.css'])
     <!-- CSS de Tailwind y JS global -->
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/view-transition.js', 'resources/js/dashboard/index.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
     @stack('styles')
     @livewireStyles
 </head>
@@ -53,14 +53,13 @@
     @include('partials.admin.sidebar-left')
     @include('partials.admin.sidebar-right')
     @include('partials.admin.mobile-dropdown')
-
     <main id="mainContent" class="main-container">
         <div class="slot-container">
-            <div class="w-full mb-4">
-                <h1 class="text-bolder">
+            <div class="page-header">
+                <div class="page-title">
                     {{ $title ?? 'Sin título' }}
-                </h1>
-                <div class="page-header">
+                </div>
+                <div class="page-nav">
                     @include('partials.admin.breadcrumb')
                     @isset($action)
                         <div>
@@ -69,11 +68,14 @@
                     @endisset
                 </div>
             </div>
-
+        </div>
+        <div class="slot-container">
             {{ $slot }}
         </div>
     </main>
 
+    @include('partials.admin.modal-info')
+    @include('partials.admin.modal-confirm')
 
     <!-- ✅ DataTables v2.3.4 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

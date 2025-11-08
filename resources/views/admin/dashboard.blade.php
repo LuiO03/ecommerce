@@ -2,6 +2,9 @@
     @vite('resources/css/modules/dashboard.css')
 @endpush
 <x-admin-layout>
+    <x-slot name="title">
+        Panel de Administración
+    </x-slot>
     <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="targeta">
             <div class="targeta-usuario">
@@ -31,11 +34,12 @@
             <h2>Constantine</h2>
             <form action="{{ route('logout') }}" method="post">
                 @csrf
-                <button class="boton-cerrar-sesion">
-                    <i class="ri-logout-box-line mr-2"></i>
-                    <span>Cerrar Sesión</span>
-                </button>
+
             </form>
+            <button class="boton-cerrar-sesion ripple-btn">
+                <i class="ri-logout-box-line mr-2"></i>
+                <span>Cerrar Sesión</span>
+            </button>
         </div>
     </div>
     <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 dashboard-cards">
@@ -49,7 +53,7 @@
                 <p class="card-label">Productos</p>
             </div>
         </a>
-        
+
         <!-- Tarjeta: Categorías -->
         <a href="" class="dashboard-card">
             <div class="card-icon card-info">

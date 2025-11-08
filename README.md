@@ -2,7 +2,7 @@
   	<img src="public/logo.png" alt="Logo del Proyecto" width="150">
 </p>
 
-<h1 align="center"><strong>Gecko</strong><i>merce</i></h1>
+<h1 align="center"><strong>GECKO</strong><i>MERCE</i></h1>
 
 <p align="center">Tu tienda virtual inteligente en Laravel</p>
 
@@ -20,14 +20,14 @@ Proyecto de **Ecommerce** desarrollado con **Laravel 12**, pensado para ofrecer 
 
 ## 🚀 Características principales
 
-✅ Catálogo de productos con categorías y marcas
-✅ Panel de administración con roles y permisos
-✅ Sistema de autenticación con Laravel Breeze / Jetstream
-✅ CRUD completo de productos, categorías y usuarios
-✅ Soporte para imágenes y galería de productos
-✅ Diseño responsive y moderno
-✅ Integración con base de datos MySQL
-✅ Preparado para futuras integraciones (pagos, carritos, etc.)
+* ✅ Catálogo de productos con categorías y marcas
+* ✅ Panel de administración con roles y permisos
+* ✅ Sistema de autenticación con Laravel Breeze / Jetstream
+* ✅ CRUD completo de productos, categorías y usuarios
+* ✅ Soporte para imágenes y galería de productos
+* ✅ Diseño responsive y moderno
+* ✅ Integración con base de datos MySQL
+* ✅ Preparado para futuras integraciones (pagos, carritos, etc.)
 
 ---
 
@@ -110,14 +110,14 @@ ecommerce/
 
 ## 👨‍💻 Autor
 
-**Luis Alberto Quispe O.**
-💼 Diseñador y programador web
-📧 70098517@institutocajas.info
-🌐 [https://github.com/LuiO03](https://github.com/LuiO03)
+* **Luis Alberto Quispe O.**
+* 💼 Diseñador y programador web
+* 📧 70098517@institutocajas.info
+* 🌐 [https://github.com/LuiO03](https://github.com/LuiO03)
 
 ---
 
-## 🪪 Licencia
+## Licencia
 
 Este proyecto se distribuye bajo la licencia **MIT**.
 Eres libre de usarlo, modificarlo y distribuirlo con fines educativos o personales.
