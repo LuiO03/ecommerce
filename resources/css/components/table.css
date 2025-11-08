@@ -236,6 +236,10 @@ input[type="checkbox"]:checked {
     border-color: var(--color-accent);
 }
 
+input[type="checkbox"]:indeterminate {
+    color: var(--color-accent);
+}
+
 /* =======================================================
    🎨 BOTONES DE TABLA
 ======================================================= */

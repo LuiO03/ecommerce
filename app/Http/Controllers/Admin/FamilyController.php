@@ -101,4 +101,45 @@ class FamilyController extends Controller
 
         return redirect()->route('admin.families.index');
     }
+
+    public function destroyMultiple(Request $request)
+    {
+        $request->validate([
+            'families' => 'required|array|min:1',
+            'families.*' => 'exists:families,id'
+        ]);
+
+        $familyIds = $request->families;
+        $families = Family::whereIn('id', $familyIds)->get();
+        $count = $families->count();
+
+        if ($count === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontraron familias para eliminar.'
+            ]);
+        }
+
+        // Obtener nombres para el mensaje
+        $familyNames = $families->pluck('name')->toArray();
+        
+        // Eliminar las familias
+        Family::whereIn('id', $familyIds)->delete();
+
+        if ($count === 1) {
+            $message = "La familia <strong>\"{$familyNames[0]}\"</strong> ha sido eliminada correctamente.";
+        } else {
+            $familyList = implode('', array_map(function($name) {
+                return "<li><strong>{$name}</strong></li>";
+            }, $familyNames));
+            
+            $message = "Se han eliminado <strong>{$count} familias</strong> correctamente:<br><br><strong>Familias eliminadas:</strong><ul>{$familyList}</ul>";
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'count' => $count
+        ]);
+    }
 }

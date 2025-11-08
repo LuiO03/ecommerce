@@ -29,6 +29,12 @@
                 <i class="ri-arrow-down-s-line selector-icon"></i>
             </div>
         </div>
+        <div>
+            <button id="deleteSelected" class="boton boton-danger" disabled>
+                <span class="boton-icon"><i class="ri-delete-bin-7-fill"></i></span>
+                <span class="boton-text">Eliminar Seleccionados</span>
+            </button>
+        </div>
         <!-- === Tabla === -->
         <div class="tabla-wrapper">
             <table id="tabla" class="tabla-general display">
@@ -109,16 +115,9 @@
         </div>
     </div>
 
-    @if (Session::has('info'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const info = @json(Session::get('info'));
-                window.showInfoModal(info);
-            });
-        </script>
-    @endif
     @push('scripts')
         <script>
+            
             $(document).ready(function() {
                 const language_es = {
                     emptyTable: `
@@ -158,6 +157,7 @@
                         actualizarIconosOrden();
                     },
                 });
+
 
                 // Reemplaza los triángulos por íconos Remix al cargar
                 document.querySelectorAll('#tabla td.control').forEach(cell => {
@@ -340,10 +340,24 @@
                         tr.removeClass('row-selected');
                     }
 
-                    // Verificar si todos los visibles están seleccionados
+                    // Actualizar el estado del checkbox principal (seleccionar todo)
                     const all = $('#tabla tbody .check-row').length;
                     const checked = $('#tabla tbody .check-row:checked').length;
-                    $('#checkAll').prop('checked', all > 0 && all === checked);
+                    const checkAll = document.getElementById('checkAll');
+
+                    if (checked === 0) {
+                        checkAll.checked = false;
+                        checkAll.indeterminate = false;
+                    } else if (checked === all) {
+                        checkAll.checked = true;
+                        checkAll.indeterminate = false;
+                    } else {
+                        checkAll.checked = false;
+                        checkAll.indeterminate = true;
+                    }
+
+                    // Habilitar/deshabilitar botón de eliminar seleccionados
+                    updateDeleteButton();
                 });
 
                 // Al marcar/desmarcar "Seleccionar todo"
@@ -362,7 +376,25 @@
                             $(this).closest('tr').removeClass('row-selected');
                         }
                     });
+
+                    // Habilitar/deshabilitar botón de eliminar seleccionados
+                    updateDeleteButton();
                 });
+
+                // Función para actualizar el estado del botón eliminar
+                function updateDeleteButton() {
+                    const deleteBtn = document.getElementById('deleteSelected');
+                    const selectedCount = selectedIds.size;
+                    
+                    if (selectedCount > 0) {
+                        deleteBtn.disabled = false;
+                        deleteBtn.querySelector('.boton-text').textContent = 
+                            `Eliminar Seleccionados (${selectedCount})`;
+                    } else {
+                        deleteBtn.disabled = true;
+                        deleteBtn.querySelector('.boton-text').textContent = 'Eliminar Seleccionados';
+                    }
+                }
                 // Escuchar eventos del DataTable
                 table.on('draw', () => {
                     // Reinserta íconos si faltan
@@ -390,16 +422,73 @@
                     const checked = $('#tabla tbody .check-row:checked').length;
                     $('#checkAll').prop('checked', all > 0 && all === checked);
 
+                    // Actualizar botón eliminar después de redraw
+                    updateDeleteButton();
+
                     updateInfoAndPagination();
                     animarFilas();
                     actualizarIconosOrden();
                 });
 
+                // Evento click para eliminar seleccionados
+                $('#deleteSelected').on('click', function() {
+                    const selectedCount = selectedIds.size;
+                    
+                    if (selectedCount === 0) {
+                        showInfoModal({
+                            type: 'warning',
+                            header: 'Sin selección',
+                            title: 'No hay elementos seleccionados',
+                            message: 'Por favor selecciona al menos una familia para eliminar.',
+                        });
+                        return;
+                    }
+
+                    // Obtener nombres de las familias seleccionadas
+                    const selectedNames = [];
+                    selectedIds.forEach(id => {
+                        const checkbox = $(`input[value="${id}"]`);
+                        const row = checkbox.closest('tr');
+                        const name = row.find('.column-name-td').text().trim();
+                        selectedNames.push(name);
+                    });
+
+                    let message;
+                    
+                    if (selectedCount === 1) {
+                        message = `¿Estás seguro de que deseas eliminar la familia <strong>"${selectedNames[0]}"</strong>?<br><span>Esta acción no se puede deshacer.</span>`;
+                    } else {
+                        const familyList = selectedNames.map(name => `<li><strong>${name}</strong></li>`).join('');
+                        message = `¿Estás seguro de que deseas eliminar las <strong>${selectedCount} familias</strong> seleccionadas?<br><br>
+                                  <strong>Familias a eliminar:</strong>
+                                  <ul>${familyList}</ul>
+                                  <span>Esta acción no se puede deshacer.</span>`;
+                    }
+
+                    showConfirm({
+                        type: 'danger',
+                        header: 'Confirmar eliminación',
+                        title: selectedCount === 1 ? '¿Eliminar familia?' : '¿Eliminar familias?',
+                        message: message,
+                        confirmText: 'Sí, eliminar',
+                        cancelText: 'No, cancelar',
+                        onConfirm: function() {
+                            deleteSelectedFamilies();
+                        }
+                    });
+                });
+
+ 
                 // Llamada inicial
                 updateInfoAndPagination();
                 animarFilas();
                 actualizarIconosOrden();
+                updateDeleteButton();
             });
         </script>
     @endpush
+
+    {{-- Incluir modales --}}
+    @include('partials.admin.modal-confirm')
+    @include('partials.admin.modal-info')
 </x-admin-layout>

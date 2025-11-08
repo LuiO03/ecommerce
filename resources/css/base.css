@@ -312,7 +312,8 @@
         display: inline-block;
     }
     strong {
-        font-weight: bolder;
+        font-size: inherit;
+        font-family: var(--font-secondary);
     }
 }
 

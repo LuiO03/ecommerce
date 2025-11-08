@@ -26,3 +26,5 @@ Route::get('/families/{family}/edit', [FamilyController::class, 'edit'])->name('
 Route::put('/families/{family}', [FamilyController::class, 'update'])->name('admin.families.update');
 
 Route::delete('/families/{family}', [FamilyController::class, 'destroy'])->name('admin.families.destroy');
+
+Route::delete('/families', [FamilyController::class, 'destroyMultiple'])->name('admin.families.destroy-multiple');

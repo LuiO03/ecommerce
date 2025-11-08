@@ -8,20 +8,19 @@
         </div>
 
         <div class="confirm-info ripple-card">
-            <i id="infoIcon" class="ri-information-fill confirm-icon text-info"></i>
+            <i id="infoIcon" class="ri-information-fill confirm-icon"></i>
             <div class="flex flex-col gap-1">
                 <h6 class="confirm-title" id="infoTitle">Acción completada</h6>
                 <p class="confirm-message" id="infoMessage">Tu operación se realizó correctamente.</p>
             </div>
             <!-- ✅ Nueva sección de acciones -->
             <div class="confirm-actions-info">
-                <button type="button" class="boton boton-modal-close" id="cancelButton">
+                <button type="button" class="boton boton-modal-close" id="cancelButtonInfo">
                     <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                     <span class="boton-text">Cerrar</span>
                 </button>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -34,7 +33,7 @@ window.showInfoModal = function (options) {
     const title = document.getElementById('infoTitle');
     const message = document.getElementById('infoMessage');
     const closeBtn = document.getElementById('closeInfoModalBtn');
-    const cancelButton = document.getElementById('cancelButton');
+    const cancelButtonInfo = document.getElementById('cancelButtonInfo');
     const headerText = document.getElementById('infoHeaderText');
 
     // Limpiar clases previas
@@ -50,11 +49,11 @@ window.showInfoModal = function (options) {
     icon.classList.add(`text-${type}`);
 
     const iconMap = {
-        success: 'ri-checkbox-circle-fill',
-        info: 'ri-information-fill',
-        warning: 'ri-alert-fill',
-        danger: 'ri-error-warning-fill',
-        dark: 'ri-shut-down-fill',
+        success: 'ri-checkbox-circle-line',
+        info: 'ri-information-line',
+        warning: 'ri-alert-line',
+        danger: 'ri-error-warning-line',
+        dark: 'ri-shut-down-line',
     };
     icon.className = `${iconMap[type]} confirm-icon text-${type}`;
 
@@ -83,7 +82,7 @@ window.showInfoModal = function (options) {
     // --- 🔹 Eliminar listeners al cerrar
     function removeListeners() {
         closeBtn.removeEventListener('click', closeModal);
-        cancelButton.removeEventListener('click', closeModal);
+        cancelButtonInfo.removeEventListener('click', closeModal);
         modal.removeEventListener('click', handleOutsideClick);
         dialog.removeEventListener('mouseenter', pauseAutoClose);
         dialog.removeEventListener('mouseleave', resumeAutoClose);
@@ -96,7 +95,7 @@ window.showInfoModal = function (options) {
 
     // --- 🔹 Listeners para botones
     closeBtn.addEventListener('click', closeModal);
-    cancelButton.addEventListener('click', closeModal);
+    cancelButtonInfo.addEventListener('click', closeModal);
     modal.addEventListener('click', handleOutsideClick);
 
     // --- 🔹 Autocierre (pausable con hover)

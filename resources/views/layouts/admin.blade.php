@@ -76,12 +76,19 @@
 
     @include('partials.admin.modal-info')
     @include('partials.admin.modal-confirm')
-
-    <!-- ✅ DataTables v2.3.4 -->
+    <!-- DataTables v2.3.4 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
     @stack('scripts')
+    @if (Session::has('info'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const info = @json(Session::get('info'));
+                window.showInfoModal(info);
+            });
+        </script>
+    @endif
     @livewireScripts
 </body>
 

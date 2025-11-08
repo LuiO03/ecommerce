@@ -1,4 +1,4 @@
-<!-- resources/views/components/partials/confirm-modal.blade.php -->
+<!-- resources/views/components/partials/modal-confirm.blade.php -->
 <div id="confirmModal" class="confirm-modal hidden">
     <div class="confirm-dialog">
         <div class="confirm-header" id="confirmHeader">
@@ -7,24 +7,25 @@
                 <i class="ri-close-line"></i>
             </button>
         </div>
-
-        <div class="confirm-body ripple-card">
-            <div class="flex flex-col gap-1">
-                <h6 class="confirm-title" id="confirmTitle">¿Estás seguro?</h6>
-                <p class="confirm-message" id="confirmMessage">Esta acción no se puede deshacer.</p>
+        <div class="flex flex-col ripple-card">
+            <div class="confirm-body">
+                <div class="flex flex-col gap-1">
+                    <h6 class="confirm-title" id="confirmTitle">¿Estás seguro?</h6>
+                    <p class="confirm-message" id="confirmMessage">Esta acción no se puede deshacer.</p>
+                </div>
+                <i id="confirmIcon" class="ri-error-warning-line confirm-icon"></i>
             </div>
-            <i id="confirmIcon" class="ri-error-warning-line confirm-icon"></i>
-        </div>
-
-        <div class="confirm-actions">
-            <button type="button" class="boton boton-modal-close" id="cancelButton">
-                <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
-                <span class="boton-text">No, Cancelar</span>
-            </button>
-            <button id="confirmButton" class="boton">
-                <span class="boton-icon"><i class="ri-check-double-line"></i></span>
-                <span class="boton-text">Sí, confirmar</span>
-            </button>
+    
+            <div class="confirm-actions">
+                <button type="button" class="boton boton-modal-close" id="cancelButton">
+                    <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
+                    <span class="boton-text">No, Cancelar</span>
+                </button>
+                <button id="confirmButton" class="boton">
+                    <span class="boton-icon"><i class="ri-check-double-line"></i></span>
+                    <span class="boton-text">Sí, confirmar</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -37,11 +38,20 @@ window.showConfirm = function(options) {
     const icon = document.getElementById('confirmIcon');
     const title = document.getElementById('confirmTitle');
     const message = document.getElementById('confirmMessage');
-    const confirmBtn = document.getElementById('confirmButton');
-    const cancelBtn = document.getElementById('cancelButton');
-    const closeBtn = document.getElementById('closeModalBtn');
     const headerText = document.getElementById('confirmHeaderText');
 
+    // Limpiar listeners previos
+    const confirmBtnOld = document.getElementById('confirmButton');
+    const cancelBtnOld = document.getElementById('cancelButton');
+    const closeBtnOld = document.getElementById('closeModalBtn');
+    const confirmBtn = confirmBtnOld.cloneNode(true);
+    const cancelBtn = cancelBtnOld.cloneNode(true);
+    const closeBtn = closeBtnOld.cloneNode(true);
+    confirmBtnOld.replaceWith(confirmBtn);
+    cancelBtnOld.replaceWith(cancelBtn);
+    closeBtnOld.replaceWith(closeBtn);
+
+    // Colores y tipo
     const colorClasses = ['danger', 'success', 'warning', 'info', 'dark'];
     colorClasses.forEach(c => {
         header.classList.remove(`bg-${c}`);
@@ -65,7 +75,7 @@ window.showConfirm = function(options) {
 
     headerText.textContent = options.header || 'Confirma la acción';
     title.textContent = options.title || '¿Estás seguro?';
-    message.textContent = options.message || 'Esta acción no se puede deshacer.';
+    message.innerHTML = options.message || 'Esta acción no se puede deshacer.';
     confirmBtn.querySelector('.boton-text').textContent = options.confirmText || 'Confirmar';
     cancelBtn.querySelector('.boton-text').textContent = options.cancelText || 'Cancelar';
 
@@ -81,9 +91,6 @@ window.showConfirm = function(options) {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
         }, 250);
-        confirmBtn.removeEventListener('click', onConfirm);
-        cancelBtn.removeEventListener('click', closeModal);
-        closeBtn.removeEventListener('click', closeModal);
     }
 
     function onConfirm() {
@@ -94,5 +101,16 @@ window.showConfirm = function(options) {
     confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', closeModal);
     closeBtn.addEventListener('click', closeModal);
+
+    // 🖱️ Cerrar al hacer clic fuera
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    // ⌨️ Cerrar con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
 };
 </script>
+
