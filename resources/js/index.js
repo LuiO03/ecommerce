@@ -8,9 +8,10 @@ import './dashboard/sidebars-control.js';
 import './dashboard/theme-toggle.js';
 
 import './utils/material-design.js';
-import './utils/view-transition.js';
+
 
 import './modals/modal-confirm.js';
+
 
 // Si tienes funciones o inicializaciones globales
 document.addEventListener('DOMContentLoaded', () => {

@@ -15,19 +15,30 @@
 .tabla-controles {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Contenedor para los filtros y selector de filas */
+.tabla-filtros {
+    flex: 1 1 380px;
+    display: flex;
+    gap: 10px;
+    max-width: 100%;
 }
 
 /* ----------------------------
    🔍 BUSCADOR
 ---------------------------- */
 .tabla-buscador {
+    flex: 1 1 380px;
     position: relative;
     display: flex;
     align-items: center;
-    flex: 1 1 200px;
+    width: 100%;
+    min-width: 280px;
+    max-width: 100%;
 }
 
 .tabla-buscador i {
@@ -44,12 +55,17 @@
 
 .tabla-buscador input {
     width: 100%;
-    padding: 6px 10px 6px 40px;
+    padding: 6px 40px 6px 40px;
     border: 2px solid var(--color-input-border);
     border-radius: var(--radius-element);
     background-color: var(--color-input-bg);
     font-size: var(--font-size-xs);
     transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Ajustar padding cuando no hay texto (sin botón limpiar) */
+.tabla-buscador:not(.has-text) input {
+    padding-right: 10px;
 }
 
 .tabla-buscador input:focus {
@@ -71,14 +87,71 @@
     color: var(--color-accent);
 }
 
+/* Botón para limpiar búsqueda */
+.buscador-clear {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--color-danger);
+    cursor: pointer;
+    border-radius: var(--radius-element);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-h3);
+    transition: color 0.2s ease;
+}
+
+.buscador-clear:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Mostrar el botón cuando hay texto */
+.tabla-buscador.has-text .buscador-clear {
+    display: flex;
+}
+
 /* ----------------------------
-   📄 SELECT DE FILAS POR PÁGINA
+   📄 SELECT DE FILAS POR PÁGINA Y FILTROS
 ---------------------------- */
 .tabla-select-wrapper {
-    position: relative;
+    flex: 1 1 300px;
     display: flex;
     align-items: center;
-    flex: 1 1 200px;
+    width: 100%;
+    gap: 10px;
+}
+
+.tabla-select-wrapper span{
+    text-wrap: nowrap;
+    font-size: var(--font-size-xs);
+}
+
+.selector{
+    width: 100%;
+    display: flex;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.tabla-select-wrapper.filter-active {
+    transform: scale(1.02);
+}
+
+.tabla-select-wrapper.filter-active select {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-light, var(--color-hover));
+    box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb, 59, 130, 246), 0.1);
+}
+
+.tabla-select-wrapper.filter-active i,
+.tabla-select-wrapper.filter-active .selector i {
+    color: var(--color-accent);
 }
 
 .tabla-select-wrapper select {
@@ -93,9 +166,12 @@
     appearance: none;
 }
 
-.tabla-select-wrapper i {
+/* Iconos dentro del selector */
+.selector i{
     position: absolute;
     right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 40px;
     display: flex;
     justify-content: center;
@@ -117,7 +193,8 @@
     box-shadow: var(--shadow-material);
 }
 
-.tabla-select-wrapper:has(select:focus) i {
+.tabla-select-wrapper:has(select:focus) i,
+.selector:has(select:focus) i {
     color: var(--color-accent);
 }
 
@@ -126,14 +203,9 @@
 ======================================================= */
 .tabla-wrapper {
     overflow-x: auto;
-    border: 2px solid var(--color-input-border);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-element);
-}
-
-.tabla-general {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: var(--radius-element);
+    position: relative;
 }
 
 .tabla-general th,
@@ -284,6 +356,16 @@ input[type="checkbox"]:indeterminate {
     font-weight: normal;
 }
 
+.filter-indicator {
+    color: var(--color-accent);
+    font-weight: bold;
+    font-size: var(--font-size-xs);
+    background-color: var(--color-accent-light, var(--color-hover));
+    padding: 2px 8px;
+    border-radius: var(--radius-element);
+    margin-left: 8px;
+}
+
 .tabla-paginacion {
     display: flex;
     justify-content: center;
@@ -412,6 +494,16 @@ input[type="checkbox"]:indeterminate {
     }
 }
 
+/* Desactivar animaciones cuando se requiera */
+#tabla.no-animate tbody tr {
+    animation: none !important;
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+    animation-fill-mode: none !important;
+    transform: none !important;
+    transition: none !important;
+}
+
 /* =============================
    SWITCH EN TABLA
 ============================= */
@@ -466,7 +558,84 @@ input[type="checkbox"]:indeterminate {
 }
 
 /* =======================================================
-   📱 RESPONSIVIDAD
+   📱 RESPONSIVIDAD CONTROLES DE TABLA
+======================================================= */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+    .tabla-controles {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .tabla-filtros {
+        justify-self: stretch;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+    }
+}
+
+/* Pantallas pequeñas - Móviles grandes */
+@media (max-width: 768px) {
+    .tabla-controles {
+        gap: 12px;
+    }
+    
+    .tabla-buscador {
+        min-width: 200px;
+    }
+    
+    .tabla-filtros {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .tabla-controles {
+        gap: 10px;
+    }
+    
+    .tabla-buscador {
+        min-width: 160px;
+    }
+    
+    .tabla-buscador input {
+        font-size: var(--font-size-sm, 14px);
+        padding: 8px 10px 8px 35px;
+    }
+    
+    .tabla-buscador i {
+        width: 35px;
+        font-size: var(--font-size-p);
+    }
+    
+    .buscador-clear {
+        width: 28px;
+        height: 28px;
+        font-size: var(--font-size-p);
+    }
+    
+    .tabla-filtros {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .tabla-select-wrapper select {
+        font-size: var(--font-size-sm, 14px);
+        padding: 8px 25px 8px 8px;
+    }
+    
+    .tabla-select-wrapper i,
+    .selector i {
+        width: 30px;
+        font-size: var(--font-size-p);
+    }
+}
+
+/* =======================================================
+   📱 RESPONSIVIDAD GENERAL
 ======================================================= */
 @media (max-width: 900px) {
     .tabla-footer {

@@ -11,13 +11,14 @@
 
     /* === Texto y colores principales === */
     --color-text: #342e37;
-    --color-text-soft: rgba(52, 46, 55, 0.6);
+    --color-text-soft: #342e37;
     --color-muted: #6c757d;
     --color-border: #e5e7eb;
     --color-border-secondary: #342e37;
 
     /* === Colores de acento y efectos === */
     --color-accent: #3d31b2;
+    --color-accent-pastel: #B2F0FF;
     --shadow-accent: rgba(61, 49, 178, 0.25);
     --color-hover: #f9f9f9;
     --color-hover-degraded: #e5e5e5;
@@ -76,6 +77,7 @@
 
     /* === Colores de acento y efectos === */
     --color-accent: #d11e4b;
+    --color-accent-pastel: #FFE5E5;
     --shadow-accent: rgba(209, 30, 75, 0.3);
     --color-hover: #212121;
     --color-hover-degraded: #2a2a2a;
@@ -314,6 +316,7 @@
     strong {
         font-size: inherit;
         font-family: var(--font-secondary);
+        color: var(--color-text);
     }
 }
 

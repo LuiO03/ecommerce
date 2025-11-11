@@ -11,7 +11,16 @@ class Family extends Model
     use HasFactory;
     public $timestamps = true;
     // asignacion masiva, $fillable define los campos que se pueden asignar masivamente
-    protected $fillable = ['name', 'description', 'status', 'slug', 'image', 'created_by', 'updated_by'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'status',
+        'image',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
 
     public function scopeForSelect($query)
     {
@@ -58,5 +67,10 @@ class Family extends Model
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

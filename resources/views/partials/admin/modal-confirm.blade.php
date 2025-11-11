@@ -7,15 +7,14 @@
                 <i class="ri-close-line"></i>
             </button>
         </div>
-        <div class="flex flex-col ripple-card">
+        <div class="flex flex-col w-full ripple-card">
             <div class="confirm-body">
-                <div class="flex flex-col gap-1">
+                <div class="confirm-text">
                     <h6 class="confirm-title" id="confirmTitle">¿Estás seguro?</h6>
                     <p class="confirm-message" id="confirmMessage">Esta acción no se puede deshacer.</p>
                 </div>
                 <i id="confirmIcon" class="ri-error-warning-line confirm-icon"></i>
             </div>
-    
             <div class="confirm-actions">
                 <button type="button" class="boton boton-modal-close" id="cancelButton">
                     <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
@@ -79,6 +78,21 @@ window.showConfirm = function(options) {
     confirmBtn.querySelector('.boton-text').textContent = options.confirmText || 'Confirmar';
     cancelBtn.querySelector('.boton-text').textContent = options.cancelText || 'Cancelar';
 
+    // Mover modal al final del body para garantizar z-index máximo
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+    
+    // Forzar z-index inline para máxima prioridad
+    modal.style.zIndex = '999999';
+    modal.style.position = 'fixed';
+    
+    // Reducir z-index del sidebar temporalmente
+    const sidebar = document.getElementById('logo-sidebar');
+    if (sidebar) {
+        sidebar.style.zIndex = '1';
+    }
+    
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     dialog.classList.remove('animate-out');
@@ -90,6 +104,12 @@ window.showConfirm = function(options) {
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            
+            // Restaurar z-index del sidebar
+            const sidebar = document.getElementById('logo-sidebar');
+            if (sidebar) {
+                sidebar.style.zIndex = '';
+            }
         }, 250);
     }
 

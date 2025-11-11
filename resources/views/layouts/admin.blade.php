@@ -29,6 +29,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
     @stack('styles')
     @livewireStyles
+
 </head>
 <script>
     // Evitar flash blanco: aplicar tema antes del renderizado
@@ -54,19 +55,17 @@
     @include('partials.admin.sidebar-right')
     @include('partials.admin.mobile-dropdown')
     <main id="mainContent" class="main-container">
-        <div class="slot-container">
-            <div class="page-header">
-                <div class="page-title">
-                    {{ $title ?? 'Sin título' }}
-                </div>
-                <div class="page-nav">
-                    @include('partials.admin.breadcrumb')
-                    @isset($action)
-                        <div>
-                            {{ $action }}
-                        </div>
-                    @endisset
-                </div>
+        <div class="page-header">
+            <div class="page-title">
+                {{ $title ?? 'Sin título' }}
+            </div>
+            <div class="page-nav">
+                @include('partials.admin.breadcrumb')
+                @isset($action)
+                    <div>
+                        {{ $action }}
+                    </div>
+                @endisset
             </div>
         </div>
         <div class="slot-container">

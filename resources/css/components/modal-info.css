@@ -1,0 +1,211 @@
+.info-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 100 !important;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
+    backdrop-filter: blur(0px);
+    isolation: isolate;
+}
+
+.info-modal.flex {
+    display: flex;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+}
+
+.info-dialog {
+    overflow: hidden;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25);
+    background-color: var(--color-sidebar-bg);
+    width: 90%;
+    max-width: 490px;
+    text-align: center;
+    transform-origin: center;
+    opacity: 0;
+    transform: scale(0.7);
+    padding-bottom: 15px;
+    border-radius: var(--radius-card) var(--radius-card) 0px 0px;
+}
+
+/* 🔹 Animación de entrada tipo SweetAlert */
+@keyframes sweetIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    45% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(0.95);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 🔹 Animación de salida tipo SweetAlert */
+@keyframes sweetOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+}
+
+.animate-in {
+    animation: sweetIn 0.35s ease forwards;
+    animation-delay: 0.1s;
+}
+
+.animate-out {
+    animation: sweetOut 0.25s ease forwards;
+}
+
+/* === Header y contenido === */
+.info-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+    color: #fff;
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+}
+
+.info-header.bg-warning, .boton.bg-warning {
+    color: black;
+}
+
+.info-close {
+    border: none;
+    color: inherit;
+    font-size: 25px;
+    padding: 0px 6px;
+    cursor: pointer;
+    transition: ease opacity 0.2s;
+}
+
+.info-close:hover {
+    opacity: 0.8;
+}
+
+.info-title{
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+}
+
+.info-message{
+    color: var(--color-text-soft);
+    width: 100%;
+    padding-inline: 10px;
+}
+
+.info-icon {
+    font-size: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-actions{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding: 0px 15px 15px 15px;
+}
+
+/* Estilos para listas en modales de información */
+.info-message ul {
+    text-align: left;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+    background-color: var(--color-hover);
+    padding: 10px 20px 10px 30px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    margin: 10px 0px;
+}
+
+.info-message ul::-webkit-scrollbar{
+    width: 5px;
+    background-color: var(--scrollbar-track);
+}
+
+.info-message ul::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.info-message ul::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-hover);
+}
+
+.info-message li {
+    line-height: 1.4;
+    color: var(--color-text);
+    list-style: disc;
+}
+
+.info-message li:last-child {
+    margin-bottom: 0;
+}
+
+.info-message li strong {
+    color: var(--color-text);
+}
+
+/* ✅ BARRA DE PROGRESO */
+.progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0 0 var(--radius-card) var(--radius-card);
+    overflow: visible;
+    display: none;
+}
+
+.progress-text {
+    position: absolute;
+    top: -25px;
+    right: 8px;
+    font-size: 0.7rem;
+    color: var(--color-text);
+    opacity: 0.8;
+    font-weight: 500;
+    background: var(--color-sidebar-bg);
+    padding: 2px 6px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--color-accent);
+    transition: width 0.1s ease-out;
+    position: relative;
+}

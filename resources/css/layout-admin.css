@@ -461,6 +461,9 @@
     width: 100%;
     padding: 0px;
     margin: 0px;
+    gap: 5px;
+    max-width: var(--max-width);
+    padding: 0px 16px;
 }
 
 .page-nav{

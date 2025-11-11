@@ -178,6 +178,8 @@
     background-color: var(--color-sidebar-bg);
     padding: 0 6px;
     color: var(--color-accent);
+    font-weight: bolder;
+    font-family: var(--font-secondary);
 }
 
 /* === Select sin foco pero con valor === */

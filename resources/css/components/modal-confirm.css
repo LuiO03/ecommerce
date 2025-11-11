@@ -1,14 +1,15 @@
 .confirm-modal {
-    position: fixed;
-    inset: 0;
+    position: fixed !important;
+    inset: 0 !important;
     background-color: rgba(0, 0, 0, 0);
-    
+    z-index: 100 !important;
     display: none;
     align-items: center;
     justify-content: center;
     opacity: 0;
     transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
     backdrop-filter: blur(0px);
+    isolation: isolate;
 }
 
 .confirm-modal.flex {
@@ -110,6 +111,14 @@
     padding: 15px;
     gap: 5px;
     text-align: start;
+    width: 100%;
+}
+
+.confirm-text{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 80%;
 }
 
 .confirm-title{
@@ -118,12 +127,14 @@
 }
 
 .confirm-message{
-    color: var(---color-text-soft);
+    color: var(--color-text-soft);
+    width: 100%;
 }
 
 .confirm-icon {
     font-size: 50px;
     display: flex;
+    width: 20%;
     align-items: center;
     justify-content: center;
 }
@@ -136,71 +147,32 @@
     padding: 0px 15px 15px 15px;
 }
 
-/* === Estilos específicos para el modal de información === */
-.confirm-info{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.confirm-actions-info{
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    padding: 15px;
-}
-
-.confirm-info .confirm-message{
-    padding-inline: 20px;
-}
-
-.confirm-info .confirm-icon {
-    font-size: 100px;
-}
-
-.deleted-header {
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-
-.deleted-item-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    text-align: left;
-}
-
-.deleted-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 0;
-    font-size: 0.95rem;
-}
-
-.deleted-bullet {
-    font-size: 1rem;
-    line-height: 1;
-}
-
-.deleted-name {
-    flex: 1;
-    word-break: break-word;
-}
-
 /* Estilos para listas en modales de confirmación */
 .confirm-message ul {
-    margin: 12px 0;
     text-align: left;
     max-height: 150px;
     overflow-y: auto;
-    background-color: var(--color-input-bg);
+    width: 100%;
+    background-color: var(--color-hover);
     border-radius: var(--radius-input);
     padding: 10px 20px 10px 30px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
+    margin: 10px 0px;
+}
+
+.confirm-message ul::-webkit-scrollbar{
+    width: 5px;
+    background-color: var(--scrollbar-track);
+}
+
+.confirm-message ul::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.confirm-message ul::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-hover);
 }
 
 .confirm-message li {
@@ -214,6 +186,5 @@
 }
 
 .confirm-message li strong {
-    color: var(--color-text-emphasis);
-    font-weight: 600;
+    color: var(--color-text);
 }

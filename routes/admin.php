@@ -28,3 +28,12 @@ Route::put('/families/{family}', [FamilyController::class, 'update'])->name('adm
 Route::delete('/families/{family}', [FamilyController::class, 'destroy'])->name('admin.families.destroy');
 
 Route::delete('/families', [FamilyController::class, 'destroyMultiple'])->name('admin.families.destroy-multiple');
+
+Route::patch('/families/{family}/status', [FamilyController::class, 'updateStatus'])
+    ->name('admin.families.update-status');
+
+Route::post('/families/export/excel', [FamilyController::class, 'exportExcel'])
+    ->name('admin.families.export.excel');
+
+Route::post('/families/export/pdf', [FamilyController::class, 'exportPdf'])
+    ->name('admin.families.export.pdf');
