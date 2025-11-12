@@ -156,6 +156,23 @@
     --color-dark-hover: #0d0f12;
 }
 
+/* ==== Colores Estados - Modo Oscuro ==== */
+.dark {
+    /* Colores pastel adaptados para modo oscuro */
+    /* Los colores pastel en dark mode son más oscuros y menos saturados */
+    /* para mantener buen contraste con el fondo oscuro */
+    
+    --color-primary-pastel: #1a2447;
+    --color-secondary-pastel: #2a2530;
+    --color-success-pastel: #0d2b0d;
+    --color-danger-pastel: #3d1520;
+    --color-warning-pastel: #3d2f0d;
+    --color-info-pastel: #1a2d47;
+    --color-orange-pastel: #3d2015;
+    --color-purple-pastel: #250a3d;
+    --color-pink-pastel: #3d1a2d;
+}
+
 /* ==== Otros ==== */
 :root {
     --font-primary: "Lato", sans-serif;

@@ -1,7 +1,7 @@
 @push('styles')
     @vite('resources/css/modules/dashboard.css')
 @endpush
-<x-admin-layout>
+<x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
         Panel de Administración
     </x-slot>

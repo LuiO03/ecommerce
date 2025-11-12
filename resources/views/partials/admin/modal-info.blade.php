@@ -66,7 +66,16 @@ window.showInfoModal = function (options) {
     // Asignar textos
     headerText.textContent = options.header || 'Información';
     title.innerHTML = options.title || 'Acción completada';
-    message.innerHTML = options.message || 'Tu operación se realizó correctamente.';
+    
+    // Construir mensaje con lista si existe
+    let messageContent = options.message || 'Tu operación se realizó correctamente.';
+    
+    if (options.list && Array.isArray(options.list) && options.list.length > 0) {
+        const listItems = options.list.map(item => `<li><strong>${item}</strong></li>`).join('');
+        messageContent += `<ul class="modal-list">${listItems}</ul>`;
+    }
+    
+    message.innerHTML = messageContent;
 
     // Mover modal al final del body para garantizar z-index máximo
     if (modal.parentElement !== document.body) {

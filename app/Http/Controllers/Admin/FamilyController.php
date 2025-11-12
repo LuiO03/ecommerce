@@ -215,14 +215,17 @@ class FamilyController extends Controller
             $family->delete();
         }
 
-        // Mensaje final
-        $names = $families->pluck('name')->implode(', ');
+        // Mensaje final con lista de nombres
+        $namesList = $families->map(function($family) {
+            return $family->name;
+        })->toArray();
 
         Session::flash('info', [
             'type' => 'danger',
             'header' => 'Registros eliminados',
-            'title' => "Se eliminaron <strong>{$count}</strong> familias",
-            'message' => "Familias eliminadas: <strong>{$names}</strong>.",
+            'title' => "Se eliminaron <strong>{$count}</strong> " . ($count === 1 ? 'familia' : 'familias'),
+            'message' => "Se " . ($count === 1 ? 'eliminó la siguiente familia' : 'eliminaron las siguientes familias') . ":",
+            'list' => $namesList, // 🔹 Agregar lista de nombres
         ]);
 
         return redirect()->route('admin.families.index');

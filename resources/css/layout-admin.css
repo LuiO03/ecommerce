@@ -501,6 +501,15 @@
     gap: 10px;
 }
 
+.slot-prime{
+    padding: 0px;
+    max-width: var(--max-width);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 @media (max-width: 768px){
     .slot-container{
         padding: 0px;

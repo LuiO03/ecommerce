@@ -79,10 +79,10 @@ window.handleMultipleDelete = function(options) {
         message = `¿Estás seguro de que deseas eliminar ${getGenderArticle(entityName)} ${entityName} <strong>"${selectedNames[0]}"</strong>?<br><span>Esta acción no se puede deshacer.</span>`;
     } else {
         const nameList = selectedNames.map(name => `<li><strong>${name}</strong></li>`).join('');
-        message = `¿Estás seguro de que deseas eliminar ${getGenderArticle(entityPlural, true)} <strong>${selectedCount} ${entityPlural}</strong> seleccionad${getGenderEnding(entityPlural)}?<br><br>
-                  <strong>${capitalizeFirst(entityPlural)} a eliminar:</strong>
-                  <ul>${nameList}</ul>
-                  <span>Esta acción no se puede deshacer.</span>`;
+        message = `¿Estás seguro de que deseas eliminar los <strong>${selectedCount} registros</strong> seleccionad${getGenderEnding(entityPlural)}?<br>
+        <strong>${capitalizeFirst(entityPlural)} a eliminar:</strong>
+        <ul>${nameList}</ul>
+        <span>Esta acción no se puede deshacer.</span>`;
     }
 
     showConfirm({
