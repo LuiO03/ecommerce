@@ -1,0 +1,125 @@
+.modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
+    backdrop-filter: blur(0px);
+}
+
+.modal.flex {
+    display: flex;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+}
+
+.modal-dialog {
+    background-color: var(--color-sidebar-bg);
+    padding: 20px;
+    border-radius: var(--radius-card);
+    width: 70%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.25);
+    transform-origin: center;
+    opacity: 0;
+    transform: scale(0.7);
+}
+
+@media (max-width: 768px) {
+    .modal-dialog{
+        width: 90%;
+        max-height: 90dvh;
+    }
+}
+
+/* 🔹 Animaciones de entrada/salida tipo modal-info */
+@keyframes modalIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    45% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(0.95);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes modalOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+}
+
+.modal-animate-in {
+    animation: modalIn 0.35s ease forwards;
+    animation-delay: 0.1s;
+}
+
+.modal-animate-out {
+    animation: modalOut 0.25s ease forwards;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.close-modal {
+    background: transparent;
+    border: none;
+    font-size: 30px;
+    padding: 3px 10px;
+    border-radius: 50px;
+    cursor: pointer;
+    color: var(--color-text);
+    transition: opacity 0.2s;
+}
+
+.close-modal:hover {
+    opacity: 0.7;
+    background-color: var(--color-hover);
+}
+
+/* 💡 Efecto suave cuando se inserta una nueva fila */
+.highlight-new {
+  animation: fadeInRow 5s ease-in-out;
+  background-color: #e5f9e7!important; /* verde claro temporal */
+  color: var(--color-success);
+  font-weight: bold;
+}
+
+@keyframes fadeInRow {
+  0% {
+    opacity: 0;
+    background-color: #b8ffb8;
+    transform: translateY(-8px);
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    background-color: transparent;
+    transform: scale(1);
+    transform: translateY(0);
+  }
+}

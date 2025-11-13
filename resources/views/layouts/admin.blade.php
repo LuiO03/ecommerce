@@ -63,7 +63,7 @@
             <div class="page-nav">
                 @include('partials.admin.breadcrumb')
                 @isset($action)
-                    <div>
+                    <div class="page-action">
                         {{ $action }}
                     </div>
                 @endisset
@@ -78,10 +78,11 @@
 
     @include('partials.admin.modal-info')
     @include('partials.admin.modal-confirm')
+    @include('partials.admin.modal-toast')
     <!-- DataTables v2.3.4 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js" defer></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js" defer></script>
     @stack('scripts')
     @if (Session::has('info'))
         <script>

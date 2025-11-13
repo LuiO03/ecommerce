@@ -82,6 +82,21 @@ class FamilyController extends Controller
             'updated_by'  => Auth::id(),
         ]);
 
+        // 🔹 Si es una petición AJAX, devolver JSON
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "La familia <strong>{$family->name}</strong> se ha creado correctamente.",
+                'family' => [
+                    'id' => $family->id,
+                    'name' => $family->name,
+                    'description' => $family->description,
+                    'status' => $family->status,
+                    'created_at' => $family->created_at->format('d/m/Y H:i'),
+                ],
+            ]);
+        }
+
         Session::flash('info', [
             'type'    => 'success',
             'header'  => 'Registro exitoso',

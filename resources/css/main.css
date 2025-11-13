@@ -10,6 +10,8 @@
 @import "./components/button.css";
 @import "./components/modal-confirm.css";
 @import "./components/modal-info.css";
+@import "./components/modal-form.css";
+@import "./components/modal-toast.css";
 
 @import "./components/mobile-dropdown.css";
 
