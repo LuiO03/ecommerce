@@ -494,6 +494,11 @@
     background-color: var(--color-dark);
 }
 
+.bg-sidebar {
+    background-color: var(--color-sidebar-bg);
+    color: var(--color-text);
+}
+
 /* HOVERS SOLO PARA BOTONES */
 .boton-primary:hover {
     background-color: var(--color-primary-hover);

@@ -135,12 +135,12 @@
 
 .tabla-select-wrapper.filter-active {
     transform: scale(1.02);
+    box-shadow: 0 0 0 3px var(--color-accent-pastel);
+    border-radius: var(--radius-element);
+    
 }
-
 .tabla-select-wrapper.filter-active select {
     border-color: var(--color-accent);
-    background-color: var(--color-accent-light, var(--color-hover));
-    box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb, 59, 130, 246), 0.1);
 }
 
 .tabla-select-wrapper.filter-active i,
