@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Family extends Model
 {
@@ -40,7 +41,8 @@ class Family extends Model
 
         while (self::where('slug', $slug)
             ->when($id, fn($q) => $q->where('id', '!=', $id))
-            ->exists()) {
+            ->exists()
+        ) {
             $slug = $originalSlug . '-' . $count;
             $count++;
         }
@@ -72,5 +74,10 @@ class Family extends Model
     public function deleter()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? Storage::url($this->image) : asset('images/no-image.png');
     }
 }

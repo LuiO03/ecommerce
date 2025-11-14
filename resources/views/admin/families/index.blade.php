@@ -146,24 +146,6 @@
             <div id="tablePagination" class="tabla-paginacion"></div>
         </div>
     </div>
-
-    <!-- Modal Crear Familia -->
-    <div id="createFamilyModal" class="modal hidden">
-        <div class="modal-dialog">
-            <div class="modal-header">
-                <div>
-                    <div class="page-title">Crear Nueva Familia</div>
-                    <p>Complete el siguiente formulario para crear una nueva familia.</p>
-                </div>
-                <button type="button" id="closeCreateModal" class="close-modal">
-                    <i class="ri-close-fill"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                @include('admin.families.partials.create-form')
-            </div>
-        </div>
-    </div>
     @push('scripts')
         <script>
             $(document).ready(function() {
@@ -668,6 +650,30 @@
                 animarFilas();
                 actualizarIconosOrden();
                 updateDeleteButton();
+
+                // ========================================
+                // 🎨 RESALTAR FILA CREADA/EDITADA
+                // ========================================
+                @if(Session::has('highlightRow'))
+                    const highlightId = {{ Session::get('highlightRow') }};
+                    setTimeout(() => {
+                        const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
+                        if (row.length) {
+                            row.addClass('row-highlight');
+                            
+                            // Scroll suave hacia la fila
+                            row[0].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+                            
+                            // Remover la clase después de la animación
+                            setTimeout(() => {
+                                row.removeClass('row-highlight');
+                            }, 3000);
+                        }
+                    }, 100);
+                @endif
             });
         </script>
     @endpush

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FamiliesExport;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class FamilyController extends Controller
@@ -72,37 +74,32 @@ class FamilyController extends Controller
 
         $slug = Family::generateUniqueSlug($request->name);
 
+        // 📌 Subida profesional de imagen con nombre descriptivo
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = $slug . '-' . time() . '.' . $extension;
+            $imagePath = 'families/' . $filename;
+            $request->file('image')->storeAs('families', $filename, 'public');
+        }
+
         $family = Family::create([
             'name'        => $request->name,
             'slug'        => $slug,
             'description' => $request->description,
             'status'      => (bool) $request->status,
-            'image'       => $request->image,
-            'created_by'  => Auth::id(), // 🔹 registra el usuario que creó
+            'image'       => $imagePath,
+            'created_by'  => Auth::id(),
             'updated_by'  => Auth::id(),
         ]);
 
-        // 🔹 Si es una petición AJAX, devolver JSON
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => "La familia <strong>{$family->name}</strong> se ha creado correctamente.",
-                'family' => [
-                    'id' => $family->id,
-                    'name' => $family->name,
-                    'description' => $family->description,
-                    'status' => $family->status,
-                    'created_at' => $family->created_at->format('d/m/Y H:i'),
-                ],
-            ]);
-        }
-
-        Session::flash('info', [
-            'type'    => 'success',
-            'header'  => 'Registro exitoso',
-            'title'   => 'Familia creada',
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Familia creada',
             'message' => "La familia <strong>{$family->name}</strong> se ha creado correctamente.",
         ]);
+
+        Session::flash('highlightRow', $family->id);
 
         return redirect()->route('admin.families.index');
     }
@@ -123,28 +120,50 @@ class FamilyController extends Controller
 
         $slug = Family::generateUniqueSlug($request->name, $family->id);
 
+        $imagePath = $family->image; // Mantener la imagen actual
+
+        // 📌 Si marca para eliminar imagen
+        if ($request->input('remove_image') == '1') {
+            if ($family->image && Storage::disk('public')->exists($family->image)) {
+                Storage::disk('public')->delete($family->image);
+            }
+            $imagePath = null;
+        }
+        // 📌 Si sube una nueva, eliminar la anterior y subir la nueva
+        elseif ($request->hasFile('image')) {
+
+            if ($family->image && Storage::disk('public')->exists($family->image)) {
+                Storage::disk('public')->delete($family->image);
+            }
+
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = $slug . '-' . time() . '.' . $extension;
+            $imagePath = 'families/' . $filename;
+            $request->file('image')->storeAs('families', $filename, 'public');
+        }
+
         $family->update([
             'name'        => $request->name,
             'slug'        => $slug,
             'description' => $request->description,
             'status'      => (bool) $request->status,
-            'image'       => $request->image,
-            'updated_by'  => Auth::id(), // 🔹 registra el usuario que editó
+            'image'       => $imagePath,
+            'updated_by'  => Auth::id(),
         ]);
 
-        Session::flash('info', [
-            'type'    => 'success',
-            'header'  => 'Actualización exitosa',
-            'title'   => 'Familia actualizada',
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Familia actualizada',
             'message' => "La familia <strong>{$family->name}</strong> ha sido actualizada correctamente.",
         ]);
+
+        Session::flash('highlightRow', $family->id);
 
         return redirect()->route('admin.families.index');
     }
 
     public function destroy(Family $family)
     {
-        // 🔹 Restringir eliminación si tiene categorías
         if ($family->categories()->exists()) {
             Session::flash('info', [
                 'type' => 'warning',
@@ -155,13 +174,13 @@ class FamilyController extends Controller
             return redirect()->route('admin.families.index');
         }
 
+        // 📌 Eliminar imagen si existe
+        if ($family->image && Storage::disk('public')->exists($family->image)) {
+            Storage::disk('public')->delete($family->image);
+        }
+
         $name = $family->name;
 
-        // Registrar el usuario que la eliminó
-        $family->deleted_by = Auth::id();
-        $family->save();
-
-        // Soft delete (si usas SoftDeletes)
         $family->delete();
 
         Session::flash('info', [
@@ -189,62 +208,78 @@ class FamilyController extends Controller
             Session::flash('info', [
                 'type' => 'danger',
                 'header' => 'Error',
-                'title' => 'Error en la eliminación',
-                'message' => 'No se recibieron familias para eliminar.',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron familias para eliminar.',
             ]);
             return redirect()->route('admin.families.index');
         }
 
         $families = Family::whereIn('id', $familyIds)->get();
-        $count = $families->count();
 
-        if ($count === 0) {
+        if ($families->isEmpty()) {
             Session::flash('info', [
                 'type' => 'danger',
                 'header' => 'Error',
-                'title' => 'Error en la eliminación',
-                'message' => 'No se encontraron familias para eliminar.',
+                'title' => 'No encontradas',
+                'message' => 'Las familias seleccionadas no existen.',
             ]);
             return redirect()->route('admin.families.index');
         }
 
-        // 🔹 Filtrar familias con categorías asociadas
+        // 🔒 Bloqueo por relaciones
         $restricted = $families->filter(fn($f) => $f->categories()->exists());
 
         if ($restricted->isNotEmpty()) {
-            $blockedNames = $restricted->pluck('name')->implode(', ');
+
+            $blocked = $restricted->pluck('name')->implode(', ');
 
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Acción restringida',
-                'title' => 'Familias con relaciones activas',
-                'message' => "No se pueden eliminar las siguientes familias porque tienen categorías asociadas: <strong>{$blockedNames}</strong>.",
+                'title' => 'Familias con categorías',
+                'message' => "Estas familias no se pueden eliminar porque tienen categorías asociadas: <strong>{$blocked}</strong>.",
             ]);
+
             return redirect()->route('admin.families.index');
         }
 
-        // 🔹 Registrar quién eliminó cada familia
+        // ===============================
+        //   🔥 Eliminación profesional
+        // ===============================
+
+        // Guarda nombres para el mensaje final
+        $names = [];
+
         foreach ($families as $family) {
+
+            $names[] = $family->name;
+
+            // 🖼️ Eliminar imagen si existe
+            if ($family->image && Storage::disk('public')->exists($family->image)) {
+                Storage::disk('public')->delete($family->image);
+            }
+
+            // Registrar quién eliminó
             $family->deleted_by = Auth::id();
             $family->save();
+
+            // Eliminar registro definitivo
             $family->delete();
         }
 
-        // Mensaje final con lista de nombres
-        $namesList = $families->map(function($family) {
-            return $family->name;
-        })->toArray();
+        $count = count($names);
 
         Session::flash('info', [
             'type' => 'danger',
             'header' => 'Registros eliminados',
             'title' => "Se eliminaron <strong>{$count}</strong> " . ($count === 1 ? 'familia' : 'familias'),
-            'message' => "Se " . ($count === 1 ? 'eliminó la siguiente familia' : 'eliminaron las siguientes familias') . ":",
-            'list' => $namesList, // 🔹 Agregar lista de nombres
+            'message' => "Lista de familias eliminadas:",
+            'list' => $names,
         ]);
 
         return redirect()->route('admin.families.index');
     }
+
 
     public function updateStatus(Request $request, $id)
     {

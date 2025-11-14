@@ -82,7 +82,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.families.index') }}" class="sidebar-link" data-tooltip="Familias">
+                <a href="{{ route('admin.families.index') }}" class="sidebar-link {{ request()->routeIs('admin.families.*') ? 'active' : '' }}" data-tooltip="Familias">
                     <i class="ri-group-line sidebar-icon"></i>
                     <span>Familias</span>
                 </a>

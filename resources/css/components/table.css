@@ -449,6 +449,17 @@ input[type="checkbox"]:indeterminate {
     border-color: var(--color-inverse);
 }
 
+/* Fila resaltada temporalmente */
+.tabla-general tbody tr.row-highlight {
+    background-color: #e5f9e7 !important;
+    color: var(--color-success);
+    animation: highlightFade 3s ease-in-out forwards;
+}
+
+.tabla-general tbody tr.row-highlight td {
+    background-color: transparent;
+}
+
 /* Estilo del borde activo */
 .tabla-general td.active-cell {
     outline: 1px solid var(--color-accent);
@@ -504,6 +515,15 @@ input[type="checkbox"]:indeterminate {
     to{
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes highlightFade {
+    0% {
+        background-color: var(--color-success-pastel);
+    }
+    100% {
+        background-color: transparent;
     }
 }
 

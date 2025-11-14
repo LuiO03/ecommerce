@@ -92,6 +92,15 @@
             });
         </script>
     @endif
+    
+    @if (Session::has('toast'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const toast = @json(Session::get('toast'));
+                window.showToast(toast);
+            });
+        </script>
+    @endif
     @livewireScripts
 </body>
 

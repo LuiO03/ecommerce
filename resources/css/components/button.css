@@ -72,10 +72,11 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    min-height: 35px;
     z-index: 1;
     border-radius: var(--radius-element);
     overflow: hidden;
-    padding: 5px 15px;
+    padding: 8px 15px;
     cursor: pointer;
     position: relative;
     border: 2px solid transparent;
@@ -83,18 +84,20 @@
 }
 
 .boton-form .boton-form-icon {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
 }
 
 .boton-form .boton-form-text {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: var(--font-size-sm);
     font-family: var(--font-secondary);
     font-weight: 600;
+    line-height: 1;
 }
 
 .boton-form:hover {

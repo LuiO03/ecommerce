@@ -91,7 +91,7 @@
     --color-cell-border: #242424;
 
     /* === Inputs === */
-    --color-input-bg: #2a2a2a;
+    --color-input-bg: #1C1918;
     /*--color-input-bg: #e2e2e2;*/
     --color-input-border: #444;
     --color-input-border-hover: #666;
@@ -233,7 +233,10 @@
     --font-size-h2: clamp(1.25rem, 2vw, 1.625rem);
     /* Subtítulos / paneles */
     --font-size-h3: clamp(1.125rem, 1.7vw, 1.28rem);
-    /* Texto general */
+    --font-size-h4: clamp(1rem, 1.5vw, 1.125rem);
+    --font-size-h5: clamp(0.95rem, 1.3vw, 1rem);
+    --font-size-h6: clamp(0.9rem, 1.2vw, 0.95rem);
+    /* Párrafos */
     --font-size-p: clamp(0.88rem, 1.5vw, 0.89rem);
     /* Texto secundario (inputs, etc.) */
     --font-size-sm: clamp(0.85rem, 1.2vw, 0.86rem);

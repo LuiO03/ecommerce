@@ -12,16 +12,21 @@
 
 /* === Grupo contenedor === */
 .input-group {
-    position: relative;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-icon-container{
+    width: 100%;
+    position: relative;
 }
 
 /* === Ícono === */
 .input-icon {
     position: absolute;
-    left: 2px;
-    top: 25px;
+    left: 1px;
+    top: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,21 +35,27 @@
     font-size: 1.3rem;
     color: var(--color-text);
     pointer-events: none;
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: color 0.2s ease;
 }
 
 /* === Input / Textarea === */
 .input-group input,
-.input-group textarea {
+.input-group textarea, .select-form {
     width: 100%;
     border-radius: var(--radius-element);
     font-size: var(--font-size-sm);
-    background: transparent;
+    background: var(--color-input-bg);
     border: 1px solid var(--color-input-border);
     transition: border 0.2s ease;
     padding: 10px 12px 10px 40px; /* espacio para el icono */
     display: block;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+    color: var(--color-input-placeholder);
+    font-size: var(--font-size-sm);
 }
 
 .input-group input {
@@ -69,82 +80,28 @@
 .input-group:focus-within .input-icon,
 .input-group:focus-within .label-form {
     color: var(--color-accent);
-    transform: translateY(-50%) scale(1.05);
 }
 
 /* === Label === */
 .label-form {
-    position: absolute;
-    left: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--color-input-placeholder);
-    pointer-events: none;
-    font-size: var(--font-size-p);
-    font-family: var(--font-primary);
-    
-    background: transparent;
-    transition: transform 0.2s ease, color 0.2s ease, padding 0.2s ease, top 0.2s ease;
-}
-
-.label-textarea {
-    top: 25px;
-}
-
-/* === Estado flotante === */
-.input-form:focus ~ .label-form,
-.input-form:not(:placeholder-shown) ~ .label-form,
-.textarea-form:focus ~ .label-form,
-.textarea-form:not(:placeholder-shown) ~ .label-form {
-    top: 0;
-    left: 32px;
-    transform: translateY(-50%) scale(0.9);
-    /* background: linear-gradient(to bottom, var(--color-sidebar-bg), var(--color-input-bg)); */
-    background-color: var(--color-sidebar-bg);
-    padding: 0 6px;
-    color: var(--color-accent);
-    font-weight: bolder;
-    font-family: var(--font-secondary);
-}
-
-/* === Input sin foco pero con contenido === */
-.input-form:not(:focus):not(:placeholder-shown) ,
-.textarea-form:not(:focus):not(:placeholder-shown)  {
-    border-color: var(--color-warning); /* Amarillo */
-}
-
-/* === Label sin foco pero con contenido === */
-.input-form:not(:focus):not(:placeholder-shown) ~ .label-form,
-.textarea-form:not(:focus):not(:placeholder-shown) ~ .label-form{
+    display: block;
     color: var(--color-text);
+    font-size: var(--font-size-p);
+    font-family: var(--font-secondary);
+    font-weight: bolder;
 }
 
-@media (max-width: 768px) {
-    .input-form:focus ~ .label-form,
-    .input-form:not(:placeholder-shown) ~ .label-form,
-    .textarea-form:focus ~ .label-form,
-    .textarea-form:not(:placeholder-shown) ~ .label-form {
-        background-color: var(--color-bg) !important;
-    }
+.label-form:has(+ .input-form:focus),
+.label-form:has(+ .textarea-form:focus),
+.input-group:focus-within .label-form {
+    color: var(--color-accent);
 }
 
 /* === Select === */
-.select-group {
-    position: relative;
-}
-
 .select-form {
-    width: 100%;
     height: 50px;
     cursor: pointer;
-    border-radius: var(--radius-element);
-    font-size: var(--font-size-sm);
-    background: transparent;
-    border: 1px solid var(--color-input-border);
-    padding: 10px 35px 10px 40px; /* icono izquierda + flecha derecha */
     appearance: none; /* quita el estilo nativo del select */
-    color: var(--color-text);
-    transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* === Flecha personalizada === */
@@ -155,9 +112,9 @@
     transform: translateY(-50%);
     font-size: 22px;
     font-weight: bold;
-    color: var(--color-input-border);
+    color: var(--color-inverse);
     pointer-events: none;
-    background-color: var(--color-sidebar-bg);
+    background-color: var(--color-input-bg);
     transition: color 0.2s ease, transform 0.2s ease;
 }
 
@@ -169,43 +126,14 @@
 }
 
 .select-group:focus-within .select-arrow,
-.select-group:focus-within .input-icon,
-.select-group:focus-within .label-form {
+.select-group:focus-within .input-icon {
     color: var(--color-accent);
-}
-
-/* === Label flotante === */
-.select-form:focus ~ .label-form,
-.select-form:valid ~ .label-form {
-    top: 0;
-    left: 32px;
-    transform: translateY(-50%) scale(0.9);
-    background-color: var(--color-sidebar-bg);
-    padding: 0 6px;
-    color: var(--color-accent);
-    font-weight: bolder;
-    font-family: var(--font-secondary);
-}
-
-/* === Select sin foco pero con valor === */
-.select-form:not(:focus):valid {
-    border-color: var(--color-warning); /* Amarillo */
-}
-
-/* === Label cuando no está en foco pero con valor === */
-.select-form:not(:focus):valid ~ .label-form {
-    color: var(--color-text);
 }
 
 /* === Animación de la flecha === */
 .select-form:focus ~ .select-arrow {
     transform: translateY(-50%) rotate(180deg);
     color: var(--color-accent);
-}
-
-/* === Placeholder oculto (para simular estado vacío) === */
-.select-form option[value=""][disabled] {
-    display: none;
 }
 
 .select-form option {
@@ -235,26 +163,221 @@
     display: none;
 }
 
-/* Label que simula el botón */
-.file-label {
+/* === SECCIÓN DE CARGA DE IMAGEN === */
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.image-preview-zone {
+    width: 100%;
+    min-height: 300px;
+    border: 3px dashed var(--color-input-border);
+    border-radius: var(--radius-card);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px dashed var(--color-input-border);
-    border-radius: var(--radius-element);
-    padding: 12px;
+    background-color: var(--color-main-bg);
     cursor: pointer;
-    transition: border-color 0.2s ease;
-    color: var(--color-input-placeholder);
-    font-weight: bold;
-    font-size: var(--font-size-sm);
-    background-color: var(--color-sidebar-bg);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    position: relative;
 }
 
-.file-label:hover {
+.image-preview-zone:hover {
     border-color: var(--color-accent);
+    background-color: var(--color-sidebar);
+}
+
+.image-preview-zone.drag-over {
+    border-color: var(--color-accent);
+    background-color: var(--color-dark-inverse);
+    color: var(--color-normal);
+    transform: scale(1.02);
+}
+
+.image-preview-zone.has-image {
+    border: 3px dotted var(--color-accent);
+    cursor: default;
+}
+
+.image-preview-zone.has-image:hover {
+    background-color: var(--color-input-bg);
+}
+
+/* Placeholder */
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    color: var(--color-input-placeholder);
+    text-align: center;
+    padding: 20px;
+}
+
+.image-placeholder i {
+    font-size: 5rem;
+    color: var(--color-input-border);
+}
+
+.image-placeholder p {
+    font-size: var(--font-size-h5);
+    font-weight: bolder;
+    margin: 0;
+    font-family: var(--font-secondary);
+    color: var(--color-text);
+}
+
+.image-placeholder span {
+    font-size: var(--font-size-xs);
+    color: var(--color-input-placeholder);
+}
+
+/* Error de imagen */
+.image-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    color: var(--color-danger);
+    text-align: center;
+    padding: 20px;
+}
+
+.image-error i {
+    font-size: 5rem;
+    color: var(--color-danger);
+}
+
+.image-error p {
+    font-size: var(--font-size-h5);
+    font-weight: bolder;
+    margin: 0;
+    font-family: var(--font-secondary);
+    color: var(--color-danger);
+}
+
+.image-error span {
+    font-size: var(--font-size-xs);
+    color: var(--color-text);
+}
+
+/* Vista previa de imagen */
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-height: 400px;
+    border-radius: inherit;
+}
+
+/* Animación de zoom pulsante */
+.image-pulse {
+    animation: imagePulse 20s ease-in-out infinite;
+}
+
+@keyframes imagePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* === OVERLAY HOVER === */
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+.image-preview-zone.has-image:hover .image-overlay {
+    opacity: 1;
+}
+
+.overlay-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 15px 20px;
+    background: var(--color-info);
+    color: white;
+    border: none;
+    border-radius: var(--radius-element);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+}
+
+.overlay-btn i {
+    font-size: 1.8rem;
+}
+
+.overlay-btn:hover {
+    background: var(--color-inverse);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-material);
+    color: var(--color-normal);
+}
+
+.overlay-btn-danger {
+    background: var(--color-danger);
+    border: 1px solid transparent;
+}
+
+.overlay-btn-danger:hover {
+    border-color: white;
+}
+
+/* Botones de acción */
+.image-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Nombre de archivo temporal */
+.image-filename {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--radius-element);
+    font-size: var(--font-size-xs);
+    color: var(--color-text);
+    font-family: var(--font-secondary);
+}
+
+.image-filename i {
     color: var(--color-accent);
-    background-color: var(--color-bg-light);
+    font-size: 1.2rem;
+}
+
+.image-filename span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
 }
 
 /* Ícono dentro del botón */
@@ -295,4 +418,38 @@
     width: 100%;
     padding: 0px;
     margin: 0px;
+}
+
+/* === RESPONSIVE === */
+.form-row {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.form-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-column {
+        width: 100%;
+    }
+}
+
+/* === ANIMACIÓN SPIN === */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

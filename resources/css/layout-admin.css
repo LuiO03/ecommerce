@@ -161,7 +161,7 @@
     position: relative;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    transition: padding 0.3s ease, border-radius 0.1s ease;
+    transition: padding 0.3s ease, border-radius 0.1s ease, font-weight 0.2s ease, font-family 0.2s ease;
 }
 
 .sidebar-link:hover {
@@ -169,29 +169,37 @@
     background-color: var(--color-hover);
     color: var(--color-accent);
     font-weight: bold;
+    font-family: var(--font-secondary);
     border-radius: 0 0.5rem 0.5rem 0 !important;
     border-left: 4px solid var(--color-accent);
 }
 
 .sidebar-link.active {
-    background-color: var(--color-accent);
+    background-color: var(--color-dark-inverse);
     font-weight: bold;
-    color: white;
+    color: var(--color-normal);
     border-radius: 0.5rem;
+    font-family: var(--font-secondary);
+}
+
+.sidebar-link.active:hover{
+    border: none;
+    border-radius: 0.5rem !important;
 }
 
 .sidebar-link.active .sidebar-icon {
-    color: white !important;
+    color: var(--color-normal) !important;
 }
 .sidebar-sublink.active, .sidebar-sublink.active:hover {
-    background-color: var(--color-accent);
+    background-color: var(--color-dark-inverse);
     font-weight: bold;
-    color: white;
+    font-family: var(--font-secondary);
+    color: var(--color-normal);
     border-radius: 0.5rem;
 }
 
 .sidebar-sublink.active .sidebar-icon {
-    color: white !important;
+    color: var(--color-normal) !important;
 }
 
 /* === Subenlaces === */
@@ -231,6 +239,11 @@
 .submenu-btn {
     background-color: var(--color-sub-menu-button-bg);
     border-radius: 0.5rem;
+}
+
+.submenu-btn:hover{
+    border: none;
+    border-radius: 0.5rem !important;
 }
 
 .submenu-btn.rounded-top {
@@ -444,7 +457,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     /*
     box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.14),
                 inset 2px 0 2px rgba(0, 0, 0, 0.14),
