@@ -1,4 +1,4 @@
-<div id="fabContainer" class="fab-container">
+<div id="fabContainer" class="fab-container hidden">
     <!-- Botones secundarios -->
     <div class="fab-buttons">
         <button class="fab-btn" title="Nuevo">

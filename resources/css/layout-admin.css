@@ -768,7 +768,8 @@
    ============================================================ */
 @media (max-width: 639px) {
     .navbar,
-    .main-container {
+    .main-container,
+    .selection-bar {
         left: 0 !important;
         width: 100% !important;
     }
@@ -785,5 +786,9 @@
 
     .main-container {
         border-radius: 0;
+    }
+
+    .sidebar-tooltip{
+        display: none;
     }
 }

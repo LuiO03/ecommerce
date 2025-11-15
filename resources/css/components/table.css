@@ -10,6 +10,186 @@
 }
 
 /* =======================================================
+   📤 MENÚ DESPLEGABLE DE EXPORTACIÓN
+======================================================= */
+.export-menu-container {
+    position: relative;
+}
+
+.export-menu-container .boton-form {
+    gap: 8px;
+}
+
+.export-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background: var(--color-card-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-element);
+    box-shadow: var(--shadow-material);
+    min-width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.export-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.export-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.export-option i {
+    font-size: var(--font-size-h3);
+}
+
+.export-option:hover {
+    background: var(--color-hover);
+    color: var(--color-accent);
+}
+
+.export-option:first-child {
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* =======================================================
+   ✅ BARRA CONTEXTUAL DE SELECCIÓN (FLOTANTE INFERIOR)
+======================================================= */
+.selection-bar {
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-expanded-width);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 0;
+    background: var(--color-card-bg);
+    opacity: 0;
+    width: calc(100% - var(--sidebar-expanded-width));
+    visibility: hidden;
+    transform: translateY(100%);
+    transition: left var(--transition-sidebar-base),
+                width var(--transition-sidebar-base);
+    z-index: 1000;
+    height: 55px;
+    border: 1px solid var(--color-border);
+    /*sombra parte superior*/
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.selection-bar.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    padding: 7px 20px;
+}
+
+.selection-info {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.selection-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.selection-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-element);
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.selection-btn i {
+    font-size: var(--font-size-h4);
+}
+
+.selection-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.selection-btn:active {
+    transform: translateY(0);
+}
+
+.selection-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bolder;
+    animation: badgePop 0.3s ease;
+}
+
+@keyframes badgePop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.selection-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 5px 10px;
+    color: var(--color-text);
+    font-size: var(--font-size-h4);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.selection-close:hover {
+    background: var(--color-hover);
+    transform: rotate(90deg);
+}
+
+.selection-close:active {
+    transform: rotate(90deg) scale(0.9);
+}
+
+/* =======================================================
    🎛️ CONTROLES DE TABLA
 ======================================================= */
 .tabla-controles {
@@ -594,6 +774,19 @@ input[type="checkbox"]:indeterminate {
    📱 RESPONSIVIDAD CONTROLES DE TABLA
 ======================================================= */
 
+/* Ajuste de barra cuando sidebar está colapsado (Desktop) */
+@media (min-width: 640px) {
+    .selection-bar {
+        left: 16rem;
+        width: calc(100% - 16rem);
+    }
+
+    body.sidebar-collapsed .selection-bar {
+        left: var(--sidebar-collapsed-width);
+        width: calc(100% - var(--sidebar-collapsed-width));
+    }
+}
+
 /* Tablets y pantallas medianas */
 @media (max-width: 1024px) {
     .tabla-controles {
@@ -605,6 +798,16 @@ input[type="checkbox"]:indeterminate {
         justify-self: stretch;
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 10px;
+    }
+    
+    .selection-info {
+        justify-content: end;
+        gap: 8px;
+    }
+    
+    .selection-actions {
+        justify-content: start;
+        flex-wrap: wrap;
     }
 }
 
@@ -621,6 +824,24 @@ input[type="checkbox"]:indeterminate {
     .tabla-filtros {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
+    }
+    
+    .selection-bar.active {
+        padding: 7px 10px;
+    }
+
+    .selection-info {
+        gap: 6px;
+    }
+
+    .selection-info i {
+        font-size: var(--font-size-h3);
+    }
+    
+    .selection-close {
+        width: 28px;
+        height: 28px;
+        font-size: var(--font-size-h5);
     }
 }
 

@@ -6,11 +6,24 @@
         Lista de Familias
     </x-slot>
     <x-slot name="action">
-        <!-- boton para descargar -->
-        <button type="button" class="boton-form boton-action">
-            <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
-            <span class="boton-form-text">Exportar</span>
-        </button>
+        <!-- Menú desplegable de exportación -->
+        <div class="export-menu-container">
+            <button type="button" class="boton-form boton-action" id="exportMenuBtn">
+                <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
+                <span class="boton-form-text">Exportar</span>
+                <i class="ri-arrow-down-s-line"></i>
+            </button>
+            <div class="export-dropdown" id="exportDropdown">
+                <button type="button" class="export-option" id="exportAllExcel">
+                    <i class="ri-file-excel-2-fill"></i>
+                    <span>Exportar todo a Excel</span>
+                </button>
+                <button type="button" class="export-option" id="exportAllPdf">
+                    <i class="ri-file-pdf-2-fill"></i>
+                    <span>Exportar todo a PDF</span>
+                </button>
+            </div>
+        </div>
         <a href="{{ route('admin.families.create') }}" class="boton boton-accent">
             <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
             <span class="boton-text">Crear Familia</span>
@@ -52,20 +65,42 @@
                 </div>
             </div>
         </div>
-        <div class="flex gap-2 w-full">
-            <button id="deleteSelected" class="boton boton-danger" disabled>
-                <span class="boton-icon"><i class="ri-delete-bin-7-fill"></i></span>
-                <span class="boton-text">Eliminar Seleccionados</span>
-            </button>
 
-            <button id="exportSelected" class="boton boton-success">
-                <span class="boton-icon"><i class="ri-file-excel-2-fill"></i></span>
-                <span class="boton-text">Excel</span>
-            </button>
-            <button id="exportPdf" class="boton boton-secondary">
-                <span class="boton-icon"><i class="ri-file-pdf-2-fill"></i></span>
-                <span class="boton-text">PDF</span>
-            </button>
+        <!-- Barra contextual de selección (oculta por defecto) -->
+        <div class="selection-bar" id="selectionBar">
+
+            <div class="selection-actions">
+                <button id="exportSelectedExcel" class="boton-selection boton-success">
+                    <span class="boton-selection-icon">
+                        <i class="ri-file-excel-2-line"></i>
+                    </span>
+                    <span class="boton-selection-text">Excel</span>
+                    l
+                    <span class="selection-badge" id="excelBadge">0</span>
+                </button>
+                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                    <span class="boton-selection-icon">
+                        <i class="ri-file-pdf-2-line"></i>
+                    </span>
+                    <span class="boton-selection-text">PDF</span>
+                    l
+                    <span class="selection-badge" id="pdfBadge">0</span>
+                </button>
+                <button id="deleteSelected" class="boton-selection boton-danger">
+                    <span class="boton-selection-icon">
+                        <i class="ri-delete-bin-7-line"></i>
+                    </span>
+                    <span class="boton-selection-text">Eliminar</span>
+                    l
+                    <span class="selection-badge" id="deleteBadge">0</span>
+                </button>
+            </div>
+            <div class="selection-info">
+                <span id="selectionCount">0 seleccionados</span>
+                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
+                    <i class="ri-close-large-fill"></i>
+                </button>
+            </div>
         </div>
         <!-- === Tabla === -->
         <div class="tabla-wrapper">
@@ -119,7 +154,7 @@
                                     </button>
                                     <a href="{{ route('admin.families.edit', $family) }}" title="Editar Familia"
                                         class="boton boton-warning">
-                                        <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
+                                        <span class="boton-icon"><i class="ri-quill-pen-fill"></i></span>
                                         <span class="boton-text">Editar</span>
                                     </a>
                                     <form action="{{ route('admin.families.destroy', $family) }}" method="POST"
@@ -380,17 +415,22 @@
                 // ========================================
                 let selectedIds = new Set();
 
-                function updateDeleteButton() {
-                    const deleteBtn = document.getElementById('deleteSelected');
-                    const selectedCount = selectedIds.size;
+                function updateSelectionBar() {
+                    const selectionBar = document.getElementById('selectionBar');
+                    const selectionCount = document.getElementById('selectionCount');
+                    const excelBadge = document.getElementById('excelBadge');
+                    const pdfBadge = document.getElementById('pdfBadge');
+                    const deleteBadge = document.getElementById('deleteBadge');
+                    const count = selectedIds.size;
 
-                    if (selectedCount > 0) {
-                        deleteBtn.disabled = false;
-                        deleteBtn.querySelector('.boton-text').textContent =
-                            `Eliminar Seleccionados (${selectedCount})`;
+                    if (count > 0) {
+                        selectionBar.classList.add('active');
+                        selectionCount.textContent = `${count} seleccionado${count > 1 ? 's' : ''}`;
+                        excelBadge.textContent = count;
+                        pdfBadge.textContent = count;
+                        deleteBadge.textContent = count;
                     } else {
-                        deleteBtn.disabled = true;
-                        deleteBtn.querySelector('.boton-text').textContent = 'Eliminar Seleccionados';
+                        selectionBar.classList.remove('active');
                     }
                 }
 
@@ -429,7 +469,7 @@
                         checkAll.indeterminate = true;
                     }
 
-                    updateDeleteButton();
+                    updateSelectionBar();
                 });
 
                 // Seleccionar todos
@@ -449,13 +489,71 @@
                         }
                     });
 
-                    updateDeleteButton();
+                    updateSelectionBar();
+                });
+
+                // Botón para deseleccionar todo
+                $('#clearSelection').on('click', function() {
+                    $('#checkAll').prop('checked', false).trigger('change');
                 });
 
                 // ========================================
-                // 📤 EXPORTACIÓN (GENERAL)
+                // 📤 MENÚ DESPLEGABLE DE EXPORTACIÓN
                 // ========================================
-                $('#exportSelected').on('click', function() {
+                const exportMenuBtn = document.getElementById('exportMenuBtn');
+                const exportDropdown = document.getElementById('exportDropdown');
+
+                // Toggle del menú
+                exportMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    exportDropdown.classList.toggle('active');
+                });
+
+                // Cerrar menú al hacer click fuera
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.export-menu-container')) {
+                        exportDropdown.classList.remove('active');
+                    }
+                });
+
+                // Exportar todo a Excel
+                $('#exportAllExcel').on('click', function() {
+                    const form = $('<form>', {
+                        method: 'POST',
+                        action: `/admin/${moduleName}/export/excel`
+                    });
+                    form.append('@csrf');
+                    form.append($('<input>', {
+                        type: 'hidden',
+                        name: 'export_all',
+                        value: '1'
+                    }));
+                    $('body').append(form);
+                    form.submit();
+                    exportDropdown.classList.remove('active');
+                });
+
+                // Exportar todo a PDF
+                $('#exportAllPdf').on('click', function() {
+                    const form = $('<form>', {
+                        method: 'POST',
+                        action: `/admin/${moduleName}/export/pdf`
+                    });
+                    form.append('@csrf');
+                    form.append($('<input>', {
+                        type: 'hidden',
+                        name: 'export_all',
+                        value: '1'
+                    }));
+                    $('body').append(form);
+                    form.submit();
+                    exportDropdown.classList.remove('active');
+                });
+
+                // ========================================
+                // 📤 EXPORTACIÓN DE SELECCIONADOS
+                // ========================================
+                $('#exportSelectedExcel').on('click', function() {
                     const selected = Array.from(selectedIds);
                     const form = $('<form>', {
                         method: 'POST',
@@ -475,7 +573,7 @@
                     form.submit();
                 });
 
-                $('#exportPdf').on('click', function() {
+                $('#exportSelectedPdf').on('click', function() {
                     const selected = Array.from(selectedIds);
                     const form = $('<form>', {
                         method: 'POST',
@@ -533,7 +631,7 @@
                     const checked = $('#tabla tbody .check-row:checked').length;
                     $('#checkAll').prop('checked', all > 0 && all === checked);
 
-                    updateDeleteButton();
+                    updateSelectionBar();
                     updateInfoAndPagination();
                     animarFilas();
                     actualizarIconosOrden();
@@ -571,7 +669,7 @@
                                 setTimeout(() => {
                                     table.draw(false);
                                     setTimeout(() => window.scrollTo(0, scrollPosition),
-                                    50);
+                                        50);
                                 }, 10);
 
                                 setTimeout(() => tabla.classList.remove('no-animate'), 500);
@@ -649,24 +747,24 @@
                 updateInfoAndPagination();
                 animarFilas();
                 actualizarIconosOrden();
-                updateDeleteButton();
+                updateSelectionBar();
 
                 // ========================================
                 // 🎨 RESALTAR FILA CREADA/EDITADA
                 // ========================================
-                @if(Session::has('highlightRow'))
+                @if (Session::has('highlightRow'))
                     const highlightId = {{ Session::get('highlightRow') }};
                     setTimeout(() => {
                         const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
                         if (row.length) {
                             row.addClass('row-highlight');
-                            
+
                             // Scroll suave hacia la fila
                             row[0].scrollIntoView({
                                 behavior: 'smooth',
                                 block: 'center'
                             });
-                            
+
                             // Remover la clase después de la animación
                             setTimeout(() => {
                                 row.removeClass('row-highlight');
