@@ -83,10 +83,6 @@ window.showConfirm = function(options) {
         document.body.appendChild(modal);
     }
     
-    // Forzar z-index inline para máxima prioridad
-    modal.style.zIndex = '999999';
-    modal.style.position = 'fixed';
-    
     // Reducir z-index del sidebar temporalmente
     const sidebar = document.getElementById('logo-sidebar');
     if (sidebar) {

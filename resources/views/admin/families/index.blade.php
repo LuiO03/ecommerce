@@ -473,7 +473,8 @@
                 // ========================================
                 // ✅ SISTEMA DE SELECCIÓN
                 // ========================================
-                let selectedIds = new Set();
+                // Map para almacenar ID -> nombre de elementos seleccionados
+                let selectedItems = new Map();
 
                 function updateSelectionBar() {
                     const selectionBar = document.getElementById('selectionBar');
@@ -482,7 +483,7 @@
                     const csvBadge = document.getElementById('csvBadge');
                     const pdfBadge = document.getElementById('pdfBadge');
                     const deleteBadge = document.getElementById('deleteBadge');
-                    const count = selectedIds.size;
+                    const count = selectedItems.size;
 
                     if (count > 0) {
                         selectionBar.classList.add('active');
@@ -507,12 +508,13 @@
                 $('#tabla').on('change', '.check-row', function() {
                     const id = $(this).val();
                     const tr = $(this).closest('tr');
+                    const name = tr.data('name');
 
                     if ($(this).is(':checked')) {
-                        selectedIds.add(id);
+                        selectedItems.set(id, name);
                         tr.addClass('row-selected');
                     } else {
-                        selectedIds.delete(id);
+                        selectedItems.delete(id);
                         tr.removeClass('row-selected');
                     }
 
@@ -540,14 +542,16 @@
 
                     $('#tabla tbody .check-row').each(function() {
                         const id = $(this).val();
+                        const tr = $(this).closest('tr');
+                        const name = tr.data('name');
                         $(this).prop('checked', checked);
 
                         if (checked) {
-                            selectedIds.add(id);
-                            $(this).closest('tr').addClass('row-selected');
+                            selectedItems.set(id, name);
+                            tr.addClass('row-selected');
                         } else {
-                            selectedIds.delete(id);
-                            $(this).closest('tr').removeClass('row-selected');
+                            selectedItems.delete(id);
+                            tr.removeClass('row-selected');
                         }
                     });
 
@@ -556,8 +560,8 @@
 
                 // Botón para deseleccionar todo
                 $('#clearSelection').on('click', function() {
-                    // Limpiar completamente el Set de IDs seleccionados
-                    selectedIds.clear();
+                    // Limpiar completamente el Map de items seleccionados
+                    selectedItems.clear();
 
                     // Desmarcar todas las filas visibles
                     $('#tabla tbody .check-row').prop('checked', false);
@@ -644,7 +648,7 @@
                 // 📤 EXPORTACIÓN DE SELECCIONADOS
                 // ========================================
                 $('#exportSelectedExcel').on('click', function() {
-                    const selected = Array.from(selectedIds);
+                    const selected = Array.from(selectedItems.keys());
                     const form = $('<form>', {
                         method: 'POST',
                         action: `/admin/${moduleName}/export/excel`
@@ -664,7 +668,7 @@
                 });
 
                 $('#exportSelectedCsv').on('click', function() {
-                    const selected = Array.from(selectedIds);
+                    const selected = Array.from(selectedItems.keys());
                     const form = $('<form>', {
                         method: 'POST',
                         action: `/admin/${moduleName}/export/csv`
@@ -684,7 +688,7 @@
                 });
 
                 $('#exportSelectedPdf').on('click', function() {
-                    const selected = Array.from(selectedIds);
+                    const selected = Array.from(selectedItems.keys());
                     const form = $('<form>', {
                         method: 'POST',
                         action: `/admin/${moduleName}/export/pdf`
@@ -727,7 +731,7 @@
                     $('#tabla tbody .check-row').each(function() {
                         const id = $(this).val();
                         const tr = $(this).closest('tr');
-                        if (selectedIds.has(id)) {
+                        if (selectedItems.has(id)) {
                             $(this).prop('checked', true);
                             tr.addClass('row-selected');
                         } else {
@@ -844,6 +848,16 @@
 
                 // Limpiar todos los filtros
                 $('#clearFiltersBtn').on('click', function() {
+                    // Contar filtros activos antes de limpiar
+                    const activeFiltersCount = [
+                        $('#customSearch').val().trim() !== '',
+                        $('#statusFilter').val() !== '',
+                        $('#sortFilter').val() !== ''
+                    ].filter(Boolean).length;
+
+                    // Solo mostrar toast si había filtros activos
+                    if (activeFiltersCount === 0) return;
+
                     // Limpiar búsqueda
                     $('#customSearch').val('').trigger('keyup');
                     
@@ -858,6 +872,14 @@
                     }, 300);
                     
                     checkFiltersActive();
+
+                    // 🍞 Mostrar Toast de confirmación
+                    showToast({
+                        type: 'info',
+                        title: 'Filtros limpiados',
+                        message: `Se ${activeFiltersCount === 1 ? 'limpió 1 filtro' : `limpiaron ${activeFiltersCount} filtros`} correctamente.`,
+                        duration: 3000
+                    });
                 });
 
                 // Verificar filtros cuando cambian
@@ -932,15 +954,14 @@
 
                 // Eliminación múltiple
                 $('#deleteSelected').on('click', function() {
-                    function getFamilyNameById(id) {
-                        const checkbox = $(`input[value="${id}"]`);
-                        const row = checkbox.closest('tr');
-                        return row.find('.column-name-td').text().trim();
+                    // Convertir Map a objeto simple para el callback
+                    function getNameById(id) {
+                        return selectedItems.get(id) || `ID: ${id}`;
                     }
 
                     handleMultipleDelete({
-                        selectedIds: selectedIds,
-                        getNameCallback: getFamilyNameById,
+                        selectedIds: new Set(selectedItems.keys()),
+                        getNameCallback: getNameById,
                         entityName: moduleName.slice(0, -1),
                         deleteRoute: `/admin/${moduleName}`,
                         csrfToken: '{{ csrf_token() }}',
