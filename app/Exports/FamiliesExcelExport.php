@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
-class FamiliesExport implements FromArray, WithStyles, WithColumnWidths, WithEvents
+class FamiliesExcelExport implements FromArray, WithStyles, WithColumnWidths, WithEvents
 {
     protected $ids;
     protected $dataCount;

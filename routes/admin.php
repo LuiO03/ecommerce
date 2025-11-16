@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FamilyController;
 use Illuminate\Support\Facades\Route;
 /* antes era '/admin' pero ahora se configuro un prefijo en app.php
@@ -40,3 +41,20 @@ Route::post('/families/export/pdf', [FamilyController::class, 'exportPdf'])
 
 Route::post('/families/export/csv', [FamilyController::class, 'exportCsv'])
     ->name('admin.families.export.csv');
+
+// Rutas para categorias aquí
+Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+Route::delete('/categories', [CategoryController::class, 'destroyMultiple'])->name('admin.categories.destroy-multiple');
+Route::patch('/categories/{category}/status', [CategoryController::class, 'updateStatus'])
+    ->name('admin.categories.update-status');
+Route::post('/categories/export/excel', [CategoryController::class, 'exportExcel'])
+    ->name('admin.categories.export.excel');
+Route::post('/categories/export/pdf', [CategoryController::class, 'exportPdf'])
+    ->name('admin.categories.export.pdf');
+Route::post('/categories/export/csv', [CategoryController::class, 'exportCsv'])
+    ->name('admin.categories.export.csv');

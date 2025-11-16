@@ -573,8 +573,9 @@ input[type="checkbox"]:indeterminate {
     max-width: 100%;
 }
 
-.tabla-general .boton {
+.tabla-general .tabla-botones .boton {
     flex: 1 1 80px;
+    max-width: fit-content;
 }
 
 /* =======================================================
@@ -793,6 +794,7 @@ input[type="checkbox"]:indeterminate {
 .column-status-td {
     text-align: center;
 }
+
 .switch-tabla {
     position: relative;
     display: inline-block;

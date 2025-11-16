@@ -144,7 +144,19 @@ public function updateStatus(Request $request, Entity $entity) {
 - Export buttons (Excel, CSV, PDF)
 - Responsive design
 
-**JS Global:** `resources/js/utils/datatable.js` - cargado automáticamente.
+**JS Modular:** `resources/js/modules/datatable-manager.js` - Sistema reutilizable para tablas  
+**Documentación:** `docs/datatable-manager-usage.md`
+
+### Uso Rápido
+```javascript
+const tableManager = new DataTableManager('#tabla', {
+    moduleName: 'entities',
+    entityNameSingular: 'entidad',
+    deleteRoute: '/admin/entities',
+    statusRoute: '/admin/entities/{id}/status',
+    csrfToken: '{{ csrf_token() }}'
+});
+```
 
 ## Exportación de Datos
 

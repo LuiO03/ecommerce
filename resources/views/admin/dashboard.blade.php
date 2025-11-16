@@ -52,7 +52,7 @@
         </a>
 
         <!-- Tarjeta: Categorías -->
-        <a href="" class="dashboard-card">
+        <a href="{{ route('admin.categories.index') }}" class="dashboard-card">
             <div class="card-icon card-info">
                 <i class="ri-price-tag-3-line"></i>
             </div>

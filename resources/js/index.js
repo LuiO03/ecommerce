@@ -11,6 +11,7 @@ import './utils/material-design.js';
 import './utils/datatable.js';
 
 import './modals/modal-confirm.js';
+import './modules/datatable-manager.js';
 
 
 // Si tienes funciones o inicializaciones globales

@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // obtener las familias ya insertadas
+        // Obtener familias
         $families = DB::table('families')->pluck('id', 'slug');
 
-        $categories = [
-            // Categorías de Ropa Hombre
+        /* ============================================
+         * 1. Insertar categorías principales
+         * ============================================ */
+        $parentCategories = [
+            // Ropa Hombre
             [
                 'name' => 'Camisas',
                 'slug' => Str::slug('Camisas'),
@@ -25,17 +25,19 @@ class CategorySeeder extends Seeder
                 'family_id' => $families['ropa-hombre'] ?? 1,
                 'image' => 'categories/camisas.jpg',
                 'status' => true,
+                'parent_id' => null,
             ],
             [
-                'name' => 'Pantalones',
+                'name' => 'Pantalones Hombre',
                 'slug' => Str::slug('Pantalones Hombre'),
                 'description' => 'Jeans, joggers y pantalones de vestir.',
                 'family_id' => $families['ropa-hombre'] ?? 1,
                 'image' => 'categories/pantalones-hombre.jpg',
                 'status' => true,
+                'parent_id' => null,
             ],
 
-            // Categorías de Ropa Mujer
+            // Ropa Mujer
             [
                 'name' => 'Vestidos',
                 'slug' => Str::slug('Vestidos'),
@@ -43,6 +45,7 @@ class CategorySeeder extends Seeder
                 'family_id' => $families['ropa-mujer'] ?? 2,
                 'image' => 'categories/vestidos.jpg',
                 'status' => true,
+                'parent_id' => null,
             ],
             [
                 'name' => 'Blusas',
@@ -51,9 +54,10 @@ class CategorySeeder extends Seeder
                 'family_id' => $families['ropa-mujer'] ?? 2,
                 'image' => 'categories/blusas.jpg',
                 'status' => true,
+                'parent_id' => null,
             ],
 
-            // Categorías de Niños
+            // Niños
             [
                 'name' => 'Ropa Infantil',
                 'slug' => Str::slug('Ropa Infantil'),
@@ -61,9 +65,10 @@ class CategorySeeder extends Seeder
                 'family_id' => $families['ninos'] ?? 3,
                 'image' => 'categories/ropa-infantil.jpg',
                 'status' => true,
+                'parent_id' => null,
             ],
 
-            // Categorías de Accesorios
+            // Accesorios
             [
                 'name' => 'Gorras',
                 'slug' => Str::slug('Gorras'),
@@ -71,6 +76,7 @@ class CategorySeeder extends Seeder
                 'family_id' => $families['accesorios'] ?? 4,
                 'image' => 'categories/gorras.jpg',
                 'status' => true,
+                'parent_id' => null,
             ],
             [
                 'name' => 'Bolsos',
@@ -79,9 +85,102 @@ class CategorySeeder extends Seeder
                 'family_id' => $families['accesorios'] ?? 4,
                 'image' => 'categories/bolsos.jpg',
                 'status' => true,
+                'parent_id' => null,
             ],
         ];
 
-        DB::table('categories')->insert($categories);
+        DB::table('categories')->insert($parentCategories);
+
+        /* =======================================================
+         * Obtener IDs de las categorías principales recién creadas
+         * ======================================================= */
+        $parents = DB::table('categories')->pluck('id', 'slug');
+
+        /* ============================================
+         * 2. Insertar subcategorías (categorías hijas)
+         * ============================================ */
+        $childCategories = [
+            // Hijos de Camisas
+            [
+                'name' => 'Camisas Manga Larga',
+                'slug' => Str::slug('Camisas Manga Larga'),
+                'description' => 'Camisas formales y casuales de manga larga.',
+                'family_id' => null,
+                'image' => 'categories/camisas-manga-larga.jpg',
+                'parent_id' => $parents['camisas'] ?? null,
+                'status' => true,
+            ],
+            [
+                'name' => 'Camisas Manga Corta',
+                'slug' => Str::slug('Camisas Manga Corta'),
+                'description' => 'Camisas frescas y ligeras.',
+                'family_id' => null,
+                'image' => 'categories/camisas-manga-corta.jpg',
+                'parent_id' => $parents['camisas'] ?? null,
+                'status' => true,
+            ],
+
+            // Hijos de Pantalones Hombre
+            [
+                'name' => 'Jeans',
+                'slug' => Str::slug('Jeans Hombre'),
+                'description' => 'Jeans clásicos y modernos.',
+                'family_id' => null,
+                'image' => 'categories/jeans-hombre.jpg',
+                'parent_id' => $parents['pantalones-hombre'] ?? null,
+                'status' => true,
+            ],
+            [
+                'name' => 'Joggers',
+                'slug' => Str::slug('Joggers Hombre'),
+                'description' => 'Joggers deportivos y urbanos.',
+                'family_id' => null,
+                'image' => 'categories/joggers-hombre.jpg',
+                'parent_id' => $parents['pantalones-hombre'] ?? null,
+                'status' => true,
+            ],
+
+            // Hijos de Vestidos
+            [
+                'name' => 'Vestidos Elegantes',
+                'slug' => Str::slug('Vestidos Elegantes'),
+                'description' => 'Vestidos para ocasiones especiales.',
+                'family_id' => null,
+                'image' => 'categories/vestidos-elegantes.jpg',
+                'parent_id' => $parents['vestidos'] ?? null,
+                'status' => true,
+            ],
+            [
+                'name' => 'Vestidos Casuales',
+                'slug' => Str::slug('Vestidos Casuales'),
+                'description' => 'Vestidos cómodos y casuales.',
+                'family_id' => null,
+                'image' => 'categories/vestidos-casuales.jpg',
+                'parent_id' => $parents['vestidos'] ?? null,
+                'status' => true,
+            ],
+
+            // Hijos de Blusas
+            [
+                'name' => 'Blusas Elegantes',
+                'slug' => Str::slug('Blusas Elegantes'),
+                'description' => 'Blusas formales modernas.',
+                'family_id' => null,
+                'image' => 'categories/blusas-elegantes.jpg',
+                'parent_id' => $parents['blusas'] ?? null,
+                'status' => true,
+            ],
+            [
+                'name' => 'Blusas Casual',
+                'slug' => Str::slug('Blusas Casual'),
+                'description' => 'Blusas para uso diario.',
+                'family_id' => null,
+                'image' => 'categories/blusas-casual.jpg',
+                'parent_id' => $parents['blusas'] ?? null,
+                'status' => true,
+            ],
+        ];
+
+        DB::table('categories')->insert($childCategories);
     }
 }

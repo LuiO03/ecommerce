@@ -20,8 +20,11 @@ return new class extends Migration
 
             // Relación con familia
             $table->foreignId('family_id')
+                ->nullable()
                 ->constrained('families')
-                ->onDelete('restrict'); // elimina categorías si se borra la familia
+                ->onDelete('restrict');;
+            // restrictOnDelete() Evita eliminar una familia si tiene categorías. 
+            // cascadeOnDelete() Cuando una familia se elimina ⇒ todas sus categorías se eliminan.
 
             // Campos adicionales
             $table->text('description')->nullable();
@@ -32,7 +35,9 @@ return new class extends Migration
 
             // Jerarquía de categorías
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('categories')->nullOnDelete();
+            $table->foreign('parent_id')
+                ->references('id')->on('categories')
+                ->onDelete('restrict');
 
             // Auditoría
             $table->unsignedBigInteger('created_by')->nullable();

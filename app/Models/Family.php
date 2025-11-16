@@ -33,6 +33,27 @@ class Family extends Model
         return $query->select('id', 'name', 'description', 'status', 'created_at')->orderByDesc('id');
     }
 
+    //relacion uno a muchos
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
     public static function generateUniqueSlug($name, $id = null)
     {
         $slug = Str::slug($name);
@@ -53,27 +74,6 @@ class Family extends Model
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-    //relacion uno a muchos
-    public function categories()
-    {
-        return $this->hasMany(Category::class);
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function updater()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    public function deleter()
-    {
-        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     public function getImageUrlAttribute()

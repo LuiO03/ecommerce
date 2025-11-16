@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\FamiliesExport;
+use App\Exports\FamiliesExcelExport;
 use App\Exports\FamiliesCsvExport;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +30,7 @@ class FamilyController extends Controller
         $filename = 'familias_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
 
-        return Excel::download(new FamiliesExport($ids), $filename);
+        return Excel::download(new FamiliesExcelExport($ids), $filename);
     }
 
     public function exportPdf(Request $request)

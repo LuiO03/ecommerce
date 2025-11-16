@@ -4,14 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
     use HasFactory;
     protected $fillable = [
         'name', 'slug', 'description', 'image', 'status',
-        'family_id', 'parent_id', 'created_by', 'updated_by'
+        'family_id', 'parent_id', 'created_by', 'updated_by',
+        'deleted_by',
     ];
+
+    public function scopeForSelect($query)
+    {
+        return $query->select('id', 'name')->orderBy('name');
+    }
+
+    public function scopeForTable($query)
+    {
+        return $query->select('id', 'name', 'description', 'status',
+        'family_id', 'parent_id', 'created_at')->orderByDesc('id');
+    }
 
     // relacion uno a muchos inversa
     public function family()
@@ -42,5 +56,37 @@ class Category extends Model
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public static function generateUniqueSlug($name, $id = null)
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (self::where('slug', $slug)
+            ->when($id, fn($q) => $q->where('id', '!=', $id))
+            ->exists()
+        ) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? Storage::url($this->image) : asset('images/no-image.png');
     }
 }
