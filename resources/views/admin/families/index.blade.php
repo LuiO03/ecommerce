@@ -608,6 +608,14 @@
                     $('body').append(form);
                     form.submit();
                     exportDropdown.classList.remove('active');
+
+                    // 🍞 Toast de confirmación
+                    showToast({
+                        type: 'info',
+                        title: 'Exportando a Excel',
+                        message: 'Preparando archivo con todos los registros...',
+                        duration: 3000
+                    });
                 });
 
                 // Exportar todo a CSV
@@ -625,6 +633,14 @@
                     $('body').append(form);
                     form.submit();
                     exportDropdown.classList.remove('active');
+
+                    // 🍞 Toast de confirmación
+                    showToast({
+                        type: 'info',
+                        title: 'Exportando a CSV',
+                        message: 'Preparando archivo con todos los registros...',
+                        duration: 3000
+                    });
                 });
 
                 // Exportar todo a PDF
@@ -642,6 +658,14 @@
                     $('body').append(form);
                     form.submit();
                     exportDropdown.classList.remove('active');
+
+                    // 🍞 Toast de confirmación
+                    showToast({
+                        type: 'info',
+                        title: 'Exportando a PDF',
+                        message: 'Preparando archivo con todos los registros...',
+                        duration: 3000
+                    });
                 });
 
                 // ========================================
@@ -649,6 +673,7 @@
                 // ========================================
                 $('#exportSelectedExcel').on('click', function() {
                     const selected = Array.from(selectedItems.keys());
+                    const count = selected.length;
                     const form = $('<form>', {
                         method: 'POST',
                         action: `/admin/${moduleName}/export/excel`
@@ -665,10 +690,19 @@
 
                     $('body').append(form);
                     form.submit();
+
+                    // 🍞 Toast de confirmación
+                    showToast({
+                        type: 'success',
+                        title: 'Exportando a Excel',
+                        message: `Preparando archivo con ${count} ${count === 1 ? 'registro seleccionado' : 'registros seleccionados'}...`,
+                        duration: 3000
+                    });
                 });
 
                 $('#exportSelectedCsv').on('click', function() {
                     const selected = Array.from(selectedItems.keys());
+                    const count = selected.length;
                     const form = $('<form>', {
                         method: 'POST',
                         action: `/admin/${moduleName}/export/csv`
@@ -685,10 +719,19 @@
 
                     $('body').append(form);
                     form.submit();
+
+                    // 🍞 Toast de confirmación
+                    showToast({
+                        type: 'success',
+                        title: 'Exportando a CSV',
+                        message: `Preparando archivo con ${count} ${count === 1 ? 'registro seleccionado' : 'registros seleccionados'}...`,
+                        duration: 3000
+                    });
                 });
 
                 $('#exportSelectedPdf').on('click', function() {
                     const selected = Array.from(selectedItems.keys());
+                    const count = selected.length;
                     const form = $('<form>', {
                         method: 'POST',
                         action: `/admin/${moduleName}/export/pdf`
@@ -714,6 +757,14 @@
 
                     $('body').append(form);
                     form.submit();
+
+                    // 🍞 Toast de confirmación
+                    showToast({
+                        type: 'success',
+                        title: 'Exportando a PDF',
+                        message: `Preparando archivo con ${count} ${count === 1 ? 'registro seleccionado' : 'registros seleccionados'}...`,
+                        duration: 3000
+                    });
                 });
 
                 // ========================================
