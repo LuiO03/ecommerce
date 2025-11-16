@@ -33,7 +33,7 @@
             <span class="boton-text">Crear Familia</span>
         </a>
     </x-slot>
-    <div class="familias-container">
+    <div class="actions-container">
         <!-- === Controles personalizados === -->
         <div class="tabla-controles">
             <div class="tabla-buscador">
@@ -81,6 +81,12 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Botón para limpiar filtros -->
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->
@@ -91,6 +97,7 @@
                         <i class="ri-file-excel-2-fill"></i>
                     </span>
                     <span class="boton-selection-text">Excel</span>
+                    l
                     <span class="selection-badge" id="excelBadge">0</span>
                 </button>
                 <button id="exportSelectedCsv" class="boton-selection boton-orange">
@@ -98,6 +105,7 @@
                         <i class="ri-file-text-fill"></i>
                     </span>
                     <span class="boton-selection-text">CSV</span>
+                    l
                     <span class="selection-badge" id="csvBadge">0</span>
                 </button>
                 <button id="exportSelectedPdf" class="boton-selection boton-secondary">
@@ -105,6 +113,7 @@
                         <i class="ri-file-pdf-2-fill"></i>
                     </span>
                     <span class="boton-selection-text">PDF</span>
+                    l
                     <span class="selection-badge" id="pdfBadge">0</span>
                 </button>
             </div>
@@ -113,6 +122,7 @@
                     <i class="ri-delete-bin-line"></i>
                 </span>
                 <span class="boton-selection-text">Eliminar</span>
+                l
                 <span class="selection-badge" id="deleteBadge">0</span>
             </button>
             <div class="selection-info">
@@ -814,6 +824,49 @@
                 if ($('#sortFilter').val() !== "") {
                     $('#sortFilter').closest('.tabla-select-wrapper').addClass('filter-active');
                 }
+
+                // ========================================
+                // 🧹 LIMPIAR TODOS LOS FILTROS
+                // ========================================
+                function checkFiltersActive() {
+                    const hasSearch = $('#customSearch').val().trim() !== '';
+                    const hasStatusFilter = $('#statusFilter').val() !== '';
+                    const hasSortFilter = $('#sortFilter').val() !== '';
+                    
+                    const anyFilterActive = hasSearch || hasStatusFilter || hasSortFilter;
+                    
+                    if (anyFilterActive) {
+                        $('#clearFiltersBtn').addClass('active');
+                    } else {
+                        $('#clearFiltersBtn').removeClass('active');
+                    }
+                }
+
+                // Limpiar todos los filtros
+                $('#clearFiltersBtn').on('click', function() {
+                    // Limpiar búsqueda
+                    $('#customSearch').val('').trigger('keyup');
+                    
+                    // Resetear filtros
+                    $('#statusFilter').val('').trigger('change');
+                    $('#sortFilter').val('').trigger('change');
+                    
+                    // Feedback visual
+                    $(this).addClass('clearing');
+                    setTimeout(() => {
+                        $(this).removeClass('clearing');
+                    }, 300);
+                    
+                    checkFiltersActive();
+                });
+
+                // Verificar filtros cuando cambian
+                $('#customSearch, #statusFilter, #sortFilter').on('input change keyup', function() {
+                    checkFiltersActive();
+                });
+
+                // Verificar al cargar
+                checkFiltersActive();
 
                 // ========================================
                 // ⚙️ FUNCIONALIDADES ESPECÍFICAS

@@ -1,7 +1,7 @@
 /* =======================================================
    📦 CONTENEDOR PRINCIPAL
 ======================================================= */
-.familias-container {
+.actions-container {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -213,6 +213,47 @@
     align-items: center;
     gap: 10px;
     width: 100%;
+}
+
+/* Botón de limpiar filtros */
+.boton-clear-filters {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    background: transparent;
+    border: 2px solid var(--color-warning);
+    border-radius: var(--radius-element);
+    color: var(--color-warning);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.boton-clear-filters.active {
+    display: flex;
+    animation: slideInDown 0.3s ease;
+}
+
+.boton-clear-filters:hover {
+    background: var(--color-warning);
+    border-color: var(--color-warning);
+    color: black;
+    /* sombra luminaosa */
+    box-shadow: 0 0 10px var(--color-warning);
+}
+
+.boton-clear-filters:active {
+    transform: scale(0.95);
+}
+
+.boton-clear-filters .boton-icon {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-h3);
 }
 
 /* Contenedor para los filtros y selector de filas */
