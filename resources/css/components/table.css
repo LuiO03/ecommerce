@@ -325,7 +325,7 @@
     width: 100%;
     display: flex;
     position: relative;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
 }
 
 .tabla-select-wrapper.filter-active {
@@ -906,8 +906,8 @@ input[type="checkbox"]:indeterminate {
     }
     
     .tabla-select-wrapper select {
-        font-size: var(--font-size-sm, 14px);
-        padding: 8px 25px 8px 8px;
+        font-size: var(--font-size-sm);
+        padding: 8px;
     }
     
     .tabla-select-wrapper i,
@@ -935,10 +935,6 @@ input[type="checkbox"]:indeterminate {
     .tabla-buscador input,
     .tabla-select-wrapper select {
         width: 100%;
-    }
-
-    .tabla-select-wrapper select {
-        padding-left: 28px;
     }
 }
 

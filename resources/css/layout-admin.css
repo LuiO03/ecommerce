@@ -137,7 +137,7 @@
 }
 
 .sidebar-header .sidebar-logo-texto span {
-    font-weight: 200;
+    font-weight: 300;
 }
 
 #sidebar.close .sidebar-logo-texto {
@@ -534,6 +534,12 @@
         padding: 0px;
         border: none;
         background-color: transparent;
+    }
+    .page-header{
+        align-items: center;
+    }
+    .page-action{
+        display: none;
     }
 }
 
