@@ -48,12 +48,11 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 16px;
+    padding: 8px 10px;
     background: transparent;
     border: none;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     font-family: var(--font-secondary);
-    font-weight: bold;
     color: var(--color-text);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -66,10 +65,25 @@
 
 .export-option:hover {
     background: var(--color-hover);
-    color: var(--color-accent);
+}
+
+.export-option:first-child:hover {
+    color: var(--color-success);
+}
+
+.export-option:nth-child(2):hover {
+    color: var(--color-orange);
+}
+
+.export-option:last-child:hover {
+    color: var(--color-danger);
 }
 
 .export-option:first-child {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.export-option:nth-child(2) {
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -84,14 +98,15 @@
     align-items: center;
     justify-content: space-between;
     gap: 15px;
-    padding: 0;
+    padding: 7px 20px;
     background: var(--color-card-bg);
     opacity: 0;
     width: calc(100% - var(--sidebar-expanded-width));
     visibility: hidden;
     transform: translateY(100%);
     transition: left var(--transition-sidebar-base),
-                width var(--transition-sidebar-base);
+                width var(--transition-sidebar-base), transform 0.3s ease,
+                opacity 0.3s ease, visibility 0.3s ease;
     z-index: 1000;
     height: 55px;
     border: 1px solid var(--color-border);
@@ -103,7 +118,7 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    padding: 7px 20px;
+    
 }
 
 .selection-info {
@@ -370,6 +385,19 @@
 .tabla-select-wrapper:has(select:focus) i,
 .selector:has(select:focus) i {
     color: var(--color-accent);
+}
+
+.select-form option {
+    background-color: var(--color-sidebar-bg);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.tabla-select-wrapper option:hover,
+.tabla-select-wrapper option:checked,
+.tabla-select-wrapper option:focus {
+    background-color: var(--color-accent) !important;
+    color: #fff;
 }
 
 /* =======================================================
@@ -826,8 +854,9 @@ input[type="checkbox"]:indeterminate {
         gap: 8px;
     }
     
-    .selection-bar.active {
+    .selection-bar {
         padding: 7px 10px;
+        display: none !important;
     }
 
     .selection-info {

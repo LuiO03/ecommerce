@@ -193,7 +193,7 @@ window.showInfoModal = function (options) {
         isPaused = true;
         pausedTime += Date.now() - startTime;
         progressContainer.style.opacity = '0.5';
-        progressText.textContent = 'Pausado - Aleja el cursor para continuar';
+        progressText.textContent = 'Aleja el cursor para continuar';
     }
     
     function resumeAutoClose() {

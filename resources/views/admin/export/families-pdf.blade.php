@@ -3,47 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <title>Listado de Familias</title>
+
     <style>
+        /* Aplicar márgenes reales en todas las páginas del PDF */
+        @page {
+            margin: 35px 45px;
+        }
+
+        /* Reiniciar el body porque @page controla el margen */
         body {
-            font-family: DejaVu Sans, sans-serif;
+            margin: 0;
+            font-family: "Noto Sans", "DejaVu Sans", sans-serif;
             font-size: 12px;
-            color: #333;
+            color: #2b2b2b;
         }
 
-        h2 {
+        /* ==========================
+            ENCABEZADO
+        =========================== */
+        .header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 18px;
         }
 
+        .title {
+            font-size: 21px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        .divider {
+            width: 100%;
+            height: 2px;
+            background: #4F46E5;
+            margin-top: 8px;
+        }
+
+        /* ==========================
+            TABLA
+        =========================== */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #999;
-            padding: 6px;
-            text-align: left;
+            table-layout: fixed;
         }
 
         th {
-            background: #f2f2f2;
-            font-weight: bold;
+            background: #4F46E5;
+            color: #fff;
+            font-size: 12px;
+            padding: 8px 5px;
+            border: 1px solid #4338CA;
+            text-align: center;
         }
 
-        tr:nth-child(even) {
-            background: #f9f9f9;
+        td {
+            border: 1px solid #d1d1d1;
+            padding: 7px 8px;
+            font-size: 11px;
+            word-wrap: break-word;
+        }
+
+        tr:nth-child(even) td {
+            background: #F3F4FF;
         }
 
         .status {
             text-align: center;
+            font-weight: bold;
+        }
+
+        .active {
+            color: #15803d;
+        }
+
+        .inactive {
+            color: #b91c1c;
         }
     </style>
 </head>
 <body>
-    <h2>Listado de Familias</h2>
+
+    <!-- Encabezado -->
+    <div class="header">
+        <div class="title">Listado de Familias</div>
+        <div class="divider"></div>
+    </div>
+
+    <!-- Tabla -->
     <table>
+        <colgroup>
+            <col style="width: 8%">
+            <col style="width: 20%">
+            <col style="width: 45%">
+            <col style="width: 12%">
+            <col style="width: 15%">
+        </colgroup>
+
         <thead>
             <tr>
                 <th>ID</th>
@@ -53,17 +111,30 @@
                 <th>Fecha</th>
             </tr>
         </thead>
+
         <tbody>
             @foreach($families as $family)
                 <tr>
                     <td>{{ $family->id }}</td>
+
                     <td>{{ $family->name }}</td>
-                    <td>{{ $family->description }}</td>
-                    <td class="status">{{ $family->status ? 'Activo' : 'Inactivo' }}</td>
-                    <td>{{ optional($family->created_at)->format('d/m/Y H:i') ?? 'Sin fecha' }}</td>
+
+                    <td style="white-space: pre-line;">
+                        {{ $family->description ?? '—' }}
+                    </td>
+
+                    <td class="status {{ $family->status ? 'active' : 'inactive' }}">
+                        {{ $family->status ? 'Activo' : 'Inactivo' }}
+                    </td>
+
+                    <td>
+                        {{ $family->created_at?->format('d/m/Y H:i') ?? 'Sin fecha' }}
+                    </td>
                 </tr>
             @endforeach
         </tbody>
+
     </table>
+
 </body>
 </html>

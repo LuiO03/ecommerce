@@ -37,3 +37,6 @@ Route::post('/families/export/excel', [FamilyController::class, 'exportExcel'])
 
 Route::post('/families/export/pdf', [FamilyController::class, 'exportPdf'])
     ->name('admin.families.export.pdf');
+
+Route::post('/families/export/csv', [FamilyController::class, 'exportCsv'])
+    ->name('admin.families.export.csv');

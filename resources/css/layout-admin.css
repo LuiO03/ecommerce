@@ -447,7 +447,7 @@
     overflow-y: auto;
     background-color: var(--color-main-bg);
     border-radius: 15px 0 0 0;
-    padding: 15px;
+    padding: 25px 15px 50px 15px;
     position: fixed;
     right: 0;
     bottom: 0;

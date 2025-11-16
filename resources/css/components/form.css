@@ -277,7 +277,7 @@
 
 /* Animación de zoom pulsante */
 .image-pulse {
-    animation: imagePulse 20s ease-in-out infinite;
+    animation: imagePulse 10s ease-in-out infinite;
 }
 
 @keyframes imagePulse {

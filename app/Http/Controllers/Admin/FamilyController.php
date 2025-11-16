@@ -9,10 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FamiliesExport;
+use App\Exports\FamiliesCsvExport;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Storage;
-
-
 
 class FamilyController extends Controller
 {
@@ -56,6 +55,21 @@ class FamilyController extends Controller
             ->format('a4')
             ->name($filename)
             ->download();
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $ids = $request->has('export_all')
+            ? null
+            : $request->input('ids');
+
+        $filename = 'familias_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        return Excel::download(
+            new FamiliesCsvExport($ids),
+            $filename,
+            \Maatwebsite\Excel\Excel::CSV
+        );
     }
 
     public function create()

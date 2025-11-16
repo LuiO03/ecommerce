@@ -9,12 +9,13 @@
             </span>
             <span class="boton-form-text">Volver</span>
         </a>
-        <form action="{{ route('admin.families.destroy', $family) }}" method="POST" class="delete-form" data-entity="familia" style="margin: 0;">
+        <form action="{{ route('admin.families.destroy', $family) }}" method="POST" class="delete-form"
+            data-entity="familia" style="margin: 0;">
             @csrf
             @method('DELETE')
-            <button class="boton-form boton-danger" type="submit">
-                <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                <span class="boton-form-text">Eliminar</span>
+            <button class="boton boton-danger" type="submit">
+                <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                <span class="boton-text">Eliminar</span>
             </button>
         </form>
     </x-slot>
@@ -39,7 +40,8 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-price-tag-3-line input-icon"></i>
-                        <input type="text" name="name" id="name" class="input-form" placeholder="Ingrese el nombre" required value="{{ old('name', $family->name) }}">
+                        <input type="text" name="name" id="name" class="input-form"
+                            placeholder="Ingrese el nombre" required value="{{ old('name', $family->name) }}">
                     </div>
                 </div>
 
@@ -55,7 +57,8 @@
                             <option value="" disabled hidden></option>
                             <option value="1" {{ old('status', $family->status) == '1' ? 'selected' : '' }}>Activo
                             </option>
-                            <option value="0" {{ old('status', $family->status) == '0' ? 'selected' : '' }}>Inactivo
+                            <option value="0" {{ old('status', $family->status) == '0' ? 'selected' : '' }}>
+                                Inactivo
                             </option>
                         </select>
                         <i class="ri-arrow-down-s-line select-arrow"></i>
@@ -67,7 +70,8 @@
                     <label for="description" class="label-form label-textarea">Descripción de la familia</label>
                     <div class="input-icon-container">
                         <i class="ri-file-text-line input-icon"></i>
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4" required>{{ old('description', $family->description) }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                            required>{{ old('description', $family->description) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -78,11 +82,19 @@
                     <label class="label-form">Imagen de la familia</label>
                     <input type="file" name="image" id="image" class="file-input" accept="image/*">
                     <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
-                    
+
                     <!-- Zona de vista previa -->
-                    <div class="image-preview-zone {{ ($family->image && file_exists(public_path('storage/' . $family->image))) ? 'has-image' : '' }}" id="imagePreviewZone">
-                        @if($family->image && file_exists(public_path('storage/' . $family->image)))
-                            <img id="imagePreview" class="image-preview image-pulse" src="{{ asset('storage/' . $family->image) }}" alt="{{ $family->name }}">
+                    <div class="image-preview-zone {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'has-image' : '' }}"
+                        id="imagePreviewZone">
+                        @if ($family->image && file_exists(public_path('storage/' . $family->image)))
+                            <img id="imagePreview" class="image-preview image-pulse"
+                                src="{{ asset('storage/' . $family->image) }}" alt="{{ $family->name }}">
+                            <!-- Placeholder oculto inicialmente (se mostrará al eliminar) -->
+                            <div class="image-placeholder" id="imagePlaceholder" style="display: none;">
+                                <i class="ri-image-add-line"></i>
+                                <p>Arrastra una imagen aquí</p>
+                                <span>o haz clic para seleccionar</span>
+                            </div>
                         @elseif($family->image)
                             <!-- Imagen no encontrada -->
                             <div class="image-error" id="imageError">
@@ -98,25 +110,28 @@
                                 <span>o haz clic para seleccionar</span>
                             </div>
                         @endif
-                        
+
                         <!-- Imagen nueva cargada (oculta inicialmente) -->
-                        <img id="imagePreviewNew" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
-                        
+                        <img id="imagePreviewNew" class="image-preview image-pulse" style="display: none;"
+                            alt="Vista previa">
+
                         <!-- Overlay único para todas las imágenes -->
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
                             <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
                                 <i class="ri-upload-2-line"></i>
                                 <span>Cambiar</span>
                             </button>
-                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn" title="Eliminar imagen">
+                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                                title="Eliminar imagen">
                                 <i class="ri-delete-bin-line"></i>
                                 <span>Eliminar</span>
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- Nombre del archivo -->
-                    <div class="image-filename" id="imageFilename" style="{{ ($family->image && file_exists(public_path('storage/' . $family->image))) ? 'display: flex;' : 'display: none;' }}">
+                    <div class="image-filename" id="imageFilename"
+                        style="{{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'display: flex;' : 'display: none;' }}">
                         <i class="ri-file-image-line"></i>
                         <span id="filenameText">{{ $family->image ? basename($family->image) : '' }}</span>
                     </div>
@@ -152,8 +167,9 @@
         const filenameText = document.getElementById('filenameText');
         const removeFlag = document.getElementById('removeImageFlag');
 
-        const hasExistingImage = {{ ($family->image && file_exists(public_path('storage/' . $family->image))) ? 'true' : 'false' }};
-        
+        const hasExistingImage =
+            {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'true' : 'false' }};
+
         // Mostrar overlay si hay imagen existente
         if (hasExistingImage) {
             imageOverlay.style.display = 'flex';
@@ -168,16 +184,16 @@
                     if (imagePreview) imagePreview.style.display = 'none';
                     if (imagePlaceholder) imagePlaceholder.style.display = 'none';
                     if (imageError) imageError.style.display = 'none';
-                    
+
                     // Mostrar nueva imagen
                     imagePreviewNew.src = e.target.result;
                     imagePreviewNew.style.display = 'block';
                     imageOverlay.style.display = 'flex';
                     imagePreviewZone.classList.add('has-image');
-                    
+
                     // Restaurar flag de eliminación
                     removeFlag.value = '0';
-                    
+
                     // Mostrar nombre de archivo original
                     filenameText.textContent = file.name;
                     imageFilename.style.display = 'flex';
@@ -191,17 +207,17 @@
             imagePreviewNew.src = '';
             imagePreviewNew.style.display = 'none';
             imageInput.value = '';
-            
+
             // Restaurar flag de eliminación
             removeFlag.value = '0';
-            
+
             // Restaurar estado original
             if (hasExistingImage && imagePreview) {
                 imagePreview.style.display = 'block';
                 imageOverlay.style.display = 'flex';
                 imagePreviewZone.classList.add('has-image');
                 // Restaurar nombre de archivo original
-                filenameText.textContent = '{{ $family->image ? basename($family->image) : "" }}';
+                filenameText.textContent = '{{ $family->image ? basename($family->image) : '' }}';
                 imageFilename.style.display = 'flex';
             } else if (imageError) {
                 imageError.style.display = 'flex';
@@ -216,6 +232,33 @@
             }
         }
 
+        // Función para eliminar imagen (existente o nueva)
+        function removeImage() {
+            // Limpiar input y vistas previas
+            imageInput.value = '';
+            imagePreviewNew.src = '';
+            imagePreviewNew.style.display = 'none';
+            
+            if (imagePreview) imagePreview.style.display = 'none';
+            
+            // Activar flag de eliminación si hay imagen existente
+            if (hasExistingImage) {
+                removeFlag.value = '1';
+            }
+            
+            // Ocultar overlay y mostrar placeholder
+            imageOverlay.style.display = 'none';
+            imagePreviewZone.classList.remove('has-image');
+            imageFilename.style.display = 'none';
+            
+            // Mostrar placeholder o error según corresponda
+            if (imageError) {
+                imageError.style.display = 'flex';
+            } else if (imagePlaceholder) {
+                imagePlaceholder.style.display = 'flex';
+            }
+        }
+
         // Botón cambiar imagen
         changeImageBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -225,34 +268,7 @@
         // Botón eliminar imagen
         removeImageBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            
-            // Si hay imagen nueva cargada, solo limpiar
-            if (imagePreviewNew.style.display === 'block') {
-                clearImagePreview();
-                return;
-            }
-            
-            // Si es imagen existente, confirmar eliminación
-            if (imagePreview && imagePreview.style.display !== 'none') {
-                const confirmDelete = confirm('¿Estás seguro de que deseas eliminar esta imagen?');
-                if (confirmDelete) {
-                    // Marcar para eliminación en el servidor
-                    removeFlag.value = '1';
-                    
-                    // Ocultar imagen y overlay
-                    imagePreview.style.display = 'none';
-                    imageOverlay.style.display = 'none';
-                    imageFilename.style.display = 'none';
-                    
-                    // Mostrar placeholder
-                    if (imagePlaceholder) {
-                        imagePlaceholder.style.display = 'flex';
-                    } else if (imageError) {
-                        imageError.style.display = 'flex';
-                    }
-                    imagePreviewZone.classList.remove('has-image');
-                }
-            }
+            removeImage();
         });
 
         // Cambio de archivo
@@ -275,7 +291,7 @@
         imagePreviewZone.addEventListener('drop', (e) => {
             e.preventDefault();
             imagePreviewZone.classList.remove('drag-over');
-            
+
             const files = e.dataTransfer.files;
             if (files.length > 0 && files[0].type.startsWith('image/')) {
                 imageInput.files = files;
@@ -296,12 +312,12 @@
             const submitBtn = document.getElementById('submitBtn');
             const btnIcon = submitBtn.querySelector('.boton-form-icon i');
             const btnText = submitBtn.querySelector('.boton-form-text');
-            
+
             // Deshabilitar botón
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
             submitBtn.style.cursor = 'not-allowed';
-            
+
             // Cambiar icono a loading
             btnIcon.className = 'ri-loader-4-line';
             btnIcon.style.animation = 'spin 1s linear infinite';

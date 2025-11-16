@@ -2,9 +2,6 @@
     @vite('resources/css/modules/dashboard.css')
 @endpush
 <x-admin-layout :useSlotContainer="false">
-    <x-slot name="title">
-        Panel de Administración
-    </x-slot>
     <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="targeta">
             <div class="targeta-usuario">

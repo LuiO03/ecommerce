@@ -8,7 +8,7 @@ import './dashboard/sidebars-control.js';
 import './dashboard/theme-toggle.js';
 
 import './utils/material-design.js';
-
+import './utils/datatable.js';
 
 import './modals/modal-confirm.js';
 

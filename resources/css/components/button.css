@@ -211,8 +211,3 @@
 .boton-selection:hover::after {
     left: -40%;
 }
-
-.boton-excel{
-    background-color: #217346;
-    color: white;
-}
