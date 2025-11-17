@@ -102,7 +102,7 @@
                 <!-- Panel de información (cuando hay 1 seleccionado) -->
                 <div id="infoPanel" class="info-panel-single" style="display: none;">
                     <div class="panel-header">
-                        <h2 id="infoName">Nombre de categoría</h2>
+                        <h2 class="panel-title" id="infoName">Nombre de categoría</h2>
                         <button type="button" id="closeInfo" class="panel-close">
                             <i class="ri-close-line"></i>
                         </button>
@@ -173,7 +173,7 @@
                 <!-- Panel de operaciones masivas (cuando hay múltiples seleccionados) -->
                 <div id="bulkPanel" class="info-panel-bulk" style="display: none;">
                     <div class="panel-header">
-                        <h3>
+                        <h3 class="panel-title">
                             <i class="ri-checkbox-multiple-line"></i>
                             <span id="bulkCount">0</span> seleccionados
                         </h3>

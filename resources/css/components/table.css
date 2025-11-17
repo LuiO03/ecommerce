@@ -344,8 +344,8 @@
     transform: scale(1.02);
     box-shadow: 0 0 0 3px var(--color-accent-pastel);
     border-radius: var(--radius-element);
-    
 }
+
 .tabla-select-wrapper.filter-active select {
     border-color: var(--color-accent);
 }
@@ -356,8 +356,8 @@
 }
 
 .tabla-select-wrapper select {
-    width: 100%;
     padding: 6px 30px 6px 10px;
+    width: 100%;
     border: 2px solid var(--color-input-border);
     border-radius: var(--radius-element);
     background-color: var(--color-input-bg);
@@ -421,7 +421,6 @@
 #tabla.ready {
     visibility: visible;
 }
-
 
 .tabla-wrapper {
     overflow-x: auto;
