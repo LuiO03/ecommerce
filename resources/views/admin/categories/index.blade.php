@@ -167,8 +167,28 @@
                             <td class="column-id-td">{{ $cat->id }}</td>
                             <td class="column-name-td">{{ $cat->name }}</td>
                             <td class="column-description-td">{{ $cat->description }}</td>
-                            <td class="column-family-td">{{ $cat->family?->name ?? 'Sin Familia' }}</td>
-                            <td class="column-father-td">{{ $cat->parent?->name ?? 'Sin Padre' }}</td>
+                            <td class="column-family-td">
+                                @if($cat->family)
+                                    <span class="badge badge-info">
+                                        {{ $cat->family->name }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-gray">
+                                        Sin Familia
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="column-father-td">
+                                @if($cat->parent)
+                                    <span class="badge badge-secondary">
+                                        {{ $cat->parent->name }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-gray">
+                                        Sin Padre
+                                    </span>
+                                @endif
+                            </td>
                             <td class="column-status-td">
                                 <label class="switch-tabla">
                                     <input type="checkbox" class="switch-status"

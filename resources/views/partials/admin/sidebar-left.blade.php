@@ -118,7 +118,7 @@
 
                 <ul id="dropdown-gestion" class="sidebar-submenu space-y-1">
                     <li>
-                        <a href="#" class="sidebar-sublink active" data-tooltip="Categorías">
+                        <a href="{{ route('admin.categories.index') }}" class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" data-tooltip="Categorías">
                             <i aria-busy=""class="ri-apps-line sidebar-icon"></i>
                             <span>Categorías</span>
                         </a>

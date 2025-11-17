@@ -210,6 +210,14 @@ class DataTableManager {
             initComplete: () => {
                 this.$table.addClass('ready');
                 this.updateOrderIcons();
+                
+                // Forzar actualización de paginación e info después de inicializar
+                setTimeout(() => {
+                    if (this.config.features.customPagination) {
+                        this.updateInfoAndPagination();
+                    }
+                    this.animateRows();
+                }, 50);
             }
         });
         
@@ -729,6 +737,19 @@ class DataTableManager {
         const currentPage = info.page;
         const windowSize = 1;
         
+        // Siempre mostrar la información de registros
+        $('#tableInfo').html(
+            `Mostrando <strong>${info.start + 1}</strong> a <strong>${info.end}</strong> de <strong>${info.recordsDisplay}</strong> registros`
+        );
+        
+        // Si solo hay 1 página o menos, no mostrar botones de paginación
+        if (totalPages <= 1) {
+            pagination.hide();
+            return;
+        }
+        
+        pagination.show();
+        
         const addPageButton = (page) => {
             const btn = $('<button>', {
                 text: page + 1,
@@ -788,11 +809,6 @@ class DataTableManager {
             click: () => this.table.page(totalPages - 1).draw('page')
         });
         pagination.append(lastBtn);
-        
-        // Info
-        $('#tableInfo').html(
-            `Mostrando <strong>${info.start + 1}</strong> a <strong>${info.end}</strong> de <strong>${info.recordsDisplay}</strong> registros`
-        );
     }
     
     animateRows() {
