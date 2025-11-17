@@ -157,7 +157,6 @@
                             <span id="infoSlug" class="info-slug">-</span>
                         </div>
                     </div>
-
                     <div class="panel-actions">
                         <a href="#" id="editCategory" class="boton boton-warning btn-block">
                             <span class="boton-icon"><i class="ri-edit-line"></i></span>
