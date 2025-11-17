@@ -49,6 +49,6 @@ class FamilySeeder extends Seeder
         DB::table('families')->insert($families);
 
         // Genera 30 familias aleatorias adicionales
-        Family::factory()->count(30)->create();
+        //Family::factory()->count(30)->create();
     }
 }

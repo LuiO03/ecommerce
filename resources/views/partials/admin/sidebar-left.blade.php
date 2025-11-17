@@ -51,7 +51,8 @@
     ];
 
     // Función helper para manejar rutas inexistentes
-    function safe_route($name) {
+    function safe_route($name)
+    {
         try {
             return route($name);
         } catch (\Exception $e) {
@@ -73,16 +74,26 @@
     <div class="sidebar-contenido">
         <ul class="space-y-1">
             @foreach ($links as $link)
-            
             @endforeach
             <li>
-                <a href="#" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" data-tooltip="Dashboard">
+                <a href="#" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                    data-tooltip="Dashboard">
                     <i class="ri-dashboard-line sidebar-icon"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.families.index') }}" class="sidebar-link {{ request()->routeIs('admin.families.*') ? 'active' : '' }}" data-tooltip="Familias">
+                <a href="{{ route('admin.categories.hierarchy') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.categories.hierarchy') ? 'active' : '' }}"
+                    data-tooltip="Gestor Jerárquico">
+                    <i aria-busy=""class="ri-node-tree sidebar-icon"></i>
+                    <span>Gestor Jerárquico</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.families.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.families.*') ? 'active' : '' }}"
+                    data-tooltip="Familias">
                     <i class="ri-group-line sidebar-icon"></i>
                     <span>Familias</span>
                 </a>
@@ -102,7 +113,8 @@
                 </a>
             </li>
             <li>
-                <a href="admin/users" class="sidebar-link {{ request()->routeIs('admin.users') ? 'active' : '' }}" data-tooltip="Users">
+                <a href="admin/users" class="sidebar-link {{ request()->routeIs('admin.users') ? 'active' : '' }}"
+                    data-tooltip="Users">
                     <i class="ri-id-card-line sidebar-icon"></i>
                     <span>Users</span>
                 </a>
@@ -118,11 +130,14 @@
 
                 <ul id="dropdown-gestion" class="sidebar-submenu space-y-1">
                     <li>
-                        <a href="{{ route('admin.categories.index') }}" class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" data-tooltip="Categorías">
+                        <a href="{{ route('admin.categories.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                            data-tooltip="Categorías">
                             <i aria-busy=""class="ri-apps-line sidebar-icon"></i>
                             <span>Categorías</span>
                         </a>
                     </li>
+
                     <li>
                         <a href="#" class="sidebar-sublink" data-tooltip="Marcas">
                             <i class="ri-price-tag-3-line sidebar-icon"></i>

@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "flowbite": "^3.1.2",
-        "puppeteer": "^24.29.1"
+        "puppeteer": "^24.29.1",
+        "sortablejs": "^1.15.6"
     }
 }

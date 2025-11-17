@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\FamilyController;
 use Illuminate\Support\Facades\Route;
 /* antes era '/admin' pero ahora se configuro un prefijo en app.php
@@ -58,3 +59,17 @@ Route::post('/categories/export/pdf', [CategoryController::class, 'exportPdf'])
     ->name('admin.categories.export.pdf');
 Route::post('/categories/export/csv', [CategoryController::class, 'exportCsv'])
     ->name('admin.categories.export.csv');
+
+// Rutas para Administrador Jerárquico de Categorías
+Route::get('/categories/hierarchy', [CategoryHierarchyController::class, 'index'])
+    ->name('admin.categories.hierarchy');
+Route::get('/categories/hierarchy/tree-data', [CategoryHierarchyController::class, 'getTreeData'])
+    ->name('admin.categories.hierarchy.tree-data');
+Route::post('/categories/hierarchy/bulk-move', [CategoryHierarchyController::class, 'bulkMove'])
+    ->name('admin.categories.hierarchy.bulk-move');
+Route::post('/categories/hierarchy/preview-move', [CategoryHierarchyController::class, 'previewMove'])
+    ->name('admin.categories.hierarchy.preview-move');
+Route::post('/categories/hierarchy/bulk-delete', [CategoryHierarchyController::class, 'bulkDelete'])
+    ->name('admin.categories.hierarchy.bulk-delete');
+Route::post('/categories/hierarchy/bulk-duplicate', [CategoryHierarchyController::class, 'bulkDuplicate'])
+    ->name('admin.categories.hierarchy.bulk-duplicate');

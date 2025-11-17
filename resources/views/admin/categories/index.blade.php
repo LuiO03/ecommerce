@@ -30,6 +30,11 @@
             </div>
         </div>
 
+        <a href="{{ route('admin.categories.hierarchy') }}" class="boton boton-purple">
+            <span class="boton-icon"><i class="ri-node-tree"></i></span>
+            <span class="boton-text">Gestor Jerárquico</span>
+        </a>
+
         <a href="{{ route('admin.categories.create') }}" class="boton boton-primary">
             <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
             <span class="boton-text">Crear Categoría</span>
