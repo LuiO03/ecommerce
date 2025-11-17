@@ -66,7 +66,7 @@
     background-color: var(--color-accent);
     color: white;
     transform: translateY(-4px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .dashboard-card:hover .card-icon i {

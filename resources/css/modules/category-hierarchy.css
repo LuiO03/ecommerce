@@ -133,15 +133,21 @@
 
 .tree-search .search-clear {
     position: absolute;
-    right: 0.5rem;
-    background: none;
+    right: 1rem;
     border: none;
     color: var(--color-text);
     cursor: pointer;
-    padding: 0.5rem;
-    border-radius: var(--radius-sm);
     display: none;
     transition: all 0.2s ease;
+    width: 30px;
+    height: 30px;
+    top: 0px;
+}
+
+.tree-search .search-clear i{
+    
+    background: red;
+    font-size: 16px;
 }
 
 .tree-search .search-clear:hover {
@@ -170,10 +176,10 @@
 .family-card {
     margin-bottom: 0.5rem;
     background: var(--color-card-bg);
-    border: 2px solid var(--color-accent);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease;
 }
 
 .family-card.collapsed {
@@ -188,7 +194,7 @@
     cursor: pointer;
     user-select: none;
     background: var(--color-info-pastel);
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 .family-toggle {
@@ -253,7 +259,6 @@
    📦 TARJETAS DE CATEGORÍA (Anidadas)
    ======================================== */
 .category-item {
-    margin-bottom: 0.375rem;
     border-radius: var(--radius-sm);
     transition: all 0.2s ease;
 }
@@ -264,17 +269,17 @@
     gap: 0.5rem;
     padding: 0.5rem 0.625rem;
     background: var(--color-card-bg);
-    border: 1px solid var(--color-border);
+    border: 1px solid transparent;
     border-radius: var(--radius-sm);
     cursor: pointer;
     user-select: none;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease;
     position: relative;
 }
 
 .category-card:hover {
     background: var(--color-hover);
-    border-color: var(--color-primary);
+    border-color: var(--color-accent);
     transform: translateX(4px);
 }
 
@@ -372,7 +377,7 @@
     align-items: center;
     justify-content: center;
     background: var(--color-primary-pastel);
-    color: var(--color-primary);
+    color: var(--color-text-soft);
     border-radius: 6px;
     font-size: 0.875rem;
 }
@@ -500,14 +505,15 @@
    ======================================== */
 .hierarchy-info-panel {
     background: var(--color-card-bg);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: 20px;
+    top: 0px;
     align-self: flex-start;
-    max-height: calc(100vh - 120px);
+    overflow: hidden;
+    max-height: calc(100vh - 90px);
 }
 
 .info-panel-empty {
@@ -517,14 +523,13 @@
     align-items: center;
     justify-content: center;
     padding: 3rem 2rem;
-    color: var(--color-text-soft);
     text-align: center;
 }
 
 .info-panel-empty i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+    font-size: 6rem;
     opacity: 0.3;
+    color: var(--color-text);
 }
 
 .info-panel-single,
@@ -624,12 +629,12 @@
 
 .info-label {
     font-size: var(--font-size-p);
+    font-family: var(--font-secondary);
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 5px;
     font-weight: bold;
-    font-family: var(--font-secondary);
 }
 
 .info-label i {
@@ -638,10 +643,11 @@
 
 .info-row span:last-child {
     font-size: var(--font-size-sm);
+    font-family: var(--font-secondary);
 }
 
 .info-slug {
-    font-family: 'Monaco', 'Courier New', monospace;
+    font-family: 'Monaco', 'Courier New', monospace !important;
     font-size: 0.8125rem;
     background: var(--color-hover-degraded);
     padding: 0.25rem 0.5rem;
@@ -653,14 +659,8 @@
     justify-content: space-between;
     border-top: 1px solid var(--color-border);
     display: flex;
-    gap: 10px;
-
-    font-weight: 500;
-    display: flex;
     align-items: center;
     gap: 5px;
-    font-weight: bold;
-    font-family: var(--font-secondary);
 }
 
 .info-label i {
@@ -863,27 +863,4 @@
     .category-children {
         margin-left: 1rem;
     }
-}
-
-/* ========================================
-   🌙 MODO OSCURO
-   ======================================== */
-.dark .tree-wrapper {
-    background: var(--color-sidebar-bg);
-}
-
-.dark .family-header:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, transparent 100%);
-}
-
-.dark .category-card:hover {
-    background: rgba(59, 130, 246, 0.1);
-}
-
-.dark .info-panel-empty i {
-    opacity: 0.2;
-}
-
-.dark .form-select {
-    background: var(--color-input-bg);
 }
