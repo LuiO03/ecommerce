@@ -29,7 +29,12 @@ class CategoryController extends Controller
         ->with(['family:id,name', 'parent:id,name'])
         ->get();
 
-        return view('admin.categories.index', compact('categories'));
+        $families = Family::select('id', 'name')
+            ->where('status', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.categories.index', compact('categories', 'families'));
     }
 
     /* ======================================================

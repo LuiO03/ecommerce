@@ -88,6 +88,31 @@
                         <i class="ri-filter-3-line selector-icon"></i>
                     </div>
                 </div>
+
+                <!-- Familia -->
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="familyFilter">
+                            <option value="">Todas las familias</option>
+                            @foreach($families as $family)
+                                <option value="{{ $family->id }}">{{ $family->name }}</option>
+                            @endforeach
+                        </select>
+                        <i class="ri-folder-3-line selector-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Nivel -->
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="levelFilter">
+                            <option value="">Todos los niveles</option>
+                            <option value="root">Raíz (sin padre)</option>
+                            <option value="subcategory">Subcategoría</option>
+                        </select>
+                        <i class="ri-node-tree selector-icon"></i>
+                    </div>
+                </div>
             </div>
 
             <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
@@ -102,19 +127,22 @@
 
                 <button id="exportSelectedExcel" class="boton-selection boton-success">
                     <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
-                    Excel
+                    <span class="boton-selection-text">Excel</span>
+                    l
                     <span class="selection-badge" id="excelBadge">0</span>
                 </button>
 
                 <button id="exportSelectedCsv" class="boton-selection boton-orange">
                     <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
-                    CSV
+                    <span class="boton-selection-text">CSV</span>
+                    l
                     <span class="selection-badge" id="csvBadge">0</span>
                 </button>
 
                 <button id="exportSelectedPdf" class="boton-selection boton-secondary">
                     <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
-                    PDF
+                    <span class="boton-selection-text">PDF</span>
+                    l
                     <span class="selection-badge" id="pdfBadge">0</span>
                 </button>
 
@@ -122,7 +150,8 @@
 
             <button id="deleteSelected" class="boton-selection boton-danger">
                 <span class="boton-selection-icon"><i class="ri-delete-bin-line"></i></span>
-                Eliminar
+                <span class="boton-selection-text">Eliminar</span>
+                l
                 <span class="selection-badge" id="deleteBadge">0</span>
             </button>
 
@@ -167,7 +196,7 @@
                             <td class="column-id-td">{{ $cat->id }}</td>
                             <td class="column-name-td">{{ $cat->name }}</td>
                             <td class="column-description-td">{{ $cat->description }}</td>
-                            <td class="column-family-td">
+                            <td class="column-family-td" data-family-id="{{ $cat->family_id ?? '' }}">
                                 @if($cat->family)
                                     <span class="badge badge-info">
                                         <i class="ri-archive-stack-line"></i>
@@ -180,7 +209,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="column-father-td">
+                            <td class="column-parent-td" data-search="{{ $cat->parent ? $cat->parent->name : 'Sin padre' }}">
                                 @if($cat->parent)
                                     <span class="badge badge-secondary">
                                         <i class="ri-node-tree"></i>
@@ -189,7 +218,7 @@
                                 @else
                                     <span class="badge badge-gray">
                                         <i class="ri-git-branch-line"></i>
-                                        Categoría Raíz
+                                        Sin padre
                                     </span>
                                 @endif
                             </td>
@@ -288,6 +317,78 @@
                             console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
                         }
                     }
+                });
+
+                // ========================================
+                // 🔍 FILTROS PERSONALIZADOS
+                // ========================================
+                
+                // Variables globales para los filtros
+                let currentFamilyFilter = '';
+                let currentLevelFilter = '';
+                
+                // Función de filtrado personalizado para DataTables
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    // Solo aplicar a esta tabla
+                    if (settings.nTable.id !== 'tabla') return true;
+                    
+                    const row = tableManager.table.row(dataIndex).node();
+                    
+                    // Filtro por Familia
+                    if (currentFamilyFilter !== '') {
+                        const rowFamilyId = $(row).find('.column-family-td').attr('data-family-id');
+                        if (rowFamilyId !== currentFamilyFilter) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filtro por Nivel
+                    if (currentLevelFilter !== '') {
+                        const searchValue = $(row).find('.column-parent-td').attr('data-search');
+                        
+                        if (currentLevelFilter === 'root' && searchValue !== 'Sin padre') {
+                            return false;
+                        }
+                        if (currentLevelFilter === 'subcategory' && searchValue === 'Sin padre') {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                });
+                
+                // Filtro por Familia
+                $('#familyFilter').on('change', function() {
+                    currentFamilyFilter = this.value;
+                    tableManager.table.draw();
+                    
+                    // Actualizar estado de filtros activos
+                    tableManager.checkFiltersActive();
+                    
+                    console.log(`🔍 Filtro Familia: ${currentFamilyFilter || 'Todas'}`);
+                });
+
+                // Filtro por Nivel (Raíz/Subcategoría)
+                $('#levelFilter').on('change', function() {
+                    currentLevelFilter = this.value;
+                    tableManager.table.draw();
+                    
+                    // Actualizar estado de filtros activos
+                    tableManager.checkFiltersActive();
+                    
+                    console.log(`🔍 Filtro Nivel: ${currentLevelFilter || 'Todos'}`);
+                });
+
+                // Limpiar filtros personalizados cuando se presiona el botón
+                const originalClearHandler = $('#clearFiltersBtn').data('events')?.click;
+                $('#clearFiltersBtn').on('click', function() {
+                    // Limpiar filtros personalizados
+                    currentFamilyFilter = '';
+                    currentLevelFilter = '';
+                    $('#familyFilter').val('');
+                    $('#levelFilter').val('');
+                    
+                    console.log('🧹 Filtros personalizados limpiados');
                 });
 
                 // ========================================

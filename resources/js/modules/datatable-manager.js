@@ -575,21 +575,26 @@ class DataTableManager {
             this.table.draw();
         });
         
-        // Verificar estado inicial
-        if ($('#statusFilter').val() !== "") {
-            $('#statusFilter').closest('.tabla-select-wrapper').addClass('filter-active');
-        }
-        if ($('#sortFilter').val() !== "") {
-            $('#sortFilter').closest('.tabla-select-wrapper').addClass('filter-active');
-        }
+        // Verificar estado inicial de TODOS los filtros
+        $('select[id$="Filter"]').each(function() {
+            const $select = $(this);
+            if ($select.val() !== '') {
+                $select.closest('.tabla-select-wrapper').addClass('filter-active');
+            }
+        });
         
         // Limpiar filtros
         $('#clearFiltersBtn').on('click', () => {
             this.clearFilters();
         });
         
-        // Verificar filtros activos
-        $('#customSearch, #statusFilter, #sortFilter').on('input change keyup', () => {
+        // Verificar filtros activos automáticamente para CUALQUIER select que termine con 'Filter'
+        const filterSelectors = ['#customSearch'];
+        $('select[id$="Filter"]').each(function() {
+            filterSelectors.push('#' + $(this).attr('id'));
+        });
+        
+        $(filterSelectors.join(', ')).on('input change keyup', () => {
             this.checkFiltersActive();
         });
         
@@ -598,25 +603,46 @@ class DataTableManager {
     
     checkFiltersActive() {
         const hasSearch = $('#customSearch').val().trim() !== '';
-        const hasStatusFilter = $('#statusFilter').val() !== '';
-        const hasSortFilter = $('#sortFilter').val() !== '';
         
-        const anyFilterActive = hasSearch || hasStatusFilter || hasSortFilter;
+        // Detectar automáticamente TODOS los filtros que terminen con 'Filter'
+        let anyFilterActive = hasSearch;
+        
+        $('select[id$="Filter"]').each(function() {
+            const $select = $(this);
+            const hasValue = $select.val() !== '';
+            
+            // Aplicar clase 'filter-active' al wrapper del select
+            $select.closest('.tabla-select-wrapper').toggleClass('filter-active', hasValue);
+            
+            // Verificar si hay algún filtro activo
+            if (hasValue) {
+                anyFilterActive = true;
+            }
+        });
+        
         $('#clearFiltersBtn').toggleClass('active', anyFilterActive);
     }
     
     clearFilters() {
-        const activeFiltersCount = [
-            $('#customSearch').val().trim() !== '',
-            $('#statusFilter').val() !== '',
-            $('#sortFilter').val() !== ''
-        ].filter(Boolean).length;
+        // Contar filtros activos dinámicamente
+        const hasSearch = $('#customSearch').val().trim() !== '';
+        let activeFiltersCount = hasSearch ? 1 : 0;
+        
+        $('select[id$="Filter"]').each(function() {
+            if ($(this).val() !== '') {
+                activeFiltersCount++;
+            }
+        });
         
         if (activeFiltersCount === 0) return;
         
+        // Limpiar búsqueda
         $('#customSearch').val('').trigger('keyup');
-        $('#statusFilter').val('').trigger('change');
-        $('#sortFilter').val('').trigger('change');
+        
+        // Limpiar TODOS los selects que terminen con 'Filter'
+        $('select[id$="Filter"]').each(function() {
+            $(this).val('').trigger('change');
+        });
         
         $('#clearFiltersBtn').addClass('clearing');
         setTimeout(() => {

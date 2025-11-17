@@ -135,35 +135,6 @@
     flex-wrap: wrap;
 }
 
-.selection-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-element);
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-family: var(--font-secondary);
-    font-weight: bold;
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    backdrop-filter: blur(10px);
-}
-
-.selection-btn i {
-    font-size: var(--font-size-h4);
-}
-
-.selection-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
 .selection-btn:active {
     transform: translateY(0);
 }
