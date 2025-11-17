@@ -59,11 +59,11 @@
     transform: scale(1.1);
 }
 
-/* Active */
 .boton:active {
     transform: scale(0.95);
 }
 
+/* Boton Form */
 .boton-form {
     flex: 1 1 150px;
     display: inline-flex;
@@ -137,10 +137,7 @@
     border: 1px solid var(--color-border);
 }
 
-
-
-
-
+/* Boton de Selection */
 .boton-selection {
     flex: 1 1 150px;
     display: inline-flex;
@@ -210,4 +207,42 @@
 
 .boton-selection:hover::after {
     left: -40%;
+}
+
+/* Boton sin iconos */
+.boton-sm {
+    width: 40px;
+    min-height: 35px;
+    margin: 0px 0px;
+    border: none;
+    text-wrap: nowrap;
+    border-radius: var(--radius-element);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.boton-sm .boton-sm-icon i {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+}
+
+/* Hover */
+.boton-sm:hover {
+    box-shadow: var(--shadow-material);
+}
+
+
+.boton-sm:hover .boton-sm-icon i {
+    transform: scale(1.1);
+}
+
+.boton-sm:active {
+    transform: scale(0.95);
 }

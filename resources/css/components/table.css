@@ -579,22 +579,6 @@ input[type="checkbox"]:indeterminate {
 }
 
 /* =======================================================
-   🟢 ESTADOS / BADGES
-======================================================= */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    width: fit-content;
-    padding: 4px 12px;
-    border: none;
-    border-radius: var(--radius-card);
-    font-size: 12px;
-    font-family: var(--font-secondary);
-    white-space: nowrap;
-}
-
-/* =======================================================
    📄 FOOTER / PAGINACIÓN
 ======================================================= */
 .tabla-footer {

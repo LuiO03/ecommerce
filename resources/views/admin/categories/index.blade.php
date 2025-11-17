@@ -170,10 +170,12 @@
                             <td class="column-family-td">
                                 @if($cat->family)
                                     <span class="badge badge-info">
+                                        <i class="ri-archive-stack-line"></i>
                                         {{ $cat->family->name }}
                                     </span>
                                 @else
                                     <span class="badge badge-gray">
+                                        <i class="ri-folder-unknow-line"></i>
                                         Sin Familia
                                     </span>
                                 @endif
@@ -181,11 +183,13 @@
                             <td class="column-father-td">
                                 @if($cat->parent)
                                     <span class="badge badge-secondary">
+                                        <i class="ri-node-tree"></i>
                                         {{ $cat->parent->name }}
                                     </span>
                                 @else
                                     <span class="badge badge-gray">
-                                        Sin Padre
+                                        <i class="ri-git-branch-line"></i>
+                                        Categoría Raíz
                                     </span>
                                 @endif
                             </td>
@@ -203,23 +207,20 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton boton-info" data-id="{{ $cat->id }}">
-                                        <span class="boton-text">Ver</span>
-                                        <span class="boton-icon"><i class="ri-eye-2-fill"></i></span>
+                                    <button class="boton-sm boton-info" data-id="{{ $cat->id }}">
+                                        <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
                                     <a href="{{ route('admin.categories.edit', $cat) }}"
-                                        class="boton boton-warning">
-                                        <span class="boton-icon"><i class="ri-quill-pen-fill"></i></span>
-                                        <span class="boton-text">Editar</span>
+                                        class="boton-sm boton-warning">
+                                        <span class="boton-sm-icon"><i class="ri-quill-pen-fill"></i></span>
                                     </a>
                                     <form action="{{ route('admin.categories.destroy', $cat) }}"
                                         method="POST" class="delete-form"
                                         data-entity="categoría">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="boton boton-danger">
-                                            <span class="boton-text">Borrar</span>
-                                            <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                        <button type="submit" class="boton-sm boton-danger">
+                                            <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                         </button>
                                     </form>
 
