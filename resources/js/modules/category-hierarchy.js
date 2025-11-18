@@ -125,7 +125,7 @@ class CategoryHierarchyManager {
                     <i class="ri-arrow-down-s-line"></i>
                 </div>
             ` : '<div style="width: 20px;"></div>'}
-            <div class="category-checkbox"></div>
+            <input type="checkbox" class="category-checkbox">
             <div class="category-icon">
                 <i class="ri-folder-line"></i>
             </div>
@@ -236,10 +236,10 @@ class CategoryHierarchyManager {
         
         if (this.selectedNodes.has(categoryId)) {
             this.selectedNodes.delete(categoryId);
-            checkbox.classList.remove('checked');
+            checkbox.checked = false;
         } else {
             this.selectedNodes.add(categoryId);
-            checkbox.classList.add('checked');
+            checkbox.checked = true;
         }
         
         this.updateSelection();
@@ -301,8 +301,15 @@ class CategoryHierarchyManager {
         const liAttr = category.li_attr;
         
         document.getElementById('infoName').textContent = category.text.replace(/\(\d+\)/, '').trim();
-        document.getElementById('infoFamily').textContent = this.getFamilyName(liAttr['data-family-id']);
-        document.getElementById('infoParent').textContent = liAttr['data-parent-id'] ? 'Tiene padre' : 'Raíz';
+        
+        // Obtener la familia (si es subcategoría, obtener la familia del padre raíz)
+        const familyName = this.getRootFamilyName(category);
+        document.getElementById('infoFamily').textContent = familyName;
+        
+        // Mostrar nombre del padre o indicar que es raíz
+        const parentName = this.getParentName(category);
+        document.getElementById('infoParent').textContent = parentName || 'Raíz';
+        
         document.getElementById('infoLevel').textContent = category.parents ? category.parents.length - 1 : 0;
         document.getElementById('infoChildren').textContent = category.children ? category.children.length : 0;
         document.getElementById('infoProducts').textContent = liAttr['data-products-count'] || 0;
@@ -325,6 +332,62 @@ class CategoryHierarchyManager {
     getFamilyName(familyId) {
         const family = this.treeData.find(f => f.li_attr['data-id'] === familyId);
         return family ? family.text : '-';
+    }
+    
+    getRootFamilyName(category) {
+        // Si tiene family-id directo, usarlo
+        const directFamilyId = category.li_attr['data-family-id'];
+        if (directFamilyId) {
+            return this.getFamilyName(directFamilyId);
+        }
+        
+        // Si es subcategoría, buscar la familia recorriendo hacia arriba
+        const parentId = category.li_attr['data-parent-id'];
+        if (parentId) {
+            const parent = this.findCategoryInTree(parentId);
+            if (parent) {
+                return this.getRootFamilyName(parent);
+            }
+        }
+        
+        return '-';
+    }
+    
+    findCategoryInTree(categoryId) {
+        for (const family of this.treeData) {
+            const found = this.findCategoryById(family.children, categoryId);
+            if (found) return found;
+        }
+        return null;
+    }
+    
+    getParentName(category) {
+        const parentId = category.li_attr['data-parent-id'];
+        if (!parentId) return null;
+        
+        // Buscar el padre en el árbol de datos
+        for (const family of this.treeData) {
+            const found = this.findCategoryById(family.children, parentId);
+            if (found) {
+                return found.text.replace(/\(\d+\)/, '').trim();
+            }
+        }
+        return null;
+    }
+    
+    findCategoryById(categories, id) {
+        if (!categories) return null;
+        
+        for (const cat of categories) {
+            if (cat.li_attr['data-id'] === id) {
+                return cat;
+            }
+            if (cat.children && cat.children.length > 0) {
+                const found = this.findCategoryById(cat.children, id);
+                if (found) return found;
+            }
+        }
+        return null;
     }
     
     // ========================================
@@ -375,8 +438,8 @@ class CategoryHierarchyManager {
         
         document.getElementById('closeBulk')?.addEventListener('click', () => {
             this.selectedNodes.clear();
-            document.querySelectorAll('.category-checkbox.checked').forEach(cb => {
-                cb.classList.remove('checked');
+            document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
+                cb.checked = false;
             });
             this.showPanel('empty');
         });
@@ -386,15 +449,67 @@ class CategoryHierarchyManager {
     // 🔍 BÚSQUEDA EN EL ÁRBOL
     // ========================================
     searchTree(query) {
-        const items = document.querySelectorAll('.category-item, .family-card');
+        const familyCards = document.querySelectorAll('.family-card');
+        const categoryItems = document.querySelectorAll('.category-item');
         
-        items.forEach(item => {
-            const name = item.querySelector('.category-name, .family-name')?.textContent.toLowerCase();
+        if (!query) {
+            // Si no hay búsqueda, mostrar todo
+            familyCards.forEach(card => card.style.display = '');
+            categoryItems.forEach(item => item.style.display = '');
+            return;
+        }
+        
+        // Ocultar todo inicialmente
+        familyCards.forEach(card => card.style.display = 'none');
+        categoryItems.forEach(item => item.style.display = 'none');
+        
+        // Buscar en categorías
+        categoryItems.forEach(item => {
+            const name = item.querySelector('.category-name')?.textContent.toLowerCase();
             
-            if (!query || name.includes(query)) {
+            if (name && name.includes(query)) {
+                // Mostrar el item encontrado
                 item.style.display = '';
+                
+                // Expandir el item si tiene hijos
+                item.classList.remove('collapsed');
+                
+                // Mostrar y expandir todos los ancestros
+                let parent = item.parentElement;
+                while (parent) {
+                    if (parent.classList.contains('family-card')) {
+                        parent.style.display = '';
+                        parent.classList.remove('collapsed');
+                        break;
+                    }
+                    if (parent.classList.contains('category-item')) {
+                        parent.style.display = '';
+                        parent.classList.remove('collapsed');
+                    }
+                    parent = parent.parentElement;
+                }
+            }
+        });
+        
+        // Buscar en familias
+        familyCards.forEach(card => {
+            const name = card.querySelector('.family-name')?.textContent.toLowerCase();
+            
+            if (name && name.includes(query)) {
+                card.style.display = '';
+                card.classList.remove('collapsed');
+                
+                // Mostrar todas las categorías hijas de esta familia
+                const childCategories = card.querySelectorAll('.category-item');
+                childCategories.forEach(child => {
+                    child.style.display = '';
+                });
             } else {
-                item.style.display = 'none';
+                // Si la familia no coincide, verificar si tiene categorías visibles
+                const visibleChildren = card.querySelectorAll('.category-item[style=""]');
+                if (visibleChildren.length > 0) {
+                    card.style.display = '';
+                }
             }
         });
     }

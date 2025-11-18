@@ -27,7 +27,7 @@
     position: relative;
     overflow: hidden;
     user-select: none;
-    transition: background 0.3s ease, transform 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 .ripple-card .ripple {

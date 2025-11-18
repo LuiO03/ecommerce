@@ -21,7 +21,7 @@
     <div class="hierarchy-container">
         <!-- Panel de Estadísticas -->
         <div class="hierarchy-stats">
-            <div class="stat-card">
+            <div class="stat-card ripple-card">
                 <div class="stat-icon card-info">
                     <i class="ri-stack-line"></i>
                 </div>
@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card ripple-card">
                 <div class="stat-icon card-success">
                     <i class="ri-folder-line"></i>
                 </div>
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card ripple-card">
                 <div class="stat-icon card-warning">
                     <i class="ri-file-list-3-line"></i>
                 </div>
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card ripple-card">
                 <div class="stat-icon card-purple">
                     <i class="ri-shopping-bag-3-line"></i>
                 </div>
@@ -66,11 +66,9 @@
             <div class="hierarchy-tree-panel">
                 <div class="tree-controls">
                     <div class="tree-search">
-                        <i class="ri-search-line"></i>
+                        <i class="ri-search-eye-line"></i>
                         <input type="text" id="treeSearch" placeholder="Buscar categorías..." autocomplete="off">
-                        <button type="button" id="clearTreeSearch" class="search-clear">
-                            <i class="ri-close-circle-fill"></i>
-                        </button>
+                        <i class="ri-close-circle-fill" id="clearTreeSearch" class="search-clear"></i>
                     </div>
                     <div class="tree-buttons">
                         <button type="button" id="expandAll" class="boton boton-info">
@@ -94,15 +92,15 @@
             <div class="hierarchy-info-panel">
 
                 <!-- Panel vacío (cuando no hay selección) -->
-                <div id="emptyPanel" class="info-panel-empty">
+                <div id="emptyPanel" class="info-panel-empty ripple-card">
                     <i class="ri-information-line"></i>
                     <p>Selecciona una categoría para ver detalles</p>
                 </div>
 
                 <!-- Panel de información (cuando hay 1 seleccionado) -->
-                <div id="infoPanel" class="info-panel-single" style="display: none;">
+                <div id="infoPanel" class="info-panel-single ripple-card" style="display: none;">
                     <div class="panel-header">
-                        <h2 class="panel-title" id="infoName">Nombre de categoría</h2>
+                        <h3 class="panel-title" id="infoName">Nombre de categoría</h3>
                         <button type="button" id="closeInfo" class="panel-close">
                             <i class="ri-close-line"></i>
                         </button>
@@ -171,7 +169,7 @@
                 </div>
 
                 <!-- Panel de operaciones masivas (cuando hay múltiples seleccionados) -->
-                <div id="bulkPanel" class="info-panel-bulk" style="display: none;">
+                <div id="bulkPanel" class="info-panel-bulk ripple-card" style="display: none;">
                     <div class="panel-header">
                         <h3 class="panel-title">
                             <i class="ri-checkbox-multiple-line"></i>
