@@ -182,10 +182,10 @@
 
                     <div class="panel-content">
                         <div class="bulk-move-section">
-                            <h4>
+                            <label class="bulk-label">
                                 <i class="ri-arrow-left-right-line"></i>
                                 Mover Categorías
-                            </h4>
+                            </label>
 
                             <div class="bulk-move-controls">
                                 <label>Destino:</label>
@@ -206,33 +206,38 @@
                                     </optgroup>
                                 </select>
 
-                                <button type="button" id="previewMove" class="boton boton-info btn-block">
-                                    <span class="boton-icon"><i class="ri-eye-line"></i></span>
-                                    <span class="boton-text">Preview</span>
-                                </button>
+                                <div class="bulk-buttons">
+                                    <button type="button" id="previewMove" class="boton boton-info btn-block">
+                                        <span class="boton-icon"><i class="ri-eye-line"></i></span>
+                                        <span class="boton-text">Preview</span>
+                                    </button>
 
-                                <button type="button" id="executeBulkMove" class="boton boton-primary btn-block">
-                                    <span class="boton-icon"><i class="ri-arrow-right-line"></i></span>
-                                    <span class="boton-text">Mover Ahora</span>
-                                </button>
+                                    <button type="button" id="executeBulkMove"
+                                        class="boton boton-primary btn-block">
+                                        <span class="boton-icon"><i class="ri-arrow-right-line"></i></span>
+                                        <span class="boton-text">Mover Ahora</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
                         <div class="bulk-actions-section">
-                            <h4>
+                            <label class="bulk-label">
                                 <i class="ri-tools-line"></i>
                                 Operaciones Masivas
-                            </h4>
+                            </label>
 
-                            <button type="button" id="bulkDuplicate" class="boton boton-secondary btn-block">
-                                <span class="boton-icon"><i class="ri-file-copy-line"></i></span>
-                                <span class="boton-text">Duplicar Seleccionados</span>
-                            </button>
-
-                            <button type="button" id="bulkDelete" class="boton boton-danger btn-block">
-                                <span class="boton-icon"><i class="ri-delete-bin-line"></i></span>
-                                <span class="boton-text">Eliminar Seleccionados</span>
-                            </button>
+                            <div class="bulk-buttons">
+                                <button type="button" id="bulkDuplicate" class="boton-form boton-secondary btn-block">
+                                    <span class="boton-form-icon"><i class="ri-file-copy-line"></i></span>
+                                    <span class="boton-form-text">Duplicar Seleccionados</span>
+                                </button>
+    
+                                <button type="button" id="bulkDelete" class="boton-form boton-danger btn-block">
+                                    <span class="boton-form-icon"><i class="ri-delete-bin-line"></i></span>
+                                    <span class="boton-form-text">Eliminar Seleccionados</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

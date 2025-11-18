@@ -273,9 +273,8 @@ class CategoryHierarchyManager {
         
         if (count === 0) {
             this.showPanel('empty');
-        } else if (count === 1) {
-            // Ya se maneja con el clic individual
         } else {
+            // Con checkbox siempre mostrar panel de acciones masivas (1 o más)
             this.showBulkPanel(count);
         }
     }
