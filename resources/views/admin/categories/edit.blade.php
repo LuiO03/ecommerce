@@ -29,12 +29,13 @@
 
         <div class="form-info-banner">
             <i class="ri-lightbulb-line form-info-icon"></i>
-    h4 class="form-info-title"  <div>
-      h4    <strong>Guía rápida:</strong>
+            <div>
+                <h4 class="form-info-title">Guía rápida:</h4>
                 <ul>
-                    <li>Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría</li>
-                    <li>Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)</li>
                     <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios</li>
+                    <li>Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría</li>
+                    <li>Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)
+                    </li>
                 </ul>
             </div>
         </div>
@@ -56,7 +57,7 @@
                         <select name="family_id" id="family_select" class="select-form" required>
                             <option value="" disabled>Seleccione una familia</option>
                             @foreach ($families as $family)
-                                <option value="{{ $family->id }}" 
+                                <option value="{{ $family->id }}"
                                     {{ old('family_id', $category->family_id) == $family->id ? 'selected' : '' }}>
                                     {{ $family->name }}
                                 </option>
@@ -74,7 +75,8 @@
                     </label>
 
                     {{-- Hidden input solo para parent_id --}}
-                    <input type="hidden" name="parent_id" id="parent_id" value="{{ old('parent_id', $category->parent_id) }}">
+                    <input type="hidden" name="parent_id" id="parent_id"
+                        value="{{ old('parent_id', $category->parent_id) }}">
 
                     {{-- Contenedor dinámico de selects --}}
                     <div id="categoryHierarchySelects" style="display: none;">
@@ -110,6 +112,27 @@
                     </div>
                 </div>
 
+
+
+                {{-- DESCRIPTION --}}
+                <div class="input-group">
+                    <label for="description" class="label-form label-textarea">
+                        Descripción
+                    </label>
+
+                    <div class="input-icon-container">
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4">{{ old('description', $category->description) }}</textarea>
+
+                        <i class="ri-file-text-line input-icon"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ============================
+                 COLUMNA DERECHA
+            ============================= -->
+            <div class="form-column">
                 {{-- STATUS --}}
                 <div class="input-group">
                     <label for="status" class="label-form">
@@ -135,27 +158,6 @@
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
                 </div>
-
-                {{-- DESCRIPTION --}}
-                <div class="input-group">
-                    <label for="description" class="label-form label-textarea">
-                        Descripción
-                    </label>
-
-                    <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4">{{ old('description', $category->description) }}</textarea>
-
-                        <i class="ri-file-text-line input-icon"></i>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ============================
-                 COLUMNA DERECHA
-            ============================= -->
-            <div class="form-column">
-
                 {{-- IMAGE UPLOAD --}}
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la categoría</label>
@@ -217,24 +219,184 @@
                 </div>
 
             </div>
+            {{-- SUBCATEGORÍAS --}}
+            <div class="form-column">
+                @if (count($subcategories) > 0)
+                    <div class="input-group">
+                        <label class="label-form">
+                            Subcategorías
+                            <span class="label-hint">({{ count($subcategories) }} total)</span>
+                        </label>
+
+                        <div class="subcategories-table-container">
+                            <table class="subcategories-table" id="table">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th class="text-center">Estado</th>
+                                        <th class="text-center">Productos</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($subcategories as $subcat)
+                                        <tr>
+                                            <td>
+                                                {{ $subcat['id'] }}
+                                            </td>
+                                            <td>
+                                                <div class="subcategory-name">
+                                                    <span class="level-indent"
+                                                        style="margin-left: {{ $subcat['level'] * 1.5 }}rem;">
+                                                        @for ($i = 0; $i < $subcat['level']; $i++)
+                                                            @if ($i == $subcat['level'] - 1)
+                                                                <i class="ri-corner-down-right-line"></i>
+                                                            @endif
+                                                        @endfor
+                                                    </span>
+                                                    <i class="ri-folder-line folder-icon"></i>
+                                                    <span class="name-text">{{ $subcat['name'] }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{ $subcat['description'] }}
+                                            </td>
+                                            <td class="text-center">
+                                                @if ($subcat['status'])
+                                                    <span class="badge boton-success">
+                                                        <i class="ri-checkbox-circle-fill"></i>
+                                                        Activo
+                                                    </span>
+                                                @else
+                                                    <span class="badge boton-danger">
+                                                        <i class="ri-close-circle-fill"></i>
+                                                        Inactivo
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge badge-gray">
+                                                    <i class="ri-archive-line"></i>
+                                                    {{ $subcat['products_count'] }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="tabla-botones">
+                                                    <button class="boton-sm boton-info">
+                                                        <span class="boton-sm-icon"><i
+                                                                class="ri-eye-2-fill"></i></span>
+                                                    </button>
+                                                    <a href="{{ route('admin.categories.edit', $subcat['slug']) }}"
+                                                        class="boton-sm boton-warning">
+                                                        <span class="boton-sm-icon"><i
+                                                                class="ri-quill-pen-fill"></i></span>
+                                                    </a>
+                                                    <form
+                                                        action="{{ route('admin.categories.destroy', $subcat['slug']) }}"
+                                                        method="POST" class="delete-form" data-entity="categoría">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="boton-sm boton-danger">
+                                                            <span class="boton-sm-icon"><i
+                                                                    class="ri-delete-bin-2-fill"></i></span>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subcategories-warning">
+                            <i class="ri-information-line"></i>
+                            <div class="subcategories-warning-text">
+                                <h4 class="form-info-title">Importante:</h4>
+                                <p>
+                                    Esta categoría tiene <strong>{{ count($subcategories) }} subcategoría(s)</strong>.
+                                    Si cambias su familia o ubicación, todas sus subcategorías se verán afectadas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
+
+        @push('scripts')
+        <script>
+            $(document).ready(function() {
+                // ========================================
+                // 📊 INICIALIZACIÓN CON DATATABLEMANAGER
+                // ========================================
+                const tableManager = new DataTableManager('#tabla', {
+                    moduleName: 'categories',
+                    entityNameSingular: 'categoría',
+                    entityNamePlural: 'categorías',
+                    deleteRoute: '/admin/categories',
+                    statusRoute: '/admin/categories/{id}/status',
+                    exportRoutes: {
+                        excel: '/admin/categories/export/excel',
+                        csv: '/admin/categories/export/csv',
+                        pdf: '/admin/categories/export/pdf'
+                    },
+                    csrfToken: '{{ csrf_token() }}',
+                    
+                    // Configuración de DataTable
+                    pageLength: 10,
+                    lengthMenu: [5, 10, 25, 50],
+                    
+                    // Características (todas activadas por defecto)
+                    features: {
+                        selection: true,
+                        export: true,
+                        filters: true,
+                        statusToggle: true,
+                        responsive: true,
+                        customPagination: true
+                    },
+                    
+                    // Callbacks personalizados (opcional)
+                    callbacks: {
+                        onDraw: () => {
+                            console.log('🔄 Tabla redibujada');
+                        },
+                        onStatusChange: (id, status, response) => {
+                            console.log(`✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
+                        },
+                        onDelete: () => {
+                            console.log('🗑️ Registros eliminados');
+                        },
+                        onExport: (type, format, count) => {
+                            console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
+                        }
+                    }
+                });
+            });
+        </script>
+    @endpush
 
         <script>
             // SISTEMA DE JERARQUÍA DE CATEGORÍAS PROGRESIVA
             document.addEventListener('DOMContentLoaded', function() {
                 // Inicializar jerarquía de categorías
                 const hierarchyManager = initCategoryHierarchy({
-                    categoriesData: {!! json_encode($parents->map(function($cat) {
-                        return [
-                            'id' => $cat->id,
-                            'name' => $cat->name,
-                            'family_id' => $cat->family_id,
-                            'parent_id' => $cat->parent_id,
-                        ];
-                    })) !!},
+                    categoriesData: {!! json_encode(
+                        $parents->map(function ($cat) {
+                            return [
+                                'id' => $cat->id,
+                                'name' => $cat->name,
+                                'family_id' => $cat->family_id,
+                                'parent_id' => $cat->parent_id,
+                            ];
+                        }),
+                    ) !!},
                     currentCategoryId: {{ $category->id }},
-                    initialFamilyId: parseInt('{{ old("family_id", $category->family_id) }}'),
-                    initialParentId: parseInt('{{ old("parent_id", $category->parent_id ?? 0) }}') || null
+                    initialFamilyId: parseInt('{{ old('family_id', $category->family_id) }}'),
+                    initialParentId: parseInt('{{ old('parent_id', $category->parent_id ?? 0) }}') || null
                 });
 
                 // MANEJO DE IMAGEN Y SUBMIT LOADER
@@ -267,6 +429,6 @@
             </button>
         </div>
 
-        
+
     </form>
 </x-admin-layout>

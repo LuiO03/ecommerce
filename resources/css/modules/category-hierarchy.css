@@ -482,7 +482,7 @@
    📋 PANEL DE INFORMACIÓN
    ======================================== */
 .hierarchy-info-panel {
-    background: var(--color-card-bg);
+    background: var(--color-sidebar-bg);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     display: flex;
@@ -598,7 +598,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.85rem;
     background: var(--color-hover);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);

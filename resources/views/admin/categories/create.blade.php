@@ -20,9 +20,9 @@
             <div>
                 <h4 class="form-info-title">Guía rápida:</h4>
                 <ul>
+                    <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios</li>
                     <li>Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría</li>
                     <li>Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)</li>
-                    <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios</li>
                 </ul>
             </div>
         </div>

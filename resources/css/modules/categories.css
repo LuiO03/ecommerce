@@ -1,0 +1,92 @@
+/* ==========================================
+   TABLA DE SUBCATEGORÍAS
+   ========================================== */
+
+.subcategories-table-container {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.subcategories-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.subcategories-table thead tr {
+    background:transparent;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.subcategories-table th {
+    padding: 0.6rem;
+    text-align: left;
+    font-size: var(--font-size-p);
+    font-weight: bolder;
+    letter-spacing: 0.5px;
+    font-family: var(--font-secondary);
+    border: 1px solid var(--color-cell-border);
+}
+
+.subcategories-table tbody tr {
+    border-bottom: 1px solid var(--color-cell-border);
+    font-size: var(--font-size-sm);
+}
+
+.subcategories-table tbody tr:nth-child(odd) {
+    background: var(--color-table-stripet-bg);
+}
+
+.subcategories-table tbody tr:hover {
+    background: var(--color-hover);
+}
+
+.subcategories-table td {
+    padding: 0.75rem;
+    border: 1px solid var(--color-cell-border);
+}
+
+.subcategories-table td.text-center {
+    text-align: center;
+}
+
+.subcategory-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subcategory-name .level-indent {
+    color: var(--color-muted);
+}
+
+.subcategory-name .folder-icon {
+    color: var(--color-warning);
+}
+
+.subcategory-name .name-text {
+    font-weight: 500;
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+}
+
+.subcategories-warning {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--color-warning-pastel);
+    font-size: var(--font-size-p);
+}
+
+.subcategories-warning i{
+    font-size: var(--font-size-h3);
+    color: var(--color-warning);
+}
+
+.subcategories-warning-text p{
+color: var(--color-text-soft);
+}

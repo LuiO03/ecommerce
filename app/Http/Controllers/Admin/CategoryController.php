@@ -188,7 +188,41 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.categories.edit', compact('category', 'families', 'parents'));
+        // Obtener subcategorías de la categoría actual (recursivo)
+        $subcategories = $this->getSubcategoriesFlat($category->id);
+
+        return view('admin.categories.edit', compact('category', 'families', 'parents', 'subcategories'));
+    }
+
+    /**
+     * Obtiene todas las subcategorías de una categoría de forma plana con nivel
+     */
+    private function getSubcategoriesFlat($categoryId, $level = 0)
+    {
+        $subcategories = [];
+        
+        $children = Category::where('parent_id', $categoryId)
+            ->with('products')
+            ->orderBy('name')
+            ->get();
+
+        foreach ($children as $child) {
+            $subcategories[] = [
+                'id' => $child->id,
+                'name' => $child->name,
+                'description' => $child->description,
+                'slug' => $child->slug,
+                'status' => $child->status,
+                'level' => $level,
+                'products_count' => $child->products->count(),
+            ];
+
+            // Recursivamente obtener hijos
+            $grandchildren = $this->getSubcategoriesFlat($child->id, $level + 1);
+            $subcategories = array_merge($subcategories, $grandchildren);
+        }
+
+        return $subcategories;
     }
 
     /* ======================================================

@@ -32,7 +32,7 @@
     gap: 0px;
 }
 
-.form-info-banner .form-info-title {
+.form-info-title {
     font-family: var(--font-secondary);
     font-weight: bolder;
 }

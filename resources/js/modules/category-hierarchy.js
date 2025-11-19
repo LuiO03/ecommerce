@@ -133,7 +133,7 @@ class CategoryHierarchyManager {
                 <div class="category-name">${category.text.replace(/\(\d+\)/, '').trim()}</div>
                 <div class="category-meta">
                     <span class="category-badge">
-                        <i class="ri-shopping-bag-3-line"></i>
+                        <i class="ri-archive-line"></i>
                         ${productsCount}
                     </span>
                     <div class="category-status ${isActive ? '' : 'inactive'}"></div>
@@ -312,8 +312,8 @@ class CategoryHierarchyManager {
         document.getElementById('infoChildren').textContent = category.children ? category.children.length : 0;
         document.getElementById('infoProducts').textContent = liAttr['data-products-count'] || 0;
         document.getElementById('infoStatus').innerHTML = liAttr['data-status'] === '1' 
-            ? '<span class="badge badge-success">Activo</span>' 
-            : '<span class="badge badge-danger">Inactivo</span>';
+            ? '<span class="badge boton-success">Activo</span>' 
+            : '<span class="badge boton-danger">Inactivo</span>';
         document.getElementById('infoSlug').textContent = liAttr['data-slug'] || '-';
         
         const editUrl = this.config.editCategoryUrl.replace(':id', liAttr['data-id']);

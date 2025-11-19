@@ -40,7 +40,7 @@
 
     /* === Tablas === */
     --color-table-header-bg: #ffffff;
-    --color-table-stripet-bg: #eeeeee;
+    --color-table-stripet-bg: #f9f9f9;
 
     /* === Scrollbar === */
     --scrollbar-track: #ffffff;
@@ -791,7 +791,7 @@
     justify-content: center;
     gap: 6px;
     width: fit-content;
-    padding: 5px 14px;
+    padding: 4px 14px;
     border-radius: 50px;
     font-size: 11.5px !important;
     letter-spacing: 0.3px;
