@@ -266,5 +266,7 @@
                 <span class="boton-form-text">Actualizar Categoría</span>
             </button>
         </div>
+
+        
     </form>
 </x-admin-layout>
