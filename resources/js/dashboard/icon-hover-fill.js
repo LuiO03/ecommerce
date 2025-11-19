@@ -9,6 +9,11 @@ document
 
         const parent = icon.closest("a, button");
 
+        // Si el padre tiene la clase 'active', aplicar el icono -fill permanentemente
+        if (parent?.classList.contains('active')) {
+            icon.classList.replace(original, filled);
+        }
+
         parent?.addEventListener("mouseenter", () => {
             if (icon.classList.contains(original)) {
                 icon.classList.replace(original, filled);
@@ -16,7 +21,8 @@ document
         });
 
         parent?.addEventListener("mouseleave", () => {
-            if (icon.classList.contains(filled)) {
+            // No revertir a -line si el elemento está activo
+            if (!parent?.classList.contains('active') && icon.classList.contains(filled)) {
                 icon.classList.replace(filled, original);
             }
         });

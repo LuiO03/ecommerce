@@ -309,7 +309,6 @@ class CategoryHierarchyManager {
         const parentName = this.getParentName(category);
         document.getElementById('infoParent').textContent = parentName || 'Raíz';
         
-        document.getElementById('infoLevel').textContent = category.parents ? category.parents.length - 1 : 0;
         document.getElementById('infoChildren').textContent = category.children ? category.children.length : 0;
         document.getElementById('infoProducts').textContent = liAttr['data-products-count'] || 0;
         document.getElementById('infoStatus').innerHTML = liAttr['data-status'] === '1' 
@@ -534,6 +533,11 @@ class CategoryHierarchyManager {
     // 📦 OPERACIONES MASIVAS
     // ========================================
     initBulkOperations() {
+        // Listener para cambio de familia (cargar categorías)
+        document.getElementById('bulkFamilyTarget')?.addEventListener('change', (e) => {
+            this.loadCategoriesForFamily(e.target.value);
+        });
+        
         // Preview de movimiento
         document.getElementById('previewMove')?.addEventListener('click', () => {
             this.previewBulkMove();
@@ -555,19 +559,80 @@ class CategoryHierarchyManager {
         });
     }
     
+    loadCategoriesForFamily(familyValue) {
+        const categorySelect = document.getElementById('bulkCategoryTarget');
+        
+        if (!familyValue || familyValue === 'root') {
+            categorySelect.disabled = true;
+            categorySelect.innerHTML = '<option value="">Sin categoría padre (raíz de familia)</option>';
+            return;
+        }
+        
+        // Extraer el ID de la familia
+        const familyId = familyValue.replace('family_', '');
+        
+        // Buscar la familia en los datos del árbol
+        const family = this.treeData.find(f => f.li_attr['data-id'] === familyId);
+        
+        if (!family || !family.children || family.children.length === 0) {
+            categorySelect.disabled = true;
+            categorySelect.innerHTML = '<option value="">Esta familia no tiene categorías</option>';
+            return;
+        }
+        
+        // Habilitar y llenar el select de categorías
+        categorySelect.disabled = false;
+        categorySelect.innerHTML = '<option value="">Sin categoría padre (raíz de familia)</option>';
+        
+        // Agregar categorías recursivamente
+        this.addCategoriesToSelect(family.children, categorySelect, 0);
+    }
+    
+    addCategoriesToSelect(categories, selectElement, level) {
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            const indent = '\u00a0\u00a0'.repeat(level); // Espacios para indentación
+            const categoryName = category.text.replace(/\(\d+\)/, '').trim();
+            
+            option.value = `category_${category.li_attr['data-id']}`;
+            option.textContent = `${indent}${level > 0 ? '\u2514 ' : ''}${categoryName}`;
+            
+            selectElement.appendChild(option);
+            
+            // Agregar subcategorías recursivamente
+            if (category.children && category.children.length > 0) {
+                this.addCategoriesToSelect(category.children, selectElement, level + 1);
+            }
+        });
+    }
+    
     async previewBulkMove() {
-        const target = document.getElementById('bulkMoveTarget').value;
-        if (!target) {
-            alert('Selecciona un destino');
+        const familyTarget = document.getElementById('bulkFamilyTarget').value;
+        const categoryTarget = document.getElementById('bulkCategoryTarget').value;
+        
+        if (!familyTarget) {
+            alert('⚠️ Selecciona una familia destino');
             return;
         }
         
         console.log('👁️ Preview movimiento masivo');
+        console.log('Familia:', familyTarget);
+        console.log('Categoría padre:', categoryTarget || 'Raíz de familia');
         // Mostrar modal de preview
     }
     
     async executeBulkMove() {
+        const familyTarget = document.getElementById('bulkFamilyTarget').value;
+        const categoryTarget = document.getElementById('bulkCategoryTarget').value;
+        
+        if (!familyTarget) {
+            alert('⚠️ Selecciona una familia destino');
+            return;
+        }
+        
         console.log('➡️ Ejecutar movimiento masivo');
+        console.log('Familia:', familyTarget);
+        console.log('Categoría padre:', categoryTarget || 'Raíz de familia');
     }
     
     async bulkDuplicate() {

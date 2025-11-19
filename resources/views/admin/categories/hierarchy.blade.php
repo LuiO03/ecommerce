@@ -122,13 +122,6 @@
 
                         <div class="info-row">
                             <span class="info-label">
-                                <i class="ri-list-ordered"></i> Nivel:
-                            </span>
-                            <span id="infoLevel">-</span>
-                        </div>
-
-                        <div class="info-row">
-                            <span class="info-label">
                                 <i class="ri-file-list-3-line"></i> Subcategorías:
                             </span>
                             <span id="infoChildren">0</span>
@@ -188,23 +181,25 @@
                             </label>
 
                             <div class="bulk-move-controls">
-                                <label>Destino:</label>
-                                <select id="bulkMoveTarget" class="form-select">
-                                    <option value="">Seleccionar destino...</option>
-                                    <optgroup label="Convertir a Raíz">
-                                        <option value="root">📍 Categoría Raíz (sin padre)</option>
-                                    </optgroup>
-                                    <optgroup label="Familias">
+                                <div class="select-group">
+                                    <label>Familia destino:</label>
+                                    <select id="bulkFamilyTarget" class="form-select">
+                                        <option value="">Seleccionar familia...</option>
+                                        <option value="root">Sin familia (Raíz)</option>
                                         @foreach ($families as $family)
                                             <option value="family_{{ $family->id }}">
-                                                📁 {{ $family->name }}
+                                                {{ $family->name }}
                                             </option>
                                         @endforeach
-                                    </optgroup>
-                                    <optgroup label="Categorías" id="categoryTargetGroup">
-                                        <!-- Se llenará dinámicamente -->
-                                    </optgroup>
-                                </select>
+                                    </select>
+                                </div>
+
+                                <div class="select-group">
+                                    <label>Categoría padre (opcional):</label>
+                                    <select id="bulkCategoryTarget" class="form-select" disabled>
+                                        <option value="">Primero selecciona una familia</option>
+                                    </select>
+                                </div>
 
                                 <div class="bulk-buttons">
                                     <button type="button" id="previewMove" class="boton boton-info btn-block">

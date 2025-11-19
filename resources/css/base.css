@@ -452,7 +452,6 @@
     }
     strong {
         font-size: inherit;
-        font-family: var(--font-secondary);
         color: var(--color-text);
     }
 }
@@ -793,10 +792,8 @@
     gap: 6px;
     width: fit-content;
     padding: 5px 14px;
-    border-radius: 6px;
+    border-radius: 50px;
     font-size: 11.5px !important;
-    font-family: var(--font-secondary);
-    font-weight: 600;
     letter-spacing: 0.3px;
     white-space: nowrap;
     border: 1.5px solid transparent;
@@ -806,7 +803,7 @@
 }
 
 .badge i {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1;
 }
 

@@ -12,13 +12,9 @@
         </a>
     </x-slot>
 
-    <form action="{{ route('admin.categories.store') }}" 
-          method="POST" 
-          enctype="multipart/form-data" 
-          class="form-container"
-          autocomplete="off" 
-          id="categoryForm">
-          
+    <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data"
+        class="form-container" autocomplete="off" id="categoryForm">
+
         @csrf
 
         <small class="form-aviso">
@@ -31,51 +27,51 @@
                  COLUMNA IZQUIERDA
             ============================= -->
             <div class="form-column">
+                <div class="form-inside-row">
+                    {{-- FAMILY --}}
+                    <div class="input-group">
+                        <label for="family_id" class="label-form">
+                            Familia
+                            <i class="ri-asterisk text-accent"></i>
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-stack-line input-icon"></i>
 
-                {{-- FAMILY --}}
-                <div class="input-group">
-                    <label for="family_id" class="label-form">
-                        Familia
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-stack-line input-icon"></i>
+                            <select name="family_id" id="family_id" class="select-form" required>
+                                <option value="" disabled selected>Seleccione una familia</option>
 
-                        <select name="family_id" id="family_id" class="select-form" required>
-                            <option value="" disabled selected>Seleccione una familia</option>
+                                @foreach ($families as $family)
+                                    <option value="{{ $family->id }}"
+                                        {{ old('family_id') == $family->id ? 'selected' : '' }}>
+                                        {{ $family->name }}
+                                    </option>
+                                @endforeach
+                            </select>
 
-                            @foreach ($families as $family)
-                                <option value="{{ $family->id }}" 
-                                    {{ old('family_id') == $family->id ? 'selected' : '' }}>
-                                    {{ $family->name }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
                     </div>
-                </div>
+                    {{-- PARENT --}}
+                    <div class="input-group">
+                        <label for="parent_id" class="label-form">
+                            Categoría padre
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-git-branch-line input-icon"></i>
 
-                {{-- PARENT --}}
-                <div class="input-group">
-                    <label for="parent_id" class="label-form">
-                        Categoría padre
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-git-branch-line input-icon"></i>
+                            <select name="parent_id" id="parent_id" class="select-form">
+                                <option value="" selected>Sin categoría padre</option>
 
-                        <select name="parent_id" id="parent_id" class="select-form">
-                            <option value="" selected>Sin categoría padre</option>
+                                @foreach ($parents as $parent)
+                                    <option value="{{ $parent->id }}"
+                                        {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
+                                        {{ $parent->name }}
+                                    </option>
+                                @endforeach
+                            </select>
 
-                            @foreach ($parents as $parent)
-                                <option value="{{ $parent->id }}" 
-                                    {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
-                                    {{ $parent->name }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
                     </div>
                 </div>
 
@@ -89,13 +85,8 @@
                     <div class="input-icon-container">
                         <i class="ri-price-tag-3-line input-icon"></i>
 
-                        <input type="text" 
-                               name="name" 
-                               id="name" 
-                               class="input-form" 
-                               required
-                               value="{{ old('name') }}"
-                               placeholder="Ingrese el nombre">
+                        <input type="text" name="name" id="name" class="input-form" required
+                            value="{{ old('name') }}" placeholder="Ingrese el nombre">
                     </div>
                 </div>
 
@@ -132,11 +123,7 @@
                     </label>
 
                     <div class="input-icon-container">
-                        <textarea name="description" 
-                                  id="description" 
-                                  class="textarea-form" 
-                                  placeholder="Ingrese la descripción"
-                                  rows="4">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4">{{ old('description') }}</textarea>
 
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
@@ -153,11 +140,7 @@
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la categoría</label>
 
-                    <input type="file" 
-                           name="image" 
-                           id="image" 
-                           class="file-input"
-                           accept="image/*">
+                    <input type="file" name="image" id="image" class="file-input" accept="image/*">
 
                     <!-- Zona de vista previa -->
                     <div class="image-preview-zone" id="imagePreviewZone">
@@ -167,7 +150,8 @@
                             <span>o haz clic para seleccionar</span>
                         </div>
 
-                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
+                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
+                            alt="Vista previa">
 
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
                             <button type="button" class="overlay-btn" id="changeImageBtn">
@@ -216,7 +200,7 @@
                         imagePlaceholder.style.display = 'none';
                         imageOverlay.style.display = 'flex';
                         imagePreviewZone.classList.add('has-image');
-                        
+
                         // Mostrar nombre de archivo original
                         filenameText.textContent = file.name;
                         imageFilename.style.display = 'flex';
@@ -268,7 +252,7 @@
             imagePreviewZone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 imagePreviewZone.classList.remove('drag-over');
-                
+
                 const files = e.dataTransfer.files;
                 if (files.length > 0 && files[0].type.startsWith('image/')) {
                     imageInput.files = files;
@@ -288,12 +272,12 @@
                 const submitBtn = document.getElementById('submitBtn');
                 const btnIcon = submitBtn.querySelector('.boton-form-icon i');
                 const btnText = submitBtn.querySelector('.boton-form-text');
-                
+
                 // Deshabilitar botón
                 submitBtn.disabled = true;
                 submitBtn.style.opacity = '0.7';
                 submitBtn.style.cursor = 'not-allowed';
-                
+
                 // Cambiar icono a loading
                 btnIcon.className = 'ri-loader-4-line';
                 btnIcon.style.animation = 'spin 1s linear infinite';

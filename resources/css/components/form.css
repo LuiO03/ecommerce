@@ -11,6 +11,17 @@
 }
 
 /* === Grupo contenedor === */
+.form-inside-row{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.form-inside-row .input-group{
+    flex: 1;
+    width: 100%;
+}
+
 .input-group {
     display: flex;
     flex-direction: column;

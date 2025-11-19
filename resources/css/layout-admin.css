@@ -190,6 +190,7 @@
 .sidebar-link.active .sidebar-icon {
     color: var(--color-normal) !important;
 }
+
 .sidebar-sublink.active, .sidebar-sublink.active:hover {
     background-color: var(--color-dark-inverse);
     font-weight: bold;
@@ -664,11 +665,13 @@
         background-color: var(--color-sidebar-bg);
         padding: 6px 10px;
         border-radius: 0.5rem;
-        font-size: 0.85rem;
+        font-size: var(--font-size-xs);
         white-space: nowrap;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
         z-index: 70;
         opacity: 0;
+        font-family: var(--font-secondary);
+        font-weight: bold;
         pointer-events: none;
         transform: translateY(-50%) scale(0.95);
         transition: opacity 0.2s ease, transform 0.2s ease;

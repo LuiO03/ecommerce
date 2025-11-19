@@ -83,18 +83,10 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.categories.hierarchy') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.categories.hierarchy') ? 'active' : '' }}"
-                    data-tooltip="Gestor Jerárquico">
-                    <i aria-busy=""class="ri-node-tree sidebar-icon"></i>
-                    <span>Gestor Jerárquico</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('admin.families.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.families.*') ? 'active' : '' }}"
                     data-tooltip="Familias">
-                    <i class="ri-group-line sidebar-icon"></i>
+                    <i class="ri-apps-line sidebar-icon"></i>
                     <span>Familias</span>
                 </a>
             </li>
@@ -130,17 +122,24 @@
 
                 <ul id="dropdown-gestion" class="sidebar-submenu space-y-1">
                     <li>
+                        <a href="{{ route('admin.categories.hierarchy') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.categories.hierarchy') ? 'active' : '' }}"
+                            data-tooltip="Gestor Jerárquico">
+                            <i aria-busy=""class="ri-node-tree sidebar-icon"></i>
+                            <span>Gestor Jerárquico</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.categories.index') }}"
-                            class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}"
                             data-tooltip="Categorías">
-                            <i aria-busy=""class="ri-apps-line sidebar-icon"></i>
+                            <i aria-busy=""class="ri-price-tag-3-line sidebar-icon"></i>
                             <span>Categorías</span>
                         </a>
                     </li>
-
                     <li>
                         <a href="#" class="sidebar-sublink" data-tooltip="Marcas">
-                            <i class="ri-price-tag-3-line sidebar-icon"></i>
+                            <i class="ri-award-line sidebar-icon"></i>
                             <span>Marcas</span>
                         </a>
                     </li>

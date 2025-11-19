@@ -1,7 +1,7 @@
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
         <div class="page-icon card-success">
-            <i class="ri-stack-line"></i>
+            <i class="ri-price-tag-3-line"></i>
         </div>
         Lista de Categorías
     </x-slot>
@@ -42,10 +42,8 @@
     </x-slot>
 
     <div class="actions-container">
-
         <!-- Controles -->
         <div class="tabla-controles">
-
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar categorías por nombre" autocomplete="off" />

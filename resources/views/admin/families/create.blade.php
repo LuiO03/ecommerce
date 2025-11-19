@@ -51,7 +51,8 @@
                 <div class="input-group">
                     <label for="description" class="label-form label-textarea">Descripción de la familia</label>
                     <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4" required>{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                            required>{{ old('description') }}</textarea>
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
                 </div>
@@ -62,7 +63,7 @@
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la familia</label>
                     <input type="file" name="image" id="image" class="file-input" accept="image/*">
-                    
+
                     <!-- Zona de vista previa -->
                     <div class="image-preview-zone" id="imagePreviewZone">
                         <div class="image-placeholder" id="imagePlaceholder">
@@ -70,13 +71,15 @@
                             <p>Arrastra una imagen aquí</p>
                             <span>o haz clic para seleccionar</span>
                         </div>
-                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
+                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
+                            alt="Vista previa">
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
                             <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
                                 <i class="ri-upload-2-line"></i>
                                 <span>Cambiar</span>
                             </button>
-                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn" title="Eliminar imagen">
+                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                                title="Eliminar imagen">
                                 <i class="ri-delete-bin-line"></i>
                                 <span>Eliminar</span>
                             </button>
@@ -91,112 +94,7 @@
             </div>
         </div>
 
-        <script>
-            // === MANEJO DE IMAGEN ===
-            const imageInput = document.getElementById('image');
-            const imagePreviewZone = document.getElementById('imagePreviewZone');
-            const imagePlaceholder = document.getElementById('imagePlaceholder');
-            const imagePreview = document.getElementById('imagePreview');
-            const imageOverlay = document.getElementById('imageOverlay');
-            const changeImageBtn = document.getElementById('changeImageBtn');
-            const removeImageBtn = document.getElementById('removeImageBtn');
-            const imageFilename = document.getElementById('imageFilename');
-            const filenameText = document.getElementById('filenameText');
 
-            // Función para mostrar vista previa
-            function showImagePreview(file) {
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                        imagePlaceholder.style.display = 'none';
-                        imageOverlay.style.display = 'flex';
-                        imagePreviewZone.classList.add('has-image');
-                        
-                        // Mostrar nombre de archivo original
-                        filenameText.textContent = file.name;
-                        imageFilename.style.display = 'flex';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-
-            // Función para limpiar vista previa
-            function clearImagePreview() {
-                imagePreview.src = '';
-                imagePreview.style.display = 'none';
-                imagePlaceholder.style.display = 'flex';
-                imageOverlay.style.display = 'none';
-                imagePreviewZone.classList.remove('has-image');
-                imageInput.value = '';
-                imageFilename.style.display = 'none';
-                filenameText.textContent = '';
-            }
-
-            // Botones del overlay
-            changeImageBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                imageInput.click();
-            });
-
-            removeImageBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                clearImagePreview();
-            });
-
-            // Cambio de archivo
-            imageInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    showImagePreview(this.files[0]);
-                }
-            });
-
-            // Drag and drop
-            imagePreviewZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                imagePreviewZone.classList.add('drag-over');
-            });
-
-            imagePreviewZone.addEventListener('dragleave', () => {
-                imagePreviewZone.classList.remove('drag-over');
-            });
-
-            imagePreviewZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                imagePreviewZone.classList.remove('drag-over');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0 && files[0].type.startsWith('image/')) {
-                    imageInput.files = files;
-                    showImagePreview(files[0]);
-                }
-            });
-
-            // Click en zona vacía para subir
-            imagePreviewZone.addEventListener('click', () => {
-                if (!imagePreviewZone.classList.contains('has-image')) {
-                    imageInput.click();
-                }
-            });
-
-            // Animación de loading en el botón submit
-            document.getElementById('familyForm').addEventListener('submit', function() {
-                const submitBtn = document.getElementById('submitBtn');
-                const btnIcon = submitBtn.querySelector('.boton-form-icon i');
-                const btnText = submitBtn.querySelector('.boton-form-text');
-                
-                // Deshabilitar botón
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = '0.7';
-                submitBtn.style.cursor = 'not-allowed';
-                
-                // Cambiar icono a loading
-                btnIcon.className = 'ri-loader-4-line';
-                btnIcon.style.animation = 'spin 1s linear infinite';
-                btnText.textContent = 'Guardando...';
-            });
-        </script>
 
         <div class="form-footer">
             <a href="{{ route('admin.families.index') }}" class="boton-form boton-volver">
@@ -215,4 +113,110 @@
             </button>
         </div>
     </form>
+    <script>
+        // === MANEJO DE IMAGEN ===
+        const imageInput = document.getElementById('image');
+        const imagePreviewZone = document.getElementById('imagePreviewZone');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+        const imagePreview = document.getElementById('imagePreview');
+        const imageOverlay = document.getElementById('imageOverlay');
+        const changeImageBtn = document.getElementById('changeImageBtn');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const imageFilename = document.getElementById('imageFilename');
+        const filenameText = document.getElementById('filenameText');
+
+        // Función para mostrar vista previa
+        function showImagePreview(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    imagePlaceholder.style.display = 'none';
+                    imageOverlay.style.display = 'flex';
+                    imagePreviewZone.classList.add('has-image');
+
+                    // Mostrar nombre de archivo original
+                    filenameText.textContent = file.name;
+                    imageFilename.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Función para limpiar vista previa
+        function clearImagePreview() {
+            imagePreview.src = '';
+            imagePreview.style.display = 'none';
+            imagePlaceholder.style.display = 'flex';
+            imageOverlay.style.display = 'none';
+            imagePreviewZone.classList.remove('has-image');
+            imageInput.value = '';
+            imageFilename.style.display = 'none';
+            filenameText.textContent = '';
+        }
+
+        // Botones del overlay
+        changeImageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            imageInput.click();
+        });
+
+        removeImageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            clearImagePreview();
+        });
+
+        // Cambio de archivo
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                showImagePreview(this.files[0]);
+            }
+        });
+
+        // Drag and drop
+        imagePreviewZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imagePreviewZone.classList.add('drag-over');
+        });
+
+        imagePreviewZone.addEventListener('dragleave', () => {
+            imagePreviewZone.classList.remove('drag-over');
+        });
+
+        imagePreviewZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imagePreviewZone.classList.remove('drag-over');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                imageInput.files = files;
+                showImagePreview(files[0]);
+            }
+        });
+
+        // Click en zona vacía para subir
+        imagePreviewZone.addEventListener('click', () => {
+            if (!imagePreviewZone.classList.contains('has-image')) {
+                imageInput.click();
+            }
+        });
+
+        // Animación de loading en el botón submit
+        document.getElementById('familyForm').addEventListener('submit', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            const btnIcon = submitBtn.querySelector('.boton-form-icon i');
+            const btnText = submitBtn.querySelector('.boton-form-text');
+
+            // Deshabilitar botón
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.cursor = 'not-allowed';
+
+            // Cambiar icono a loading
+            btnIcon.className = 'ri-loader-4-line';
+            btnIcon.style.animation = 'spin 1s linear infinite';
+            btnText.textContent = 'Guardando...';
+        });
+    </script>
 </x-admin-layout>
