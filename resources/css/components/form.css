@@ -478,10 +478,11 @@
     display: flex;
     width: 100%;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .form-column {
-    flex: 1;
+    flex: 1 1 400px;
     display: flex;
     flex-direction: column;
     gap: 10px;

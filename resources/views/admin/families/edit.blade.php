@@ -159,158 +159,11 @@
         </div>
     </form>
     <script>
-        // === MANEJO DE IMAGEN ===
-        const imageInput = document.getElementById('image');
-        const imagePreviewZone = document.getElementById('imagePreviewZone');
-        const imagePlaceholder = document.getElementById('imagePlaceholder');
-        const imageError = document.getElementById('imageError');
-        const imagePreview = document.getElementById('imagePreview');
-        const imagePreviewNew = document.getElementById('imagePreviewNew');
-        const imageOverlay = document.getElementById('imageOverlay');
-        const changeImageBtn = document.getElementById('changeImageBtn');
-        const removeImageBtn = document.getElementById('removeImageBtn');
-        const imageFilename = document.getElementById('imageFilename');
-        const filenameText = document.getElementById('filenameText');
-        const removeFlag = document.getElementById('removeImageFlag');
-
-        const hasExistingImage =
-            {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'true' : 'false' }};
-
-        // Mostrar overlay si hay imagen existente
-        if (hasExistingImage) {
-            imageOverlay.style.display = 'flex';
-        }
-
-        // Función para mostrar vista previa de nueva imagen
-        function showImagePreview(file) {
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Ocultar elementos anteriores
-                    if (imagePreview) imagePreview.style.display = 'none';
-                    if (imagePlaceholder) imagePlaceholder.style.display = 'none';
-                    if (imageError) imageError.style.display = 'none';
-
-                    // Mostrar nueva imagen
-                    imagePreviewNew.src = e.target.result;
-                    imagePreviewNew.style.display = 'block';
-                    imageOverlay.style.display = 'flex';
-                    imagePreviewZone.classList.add('has-image');
-
-                    // Restaurar flag de eliminación
-                    removeFlag.value = '0';
-
-                    // Mostrar nombre de archivo original
-                    filenameText.textContent = file.name;
-                    imageFilename.style.display = 'flex';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Función para limpiar nueva imagen
-        function clearImagePreview() {
-            imagePreviewNew.src = '';
-            imagePreviewNew.style.display = 'none';
-            imageInput.value = '';
-
-            // Restaurar flag de eliminación
-            removeFlag.value = '0';
-
-            // Restaurar estado original
-            if (hasExistingImage && imagePreview) {
-                imagePreview.style.display = 'block';
-                imageOverlay.style.display = 'flex';
-                imagePreviewZone.classList.add('has-image');
-                // Restaurar nombre de archivo original
-                filenameText.textContent = '{{ $family->image ? basename($family->image) : '' }}';
-                imageFilename.style.display = 'flex';
-            } else if (imageError) {
-                imageError.style.display = 'flex';
-                imageOverlay.style.display = 'none';
-                imagePreviewZone.classList.remove('has-image');
-                imageFilename.style.display = 'none';
-            } else if (imagePlaceholder) {
-                imagePlaceholder.style.display = 'flex';
-                imageOverlay.style.display = 'none';
-                imagePreviewZone.classList.remove('has-image');
-                imageFilename.style.display = 'none';
-            }
-        }
-
-        // Función para eliminar imagen (existente o nueva)
-        function removeImage() {
-            // Limpiar input y vistas previas
-            imageInput.value = '';
-            imagePreviewNew.src = '';
-            imagePreviewNew.style.display = 'none';
-            
-            if (imagePreview) imagePreview.style.display = 'none';
-            
-            // Activar flag de eliminación si hay imagen existente
-            if (hasExistingImage) {
-                removeFlag.value = '1';
-            }
-            
-            // Ocultar overlay y mostrar placeholder
-            imageOverlay.style.display = 'none';
-            imagePreviewZone.classList.remove('has-image');
-            imageFilename.style.display = 'none';
-            
-            // Mostrar placeholder o error según corresponda
-            if (imageError) {
-                imageError.style.display = 'flex';
-            } else if (imagePlaceholder) {
-                imagePlaceholder.style.display = 'flex';
-            }
-        }
-
-        // Botón cambiar imagen
-        changeImageBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            imageInput.click();
-        });
-
-        // Botón eliminar imagen
-        removeImageBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            removeImage();
-        });
-
-        // Cambio de archivo
-        imageInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                showImagePreview(this.files[0]);
-            }
-        });
-
-        // Drag and drop
-        imagePreviewZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            imagePreviewZone.classList.add('drag-over');
-        });
-
-        imagePreviewZone.addEventListener('dragleave', () => {
-            imagePreviewZone.classList.remove('drag-over');
-        });
-
-        imagePreviewZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            imagePreviewZone.classList.remove('drag-over');
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type.startsWith('image/')) {
-                imageInput.files = files;
-                showImagePreview(files[0]);
-            }
-        });
-
-        // Click en zona vacía para subir
-        imagePreviewZone.addEventListener('click', (e) => {
-            // Solo si no tiene imagen o es placeholder/error
-            if (!imagePreviewZone.classList.contains('has-image') || imageError || imagePlaceholder) {
-                imageInput.click();
-            }
+        // Inicializar manejador de imágenes
+        const imageHandler = initImageUpload({
+            mode: 'edit',
+            hasExistingImage: {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'true' : 'false' }},
+            existingImageFilename: '{{ $family->image ? basename($family->image) : '' }}'
         });
 
         // Animación de loading en el botón submit
@@ -319,12 +172,10 @@
             const btnIcon = submitBtn.querySelector('.boton-form-icon i');
             const btnText = submitBtn.querySelector('.boton-form-text');
 
-            // Deshabilitar botón
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
             submitBtn.style.cursor = 'not-allowed';
 
-            // Cambiar icono a loading
             btnIcon.className = 'ri-loader-4-line';
             btnIcon.style.animation = 'spin 1s linear infinite';
             btnText.textContent = 'Actualizando...';

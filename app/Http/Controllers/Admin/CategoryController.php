@@ -176,9 +176,16 @@ class CategoryController extends Controller
      ====================================================== */
     public function edit(Category $category)
     {
-        $families = Family::forSelect()->get();
+        // Familias activas para el select
+        $families = Family::where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        // Todas las categorías excepto la actual (para evitar bucles)
+        // Necesitamos family_id y parent_id para reconstruir la jerarquía
         $parents = Category::where('id', '!=', $category->id)
-            ->forSelect()
+            ->select('id', 'name', 'family_id', 'parent_id')
+            ->orderBy('name')
             ->get();
 
         return view('admin.categories.edit', compact('category', 'families', 'parents'));

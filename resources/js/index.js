@@ -12,6 +12,10 @@ import './utils/material-design.js';
 import './modals/modal-confirm.js';
 import './modules/datatable-manager.js';
 import './modules/category-hierarchy.js';
+import { initImageUpload } from './modules/image-upload-handler.js';
+
+// Exportar para uso global
+window.initImageUpload = initImageUpload;
 
 
 // Si tienes funciones o inicializaciones globales
