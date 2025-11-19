@@ -14,10 +14,12 @@ import './utils/datatable-manager.js';
 import './modules/category-hierarchy.js';
 import { initImageUpload } from './utils/image-upload-handler.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
+import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
 window.initSubmitLoader = initSubmitLoader;
+window.initCategoryHierarchy = initCategoryHierarchy;
 
 
 // Si tienes funciones o inicializaciones globales

@@ -18,7 +18,7 @@
         <div class="form-info-banner">
             <i class="ri-lightbulb-line form-info-icon"></i>
             <div>
-                <strong>Guía rápida:</strong>
+                <h4 class="form-info-title">Guía rápida:</h4>
                 <ul>
                     <li>Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría</li>
                     <li>Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)</li>
@@ -182,205 +182,21 @@
         </div>
 
         <script>
-            // SISTEMA DE JERARQUÍA DE CATEGORÍAS PROGRESIVA (CASCADING SELECTS)
-            const categoriesData = {!! json_encode($allCategories) !!};
-            const familySelect = document.getElementById('family_select');
-            const categoryContainer = document.getElementById('categoryHierarchySelects');
-            const noFamilyMessage = document.getElementById('noFamilyMessage');
-            const parentIdInput = document.getElementById('parent_id');
-            
-            let selectedPath = [];
-            let currentFamilyId = null;
-
-            // Listener para cambio de familia
-            familySelect.addEventListener('change', function() {
-                const familyId = parseInt(this.value);
-                if (familyId) {
-                    loadCategoriesForFamily(familyId);
-                } else {
-                    resetCategorySelects();
-                }
-            });
-
-            function loadCategoriesForFamily(familyId) {
-                currentFamilyId = familyId;
-                
-                // Filtrar categorías raíz de esta familia
-                const rootCategories = categoriesData.filter(cat => 
-                    cat.family_id === familyId && cat.parent_id === null
-                );
-
-                // Limpiar container
-                categoryContainer.innerHTML = '';
-                selectedPath = [];
-                parentIdInput.value = '';
-
-                if (rootCategories.length === 0) {
-                    // No hay categorías, será raíz de esta familia
-                    noFamilyMessage.style.display = 'flex';
-                    noFamilyMessage.innerHTML = '<i class="ri-information-line"></i> No hay categorías en esta familia. Se creará como categoría raíz.';
-                    categoryContainer.style.display = 'none';
-                    updateBreadcrumb([]);
-                } else {
-                    noFamilyMessage.style.display = 'none';
-                    categoryContainer.style.display = 'block';
-                    createLevelSelect(0, rootCategories, 'Categoría raíz de la familia');
-                }
-            }
-
-            function createLevelSelect(level, categories, parentName = null) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'hierarchy-select-wrapper';
-                wrapper.setAttribute('data-level', level);
-                wrapper.style.marginTop = level > 0 ? '0.75rem' : '0';
-                wrapper.style.opacity = '0';
-                wrapper.style.transform = 'translateY(-10px)';
-                wrapper.style.transition = 'all 0.3s ease';
-
-                if (level > 0 && parentName) {
-                    const levelLabel = document.createElement('div');
-                    levelLabel.style.fontSize = '0.8125rem';
-                    levelLabel.style.fontWeight = '500';
-                    levelLabel.style.marginBottom = '0.5rem';
-                    levelLabel.style.color = 'var(--color-text-light)';
-                    levelLabel.innerHTML = `<i class="ri-corner-down-right-line"></i> Subcategoría de <strong>${parentName}</strong>:`;
-                    wrapper.appendChild(levelLabel);
-                }
-
-                const selectContainer = document.createElement('div');
-                selectContainer.className = 'input-icon-container';
-                
-                const optionsHtml = categories.map(cat => 
-                    `<option value="${cat.id}" data-has-children="${cat.children && cat.children.length > 0}">${cat.name}</option>`
-                ).join('');
-
-                const defaultOption = level === 0 
-                    ? 'Nueva categoría raíz (sin padre)' 
-                    : `Crear aquí (como hijo de "${parentName}")`;
-
-                selectContainer.innerHTML = `
-                    <i class="ri-folder-line input-icon"></i>
-                    <select class="select-form category-level-select" data-level="${level}">
-                        <option value="">${defaultOption}</option>
-                        ${optionsHtml}
-                    </select>
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                `;
-
-                wrapper.appendChild(selectContainer);
-                categoryContainer.appendChild(wrapper);
-
-                // Animación
-                setTimeout(() => {
-                    wrapper.style.opacity = '1';
-                    wrapper.style.transform = 'translateY(0)';
-                }, 10);
-
-                // Event listener
-                const select = wrapper.querySelector('select');
-                select.addEventListener('change', function() {
-                    handleLevelChange(level, this.value);
-                });
-            }
-
-            function handleLevelChange(level, selectedId) {
-                removeSelectsAfterLevel(level);
-
-                if (!selectedId) {
-                    // Truncar path hasta este nivel
-                    selectedPath = selectedPath.slice(0, level);
-                    parentIdInput.value = selectedPath.length > 0 ? selectedPath[selectedPath.length - 1].id : '';
-                    updateBreadcrumb(selectedPath);
-                    return;
-                }
-
-                const category = findCategoryById(parseInt(selectedId));
-                if (!category) return;
-
-                // Actualizar path
-                selectedPath = selectedPath.slice(0, level);
-                selectedPath.push({
-                    id: category.id,
-                    name: category.name
-                });
-
-                parentIdInput.value = category.id;
-                updateBreadcrumb(selectedPath);
-
-                // Si tiene hijos, crear siguiente nivel
-                if (category.children && category.children.length > 0) {
-                    createLevelSelect(level + 1, category.children, category.name);
-                }
-            }
-
-            function removeSelectsAfterLevel(level) {
-                const selects = categoryContainer.querySelectorAll('[data-level]');
-                selects.forEach(wrapper => {
-                    const wrapperLevel = parseInt(wrapper.getAttribute('data-level'));
-                    if (wrapperLevel > level) {
-                        wrapper.style.opacity = '0';
-                        wrapper.style.transform = 'translateY(-10px)';
-                        setTimeout(() => wrapper.remove(), 200);
-                    }
-                });
-            }
-
-            function resetCategorySelects() {
-                categoryContainer.innerHTML = '';
-                categoryContainer.style.display = 'none';
-                noFamilyMessage.style.display = 'flex';
-                noFamilyMessage.innerHTML = '<i class="ri-information-line"></i> Primero selecciona una familia para ver las categorías disponibles';
-                selectedPath = [];
-                parentIdInput.value = '';
-                updateBreadcrumb([]);
-            }
-
-            function updateBreadcrumb(path) {
-                const breadcrumb = document.getElementById('hierarchyBreadcrumb');
-                const breadcrumbPath = document.getElementById('breadcrumbPath');
-
-                if (path.length === 0) {
-                    breadcrumb.style.display = 'none';
-                    return;
-                }
-
-                const pathText = path.map((item, index) => {
-                    const arrow = index > 0 ? ' → ' : '';
-                    return `${arrow}${item.name}`;
-                }).join('');
-
-                const familyName = familySelect.options[familySelect.selectedIndex].text;
-
-                breadcrumbPath.innerHTML = `<span style="color: var(--color-info); font-weight: 600;">[${familyName}]</span> ${pathText}`;
-                breadcrumb.style.display = 'block';
-            }
-
-            function findCategoryById(id, categories = categoriesData) {
-                for (let category of categories) {
-                    if (category.id === id) return category;
-                    if (category.children && category.children.length > 0) {
-                        const found = findCategoryById(id, category.children);
-                        if (found) return found;
-                    }
-                }
-                return null;
-            }
-
-            // Restaurar old() si existe
-            const oldFamilyId = '{{ old("family_id") }}';
-            const oldParentId = '{{ old("parent_id") }}';
-            if (oldFamilyId) {
-                setTimeout(() => loadCategoriesForFamily(parseInt(oldFamilyId)), 100);
-            }
-
-            // ===================================================================
-            // MANEJO DE IMAGEN Y SUBMIT LOADER
-            // ===================================================================
+            // SISTEMA DE JERARQUÍA DE CATEGORÍAS PROGRESIVA
             document.addEventListener('DOMContentLoaded', function() {
+                // Inicializar jerarquía de categorías
+                const hierarchyManager = initCategoryHierarchy({
+                    categoriesData: {!! json_encode($allCategories) !!},
+                    initialFamilyId: '{{ old("family_id") }}' ? parseInt('{{ old("family_id") }}') : null,
+                    initialParentId: '{{ old("parent_id") }}' ? parseInt('{{ old("parent_id") }}') : null
+                });
+
+                // Inicializar manejador de imágenes
                 const imageHandler = initImageUpload({
                     mode: 'create'
                 });
 
+                // Inicializar loading del botón submit
                 const submitLoader = initSubmitLoader({
                     formId: 'categoryForm',
                     buttonId: 'submitBtn',
