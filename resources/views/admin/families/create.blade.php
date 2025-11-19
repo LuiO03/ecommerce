@@ -17,7 +17,7 @@
         <div class="form-info-banner">
             <i class="ri-lightbulb-line form-info-icon"></i>
             <div>
-                <strong>Información:</strong>
+                <h4 class="form-info-title">Información:</h4>
                 <ul>
                     <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.</li>
                 </ul>

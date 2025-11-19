@@ -32,8 +32,9 @@
     gap: 0px;
 }
 
-.form-info-banner strong {
+.form-info-banner .form-info-title {
     font-family: var(--font-secondary);
+    font-weight: bolder;
 }
 
 .form-info-banner ul {
@@ -496,6 +497,18 @@
     }
 }
 
+/* === JERARQUÍA DE CATEGORÍAS PROGRESIVA === */
+.hierarchy-select-wrapper {
+    width: 100%;
+}
+
+.label-hint {
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-soft);
+}
+
 /* === ANIMACIÓN SPIN === */
 @keyframes spin {
     from {
@@ -505,3 +518,4 @@
         transform: rotate(360deg);
     }
 }
+

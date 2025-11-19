@@ -5,71 +5,56 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\FamilyController;
 use Illuminate\Support\Facades\Route;
-/* antes era '/admin' pero ahora se configuro un prefijo en app.php
-Route::get('/', function () {
-    return view('admin.dashboard'); // Aquí va la vista del dashboard del admin
-})->name('admin.dashboard'); // El name() es para nombrar la ruta
-*/
-// antes era '/admin/users'
-Route::get('/users', function () {
-    return 'lista de usuarios';
-})->name('admin.users');
 
+// Dashboard
 Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 
-Route::get('/families', [FamilyController::class, 'index'])->name('admin.families.index');
+// ============================================================================
+// FAMILIES
+// ============================================================================
+Route::controller(FamilyController::class)->group(function () {
+    Route::get('/families', 'index')->name('admin.families.index');
+    Route::get('/families/create', 'create')->name('admin.families.create');
+    Route::post('/families', 'store')->name('admin.families.store');
+    Route::get('/families/{family}/edit', 'edit')->name('admin.families.edit');
+    Route::put('/families/{family}', 'update')->name('admin.families.update');
+    Route::delete('/families/{family}', 'destroy')->name('admin.families.destroy');
+    Route::delete('/families', 'destroyMultiple')->name('admin.families.destroy-multiple');
+    Route::patch('/families/{family}/status', 'updateStatus')->name('admin.families.update-status');
+    
+    // Exports
+    Route::post('/families/export/excel', 'exportExcel')->name('admin.families.export.excel');
+    Route::post('/families/export/pdf', 'exportPdf')->name('admin.families.export.pdf');
+    Route::post('/families/export/csv', 'exportCsv')->name('admin.families.export.csv');
+});
 
-Route::get('/families/create', [FamilyController::class, 'create'])->name('admin.families.create');
+// ============================================================================
+// CATEGORIES
+// ============================================================================
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('/categories', 'index')->name('admin.categories.index');
+    Route::get('/categories/create', 'create')->name('admin.categories.create');
+    Route::post('/categories', 'store')->name('admin.categories.store');
+    Route::get('/categories/{category}/edit', 'edit')->name('admin.categories.edit');
+    Route::put('/categories/{category}', 'update')->name('admin.categories.update');
+    Route::delete('/categories/{category}', 'destroy')->name('admin.categories.destroy');
+    Route::delete('/categories', 'destroyMultiple')->name('admin.categories.destroy-multiple');
+    Route::patch('/categories/{category}/status', 'updateStatus')->name('admin.categories.update-status');
+    
+    // Exports
+    Route::post('/categories/export/excel', 'exportExcel')->name('admin.categories.export.excel');
+    Route::post('/categories/export/pdf', 'exportPdf')->name('admin.categories.export.pdf');
+    Route::post('/categories/export/csv', 'exportCsv')->name('admin.categories.export.csv');
+});
 
-Route::post('/families', [FamilyController::class, 'store'])->name('admin.families.store');
-
-Route::get('/families/{family}/edit', [FamilyController::class, 'edit'])->name('admin.families.edit');
-
-Route::put('/families/{family}', [FamilyController::class, 'update'])->name('admin.families.update');
-
-Route::delete('/families/{family}', [FamilyController::class, 'destroy'])->name('admin.families.destroy');
-
-Route::delete('/families', [FamilyController::class, 'destroyMultiple'])->name('admin.families.destroy-multiple');
-
-Route::patch('/families/{family}/status', [FamilyController::class, 'updateStatus'])
-    ->name('admin.families.update-status');
-
-Route::post('/families/export/excel', [FamilyController::class, 'exportExcel'])
-    ->name('admin.families.export.excel');
-
-Route::post('/families/export/pdf', [FamilyController::class, 'exportPdf'])
-    ->name('admin.families.export.pdf');
-
-Route::post('/families/export/csv', [FamilyController::class, 'exportCsv'])
-    ->name('admin.families.export.csv');
-
-// Rutas para categorias aquí
-Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
-Route::delete('/categories', [CategoryController::class, 'destroyMultiple'])->name('admin.categories.destroy-multiple');
-Route::patch('/categories/{category}/status', [CategoryController::class, 'updateStatus'])
-    ->name('admin.categories.update-status');
-Route::post('/categories/export/excel', [CategoryController::class, 'exportExcel'])
-    ->name('admin.categories.export.excel');
-Route::post('/categories/export/pdf', [CategoryController::class, 'exportPdf'])
-    ->name('admin.categories.export.pdf');
-Route::post('/categories/export/csv', [CategoryController::class, 'exportCsv'])
-    ->name('admin.categories.export.csv');
-
-// Rutas para Administrador Jerárquico de Categorías
-Route::get('/categories/hierarchy', [CategoryHierarchyController::class, 'index'])
-    ->name('admin.categories.hierarchy');
-Route::get('/categories/hierarchy/tree-data', [CategoryHierarchyController::class, 'getTreeData'])
-    ->name('admin.categories.hierarchy.tree-data');
-Route::post('/categories/hierarchy/bulk-move', [CategoryHierarchyController::class, 'bulkMove'])
-    ->name('admin.categories.hierarchy.bulk-move');
-Route::post('/categories/hierarchy/preview-move', [CategoryHierarchyController::class, 'previewMove'])
-    ->name('admin.categories.hierarchy.preview-move');
-Route::post('/categories/hierarchy/bulk-delete', [CategoryHierarchyController::class, 'bulkDelete'])
-    ->name('admin.categories.hierarchy.bulk-delete');
-Route::post('/categories/hierarchy/bulk-duplicate', [CategoryHierarchyController::class, 'bulkDuplicate'])
-    ->name('admin.categories.hierarchy.bulk-duplicate');
+// ============================================================================
+// CATEGORY HIERARCHY MANAGER
+// ============================================================================
+Route::controller(CategoryHierarchyController::class)->prefix('categories/hierarchy')->group(function () {
+    Route::get('/', 'index')->name('admin.categories.hierarchy');
+    Route::get('/tree-data', 'getTreeData')->name('admin.categories.hierarchy.tree-data');
+    Route::post('/bulk-move', 'bulkMove')->name('admin.categories.hierarchy.bulk-move');
+    Route::post('/preview-move', 'previewMove')->name('admin.categories.hierarchy.preview-move');
+    Route::post('/bulk-delete', 'bulkDelete')->name('admin.categories.hierarchy.bulk-delete');
+    Route::post('/bulk-duplicate', 'bulkDuplicate')->name('admin.categories.hierarchy.bulk-duplicate');
+});

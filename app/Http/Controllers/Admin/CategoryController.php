@@ -90,10 +90,37 @@ class CategoryController extends Controller
      ====================================================== */
     public function create()
     {
-        $families = Family::forSelect()->get();
-        $parents = Category::forSelect()->get();
+        // Familias activas
+        $families = Family::where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
-        return view('admin.categories.create', compact('families', 'parents'));
+        // Estructura jerárquica completa de categorías
+        $allCategories = $this->buildHierarchicalCategories();
+
+        return view('admin.categories.create', compact('families', 'allCategories'));
+    }
+
+    /**
+     * Construye estructura jerárquica completa de categorías
+     */
+    private function buildHierarchicalCategories($parentId = null)
+    {
+        $categories = Category::where('parent_id', $parentId)
+            ->with('family:id,name')
+            ->orderBy('name')
+            ->get(['id', 'name', 'family_id', 'parent_id']);
+
+        return $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'family_id' => $category->family_id,
+                'family_name' => $category->family->name ?? 'Sin familia',
+                'parent_id' => $category->parent_id,
+                'children' => $this->buildHierarchicalCategories($category->id),
+            ];
+        });
     }
 
     /* ======================================================
