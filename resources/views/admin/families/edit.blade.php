@@ -158,27 +158,24 @@
             </button>
         </div>
     </form>
+
+    @push('scripts')
     <script>
-        // Inicializar manejador de imágenes
-        const imageHandler = initImageUpload({
-            mode: 'edit',
-            hasExistingImage: {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'true' : 'false' }},
-            existingImageFilename: '{{ $family->image ? basename($family->image) : '' }}'
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar manejador de imágenes
+            const imageHandler = initImageUpload({
+                mode: 'edit',
+                hasExistingImage: {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'true' : 'false' }},
+                existingImageFilename: '{{ $family->image ? basename($family->image) : '' }}'
+            });
 
-        // Animación de loading en el botón submit
-        document.getElementById('familyForm').addEventListener('submit', function() {
-            const submitBtn = document.getElementById('submitBtn');
-            const btnIcon = submitBtn.querySelector('.boton-form-icon i');
-            const btnText = submitBtn.querySelector('.boton-form-text');
-
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
-            submitBtn.style.cursor = 'not-allowed';
-
-            btnIcon.className = 'ri-loader-4-line';
-            btnIcon.style.animation = 'spin 1s linear infinite';
-            btnText.textContent = 'Actualizando...';
+            // Inicializar loading del botón submit
+            const submitLoader = initSubmitLoader({
+                formId: 'familyForm',
+                buttonId: 'submitBtn',
+                loadingText: 'Actualizando...'
+            });
         });
     </script>
+    @endpush
 </x-admin-layout>

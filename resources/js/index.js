@@ -10,12 +10,14 @@ import './dashboard/theme-toggle.js';
 import './utils/material-design.js';
 
 import './modals/modal-confirm.js';
-import './modules/datatable-manager.js';
+import './utils/datatable-manager.js';
 import './modules/category-hierarchy.js';
-import { initImageUpload } from './modules/image-upload-handler.js';
+import { initImageUpload } from './utils/image-upload-handler.js';
+import { initSubmitLoader } from './utils/submit-button-loader.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
+window.initSubmitLoader = initSubmitLoader;
 
 
 // Si tienes funciones o inicializaciones globales

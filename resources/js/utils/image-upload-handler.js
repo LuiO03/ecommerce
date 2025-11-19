@@ -133,8 +133,13 @@ export class ImageUploadHandler {
             }
         });
 
-        // Event: Click en zona vacía
+        // Event: Click en zona vacía o placeholder
         previewZone.addEventListener('click', (e) => {
+            // Evitar que el click en botones del overlay dispare el input
+            if (e.target.closest('.overlay-btn')) {
+                return;
+            }
+
             // Solo permitir click si no hay imagen o es placeholder/error
             const hasImage = previewZone.classList.contains('has-image');
             const isPlaceholder = this.elements.placeholder && this.elements.placeholder.style.display !== 'none';
@@ -144,6 +149,22 @@ export class ImageUploadHandler {
                 input.click();
             }
         });
+
+        // Event: Click directo en placeholder (fallback)
+        if (this.elements.placeholder) {
+            this.elements.placeholder.addEventListener('click', (e) => {
+                e.stopPropagation();
+                input.click();
+            });
+        }
+
+        // Event: Click directo en error container (fallback)
+        if (this.elements.errorContainer) {
+            this.elements.errorContainer.addEventListener('click', (e) => {
+                e.stopPropagation();
+                input.click();
+            });
+        }
     }
 
     /**

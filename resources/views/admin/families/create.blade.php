@@ -119,25 +119,22 @@
             </button>
         </div>
     </form>
+
+    @push('scripts')
     <script>
-        // Inicializar manejador de imágenes
-        const imageHandler = initImageUpload({
-            mode: 'create'
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar manejador de imágenes
+            const imageHandler = initImageUpload({
+                mode: 'create'
+            });
 
-        // Animación de loading en el botón submit
-        document.getElementById('familyForm').addEventListener('submit', function() {
-            const submitBtn = document.getElementById('submitBtn');
-            const btnIcon = submitBtn.querySelector('.boton-form-icon i');
-            const btnText = submitBtn.querySelector('.boton-form-text');
-
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
-            submitBtn.style.cursor = 'not-allowed';
-
-            btnIcon.className = 'ri-loader-4-line';
-            btnIcon.style.animation = 'spin 1s linear infinite';
-            btnText.textContent = 'Guardando...';
+            // Inicializar loading del botón submit
+            const submitLoader = initSubmitLoader({
+                formId: 'familyForm',
+                buttonId: 'submitBtn',
+                loadingText: 'Guardando...'
+            });
         });
     </script>
+    @endpush
 </x-admin-layout>

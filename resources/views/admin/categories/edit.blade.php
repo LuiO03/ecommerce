@@ -464,27 +464,20 @@
             }
 
             // ===================================================================
-            // MANEJO DE IMAGEN
+            // MANEJO DE IMAGEN Y SUBMIT LOADER
             // ===================================================================
-            const imageHandler = initImageUpload({
-                mode: 'edit',
-                hasExistingImage: {{ $category->image && file_exists(public_path('storage/' . $category->image)) ? 'true' : 'false' }},
-                existingImageFilename: '{{ $category->image ? basename($category->image) : '' }}'
-            });
+            document.addEventListener('DOMContentLoaded', function() {
+                const imageHandler = initImageUpload({
+                    mode: 'edit',
+                    hasExistingImage: {{ $category->image && file_exists(public_path('storage/' . $category->image)) ? 'true' : 'false' }},
+                    existingImageFilename: '{{ $category->image ? basename($category->image) : '' }}'
+                });
 
-            // Animación de loading en el botón submit
-            document.getElementById('categoryForm').addEventListener('submit', function() {
-                const submitBtn = document.getElementById('submitBtn');
-                const btnIcon = submitBtn.querySelector('.boton-form-icon i');
-                const btnText = submitBtn.querySelector('.boton-form-text');
-
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = '0.7';
-                submitBtn.style.cursor = 'not-allowed';
-
-                btnIcon.className = 'ri-loader-4-line';
-                btnIcon.style.animation = 'spin 1s linear infinite';
-                btnText.textContent = 'Actualizando...';
+                const submitLoader = initSubmitLoader({
+                    formId: 'categoryForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Actualizando...'
+                });
             });
         </script>
 
