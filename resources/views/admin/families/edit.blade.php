@@ -26,9 +26,15 @@
         @csrf
         @method('PUT')
 
-        <small class="form-aviso">
-            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
-        </small>
+        <div class="form-info-banner">
+            <i class="ri-lightbulb-line form-info-icon"></i>
+            <div>
+                <strong>Información:</strong>
+                <ul>
+                    <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.</li>
+                </ul>
+            </div>
+        </div>
 
         <div class="form-row">
             <div class="form-column">

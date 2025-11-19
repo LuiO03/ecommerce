@@ -14,9 +14,15 @@
     <form action="{{ route('admin.families.store') }}" method="POST" enctype="multipart/form-data" class="form-container"
         autocomplete="off" id="familyForm">
         @csrf
-        <small class="form-aviso">
-            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
-        </small>
+        <div class="form-info-banner">
+            <i class="ri-lightbulb-line form-info-icon"></i>
+            <div>
+                <strong>Información:</strong>
+                <ul>
+                    <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.</li>
+                </ul>
+            </div>
+        </div>
         <div class="form-row">
             <div class="form-column">
                 <!-- === Nombre === -->
