@@ -131,7 +131,7 @@
                     </li>
                     <li>
                         <a href="{{ route('admin.categories.index') }}"
-                            class="sidebar-sublink {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                             data-tooltip="Categorías">
                             <i aria-busy=""class="ri-price-tag-3-line sidebar-icon"></i>
                             <span>Categorías</span>

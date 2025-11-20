@@ -57,4 +57,5 @@ Route::controller(CategoryHierarchyController::class)->prefix('categories/hierar
     Route::post('/preview-move', 'previewMove')->name('admin.categories.hierarchy.preview-move');
     Route::post('/bulk-delete', 'bulkDelete')->name('admin.categories.hierarchy.bulk-delete');
     Route::post('/bulk-duplicate', 'bulkDuplicate')->name('admin.categories.hierarchy.bulk-duplicate');
+    Route::post('/drag-move', 'dragMove')->name('admin.categories.hierarchy.drag-move');
 });

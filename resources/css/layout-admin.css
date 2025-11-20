@@ -389,15 +389,21 @@
     background: linear-gradient(to right, var(--color-hover), var(--color-hover-degraded));
 }
 
-.menu-item.logout {
-    background-color: var(--color-danger);
+.menu-item-logout {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 8px;
+    border-radius: var(--radius-element);
+    background-color: var(--color-danger-pastel);
     border: 1px solid transparent;
-    color: white;
-    transition: border-color 0.2s ease;
+    color: var(--color-danger);
+    transition: border-color 0.2s ease, font-weight 0.2s ease;
 }
 
-.menu-item.logout:hover {
-    border-color: white;
+.menu-item-logout:hover {
+    font-weight: bold;
+    border-color: var(--color-danger);
 }
 
 /* === Fondo decorativo usuario === */

@@ -39,7 +39,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="menu-item logout">
+                    <a href="#" class="menu-item-logout">
                         <i class="ri-shut-down-line sidebar-icon"></i>
                         <span>Cerrar sesión</span>
                     </a>

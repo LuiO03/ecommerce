@@ -71,14 +71,19 @@
                         <i class="ri-close-circle-fill" id="clearTreeSearch" class="search-clear"></i>
                     </div>
                     <div class="tree-buttons">
-                        <button type="button" id="expandAll" class="boton boton-info">
-                            <span class="boton-icon"><i class="ri-arrow-down-s-line"></i></span>
-                            <span class="boton-text">Expandir Todo</span>
+                        <button type="button" id="expandAll" class="boton-form boton-action" title="Expandir todo">
+                            <span class="boton-form-icon"><i class="ri-expand-diagonal-line"></i></span>
+                            <span class="boton-form-text">Expandir</span>
                         </button>
 
-                        <button type="button" id="collapseAll" class="boton boton-info">
-                            <span class="boton-icon"><i class="ri-arrow-up-s-line"></i></span>
-                            <span class="boton-text">Colapsar Todo</span>
+                        <button type="button" id="collapseAll" class="boton-form boton-action" title="Colapsar todo">
+                            <span class="boton-form-icon"><i class="ri-collapse-diagonal-line"></i></span>
+                            <span class="boton-form-text">Colapsar</span>
+                        </button>
+
+                        <button type="button" id="deselectAll" class="boton-form boton-action" title="Deseleccionar todos" style="display: none;">
+                            <span class="boton-form-icon"><i class="ri-checkbox-multiple-blank-line"></i></span>
+                            <span class="boton-form-text">Deseleccionar</span>
                         </button>
                     </div>
                 </div>
@@ -162,7 +167,7 @@
                 </div>
 
                 <!-- Panel de operaciones masivas (cuando hay múltiples seleccionados) -->
-                <div id="bulkPanel" class="info-panel-bulk ripple-card" style="display: none;">
+                <div id="bulkPanel" class="info-panel-bulk" style="display: none;">
                     <div class="panel-header">
                         <h3 class="panel-title">
                             <i class="ri-checkbox-multiple-line"></i>
@@ -312,6 +317,7 @@
                 previewMoveUrl: '{{ route('admin.categories.hierarchy.preview-move') }}',
                 bulkDeleteUrl: '{{ route('admin.categories.hierarchy.bulk-delete') }}',
                 bulkDuplicateUrl: '{{ route('admin.categories.hierarchy.bulk-duplicate') }}',
+                dragMoveUrl: '{{ route('admin.categories.hierarchy.drag-move') }}',
                 editCategoryUrl: '{{ route('admin.categories.edit', ':id') }}',
                 csrfToken: '{{ csrf_token() }}'
             };

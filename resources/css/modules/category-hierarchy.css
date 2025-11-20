@@ -180,8 +180,9 @@
     padding: 0.625rem 0.75rem;
     cursor: pointer;
     user-select: none;
-    background: var(--color-info-pastel);
+    background: var(--color-sidebar-bg);
     transition: transform 0.2s ease;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .family-toggle {
@@ -289,11 +290,23 @@
 .category-card.dragging {
     opacity: 0.5;
     cursor: grabbing;
+    transform: rotate(2deg);
 }
 
 .category-card.drag-over {
     border-color: var(--color-success);
     background: var(--color-success-pastel);
+}
+
+/* Sortable ghost (elemento fantasma durante drag) */
+.sortable-ghost {
+    opacity: 0.4;
+    background: var(--color-primary-pastel);
+    border: 2px dashed var(--color-primary);
+}
+
+.sortable-ghost .category-card {
+    opacity: 0.6;
 }
 
 .category-drag-handle {
@@ -452,9 +465,9 @@
 
 /* Subcategorías anidadas */
 .category-children {
-    margin-left: 1.5rem;
+    margin-left: 20px;
     margin-top: 0.375rem;
-    padding-left: 0.75rem;
+    padding-left: 10px;
     border-left: 2px solid var(--color-border);
     max-height: 2000px;
     opacity: 1;

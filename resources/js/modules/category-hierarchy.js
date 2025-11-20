@@ -203,17 +203,120 @@ class CategoryHierarchyManager {
     initSortable(container) {
         const sortable = new Sortable(container, {
             group: 'categories',
-            animation: 150,
+            animation: 200,
             handle: '.category-drag-handle',
             ghostClass: 'dragging',
             dragClass: 'drag-over',
-            onEnd: (evt) => {
-                console.log('📦 Item movido:', evt.item.dataset.categoryId);
-                // Aquí puedes implementar la lógica de persistencia
+            fallbackOnBody: true,
+            swapThreshold: 0.65,
+            onEnd: async (evt) => {
+                // Obtener datos del item movido
+                const movedItem = evt.item;
+                const categoryId = movedItem.dataset.categoryId;
+                const categoryData = JSON.parse(movedItem.dataset.categoryData);
+                
+                // Determinar el nuevo padre
+                const newParentContainer = evt.to;
+                let newParentId = null;
+                let newFamilyId = null;
+                
+                // Buscar el contenedor padre
+                const parentItem = newParentContainer.closest('.category-item');
+                const parentFamily = newParentContainer.closest('.family-card');
+                
+                if (parentItem) {
+                    // Se movió dentro de otra categoría (subcategoría)
+                    newParentId = parentItem.dataset.categoryId;
+                    const parentData = JSON.parse(parentItem.dataset.categoryData);
+                    newFamilyId = parentData.li_attr['data-family-id'];
+                } else if (parentFamily) {
+                    // Se movió a nivel raíz de una familia
+                    newFamilyId = parentFamily.dataset.familyId;
+                    newParentId = null;
+                } else {
+                    console.warn('⚠️ No se pudo determinar el destino');
+                    return;
+                }
+                
+                // Verificar si realmente cambió de posición
+                const oldParentId = categoryData.li_attr['data-parent-id'] || null;
+                const oldFamilyId = categoryData.li_attr['data-family-id'];
+                
+                if (oldParentId == newParentId && oldFamilyId == newFamilyId) {
+                    console.log('ℹ️ Solo cambió el orden, no la jerarquía');
+                    return;
+                }
+                
+                console.log('🎯 Moviendo categoría:', {
+                    categoryId,
+                    categoryName: categoryData.text,
+                    from: { familyId: oldFamilyId, parentId: oldParentId },
+                    to: { familyId: newFamilyId, parentId: newParentId }
+                });
+                
+                // Persistir el cambio en el backend
+                await this.saveCategoryMove(categoryId, newFamilyId, newParentId);
             }
         });
         
         this.sortableInstances.push(sortable);
+    }
+    
+    // ========================================
+    // 💾 GUARDAR MOVIMIENTO DE CATEGORÍA
+    // ========================================
+    async saveCategoryMove(categoryId, newFamilyId, newParentId) {
+        try {
+            const response = await fetch(this.config.dragMoveUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': this.config.csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    category_id: categoryId,
+                    family_id: newFamilyId,
+                    parent_id: newParentId
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Mostrar toast de éxito
+                if (typeof window.showToast === 'function') {
+                    window.showToast({
+                        type: 'success',
+                        title: 'Categoría movida',
+                        message: data.message || 'La categoría se movió correctamente',
+                        duration: 3000
+                    });
+                }
+                
+                // Recargar datos del árbol para reflejar cambios
+                await this.loadTreeData();
+                
+            } else {
+                throw new Error(data.message || 'Error al mover categoría');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error al guardar movimiento:', error);
+            
+            // Mostrar toast de error
+            if (typeof window.showToast === 'function') {
+                window.showToast({
+                    type: 'danger',
+                    title: 'Error',
+                    message: error.message || 'No se pudo mover la categoría',
+                    duration: 4000
+                });
+            }
+            
+            // Recargar para revertir cambios visuales
+            await this.loadTreeData();
+        }
     }
     
     // ========================================
@@ -232,14 +335,17 @@ class CategoryHierarchyManager {
     // ========================================
     toggleCheckbox(item) {
         const checkbox = item.querySelector('.category-checkbox');
+        const card = item.querySelector('.category-card');
         const categoryId = item.dataset.categoryId;
         
         if (this.selectedNodes.has(categoryId)) {
             this.selectedNodes.delete(categoryId);
             checkbox.checked = false;
+            card.classList.remove('selected');
         } else {
             this.selectedNodes.add(categoryId);
             checkbox.checked = true;
+            card.classList.add('selected');
         }
         
         this.updateSelection();
@@ -256,7 +362,15 @@ class CategoryHierarchyManager {
             return;
         }
         
-        // Deseleccionar otros
+        // Limpiar selecciones múltiples si existen
+        if (this.selectedNodes.size > 0) {
+            this.selectedNodes.clear();
+            document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
+                cb.checked = false;
+            });
+        }
+        
+        // Deseleccionar otros (solo para selección individual)
         document.querySelectorAll('.category-card.selected').forEach(card => {
             card.classList.remove('selected');
         });
@@ -270,12 +384,15 @@ class CategoryHierarchyManager {
     // ========================================
     updateSelection() {
         const count = this.selectedNodes.size;
+        const deselectBtn = document.getElementById('deselectAll');
         
         if (count === 0) {
             this.showPanel('empty');
+            if (deselectBtn) deselectBtn.style.display = 'none';
         } else {
             // Con checkbox siempre mostrar panel de acciones masivas (1 o más)
             this.showBulkPanel(count);
+            if (deselectBtn) deselectBtn.style.display = 'inline-flex';
         }
     }
     
@@ -438,8 +555,19 @@ class CategoryHierarchyManager {
             this.selectedNodes.clear();
             document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
                 cb.checked = false;
+                cb.closest('.category-card')?.classList.remove('selected');
             });
             this.showPanel('empty');
+        });
+
+        // Deseleccionar todos
+        document.getElementById('deselectAll')?.addEventListener('click', () => {
+            this.selectedNodes.clear();
+            document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.category-card')?.classList.remove('selected');
+            });
+            this.updateSelection();
         });
     }
     
@@ -571,8 +699,13 @@ class CategoryHierarchyManager {
         // Extraer el ID de la familia
         const familyId = familyValue.replace('family_', '');
         
-        // Buscar la familia en los datos del árbol
-        const family = this.treeData.find(f => f.li_attr['data-id'] === familyId);
+        console.log('🔍 Buscando familia con ID:', familyId);
+        console.log('📊 Datos del árbol:', this.treeData);
+        
+        // Buscar la familia en los datos del árbol (comparar como string)
+        const family = this.treeData.find(f => String(f.li_attr['data-id']) === String(familyId));
+        
+        console.log('✅ Familia encontrada:', family);
         
         if (!family || !family.children || family.children.length === 0) {
             categorySelect.disabled = true;
@@ -583,6 +716,8 @@ class CategoryHierarchyManager {
         // Habilitar y llenar el select de categorías
         categorySelect.disabled = false;
         categorySelect.innerHTML = '<option value="">Sin categoría padre (raíz de familia)</option>';
+        
+        console.log('📦 Agregando categorías al select:', family.children.length);
         
         // Agregar categorías recursivamente
         this.addCategoriesToSelect(family.children, categorySelect, 0);

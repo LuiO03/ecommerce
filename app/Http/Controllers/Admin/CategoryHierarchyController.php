@@ -424,4 +424,68 @@ class CategoryHierarchyController extends Controller
 
         return $duplicate;
     }
+
+    /* ======================================================
+     |  DRAG MOVE - Mover categoría mediante drag & drop
+     ====================================================== */
+    public function dragMove(Request $request)
+    {
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'family_id' => 'required|exists:families,id',
+            'parent_id' => 'nullable|exists:categories,id'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $category = Category::findOrFail($request->category_id);
+            $oldFamilyId = $category->family_id;
+            $oldParentId = $category->parent_id;
+
+            // Validar que no se cree un ciclo
+            if ($request->parent_id) {
+                if ($this->wouldCreateCycle($request->category_id, $request->parent_id)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No se puede mover: se crearía una referencia circular'
+                    ], 422);
+                }
+            }
+
+            // Actualizar la categoría
+            $category->family_id = $request->family_id;
+            $category->parent_id = $request->parent_id;
+            $category->updated_by = Auth::id();
+            $category->save();
+
+            DB::commit();
+
+            // Obtener nombres para el mensaje
+            $family = Family::find($request->family_id);
+            $parentName = $request->parent_id 
+                ? Category::find($request->parent_id)->name 
+                : 'raíz';
+
+            return response()->json([
+                'success' => true,
+                'message' => "'{$category->name}' movida a {$family->name} → {$parentName}",
+                'category' => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'family_id' => $category->family_id,
+                    'parent_id' => $category->parent_id
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error en dragMove: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al mover la categoría: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
