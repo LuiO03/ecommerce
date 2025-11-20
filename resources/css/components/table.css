@@ -507,8 +507,8 @@ table.dataTable.dtr-inline.collapsed td.control::before {
 ======================================================= */
 input[type="checkbox"] {
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border: 2px solid var(--color-border-secondary);
     border-radius: var(--radius-element);
     background-color: var(--color-input-bg);

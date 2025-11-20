@@ -4,7 +4,6 @@
 
 .subcategories-table-container {
     background: var(--color-bg);
-    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     overflow: hidden;
 }
@@ -15,7 +14,7 @@
 }
 
 .subcategories-table thead tr {
-    background:transparent;
+    background: transparent;
     border-bottom: 2px solid var(--color-border);
 }
 
@@ -79,14 +78,87 @@
     align-items: center;
     gap: 0.5rem;
     background-color: var(--color-warning-pastel);
-    font-size: var(--font-size-p);
+    border-left: 4px solid var(--color-warning);
+    border-radius: var(--radius-element);
 }
 
-.subcategories-warning i{
-    font-size: var(--font-size-h3);
+.subcategories-warning i {
+    font-size: 1.5rem;
     color: var(--color-warning);
 }
 
-.subcategories-warning-text p{
-color: var(--color-text-soft);
+.subcategories-warning div span{
+    font-size: var(--font-size-p);
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
+.subcategories-warning div p {
+    color: var(--color-text-soft);
+    font-size: var(--font-size-xs);
+}
+
+@media (max-width: 768px) {
+
+    .subcategories-table thead {
+        display: none;
+    }
+
+    .subcategories-table tbody {
+        flex-wrap: wrap;
+        display: flex;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .subcategories-table,
+    .subcategories-table td {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        text-align: left;
+        border: none;
+    }
+
+    .subcategories-table tbody tr {
+        flex: 1 1 200px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        position: relative;
+        border-radius: var(--radius-card);
+        background-color: var(--color-card-bg);
+        gap: 5px;
+        padding: 15px;
+        font-size: var(--font-size-xs);
+    }
+
+    .subcategories-table tbody tr.row-selected {
+        background-color: var(--color-inverse);
+        color: var(--color-normal);
+    }
+
+    .subcategories-table tbody tr:hover {
+        background-color: var(--color-hover);
+    }
+
+    .subcategories-table tbody tr:nth-child(odd),
+    .subcategories-table tbody tr:nth-child(even) {
+        background-color: var(--color-card-bg);
+    }
+
+    .subcategories-table td[data-label] {
+        display: flex;
+        align-items: flex-start;
+        border: none;
+    }
+    .subcategories-table td {
+        border: none;
+        padding: 0px;
+    }
+    /* Para las filas del cuerpo */
+    .subcategories-table tbody tr td:last-child {
+        width: 100%;
+        text-align: center;
+    }
 }

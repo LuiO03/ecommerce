@@ -313,8 +313,8 @@
 
                         <div class="subcategories-warning">
                             <i class="ri-information-line"></i>
-                            <div class="subcategories-warning-text">
-                                <h4 class="form-info-title">Importante:</h4>
+                            <div>
+                                <span>Importante:</span>
                                 <p>
                                     Esta categoría tiene <strong>{{ count($subcategories) }} subcategoría(s)</strong>.
                                     Si cambias su familia o ubicación, todas sus subcategorías se verán afectadas.
@@ -325,59 +325,6 @@
                 @endif
             </div>
         </div>
-
-        @push('scripts')
-        <script>
-            $(document).ready(function() {
-                // ========================================
-                // 📊 INICIALIZACIÓN CON DATATABLEMANAGER
-                // ========================================
-                const tableManager = new DataTableManager('#tabla', {
-                    moduleName: 'categories',
-                    entityNameSingular: 'categoría',
-                    entityNamePlural: 'categorías',
-                    deleteRoute: '/admin/categories',
-                    statusRoute: '/admin/categories/{id}/status',
-                    exportRoutes: {
-                        excel: '/admin/categories/export/excel',
-                        csv: '/admin/categories/export/csv',
-                        pdf: '/admin/categories/export/pdf'
-                    },
-                    csrfToken: '{{ csrf_token() }}',
-                    
-                    // Configuración de DataTable
-                    pageLength: 10,
-                    lengthMenu: [5, 10, 25, 50],
-                    
-                    // Características (todas activadas por defecto)
-                    features: {
-                        selection: true,
-                        export: true,
-                        filters: true,
-                        statusToggle: true,
-                        responsive: true,
-                        customPagination: true
-                    },
-                    
-                    // Callbacks personalizados (opcional)
-                    callbacks: {
-                        onDraw: () => {
-                            console.log('🔄 Tabla redibujada');
-                        },
-                        onStatusChange: (id, status, response) => {
-                            console.log(`✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
-                        },
-                        onDelete: () => {
-                            console.log('🗑️ Registros eliminados');
-                        },
-                        onExport: (type, format, count) => {
-                            console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
-                        }
-                    }
-                });
-            });
-        </script>
-    @endpush
 
         <script>
             // SISTEMA DE JERARQUÍA DE CATEGORÍAS PROGRESIVA

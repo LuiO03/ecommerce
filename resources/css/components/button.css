@@ -66,6 +66,7 @@
 /* Boton Form */
 .boton-form {
     flex: 1 1 150px;
+    min-height: 35px;
     display: inline-flex;
     max-width: fit-content;
     gap: 5px;
@@ -140,6 +141,7 @@
 /* Boton de Selection */
 .boton-selection {
     flex: 1 1 150px;
+    min-height: 35px;
     display: inline-flex;
     max-width: fit-content;
     gap: 5px;
@@ -245,81 +247,4 @@
 
 .boton-sm:active {
     transform: scale(0.95);
-}
-
-/* ==========================================
-   BOTÓN ICONO PEQUEÑO (para tablas/acciones)
-   ========================================== */
-.boton-icon-small {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-element);
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-.boton-icon-small:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.boton-icon-small:active {
-    transform: translateY(0);
-}
-
-/* Colores para boton-icon-small */
-.boton-icon-small.boton-info {
-    background-color: var(--color-info-pastel);
-    color: var(--color-info);
-}
-
-.boton-icon-small.boton-info:hover {
-    background-color: var(--color-info);
-    color: white;
-}
-
-.boton-icon-small.boton-success {
-    background-color: var(--color-success-pastel);
-    color: var(--color-success);
-}
-
-.boton-icon-small.boton-success:hover {
-    background-color: var(--color-success);
-    color: white;
-}
-
-.boton-icon-small.boton-danger {
-    background-color: var(--color-danger-pastel);
-    color: var(--color-danger);
-}
-
-.boton-icon-small.boton-danger:hover {
-    background-color: var(--color-danger);
-    color: white;
-}
-
-.boton-icon-small.boton-warning {
-    background-color: var(--color-warning-pastel);
-    color: var(--color-warning);
-}
-
-.boton-icon-small.boton-warning:hover {
-    background-color: var(--color-warning);
-    color: var(--color-text);
-}
-
-.boton-icon-small.boton-primary {
-    background-color: var(--color-primary-pastel);
-    color: var(--color-primary);
-}
-
-.boton-icon-small.boton-primary:hover {
-    background-color: var(--color-primary);
-    color: white;
 }

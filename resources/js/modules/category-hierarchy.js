@@ -312,8 +312,8 @@ class CategoryHierarchyManager {
         document.getElementById('infoChildren').textContent = category.children ? category.children.length : 0;
         document.getElementById('infoProducts').textContent = liAttr['data-products-count'] || 0;
         document.getElementById('infoStatus').innerHTML = liAttr['data-status'] === '1' 
-            ? '<span class="badge boton-success">Activo</span>' 
-            : '<span class="badge boton-danger">Inactivo</span>';
+            ? '<span class="badge boton-success"><i class="ri-checkbox-circle-fill"></i>Activo</span>' 
+            : '<span class="badge boton-danger"><i class="ri-close-circle-fill"></i>Inactivo</span>';
         document.getElementById('infoSlug').textContent = liAttr['data-slug'] || '-';
         
         const editUrl = this.config.editCategoryUrl.replace(':id', liAttr['data-id']);
