@@ -71,19 +71,17 @@
                         <i class="ri-close-circle-fill" id="clearTreeSearch" class="search-clear"></i>
                     </div>
                     <div class="tree-buttons">
-                        <button type="button" id="expandAll" class="boton-form boton-action" title="Expandir todo">
-                            <span class="boton-form-icon"><i class="ri-expand-diagonal-line"></i></span>
-                            <span class="boton-form-text">Expandir</span>
+                        <button type="button" id="expandAll" class="boton-single" title="Expandir todo">
+                            <i class="ri-expand-diagonal-line"></i>
+                            
                         </button>
 
-                        <button type="button" id="collapseAll" class="boton-form boton-action" title="Colapsar todo">
-                            <span class="boton-form-icon"><i class="ri-collapse-diagonal-line"></i></span>
-                            <span class="boton-form-text">Colapsar</span>
+                        <button type="button" id="collapseAll" class="boton-single" title="Colapsar todo">
+                            <i class="ri-collapse-diagonal-line"></i>
                         </button>
 
-                        <button type="button" id="deselectAll" class="boton-form boton-action" title="Deseleccionar todos" style="display: none;">
-                            <span class="boton-form-icon"><i class="ri-checkbox-multiple-blank-line"></i></span>
-                            <span class="boton-form-text">Deseleccionar</span>
+                        <button type="button" id="deselectAll" class="boton-single" title="Deseleccionar todos" style="display: none;">
+                            <i class="ri-checkbox-multiple-blank-line"></i>
                         </button>
                     </div>
                 </div>
@@ -161,19 +159,21 @@
                         </div>
                     </div>
                     <div class="panel-actions">
+                        <!-- Botón principal (más grande, ocupa toda la fila) -->
                         <a href="#" id="editCategory" class="boton-form boton-warning btn-block">
                             <span class="boton-form-icon"><i class="ri-edit-circle-fill"></i></span>
-                            <span class="boton-form-text">Editar</span>
+                            <span class="boton-form-text">Editar Categoría</span>
                         </a>
 
+                        <!-- Botones secundarios (grid 2 columnas) -->
                         <button type="button" id="createChild" class="boton-form boton-success btn-block">
                             <span class="boton-form-icon"><i class="ri-add-circle-fill"></i></span>
-                            <span class="boton-form-text">Crear Subcategoría</span>
+                            <span class="boton-form-text">Crear Hijo</span>
                         </button>
 
                         <button type="button" id="deleteCategory" class="boton-form boton-danger btn-block">
                             <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
-                            <span class="boton-form-text">Eliminar Categoría</span>
+                            <span class="boton-form-text">Eliminar</span>
                         </button>
                     </div>
                 </div>
@@ -219,15 +219,15 @@
                                 </div>
 
                                 <div class="bulk-buttons">
-                                    <button type="button" id="previewMove" class="boton boton-info btn-block">
-                                        <span class="boton-icon"><i class="ri-eye-line"></i></span>
-                                        <span class="boton-text">Preview</span>
+                                    <button type="button" id="previewMove" class="boton-form boton-info">
+                                        <span class="boton-form-icon"><i class="ri-eye-line"></i></span>
+                                        <span class="boton-form-text">Preview</span>
                                     </button>
 
                                     <button type="button" id="executeBulkMove"
-                                        class="boton boton-primary btn-block">
-                                        <span class="boton-icon"><i class="ri-arrow-right-line"></i></span>
-                                        <span class="boton-text">Mover Ahora</span>
+                                        class="boton-form boton-primary">
+                                        <span class="boton-form-icon"><i class="ri-arrow-right-line"></i></span>
+                                        <span class="boton-form-text">Mover Ahora</span>
                                     </button>
                                 </div>
                             </div>

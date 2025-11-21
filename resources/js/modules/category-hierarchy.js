@@ -31,6 +31,11 @@ class CategoryHierarchyManager {
     // 🌳 CARGAR DATOS DEL ÁRBOL
     // ========================================
     async loadTreeData() {
+        const container = document.getElementById('categoryTree');
+        
+        // Mostrar spinner de carga
+        this.showLoadingSpinner(container);
+        
         try {
             const response = await fetch(this.config.treeDataUrl);
             this.treeData = await response.json();
@@ -39,7 +44,40 @@ class CategoryHierarchyManager {
             console.log('✅ Árbol cargado:', this.treeData.length, 'familias');
         } catch (error) {
             console.error('❌ Error cargando árbol:', error);
+            this.showErrorState(container);
         }
+    }
+    
+    // ========================================
+    // ⏳ MOSTRAR SPINNER DE CARGA
+    // ========================================
+    showLoadingSpinner(container) {
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="tree-loading-state">
+                <div class="loading-spinner"></div>
+                <p>Cargando árbol de categorías...</p>
+            </div>
+        `;
+    }
+    
+    // ========================================
+    // ❌ MOSTRAR ESTADO DE ERROR
+    // ========================================
+    showErrorState(container) {
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="tree-error-state">
+                <i class="ri-error-warning-line"></i>
+                <p>Error al cargar las categorías</p>
+                <button type="button" class="boton-form boton-action" onclick="window.hierarchyManager.loadTreeData()">
+                    <span class="boton-form-icon"><i class="ri-refresh-line"></i></span>
+                    <span class="boton-form-text">Reintentar</span>
+                </button>
+            </div>
+        `;
     }
     
     // ========================================
@@ -112,11 +150,12 @@ class CategoryHierarchyManager {
         item.dataset.categoryData = JSON.stringify(category);
         
         const card = document.createElement('div');
-        card.className = 'category-card';
-        
         const hasChildren = category.children && category.children.length > 0;
         const productsCount = category.li_attr['data-products-count'] || 0;
         const isActive = category.li_attr['data-status'] === '1';
+        
+        // Clase diferente para categorías padre vs hoja
+        card.className = hasChildren ? 'category-card category-parent' : 'category-card category-leaf';
         
         card.innerHTML = `
             <div class="category-drag-handle">
@@ -147,7 +186,7 @@ class CategoryHierarchyManager {
             </div>
             <div class="category-actions">
                 <button class="category-action-btn edit" data-action="edit">
-                    <i class="ri-edit-circle-fill"></i>
+                    <i class="ri-edit-circle-line"></i>
                 </button>
                 <button class="category-action-btn delete" data-action="delete">
                     <i class="ri-delete-bin-line"></i>
@@ -213,11 +252,36 @@ class CategoryHierarchyManager {
             group: 'categories',
             animation: 200,
             handle: '.category-drag-handle',
-            ghostClass: 'dragging',
-            dragClass: 'drag-over',
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
             fallbackOnBody: true,
             swapThreshold: 0.65,
+            direction: 'vertical',
+            forceFallback: true,
+            
+            // Indicador visual de dónde se soltará
+            onMove: (evt) => {
+                const target = evt.related;
+                if (target) {
+                    // Añadir clase visual al objetivo
+                    target.classList.add('drop-target-indicator');
+                }
+                return true;
+            },
+            
+            onChange: (evt) => {
+                // Limpiar indicadores previos
+                document.querySelectorAll('.drop-target-indicator').forEach(el => {
+                    el.classList.remove('drop-target-indicator');
+                });
+            },
+            
             onEnd: async (evt) => {
+                // Limpiar indicadores al soltar
+                document.querySelectorAll('.drop-target-indicator').forEach(el => {
+                    el.classList.remove('drop-target-indicator');
+                });
                 // Obtener datos del item movido
                 const movedItem = evt.item;
                 const categoryId = movedItem.dataset.categoryId;
@@ -346,6 +410,12 @@ class CategoryHierarchyManager {
         const card = item.querySelector('.category-card');
         const categoryId = item.dataset.categoryId;
         
+        // Si hay una categoría seleccionada individualmente (clic normal), limpiarla
+        if (this.currentCategory) {
+            this.clearSingleSelection();
+            this.currentCategory = null;
+        }
+        
         if (this.selectedNodes.has(categoryId)) {
             this.selectedNodes.delete(categoryId);
             checkbox.checked = false;
@@ -370,12 +440,9 @@ class CategoryHierarchyManager {
             return;
         }
         
-        // Limpiar selecciones múltiples si existen
+        // Limpiar selecciones múltiples (checkboxes) si existen
         if (this.selectedNodes.size > 0) {
-            this.selectedNodes.clear();
-            document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
-                cb.checked = false;
-            });
+            this.clearCheckboxSelections();
         }
         
         // Deseleccionar otros (solo para selección individual)
@@ -385,6 +452,28 @@ class CategoryHierarchyManager {
         
         item.querySelector('.category-card').classList.add('selected');
         this.showSingleInfo(category);
+    }
+    
+    // ========================================
+    // 🧹 MÉTODOS AUXILIARES DE LIMPIEZA
+    // ========================================
+    clearCheckboxSelections() {
+        this.selectedNodes.clear();
+        document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
+            cb.checked = false;
+        });
+        document.querySelectorAll('.category-card.selected').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        const deselectBtn = document.getElementById('deselectAll');
+        if (deselectBtn) deselectBtn.style.display = 'none';
+    }
+    
+    clearSingleSelection() {
+        document.querySelectorAll('.category-card.selected').forEach(card => {
+            card.classList.remove('selected');
+        });
     }
     
     // ========================================

@@ -60,13 +60,17 @@
                     <div class="input-icon-container">
                         <i class="ri-focus-2-line input-icon"></i>
                         <select name="status" id="status" class="select-form" required>
-                            <option value="" disabled hidden></option>
-                            <option value="1" {{ old('status', $family->status) == '1' ? 'selected' : '' }}>Activo
+                            <option value="" disabled>Seleccione un estado</option>
+
+                            <option value="1" @selected(old('status', $family->status) == 1)>
+                                Activo
                             </option>
-                            <option value="0" {{ old('status', $family->status) == '0' ? 'selected' : '' }}>
+
+                            <option value="0" @selected(old('status', $family->status) == 0)>
                                 Inactivo
                             </option>
                         </select>
+
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
                 </div>
@@ -160,22 +164,22 @@
     </form>
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar manejador de imágenes
-            const imageHandler = initImageUpload({
-                mode: 'edit',
-                hasExistingImage: {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'true' : 'false' }},
-                existingImageFilename: '{{ $family->image ? basename($family->image) : '' }}'
-            });
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Inicializar manejador de imágenes
+                const imageHandler = initImageUpload({
+                    mode: 'edit',
+                    hasExistingImage: {{ $family->image && file_exists(public_path('storage/' . $family->image)) ? 'true' : 'false' }},
+                    existingImageFilename: '{{ $family->image ? basename($family->image) : '' }}'
+                });
 
-            // Inicializar loading del botón submit
-            const submitLoader = initSubmitLoader({
-                formId: 'familyForm',
-                buttonId: 'submitBtn',
-                loadingText: 'Actualizando...'
+                // Inicializar loading del botón submit
+                const submitLoader = initSubmitLoader({
+                    formId: 'familyForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Actualizando...'
+                });
             });
-        });
-    </script>
+        </script>
     @endpush
 </x-admin-layout>

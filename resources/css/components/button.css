@@ -135,7 +135,7 @@
     background-color: var(--color-sidebar-bg);
     padding: 5px 10px;
     border-radius: var(--radius-element);
-    border: 1px solid var(--color-border);
+    border-color: var(--color-border);
 }
 
 /* Boton de Selection */
@@ -247,4 +247,28 @@
 
 .boton-sm:active {
     transform: scale(0.95);
+}
+
+
+.boton-single{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    min-height: 35px;
+    z-index: 1;
+    overflow: hidden;
+    padding: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s ease, font-weight 0.3s ease;
+    font-size: var(--font-size-h4);
+}
+
+.boton-single:active {
+    transform: scale(0.95);
+}
+.boton-single:hover {
+    font-weight: bold;
+    color: var(--color-accent);
 }

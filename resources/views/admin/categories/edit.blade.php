@@ -57,8 +57,7 @@
                         <select name="family_id" id="family_select" class="select-form" required>
                             <option value="" disabled>Seleccione una familia</option>
                             @foreach ($families as $family)
-                                <option value="{{ $family->id }}"
-                                    {{ old('family_id', $category->family_id) == $family->id ? 'selected' : '' }}>
+                                <option value="{{ $family->id }}" @selected(old('family_id', $category->family_id) == $family->id)>
                                     {{ $family->name }}
                                 </option>
                             @endforeach
@@ -112,8 +111,6 @@
                     </div>
                 </div>
 
-
-
                 {{-- DESCRIPTION --}}
                 <div class="input-group">
                     <label for="description" class="label-form label-textarea">
@@ -146,14 +143,15 @@
                         <select name="status" id="status" class="select-form" required>
                             <option value="" disabled>Seleccione un estado</option>
 
-                            <option value="1" {{ old('status', $category->status) == '1' ? 'selected' : '' }}>
+                            <option value="1" @selected(old('status', $category->status) == 1)>
                                 Activo
                             </option>
 
-                            <option value="0" {{ old('status', $category->status) == '0' ? 'selected' : '' }}>
+                            <option value="0" @selected(old('status', $category->status) == 0)>
                                 Inactivo
                             </option>
                         </select>
+
 
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>

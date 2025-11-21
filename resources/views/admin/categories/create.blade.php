@@ -15,6 +15,7 @@
     <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data"
         class="form-container" autocomplete="off" id="categoryForm">
         @csrf
+
         <div class="form-info-banner">
             <i class="ri-lightbulb-line form-info-icon"></i>
             <div>
@@ -41,7 +42,7 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-stack-line input-icon"></i>
-                        <select name="family_id" id="family_select" class="select-form" required>
+                        <select name="family_id" id="family_select" class="select-form @error('family_id') input-error @enderror">
                             <option value="" disabled selected>Seleccione una familia</option>
                             @foreach ($families as $family)
                                 <option value="{{ $family->id }}" {{ old('family_id') == $family->id ? 'selected' : '' }}>
@@ -51,6 +52,12 @@
                         </select>
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
+                    @error('family_id')
+                        <span class="input-error-message">
+                            <i class="ri-error-warning-line"></i>
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
 
                 {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
@@ -92,9 +99,15 @@
                     <div class="input-icon-container">
                         <i class="ri-price-tag-3-line input-icon"></i>
 
-                        <input type="text" name="name" id="name" class="input-form" required
+                        <input type="text" name="name" id="name" class="input-form @error('name') input-error @enderror" 
                             value="{{ old('name') }}" placeholder="Ingrese el nombre">
                     </div>
+                    @error('name')
+                        <span class="input-error-message">
+                            <i class="ri-error-warning-line"></i>
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
 
                 {{-- STATUS --}}
@@ -107,7 +120,7 @@
                     <div class="input-icon-container">
                         <i class="ri-focus-2-line input-icon"></i>
 
-                        <select name="status" id="status" class="select-form" required>
+                        <select name="status" id="status" class="select-form @error('status') input-error @enderror">
                             <option value="" disabled selected>Seleccione un estado</option>
 
                             <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>
@@ -121,6 +134,12 @@
 
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
+                    @error('status')
+                        <span class="input-error-message">
+                            <i class="ri-error-warning-line"></i>
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
 
                 {{-- DESCRIPTION --}}
