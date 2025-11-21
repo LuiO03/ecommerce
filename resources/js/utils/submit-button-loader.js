@@ -71,9 +71,18 @@ export class SubmitButtonLoader {
     init() {
         const { form } = this.elements;
 
+        // Guardar instancia global para que FormValidator pueda accederla
+        window.submitLoaderInstance = this;
+
+        // Usar 'submit' event con prioridad baja (se ejecuta después del validador)
         form.addEventListener('submit', (e) => {
-            // No prevenir el submit, solo mostrar loading
-            this.showLoading();
+            // Solo mostrar loading si el submit no fue prevenido por el validador
+            // Usar setTimeout para que se ejecute después del validador
+            setTimeout(() => {
+                if (!e.defaultPrevented) {
+                    this.showLoading();
+                }
+            }, 0);
         });
     }
 

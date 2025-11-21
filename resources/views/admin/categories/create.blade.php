@@ -16,6 +16,21 @@
         class="form-container" autocomplete="off" id="categoryForm">
         @csrf
 
+        {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
+        @if ($errors->any())
+            <div class="form-error-banner">
+                <i class="ri-error-warning-line form-error-icon"></i>
+                <div>
+                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <div class="form-info-banner">
             <i class="ri-lightbulb-line form-info-icon"></i>
             <div>
@@ -42,7 +57,9 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-stack-line input-icon"></i>
-                        <select name="family_id" id="family_select" class="select-form @error('family_id') input-error @enderror">
+                        <select name="family_id" id="family_select" class="select-form @error('family_id') input-error @enderror"
+                            data-validate="required|selected"
+                            data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
                             <option value="" disabled selected>Seleccione una familia</option>
                             @foreach ($families as $family)
                                 <option value="{{ $family->id }}" {{ old('family_id') == $family->id ? 'selected' : '' }}>
@@ -54,7 +71,7 @@
                     </div>
                     @error('family_id')
                         <span class="input-error-message">
-                            <i class="ri-error-warning-line"></i>
+                            <i class="ri-error-warning-fill"></i>
                             {{ $message }}
                         </span>
                     @enderror
@@ -100,11 +117,13 @@
                         <i class="ri-price-tag-3-line input-icon"></i>
 
                         <input type="text" name="name" id="name" class="input-form @error('name') input-error @enderror" 
-                            value="{{ old('name') }}" placeholder="Ingrese el nombre">
+                            value="{{ old('name') }}" placeholder="Ingrese el nombre"
+                            data-validate="required|min:3|max:100"
+                            data-validate-messages='{"required":"El nombre es obligatorio","min":"El nombre debe tener al menos 3 caracteres","max":"El nombre no puede exceder 100 caracteres"}'>
                     </div>
                     @error('name')
                         <span class="input-error-message">
-                            <i class="ri-error-warning-line"></i>
+                            <i class="ri-error-warning-fill"></i>
                             {{ $message }}
                         </span>
                     @enderror
@@ -120,7 +139,9 @@
                     <div class="input-icon-container">
                         <i class="ri-focus-2-line input-icon"></i>
 
-                        <select name="status" id="status" class="select-form @error('status') input-error @enderror">
+                        <select name="status" id="status" class="select-form @error('status') input-error @enderror"
+                            data-validate="required|selected"
+                            data-validate-messages='{"required":"Debe seleccionar un estado","selected":"Debe seleccionar un estado válido"}'>
                             <option value="" disabled selected>Seleccione un estado</option>
 
                             <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>
@@ -136,7 +157,7 @@
                     </div>
                     @error('status')
                         <span class="input-error-message">
-                            <i class="ri-error-warning-line"></i>
+                            <i class="ri-error-warning-fill"></i>
                             {{ $message }}
                         </span>
                     @enderror
@@ -203,23 +224,30 @@
         <script>
             // SISTEMA DE JERARQUÍA DE CATEGORÍAS PROGRESIVA
             document.addEventListener('DOMContentLoaded', function() {
-                // Inicializar jerarquía de categorías
+                // 1. Inicializar submit loader PRIMERO
+                const submitLoader = initSubmitLoader({
+                    formId: 'categoryForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Guardando...'
+                });
+
+                // 2. Inicializar validación de formulario DESPUÉS
+                const formValidator = initFormValidator('#categoryForm', {
+                    validateOnBlur: true,
+                    validateOnInput: false,
+                    scrollToFirstError: true
+                });
+
+                // 3. Inicializar jerarquía de categorías
                 const hierarchyManager = initCategoryHierarchy({
                     categoriesData: {!! json_encode($allCategories) !!},
                     initialFamilyId: '{{ old("family_id") }}' ? parseInt('{{ old("family_id") }}') : null,
                     initialParentId: '{{ old("parent_id") }}' ? parseInt('{{ old("parent_id") }}') : null
                 });
 
-                // Inicializar manejador de imágenes
+                // 4. Inicializar manejador de imágenes
                 const imageHandler = initImageUpload({
                     mode: 'create'
-                });
-
-                // Inicializar loading del botón submit
-                const submitLoader = initSubmitLoader({
-                    formId: 'categoryForm',
-                    buttonId: 'submitBtn',
-                    loadingText: 'Guardando...'
                 });
             });
         </script>

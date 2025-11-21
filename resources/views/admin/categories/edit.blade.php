@@ -27,6 +27,21 @@
         @csrf
         @method('PUT')
 
+        {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
+        @if ($errors->any())
+            <div class="form-error-banner">
+                <i class="ri-error-warning-line form-error-icon"></i>
+                <div>
+                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <div class="form-info-banner">
             <i class="ri-lightbulb-line form-info-icon"></i>
             <div>
@@ -64,6 +79,12 @@
                         </select>
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
+                    @error('family_id')
+                        <span class="input-error-message">
+                            <i class="ri-error-warning-fill"></i>
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
 
                 {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
@@ -109,6 +130,12 @@
                         <input type="text" name="name" id="name" class="input-form" required
                             value="{{ old('name', $category->name) }}" placeholder="Ingrese el nombre">
                     </div>
+                    @error('name')
+                        <span class="input-error-message">
+                            <i class="ri-error-warning-fill"></i>
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
 
                 {{-- DESCRIPTION --}}
@@ -151,10 +178,14 @@
                                 Inactivo
                             </option>
                         </select>
-
-
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
+                    @error('status')
+                        <span class="input-error-message">
+                            <i class="ri-error-warning-fill"></i>
+                            {{ $message }}
+                        </span>
+                    @enderror
                 </div>
                 {{-- IMAGE UPLOAD --}}
                 <div class="image-upload-section">
@@ -327,7 +358,21 @@
         <script>
             // SISTEMA DE JERARQUÍA DE CATEGORÍAS PROGRESIVA
             document.addEventListener('DOMContentLoaded', function() {
-                // Inicializar jerarquía de categorías
+                // 1. Inicializar submit loader PRIMERO
+                const submitLoader = initSubmitLoader({
+                    formId: 'categoryForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Actualizando...'
+                });
+
+                // 2. Inicializar validación de formulario DESPUÉS (si lo necesitas)
+                // const formValidator = initFormValidator('#categoryForm', {
+                //     validateOnBlur: true,
+                //     validateOnInput: false,
+                //     scrollToFirstError: true
+                // });
+
+                // 3. Inicializar jerarquía de categorías
                 const hierarchyManager = initCategoryHierarchy({
                     categoriesData: {!! json_encode(
                         $parents->map(function ($cat) {
@@ -344,17 +389,11 @@
                     initialParentId: parseInt('{{ old('parent_id', $category->parent_id ?? 0) }}') || null
                 });
 
-                // MANEJO DE IMAGEN Y SUBMIT LOADER
+                // 4. Inicializar manejador de imagen
                 const imageHandler = initImageUpload({
                     mode: 'edit',
                     hasExistingImage: {{ $category->image && file_exists(public_path('storage/' . $category->image)) ? 'true' : 'false' }},
                     existingImageFilename: '{{ $category->image ? basename($category->image) : '' }}'
-                });
-
-                const submitLoader = initSubmitLoader({
-                    formId: 'categoryForm',
-                    buttonId: 'submitBtn',
-                    loadingText: 'Actualizando...'
                 });
             });
         </script>
