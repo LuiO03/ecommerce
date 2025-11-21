@@ -36,7 +36,7 @@
         <li class="breadcrumb">
             <a href="{{ route('admin.dashboard') }}" class="breadcrumb-link ripple-btn">
                 <i class="ri-home-heart-fill breadcrumb-icon"></i>
-                <span>Dashboard</span>
+                <span>Inicio</span>
             </a>
         </li>
         {{-- Módulo principal --}}

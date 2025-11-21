@@ -470,9 +470,6 @@
 }
 
 @media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-    }
     
     .form-column {
         width: 100%;
