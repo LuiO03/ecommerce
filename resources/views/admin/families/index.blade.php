@@ -184,7 +184,7 @@
                                     </button>
                                     <a href="{{ route('admin.families.edit', $family) }}" title="Editar Familia"
                                         class="boton boton-warning">
-                                        <span class="boton-icon"><i class="ri-quill-pen-fill"></i></span>
+                                        <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
                                         <span class="boton-text">Editar</span>
                                     </a>
                                     <form action="{{ route('admin.families.destroy', $family) }}" method="POST"

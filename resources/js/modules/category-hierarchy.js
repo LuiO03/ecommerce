@@ -9,6 +9,7 @@ class CategoryHierarchyManager {
     constructor() {
         this.treeData = null;
         this.selectedNodes = new Set();
+        this.currentCategory = null;
         this.config = window.hierarchyConfig || {};
         this.sortableInstances = [];
         
@@ -89,10 +90,11 @@ class CategoryHierarchyManager {
             family.children.forEach(category => {
                 children.appendChild(this.createCategoryItem(category));
             });
-            
-            // Inicializar Sortable para drag & drop
-            this.initSortable(children);
         }
+        
+        // Inicializar Sortable para TODAS las familias (incluso vacías)
+        // Esto permite arrastrar categorías a familias sin hijos
+        this.initSortable(children);
         
         card.appendChild(header);
         card.appendChild(children);
@@ -124,10 +126,14 @@ class CategoryHierarchyManager {
                 <div class="category-toggle">
                     <i class="ri-arrow-down-s-line"></i>
                 </div>
-            ` : '<div style="width: 20px;"></div>'}
+            ` : `
+                <div class="category-toggle" style="pointer-events: none;">
+                    <i class="ri-corner-down-right-line"></i>
+                </div>
+            `}
             <input type="checkbox" class="category-checkbox">
             <div class="category-icon">
-                <i class="ri-folder-line"></i>
+                <i class="${hasChildren ? 'ri-folder-line' : 'ri-file-line'}"></i>
             </div>
             <div class="category-info">
                 <div class="category-name">${category.text.replace(/\(\d+\)/, '').trim()}</div>
@@ -141,7 +147,7 @@ class CategoryHierarchyManager {
             </div>
             <div class="category-actions">
                 <button class="category-action-btn edit" data-action="edit">
-                    <i class="ri-edit-line"></i>
+                    <i class="ri-edit-circle-fill"></i>
                 </button>
                 <button class="category-action-btn delete" data-action="delete">
                     <i class="ri-delete-bin-line"></i>
@@ -170,13 +176,15 @@ class CategoryHierarchyManager {
         const editBtn = card.querySelector('[data-action="edit"]');
         editBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            window.location.href = this.config.editCategoryUrl.replace(':id', category.li_attr['data-id']);
+            const slug = category.li_attr['data-slug'];
+            window.location.href = this.config.editCategoryUrl.replace(':id', slug);
         });
         
         const deleteBtn = card.querySelector('[data-action="delete"]');
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.deleteCategory(category.li_attr['data-id'], category.text);
+            const slug = category.li_attr['data-slug'];
+            this.deleteCategory(slug, category.text, category.li_attr['data-id']);
         });
         
         item.appendChild(card);
@@ -416,7 +424,15 @@ class CategoryHierarchyManager {
     showSingleInfo(category) {
         const liAttr = category.li_attr;
         
-        document.getElementById('infoName').textContent = category.text.replace(/\(\d+\)/, '').trim();
+        // Almacenar los datos de la categoría actual para uso en botones
+        this.currentCategory = {
+            id: liAttr['data-id'],
+            slug: liAttr['data-slug'],
+            name: category.text.replace(/\(\d+\)/, '').trim()
+        };
+        
+        document.getElementById('infoName').textContent = this.currentCategory.name;
+        document.getElementById('infoId').textContent = this.currentCategory.id;
         
         // Obtener la familia (si es subcategoría, obtener la familia del padre raíz)
         const familyName = this.getRootFamilyName(category);
@@ -433,7 +449,7 @@ class CategoryHierarchyManager {
             : '<span class="badge boton-danger"><i class="ri-close-circle-fill"></i>Inactivo</span>';
         document.getElementById('infoSlug').textContent = liAttr['data-slug'] || '-';
         
-        const editUrl = this.config.editCategoryUrl.replace(':id', liAttr['data-id']);
+        const editUrl = this.config.editCategoryUrl.replace(':id', this.currentCategory.slug);
         document.getElementById('editCategory').setAttribute('href', editUrl);
         
         this.showPanel('single');
@@ -569,6 +585,21 @@ class CategoryHierarchyManager {
             });
             this.updateSelection();
         });
+
+        // Botón de crear subcategoría
+        document.getElementById('createChild')?.addEventListener('click', () => {
+            if (this.currentCategory) {
+                // Redirigir a la página de creación con el parent_id en la URL
+                window.location.href = `/admin/categories/create?parent_id=${this.currentCategory.id}`;
+            }
+        });
+
+        // Botón de eliminar desde el panel de información
+        document.getElementById('deleteCategory')?.addEventListener('click', () => {
+            if (this.currentCategory) {
+                this.deleteCategory(this.currentCategory.slug, this.currentCategory.name, this.currentCategory.id);
+            }
+        });
     }
     
     // ========================================
@@ -643,17 +674,79 @@ class CategoryHierarchyManager {
     // ========================================
     // 🗑️ ELIMINAR CATEGORÍA
     // ========================================
-    async deleteCategory(id, name) {
-        const confirmed = await window.showConfirmModal({
-            title: '¿Eliminar categoría?',
-            message: `¿Estás seguro de eliminar "${name}"?`,
-            confirmText: 'Eliminar',
-            confirmClass: 'boton-danger'
-        });
+    async deleteCategory(slug, name, id = null) {
+        // Limpiar el nombre (remover conteo de productos)
+        const cleanName = name.replace(/\(\d+\)/, '').trim();
         
-        if (confirmed) {
-            // Implementar lógica de eliminación
-            console.log('🗑️ Eliminar categoría:', id);
+        // Usar el sistema global de confirmación
+        window.showConfirm({
+            type: 'danger',
+            header: 'Confirmar eliminación',
+            title: '¿Eliminar categoría?',
+            message: `¿Estás seguro de que deseas eliminar la categoría <strong>"${cleanName}"</strong>?<br><span>Esta acción no se puede deshacer.</span>`,
+            confirmText: 'Sí, eliminar',
+            cancelText: 'No, cancelar',
+            onConfirm: async () => {
+                await this.performDelete(slug, cleanName);
+            }
+        });
+    }
+    
+    // ========================================
+    // 💾 EJECUTAR ELIMINACIÓN
+    // ========================================
+    async performDelete(slug, name) {
+        try {
+            // Crear FormData para enviar la petición DELETE
+            const formData = new FormData();
+            formData.append('_method', 'DELETE');
+            formData.append('_token', this.config.csrfToken);
+            
+            const response = await fetch(`/admin/categories/${slug}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': this.config.csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                // Mostrar toast de éxito
+                if (typeof window.showToast === 'function') {
+                    window.showToast({
+                        type: 'success',
+                        title: 'Categoría eliminada',
+                        message: `La categoría "${name}" ha sido eliminada exitosamente.`,
+                        duration: 4000
+                    });
+                }
+                
+                // Recargar el árbol para reflejar cambios
+                await this.loadTreeData();
+                
+                // Cerrar el panel de información si estaba abierto
+                this.showPanel('empty');
+                
+            } else {
+                // Error del servidor
+                throw new Error(data.message || 'Error al eliminar la categoría');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error al eliminar categoría:', error);
+            
+            // Mostrar modal de error
+            if (typeof window.showInfoModal === 'function') {
+                window.showInfoModal({
+                    type: 'danger',
+                    header: 'Error',
+                    title: 'No se pudo eliminar',
+                    message: error.message || 'Ocurrió un error al intentar eliminar la categoría. Puede que tenga subcategorías o productos asociados.'
+                });
+            }
         }
     }
     

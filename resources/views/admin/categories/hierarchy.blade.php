@@ -113,6 +113,13 @@
                     <div class="info-details">
                         <div class="info-row">
                             <span class="info-label">
+                                <i class="ri-hashtag"></i> ID:
+                            </span>
+                            <span id="infoId" style="font-family: 'Monaco', 'Courier New', monospace; font-weight: bold;">-</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
                                 <i class="ri-folder-3-line"></i> Familia:
                             </span>
                             <span id="infoFamily">-</span>
@@ -154,14 +161,19 @@
                         </div>
                     </div>
                     <div class="panel-actions">
-                        <a href="#" id="editCategory" class="boton boton-warning btn-block">
-                            <span class="boton-icon"><i class="ri-edit-line"></i></span>
-                            <span class="boton-text">Editar</span>
+                        <a href="#" id="editCategory" class="boton-form boton-warning btn-block">
+                            <span class="boton-form-icon"><i class="ri-edit-circle-fill"></i></span>
+                            <span class="boton-form-text">Editar</span>
                         </a>
 
-                        <button type="button" id="createChild" class="boton boton-success btn-block">
-                            <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
-                            <span class="boton-text">Crear Subcategoría</span>
+                        <button type="button" id="createChild" class="boton-form boton-success btn-block">
+                            <span class="boton-form-icon"><i class="ri-add-circle-fill"></i></span>
+                            <span class="boton-form-text">Crear Subcategoría</span>
+                        </button>
+
+                        <button type="button" id="deleteCategory" class="boton-form boton-danger btn-block">
+                            <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
+                            <span class="boton-form-text">Eliminar Categoría</span>
                         </button>
                     </div>
                 </div>
@@ -229,12 +241,12 @@
 
                             <div class="bulk-buttons">
                                 <button type="button" id="bulkDuplicate" class="boton-form boton-secondary btn-block">
-                                    <span class="boton-form-icon"><i class="ri-file-copy-line"></i></span>
+                                    <span class="boton-form-icon"><i class="ri-file-copy-fill"></i></span>
                                     <span class="boton-form-text">Duplicar Seleccionados</span>
                                 </button>
     
                                 <button type="button" id="bulkDelete" class="boton-form boton-danger btn-block">
-                                    <span class="boton-form-icon"><i class="ri-delete-bin-line"></i></span>
+                                    <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
                                     <span class="boton-form-text">Eliminar Seleccionados</span>
                                 </button>
                             </div>

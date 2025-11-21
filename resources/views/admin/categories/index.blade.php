@@ -244,7 +244,7 @@
                                     </button>
                                     <a href="{{ route('admin.categories.edit', $cat) }}"
                                         class="boton-sm boton-warning">
-                                        <span class="boton-sm-icon"><i class="ri-quill-pen-fill"></i></span>
+                                        <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
                                     </a>
                                     <form action="{{ route('admin.categories.destroy', $cat) }}"
                                         method="POST" class="delete-form"

@@ -180,7 +180,7 @@
     padding: 0.625rem 0.75rem;
     cursor: pointer;
     user-select: none;
-    background: var(--color-sidebar-bg);
+    background: var(--color-card-bg);
     transition: transform 0.2s ease;
     border-bottom: 1px solid var(--color-border);
 }
@@ -239,6 +239,7 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    background-color: var(--color-sidebar-bg);
 }
 
 .family-card.collapsed .family-children {
@@ -261,7 +262,6 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.625rem;
-    background: var(--color-card-bg);
     border: 2px solid transparent;
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -279,12 +279,16 @@
     border-color: var(--color-accent);
 }
 .category-card .category-name{
-    transition: color 0.2s ease, font-weight 0.2s ease, font-family 0.2s ease;
+    transition: font-weight 0.2s ease, font-family 0.2s ease;
 }
 .category-card.selected .category-name{
     font-family: var(--font-secondary);
     font-weight: bold;
     color: var(--color-accent) !important;
+}
+
+.category-card.selected .category-icon i{
+    color: white !important;
 }
 
 .category-card.dragging {
@@ -367,6 +371,11 @@
 .category-card.selected .category-icon {
     background: var(--color-accent);
     color: white;
+}
+
+/* Icono para categorías sin hijos (archivos) */
+.category-icon i.ri-file-line {
+    color: var(--color-info);
 }
 
 .category-info {
@@ -605,11 +614,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.85rem;
-    background: var(--color-hover);
-    border-radius: var(--radius-card);
-    border: 1px solid var(--color-border);
+    gap: 5px;
+    padding: 0.5rem 0px;
 }
 
 .info-label {
@@ -657,14 +663,14 @@
 
 .panel-actions {
     padding: 0.75rem;
-    justify-content: space-between;
+    flex-wrap: wrap;
     border-top: 1px solid var(--color-border);
     display: flex;
     gap: 0.5rem;
 }
 
 .btn-block {
-    width: max-content;
+    flex: 1 1 auto;
 }
 
 /* ========================================
@@ -707,6 +713,14 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+.bulk-buttons .btn-block{
+    flex-direction: column;
+}
+
+.bulk-buttons .btn-block i{
+    font-size: var(--font-size-h3);
 }
 
 .select-group .form-select{
