@@ -9,6 +9,8 @@
 @import "./components/breadcrumb.css";
 @import "./components/table.css";
 @import "./components/form.css";
+@import "./components/validation.css";
+@import "./components/alert.css";
 @import "./components/button.css";
 @import "./components/modal-confirm.css";
 @import "./components/modal-info.css";

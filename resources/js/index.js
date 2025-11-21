@@ -10,6 +10,7 @@ import './dashboard/theme-toggle.js';
 import './utils/material-design.js';
 
 import './modals/modal-confirm.js';
+import './components/alert.js';
 import './utils/datatable-manager.js';
 import './modules/category-hierarchy.js';
 import { initImageUpload } from './utils/image-upload-handler.js';

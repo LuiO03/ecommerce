@@ -151,10 +151,11 @@ export class CategoryHierarchyManager {
 
         if (rootCategories.length === 0) {
             // No hay categorías disponibles
-            this.elements.noFamilyMessage.style.display = 'flex';
+            this.elements.noFamilyMessage.style.display = 'block';
+            this.elements.noFamilyMessage.className = 'label-hint'; // Usar clase con estilos
             this.elements.noFamilyMessage.innerHTML = this.config.currentCategoryId
-                ? '<i class="ri-information-line"></i> No hay categorías disponibles en esta familia. Se mantendrá como categoría raíz.'
-                : '<i class="ri-information-line"></i> No hay categorías en esta familia. Se creará como categoría raíz.';
+                ? '<i class="ri-information-line"></i> <span>No hay categorías disponibles en esta familia. Se mantendrá como categoría raíz.</span>'
+                : '<i class="ri-information-line"></i> <span>No hay categorías en esta familia. Se creará como categoría raíz.</span>';
             this.elements.categoryContainer.style.display = 'none';
             this.updateBreadcrumb([]);
         } else {
@@ -283,8 +284,9 @@ export class CategoryHierarchyManager {
     resetCategorySelects() {
         this.elements.categoryContainer.innerHTML = '';
         this.elements.categoryContainer.style.display = 'none';
-        this.elements.noFamilyMessage.style.display = 'flex';
-        this.elements.noFamilyMessage.innerHTML = '<i class="ri-information-line"></i> Primero selecciona una familia para ver las categorías disponibles';
+        this.elements.noFamilyMessage.style.display = 'block';
+        this.elements.noFamilyMessage.className = 'label-hint'; // Usar clase con estilos
+        this.elements.noFamilyMessage.innerHTML = '<i class="ri-information-line"></i> <span>Primero selecciona una familia para ver las categorías disponibles</span>';
         this.selectedPath = [];
         this.elements.parentInput.value = '';
         this.updateBreadcrumb([]);

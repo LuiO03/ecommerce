@@ -14,15 +14,9 @@
     <form action="{{ route('admin.families.store') }}" method="POST" enctype="multipart/form-data" class="form-container"
         autocomplete="off" id="familyForm">
         @csrf
-        <div class="form-info-banner">
-            <i class="ri-lightbulb-line form-info-icon"></i>
-            <div>
-                <h4 class="form-info-title">Información:</h4>
-                <ul>
-                    <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.</li>
-                </ul>
-            </div>
-        </div>
+
+        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+
         <div class="form-row">
             <div class="form-column">
                 <!-- === Nombre === -->
@@ -34,7 +28,8 @@
                     <div class="input-icon-container">
                         <i class="ri-price-tag-3-line input-icon"></i>
                         <input type="text" name="name" id="name" class="input-form" required
-                            value="{{ old('name') }}" placeholder="Ingrese el nombre">
+                            value="{{ old('name') }}" placeholder="Ingrese el nombre"
+                            data-validate="required|min:3|max:100|alphanumeric">
                     </div>
                 </div>
                 <!-- === Estado === -->
@@ -45,7 +40,8 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-focus-2-line input-icon"></i>
-                        <select name="status" id="status" class="select-form" required>
+                        <select name="status" id="status" class="select-form" required
+                            data-validate="required|selected">
                             <option value="" disabled selected>Seleccione un estado</option>
                             <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Activo</option>
                             <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactivo</option>
@@ -58,7 +54,7 @@
                     <label for="description" class="label-form label-textarea">Descripción de la familia</label>
                     <div class="input-icon-container">
                         <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
-                            required>{{ old('description') }}</textarea>
+                            data-validate="min:10|max:500">{{ old('description') }}</textarea>
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
                 </div>
@@ -68,7 +64,8 @@
                 <!-- === Imagen === -->
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la familia</label>
-                    <input type="file" name="image" id="image" class="file-input" accept="image/*">
+                    <input type="file" name="image" id="image" class="file-input" accept="image/*"
+                        data-validate="image|maxSizeMB:3">
 
                     <!-- Zona de vista previa -->
                     <div class="image-preview-zone" id="imagePreviewZone">
@@ -100,8 +97,6 @@
             </div>
         </div>
 
-
-
         <div class="form-footer">
             <a href="{{ route('admin.families.index') }}" class="boton-form boton-volver">
                 <span class="boton-form-icon"> <i class="ri-arrow-left-circle-fill"></i> </span>
@@ -121,20 +116,27 @@
     </form>
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar manejador de imágenes
-            const imageHandler = initImageUpload({
-                mode: 'create'
-            });
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Inicializar manejador de imágenes
+                const imageHandler = initImageUpload({
+                    mode: 'create'
+                });
 
-            // Inicializar loading del botón submit
-            const submitLoader = initSubmitLoader({
-                formId: 'familyForm',
-                buttonId: 'submitBtn',
-                loadingText: 'Guardando...'
+                // 1. Inicializar submit loader PRIMERO
+                const submitLoader = initSubmitLoader({
+                    formId: 'familyForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Guardando...'
+                });
+
+                // 2. Inicializar validación de formulario DESPUÉS
+                const formValidator = initFormValidator('#familyForm', {
+                    validateOnBlur: true,
+                    validateOnInput: false,
+                    scrollToFirstError: true
+                });
             });
-        });
-    </script>
+        </script>
     @endpush
 </x-admin-layout>

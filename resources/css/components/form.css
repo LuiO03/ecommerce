@@ -6,105 +6,31 @@
     gap: 20px;
 }
 
-/* === Banner de información === */
-
-.form-info-banner {
+/* === Mensaje de información contextual (usado en jerarquía) === */
+.label-hint {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
-    background: linear-gradient(135deg, var(--color-primary-pastel ) 0%, var(--color-info-pastel) 100%);
-    border-left: 4px solid var(--color-info);
-    border-radius: var(--radius-element);
-    font-size: var(--font-size-sm);
-    color: var(--color-text);
-}
-
-.form-info-banner .form-info-icon {
-    font-size: 1.5rem;
+    align-items: center;
+    gap: 8px;
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--font-size-xs);
     color: var(--color-info);
-    margin-top: 2px;
-}
-
-.form-info-banner div {
-    display: flex;
-    flex-direction: column;
-    gap: 0px;
-}
-
-.form-info-title {
-    font-family: var(--font-secondary);
-    font-weight: bolder;
-}
-
-.form-info-banner ul {
-    margin: 4px 0px 0px 16px;
-    padding: 0px;
-    list-style-type: disc;
-}
-
-.form-info-banner li {
-    color: var(--color-text-soft);
-    font-size: var(--font-size-xs);
-}
-
-/* === Banner de errores === */
-
-.form-error-banner {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
-    background-color: var(--color-danger-pastel);
-    border-left: 4px solid var(--color-danger);
+    padding: 5px 12px;
+    background-color: var(--color-info-pastel);
+    border-left: 3px solid var(--color-info);
     border-radius: var(--radius-element);
-    font-size: var(--font-size-sm);
-    color: var(--color-text);
-    animation: slideDown 0.3s ease-out;
 }
 
-.form-error-banner .form-error-icon {
-    font-size: 1.5rem;
-    color: var(--color-danger);
-    margin-top: 2px;
-}
-
-.form-error-banner div {
-    display: flex;
-    flex-direction: column;
-    gap: 0px;
-}
-
-.form-error-title {
-    font-family: var(--font-secondary);
-    font-weight: bolder;
-    color: var(--color-danger);
-}
-
-.form-error-banner ul {
-    margin: 4px 0px 0px 16px;
-    padding: 0px;
-    list-style-type: disc;
-}
-
-.form-error-banner li {
-    color: var(--color-text);
+.label-italic{
+    font-style: italic;
+    font-weight: 400;
     font-size: var(--font-size-xs);
+    color: var(--color-text-soft);
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.form-warning{
-    padding: 0px 0px 20px 0px;
+.label-hint i {
+    font-size: 1rem;
+    color: var(--color-info);
 }
 
 /* === Grupo contenedor === */
@@ -153,7 +79,7 @@
     border-radius: var(--radius-element);
     font-size: var(--font-size-sm);
     background: var(--color-input-bg);
-    border: 1px solid var(--color-input-border);
+    border: 2px solid var(--color-input-border);
     transition: border 0.2s ease;
     padding: 10px 12px 10px 40px; /* espacio para el icono */
     display: block;
@@ -223,7 +149,7 @@
     color: var(--color-inverse);
     pointer-events: none;
     background-color: var(--color-input-bg);
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: color 0.3s ease, transform 0.2s ease, background-color 0.3s ease; /* Agregada transición de background */
 }
 
 /* === Focus === */
@@ -255,33 +181,6 @@
 .select-form option:focus {
     background-color: var(--color-accent) !important;
     color: #fff;
-}
-
-/* === Mensaje de error inline === */
-.input-error-message {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: -4px;
-    padding: 6px 10px;
-    background-color: var(--color-danger-pastel);
-    border-left: 3px solid var(--color-danger);
-    border-radius: var(--radius-element);
-    color: var(--color-danger);
-    font-size: var(--font-size-xs);
-    font-weight: 500;
-    animation: shake 0.3s ease-in-out;
-}
-
-.input-error-message i {
-    font-size: 14px;
-    color: var(--color-danger);
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
 }
 
 /* === Grupo archivo === */
@@ -583,13 +482,6 @@
 /* === JERARQUÍA DE CATEGORÍAS PROGRESIVA === */
 .hierarchy-select-wrapper {
     width: 100%;
-}
-
-.label-hint {
-    font-style: italic;
-    font-weight: 400;
-    font-size: var(--font-size-xs);
-    color: var(--color-text-soft);
 }
 
 /* === ANIMACIÓN SPIN === */

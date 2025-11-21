@@ -88,6 +88,41 @@ public function scopeForTable($query) {
 **Sistema:** Remix Icon (clases `ri-*-line` y `ri-*-fill`)  
 **NO uses** Font Awesome, Material Icons u otros.
 
+### Componente Alert
+**Ver:** `docs/alert-component.md` | **Archivos:** `app/View/Components/Alert.php`, `resources/views/components/alert.blade.php`
+
+Componente reutilizable para banners contextuales (info, warning, danger, success):
+```blade
+{{-- Con lista de items --}}
+<x-alert 
+    type="info" 
+    title="Guía rápida:" 
+    :items="[
+        'Item 1 con <strong>HTML</strong>',
+        'Item 2 con <i class=\'ri-check-line\'></i> icono'
+    ]"
+/>
+
+{{-- Con slot personalizado --}}
+<x-alert type="warning" title="Advertencia:">
+    Contenido personalizado del banner.
+</x-alert>
+
+{{-- Con botón de cerrar --}}
+<x-alert type="success" :dismissible="true" title="¡Éxito!">
+    Mensaje que puede cerrarse.
+</x-alert>
+```
+
+**Parámetros:**
+- `type`: `'info'` (default), `'warning'`, `'danger'`, `'success'`
+- `title`: Título del banner
+- `items`: Array de strings (soporta HTML)
+- `dismissible`: `true` para mostrar botón X
+- `icon`: Ícono personalizado (opcional)
+- `data-persist-key`: Clave localStorage (no vuelve a aparecer)
+- `data-auto-dismiss`: Tiempo en ms para auto-cierre
+
 ## JavaScript Patterns
 
 ### Eliminación Múltiple Global

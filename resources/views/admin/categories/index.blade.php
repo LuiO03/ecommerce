@@ -198,7 +198,7 @@
                             </td>
                             <td class="column-id-td">{{ $cat->id }}</td>
                             <td class="column-name-td">{{ $cat->name }}</td>
-                            <td class="column-description-td">{{ $cat->description }}</td>
+                            <td class="column-description-td">{{ $cat->description ?? 'Sin descripción' }}</td>
                             <td class="column-family-td" data-family-id="{{ $cat->family_id ?? '' }}">
                                 @if($cat->family)
                                     <span class="badge badge-info">
@@ -221,7 +221,7 @@
                                 @else
                                     <span class="badge badge-gray">
                                         <i class="ri-git-branch-line"></i>
-                                        Sin padre
+                                        Categoría Raíz
                                     </span>
                                 @endif
                             </td>

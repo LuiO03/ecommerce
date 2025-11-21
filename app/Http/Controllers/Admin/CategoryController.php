@@ -131,10 +131,12 @@ class CategoryController extends Controller
         $request->validate([
             'family_id' => 'required|exists:families,id',
             'parent_id' => 'nullable|exists:categories,id',
-            'name'      => 'required|string|max:255|min:3|unique:categories,name',
+            'name'      => 'required|string|max:255|min:3|unique:categories,name|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status'    => 'required|boolean',
             'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
 
         $slug = Category::generateUniqueSlug($request->name);
@@ -233,10 +235,12 @@ class CategoryController extends Controller
         $request->validate([
             'family_id' => 'required|exists:families,id',
             'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id,
-            'name'      => 'required|string|max:255|min:3|unique:categories,name,' . $category->id,
+            'name'      => 'required|string|max:255|min:3|unique:categories,name,' . $category->id . '|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status'    => 'required|boolean',
             'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
 
         $slug = Category::generateUniqueSlug($request->name, $category->id);

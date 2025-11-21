@@ -26,15 +26,14 @@
         @csrf
         @method('PUT')
 
-        <div class="form-info-banner">
-            <i class="ri-lightbulb-line form-info-icon"></i>
-            <div>
-                <h4 class="form-info-title">Información:</h4>
-                <ul>
-                    <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.</li>
-                </ul>
-            </div>
-        </div>
+        <x-alert 
+            type="info" 
+            title="Información:" 
+            :dismissible="true"
+            :items="[
+                'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.'
+            ]"
+        />
 
         <div class="form-row">
             <div class="form-column">
@@ -47,7 +46,8 @@
                     <div class="input-icon-container">
                         <i class="ri-price-tag-3-line input-icon"></i>
                         <input type="text" name="name" id="name" class="input-form"
-                            placeholder="Ingrese el nombre" required value="{{ old('name', $family->name) }}">
+                            placeholder="Ingrese el nombre" required value="{{ old('name', $family->name) }}"
+                            data-validate="required|min:3|max:100|alphanumeric">
                     </div>
                 </div>
 
@@ -59,7 +59,8 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-focus-2-line input-icon"></i>
-                        <select name="status" id="status" class="select-form" required>
+                        <select name="status" id="status" class="select-form" required
+                            data-validate="required|selected">
                             <option value="" disabled>Seleccione un estado</option>
 
                             <option value="1" @selected(old('status', $family->status) == 1)>
@@ -81,7 +82,7 @@
                     <div class="input-icon-container">
                         <i class="ri-file-text-line input-icon"></i>
                         <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
-                            required>{{ old('description', $family->description) }}</textarea>
+                            data-validate="min:10|max:500">{{ old('description', $family->description) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -90,7 +91,8 @@
                 <!-- === Imagen === -->
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la familia</label>
-                    <input type="file" name="image" id="image" class="file-input" accept="image/*">
+                    <input type="file" name="image" id="image" class="file-input" accept="image/*"
+                        data-validate="image|maxSizeMB:3">
                     <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
 
                     <!-- Zona de vista previa -->
@@ -173,11 +175,18 @@
                     existingImageFilename: '{{ $family->image ? basename($family->image) : '' }}'
                 });
 
-                // Inicializar loading del botón submit
+                // 1. Inicializar submit loader PRIMERO
                 const submitLoader = initSubmitLoader({
                     formId: 'familyForm',
                     buttonId: 'submitBtn',
                     loadingText: 'Actualizando...'
+                });
+
+                // 2. Inicializar validación de formulario DESPUÉS
+                const formValidator = initFormValidator('#familyForm', {
+                    validateOnBlur: true,
+                    validateOnInput: false,
+                    scrollToFirstError: true
                 });
             });
         </script>

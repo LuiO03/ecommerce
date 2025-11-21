@@ -15,9 +15,11 @@ class FormValidator {
             validateOnBlur: true,
             validateOnInput: false,
             showErrorsInline: true,
+            showSuccessIndicators: true, // ✅ NUEVO: Mostrar indicadores de éxito
             preventSubmitOnError: true,
             scrollToFirstError: true,
             errorClass: 'input-error',
+            successClass: 'input-success', // ✅ NUEVO: Clase de éxito
             errorMessageClass: 'input-error-message',
             ...options
         };
@@ -166,7 +168,9 @@ class FormValidator {
         // Actualizar UI
         if (isValid) {
             this.clearError(field);
+            this.showSuccess(field); // ✅ NUEVO: Mostrar indicador de éxito
         } else {
+            this.clearSuccess(field); // ✅ NUEVO: Limpiar éxito antes de mostrar error
             this.showError(field, errorMessage);
         }
 
@@ -259,12 +263,16 @@ class FormValidator {
             };
         },
 
-        // === ALFANUMÉRICO ===
+        // === ALFANUMÉRICO (debe contener al menos una letra) ===
         alphanumeric: (value) => {
             if (!value) return { valid: true };
+            // Primero valida que solo tenga letras, números y espacios
+            const onlyValidChars = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value);
+            // Luego valida que contenga al menos una letra
+            const hasLetter = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(value);
             return {
-                valid: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/.test(value),
-                message: 'Solo se permiten letras y números'
+                valid: onlyValidChars && hasLetter,
+                message: 'Debe contener al menos una letra'
             };
         },
 
@@ -382,6 +390,19 @@ class FormValidator {
             };
         },
 
+        // === TAMAÑO MÁXIMO (en MB) - MÁS INTUITIVO ===
+        maxSizeMB: (files, param) => {
+            if (!files || files.length === 0) return { valid: true };
+            const file = files[0];
+            const maxSizeMB = parseFloat(param);
+            const fileSizeMB = file.size / (1024 * 1024);
+            
+            return {
+                valid: fileSizeMB <= maxSizeMB,
+                message: `El archivo no debe exceder ${maxSizeMB}MB (actual: ${fileSizeMB.toFixed(2)}MB)`
+            };
+        },
+
         // === TIPOS DE ARCHIVO PERMITIDOS ===
         fileTypes: (files, param) => {
             if (!files || files.length === 0) return { valid: true };
@@ -429,6 +450,48 @@ class FormValidator {
     };
 
     // ========================================
+    // ✅ MOSTRAR ÉXITO
+    // ========================================
+    showSuccess(field) {
+        if (!this.options.showSuccessIndicators) return;
+
+        // Agregar clase de éxito al input
+        field.classList.add(this.options.successClass);
+        field.classList.remove(this.options.errorClass);
+
+        console.log(`✅ Success aplicado a:`, field.tagName, field.name || field.id, `Clases:`, field.className);
+
+        // Solo agregar icono de check si NO es un select (ya tiene flecha)
+        // y NO es un input type file
+        if (field.tagName !== 'SELECT' && field.type !== 'file') {
+            const parent = field.closest('.input-icon-container');
+            if (parent && !parent.querySelector('.validation-check-icon')) {
+                const checkIcon = document.createElement('i');
+                checkIcon.className = 'ri-checkbox-circle-fill validation-check-icon';
+                parent.appendChild(checkIcon);
+                console.log(`✅ Check icon agregado`);
+            }
+        } else {
+            console.log(`⚠️ No se agrega check (es SELECT o FILE)`);
+        }
+    }
+
+    // ========================================
+    // ❌ LIMPIAR ÉXITO
+    // ========================================
+    clearSuccess(field) {
+        field.classList.remove(this.options.successClass);
+        
+        const parent = field.closest('.input-icon-container');
+        if (parent) {
+            const checkIcon = parent.querySelector('.validation-check-icon');
+            if (checkIcon) {
+                checkIcon.remove();
+            }
+        }
+    }
+
+    // ========================================
     // ❌ MOSTRAR ERROR
     // ========================================
     showError(field, message) {
@@ -436,6 +499,7 @@ class FormValidator {
 
         // Agregar clase de error al input
         field.classList.add(this.options.errorClass);
+        field.classList.remove(this.options.successClass); // ✅ NUEVO: Quitar clase de éxito
 
         if (!this.options.showErrorsInline) return;
 
@@ -502,6 +566,7 @@ class FormValidator {
         this.errors.clear();
         this.fields.forEach((config, field) => {
             this.clearError(field);
+            this.clearSuccess(field); // ✅ NUEVO: Limpiar también éxitos
         });
     }
 }

@@ -31,17 +31,16 @@
             </div>
         @endif
 
-        <div class="form-info-banner">
-            <i class="ri-lightbulb-line form-info-icon"></i>
-            <div>
-                <h4 class="form-info-title">Guía rápida:</h4>
-                <ul>
-                    <li>Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios</li>
-                    <li>Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría</li>
-                    <li>Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)</li>
-                </ul>
-            </div>
-        </div>
+        <x-alert 
+            type="info" 
+            title="Guía rápida:" 
+            :dismissible="true"
+            :items="[
+                'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
+                'Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría',
+                'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)'
+            ]"
+        />
 
         <div class="form-row">
 
@@ -80,8 +79,7 @@
                 {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
                 <div class="input-group">
                     <label class="label-form">
-                        Ubicación en la jerarquía
-                        <span class="label-hint">(opcional)</span>
+                        Ubicación en la jerarquía <span class="label-italic">(opcional)</span>
                     </label>
 
                     {{-- Hidden input solo para parent_id --}}
@@ -92,9 +90,10 @@
                         {{-- Los selects se generarán dinámicamente según la familia --}}
                     </div>
 
-                    <span id="noFamilyMessage" class="label-hint">
-                        Primero selecciona una familia para ver las categorías disponibles
-                    </span>
+                    <div id="noFamilyMessage" class="label-hint">
+                        <i class="ri-information-line"></i>
+                        <span>Primero selecciona una familia para ver las categorías disponibles</span>
+                    </div>
 
                     {{-- Breadcrumb visual de la ruta seleccionada --}}
                     <div id="hierarchyBreadcrumb"
@@ -118,8 +117,8 @@
 
                         <input type="text" name="name" id="name" class="input-form @error('name') input-error @enderror" 
                             value="{{ old('name') }}" placeholder="Ingrese el nombre"
-                            data-validate="required|min:3|max:100"
-                            data-validate-messages='{"required":"El nombre es obligatorio","min":"El nombre debe tener al menos 3 caracteres","max":"El nombre no puede exceder 100 caracteres"}'>
+                            data-validate="required|alphanumeric|min:3|max:100"
+                            data-validate-messages='{"required":"El nombre es obligatorio","alphanumeric":"El nombre debe contener al menos una letra","min":"El nombre debe tener al menos 3 caracteres","max":"El nombre no puede exceder 100 caracteres"}'>
                     </div>
                     @error('name')
                         <span class="input-error-message">
@@ -170,7 +169,7 @@
                     </label>
 
                     <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4" data-validate="min:10|max:250">{{ old('description') }}</textarea>
 
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
@@ -186,7 +185,8 @@
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la categoría</label>
 
-                    <input type="file" name="image" id="image" class="file-input" accept="image/*">
+                    <input type="file" name="image" id="image" class="file-input" accept="image/*"
+                        data-validate="image|maxSizeMB:3">
 
                     <!-- Zona de vista previa -->
                     <div class="image-preview-zone" id="imagePreviewZone">

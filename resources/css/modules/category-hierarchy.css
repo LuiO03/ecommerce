@@ -235,7 +235,7 @@
     transition: transform 0.3s ease;
 }
 
-.family-card.collapsed .family-toggle {
+.family-card.collapsed .family-toggle .ri-arrow-down-s-line {
     transform: rotate(-90deg);
 }
 
@@ -417,8 +417,14 @@
     transition: transform 0.3s ease;
 }
 
-.category-item.collapsed .category-toggle {
+/* Solo rotar la flecha de items CON hijos (ri-arrow-down-s-line) */
+.category-item.collapsed .category-toggle .ri-arrow-down-s-line {
     transform: rotate(-90deg);
+}
+
+/* NO rotar el icono de items SIN hijos (ri-corner-down-right-line) */
+.category-toggle .ri-corner-down-right-line {
+    transform: none !important;
 }
 
 .category-checkbox {

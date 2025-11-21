@@ -70,34 +70,6 @@
     font-size: var(--font-size-sm);
 }
 
-.subcategories-warning {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: var(--color-warning-pastel);
-    border-left: 4px solid var(--color-warning);
-    border-radius: var(--radius-element);
-}
-
-.subcategories-warning i {
-    font-size: 1.5rem;
-    color: var(--color-warning);
-}
-
-.subcategories-warning div span{
-    font-size: var(--font-size-p);
-    font-family: var(--font-secondary);
-    font-weight: bold;
-}
-
-.subcategories-warning div p {
-    color: var(--color-text-soft);
-    font-size: var(--font-size-xs);
-}
-
 @media (max-width: 768px) {
 
     .subcategories-table thead {
