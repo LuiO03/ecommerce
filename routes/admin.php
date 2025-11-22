@@ -77,5 +77,32 @@ Route::controller(UserController::class)->group(function () {
     // Exports
     Route::post('/users/export/excel', 'exportExcel')->name('admin.users.export.excel');
     Route::post('/users/export/pdf', 'exportPdf')->name('admin.users.export.pdf');
+
     Route::post('/users/export/csv', 'exportCsv')->name('admin.users.export.csv');
+});
+
+// ============================================================================
+// ROLES
+// ============================================================================
+Route::controller(App\Http\Controllers\Admin\RoleController::class)->group(function () {
+    Route::get('/roles', 'index')->name('admin.roles.index');
+    Route::get('/roles/create', 'create')->name('admin.roles.create');
+    Route::post('/roles', 'store')->name('admin.roles.store');
+    Route::get('/roles/{role}/permissions', 'permissions')->name('admin.roles.permissions');
+    Route::post('/roles/{role}/permissions', 'updatePermissions')->name('admin.roles.update-permissions');
+    Route::get('/roles/{role}/edit', 'edit')->name('admin.roles.edit');
+    Route::patch('/roles/{role}', 'update')->name('admin.roles.update');
+    Route::delete('/roles/{role}', 'destroy')->name('admin.roles.destroy');
+});
+
+// ============================================================================
+// PERMISSIONS
+// ============================================================================
+Route::controller(App\Http\Controllers\Admin\PermissionController::class)->group(function () {
+    Route::get('/permissions', 'index')->name('admin.permissions.index');
+    Route::get('/permissions/create', 'create')->name('admin.permissions.create');
+    Route::post('/permissions', 'store')->name('admin.permissions.store');
+    Route::get('/permissions/{permission}/edit', 'edit')->name('admin.permissions.edit');
+    Route::patch('/permissions/{permission}', 'update')->name('admin.permissions.update');
+    Route::delete('/permissions/{permission}', 'destroy')->name('admin.permissions.destroy');
 });

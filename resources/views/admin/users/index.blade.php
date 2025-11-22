@@ -82,6 +82,32 @@
                         <i class="ri-filter-3-line selector-icon"></i>
                     </div>
                 </div>
+
+                <!-- Rol -->
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="roleFilter">
+                            <option value="">Todos los roles</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                            @endforeach
+                            <option value="sin-rol">Sin rol</option>
+                        </select>
+                        <i class="ri-shield-user-line selector-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Verificación de Email -->
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="verifiedFilter">
+                            <option value="">Todos los usuarios</option>
+                            <option value="1">Email verificado</option>
+                            <option value="0">Sin verificar</option>
+                        </select>
+                        <i class="ri-mail-check-line selector-icon"></i>
+                    </div>
+                </div>
             </div>
 
             <!-- Botón para limpiar filtros -->
@@ -139,9 +165,9 @@
                             </div>
                         </th>
                         <th class="column-name-th">Nombre</th>
+                        <th class="column-last-name-th">Apellidos</th>
                         <th class="column-email-th">Email</th>
-                        <th class="column-dni-th">DNI</th>
-                        <th class="column-phone-th">Teléfono</th>
+                        <th class="column-role-th">Rol</th>
                         <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
@@ -161,22 +187,37 @@
                             </td>
                             <td class="column-name-td">
                                 <div class="user-info">
-                                    @if ($user->image && file_exists(public_path('storage/' . $user->image)))
+                                    @if ($user->image)
                                         <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}"
-                                            class="user-avatar">
+                                            class="user-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="user-avatar-placeholder" style="display: none; background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
+                                            {{ $user->initials }}
+                                        </div>
                                     @else
                                         <div class="user-avatar-placeholder"
                                             style="background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
                                             {{ $user->initials }}
                                         </div>
                                     @endif
-                                    <span>{{ $user->name }} {{ $user->last_name }}</span>
+                                    <span>{{ $user->name }}</span>
                                 </div>
                             </td>
+                            <td class="column-last-name-td">{{ $user->last_name }}</td>
                             <td class="column-email-td">{{ $user->email }}</td>
-                            <td class="column-dni-td">{{ $user->dni ?? 'Sin DNI' }}</td>
-                            <td class="column-phone-td">{{ $user->phone ?? 'Sin teléfono' }}</td>
-                            <td class="column-status-td">
+                            <td class="column-role-td" data-role="{{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'sin-rol' }}">
+                                @if($user->roles->isNotEmpty())
+                                    <span class="badge badge-primary">
+                                        <i class="ri-shield-user-line"></i>
+                                        {{ $user->roles->first()->name }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-gray">
+                                        <i class="ri-file-unknow-line"></i>
+                                        Sin rol
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="column-status-td" data-verified="{{ $user->email_verified_at ? '1' : '0' }}">
                                 <label class="switch-tabla">
                                     <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
                                         {{ $user->status ? 'checked' : '' }}>
@@ -258,6 +299,74 @@
                             console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
                         }
                     }
+                });
+
+                // ========================================
+                // 🔍 FILTROS PERSONALIZADOS
+                // ========================================
+                
+                // Variables globales para los filtros
+                let currentRoleFilter = '';
+                let currentVerifiedFilter = '';
+                
+                // Función de filtrado personalizado para DataTables
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    // Solo aplicar a esta tabla
+                    if (settings.nTable.id !== 'tabla') return true;
+                    
+                    const row = tableManager.table.row(dataIndex).node();
+                    
+                    // Filtro por Rol
+                    if (currentRoleFilter !== '') {
+                        const rowRole = $(row).find('.column-role-td').attr('data-role');
+                        if (rowRole !== currentRoleFilter) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filtro por Verificación de Email
+                    if (currentVerifiedFilter !== '') {
+                        const rowVerified = $(row).find('.column-status-td').attr('data-verified');
+                        if (rowVerified !== currentVerifiedFilter) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                });
+                
+                // Filtro por Rol
+                $('#roleFilter').on('change', function() {
+                    currentRoleFilter = this.value;
+                    tableManager.table.draw();
+                    
+                    // Actualizar estado de filtros activos
+                    tableManager.checkFiltersActive();
+                    
+                    console.log(`🔍 Filtro Rol: ${currentRoleFilter || 'Todos'}`);
+                });
+
+                // Filtro por Verificación de Email
+                $('#verifiedFilter').on('change', function() {
+                    currentVerifiedFilter = this.value;
+                    tableManager.table.draw();
+                    
+                    // Actualizar estado de filtros activos
+                    tableManager.checkFiltersActive();
+                    
+                    console.log(`🔍 Filtro Verificación: ${currentVerifiedFilter === '1' ? 'Verificados' : currentVerifiedFilter === '0' ? 'Sin verificar' : 'Todos'}`);
+                });
+
+                // Limpiar filtros personalizados cuando se presiona el botón
+                const originalClearHandler = $('#clearFiltersBtn').data('events')?.click;
+                $('#clearFiltersBtn').on('click', function() {
+                    // Limpiar filtros personalizados
+                    currentRoleFilter = '';
+                    currentVerifiedFilter = '';
+                    $('#roleFilter').val('');
+                    $('#verifiedFilter').val('');
+                    
+                    console.log('🧹 Filtros personalizados limpiados');
                 });
 
                 // ========================================

@@ -4,6 +4,7 @@
 @import "./modules/dashboard.css";
 @import "./modules/categories.css";
 @import "./modules/category-hierarchy.css";
+@import "./modules/roles.css";
 
 
 @import "./components/breadcrumb.css";

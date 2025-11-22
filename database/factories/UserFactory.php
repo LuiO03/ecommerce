@@ -26,13 +26,21 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->name();
+        $firstName = fake()->firstName();
+        $lastName = fake()->lastName();
+        $fullName = $firstName . ' ' . $lastName;
+        
         return [
-            'name' => fake()->name(),
-            'slug' => Str::slug($name . '-' . fake()->unique()->numberBetween(1, 9999)),
+            'name' => $firstName,
+            'last_name' => $lastName,
+            'slug' => Str::slug($fullName . '-' . fake()->unique()->numberBetween(1, 9999)),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'status' => fake()->boolean(80), // 80% activos
+            'dni' => fake()->optional(0.7)->numerify('########'), // 70% tienen DNI
+            'phone' => fake()->optional(0.6)->numerify('9########'), // 60% tienen teléfono
+            'address' => fake()->optional(0.5)->address(), // 50% tienen dirección
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'remember_token' => Str::random(10),

@@ -17,11 +17,14 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::select(['id', 'name', 'email', 'slug', 'status', 'created_at'])
+        $users = User::with('roles')
+            ->select(['id', 'name', 'last_name', 'email', 'slug', 'status', 'created_at', 'image', 'dni', 'phone', 'email_verified_at'])
             ->orderByDesc('id')
             ->get();
+        
+        $roles = \Spatie\Permission\Models\Role::all();
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('users', 'roles'));
     }
 
     // ======================
@@ -76,7 +79,8 @@ class UserController extends Controller
     // ======================
     public function create()
     {
-        return view('admin.users.create');
+        $roles = \Spatie\Permission\Models\Role::all();
+        return view('admin.users.create', compact('roles'));
     }
 
     // ======================
@@ -89,6 +93,7 @@ class UserController extends Controller
             'email'     => 'required|email|unique:users,email',
             'password'  => 'required|string|min:6',
             'status'    => 'required|boolean',
+            'role'      => 'required|exists:roles,name',
 
             'last_name' => 'nullable|string|max:255',
             'dni'       => 'nullable|string|max:20|unique:users,dni',
@@ -126,6 +131,9 @@ class UserController extends Controller
             'updated_by'  => Auth::id(),
         ]);
 
+        // Asignar rol
+        $user->assignRole($request->role);
+
         Session::flash('toast', [
             'type' => 'success',
             'title' => 'Usuario creado',
@@ -142,7 +150,8 @@ class UserController extends Controller
     // ======================
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $roles = \Spatie\Permission\Models\Role::all();
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
     // ======================
@@ -154,6 +163,7 @@ class UserController extends Controller
             'name'      => 'required|string|max:255|min:3',
             'email'     => 'required|email|unique:users,email,' . $user->id,
             'status'    => 'required|boolean',
+            'role'      => 'required|exists:roles,name',
 
             'last_name' => 'nullable|string|max:255',
             'dni'       => 'nullable|string|max:20|unique:users,dni,' . $user->id,
@@ -199,6 +209,9 @@ class UserController extends Controller
             'image'       => $imagePath,
             'updated_by'  => Auth::id(),
         ]);
+
+        // Sincronizar rol
+        $user->syncRoles([$request->role]);
 
         Session::flash('toast', [
             'type' => 'success',

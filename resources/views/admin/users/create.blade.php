@@ -74,6 +74,27 @@
                     </div>
                 </div>
 
+                <!-- === Rol === -->
+                <div class="input-group">
+                    <label for="role" class="label-form">
+                        Rol
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-shield-user-line input-icon"></i>
+                        <select name="role" id="role" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled selected>Seleccione un rol</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
+                                    {{ ucfirst($role->name) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
+
                 <!-- === Estado === -->
                 <div class="input-group">
                     <label for="status" class="label-form">
@@ -138,7 +159,7 @@
                             data-validate="max:255">
                     </div>
                 </div>
-                
+
                 <!-- === DNI === -->
                 <div class="input-group">
                     <label for="dni" class="label-form">DNI</label>

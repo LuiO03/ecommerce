@@ -57,7 +57,7 @@
                 <i class="ri-price-tag-3-line"></i>
             </div>
             <div class="card-content">
-                <h1 class="card-count">10</h1>
+                <h1 class="card-count">{{ $totalCategories }}</h1>
                 <p class="card-label">Categorías</p>
             </div>
         </a>
@@ -84,13 +84,35 @@
             </div>
         </a>
 
+        <!-- Tarjeta: Permisos -->
+        <a href="{{ route('admin.permissions.index') }}" class="dashboard-card">
+            <div class="card-icon card-accent">
+                <i class="ri-key-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalPermissions }}</h1>
+                <p class="card-label">Permisos</p>
+            </div>
+        </a>
+
+        <!-- Tarjeta: Roles -->
+        <a href="{{ route('admin.roles.index') }}" class="dashboard-card">
+            <div class="card-icon card-primary">
+                <i class="ri-shield-user-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalRoles }}</h1>
+                <p class="card-label">Roles</p>
+            </div>
+        </a>
+
         <!-- Tarjeta: Usuarios -->
-        <a href="" class="dashboard-card">
+        <a href="{{ route('admin.users.index') }}" class="dashboard-card">
             <div class="card-icon card-purple">
                 <i class="ri-admin-line"></i>
             </div>
             <div class="card-content">
-                <h1 class="card-count">23</h1>
+                <h1 class="card-count">{{ $totalUsers }}</h1>
                 <p class="card-label">Usuarios</p>
             </div>
         </a>

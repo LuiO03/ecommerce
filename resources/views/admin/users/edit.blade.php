@@ -74,6 +74,28 @@
                     </div>
                 </div>
 
+                <!-- === Rol === -->
+                <div class="input-group select-group">
+                    <label for="role" class="label-form">
+                        Rol
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-shield-user-line input-icon"></i>
+                        <select name="role" id="role" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled>Seleccione un rol</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->name }}" 
+                                    @selected(old('role', $user->roles->first()?->name) == $role->name)>
+                                    {{ ucfirst($role->name) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
+
                 <!-- === Estado === -->
                 <div class="input-group select-group">
                     <label for="status" class="label-form">

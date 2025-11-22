@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Family;
 use App\Models\Product;
 use App\Models\User;
+use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
 {
@@ -17,6 +18,8 @@ class AdminController extends Controller
             'totalFamilies'   => Family::count(),
             'totalProducts'   => Product::count(),
             'totalUsers'      => User::count(),
+            'totalPermissions' => Permission::count(),
+            'totalRoles'      => \Spatie\Permission\Models\Role::count(),
         ]);
     }
     

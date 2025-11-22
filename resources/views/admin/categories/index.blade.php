@@ -212,7 +212,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="column-parent-td" data-search="{{ $cat->parent ? $cat->parent->name : 'Sin padre' }}">
+                            <td class="column-parent-td" data-search="{{ $cat->parent ? $cat->parent->name : 'Categoría Raíz' }}">
                                 @if($cat->parent)
                                     <span class="badge badge-secondary">
                                         <i class="ri-node-tree"></i>

@@ -751,6 +751,10 @@ input[type="checkbox"]:indeterminate {
     text-align: center;
 }
 
+.column-role-td {
+    text-align: center;
+}
+
 .switch-tabla {
     position: relative;
     display: inline-block;

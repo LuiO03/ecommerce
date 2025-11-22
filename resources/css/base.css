@@ -175,13 +175,29 @@
 
 /* ==== Variables para Badges ==== */
 :root {
-    /* Badge Info - Azul */
-    --badge-info-bg: #E3F2FD;
-    --badge-info-text: #0D47A1;
-    --badge-info-border: #90CAF9;
-    --badge-info-hover-bg: #1976D2;
+    /* Badge Accent - Color personalizado del proyecto */
+    --badge-accent-bg: #EDE7F6;
+    --badge-accent-text: #3d31b2;
+    --badge-accent-border: #9575CD;
+    --badge-accent-hover-bg: #3d31b2;
+    --badge-accent-hover-text: #ffffff;
+    --badge-accent-hover-border: #5E35B1;
+    
+    /* Badge Primary - Azul tradicional (más oscuro/saturado) */
+    --badge-primary-bg: #E3F2FD;
+    --badge-primary-text: #0D47A1;
+    --badge-primary-border: #1976D2;
+    --badge-primary-hover-bg: #1565C0;
+    --badge-primary-hover-text: #ffffff;
+    --badge-primary-hover-border: #0D47A1;
+    
+    /* Badge Info - Cian claro (más claro/vibrante) */
+    --badge-info-bg: #E0F7FA;
+    --badge-info-text: #00838F;
+    --badge-info-border: #26C6DA;
+    --badge-info-hover-bg: #00ACC1;
     --badge-info-hover-text: #ffffff;
-    --badge-info-hover-border: #1565C0;
+    --badge-info-hover-border: #00838F;
     
     /* Badge Secondary - Púrpura */
     --badge-secondary-bg: #F3E5F5;
@@ -230,16 +246,40 @@
     --badge-orange-hover-bg: #F57C00;
     --badge-orange-hover-text: #ffffff;
     --badge-orange-hover-border: #EF6C00;
+    
+    /* Badge Pink - Rosa */
+    --badge-pink-bg: #FCE4EC;
+    --badge-pink-text: #AD1457;
+    --badge-pink-border: #F48FB1;
+    --badge-pink-hover-bg: #C2185B;
+    --badge-pink-hover-text: #ffffff;
+    --badge-pink-hover-border: #AD1457;
 }
 
 .dark {
-    /* Badge Info - Modo Oscuro */
-    --badge-info-bg: #1A237E;
-    --badge-info-text: #90CAF9;
-    --badge-info-border: #3949AB;
-    --badge-info-hover-bg: #1565C0;
+    /* Badge Accent - Modo Oscuro (Color personalizado rojo del tema) */
+    --badge-accent-bg: #8B0020;
+    --badge-accent-text: #FFB3C6;
+    --badge-accent-border: #d11e4b;
+    --badge-accent-hover-bg: #d11e4b;
+    --badge-accent-hover-text: #ffffff;
+    --badge-accent-hover-border: #FF547D;
+
+    /* Badge Primary - Modo Oscuro (Azul tradicional oscuro) */
+    --badge-primary-bg: #0D47A1;
+    --badge-primary-text: #64B5F6;
+    --badge-primary-border: #1976D2;
+    --badge-primary-hover-bg: #1565C0;
+    --badge-primary-hover-text: #ffffff;
+    --badge-primary-hover-border: #1E88E5;
+
+    /* Badge Info - Modo Oscuro (Cian/Turquesa vibrante) */
+    --badge-info-bg: #004D40;
+    --badge-info-text: #26C6DA;
+    --badge-info-border: #00897B;
+    --badge-info-hover-bg: #00796B;
     --badge-info-hover-text: #ffffff;
-    --badge-info-hover-border: #0D47A1;
+    --badge-info-hover-border: #4DD0E1;
     
     /* Badge Secondary - Modo Oscuro */
     --badge-secondary-bg: #4A148C;
@@ -288,6 +328,14 @@
     --badge-orange-hover-bg: #F57C00;
     --badge-orange-hover-text: #ffffff;
     --badge-orange-hover-border: #E65100;
+    
+    /* Badge Pink - Modo Oscuro */
+    --badge-pink-bg: #880E4F;
+    --badge-pink-text: #F48FB1;
+    --badge-pink-border: #C2185B;
+    --badge-pink-hover-bg: #AD1457;
+    --badge-pink-hover-text: #ffffff;
+    --badge-pink-hover-border: #880E4F;
 }
 
 /* ==== Otros ==== */
@@ -807,6 +855,34 @@
     line-height: 1;
 }
 
+/* Badge Accent - Color personalizado del proyecto */
+.badge-accent {
+    background-color: var(--badge-accent-bg);
+    color: var(--badge-accent-text);
+    border-color: var(--badge-accent-border);
+}
+.badge-accent:hover {
+    background-color: var(--badge-accent-hover-bg);
+    color: var(--badge-accent-hover-text);
+    border-color: var(--badge-accent-hover-border);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(61, 49, 178, 0.3);
+}
+
+/* Badge Primary - Azul tradicional */
+.badge-primary {
+    background-color: var(--badge-primary-bg);
+    color: var(--badge-primary-text);
+    border-color: var(--badge-primary-border);
+}
+.badge-primary:hover {
+    background-color: var(--badge-primary-hover-bg);
+    color: var(--badge-primary-hover-text);
+    border-color: var(--badge-primary-hover-border);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
 /* Badge Info - Azul Profesional */
 .badge-info {
     background-color: var(--badge-info-bg);
@@ -910,4 +986,19 @@
     border-color: var(--badge-orange-hover-border);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
+}
+
+/* Badge Pink - Rosa Elegante */
+.badge-pink {
+    background-color: var(--badge-pink-bg);
+    color: var(--badge-pink-text);
+    border-color: var(--badge-pink-border);
+}
+
+.badge-pink:hover {
+    background-color: var(--badge-pink-hover-bg);
+    color: var(--badge-pink-hover-text);
+    border-color: var(--badge-pink-hover-border);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(194, 24, 91, 0.3);
 }
