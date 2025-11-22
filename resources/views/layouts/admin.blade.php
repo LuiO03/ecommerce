@@ -57,13 +57,15 @@
     @props(['useSlotContainer' => true])
     <main id="mainContent" class="main-container">
         <div class="page-header">
-            @isset($title)
-            <div class="page-title">
-                {{ $title ?? 'Sin título' }}
-            </div>
-            @endisset
-            <div class="page-nav">
-                @include('partials.admin.breadcrumb')
+            @include('partials.admin.breadcrumb')
+            
+            <div class="page-title-row">
+                @isset($title)
+                <div class="page-title">
+                    {{ $title ?? 'Sin título' }}
+                </div>
+                @endisset
+                
                 @isset($action)
                     <div class="page-action">
                         {{ $action }}

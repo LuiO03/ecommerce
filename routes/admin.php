@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\FamilyController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
@@ -58,4 +59,23 @@ Route::controller(CategoryHierarchyController::class)->prefix('categories/hierar
     Route::post('/bulk-delete', 'bulkDelete')->name('admin.categories.hierarchy.bulk-delete');
     Route::post('/bulk-duplicate', 'bulkDuplicate')->name('admin.categories.hierarchy.bulk-duplicate');
     Route::post('/drag-move', 'dragMove')->name('admin.categories.hierarchy.drag-move');
+});
+
+// ============================================================================
+// USERS
+// ============================================================================
+Route::controller(UserController::class)->group(function () {
+    Route::get('/users', 'index')->name('admin.users.index');
+    Route::get('/users/create', 'create')->name('admin.users.create');
+    Route::post('/users', 'store')->name('admin.users.store');
+    Route::get('/users/{user}/edit', 'edit')->name('admin.users.edit');
+    Route::put('/users/{user}', 'update')->name('admin.users.update');
+    Route::delete('/users/{user}', 'destroy')->name('admin.users.destroy');
+    Route::delete('/users', 'destroyMultiple')->name('admin.users.destroy-multiple');
+    Route::patch('/users/{user}/status', 'updateStatus')->name('admin.users.update-status');
+    
+    // Exports
+    Route::post('/users/export/excel', 'exportExcel')->name('admin.users.export.excel');
+    Route::post('/users/export/pdf', 'exportPdf')->name('admin.users.export.pdf');
+    Route::post('/users/export/csv', 'exportCsv')->name('admin.users.export.csv');
 });

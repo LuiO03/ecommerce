@@ -1,6 +1,10 @@
 <x-admin-layout>
     <x-slot name="title">
-        Editar {{ $category->name }}
+        <div class="page-icon card-info"><i class="ri-edit-circle-line"></i></div>
+        <div class="page-edit-title">
+            <span class="page-subtitle">Editar Categoría</span>
+            {{ $category->name }}
+        </div>
     </x-slot>
 
     <x-slot name="action">

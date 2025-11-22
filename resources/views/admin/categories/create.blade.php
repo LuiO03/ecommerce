@@ -1,6 +1,7 @@
 <x-admin-layout>
     <x-slot name="title">
-        Agregar Categoría
+        <div class="page-icon card-success"><i class="ri-add-circle-line"></i></div>
+        Nueva Categoría
     </x-slot>
 
     <x-slot name="action">

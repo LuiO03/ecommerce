@@ -1,9 +1,9 @@
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
         <div class="page-icon card-success">
-            <i class="ri-apps-line"></i>
+            <i class="ri-user-line"></i>
         </div>
-        Lista de Familias
+        Lista de Usuarios
     </x-slot>
     <x-slot name="action">
         <!-- Menú desplegable de exportación -->
@@ -28,17 +28,19 @@
                 </button>
             </div>
         </div>
-        <a href="{{ route('admin.families.create') }}" class="boton boton-primary">
+        <a href="{{ route('admin.users.create') }}" class="boton boton-primary">
             <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Familia</span>
+            <span class="boton-text">Crear Usuario</span>
         </a>
     </x-slot>
+
     <div class="actions-container">
         <!-- === Controles personalizados === -->
         <div class="tabla-controles">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
-                <input type="text" id="customSearch" placeholder="Buscar familias por nombre" autocomplete="off" />
+                <input type="text" id="customSearch" placeholder="Buscar usuarios por nombre o email"
+                    autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
@@ -97,38 +99,30 @@
                         <i class="ri-file-excel-2-fill"></i>
                     </span>
                     <span class="boton-selection-text">Excel</span>
-                    l
-                    <span class="selection-badge" id="excelBadge">0</span>
                 </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                <button id="exportSelectedCsv" class="boton-selection boton-info">
                     <span class="boton-selection-icon">
                         <i class="ri-file-text-fill"></i>
                     </span>
                     <span class="boton-selection-text">CSV</span>
-                    l
-                    <span class="selection-badge" id="csvBadge">0</span>
                 </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                <button id="exportSelectedPdf" class="boton-selection boton-accent">
                     <span class="boton-selection-icon">
                         <i class="ri-file-pdf-2-fill"></i>
                     </span>
                     <span class="boton-selection-text">PDF</span>
-                    l
-                    <span class="selection-badge" id="pdfBadge">0</span>
+                </button>
+                <button id="deleteSelectedBtn" class="boton-selection boton-danger">
+                    <span class="boton-selection-icon">
+                        <i class="ri-delete-bin-6-line"></i>
+                    </span>
+                    <span class="boton-selection-text">Eliminar</span>
                 </button>
             </div>
-            <button id="deleteSelected" class="boton-selection boton-danger">
-                <span class="boton-selection-icon">
-                    <i class="ri-delete-bin-line"></i>
-                </span>
-                <span class="boton-selection-text">Eliminar</span>
-                l
-                <span class="selection-badge" id="deleteBadge">0</span>
-            </button>
             <div class="selection-info">
-                <span id="selectionCount">0 seleccionados</span>
-                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
-                    <i class="ri-close-large-fill"></i>
+                <span id="selectionCount"></span>
+                <button type="button" id="clearSelectionBtn" title="Deseleccionar todo">
+                    <i class="ri-close-line"></i>
                 </button>
             </div>
         </div>
@@ -138,64 +132,75 @@
                 <thead>
                     <tr>
                         <th class="control"></th>
+                        </th>
                         <th class="column-check-th column-not-order">
                             <div>
                                 <input type="checkbox" id="checkAll" name="checkAll">
                             </div>
                         </th>
-                        <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
-                        <th class="column-description-th">Descripción</th>
+                        <th class="column-email-th">Email</th>
+                        <th class="column-dni-th">DNI</th>
+                        <th class="column-phone-th">Teléfono</th>
                         <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($families as $family)
-                        <tr data-id="{{ $family->id }}" data-name="{{ $family->name }}">
+                    @foreach ($users as $user)
+                        <tr data-id="{{ $user->id }}" data-name="{{ $user->name }}">
+
                             <td class="control" title="Expandir detalles">
                             </td>
                             <td class="column-check-td">
                                 <div>
-                                    <input type="checkbox" class="check-row" id="check-row-{{ $family->id }}"
-                                        name="families[]" value="{{ $family->id }}">
+                                    <input type="checkbox" class="check-row" id="check-row-{{ $user->id }}"
+                                        name="users[]" value="{{ $user->id }}">
                                 </div>
                             </td>
-                            <td class="column-id-td">
-                                <span class="id-text">{{ $family->id }}</span>
+                            <td class="column-name-td">
+                                <div class="user-info">
+                                    @if ($user->image && file_exists(public_path('storage/' . $user->image)))
+                                        <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}"
+                                            class="user-avatar">
+                                    @else
+                                        <div class="user-avatar-placeholder"
+                                            style="background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
+                                            {{ $user->initials }}
+                                        </div>
+                                    @endif
+                                    <span>{{ $user->name }} {{ $user->last_name }}</span>
+                                </div>
                             </td>
-                            <td class="column-name-td">{{ $family->name }}</td>
-                            <td class="column-description-td">{{ $family->description ?? 'Sin descripción' }}</td>
+                            <td class="column-email-td">{{ $user->email }}</td>
+                            <td class="column-dni-td">{{ $user->dni ?? 'Sin DNI' }}</td>
+                            <td class="column-phone-td">{{ $user->phone ?? 'Sin teléfono' }}</td>
                             <td class="column-status-td">
                                 <label class="switch-tabla">
-                                    <input type="checkbox" class="switch-status" data-id="{{ $family->id }}"
-                                        {{ $family->status ? 'checked' : '' }}>
+                                    <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
+                                        {{ $user->status ? 'checked' : '' }}>
                                     <span class="slider"></span>
                                 </label>
                             </td>
-                            <td>{{ $family->created_at ? $family->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
-
+                            <td>{{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton boton-info" data-id="" title="Ver Familia">
-                                        <span class="boton-text">Ver</span>
-                                        <span class="boton-icon"><i class="ri-eye-2-fill"></i></span>
+                                    <button class="boton-sm boton-info" data-id="{{ $user->id }}">
+                                        <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
-                                    <a href="{{ route('admin.families.edit', $family) }}" title="Editar Familia"
-                                        class="boton boton-warning">
-                                        <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                                        <span class="boton-text">Editar</span>
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning">
+                                        <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
                                     </a>
-                                    <form action="{{ route('admin.families.destroy', $family) }}" method="POST"
-                                        class="delete-form" data-entity="familia">
+                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                                        class="delete-form" data-entity="usuario">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" title="Eliminar Familia" class="boton boton-danger">
-                                            <span class="boton-text">Borrar</span>
-                                            <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                        <button type="submit" class="boton-sm boton-danger">
+                                            <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                         </button>
                                     </form>
+
                                 </div>
                             </td>
                         </tr>
@@ -203,8 +208,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- === Footer: info + paginación === -->
         <div class="tabla-footer">
             <div id="tableInfo" class="tabla-info"></div>
             <div id="tablePagination" class="tabla-paginacion"></div>
@@ -212,20 +215,17 @@
     </div>
     @push('scripts')
         <script>
-            $(document).ready(function() {
-                // ========================================
-                // 📊 INICIALIZACIÓN CON DATATABLEMANAGER
-                // ========================================
+            document.addEventListener('DOMContentLoaded', function() {
                 const tableManager = new DataTableManager('#tabla', {
-                    moduleName: 'families',
-                    entityNameSingular: 'familia',
-                    entityNamePlural: 'familias',
-                    deleteRoute: '/admin/families',
-                    statusRoute: '/admin/families/{id}/status',
+                    moduleName: 'users',
+                    entityNameSingular: 'usuario',
+                    entityNamePlural: 'usuarios',
+                    deleteRoute: '/admin/users',
+                    statusRoute: '/admin/users/{id}/status',
                     exportRoutes: {
-                        excel: '/admin/families/export/excel',
-                        csv: '/admin/families/export/csv',
-                        pdf: '/admin/families/export/pdf'
+                        excel: '/admin/users/export/excel',
+                        csv: '/admin/users/export/csv',
+                        pdf: '/admin/users/export/pdf'
                     },
                     csrfToken: '{{ csrf_token() }}',
                     
@@ -283,17 +283,7 @@
                         }
                     }, 100);
                 @endif
-                
-                // ========================================
-                // 🛠️ API DISPONIBLES (Ejemplos de uso)
-                // ========================================
-                // tableManager.getTable() - Obtiene instancia DataTable
-                // tableManager.getSelectedItems() - Obtiene Map de items seleccionados
-                // tableManager.refresh() - Refresca la tabla
-                // tableManager.clearSelection() - Limpia selección
-                // tableManager.destroy() - Destruye la instancia
             });
         </script>
     @endpush
-    
 </x-admin-layout>

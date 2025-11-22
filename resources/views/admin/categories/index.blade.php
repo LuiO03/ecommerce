@@ -181,7 +181,7 @@
                         <th class="column-family-th">Familia</th>
                         <th class="column-father-th">Padre</th>
                         <th class="column-status-th">Estado</th>
-                        <th class="column-date-th">Fecha</th>
+                        <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
                 </thead>
@@ -262,7 +262,6 @@
                         </tr>
                     @endforeach
                 </tbody>
-
             </table>
         </div>
 

@@ -1,10 +1,10 @@
 <x-admin-layout>
     <x-slot name="title">
         <div class="page-icon card-success"><i class="ri-add-circle-line"></i></div>
-        Nueva Familia
+        Nuevo Usuario
     </x-slot>
     <x-slot name="action">
-        <a href="{{ route('admin.families.index') }}"class="boton-form boton-action">
+        <a href="{{ route('admin.users.index') }}" class="boton-form boton-action">
             <span class="boton-form-icon">
                 <i class="ri-arrow-left-circle-fill"></i>
             </span>
@@ -12,31 +12,72 @@
         </a>
     </x-slot>
 
-    <form action="{{ route('admin.families.store') }}" method="POST" enctype="multipart/form-data" class="form-container"
-        autocomplete="off" id="familyForm">
+    <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data" class="form-container"
+        autocomplete="off" id="userForm">
         @csrf
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+        <x-alert type="info" title="Información:" :dismissible="true"
+            :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
         <div class="form-row">
             <div class="form-column">
                 <!-- === Nombre === -->
                 <div class="input-group">
                     <label for="name" class="label-form">
-                        Nombre de la familia
+                        Nombre
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
-                        <i class="ri-price-tag-3-line input-icon"></i>
+                        <i class="ri-user-line input-icon"></i>
                         <input type="text" name="name" id="name" class="input-form" required
                             value="{{ old('name') }}" placeholder="Ingrese el nombre"
-                            data-validate="required|min:3|max:100|alphanumeric">
+                            data-validate="required|min:3|max:255|alpha">
                     </div>
                 </div>
+
+                <!-- === Apellido === -->
+                <div class="input-group">
+                    <label for="last_name" class="label-form">Apellido</label>
+                    <div class="input-icon-container">
+                        <i class="ri-user-line input-icon"></i>
+                        <input type="text" name="last_name" id="last_name" class="input-form"
+                            value="{{ old('last_name') }}" placeholder="Ingrese el apellido"
+                            data-validate="min:3|max:255|alpha">
+                    </div>
+                </div>
+
+                <!-- === Contraseña === -->
+                <div class="input-group">
+                    <label for="password" class="label-form">
+                        Contraseña
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-lock-line input-icon"></i>
+                        <input type="password" name="password" id="password" class="input-form" required
+                            placeholder="Mínimo 6 caracteres"
+                            data-validate="required|min:6">
+                    </div>
+                </div>
+
+                <!-- === Email === -->
+                <div class="input-group">
+                    <label for="email" class="label-form">
+                        Email
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-mail-line input-icon"></i>
+                        <input type="email" name="email" id="email" class="input-form" required
+                            value="{{ old('email') }}" placeholder="usuario@ejemplo.com"
+                            data-validate="required|email">
+                    </div>
+                </div>
+
                 <!-- === Estado === -->
                 <div class="input-group">
                     <label for="status" class="label-form">
-                        Estado de la familia
+                        Estado
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
@@ -50,21 +91,12 @@
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
                 </div>
-                <!-- === Descripción === -->
-                <div class="input-group">
-                    <label for="description" class="label-form label-textarea">Descripción de la familia</label>
-                    <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
-                            data-validate="min:10|max:500">{{ old('description') }}</textarea>
-                        <i class="ri-file-text-line input-icon"></i>
-                    </div>
-                </div>
             </div>
 
             <div class="form-column">
                 <!-- === Imagen === -->
                 <div class="image-upload-section">
-                    <label class="label-form">Imagen de la familia</label>
+                    <label class="label-form">Foto de perfil</label>
                     <input type="file" name="image" id="image" class="file-input" accept="image/*"
                         data-validate="image|maxSizeMB:3">
 
@@ -95,11 +127,44 @@
                         <span id="filenameText"></span>
                     </div>
                 </div>
+                                
+                <!-- === Dirección === -->
+                <div class="input-group">
+                    <label for="address" class="label-form">Dirección</label>
+                    <div class="input-icon-container">
+                        <i class="ri-map-pin-line input-icon"></i>
+                        <input type="text" name="address" id="address" class="input-form"
+                            value="{{ old('address') }}" placeholder="Ingrese la dirección"
+                            data-validate="max:255">
+                    </div>
+                </div>
+                
+                <!-- === DNI === -->
+                <div class="input-group">
+                    <label for="dni" class="label-form">DNI</label>
+                    <div class="input-icon-container">
+                        <i class="ri-id-card-line input-icon"></i>
+                        <input type="text" name="dni" id="dni" class="input-form"
+                            value="{{ old('dni') }}" placeholder="8 dígitos"
+                            data-validate="dni">
+                    </div>
+                </div>
+
+                <!-- === Teléfono === -->
+                <div class="input-group">
+                    <label for="phone" class="label-form">Teléfono</label>
+                    <div class="input-icon-container">
+                        <i class="ri-phone-line input-icon"></i>
+                        <input type="text" name="phone" id="phone" class="input-form"
+                            value="{{ old('phone') }}" placeholder="9 dígitos"
+                            data-validate="phone">
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="form-footer">
-            <a href="{{ route('admin.families.index') }}" class="boton-form boton-volver">
+            <a href="{{ route('admin.users.index') }}" class="boton-form boton-volver">
                 <span class="boton-form-icon"> <i class="ri-arrow-left-circle-fill"></i> </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
@@ -111,7 +176,7 @@
 
             <button class="boton-form boton-success" type="submit" id="submitBtn">
                 <span class="boton-form-icon"> <i class="ri-save-3-fill"></i> </span>
-                <span class="boton-form-text">Crear Familia</span>
+                <span class="boton-form-text">Crear Usuario</span>
             </button>
         </div>
     </form>
@@ -126,13 +191,13 @@
 
                 // 1. Inicializar submit loader PRIMERO
                 const submitLoader = initSubmitLoader({
-                    formId: 'familyForm',
+                    formId: 'userForm',
                     buttonId: 'submitBtn',
                     loadingText: 'Guardando...'
                 });
 
                 // 2. Inicializar validación de formulario DESPUÉS
-                const formValidator = initFormValidator('#familyForm', {
+                const formValidator = initFormValidator('#userForm', {
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true

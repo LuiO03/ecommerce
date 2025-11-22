@@ -105,7 +105,7 @@
                 </a>
             </li>
             <li>
-                <a href="admin/users" class="sidebar-link {{ request()->routeIs('admin.users') ? 'active' : '' }}"
+                <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                     data-tooltip="Users">
                     <i class="ri-id-card-line sidebar-icon"></i>
                     <span>Users</span>

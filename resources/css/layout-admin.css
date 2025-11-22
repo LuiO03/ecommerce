@@ -480,12 +480,12 @@
     align-items: start;
     width: 100%;
     margin: 0px;
-    gap: 5px;
+    gap: 8px;
     max-width: var(--max-width);
     padding: 0px 16px;
 }
 
-.page-nav{
+.page-title-row{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -505,8 +505,20 @@
     font-family: var(--font-secondary);
     display: inline-flex;
     align-items: center;
-    color: var(--color-inverse);
     gap: 10px;
+}
+
+.page-edit-title{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    line-height: 1;
+}
+
+.page-subtitle{
+    color: var(--color-accent);
+    display: block;
+    font-size: var(--font-size-p);
 }
 
 .page-icon{
