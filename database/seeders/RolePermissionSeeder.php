@@ -12,7 +12,6 @@ class RolePermissionSeeder extends Seeder
     {
         // === PERMISOS DEFINIDOS POR MÓDULO (CRUD + ESPECIALES) ===
         $permissions = [
-
             // --- Productos ---
             'productos' => [
                 ['name' => 'ver productos', 'description' => 'Puede ver la lista de productos'],
@@ -28,6 +27,26 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'crear categorías', 'description' => 'Puede crear nuevas categorías'],
                 ['name' => 'editar categorías', 'description' => 'Puede editar categorías existentes'],
                 ['name' => 'eliminar categorías', 'description' => 'Puede eliminar categorías del sistema'],
+                // Permisos para jerarquía de categorías
+                ['name' => 'gestionar jerarquía de categorías', 'description' => 'Puede modificar el orden y la jerarquía de las categorías'],
+                ['name' => 'ver jerarquía de categorías', 'description' => 'Puede visualizar la estructura jerárquica de las categorías'],
+            ],
+
+            // --- Roles ---
+            'roles' => [
+                ['name' => 'ver roles', 'description' => 'Puede ver la lista de roles'],
+                ['name' => 'crear roles', 'description' => 'Puede crear nuevos roles'],
+                ['name' => 'editar roles', 'description' => 'Puede editar roles existentes'],
+                ['name' => 'eliminar roles', 'description' => 'Puede eliminar roles del sistema'],
+                ['name' => 'asignar permisos a roles', 'description' => 'Puede asignar o quitar permisos a los roles'],
+            ],
+
+            // --- Permisos ---
+            'permisos' => [
+                ['name' => 'ver permisos', 'description' => 'Puede ver la lista de permisos'],
+                ['name' => 'crear permisos', 'description' => 'Puede crear nuevos permisos'],
+                ['name' => 'editar permisos', 'description' => 'Puede editar permisos existentes'],
+                ['name' => 'eliminar permisos', 'description' => 'Puede eliminar permisos del sistema'],
             ],
 
             // --- Usuarios ---
