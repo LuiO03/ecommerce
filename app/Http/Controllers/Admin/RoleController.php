@@ -64,7 +64,7 @@ class RoleController extends Controller
 
             Session::flash('highlightRow', $role->id);
 
-            return redirect()->route('admin.roles.permissions', $role);
+            return redirect()->route('admin.roles.index', $role);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -119,7 +119,7 @@ class RoleController extends Controller
 
             Session::flash('highlightRow', $role->id);
 
-            return redirect()->route('admin.roles.permissions', $role);
+            return redirect()->route('admin.roles.index', $role);
         } catch (\Exception $e) {
             DB::rollBack();
 

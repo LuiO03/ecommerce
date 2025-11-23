@@ -90,20 +90,7 @@
                     <span>Familias</span>
                 </a>
             </li>
-            <li>
-                <a href="#" class="sidebar-link" data-tooltip="Kanban">
-                    <i class="ri-stack-line sidebar-icon"></i>
-                    <span>Kanban</span>
-                    <span class="sidebar-badge">Pro</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="sidebar-link" data-tooltip="Inbox">
-                    <i class="ri-mail-line sidebar-icon"></i>
-                    <span>Inbox</span>
-                    <span class="sidebar-badge">3</span>
-                </a>
-            </li>
+            
             <li>
                 <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                     data-tooltip="Users">
@@ -112,15 +99,31 @@
                 </a>
             </li>
 
-            <!-- Submenú Gestión -->
+            <li>
+                <a href="{{  route('admin.roles.index') }}" class="sidebar-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
+                    data-tooltip="Roles">
+                    <i class="ri-shield-user-line sidebar-icon"></i>
+                    <span>Roles</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{  route('admin.permissions.index') }}" class="sidebar-link {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
+                    data-tooltip="Permisos">
+                    <i class="ri-key-line sidebar-icon"></i>
+                    <span>Permisos</span>
+                </a>
+            </li>
+
+            <!-- Submenú Tienda -->
             <li class="submenu-container">
-                <button type="button" class="sidebar-link w-full submenu-btn flex items-center" data-tooltip="Gestión">
-                    <i class="ri-settings-3-line sidebar-icon"></i>
-                    <span class="flex-1 text-left">Gestión</span>
+                <button type="button" class="sidebar-link w-full submenu-btn flex items-center" data-tooltip="Tienda">
+                    <i class="ri-store-line sidebar-icon"></i>
+                    <span class="flex-1 text-left">Tienda</span>
                     <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
                 </button>
 
-                <ul id="dropdown-gestion" class="sidebar-submenu space-y-1">
+                <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
                     <li>
                         <a href="{{ route('admin.categories.hierarchy') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.categories.hierarchy') ? 'active' : '' }}"
@@ -152,12 +155,6 @@
                 </ul>
             </li>
 
-            <li>
-                <a href="#" class="sidebar-link" data-tooltip="Products">
-                    <i class="ri-shopping-bag-3-line sidebar-icon"></i>
-                    <span>Products</span>
-                </a>
-            </li>
         </ul>
     </div>
 

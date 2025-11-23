@@ -1,40 +1,95 @@
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-primary"><i class="ri-shield-user-line"></i></div>
-        Editar Rol
+        <div class="page-icon card-info"><i class="ri-edit-circle-line"></i></div>
+        <div class="page-edit-title">
+            <span class="page-subtitle">Editar Rol</span>
+            {{ $role->name }}
+        </div>
     </x-slot>
     <x-slot name="action">
-        <a href="{{ route('admin.roles.index') }}" class="boton boton-secondary">
-            <span class="boton-icon"><i class="ri-arrow-go-back-line"></i></span>
-            <span class="boton-text">Volver</span>
+        <a href="{{ route('admin.roles.index') }}" class="boton-form boton-action">
+            <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
+            <span class="boton-form-text">Volver</span>
         </a>
+        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="delete-form" data-entity="rol" style="margin: 0;">
+            @csrf
+            @method('DELETE')
+            <button class="boton boton-danger" type="submit">
+                <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                <span class="boton-text">Eliminar</span>
+            </button>
+        </form>
     </x-slot>
-    <div class="card max-w-lg mx-auto">
-        <div class="card-body">
-            <form action="{{ route('admin.roles.update', $role) }}" method="POST" autocomplete="off">
-                @csrf
-                @method('PATCH')
-                <div class="mb-4">
-                    <label for="name" class="form-label">Nombre del rol</label>
-                    <input type="text" name="name" id="name" class="form-input" value="{{ old('name', $role->name) }}" required maxlength="255">
-                    @error('name')
-                        <x-alert type="danger" :items="[$message]" />
-                    @enderror
+
+    <form action="{{ route('admin.roles.update', $role) }}" method="POST" class="form-container" autocomplete="off" id="roleForm">
+        @csrf
+        @method('PATCH')
+
+        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+
+        <div class="form-row">
+            <div class="form-column">
+                <!-- === Nombre === -->
+                <div class="input-group">
+                    <label for="name" class="label-form">
+                        Nombre del rol
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-shield-user-line input-icon"></i>
+                        <input type="text" name="name" id="name" class="input-form" required
+                            value="{{ old('name', $role->name) }}" placeholder="Ingrese el nombre"
+                            maxlength="100" data-validate="required|min:3|max:100|alphanumeric">
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="description" class="form-label">Descripción</label>
-                    <input type="text" name="description" id="description" class="form-input" value="{{ old('description', $role->description) }}" maxlength="255" placeholder="Breve descripción del rol">
-                    @error('description')
-                        <x-alert type="danger" :items="[$message]" />
-                    @enderror
+
+                <!-- No hay campo estado para roles -->
+
+                <!-- === Descripción === -->
+                <div class="input-group">
+                    <label for="description" class="label-form label-textarea">Descripción del rol</label>
+                    <div class="input-icon-container">
+                        <i class="ri-file-text-line input-icon"></i>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                            maxlength="500" data-validate="min:10|max:500">{{ old('description', $role->description) }}</textarea>
+                    </div>
                 </div>
-                <div class="flex justify-end gap-2">
-                    <button type="submit" class="boton boton-primary">
-                        <span class="boton-icon"><i class="ri-save-line"></i></span>
-                        <span class="boton-text">Actualizar</span>
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
+
+        <div class="form-footer">
+            <a href="{{ route('admin.roles.index') }}" class="boton-form boton-volver">
+                <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
+                <span class="boton-form-text">Cancelar</span>
+            </a>
+            <button type="reset" class="boton-form boton-warning">
+                <span class="boton-form-icon"><i class="ri-paint-brush-fill"></i></span>
+                <span class="boton-form-text">Limpiar</span>
+            </button>
+            <button class="boton-form boton-accent" type="submit" id="submitBtn">
+                <span class="boton-form-icon"><i class="ri-loop-left-line"></i></span>
+                <span class="boton-form-text">Actualizar Rol</span>
+            </button>
+        </div>
+    </form>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 1. Inicializar submit loader PRIMERO
+                const submitLoader = initSubmitLoader({
+                    formId: 'roleForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Actualizando...'
+                });
+
+                // 2. Inicializar validación de formulario DESPUÉS
+                const formValidator = initFormValidator('#roleForm', {
+                    validateOnBlur: true,
+                    validateOnInput: false,
+                    scrollToFirstError: true
+                });
+            });
+        </script>
+    @endpush
 </x-admin-layout>
