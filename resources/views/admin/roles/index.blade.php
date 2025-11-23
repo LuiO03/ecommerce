@@ -127,6 +127,7 @@
                         </th>
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
+                        <th class="column-description-th">Descripción</th>
                         <th class="column-users-th">Usuarios</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
@@ -145,6 +146,9 @@
                                 <span class="id-text">{{ $role->id }}</span>
                             </td>
                             <td class="column-name-td"><span class="badge badge-primary">{{ $role->name }}</span></td>
+                            <td class="column-description-td">
+                                <span class="text-gray-700">{{ $role->description ?? 'Sin descripción' }}</span>
+                            </td>
                             <td class="column-users-td"><span class="badge badge-info">{{ $role->users_count }}</span></td>
                             <td class="column-date-td">{{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
                             <td class="column-actions-td">

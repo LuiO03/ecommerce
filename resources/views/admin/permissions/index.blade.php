@@ -124,6 +124,7 @@
                         </th>
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
+                        <th class="column-description-th">Descripción</th>
                         <th class="column-guard-th">Guard</th>
                         <th class="column-roles-th">Roles asignados</th>
                         <th class="column-date-th">Creado</th>
@@ -143,6 +144,9 @@
                                 <span class="id-text">{{ $permission->id }}</span>
                             </td>
                             <td class="column-name-td"><span class="badge badge-info">{{ $permission->name }}</span></td>
+                            <td class="column-description-td">
+                                <span class="text-gray-700">{{ $permission->description ?? 'Sin descripción' }}</span>
+                            </td>
                             <td class="column-guard-td">{{ $permission->guard_name }}</td>
                             <td class="column-roles-td">
                                 @if($permission->roles->count())

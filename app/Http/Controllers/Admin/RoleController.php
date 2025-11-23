@@ -37,14 +37,21 @@ class RoleController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
+            'description' => 'nullable|string|max:255',
         ]);
+
+        // Capitalizar nombre
+        $name = ucwords(mb_strtolower($validated['name']));
+        // Descripción: primera letra mayúscula, resto minúscula
+        $description = $validated['description'] ? ucfirst(mb_strtolower($validated['description'])) : null;
 
         DB::beginTransaction();
 
         try {
             $role = Role::create([
-                'name' => $validated['name'],
+                'name' => $name,
                 'guard_name' => 'web',
+                'description' => $description,
             ]);
 
             DB::commit();
@@ -86,12 +93,21 @@ class RoleController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'description' => 'nullable|string|max:255',
         ]);
+
+        // Capitalizar nombre
+        $name = ucwords(mb_strtolower($validated['name']));
+        // Descripción: primera letra mayúscula, resto minúscula
+        $description = $validated['description'] ? ucfirst(mb_strtolower($validated['description'])) : null;
 
         DB::beginTransaction();
 
         try {
-            $role->update(['name' => $validated['name']]);
+            $role->update([
+                'name' => $name,
+                'description' => $description,
+            ]);
 
             DB::commit();
 

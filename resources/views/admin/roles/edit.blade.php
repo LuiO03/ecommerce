@@ -21,6 +21,13 @@
                         <x-alert type="danger" :items="[$message]" />
                     @enderror
                 </div>
+                <div class="mb-4">
+                    <label for="description" class="form-label">Descripción</label>
+                    <input type="text" name="description" id="description" class="form-input" value="{{ old('description', $role->description) }}" maxlength="255" placeholder="Breve descripción del rol">
+                    @error('description')
+                        <x-alert type="danger" :items="[$message]" />
+                    @enderror
+                </div>
                 <div class="flex justify-end gap-2">
                     <button type="submit" class="boton boton-primary">
                         <span class="boton-icon"><i class="ri-save-line"></i></span>

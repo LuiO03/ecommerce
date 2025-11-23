@@ -21,7 +21,7 @@ class UserController extends Controller
             ->select(['id', 'name', 'last_name', 'email', 'slug', 'status', 'created_at', 'image', 'dni', 'phone', 'email_verified_at'])
             ->orderByDesc('id')
             ->get();
-        
+
         $roles = \Spatie\Permission\Models\Role::all();
 
         return view('admin.users.index', compact('users', 'roles'));
@@ -173,7 +173,11 @@ class UserController extends Controller
             'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $slug = User::generateUniqueSlug($request->name, $user->id);
+        // Capitalizar nombre y dirección
+        $name = ucwords(mb_strtolower($request->name));
+        $address = $request->address ? ucfirst(mb_strtolower($request->address)) : null;
+
+        $slug = User::generateUniqueSlug($name, $user->id);
 
         $imagePath = $user->image;
 
@@ -189,21 +193,19 @@ class UserController extends Controller
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
-
             $ext = $request->file('image')->getClientOriginalExtension();
             $filename = $slug . '-' . time() . '.' . $ext;
             $imagePath = 'users/' . $filename;
-
             $request->file('image')->storeAs('users', $filename, 'public');
         }
 
         $user->update([
-            'name'        => $request->name,
+            'name'        => $name,
             'last_name'   => $request->last_name,
             'email'       => $request->email,
             'slug'        => $slug,
             'status'      => (bool)$request->status,
-            'address'     => $request->address,
+            'address'     => $address,
             'dni'         => $request->dni,
             'phone'       => $request->phone,
             'image'       => $imagePath,
@@ -255,6 +257,10 @@ class UserController extends Controller
     // =====================================
     public function destroyMultiple(Request $request)
     {
+        // Capitalizar nombre y dirección
+        $name = ucwords(mb_strtolower($request->name));
+        $address = $request->address ? ucfirst(mb_strtolower($request->address)) : null;
+
         $request->validate([
             'users' => 'sometimes|array|min:1',
             'users.*' => 'exists:users,id',
@@ -285,7 +291,6 @@ class UserController extends Controller
 
             $user->deleted_by = Auth::id();
             $user->save();
-            $user->delete();
         }
 
         Session::flash('info', [

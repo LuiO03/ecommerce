@@ -38,13 +38,23 @@ class PermissionController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name',
+            'description' => 'nullable|string|max:255',
         ]);
+
+        // Capitalizar nombre (cada palabra)
+            $name = ucwords(mb_strtolower($validated['name'])); // Capitalizar nombre (cada palabra)
+        // Descripción: primera letra mayúscula, resto minúscula
+            $description = $validated['description'] ?? null; // Descripción: primera letra mayúscula, resto minúscula
+        if ($description) {
+            $description = ucfirst(mb_strtolower($description));
+        }
 
         DB::beginTransaction();
         try {
             $permission = Permission::create([
-                'name' => $validated['name'],
+                'name' => $name,
                 'guard_name' => 'web',
+                'description' => $description,
             ]);
 
             DB::commit();
@@ -81,11 +91,23 @@ class PermissionController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
+            'description' => 'nullable|string|max:255',
         ]);
+
+        // Capitalizar nombre (cada palabra)
+            $name = ucwords(mb_strtolower($validated['name'])); // Capitalizar nombre (cada palabra)
+        // Descripción: primera letra mayúscula, resto minúscula
+            $description = $validated['description'] ?? null; // Descripción: primera letra mayúscula, resto minúscula
+        if ($description) {
+            $description = ucfirst(mb_strtolower($description));
+        }
 
         DB::beginTransaction();
         try {
-            $permission->update(['name' => $validated['name']]);
+            $permission->update([
+                'name' => $name,
+                'description' => $description,
+            ]);
             DB::commit();
             Session::flash('toast', [
                 'type' => 'success',

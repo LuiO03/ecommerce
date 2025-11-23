@@ -86,7 +86,11 @@ class FamilyController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $slug = Family::generateUniqueSlug($request->name);
+        // Capitalizar nombre y descripción
+        $name = ucwords(mb_strtolower($request->name));
+        $description = $request->description ? ucfirst(mb_strtolower($request->description)) : null;
+
+        $slug = Family::generateUniqueSlug($name);
 
         // 📌 Subida profesional de imagen con nombre descriptivo
         $imagePath = null;
@@ -98,9 +102,9 @@ class FamilyController extends Controller
         }
 
         $family = Family::create([
-            'name'        => $request->name,
+            'name'        => $name,
             'slug'        => $slug,
-            'description' => $request->description,
+            'description' => $description,
             'status'      => (bool) $request->status,
             'image'       => $imagePath,
             'created_by'  => Auth::id(),
@@ -156,42 +160,45 @@ class FamilyController extends Controller
             $request->file('image')->storeAs('families', $filename, 'public');
         }
 
+        $request->validate([
+            'name' => 'required|string|max:255|min:3|unique:families,name,' . $family->id,
+            'status' => 'required|boolean',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // Capitalizar nombre y descripción
+        $name = ucwords(mb_strtolower($request->name));
+        $description = $request->description ? ucfirst(mb_strtolower($request->description)) : null;
+
+        $slug = Family::generateUniqueSlug($name, $family->id);
+
+        $imagePath = $family->image; // Mantener la imagen actual
+
+        // 📌 Si marca para eliminar imagen
+        if ($request->input('remove_image') == '1') {
+            if ($family->image && Storage::disk('public')->exists($family->image)) {/* Lines 142-143 omitted */}
+            $imagePath = null;
+        }
+        // 📌 Si sube una nueva, eliminar la anterior y subir la nueva
+        elseif ($request->hasFile('image')) {
+
+            if ($family->image && Storage::disk('public')->exists($family->image)) {/* Lines 150-151 omitted */}
+
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = $slug . '-' . time() . '.' . $extension;
+            $imagePath = 'families/' . $filename;
+            $request->file('image')->storeAs('families', $filename, 'public');
+        }
+
         $family->update([
-            'name'        => $request->name,
+            'name'        => $name,
             'slug'        => $slug,
-            'description' => $request->description,
+            'description' => $description,
             'status'      => (bool) $request->status,
             'image'       => $imagePath,
             'updated_by'  => Auth::id(),
         ]);
-
-        Session::flash('toast', [
-            'type' => 'success',
-            'title' => 'Familia actualizada',
-            'message' => "La familia <strong>{$family->name}</strong> ha sido actualizada correctamente.",
-        ]);
-
-        Session::flash('highlightRow', $family->id);
-
-        return redirect()->route('admin.families.index');
-    }
-
-    public function destroy(Family $family)
-    {
-        if ($family->categories()->exists()) {
-            Session::flash('info', [
-                'type' => 'warning',
-                'header' => 'Acción no permitida',
-                'title' => 'Familia con categorías asociadas',
-                'message' => "No se puede eliminar la familia <strong>{$family->name}</strong> porque tiene categorías asociadas.",
-            ]);
-            return redirect()->route('admin.families.index');
-        }
-
-        // 📌 Eliminar imagen si existe
-        if ($family->image && Storage::disk('public')->exists($family->image)) {
-            Storage::disk('public')->delete($family->image);
-        }
 
         $name = $family->name;
 
