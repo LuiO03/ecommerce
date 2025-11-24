@@ -224,6 +224,7 @@ class RoleController extends Controller
                     'id' => $permission->id,
                     'name' => $permission->name,
                     'action' => $action,
+                    'description' => $permission->description,
                     'assigned' => $role->permissions->contains('id', $permission->id)
                 ];
             } else {
@@ -231,6 +232,7 @@ class RoleController extends Controller
                     'id' => $permission->id,
                     'name' => $permission->name,
                     'action' => $permission->name,
+                    'description' => $permission->description,
                     'assigned' => $role->permissions->contains('id', $permission->id)
                 ];
             }

@@ -1,15 +1,58 @@
+.permissions-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
-.card-permissions-module{
+/* Permisos: filas compactas y responsivas */
+.perm-row-custom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.perm-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.permissions-name {
+    text-transform: capitalize;
+    font-size: var(--font-size-h5);
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+    color: var(--color-accent);
+}
+
+.perm-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-soft);
+    margin-top: 2px;
+    line-height: 1.2;
+}
+
+/* Ocultar descripción en móvil */
+@media (max-width: 767px) {
+    .perm-desc {
+        display: none;
+    }
+}
+
+.perm-toggle {
+    margin-left: 1rem;
+}
+
+.permissions-card{
+    flex: 1 1 300px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     background-color: var(--color-card-bg);
     padding: 1rem;
 }
-/* Usar badge-accent global, pero si se requiere override: */
-.permissions-name {
-	text-transform: capitalize;
-}
-
 
 .module-search {
     position: relative;

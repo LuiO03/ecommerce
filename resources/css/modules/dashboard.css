@@ -109,6 +109,13 @@
     font-size: var(--font-size-p);
 }
 
+.card-title{
+    font-weight: bolder;
+    text-transform: capitalize;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-h3);
+}
+
 /* === Responsivo === */
 @media (max-width: 640px) {
     .dashboard-user-avatar {

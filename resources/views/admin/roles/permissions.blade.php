@@ -1,7 +1,11 @@
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-primary"><i class="ri-shield-user-line"></i></div>
-        Gestione permisos
+        
+        <div class="page-edit-title">
+            <span class="page-subtitle">Gestione permisos para</span>
+            {{ $role->name }}
+        </div>
     </x-slot>
     <x-slot name="action">
         <a href="{{ route('admin.roles.index') }}" class="boton boton-secondary">
@@ -10,7 +14,6 @@
         </a>
     </x-slot>
     <div class="actions-container">
-        <h1>Rol {{ $role->name }}</h1>
         <!-- Buscador de módulos y acciones -->
         <div class="module-search">
             <i class="ri-search-eye-line"></i>
@@ -20,43 +23,40 @@
         <form method="POST" action="{{ route('admin.roles.update-permissions', $role) }}" autocomplete="off">
             @csrf
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="permissions-container">
                 @forelse($modules as $module => $perms)
-                    <div class="card-permissions-module">
+                    <div class="permissions-card">
                         <div class="card-header flex items-center justify-between mb-2">
-                            <span class="font-bold text-lg"><i
-                                    class="ri-apps-line mr-2"></i>{{ ucfirst($module) }}</span>
-                            <button type="button" class="boton boton-info select-all-btn"
+                            <span class="card-title">
+                                {{ ucfirst($module) }}
+                            </span>
+                            <button type="button" class="boton boton-danger select-all-btn"
                                 data-module="{{ $module }}">
                                 <span class="boton-icon"><i class="ri-checkbox-multiple-line"></i></span>
                                 <span class="boton-text">Seleccionar todo</span>
                             </button>
                         </div>
                         <div class="card-body">
-                            <ul class="list-none p-0">
+                            <ul class="p-0">
                                 @foreach ($perms as $perm)
-                                    <li class="mb-3 flex items-center gap-3 perm-row" data-module="{{ $module }}" data-action="{{ $perm['action'] }}">
-                                        <label class="switch-tabla" title="{{ $perm['description'] ?? '' }}">
-                                            <input type="checkbox" name="permissions[]" value="{{ $perm['id'] }}" class="toggle-estado perm-checkbox"
-                                                {{ $perm['assigned'] ? 'checked' : '' }}>
+                                    <li class="perm-row perm-row-custom" data-module="{{ $module }}" data-action="{{ $perm['action'] }}">
+                                        <div class="perm-info">
+                                            <span class="permissions-name" title="{{ $perm['description'] ?? '' }}">{{ $perm['action'] }}</span>
+                                            @if (!empty($perm['description']))
+                                                <span class="perm-desc">{{ $perm['description'] }}</span>
+                                            @endif
+                                        </div>
+                                        <label class="switch-tabla perm-toggle" title="{{ $perm['description'] ?? '' }}">
+                                            <input type="checkbox" name="permissions[]" value="{{ $perm['id'] }}" class="toggle-estado perm-checkbox" {{ $perm['assigned'] ? 'checked' : '' }}>
                                             <span class="slider"></span>
                                         </label>
-                                        <span class="permissions-name badge badge-accent" title="{{ $perm['description'] ?? '' }}">
-                                            {{ $perm['action'] }}
-                                        </span>
-                                        @if (!empty($perm['description']))
-                                            <span class="text-xs text-gray-500 ml-2"
-                                                title="{{ $perm['description'] }}">
-                                                <i class="ri-information-line"></i> {{ $perm['description'] }}
-                                            </span>
-                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
                     </div>
                 @empty
-                    <div class="text-gray-400 col-span-2">No hay permisos disponibles.</div>
+                    <div class="text-muted">No hay permisos disponibles.</div>
                 @endforelse
             </div>
             <div class="flex justify-end mt-8">
