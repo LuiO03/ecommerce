@@ -27,7 +27,7 @@
         <div class="flex flex-col items-center">
             <ul class="w-full text-left space-y-1">
                 <li>
-                    <a href="#" class="menu-item">
+                    <a href="{{ route('admin.profile.index') }}" class="menu-item">
                         <i class="ri-user-line sidebar-icon"></i>
                         <span>Ver perfil</span>
                     </a>

@@ -5,10 +5,23 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
 Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+
+Route::controller(ProfileController::class)->group(function () {
+    
+    Route::get('/profile', 'index')->name('admin.profile.index');
+    Route::put('/profile', 'update')->name('admin.profile.update');
+    Route::put('/profile/password', 'updatePassword')->name('admin.profile.password');
+
+    // Exportaciones
+    Route::post('/profile/export/excel', 'exportExcel')->name('admin.profile.export.excel');
+    Route::post('/profile/export/pdf', 'exportPdf')->name('admin.profile.export.pdf');
+    Route::post('/profile/export/csv', 'exportCsv')->name('admin.profile.export.csv');
+});
 
 // ============================================================================
 // FAMILIES
