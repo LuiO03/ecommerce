@@ -4,11 +4,9 @@
         Nueva Familia
     </x-slot>
     <x-slot name="action">
-        <a href="{{ route('admin.families.index') }}"class="boton-form boton-action">
-            <span class="boton-form-icon">
-                <i class="ri-arrow-left-circle-fill"></i>
-            </span>
-            <span class="boton-form-text">Volver</span>
+        <a href="{{ route('admin.families.index') }}" class="boton boton-secondary">
+            <span class="boton-icon"><i class="ri-arrow-go-back-line"></i></span>
+            <span class="boton-text">Volver</span>
         </a>
     </x-slot>
 

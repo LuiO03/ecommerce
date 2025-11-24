@@ -148,11 +148,15 @@ class User extends Authenticatable
 
     public function getInitialsAttribute(): string
     {
-        $initials = collect(explode(' ', trim($this->name)))
-            ->map(fn($part) => strtoupper(substr($part, 0, 1)))
-            ->take(2)
-            ->implode('');
-
+        $name = trim($this->name);
+        $lastName = trim($this->last_name ?? '');
+        $initials = '';
+        if ($name !== '') {
+            $initials .= strtoupper(substr($name, 0, 1));
+        }
+        if ($lastName !== '') {
+            $initials .= strtoupper(substr($lastName, 0, 1));
+        }
         return $initials ?: '?';
     }
 

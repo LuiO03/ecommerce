@@ -657,7 +657,7 @@ input[type="checkbox"]:indeterminate {
 
 /* Fila resaltada temporalmente */
 .tabla-general tbody tr.row-highlight {
-    background-color: #e5f9e7 !important;
+    background-color: var(--color-danger-pastel) !important;
     color: var(--color-success);
     animation: highlightFade 3s ease-in-out forwards;
 }
