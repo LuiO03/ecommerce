@@ -25,7 +25,7 @@ return new class extends Migration
             
             // Optional fields
             $table->string('address', 255)->nullable();
-            $table->string('dni', 20)->nullable();
+            $table->string('dni', 20)->unique()->nullable();
             $table->string('phone', 15)->nullable();
             $table->string('image', 255)->nullable();
             $table->boolean('status')->default(true);

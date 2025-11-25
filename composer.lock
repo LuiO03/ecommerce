@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be70c54489cda36747b56f1defdf4c72",
+    "content-hash": "010bdb817000dae74154a64f3d874323",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -3292,16 +3292,16 @@
         },
         {
             "name": "laravel/jetstream",
-            "version": "v5.3.8",
+            "version": "v5.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/jetstream.git",
-                "reference": "5720f0c0a81ad4bc44602d45c2d5ce55f8c7fe24"
+                "reference": "5a83a20b419c2b2c42a8c2407ca4647d8734456b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/jetstream/zipball/5720f0c0a81ad4bc44602d45c2d5ce55f8c7fe24",
-                "reference": "5720f0c0a81ad4bc44602d45c2d5ce55f8c7fe24",
+                "url": "https://api.github.com/repos/laravel/jetstream/zipball/5a83a20b419c2b2c42a8c2407ca4647d8734456b",
+                "reference": "5a83a20b419c2b2c42a8c2407ca4647d8734456b",
                 "shasum": ""
             },
             "require": {
@@ -3318,9 +3318,8 @@
                 "laravel/sanctum": "^4.0",
                 "livewire/livewire": "^3.3",
                 "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^9.0|^10.0",
-                "phpstan/phpstan": "^1.10",
-                "phpunit/phpunit": "^11.0"
+                "orchestra/testbench": "^9.15|^10.8",
+                "phpstan/phpstan": "^1.10"
             },
             "type": "library",
             "extra": {
@@ -3355,7 +3354,7 @@
                 "issues": "https://github.com/laravel/jetstream/issues",
                 "source": "https://github.com/laravel/jetstream"
             },
-            "time": "2025-07-18T18:49:50+00:00"
+            "time": "2025-11-25T14:46:14+00:00"
         },
         {
             "name": "laravel/prompts",
