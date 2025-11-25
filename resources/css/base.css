@@ -165,7 +165,8 @@
     --color-primary-pastel: #1a2447;
     --color-secondary-pastel: #2a2530;
     --color-success-pastel: #0d2b0d;
-    --color-danger-pastel: #3d1520;
+     /*--color-danger-pastel: #3d1520;*/
+    --color-danger-pastel: #241616;
     --color-warning-pastel: #3d2f0d;
     --color-info-pastel: #1a2d47;
     --color-orange-pastel: #3d2015;

@@ -1,8 +1,8 @@
 /* 🎨 Diseño 1 */
 .fondo-estilo-1 {
   --s: 150px;
-  --c1: var(--color-sidebar);
-  --c2: var(--color-primario);
+  --c1: var(--color-sidebar-bg);
+  --c2: var(--color-accent);
 
   --_g: 
      var(--c1) 0%  5%, var(--c2) 6%  15%, var(--c1) 16% 25%, var(--c2) 26% 35%, var(--c1) 36% 45%,
@@ -83,8 +83,8 @@
 }
 .fondo-estilo-7 {
   --s: 100px; /* control the size*/
-  --c1: var(--color-primario);
-  --c2: var(--color-sidebar);
+  --c1: var(--color-accent);
+  --c2: var(--color-sidebar-bg);
   
   --_g: #0000 24%,
     var(--c2) 26% 34%,var(--c1) 36% 44%,

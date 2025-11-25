@@ -4,7 +4,7 @@
     @method('PUT')
 
     <x-alert type="danger" title="Seguridad:" :dismissible="true"
-        :items="['Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.']" />
+        :items="['Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.','Si no deseas cambiar tu contraseña, deja los campos en blanco.']" />
 
     <div class="form-row">
         <div class="form-profile-column column-password">

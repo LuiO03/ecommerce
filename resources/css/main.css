@@ -20,4 +20,5 @@
 
 @import "./components/mobile-dropdown.css";
 
-@import "./visuals/material-design.css"
+@import "./visuals/material-design.css";
+@import "./visuals/background-design.css";

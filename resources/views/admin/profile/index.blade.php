@@ -5,15 +5,17 @@
 <x-admin-layout :useSlotContainer="false">
 <div class="profile-container">
     <div class="profile-header">
-        @if($user->image)
-            <img src="{{ $user->image_url }}" alt="Foto de perfil" class="profile-avatar">
-        @else
-            <div class="profile-avatar"
-                style="background-color: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}; border-color: {{ $user->avatar_colors['color'] }}; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; font-weight: bold;">
-                <i class="ri-user-3-line"></i>
-            </div>
-        @endif
-        <h1>{{ $user->image_url }} {{ $user->last_name }}</h1>
+        <div class="profile-avatar-container fondo-estilo-2">
+            @if($user->image)
+                <img src="{{ asset('storage/' . $user->image) }}" alt="Foto de perfil" class="profile-avatar">
+            @else
+                <div class="profile-avatar"
+                    style="background-color: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}; border-color: {{ $user->avatar_colors['color'] }}; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; font-weight: bold;">
+                    <i class="ri-user-3-line"></i>
+                </div>
+            @endif
+        </div>
+        <h1>{{ $user->name }} {{ $user->last_name }}</h1>
         <span class="profile-rol">{{ $user->role_list ?? 'Sin rol' }}</span>
         <span class="profile-description">
             Gestiona tu <strong>información personal</strong>, seguridad y descargas.
