@@ -5,9 +5,16 @@
 <x-admin-layout :useSlotContainer="false">
 <div class="profile-container">
     <div class="profile-header">
-        <img src="{{ $user->image_url ?? asset('images/no-image.png') }}" alt="Foto de perfil" class="profile-avatar">
-        <h1>{{ $user->name }} {{ $user->last_name }}</h1>
-        <span class="profile-rol">{{ $user->role }}</span>
+        @if($user->image)
+            <img src="{{ $user->image_url }}" alt="Foto de perfil" class="profile-avatar">
+        @else
+            <div class="profile-avatar"
+                style="background-color: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}; border-color: {{ $user->avatar_colors['color'] }}; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; font-weight: bold;">
+                <i class="ri-user-3-line"></i>
+            </div>
+        @endif
+        <h1>{{ $user->image_url }} {{ $user->last_name }}</h1>
+        <span class="profile-rol">{{ $user->role_list ?? 'Sin rol' }}</span>
         <span class="profile-description">
             Gestiona tu <strong>información personal</strong>, seguridad y descargas.
         </span>
@@ -42,9 +49,18 @@
 <script>
     document.querySelectorAll('.profile-tab-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.profile-tab-content').forEach(tab => tab.classList.add('hidden'));
-            document.getElementById('tab-' + this.dataset.tab).classList.remove('hidden');
+            document.querySelectorAll('.profile-tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+                tab.classList.remove('fade-in');
+            });
+            const activeTab = document.getElementById('tab-' + this.dataset.tab);
+            activeTab.classList.remove('hidden');
+            activeTab.classList.add('fade-in');
+            document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
         });
     });
+    // Activar el primer tab por defecto
+    document.querySelector('.profile-tab-btn[data-tab="info"]').classList.add('active');
 </script>
 </x-admin-layout>

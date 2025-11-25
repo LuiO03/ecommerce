@@ -3,7 +3,7 @@
     @csrf
     @method('PUT')
 
-    <x-alert type="info" title="Seguridad:" :dismissible="true"
+    <x-alert type="danger" title="Seguridad:" :dismissible="true"
         :items="['Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.']" />
 
     <div class="form-row">
