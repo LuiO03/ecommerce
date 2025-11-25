@@ -7,7 +7,7 @@
     <div class="profile-header">
         <img src="{{ $user->image_url ?? asset('images/no-image.png') }}" alt="Foto de perfil" class="profile-avatar">
         <h1>{{ $user->name }} {{ $user->last_name }}</h1>
-        <span class="profile-email">{{ $user->email }}</span>
+        <span class="profile-rol">{{ $user->role }}</span>
         <span class="profile-description">
             Gestiona tu <strong>información personal</strong>, seguridad y descargas.
         </span>

@@ -3,7 +3,6 @@
 .profile-container {
     width: 100%;
     border-radius: var(--radius-card);
-    border: 2px solid red;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -26,7 +25,7 @@
     margin-bottom: 1rem;
 }
 
-.profile-email {
+.profile-rol {
     color: var(--color-muted);
 }
 
@@ -63,13 +62,6 @@
     color: var(--color-normal);
 }
 
-.profile-content {
-    background: var(--color-main-bg);
-    border-radius: var(--radius-card, 1rem);
-    box-shadow: 0 1px 8px var(--shadow-accent);
-    padding: 2rem 1rem;
-}
-
 .profile-tab-content {
     display: block;
 }
@@ -77,24 +69,20 @@
     display: none;
 }
 
-/* Inputs y formularios */
-.input {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-input-border);
-    border-radius: 0.5rem;
-    background: var(--color-input-bg);
-    color: var(--color-text);
-    font-size: 1rem;
-    margin-top: 0.25rem;
-    margin-bottom: 1rem;
-    transition: border 0.2s;
-}
-.input:focus {
-    border-color: var(--color-accent);
-    outline: none;
+.form-profile-column {
+    flex: 1 1 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--color-card-bg);
+    padding: 20px 1rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
 }
 
+.form-profile-column.column-password{
+    background-color: var(--color-danger-pastel);
+}
 
 /* Otros detalles */
 .profile-avatar-small {
