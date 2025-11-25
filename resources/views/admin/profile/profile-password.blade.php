@@ -63,3 +63,15 @@
         </button>
     </div>
 </form>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formValidator = initFormValidator('#passwordForm', {
+                validateOnBlur: true,
+                validateOnInput: false,
+                scrollToFirstError: true
+            });
+        });
+    </script>
+    @endpush

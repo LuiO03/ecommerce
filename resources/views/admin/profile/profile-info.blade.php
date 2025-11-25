@@ -89,9 +89,27 @@
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
             <span class="boton-form-text">Volver al inicio</span>
         </a>
-        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+        <button class="boton-form boton-accent" type="submit" id="submitBtn" disabled>
             <span class="boton-form-icon"><i class="ri-save-line"></i></span>
             <span class="boton-form-text">Guardar cambios</span>
         </button>
     </div>
 </form>
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formValidator = initFormValidator('#profileForm', {
+                validateOnBlur: true,
+                validateOnInput: false,
+                scrollToFirstError: true
+            });
+            // 1. Inicializar submit loader PRIMERO
+            const submitLoader = initSubmitLoader({
+                formId: 'profileForm',
+                buttonId: 'submitBtn',
+                loadingText: 'Actualizando...'
+            });
+        });
+    </script>
+@endpush
