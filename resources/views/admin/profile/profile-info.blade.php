@@ -3,21 +3,6 @@
     @csrf
     @method('PUT')
 
-    {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
-    @if ($errors->any())
-        <div class="form-error-banner">
-            <i class="ri-error-warning-line form-error-icon"></i>
-            <div>
-                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    @endif
-
     <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
     <div class="form-row">
@@ -108,8 +93,7 @@
             const saveBackgroundBtn = document.getElementById('saveBackgroundBtn');
             document.querySelectorAll('.gallery-option').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove(
-                        'selected'));
+                    document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove('selected'));
                     this.classList.add('selected');
                     const bgInput = document.getElementById('background_style');
                     bgInput.value = this.dataset.style;
@@ -122,42 +106,8 @@
                     if (submitBtn) submitBtn.disabled = true;
                 });
             });
-
             // Inicialmente desactivar el botón de fondo
             if (saveBackgroundBtn) saveBackgroundBtn.disabled = true;
-
-            // Guardar solo el fondo
-            if (saveBackgroundBtn) {
-                saveBackgroundBtn.addEventListener('click', function() {
-                    const form = document.getElementById('profileForm');
-                    // Crear input temporal para solo enviar background_style
-                    const tempForm = document.createElement('form');
-                    tempForm.method = 'POST';
-                    tempForm.action = form.action;
-                    tempForm.enctype = form.enctype;
-                    tempForm.style.display = 'none';
-                    // Copiar CSRF y método
-                    const csrf = form.querySelector('input[name="_token"]');
-                    const method = form.querySelector('input[name="_method"]');
-                    if (csrf) {
-                        const csrfClone = csrf.cloneNode();
-                        tempForm.appendChild(csrfClone);
-                    }
-                    if (method) {
-                        const methodClone = method.cloneNode();
-                        tempForm.appendChild(methodClone);
-                    }
-                    // Campo background_style
-                    const bgInput = document.getElementById('background_style');
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'background_style';
-                    input.value = bgInput.value;
-                    tempForm.appendChild(input);
-                    document.body.appendChild(tempForm);
-                    tempForm.submit();
-                });
-            }
         });
     </script>
     <div class="form-footer">
@@ -176,6 +126,7 @@
     autocomplete="off">
     @csrf
     @method('PUT')
+    <input type="hidden" name="only_background" value="1">
     <div class="form-profile-column">
         <span class="card-title">Fondo de perfil</span>
         <label for="background_style" class="label-form">Elige tu fondo</label>

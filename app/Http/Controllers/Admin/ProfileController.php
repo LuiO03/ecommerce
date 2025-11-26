@@ -76,6 +76,23 @@ class ProfileController extends Controller
             return redirect()->route('admin.profile.index');
         }
 
+        // Si solo se envía fondo (desde el formulario independiente)
+        if ($request->has('only_background')) {
+            $request->validate([
+                'background_style' => 'required|string|max:30',
+            ]);
+            $user->update([
+                'background_style' => $request->background_style,
+                'updated_by' => Auth::id(),
+            ]);
+            Session::flash('toast', [
+                'type' => 'success',
+                'title' => 'Fondo actualizado',
+                'message' => 'El fondo de perfil se guardó correctamente.',
+            ]);
+            return redirect()->route('admin.profile.index');
+        }
+
         $request->validate([
             'name'      => 'required|string|max:255|min:3',
             'email'     => 'required|email|unique:users,email,' . $user->id,

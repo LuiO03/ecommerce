@@ -3,21 +3,6 @@
     @csrf
     @method('PUT')
 
-    {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
-    @if ($errors->any())
-        <div class="form-error-banner">
-            <i class="ri-error-warning-line form-error-icon"></i>
-            <div>
-                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    @endif
-
     <x-alert type="danger" title="Seguridad:" :dismissible="true" :items="[
         'Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.',
         'Si no deseas cambiar tu contraseña, deja los campos en blanco.',

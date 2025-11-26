@@ -90,13 +90,21 @@
     display: flex;
     gap: 1rem;
     width: 100%;
-    align-items: center;
     padding: 1rem;
     justify-content: center;
 }
 
+.modal-avatar-right{
+    background-color: red !important;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+}
+
 .modal-avatar-actions {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 200px;
     justify-content: center;
     gap: 10px;
@@ -118,6 +126,17 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.avatar-file-name{
+    margin-top: 0.5rem;
+    font-size: var(--font-size-xs);
+    text-align: center;
+    font-family: monospace;
+    background-color: whitesmoke;
+    padding: 4px 8px;
+    color: black;
+    border-radius: 6px;
 }
 .modal-avatar-preview-icon {
     font-size: 2.5rem;

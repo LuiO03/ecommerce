@@ -11,27 +11,33 @@
             @csrf
             @method('PUT')
             <input type="hidden" name="only_image" value="1">
-            <div class="modal-avatar-preview" id="avatarPreview">
-                @if ($user->image)
-                    <img src="{{ asset('storage/' . $user->image) }}" alt="Foto actual" id="avatarPreviewImg">
-                @else
-                    <i class="ri-user-4-line modal-avatar-preview-icon" id="avatarPreviewIcon"></i>
-                @endif
+            <div class="modal-avatar-left">
+                <div class="modal-avatar-preview" id="avatarPreview" style="flex-direction: column;">
+                    @if ($user->image)
+                        <img src="{{ asset('storage/' . $user->image) }}" alt="Foto actual" id="avatarPreviewImg">
+                    @endif
+                </div>
+                <div id="avatarFileName"
+                    class="avatar-file-name">
+                    {{ basename($user->image) }}
+                </div>
             </div>
-            <input type="file" name="image" id="imageModal" accept="image/*" class="input-form modal-avatar-input">
-            <div class="modal-avatar-actions">
-                <button type="button" id="uploadSquareBtn" class="boton boton-primary">
-                    <span class="boton-icon"><i class="ri-crop-line"></i></span>
-                    <span class="boton-text">Subir imagen</span>
-                </button>
-                <button type="submit" class="boton boton-accent">
-                    <span class="boton-icon"><i class="ri-image-edit-fill"></i></span>
-                    <span class="boton-text">Guardar foto</span>
-                </button>
-                <button type="button" id="removeAvatarBtn" class="boton boton-danger">
-                    <span class="boton-icon"><i class="ri-delete-bin-line"></i></span>
-                    <span class="boton-text">Quitar foto</span>
-                </button>
+            <input type="file" name="image" id="imageModal" accept="image/*" class="d-none">
+            <div class="modal-avatar-right">
+                <div class="modal-avatar-actions">
+                    <button type="button" id="uploadSquareBtn" class="boton boton-primary">
+                        <span class="boton-icon"><i class="ri-crop-line"></i></span>
+                        <span class="boton-text">Subir imagen</span>
+                    </button>
+                    <button type="submit" class="boton boton-accent">
+                        <span class="boton-icon"><i class="ri-image-edit-fill"></i></span>
+                        <span class="boton-text">Guardar foto</span>
+                    </button>
+                    <button type="button" id="removeAvatarBtn" class="boton boton-danger">
+                        <span class="boton-icon"><i class="ri-delete-bin-line"></i></span>
+                        <span class="boton-text">Quitar foto</span>
+                    </button>
+                </div>
                 <button type="button" class="boton boton-modal-close" id="cancelButtonAvatar">
                     <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                     <span class="boton-text">Cerrar</span>
@@ -88,6 +94,7 @@
     const avatarPreview = document.getElementById('avatarPreview');
     imageInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
+        const fileNameDiv = document.getElementById('avatarFileName');
         if (file) {
             const reader = new FileReader();
             reader.onload = function(ev) {
@@ -100,8 +107,11 @@
                     avatarPreview.appendChild(img);
                 }
                 img.src = ev.target.result;
+                if (fileNameDiv) fileNameDiv.textContent = file.name;
             };
             reader.readAsDataURL(file);
+        } else {
+            if (fileNameDiv) fileNameDiv.textContent = '';
         }
     });
     // Botón para subir imagen 1:1
@@ -112,5 +122,4 @@
     document.getElementById('removeAvatarBtn').addEventListener('click', function() {
         document.getElementById('removeAvatarForm').submit();
     });
-    
 </script>
