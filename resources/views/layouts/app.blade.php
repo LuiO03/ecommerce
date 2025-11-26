@@ -21,7 +21,8 @@
         <x-banner />
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @livewire('navigation-menu')
+            {{-- Menú de navegación Jetstream/Blade aquí --}}
+            @include('partials.admin.sidebar-right')
 
             <!-- Page Heading -->
             @if (isset($header))

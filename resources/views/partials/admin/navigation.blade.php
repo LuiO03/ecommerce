@@ -22,7 +22,7 @@
 
     <div class="topbar-right">
         <div class="flex items-center ms-3">
-            <a href="{{ route('admin.profile.index') }}">
+            <a href="{{ route('admin.profile.index') }}" title="Perfil de usuario">
                 @if (auth()->user()->image)
                     <img class="topbar-avatar" src="{{ asset('storage/' . auth()->user()->image) }}"
                         alt="{{ auth()->user()->name }}">

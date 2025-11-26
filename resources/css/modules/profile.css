@@ -32,44 +32,27 @@
 }
 .avatar-edit-btn {
     position: absolute;
-    right: 18px;
-    bottom: 18px;
+    right: 10px;
+    bottom: 10px;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     z-index: 2;
-    padding: 0;
-}
-.avatar-edit-icon {
-    font-size: 1.5rem;
+    padding: 7px 10px 7px 12px;
 }
 
 /* --- Modal avatar --- */
-.modal-avatar {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.25);
-    z-index: 50;
-    align-items: center;
-    justify-content: center;
-}
 .modal-avatar-content {
-    background: var(--color-card-bg);
-    border-radius: 18px;
-    padding: 2rem;
-    max-width: 340px;
-    width: 90vw;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    background-color: var(--color-sidebar-bg);
+    border-radius: var(--radius-card);
+    width: 100%;
+    max-width: fit-content;
     position: relative;
+    overflow: hidden;
 }
+
 .modal-avatar-close {
     position: absolute;
     top: 12px;
@@ -80,24 +63,36 @@
     color: var(--color-muted);
     cursor: pointer;
 }
-.modal-avatar-form {
+
+.modal-avatar-body {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    align-items: center;
+    padding: 1rem;
+    justify-content: center;
+}
+
+.modal-avatar-actions {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    background-color: red;
+    width: 200px;
+    justify-content: center;
+    gap: 10px;
 }
+
 .modal-avatar-preview {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
+    width: 250px;
+    height: 250px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    box-shadow: var(--shadow-material);
     background: var(--color-card-bg);
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 2px solid var(--color-border);
 }
+
 .modal-avatar-preview img {
     width: 100%;
     height: 100%;
@@ -106,10 +101,6 @@
 .modal-avatar-preview-icon {
     font-size: 2.5rem;
     color: var(--color-muted);
-}
-.modal-avatar-input {
-    width: 100%;
-    max-width: 220px;
 }
 
 .profile-avatar-small {
