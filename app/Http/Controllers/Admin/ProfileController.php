@@ -13,6 +13,26 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class ProfileController extends Controller
 {
+        // ======================
+        //   QUITAR FOTO DE PERFIL
+        // ======================
+        public function removeImage(Request $request)
+        {
+            $user = User::query()->findOrFail(Auth::id());
+            if ($user->image && Storage::disk('public')->exists($user->image)) {
+                Storage::disk('public')->delete($user->image);
+            }
+            $user->update([
+                'image' => null,
+                'updated_by' => Auth::id(),
+            ]);
+            Session::flash('toast', [
+                'type' => 'success',
+                'title' => 'Foto eliminada',
+                'message' => 'La foto de perfil ha sido eliminada correctamente.',
+            ]);
+            return redirect()->route('admin.profile.index');
+        }
     // ======================
     //      VISTA PRINCIPAL PERFIL
     // ======================
@@ -30,21 +50,30 @@ class ProfileController extends Controller
         
         $user = User::query()->findOrFail(Auth::id());
 
-        // Si solo se envía background_style, actualizar solo ese campo
-        if ($request->has('background_style') && !$request->has('name') && !$request->has('email')) {
+        // Si solo se envía imagen (desde la modal)
+        if ($request->has('only_image')) {
             $request->validate([
-                'background_style' => 'required|string|max:30',
+                'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             ]);
+            // Eliminar imagen anterior si existe
+            if ($user->image && Storage::disk('public')->exists($user->image)) {
+                Storage::disk('public')->delete($user->image);
+            }
+            $ext = $request->file('image')->getClientOriginalExtension();
+            $slug = User::generateUniqueSlug($user->name, $user->id);
+            $filename = $slug . '-' . time() . '.' . $ext;
+            $imagePath = 'users/' . $filename;
+            $request->file('image')->storeAs('users', $filename, 'public');
             $user->update([
-                'background_style' => $request->background_style,
+                'image' => $imagePath,
                 'updated_by' => Auth::id(),
             ]);
             Session::flash('toast', [
                 'type' => 'success',
-                'title' => 'Fondo actualizado',
-                'message' => 'El fondo de perfil se guardó correctamente.',
+                'title' => 'Foto actualizada',
+                'message' => 'La foto de perfil se guardó correctamente.',
             ]);
-            return back();
+            return redirect()->route('admin.profile.index');
         }
 
         $request->validate([

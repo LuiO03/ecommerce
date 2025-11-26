@@ -44,6 +44,21 @@
             </div>
         @endif
 
+        {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
+        @if ($errors->any())
+            <div class="form-error-banner">
+                <i class="ri-error-warning-line form-error-icon"></i>
+                <div>
+                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <x-alert 
             type="info" 
             title="Guía rápida:" 

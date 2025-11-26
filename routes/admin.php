@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 
 Route::controller(ProfileController::class)->group(function () {
-    
     Route::get('/profile', 'index')->name('admin.profile.index');
     Route::put('/profile', 'update')->name('admin.profile.update');
     Route::put('/profile/password', 'updatePassword')->name('admin.profile.password');
+
+    // Quitar foto de perfil
+    Route::delete('/profile/remove-image', 'removeImage')->name('admin.profile.removeImage');
 
     // Exportaciones
     Route::post('/profile/export/excel', 'exportExcel')->name('admin.profile.export.excel');

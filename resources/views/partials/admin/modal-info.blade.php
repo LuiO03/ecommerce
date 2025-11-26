@@ -82,7 +82,6 @@ window.showInfoModal = function (options) {
         document.body.appendChild(modal);
     }
     
-    
     // Reducir z-index del sidebar temporalmente
     const sidebar = document.getElementById('logo-sidebar');
     if (sidebar) {

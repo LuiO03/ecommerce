@@ -1,10 +1,27 @@
-
-<form method="POST" action="{{ route('admin.profile.password') }}" class="form-container" autocomplete="off" id="passwordForm">
+<form method="POST" action="{{ route('admin.profile.password') }}" class="form-container" autocomplete="off"
+    id="passwordForm">
     @csrf
     @method('PUT')
 
-    <x-alert type="danger" title="Seguridad:" :dismissible="true"
-        :items="['Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.','Si no deseas cambiar tu contraseña, deja los campos en blanco.']" />
+    {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
+    @if ($errors->any())
+        <div class="form-error-banner">
+            <i class="ri-error-warning-line form-error-icon"></i>
+            <div>
+                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
+    <x-alert type="danger" title="Seguridad:" :dismissible="true" :items="[
+        'Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.',
+        'Si no deseas cambiar tu contraseña, deja los campos en blanco.',
+    ]" />
 
     <div class="form-row">
         <div class="form-profile-column column-password">
@@ -16,8 +33,9 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-line input-icon"></i>
-                    <input type="password" name="current_password" id="current_password" class="input-form password-input"
-                        placeholder="Ingresa tu contraseña actual" required data-validate="required">
+                    <input type="password" name="current_password" id="current_password"
+                        class="input-form password-input" placeholder="Ingresa tu contraseña actual" required
+                        data-validate="required">
                     <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
                         <i class="ri-eye-line"></i>
                     </button>
@@ -50,8 +68,9 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-password-line input-icon"></i>
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="input-form password-input"
-                        placeholder="Repite la nueva contraseña" required data-validate="required|confirmed:password">
+                    <input type="password" name="password_confirmation" id="password_confirmation"
+                        class="input-form password-input" placeholder="Repite la nueva contraseña" required
+                        data-validate="required|confirmed:password">
                     <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
                         <i class="ri-eye-line"></i>
                     </button>
@@ -73,7 +92,7 @@
     </div>
 </form>
 
-    @push('scripts')
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const formValidator = initFormValidator('#passwordForm', {
@@ -104,4 +123,4 @@
             });
         });
     </script>
-    @endpush
+@endpush

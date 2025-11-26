@@ -44,6 +44,28 @@
 }
 
 /* --- Modal avatar --- */
+.modal-avatar {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
+    backdrop-filter: blur(0px);
+    isolation: isolate;
+    font-family: var(--font-secondary);
+}
+
+.modal-avatar.flex {
+    display: flex;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+}
+
 .modal-avatar-content {
     background-color: var(--color-sidebar-bg);
     border-radius: var(--radius-card);
@@ -74,8 +96,7 @@
 }
 
 .modal-avatar-actions {
-    display: flex;
-    flex-direction: column;
+    display: block;
     width: 200px;
     justify-content: center;
     gap: 10px;
