@@ -56,23 +56,10 @@ Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseña
 * ✅ Auditoría automática: `created_by`, `updated_by`, `deleted_by`
 * ✅ Soft Deletes en todos los modelos principales
 * ✅ Protección CSRF en todas las operaciones
-
 ### 📊 **Exportación de Datos**
 * ✅ Excel con estilos profesionales y auto-ajuste de columnas
 * ✅ CSV para importación en otros sistemas
-* ✅ PDF con formato A4 (generado con Puppeteer)
-* ✅ Exportación selectiva o completa
 
-### 🌐 **Internacionalización**
-* ✅ Idioma principal: Español (ES)
-* ✅ Helpers globales: `fecha_hoy()` con formato localizado
-* ✅ Paquetes: `laravel-lang/common` + `laravel-lang/publisher`
-
----
-
-## ⚙️ Requisitos previos
-
-Antes de comenzar, asegúrate de tener instalado:
 
 - **[PHP ^8.2](https://www.php.net/)** - Motor del backend
 - **[Composer](https://getcomposer.org/)** - Gestor de dependencias PHP
@@ -121,18 +108,12 @@ cd ecommerce
 
 # 2️⃣ Instalar dependencias PHP
 composer install
-
 # 3️⃣ Instalar dependencias Node
 npm install
 
 # 4️⃣ Configurar entorno
 cp .env.example .env
-php artisan key:generate
-
-# 5️⃣ Configurar base de datos en .env
-
 # 6️⃣ Ejecutar migraciones con seeders
-php artisan migrate --seed
 
 # 7️⃣ Compilar assets
 npm run build
@@ -163,14 +144,10 @@ User:  user@ecommerce.com / password
 └──────┬──────┘
        │ 1:N
        ▼
-┌─────────────┐
 │  Category   │  Nivel 2: Categorías (con soporte para parent_id)
 └──────┬──────┘
        │ 1:N
        ▼
-┌─────────────┐
-│   Product   │  Nivel 3: Productos (SKU, precio, descuento, slug)
-└──────┬──────┘
        │ 1:N
        ▼
 ┌─────────────┐
@@ -219,7 +196,6 @@ ecommerce/
 │   └── admin.php             # Rutas admin (prefix: /admin)
 └── tests/
 ```
-
 ---
 
 ## 🔧 Comandos de Desarrollo
@@ -254,76 +230,35 @@ php artisan migrate            # Ejecutar migraciones
 php artisan migrate:fresh --seed # Reset + seeders
 php artisan db:seed --class=RolePermissionSeeder
 ```
-
 ### Construcción para producción
 ```bash
 npm run build                  # Assets optimizados
-composer install --optimize-autoloader --no-dev
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
 
----
-
-## 📚 Convenciones de Código
-
-### Modelos Eloquent
 Todos los modelos principales incluyen auditoría automática:
 ```php
 protected $fillable = [
     'name', 'slug', 'description', 'status',
-    'created_by', 'updated_by', 'deleted_by'
-];
 ```
 
-### Slugs Únicos
-```php
-// Método en todos los modelos principales
 public static function generateUniqueSlug($name, $id = null) {
     $slug = Str::slug($name);
-    // Auto-incrementa: producto-1, producto-2...
     while (self::where('slug', $slug)
         ->when($id, fn($q) => $q->where('id', '!=', $id))
-        ->exists()) {
         $slug = $originalSlug . '-' . $count++;
     }
-    return $slug;
 }
 
-// Route Model Binding usa slug
 public function getRouteKeyName() {
     return 'slug';
-}
 ```
-
 ### Query Scopes
 ```php
 public function scopeForTable($query) {
-    return $query->select('id', 'name', 'status', 'created_at')
-                 ->orderByDesc('id');
-}
-```
-
-### Rutas Admin
-```php
 // routes/admin.php
-// Middleware: ['web', 'auth', 'verified']
 // Prefix: /admin
 Route::get('/entities', [EntityController::class, 'index'])
     ->name('admin.entities.index');
-
-Route::delete('/entities', [EntityController::class, 'destroyMultiple'])
-    ->name('admin.entities.destroy-multiple');
-
-Route::patch('/entities/{entity}/status', [EntityController::class, 'updateStatus'])
-    ->name('admin.entities.update-status');
-```
-
----
-
 ## 🎨 Componentes Reutilizables
-
 ### Admin Layout
 ```blade
 <x-admin-layout :showMobileFab="true" :useSlotContainer="false">
@@ -336,11 +271,7 @@ Route::patch('/entities/{entity}/status', [EntityController::class, 'updateStatu
     
     <x-slot name="action">
         <a href="{{ route('admin.entities.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Entidad</span>
-        </a>
     </x-slot>
-    
     <!-- Contenido -->
 </x-admin-layout>
 ```
@@ -349,7 +280,6 @@ Route::patch('/entities/{entity}/status', [EntityController::class, 'updateStatu
 ```javascript
 handleMultipleDelete({
     selectedIds: selectedIds,             // Set o Array
-    getNameCallback: getEntityNameById,   // Función para obtener nombres
     entityName: 'producto',               // Para mensajes
     deleteRoute: '/admin/products',       // Ruta destroy-multiple
     csrfToken: '{{ csrf_token() }}',
@@ -358,18 +288,10 @@ handleMultipleDelete({
 ```
 
 ### Toggle de Estado Rápido
-```html
 <label class="switch-tabla">
     <input type="checkbox" class="toggle-estado" 
            {{ $entity->status ? 'checked' : '' }}
-           data-entity-id="{{ $entity->id }}">
-    <span class="slider"></span>
-</label>
-```
 
----
-
-## 📖 Documentación Técnica
 
 - **[Multiple Delete Global](docs/multiple-delete-global.md)** - Sistema de eliminación múltiple reutilizable
 - **[Quick Status Toggle](docs/quick-status-toggle.md)** - Toggle de estado instantáneo sin modales

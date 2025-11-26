@@ -26,10 +26,6 @@ Todos los modelos principales (`Family`, `Category`, etc.) incluyen:
 ### Admin Routes (`routes/admin.php`)
 **Prefijo:** `/admin` | **Middleware:** `['web', 'auth', 'verified']` (configurado en `bootstrap/app.php`)
 ```php
-// ✅ Patrón correcto para nuevos módulos
-Route::get('/entities', [EntityController::class, 'index'])->name('admin.entities.index');
-Route::delete('/entities', [EntityController::class, 'destroyMultiple'])->name('admin.entities.destroy-multiple');
-Route::patch('/entities/{entity}/status', [EntityController::class, 'updateStatus'])->name('admin.entities.update-status');
 ```
 
 **NO uses** `->name('admin.')` prefix - está comentado intencionalmente en `bootstrap/app.php`.
@@ -41,7 +37,6 @@ Route::patch('/entities/{entity}/status', [EntityController::class, 'updateStatu
 ```php
 public static function generateUniqueSlug($name, $id = null) {
     $slug = Str::slug($name);
-    // Auto-incrementa si existe: producto-1, producto-2...
     while (self::where('slug', $slug)->when($id, fn($q) => $q->where('id', '!=', $id))->exists()) {
         $slug = $originalSlug . '-' . $count++;
     }
@@ -54,7 +49,6 @@ public static function generateUniqueSlug($name, $id = null) {
 public function getRouteKeyName() {
     return 'slug'; // Usa slug en lugar de id en URLs
 }
-```
 
 ### 3. Query Scopes Reutilizables
 Define scopes en modelos para consultas comunes:
@@ -62,7 +56,6 @@ Define scopes en modelos para consultas comunes:
 public function scopeForTable($query) {
     return $query->select('id', 'name', 'description', 'status', 'created_at')->orderByDesc('id');
 }
-```
 
 ## Componentes Frontend
 
@@ -72,19 +65,16 @@ public function scopeForTable($query) {
 <x-admin-layout :showMobileFab="true" :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-success"><i class="ri-apps-line"></i></div>
-        Título de Página
     </x-slot>
     <x-slot name="action">
         <a href="#" class="boton boton-primary">
             <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
             <span class="boton-text">Acción</span>
         </a>
-    </x-slot>
     <!-- Contenido -->
 </x-admin-layout>
 ```
 
-### Iconos
 **Sistema:** Remix Icon (clases `ri-*-line` y `ri-*-fill`)  
 **NO uses** Font Awesome, Material Icons u otros.
 
@@ -102,13 +92,10 @@ Componente reutilizable para banners contextuales (info, warning, danger, succes
         'Item 2 con <i class=\'ri-check-line\'></i> icono'
     ]"
 />
-
-{{-- Con slot personalizado --}}
 <x-alert type="warning" title="Advertencia:">
     Contenido personalizado del banner.
 </x-alert>
 
-{{-- Con botón de cerrar --}}
 <x-alert type="success" :dismissible="true" title="¡Éxito!">
     Mensaje que puede cerrarse.
 </x-alert>
@@ -124,7 +111,6 @@ Componente reutilizable para banners contextuales (info, warning, danger, succes
 - `data-auto-dismiss`: Tiempo en ms para auto-cierre
 
 ## JavaScript Patterns
-
 ### Eliminación Múltiple Global
 **Ver:** `docs/multiple-delete-global.md` | **Archivo:** `resources/js/modals/modal-confirm.js`
 
@@ -136,7 +122,6 @@ handleMultipleDelete({
     entityName: 'familia',                // Para mensajes en español
     deleteRoute: '/admin/families',       // Ruta destroy-multiple
     csrfToken: '{{ csrf_token() }}',
-    buttonSelector: '#deleteSelectedBtn'
 });
 ```
 
@@ -149,7 +134,6 @@ public function destroyMultiple(Request $request) {
 }
 ```
 
-### Toggle de Estado Rápido
 **Ver:** `docs/quick-status-toggle.md`
 
 ```html
@@ -158,31 +142,18 @@ public function destroyMultiple(Request $request) {
            {{ $entity->status ? 'checked' : '' }}
            data-entity-id="{{ $entity->id }}">
     <span class="slider"></span>
-</label>
-```
-
 Controlador:
 ```php
 public function updateStatus(Request $request, Entity $entity) {
-    $request->validate(['status' => 'required|boolean']);
-    $entity->status = $request->status;
     $entity->save();
     return response()->json(['success' => true, 'status' => $entity->status]);
 }
-```
-
 ## DataTables Integration
 
 **Patrón estándar:** Ver `resources/views/admin/families/index.blade.php` (líneas 1-100)
-- Custom search, sort, status filters
-- Multi-select con checkboxes
 - Export buttons (Excel, CSV, PDF)
 - Responsive design
 
-**JS Modular:** `resources/js/modules/datatable-manager.js` - Sistema reutilizable para tablas  
-**Documentación:** `docs/datatable-manager-usage.md`
-
-### Uso Rápido
 ```javascript
 const tableManager = new DataTableManager('#tabla', {
     moduleName: 'entities',
