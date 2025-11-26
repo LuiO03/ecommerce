@@ -1,3 +1,29 @@
+.profile-avatar-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 120px; /* Ajusta según tu diseño */
+}
+
+.profile-avatar {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%) translateY(50%);
+    /* Mantener centrado horizontal y el centro en el borde inferior */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px; /* Ajusta según tu diseño */
+    height: 120px; /* Ajusta según tu diseño */
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: #fff;
+    font-size: 4.5rem;
+    font-weight: bold;
+    border: 3px solid #e5e7eb;
+}
 /* Transición de entrada para partials de tabs */
 .fade-in {
     animation: fadeInTab 0.4s ease;
@@ -27,7 +53,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0px;
+    gap: 70px;
 }
 
 .profile-avatar-container {

@@ -453,27 +453,26 @@ class FormValidator {
     // ✅ MOSTRAR ÉXITO
     // ========================================
     showSuccess(field) {
-        if (!this.options.showSuccessIndicators) return;
+            if (!this.options.showSuccessIndicators) return;
 
-        // Agregar clase de éxito al input
-        field.classList.add(this.options.successClass);
-        field.classList.remove(this.options.errorClass);
+            // Agregar clase de éxito al input
+            field.classList.add(this.options.successClass);
+            field.classList.remove(this.options.errorClass);
 
-        console.log(`✅ Success aplicado a:`, field.tagName, field.name || field.id, `Clases:`, field.className);
+            console.log(`✅ Success aplicado a:`, field.tagName, field.name || field.id, `Clases:`, field.className);
 
-        // Solo agregar icono de check si NO es un select (ya tiene flecha)
-        // y NO es un input type file
-        if (field.tagName !== 'SELECT' && field.type !== 'file') {
-            const parent = field.closest('.input-icon-container');
-            if (parent && !parent.querySelector('.validation-check-icon')) {
-                const checkIcon = document.createElement('i');
-                checkIcon.className = 'ri-checkbox-circle-fill validation-check-icon';
-                parent.appendChild(checkIcon);
-                console.log(`✅ Check icon agregado`);
+            // Agregar icono de check en inputs, selects y textareas (no en files)
+            if (field.type !== 'file') {
+                const parent = field.closest('.input-icon-container');
+                if (parent && !parent.querySelector('.validation-check-icon')) {
+                    const checkIcon = document.createElement('i');
+                    checkIcon.className = 'ri-checkbox-circle-fill validation-check-icon';
+                    parent.appendChild(checkIcon);
+                    console.log(`✅ Check icon agregado`);
+                }
+            } else {
+                console.log(`⚠️ No se agrega check (es FILE)`);
             }
-        } else {
-            console.log(`⚠️ No se agrega check (es SELECT o FILE)`);
-        }
     }
 
     // ========================================

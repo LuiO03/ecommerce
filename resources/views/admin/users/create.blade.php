@@ -52,9 +52,12 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-lock-line input-icon"></i>
-                        <input type="password" name="password" id="password" class="input-form" required
+                        <input type="password" name="password" id="password" class="input-form password-input" required
                             placeholder="Mínimo 6 caracteres"
                             data-validate="required|min:6">
+                        <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                            <i class="ri-eye-line"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -220,6 +223,27 @@
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true
+                });
+
+                // Toggle password visibility
+                document.querySelectorAll('.toggle-password').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const input = this.parentElement.querySelector('.password-input');
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            this.querySelector('i').classList.remove('ri-eye-line');
+                            this.querySelector('i').classList.add('ri-eye-off-line');
+                            this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                        } else {
+                            input.type = 'password';
+                            this.querySelector('i').classList.remove('ri-eye-off-line');
+                            this.querySelector('i').classList.add('ri-eye-line');
+                            this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                        }
+                        setTimeout(() => {
+                            this.querySelector('i').style.animation = '';
+                        }, 300);
+                    });
                 });
             });
         </script>

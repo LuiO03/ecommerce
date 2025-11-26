@@ -16,8 +16,11 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-line input-icon"></i>
-                    <input type="password" name="current_password" id="current_password" class="input-form"
+                    <input type="password" name="current_password" id="current_password" class="input-form password-input"
                         placeholder="Ingresa tu contraseña actual" required data-validate="required">
+                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="ri-eye-line"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -30,8 +33,11 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-password-line input-icon"></i>
-                    <input type="password" name="password" id="password" class="input-form"
+                    <input type="password" name="password" id="password" class="input-form password-input"
                         placeholder="Ingresa la nueva contraseña" required data-validate="required|min:6">
+                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="ri-eye-line"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -44,8 +50,11 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-password-line input-icon"></i>
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="input-form"
-                        placeholder="Repite la nueva contraseña" required data-validate="required|same:password">
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="input-form password-input"
+                        placeholder="Repite la nueva contraseña" required data-validate="required|confirmed:password">
+                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="ri-eye-line"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -71,6 +80,27 @@
                 validateOnBlur: true,
                 validateOnInput: false,
                 scrollToFirstError: true
+            });
+
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.password-input');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.querySelector('i').classList.remove('ri-eye-line');
+                        this.querySelector('i').classList.add('ri-eye-off-line');
+                        this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                    } else {
+                        input.type = 'password';
+                        this.querySelector('i').classList.remove('ri-eye-off-line');
+                        this.querySelector('i').classList.add('ri-eye-line');
+                        this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                    }
+                    setTimeout(() => {
+                        this.querySelector('i').style.animation = '';
+                    }, 300);
+                });
             });
         });
     </script>

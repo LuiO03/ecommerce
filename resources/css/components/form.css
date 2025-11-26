@@ -1,3 +1,32 @@
+
+/* Animación para el ojito de contraseña */
+@keyframes eyeBlink {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(-10deg); }
+    100% { transform: scale(1); }
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.toggle-password i {
+    font-size: 1.5rem;
+    transition: color 0.2s, transform 0.2s;
+}
+.toggle-password:active i {
+    color: var(--color-warning);
+}
 .form-container {
     width: 100%;
     padding: 0px;

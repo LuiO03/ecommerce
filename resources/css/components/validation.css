@@ -141,10 +141,13 @@ select.input-success:focus {
 /* Icono de check de validación */
 .validation-check-icon {
     position: absolute;
-    right: 12px;
-    top: 50%;
+    right: -10px;
+    top: 10%;
     transform: translateY(-50%);
     font-size: 1.2rem;
+    background-color: var(--color-sidebar-bg);
+    border-radius: 50px;
+    padding: 0px 5px;
     color: var(--color-success);
     pointer-events: none;
     animation: checkPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -152,12 +155,15 @@ select.input-success:focus {
 }
 
 /* Mostrar solo en inputs de texto (no selects, no files) */
+
 .input-icon-container:has(input[type="text"]) .validation-check-icon,
 .input-icon-container:has(input[type="email"]) .validation-check-icon,
 .input-icon-container:has(input[type="password"]) .validation-check-icon,
 .input-icon-container:has(input[type="number"]) .validation-check-icon,
 .input-icon-container:has(input[type="tel"]) .validation-check-icon,
-.input-icon-container:has(input[type="url"]) .validation-check-icon {
+.input-icon-container:has(input[type="url"]) .validation-check-icon,
+.input-icon-container:has(select) .validation-check-icon,
+.input-icon-container:has(textarea) .validation-check-icon {
     display: block;
 }
 
