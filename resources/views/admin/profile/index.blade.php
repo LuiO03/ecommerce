@@ -20,7 +20,7 @@
                     <i class="ri-image-edit-fill avatar-edit-icon"></i>
                 </button>
             </div>
-            
+
             <div class="text-center">
                 <h1>{{ $user->name }} {{ $user->last_name }}</h1>
                 <span class="profile-rol">{{ $user->role_list ?: 'Sin rol' }}</span>
@@ -57,5 +57,22 @@
     </div>
     <!-- Modal para cambiar imagen -->
     @include('admin.profile.profile-avatar')
-    
+
+    <script>
+        document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.profile-tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
+                    tab.classList.remove('fade-in');
+                });
+                const activeTab = document.getElementById('tab-' + this.dataset.tab);
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('fade-in');
+                document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        // Activar el primer tab por defecto
+        document.querySelector('.profile-tab-btn[data-tab="info"]').classList.add('active');
+    </script>
 </x-admin-layout>
