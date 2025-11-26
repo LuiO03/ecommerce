@@ -22,7 +22,7 @@
 
     <div class="topbar-right">
         <div class="flex items-center ms-3">
-            <div>
+            <a href="{{ route('admin.profile.index') }}">
                 @if (auth()->user()->image)
                     <img class="topbar-avatar" src="{{ asset('storage/' . auth()->user()->image) }}"
                         alt="{{ auth()->user()->name }}">
@@ -33,7 +33,7 @@
                         {{ auth()->user()->initials }}
                     </div>
                 @endif
-            </div>
+            </a>
         </div>
 
         <div class="topbar-user-menu">

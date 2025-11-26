@@ -1,10 +1,10 @@
 <!-- SIDEBAR DERECHO (Perfil de usuario) -->
-<aside id="userSidebar"
-    class="sidebar-usuario z-[60] translate-x-full">
+<aside id="userSidebar" class="sidebar-usuario z-[60] translate-x-full">
 
     <div class="sidebar-user-contenido">
         <div class="sidebar-cuerpo">
-            <div class="fondo-usuario w-full {{ auth()->user()->background_style && auth()->user()->background_style !== '' ? auth()->user()->background_style : 'fondo-estilo-2' }}">
+            <div
+                class="fondo-usuario w-full {{ auth()->user()->background_style && auth()->user()->background_style !== '' ? auth()->user()->background_style : 'fondo-estilo-2' }}">
                 @if (auth()->user()->image)
                     <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="{{ auth()->user()->name }}"
                         class="sidebar-avatar">
@@ -39,10 +39,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="menu-item-logout">
-                        <i class="ri-shut-down-line sidebar-icon"></i>
-                        <span>Cerrar sesión</span>
-                    </a>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="menu-item-logout">
+                            <i class="ri-shut-down-line sidebar-icon"></i>
+                            <span>Cerrar sesión</span>
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
