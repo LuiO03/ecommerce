@@ -23,8 +23,8 @@
     <div class="topbar-right">
         <div class="flex items-center ms-3">
             <div>
-                @if (auth()->user()->has_local_photo)
-                    <img class="topbar-avatar" src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}"
+                @if (auth()->user()->image)
+                    <img class="topbar-avatar" src="{{ asset('storage/' . auth()->user()->image) }}"
                         alt="{{ auth()->user()->name }}">
                 @else
                     <div class="topbar-avatar"

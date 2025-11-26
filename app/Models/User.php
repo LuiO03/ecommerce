@@ -26,6 +26,7 @@ class User extends Authenticatable
         'dni',
         'phone',
         'image',
+        'background_style',
         'status',
         'last_login',
         'last_password_update',

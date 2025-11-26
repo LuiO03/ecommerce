@@ -5,7 +5,7 @@
 <x-admin-layout :useSlotContainer="false">
     <div class="profile-container">
         <div class="profile-header">
-            <div class="profile-avatar-container fondo-estilo-2">
+            <div class="profile-avatar-container {{ $user->background_style && $user->background_style !== '' ? $user->background_style : 'fondo-estilo-2' }}">
                 @if ($user->image)
                     <img src="{{ asset('storage/' . $user->image) }}" alt="Foto de perfil" class="profile-avatar">
                 @else

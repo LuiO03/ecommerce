@@ -1,3 +1,35 @@
+/* 🎨 Diseño 12 */
+.fondo-estilo-12 {
+  --s: 110px;
+  --c1: #ffb347;
+  --c2: #ffccff;
+  --c3: #6a0572;
+  background:
+    linear-gradient(45deg, var(--c1) 0 40%, var(--c2) 40% 80%, var(--c3) 80% 100%);
+  background-size: var(--s) var(--s);
+}
+
+/* 🎨 Diseño 13 */
+.fondo-estilo-13 {
+  --s: 130px;
+  --c1: #00c9a7;
+  --c2: #92fe9d;
+  --c3: #ff6a00;
+  background:
+    repeating-radial-gradient(circle, var(--c1) 0 20px, var(--c2) 21px 40px, var(--c3) 41px 60px, #0000 61px 80px);
+  background-size: var(--s) var(--s);
+}
+
+/* 🎨 Diseño 14 */
+.fondo-estilo-14 {
+  --s: 100px;
+  --c1: #f7971e;
+  --c2: #ffd200;
+  --c3: #f44336;
+  background:
+    linear-gradient(90deg, var(--c1) 0 33%, var(--c2) 33% 66%, var(--c3) 66% 100%);
+  background-size: var(--s) var(--s);
+}
 /* 🎨 Diseño 1 */
 .fondo-estilo-1 {
   --s: 150px;
@@ -83,18 +115,17 @@
 }
 .fondo-estilo-7 {
   --s: 100px; /* control the size*/
-  --c1: var(--color-accent);
-  --c2: var(--color-sidebar-bg);
-  
+  --c1: #d11e4b; /* Azul eléctrico */
+  --c2: var(--color-normal); /* Rosa pastel */
+
   --_g: #0000 24%,
-    var(--c2) 26% 34%,var(--c1) 36% 44%,
-    var(--c2) 46% 54%,var(--c1) 56% 64%,
-    var(--c2) 66% 74%,#0000 76%;
+    var(--c2) 26% 34%, var(--c1) 36% 44%,
+    var(--c2) 46% 54%, var(--c1) 56% 64%,
+    var(--c2) 66% 74%, #0000 76%;
   background:
-    radial-gradient(100% 100% at 100% 0,var(--_g)),
-    radial-gradient(100% 100% at 0 100%,var(--_g)),
-    radial-gradient(var(--c2) 14%,var(--c1) 16%) 
-     calc(var(--s)/2) calc(var(--s)/2);
+    radial-gradient(100% 100% at 100% 0, var(--_g)),
+    radial-gradient(100% 100% at 0 100%, var(--_g)),
+    radial-gradient(var(--c2) 14%, var(--c1) 16%) calc(var(--s)/2) calc(var(--s)/2);
   background-size: var(--s) var(--s);
 }
 .fondo-estilo-8 {
@@ -113,4 +144,116 @@
     radial-gradient(30% 30% at 30% 0%  ,var(--g))
      var(--c2);
   background-size: calc(20*var(--s)) calc(20*var(--s));
+}
+
+/* 🎨 Diseño 9 */
+.fondo-estilo-9 {
+  --s: 120px;
+  --c1: #f7b32b;
+  --c2: #2d82b7;
+  --c3: #3a4750;
+  background:
+    repeating-linear-gradient(135deg, var(--c1) 0 20px, var(--c2) 20px 40px, var(--c3) 40px 60px);
+  background-size: var(--s) var(--s);
+}
+
+/* 🎨 Diseño 10 */
+.fondo-estilo-10 {
+  --s: 160px;
+  --c1: #f67280;
+  --c2: #355c7d;
+  --c3: #c06c84;
+  background:
+    radial-gradient(circle at 20% 20%, var(--c1) 0 30px, #0000 31px),
+    radial-gradient(circle at 80% 80%, var(--c2) 0 30px, #0000 31px),
+    radial-gradient(circle at 50% 50%, var(--c3) 0 40px, #0000 41px);
+  background-size: var(--s) var(--s);
+}
+
+/* 🎨 Diseño 11 */
+.fondo-estilo-11 {
+  --s: 140px;
+  --c1: #43cea2;
+  --c2: #185a9d;
+  --c3: #f8ffae;
+  background:
+    linear-gradient(120deg, var(--c1) 0%, var(--c2) 100%),
+    repeating-radial-gradient(circle, var(--c3) 0 10px, #0000 11px 20px);
+  background-blend-mode: multiply;
+  background-size: var(--s) var(--s);
+}
+
+
+.fondo-estilo-12 {
+  --s: 150px; /* control the size*/
+  --c1: #046d8b;
+  --c2: #2fb8ac;
+  
+  --_g: #0000 90deg,var(--c1) 0;
+  background:
+    conic-gradient(from 116.56deg at calc(100%/3) 0   ,var(--_g)),
+    conic-gradient(from -63.44deg at calc(200%/3) 100%,var(--_g))
+    var(--c2);
+  background-size: var(--s) var(--s);
+}
+
+.fondo-estilo-13 {
+  --s: 76px; /* control the size*/
+  --c1: #1a144a;
+  --c2: #2eb044;
+  
+  --_g: conic-gradient(var(--c1) 25%,#0000 0) 0 0;
+  background:
+    var(--_g)/calc(2*var(--s)) calc(var(--s)/9.5),
+    var(--_g)/calc(var(--s)/9.5) calc(2*var(--s)),
+    repeating-conic-gradient(#0000 0 25%,var(--c1) 0 50%) 
+     var(--s) 0 /calc(2*var(--s)) calc(2*var(--s)),
+    radial-gradient(50% 50%,var(--c2) 98%,var(--c1)) 
+     0 0/var(--s) var(--s);
+}
+
+.fondo-estilo-14 {
+  --s: 40px; /* control the size*/
+  --c1: #73c8a9;
+  --c2: #dee1b6;
+  --c3: #bd5532;
+  --c4: #373b44;
+  
+  --c:,#0000 39%,var(--c1) 40% 93%,#0000 94%;
+  --_s:calc(1.5*var(--s))/calc(4*var(--s)) calc(3*var(--s));
+  background:
+    radial-gradient(calc(1.5*var(--s)) at 37.5%   0%var(--c))
+     calc(-.5*var(--s)) var(--_s),
+    radial-gradient(calc(1.5*var(--s)) at 37.5% 100%var(--c))
+     calc(1.5*var(--s)) var(--_s),
+    radial-gradient(25% calc(50%/3),#0000 96%,var(--c2))
+     0 0/calc(2*var(--s)) calc(3*var(--s)),
+    repeating-conic-gradient(var(--c3) 0 25%,var(--c4) 0 50%)
+     0 0/calc(4*var(--s)) calc(6*var(--s));
+}
+
+
+.fondo-estilo-15 {
+  --s: 16px; /* control the size*/
+  --c1: #e4844a;
+  --c2: #0d6759;
+  
+  --g:radial-gradient(30% 50% at 30% 100%,#0000 66%,var(--c1) 67% 98%,#0000);
+  background:
+    var(--g),var(--g) calc(5*var(--s)) calc(3*var(--s)),
+    repeating-linear-gradient(90deg,var(--c1) 0 10%,var(--c2) 0 50%);
+  background-size: calc(10*var(--s)) calc(6*var(--s));
+}
+
+.fondo-estilo-16 {
+  --s: 100px; /* control the size*/
+  --c1: #88c425;
+  --c2: #1b676b;
+  
+  --g:var(--c2) -5% 5%,#0000 0 45%;
+  background:
+    linear-gradient(45deg,#0000 10%,var(--c1) 0 40%,#0000 0),
+    repeating-linear-gradient( 45deg,var(--g)),
+    repeating-linear-gradient(-45deg,var(--g)) var(--c1);
+  background-size: var(--s) var(--s);
 }

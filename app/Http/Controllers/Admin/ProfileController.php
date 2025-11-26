@@ -38,6 +38,7 @@ class ProfileController extends Controller
             'phone'     => 'nullable|string|max:15',
             'address'   => 'nullable|string|max:255',
             'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'background_style' => 'nullable|string|max:30',
         ]);
 
         $name = ucwords(mb_strtolower($request->name));
@@ -71,6 +72,7 @@ class ProfileController extends Controller
             'dni'         => $request->dni,
             'phone'       => $request->phone,
             'image'       => $imagePath,
+            'background_style' => $request->background_style,
             'updated_by'  => Auth::id(),
         ]);
 

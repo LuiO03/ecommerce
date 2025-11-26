@@ -4,9 +4,9 @@
 
     <div class="sidebar-user-contenido">
         <div class="sidebar-cuerpo">
-            <div class="fondo-usuario w-full">
-                @if (auth()->user()->has_local_photo)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="{{ auth()->user()->name }}"
+            <div class="fondo-usuario w-full {{ auth()->user()->background_style && auth()->user()->background_style !== '' ? auth()->user()->background_style : 'fondo-estilo-2' }}">
+                @if (auth()->user()->image)
+                    <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="{{ auth()->user()->name }}"
                         class="sidebar-avatar">
                 @else
                     <div class="sidebar-avatar"

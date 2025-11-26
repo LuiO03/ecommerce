@@ -6,6 +6,7 @@
     <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
     <div class="form-row">
+
         <div class="form-profile-column">
             <span class="card-title">Información Personal</span>
             <!-- === Nombre === -->
@@ -81,9 +82,69 @@
                 </div>
             </div>
         </div>
+        <div class="form-profile-column">
+            <span class="card-title">Fondo de perfil</span>
+            <div class="input-group">
+                <label for="background_style" class="label-form">Elige tu fondo</label>
+                <div class="background-gallery">
+                    @php
+                        $fondos = [
+                            'fondo-estilo-1',
+                            'fondo-estilo-2',
+                            'fondo-estilo-4',
+                            'fondo-estilo-5',
+                            'fondo-estilo-6',
+                            'fondo-estilo-7',
+                            'fondo-estilo-8',
+                            'fondo-estilo-9',
+                            'fondo-estilo-10',
+                            'fondo-estilo-11',
+                            'fondo-estilo-12',
+                            'fondo-estilo-13',
+                            'fondo-estilo-14',
+                            'fondo-estilo-15',
+                        ];
+                    @endphp
+                    <input type="hidden" name="background_style" id="background_style"
+                        value="{{ old('background_style', $user->background_style) }}">
+                    <div class="gallery-options">
+                        @foreach ($fondos as $fondo)
+                            <button type="button"
+                                class="gallery-option {{ $user->background_style == $fondo ? 'selected' : '' }}"
+                                data-style="{{ $fondo }}">
+                                <div class="gallery-preview {{ $fondo }}"></div>
+                                <span
+                                    class="gallery-label">{{ Str::replace('fondo-estilo-', 'Diseño ', $fondo) }}</span>
+                                @if ($user->background_style == $fondo)
+                                    <i class="ri-checkbox-circle-fill gallery-check"></i>
+                                @endif
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- === FOOTER DE ACCIONES === -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.gallery-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const bgInput = document.getElementById('background_style');
+                    bgInput.value = this.dataset.style;
+                    document.querySelectorAll('.gallery-check').forEach(i => i.remove());
+                    const check = document.createElement('i');
+                    check.className = 'ri-checkbox-circle-fill gallery-check';
+                    this.appendChild(check);
+                    // Disparar evento input para que el validador detecte el cambio
+                    bgInput.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+            });
+        });
+    </script>
     <div class="form-footer">
         <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
