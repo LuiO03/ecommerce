@@ -147,6 +147,15 @@
                     'fondo-estilo-13',
                     'fondo-estilo-14',
                     'fondo-estilo-15',
+                    'fondo-estilo-17',
+                    'fondo-estilo-18',
+                    'fondo-estilo-19',
+                    'fondo-estilo-20',
+                    'fondo-estilo-21',
+                    'fondo-estilo-22',
+                    'fondo-estilo-23',
+                    'fondo-estilo-24',
+                    'fondo-estilo-25',
                 ];
             @endphp
             <input type="hidden" name="background_style" id="background_style"

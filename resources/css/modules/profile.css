@@ -91,15 +91,6 @@
     gap: 1rem;
     width: 100%;
     padding: 1rem;
-    justify-content: center;
-}
-
-.modal-avatar-right{
-    background-color: red !important;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 100%;
 }
 
 .modal-avatar-actions {
@@ -108,6 +99,7 @@
     width: 200px;
     justify-content: center;
     gap: 10px;
+    height: 250px;
 }
 
 .modal-avatar-preview {

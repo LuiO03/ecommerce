@@ -5,14 +5,12 @@
     <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="targeta">
             <div class="targeta-usuario">
-                @if (auth()->user()->has_local_photo)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}"
+                @if (auth()->user()->image)
+                    <img src="{{ asset('storage/' . auth()->user()->image) }}"
                         alt="{{ auth()->user()->name }}" class="dashboard-user-avatar">
                 @else
                     <div class="dashboard-user-avatar"
-                        style="background-color: {{ auth()->user()->avatar_colors['background'] }};
-                                   color: {{ auth()->user()->avatar_colors['color'] }};
-                                   border-color: {{ auth()->user()->avatar_colors['color'] }};">
+                        style="background-color: {{ auth()->user()->avatar_colors['background'] }}; color: {{ auth()->user()->avatar_colors['color'] }}; border-color: {{ auth()->user()->avatar_colors['color'] }};">
                         {{ auth()->user()->initials }}
                     </div>
                 @endif

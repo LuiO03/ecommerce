@@ -7,23 +7,21 @@
             </button>
         </div>
         <form method="POST" action="{{ route('admin.profile.update') }}" enctype="multipart/form-data"
-            id="profileImageFormModal" autocomplete="off" class="modal-avatar-body ripple-card">
+            id="profileImageFormModal" autocomplete="off" class="modal-avatar-body">
             @csrf
             @method('PUT')
             <input type="hidden" name="only_image" value="1">
             <div class="modal-avatar-left">
-                <div class="modal-avatar-preview" id="avatarPreview" style="flex-direction: column;">
+                <div class="modal-avatar-preview" id="avatarPreview">
                     @if ($user->image)
                         <img src="{{ asset('storage/' . $user->image) }}" alt="Foto actual" id="avatarPreviewImg">
                     @endif
                 </div>
-                <div id="avatarFileName"
-                    class="avatar-file-name">
+                <div id="avatarFileName" class="avatar-file-name">
                     {{ basename($user->image) }}
                 </div>
             </div>
-            <input type="file" name="image" id="imageModal" accept="image/*" class="d-none">
-            <div class="modal-avatar-right">
+            <input type="file" name="image" id="imageModal" accept="image/*" class="hidden">
                 <div class="modal-avatar-actions">
                     <button type="button" id="uploadSquareBtn" class="boton boton-primary">
                         <span class="boton-icon"><i class="ri-crop-line"></i></span>
@@ -37,22 +35,20 @@
                         <span class="boton-icon"><i class="ri-delete-bin-line"></i></span>
                         <span class="boton-text">Quitar foto</span>
                     </button>
+
+                    <hr class="w-full my-0 border-default">
+                    
+                    <button type="button" class="boton boton-modal-close" id="cancelButtonAvatar">
+                        <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
+                        <span class="boton-text">Cerrar</span>
+                    </button>
                 </div>
-                <button type="button" class="boton boton-modal-close" id="cancelButtonAvatar">
-                    <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
-                    <span class="boton-text">Cerrar</span>
-                </button>
-            </div>
         </form>
         <form method="POST" action="{{ route('admin.profile.removeImage') }}" id="removeAvatarForm"
             style="display:none;">
             @csrf
             @method('DELETE')
         </form>
-        <div class="progress-container" id="avatarModalProgressContainer" style="display:none;">
-            <div class="progress-bar" id="avatarModalProgressBar"></div>
-            <div class="progress-text" id="avatarModalProgressText">Se cerrará automáticamente</div>
-        </div>
     </div>
 </div>
 
