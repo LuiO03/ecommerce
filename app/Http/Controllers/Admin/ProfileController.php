@@ -30,6 +30,23 @@ class ProfileController extends Controller
         
         $user = User::query()->findOrFail(Auth::id());
 
+        // Si solo se envía background_style, actualizar solo ese campo
+        if ($request->has('background_style') && !$request->has('name') && !$request->has('email')) {
+            $request->validate([
+                'background_style' => 'required|string|max:30',
+            ]);
+            $user->update([
+                'background_style' => $request->background_style,
+                'updated_by' => Auth::id(),
+            ]);
+            Session::flash('toast', [
+                'type' => 'success',
+                'title' => 'Fondo actualizado',
+                'message' => 'El fondo de perfil se guardó correctamente.',
+            ]);
+            return back();
+        }
+
         $request->validate([
             'name'      => 'required|string|max:255|min:3',
             'email'     => 'required|email|unique:users,email,' . $user->id,

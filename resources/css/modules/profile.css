@@ -11,6 +11,7 @@
     height: 120px;
     width: 100%;
     border-radius: var(--radius-card);
+    box-shadow: var(--shadow-material);
 }
 .profile-avatar {
     position: absolute;
@@ -115,13 +116,10 @@
 }
 
 /* --- Galería de fondos --- */
-.background-gallery {
-    margin-bottom: 1.5rem;
-}
 .gallery-options {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 1rem;
-    flex-wrap: wrap;
 }
 .gallery-option {
     border: 2px solid var(--color-sidebar-bg);
@@ -130,13 +128,14 @@
     border-radius: 12px;
     cursor: pointer;
     position: relative;
-    transition: border-color 0.2s;
+    padding: 5px;
 }
+
 .gallery-option.selected {
     border-color: var(--color-accent);
 }
 .gallery-preview {
-    width: 60px;
+    width: 100%;
     height: 60px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -150,11 +149,14 @@
 }
 .gallery-check {
     position: absolute;
-    top: 6px;
-    right: 6px;
+    top: 2px;
+    right: 2px;
     color: var(--color-accent);
     font-size: 1.3rem;
     pointer-events: none;
+    background-color: var(--color-sidebar-bg);
+    padding: 0px 5px;
+    border-radius: 50%;
 }
 
 /* --- Animaciones y transiciones --- */

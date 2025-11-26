@@ -159,20 +159,35 @@
 
 /* 🎨 Diseño 10 */
 .fondo-estilo-10 {
-  --s: 160px;
   --c1: #f67280;
   --c2: #355c7d;
   --c3: #c06c84;
+  --c4: #ffd700;
+  --c5: #6dd5ed;
+  --c6: #f8ffae;
+  --c7: #8e44ad;
+  --c8: #2ecc71;
+  --c9: #e67e22;
   background:
-    radial-gradient(circle at 20% 20%, var(--c1) 0 30px, #0000 31px),
-    radial-gradient(circle at 80% 80%, var(--c2) 0 30px, #0000 31px),
-    radial-gradient(circle at 50% 50%, var(--c3) 0 40px, #0000 41px);
-  background-size: var(--s) var(--s);
+    /* Grandes */
+    radial-gradient(circle at 20% 25%, var(--c1) 0 60px, #0000 61px),
+    radial-gradient(circle at 75% 35%, var(--c2) 0 50px, #0000 51px),
+    radial-gradient(circle at 45% 80%, var(--c3) 0 40px, #0000 41px),
+    /* Medianos */
+    radial-gradient(circle at 85% 65%, var(--c4) 0 28px, #0000 29px),
+    radial-gradient(circle at 60% 55%, var(--c5) 0 24px, #0000 25px),
+    radial-gradient(circle at 30% 60%, var(--c6) 0 22px, #0000 23px),
+    radial-gradient(circle at 55% 35%, var(--c7) 0 20px, #0000 21px),
+    /* Pequeños */
+    radial-gradient(circle at 80% 15%, var(--c8) 0 12px, #0000 13px),
+    radial-gradient(circle at 10% 75%, var(--c9) 0 16px, #0000 17px),
+    radial-gradient(circle at 35% 40%, var(--c4) 0 10px, #0000 11px),
+    radial-gradient(circle at 65% 70%, var(--c5) 0 8px, #0000 9px);
 }
 
 /* 🎨 Diseño 11 */
 .fondo-estilo-11 {
-  --s: 140px;
+  --s: 100%;
   --c1: #43cea2;
   --c2: #185a9d;
   --c3: #f8ffae;

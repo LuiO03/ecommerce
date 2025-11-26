@@ -82,56 +82,19 @@
                 </div>
             </div>
         </div>
-        <div class="form-profile-column">
-            <span class="card-title">Fondo de perfil</span>
-            <div class="input-group">
-                <label for="background_style" class="label-form">Elige tu fondo</label>
-                <div class="background-gallery">
-                    @php
-                        $fondos = [
-                            'fondo-estilo-1',
-                            'fondo-estilo-2',
-                            'fondo-estilo-4',
-                            'fondo-estilo-5',
-                            'fondo-estilo-6',
-                            'fondo-estilo-7',
-                            'fondo-estilo-8',
-                            'fondo-estilo-9',
-                            'fondo-estilo-10',
-                            'fondo-estilo-11',
-                            'fondo-estilo-12',
-                            'fondo-estilo-13',
-                            'fondo-estilo-14',
-                            'fondo-estilo-15',
-                        ];
-                    @endphp
-                    <input type="hidden" name="background_style" id="background_style"
-                        value="{{ old('background_style', $user->background_style) }}">
-                    <div class="gallery-options">
-                        @foreach ($fondos as $fondo)
-                            <button type="button"
-                                class="gallery-option {{ $user->background_style == $fondo ? 'selected' : '' }}"
-                                data-style="{{ $fondo }}">
-                                <div class="gallery-preview {{ $fondo }}"></div>
-                                <span
-                                    class="gallery-label">{{ Str::replace('fondo-estilo-', 'Diseño ', $fondo) }}</span>
-                                @if ($user->background_style == $fondo)
-                                    <i class="ri-checkbox-circle-fill gallery-check"></i>
-                                @endif
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <!-- === FOOTER DE ACCIONES === -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Desactivar el botón principal al seleccionar fondo
+            const submitBtn = document.getElementById('submitBtn');
+            const saveBackgroundBtn = document.getElementById('saveBackgroundBtn');
             document.querySelectorAll('.gallery-option').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove('selected'));
+                    document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove(
+                        'selected'));
                     this.classList.add('selected');
                     const bgInput = document.getElementById('background_style');
                     bgInput.value = this.dataset.style;
@@ -139,10 +102,47 @@
                     const check = document.createElement('i');
                     check.className = 'ri-checkbox-circle-fill gallery-check';
                     this.appendChild(check);
-                    // Disparar evento input para que el validador detecte el cambio
-                    bgInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    // Solo activar el botón de fondo
+                    if (saveBackgroundBtn) saveBackgroundBtn.disabled = false;
+                    if (submitBtn) submitBtn.disabled = true;
                 });
             });
+
+            // Inicialmente desactivar el botón de fondo
+            if (saveBackgroundBtn) saveBackgroundBtn.disabled = true;
+
+            // Guardar solo el fondo
+            if (saveBackgroundBtn) {
+                saveBackgroundBtn.addEventListener('click', function() {
+                    const form = document.getElementById('profileForm');
+                    // Crear input temporal para solo enviar background_style
+                    const tempForm = document.createElement('form');
+                    tempForm.method = 'POST';
+                    tempForm.action = form.action;
+                    tempForm.enctype = form.enctype;
+                    tempForm.style.display = 'none';
+                    // Copiar CSRF y método
+                    const csrf = form.querySelector('input[name="_token"]');
+                    const method = form.querySelector('input[name="_method"]');
+                    if (csrf) {
+                        const csrfClone = csrf.cloneNode();
+                        tempForm.appendChild(csrfClone);
+                    }
+                    if (method) {
+                        const methodClone = method.cloneNode();
+                        tempForm.appendChild(methodClone);
+                    }
+                    // Campo background_style
+                    const bgInput = document.getElementById('background_style');
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'background_style';
+                    input.value = bgInput.value;
+                    tempForm.appendChild(input);
+                    document.body.appendChild(tempForm);
+                    tempForm.submit();
+                });
+            }
         });
     </script>
     <div class="form-footer">
@@ -153,6 +153,57 @@
         <button class="boton-form boton-accent" type="submit" id="submitBtn" disabled>
             <span class="boton-form-icon"><i class="ri-save-line"></i></span>
             <span class="boton-form-text">Guardar cambios</span>
+        </button>
+    </div>
+</form>
+
+<form method="POST" action="{{ route('admin.profile.update') }}" class="form-container mt-5" id="backgroundForm"
+    autocomplete="off">
+    @csrf
+    @method('PUT')
+    <div class="form-profile-column">
+        <span class="card-title">Fondo de perfil</span>
+        <label for="background_style" class="label-form">Elige tu fondo</label>
+        <div class="background-gallery">
+            @php
+                $fondos = [
+                    'fondo-estilo-1',
+                    'fondo-estilo-2',
+                    'fondo-estilo-4',
+                    'fondo-estilo-5',
+                    'fondo-estilo-6',
+                    'fondo-estilo-7',
+                    'fondo-estilo-8',
+                    'fondo-estilo-9',
+                    'fondo-estilo-10',
+                    'fondo-estilo-11',
+                    'fondo-estilo-12',
+                    'fondo-estilo-13',
+                    'fondo-estilo-14',
+                    'fondo-estilo-15',
+                ];
+            @endphp
+            <input type="hidden" name="background_style" id="background_style"
+                value="{{ old('background_style', $user->background_style) }}">
+            <div class="gallery-options">
+                @foreach ($fondos as $fondo)
+                    <button type="button"
+                        class="gallery-option {{ $user->background_style == $fondo ? 'selected' : '' }}"
+                        data-style="{{ $fondo }}">
+                        <div class="gallery-preview {{ $fondo }}"></div>
+                        <span class="gallery-label">{{ Str::replace('fondo-estilo-', 'Diseño ', $fondo) }}</span>
+                        @if ($user->background_style == $fondo)
+                            <i class="ri-checkbox-circle-fill gallery-check"></i>
+                        @endif
+                    </button>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    <div class="form-footer">
+        <button type="submit" id="saveBackgroundBtn" class="boton-form boton-accent">
+            <span class="boton-form-icon"><i class="ri-paint-brush-fill"></i></span>
+            <span class="boton-form-text">Guardar fondo</span>
         </button>
     </div>
 </form>
