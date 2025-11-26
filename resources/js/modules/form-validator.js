@@ -578,5 +578,36 @@ export default FormValidator;
 
 // Función helper para inicialización rápida
 export function initFormValidator(formSelector, options = {}) {
-    return new FormValidator(formSelector, options);
+    const validator = new FormValidator(formSelector, options);
+
+    // === Habilitar botón submit solo si hay cambios en formularios de edición ===
+    const form = document.querySelector(formSelector);
+    if (!form) return validator;
+
+    // Detectar si es formulario de edición por id o atributo personalizado
+    const isEditForm = form.hasAttribute('data-edit-form') || /Form$/.test(form.id);
+    if (isEditForm) {
+        const submitBtn = form.querySelector('button[type="submit"],input[type="submit"]');
+        if (submitBtn) {
+            // Guardar estado inicial
+            const initialData = new FormData(form);
+            let edited = false;
+
+            function checkChanges() {
+                const currentData = new FormData(form);
+                edited = false;
+                for (let [key, value] of currentData.entries()) {
+                    if (initialData.get(key) !== value) {
+                        edited = true;
+                        break;
+                    }
+                }
+                submitBtn.disabled = !edited;
+            }
+
+            form.addEventListener('input', checkChanges);
+            form.addEventListener('change', checkChanges);
+        }
+    }
+    return validator;
 }

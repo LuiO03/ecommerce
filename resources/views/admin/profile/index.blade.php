@@ -22,17 +22,17 @@
         </span>
     </div>
     <div class="profile-tabs">
-        <button class="profile-tab-btn" data-tab="info">
+        <button class="profile-tab-btn" data-tab="info" title="Información">
             <i class="ri-user-3-line"></i>
-            Información
+            <span class="profile-tab-text">Información</span>
         </button>
-        <button class="profile-tab-btn" data-tab="password">
+        <button class="profile-tab-btn" data-tab="password" title="Cambiar contraseña">
             <i class="ri-lock-password-line"></i>
-            Cambiar contraseña
+            <span class="profile-tab-text">Cambiar contraseña</span>
         </button>
-        <button class="profile-tab-btn" data-tab="export">
+        <button class="profile-tab-btn" data-tab="export" title="Descargar datos">
             <i class="ri-download-line"></i>
-            Descargar datos
+            <span class="profile-tab-text">Descargar datos</span>
         </button>
     </div>
     <div class="profile-content">

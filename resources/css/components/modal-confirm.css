@@ -10,6 +10,7 @@
     transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
     backdrop-filter: blur(0px);
     isolation: isolate;
+    font-family: var(--font-secondary);
 }
 
 .confirm-modal.flex {
@@ -82,7 +83,6 @@
     padding: 5px 15px;
     color: #fff;
     font-weight: bolder;
-    font-family: var(--font-secondary);
 }
 
 .confirm-actions {
@@ -114,6 +114,10 @@
     width: 100%;
 }
 
+.confirm-body p{
+    font-size: var(--font-size-xs);
+}
+
 .confirm-text{
     display: flex;
     flex-direction: column;
@@ -123,7 +127,6 @@
 
 .confirm-title{
     font-weight: bolder;
-    font-family: var(--font-secondary);
 }
 
 .confirm-message{

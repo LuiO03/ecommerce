@@ -10,6 +10,7 @@
     transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
     backdrop-filter: blur(0px);
     isolation: isolate;
+    font-family: var(--font-secondary);
 }
 
 .info-modal.flex {
@@ -82,7 +83,6 @@
     padding: 5px 15px;
     color: #fff;
     font-weight: bolder;
-    font-family: var(--font-secondary);
 }
 
 .info-header.bg-warning, .boton.bg-warning {
@@ -104,7 +104,6 @@
 
 .info-title{
     font-weight: bolder;
-    font-family: var(--font-secondary);
 }
 
 .info-message{
@@ -126,6 +125,10 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
+}
+
+.info-body p{
+    font-size: var(--font-size-xs);
 }
 
 .info-actions{
