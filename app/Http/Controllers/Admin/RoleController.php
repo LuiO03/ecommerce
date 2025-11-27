@@ -14,6 +14,50 @@ use App\Models\Role;
 class RoleController extends Controller
 {
     /**
+     * Exportar roles a Excel
+     */
+    public function exportExcel(Request $request)
+    {
+        $ids = $request->input('ids');
+        $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\RolesExcelExport($ids), $filename);
+    }
+
+    /**
+     * Exportar roles a PDF
+     */
+    public function exportPdf(Request $request)
+    {
+        if ($request->has('ids')) {
+            $roles = \App\Models\Role::whereIn('id', $request->ids)->get();
+        } elseif ($request->has('export_all')) {
+            $roles = \App\Models\Role::all();
+        } else {
+            return back()->with('error', 'No se seleccionaron roles para exportar.');
+        }
+
+        if ($roles->isEmpty()) {
+            return back()->with('error', 'No hay roles disponibles para exportar.');
+        }
+
+        $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+
+        return \Spatie\LaravelPdf\Facades\Pdf::view('admin.export.roles-pdf', compact('roles'))
+            ->format('a4')
+            ->name($filename)
+            ->download();
+    }
+
+    /**
+     * Exportar roles a CSV
+     */
+    public function exportCsv(Request $request)
+    {
+        $ids = $request->has('export_all') ? null : $request->input('ids');
+        $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\RolesExcelExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
+    }
+    /**
      * Mostrar detalle de permisos por rol.
      */
     public function index()

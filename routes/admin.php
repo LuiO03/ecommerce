@@ -110,6 +110,11 @@ Route::controller(App\Http\Controllers\Admin\RoleController::class)->group(funct
     Route::get('/roles/{role}/edit', 'edit')->name('admin.roles.edit');
     Route::patch('/roles/{role}', 'update')->name('admin.roles.update');
     Route::delete('/roles/{role}', 'destroy')->name('admin.roles.destroy');
+
+        // Exports
+        Route::post('/roles/export/excel', 'exportExcel')->name('admin.roles.export.excel');
+        Route::post('/roles/export/pdf', 'exportPdf')->name('admin.roles.export.pdf');
+        Route::post('/roles/export/csv', 'exportCsv')->name('admin.roles.export.csv');
 });
 
 // ============================================================================

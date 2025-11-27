@@ -207,6 +207,7 @@
                         selection: true,
                         export: true,
                         filters: true,
+                        statusToggle: false,
                         responsive: true,
                         customPagination: true
                     },
@@ -223,16 +224,6 @@
                     }
                 });
 
-                // ========================================
-                // 🔎 Buscador personalizado
-                // ========================================
-                $('#customSearch').on('input', function() {
-                    tableManager.getTable().search(this.value).draw();
-                });
-                $('#clearSearch').on('click', function() {
-                    $('#customSearch').val('');
-                    tableManager.getTable().search('').draw();
-                });
 
                 // ========================================
                 // 🎨 RESALTAR FILA CREADA/EDITADA
