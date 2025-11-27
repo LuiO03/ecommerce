@@ -178,7 +178,8 @@
 
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton boton-info" data-id="" title="Ver Familia">
+                                    <button class="boton boton-info btn-ver-familia" data-slug="{{ $family->slug }}"
+                                        title="Ver Familia">
                                         <span class="boton-text">Ver</span>
                                         <span class="boton-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
@@ -210,6 +211,76 @@
             <div id="tablePagination" class="tabla-paginacion"></div>
         </div>
     </div>
+    <!-- Modal para mostrar datos completos de la familia -->
+    <div id="modalFamilia" class="modal-familia hidden">
+        <div class="modal-content">
+            <div class="show-modal-header" id="modalHeader">
+                <h6>Detalles de la Familia</h6>
+                <button type="button" id="closeModal" class="confirm-close ripple-btn">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <span class="card-title">Fondo de perfil</span>
+            <div class="show-modal-body">
+                <table class="show-modal-table">
+                    <tr>
+                        <th>ID</th>
+                        <td id="fam-id">-</td>
+                    </tr>
+                    <tr>
+                        <th>Slug</th>
+                        <td id="fam-slug">-</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre</th>
+                        <td id="fam-name">-</td>
+                    </tr>
+                    <tr>
+                        <th>Descripción</th>
+                        <td id="fam-description">-</td>
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                        <td id="fam-status">-</td>
+                    </tr>
+                    <tr>
+                        <th>Imagen</th>
+                        <td id="fam-image">-</td>
+                    </tr>
+                    <tr>
+                        <th>Creado por</th>
+                        <td id="fam-created-by">-</td>
+                    </tr>
+                    <tr>
+                        <th>Actualizado por</th>
+                        <td id="fam-updated-by">-</td>
+                    </tr>
+                    <tr>
+                        <th>Eliminado por</th>
+                        <td id="fam-deleted-by">-</td>
+                    </tr>
+                    <tr>
+                        <th>Creado en</th>
+                        <td id="fam-created-at">-</td>
+                    </tr>
+                    <tr>
+                        <th>Actualizado en</th>
+                        <td id="fam-updated-at">-</td>
+                    </tr>
+                    <tr>
+                        <th>Eliminado en</th>
+                        <td id="fam-deleted-at">-</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="show-modal-footer">
+                <button type="button" class="boton boton-modal-close" id="cancelButton">
+                    <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
+                    <span class="boton-text">Cerrar</span>
+                </button>
+            </div>
+        </div>
+    </div>
     @push('scripts')
         <script>
             $(document).ready(function() {
@@ -228,11 +299,11 @@
                         pdf: '/admin/families/export/pdf'
                     },
                     csrfToken: '{{ csrf_token() }}',
-                    
+
                     // Configuración de DataTable
                     pageLength: 10,
                     lengthMenu: [5, 10, 25, 50],
-                    
+
                     // Características (todas activadas por defecto)
                     features: {
                         selection: true,
@@ -242,20 +313,22 @@
                         responsive: true,
                         customPagination: true
                     },
-                    
+
                     // Callbacks personalizados (opcional)
                     callbacks: {
                         onDraw: () => {
                             console.log('🔄 Tabla redibujada');
                         },
                         onStatusChange: (id, status, response) => {
-                            console.log(`✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
+                            console.log(
+                                `✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
                         },
                         onDelete: () => {
                             console.log('🗑️ Registros eliminados');
                         },
                         onExport: (type, format, count) => {
-                            console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
+                            console.log(
+                                `📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
                         }
                     }
                 });
@@ -283,7 +356,7 @@
                         }
                     }, 100);
                 @endif
-                
+
                 // ========================================
                 // 🛠️ API DISPONIBLES (Ejemplos de uso)
                 // ========================================
@@ -292,8 +365,97 @@
                 // tableManager.refresh() - Refresca la tabla
                 // tableManager.clearSelection() - Limpia selección
                 // tableManager.destroy() - Destruye la instancia
+
+                // ==============================
+                // Modal Ver Familia
+                // ==============================
+                function openModalFamilia() {
+                    // Mover modal al final del body para garantizar z-index máximo
+
+                    $('#modalFamilia').removeClass('hidden');
+                    $('.modal-content').removeClass('animate-out').addClass('animate-in');
+                    $('#modalFamilia').appendTo('body');
+                }
+
+                function closeModal() {
+                    $('.modal-content').removeClass('animate-in').addClass('animate-out');
+                    setTimeout(function() {
+                        $('#modalFamilia').addClass('hidden');
+                        // Limpiar los campos al cerrar
+                        $('#fam-id').text('-');
+                        $('#fam-slug').text('-');
+                        $('#fam-name').text('-');
+                        $('#fam-description').text('-');
+                        $('#fam-status').text('-');
+                        $('#fam-image').html('-');
+                        $('#fam-created-by').text('-');
+                        $('#fam-updated-by').text('-');
+                        $('#fam-deleted-by').text('-');
+                        $('#fam-created-at').text('-');
+                        $('#fam-updated-at').text('-');
+                        $('#fam-deleted-at').text('-');
+                    }, 250);
+                }
+                $(document).on('click', '.btn-ver-familia', function() {
+                    const slug = $(this).data('slug');
+                    openModalFamilia();
+                    // Limpiar los campos antes de cargar
+                    $('#fam-id').text('-');
+                    $('#fam-slug').text('-');
+                    $('#fam-name').text('-');
+                    $('#fam-description').text('-');
+                    $('#fam-status').text('-');
+                    $('#fam-image').html('-');
+                    $('#fam-created-by').text('-');
+                    $('#fam-updated-by').text('-');
+                    $('#fam-deleted-by').text('-');
+                    $('#fam-created-at').text('-');
+                    $('#fam-updated-at').text('-');
+                    $('#fam-deleted-at').text('-');
+                    $.ajax({
+                        url: `/admin/families/${slug}/show-full`,
+                        method: 'GET',
+                        success: function(data) {
+                            $('#fam-id').text(data.id ?? '-');
+                            $('#fam-slug').text(data.slug ?? '-');
+                            $('#fam-name').text(data.name ?? '-');
+                            $('#fam-description').text(data.description ?? 'Sin descripción');
+                            $('#fam-status').text(data.status ? 'Activo' : 'Inactivo');
+                            if (data.image) {
+                                $('#fam-image').html(
+                                    `<img src='/storage/${data.image}' class='modal-img' />`);
+                            } else {
+                                $('#fam-image').html('Sin imagen');
+                            }
+                            $('#fam-created-by').text(data.created_by_name ?? data.created_by ??
+                                '-');
+                            $('#fam-updated-by').text(data.updated_by_name ?? data.updated_by ??
+                                '-');
+                            $('#fam-deleted-by').text(data.deleted_by_name ?? data.deleted_by ??
+                                '-');
+                            $('#fam-created-at').text(data.created_at ?? '-');
+                            $('#fam-updated-at').text(data.updated_at ?? '-');
+                            $('#fam-deleted-at').text(data.deleted_at ?? '-');
+                        },
+                        error: function() {
+                            $('#fam-id').text('Error');
+                            $('#fam-slug').text('Error');
+                            $('#fam-name').text('Error');
+                            $('#fam-description').text('Error');
+                            $('#fam-status').text('Error');
+                            $('#fam-image').html('<span class="text-red-500">Error</span>');
+                            $('#fam-created-by').text('Error');
+                            $('#fam-updated-by').text('Error');
+                            $('#fam-deleted-by').text('Error');
+                            $('#fam-created-at').text('Error');
+                            $('#fam-updated-at').text('Error');
+                            $('#fam-deleted-at').text('Error');
+                        }
+                    });
+                });
+                $('#closeModal').on('click', closeModal);
             });
         </script>
     @endpush
-    
+
 </x-admin-layout>

@@ -1,0 +1,120 @@
+.modal-familia {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
+    backdrop-filter: blur(0px);
+    isolation: isolate;
+    
+}
+
+.modal-familia:not(.hidden) {
+    display: flex;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+}
+
+.modal-familia .modal-content {
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background-color: var(--color-sidebar-bg);
+    width: 90%;
+    max-width: 490px;
+    text-align: center;
+    transform-origin: center;
+    opacity: 0;
+    transform: scale(0.7);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;   
+}
+
+.show-modal-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+    color: #fff;
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+    background-color: var(--color-accent);
+}
+
+.animate-in {
+    animation: sweetIn 0.35s ease forwards;
+    animation-delay: 0.1s;
+}
+
+.animate-out {
+    animation: sweetOut 0.25s ease forwards;
+}
+
+.show-modal-body{
+    padding: 0px 1rem;
+}
+
+.show-modal-footer{
+    width: 100%;
+    padding: 0rem 1rem 1rem 1rem;
+}
+
+.show-modal-table {
+    width: 100%;
+    font-size: var(--font-size-sm);
+}
+
+.show-modal-table th,
+.show-modal-table td {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-cell-border);
+    text-align: left;
+}
+.show-modal-table tr th {
+    background: var(--color-table-header-bg);
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+    max-width: 180px !important;
+}
+
+
+.modal-img {
+    max-height: 80px;
+    border-radius: 0.5rem;
+}
+
+@keyframes sweetIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    45% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(0.95);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes sweetOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+}

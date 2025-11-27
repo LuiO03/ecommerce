@@ -319,4 +319,37 @@ class FamilyController extends Controller
             'status' => $family->status,
         ]);
     }
+
+    /**
+     * Devuelve los datos completos de una familia por slug (JSON)
+     */
+    public function showFull($slug)
+    {
+        $family = Family::with([
+            'creator:id,name',
+            'updater:id,name',
+            'deleter:id,name'
+        ])
+        ->select('id', 'slug', 'name', 'description', 'status', 'image', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at')
+        ->where('slug', $slug)
+        ->firstOrFail();
+
+        return response()->json([
+            'id' => $family->id,
+            'slug' => $family->slug,
+            'name' => $family->name,
+            'description' => $family->description,
+            'status' => $family->status,
+            'image' => $family->image,
+            'created_by' => $family->created_by,
+            'updated_by' => $family->updated_by,
+            'deleted_by' => $family->deleted_by,
+            'created_by_name' => $family->creator ? $family->creator->name : null,
+            'updated_by_name' => $family->updater ? $family->updater->name : null,
+            'deleted_by_name' => $family->deleter ? $family->deleter->name : null,
+            'created_at' => $family->created_at ? $family->created_at->format('d/m/Y H:i') : null,
+            'updated_at' => $family->updated_at ? $family->updated_at->format('d/m/Y H:i') : null,
+            'deleted_at' => $family->deleted_at ? $family->deleted_at->format('d/m/Y H:i') : null,
+        ]);
+    }
 }

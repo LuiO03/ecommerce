@@ -39,6 +39,8 @@ Route::controller(FamilyController::class)->group(function () {
     Route::delete('/families/{family}', 'destroy')->name('admin.families.destroy');
     Route::delete('/families', 'destroyMultiple')->name('admin.families.destroy-multiple');
     Route::patch('/families/{family}/status', 'updateStatus')->name('admin.families.update-status');
+    // Mostrar datos completos de familia por slug
+    Route::get('/families/{slug}/show-full', 'showFull')->name('admin.families.show-full');
     
     // Exports
     Route::post('/families/export/excel', 'exportExcel')->name('admin.families.export.excel');
