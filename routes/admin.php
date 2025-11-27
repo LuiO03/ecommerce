@@ -23,6 +23,8 @@ Route::controller(ProfileController::class)->group(function () {
     Route::post('/profile/export/excel', 'exportExcel')->name('admin.profile.export.excel');
     Route::post('/profile/export/pdf', 'exportPdf')->name('admin.profile.export.pdf');
     Route::post('/profile/export/csv', 'exportCsv')->name('admin.profile.export.csv');
+    // Cerrar sesión de otros dispositivos
+    Route::post('/profile/logout-session', 'logoutSession')->name('admin.profile.logout-session');
 });
 
 // ============================================================================

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\DB;
 
 
 class ProfileController extends Controller
@@ -39,8 +40,21 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('admin.profile.index', compact('user'));
+            // Obtener sesiones activas desde la tabla sessions
+            $sessions = DB::table('sessions')
+                ->where('user_id', $user->id)
+                ->orderByDesc('last_activity')
+                ->get();
+            return view('admin.profile.index', compact('user', 'sessions'));
     }
+        // ======================
+        //      CERRAR SESIÓN DE OTRO DISPOSITIVO (manual)
+        // ======================
+        public function logoutSession(Request $request)
+        {
+            DB::table('sessions')->where('id', $request->session_id)->delete();
+            return back()->with('success', 'Sesión cerrada correctamente.');
+        }
 
     // ======================
     //      ACTUALIZAR PERFIL

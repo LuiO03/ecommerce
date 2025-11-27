@@ -23,11 +23,11 @@
 
             <div class="text-center">
                 <h1>{{ $user->name }} {{ $user->last_name }}</h1>
-                <span class="profile-rol">{{ $user->role_list ?: 'Sin rol' }}</span>
-                <span class="profile-description">
+                <p class="profile-description">
                     Gestiona tu <strong>información personal</strong>, seguridad y descargas.
-                </span>
+                </p>
             </div>
+
         </div>
         <div class="profile-tabs">
             <button class="profile-tab-btn" data-tab="info" title="Información">
@@ -42,6 +42,10 @@
                 <i class="ri-download-line"></i>
                 <span class="profile-tab-text">Descargar datos</span>
             </button>
+               <button class="profile-tab-btn" data-tab="sessions" title="Sesiones activas">
+                   <i class="ri-device-line"></i>
+                   <span class="profile-tab-text">Sesiones</span>
+               </button>
         </div>
         <div class="profile-content">
             <div id="tab-info" class="profile-tab-content">
@@ -53,6 +57,9 @@
             <div id="tab-export" class="profile-tab-content hidden">
                 @include('admin.profile.profile-export')
             </div>
+               <div id="tab-sessions" class="profile-tab-content hidden">
+                   @include('admin.profile.profile-sessions')
+               </div>
         </div>
     </div>
     <!-- Modal para cambiar imagen -->
@@ -70,9 +77,18 @@
                 activeTab.classList.add('fade-in');
                 document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
+                   // Guardar tab activo en localStorage
+                   localStorage.setItem('profileActiveTab', this.dataset.tab);
             });
         });
-        // Activar el primer tab por defecto
-        document.querySelector('.profile-tab-btn[data-tab="info"]').classList.add('active');
+            // Activar el tab guardado en localStorage o el primero por defecto
+            const savedTab = localStorage.getItem('profileActiveTab');
+            let initialTab = savedTab || 'info';
+            if(window.location.hash === '#sessions') initialTab = 'sessions';
+            document.querySelectorAll('.profile-tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById('tab-' + initialTab).classList.remove('hidden');
+            document.getElementById('tab-' + initialTab).classList.add('fade-in');
+            document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.profile-tab-btn[data-tab="' + initialTab + '"]').classList.add('active');
     </script>
 </x-admin-layout>
