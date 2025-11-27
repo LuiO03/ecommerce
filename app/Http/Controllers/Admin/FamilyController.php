@@ -202,8 +202,6 @@ class FamilyController extends Controller
 
         $name = $family->name;
 
-        $family->delete();
-
         Session::flash('info', [
             'type' => 'danger',
             'header' => 'Registro eliminado',

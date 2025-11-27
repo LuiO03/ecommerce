@@ -76,7 +76,7 @@
             @foreach ($links as $link)
             @endforeach
             <li>
-                <a href="#" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                     data-tooltip="Dashboard">
                     <i class="ri-dashboard-line sidebar-icon"></i>
                     <span>Dashboard</span>
