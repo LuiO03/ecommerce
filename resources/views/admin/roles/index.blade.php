@@ -224,6 +224,17 @@
                 });
 
                 // ========================================
+                // 🔎 Buscador personalizado
+                // ========================================
+                $('#customSearch').on('input', function() {
+                    tableManager.getTable().search(this.value).draw();
+                });
+                $('#clearSearch').on('click', function() {
+                    $('#customSearch').val('');
+                    tableManager.getTable().search('').draw();
+                });
+
+                // ========================================
                 // 🎨 RESALTAR FILA CREADA/EDITADA
                 // ========================================
                 @if (Session::has('highlightRow'))

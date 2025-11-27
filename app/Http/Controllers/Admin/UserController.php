@@ -102,8 +102,12 @@ class UserController extends Controller
             'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        // Capitalizar nombre y apellido
+        $name = ucwords(mb_strtolower($request->name));
+        $lastName = $request->last_name ? ucwords(mb_strtolower($request->last_name)) : null;
+
         // Slug único
-        $slug = User::generateUniqueSlug($request->name);
+        $slug = User::generateUniqueSlug($name);
 
         // Imagen
         $imagePath = null;
@@ -116,8 +120,8 @@ class UserController extends Controller
         }
 
         $user = User::create([
-            'name'        => $request->name,
-            'last_name'   => $request->last_name,
+            'name'        => $name,
+            'last_name'   => $lastName,
             'email'       => $request->email,
             'password'    => $request->password,
             'slug'        => $slug,
@@ -173,8 +177,9 @@ class UserController extends Controller
             'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Capitalizar nombre y dirección
+        // Capitalizar nombre, apellido y dirección
         $name = ucwords(mb_strtolower($request->name));
+        $lastName = $request->last_name ? ucwords(mb_strtolower($request->last_name)) : null;
         $address = $request->address ? ucfirst(mb_strtolower($request->address)) : null;
 
         $slug = User::generateUniqueSlug($name, $user->id);
@@ -201,7 +206,7 @@ class UserController extends Controller
 
         $user->update([
             'name'        => $name,
-            'last_name'   => $request->last_name,
+            'last_name'   => $lastName,
             'email'       => $request->email,
             'slug'        => $slug,
             'status'      => (bool)$request->status,

@@ -111,7 +111,6 @@
 
 .card-title{
     font-weight: bolder;
-    text-transform: capitalize;
     font-family: var(--font-secondary);
     font-size: var(--font-size-h4);
 }

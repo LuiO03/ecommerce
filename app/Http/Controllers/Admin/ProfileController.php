@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -14,54 +15,58 @@ use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
-        // ======================
-        //   QUITAR FOTO DE PERFIL
-        // ======================
-        public function removeImage(Request $request)
-        {
-            $user = User::query()->findOrFail(Auth::id());
-            if ($user->image && Storage::disk('public')->exists($user->image)) {
-                Storage::disk('public')->delete($user->image);
-            }
-            $user->update([
-                'image' => null,
-                'updated_by' => Auth::id(),
-            ]);
-            Session::flash('toast', [
-                'type' => 'success',
-                'title' => 'Foto eliminada',
-                'message' => 'La foto de perfil ha sido eliminada correctamente.',
-            ]);
-            return redirect()->route('admin.profile.index');
+    // ======================
+    //   QUITAR FOTO DE PERFIL
+    // ======================
+    public function removeImage(Request $request)
+    {
+        $user = User::query()->findOrFail(Auth::id());
+        if ($user->image && Storage::disk('public')->exists($user->image)) {
+            Storage::disk('public')->delete($user->image);
         }
+        $user->update([
+            'image' => null,
+            'updated_by' => Auth::id(),
+        ]);
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Foto eliminada',
+            'message' => 'La foto de perfil ha sido eliminada correctamente.',
+        ]);
+        return redirect()->route('admin.profile.index');
+    }
     // ======================
     //      VISTA PRINCIPAL PERFIL
     // ======================
     public function index()
     {
         $user = Auth::user();
-            // Obtener sesiones activas desde la tabla sessions
-            $sessions = DB::table('sessions')
-                ->where('user_id', $user->id)
-                ->orderByDesc('last_activity')
-                ->get();
-            return view('admin.profile.index', compact('user', 'sessions'));
+        // Obtener sesiones activas desde la tabla sessions
+        $sessions = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->orderByDesc('last_activity')
+            ->get();
+        return view('admin.profile.index', compact('user', 'sessions'));
     }
-        // ======================
-        //      CERRAR SESIÓN DE OTRO DISPOSITIVO (manual)
-        // ======================
-        public function logoutSession(Request $request)
-        {
-            DB::table('sessions')->where('id', $request->session_id)->delete();
-            return back()->with('success', 'Sesión cerrada correctamente.');
-        }
+    // ======================
+    //      CERRAR SESIÓN DE OTRO DISPOSITIVO (manual)
+    // ======================
+    public function logoutSession(Request $request)
+    {
+        DB::table('sessions')->where('id', $request->session_id)->delete();
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Sesión cerrada',
+            'message' => 'La sesión de otro dispositivo ha sido cerrada correctamente.',
+        ]);
+        return back()->with('success', 'Sesión cerrada correctamente.');
+    }
 
     // ======================
     //      ACTUALIZAR PERFIL
     // ======================
     public function update(Request $request)
     {
-        
         $user = User::query()->findOrFail(Auth::id());
 
         // Si solo se envía imagen (desde la modal)
