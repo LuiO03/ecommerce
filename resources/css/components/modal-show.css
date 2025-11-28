@@ -1,10 +1,5 @@
 .slug-mono {
     font-family: "Monaco", "Courier New", monospace;
-    background-color: var(--color-secondary);
-    padding: 5px 10px;
-    border-radius: var(--radius-card);
-    color: white;
-    font-size: var(--font-size-sm);
 }
 
 .text-muted-null {
@@ -12,7 +7,7 @@
     font-style: italic;
 }
 
-.modal-familia {
+.modal-show {
     position: fixed;
     top: 0;
     left: 0;
@@ -30,7 +25,7 @@
     overflow: hidden;
 }
 
-.modal-familia:not(.hidden) {
+.modal-show:not(.hidden) {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -39,7 +34,7 @@
     backdrop-filter: blur(3px);
 }
 
-.modal-familia .modal-content {
+.modal-show .modal-content {
     border-radius: var(--radius-card);
     background-color: var(--color-sidebar-bg);
     width: 90%;
@@ -101,10 +96,12 @@
 .show-modal-footer{
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 10px;
     flex: 0 0 auto;
     padding: 1rem;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-card-bg);
 }
 
 .show-modal-table {
@@ -175,6 +172,15 @@
     font-size: 1.5rem;
     font-weight: 400;
     gap: 10px;
+}
+
+.show-modal-actions{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    padding: 0px;
 }
 
 @keyframes sweetIn {

@@ -1,5 +1,5 @@
 <!-- Modal para mostrar datos completos de la familia -->
-<div id="modalFamilia" class="modal-familia hidden">
+<div id="modalShow" class="modal-show hidden">
     <div class="modal-content">
         <div class="show-modal-header" id="modalHeader">
             <h6>Detalles de la Familia</h6>
@@ -8,7 +8,7 @@
             </button>
         </div>
         <div class="show-modal-body">
-            <span class="card-title" id="fam-titulo">Sin título</span>
+            <span class="card-title" id="fam-name">Sin título</span>
             <table class="show-modal-table">
                 <tr>
                     <th>ID</th>
@@ -17,10 +17,6 @@
                 <tr>
                     <th>Slug</th>
                     <td id="fam-slug" class="slug-mono">-</td>
-                </tr>
-                <tr>
-                    <th>Nombre</th>
-                    <td id="fam-name">-</td>
                 </tr>
                 <tr>
                     <th>Descripción</th>
@@ -42,20 +38,23 @@
             <div class="modal-img-container">
                 <div id="fam-image">-</div>
             </div>
+            <div class="show-modal-actions">
+                <a href="#" id="modalEditBtn" class="boton boton-warning" title="Editar familia">
+                    <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
+                    <span class="boton-text">Editar</span>
+                </a>
+                <form id="modalDeleteForm" action="#" method="POST" title="Eliminar familia">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="boton boton-danger">
+                        <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                        <span class="boton-text">Eliminar</span>
+                    </button>
+                </form>
+            </div>
         </div>
         <div class="show-modal-footer">
-            <a href="#" id="modalEditBtn" class="boton boton-warning" style="min-width:110px;">
-                <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                <span class="boton-text">Editar</span>
-            </a>
-            <form id="modalDeleteForm" action="/admin/families" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="boton boton-danger">
-                    <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
-                    <span class="boton-text">Eliminar</span>
-                </button>
-            </form>
+
             <button type="button" class="boton boton-modal-close" id="cancelButton">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                 <span class="boton-text">Cerrar</span>
@@ -66,22 +65,28 @@
 
 @push('scripts')
     <script>
-        function openModalFamilia() {
-            $('#modalFamilia').removeClass('hidden');
+        function openmodalShow() {
+            $('#modalShow').removeClass('hidden');
             $('.modal-content').removeClass('animate-out').addClass('animate-in');
-            $('#modalFamilia').appendTo('body');
+            $('#modalShow').appendTo('body');
+            // Listener ESC solo para esta modal
+            document.addEventListener('keydown', escFamiliaListener);
+            // Listener click fuera solo para esta modal
+            document.addEventListener('mousedown', clickOutsideShowListener);
         }
 
         function closeModal() {
             $('.modal-content').removeClass('animate-in').addClass('animate-out');
             setTimeout(function() {
-                $('#modalFamilia').addClass('hidden');
+                $('#modalShow').addClass('hidden');
                 setLoadingModalFields();
+                // Remover listeners al cerrar
+                document.removeEventListener('keydown', escFamiliaListener);
+                document.removeEventListener('mousedown', clickOutsideShowListener);
             }, 250);
         }
 
         function setLoadingModalFields() {
-            $('#fam-titulo').html('<span class="loader-modal">Cargando...</span>');
             $('#fam-id').html('<span class="loader-modal">Cargando...</span>');
             $('#fam-slug').html('<span class="loader-modal">Cargando...</span>');
             $('#fam-name').html('<span class="loader-modal">Cargando...</span>');
@@ -93,15 +98,20 @@
         }
         $(document).on('click', '.btn-ver-familia', function() {
             setLoadingModalFields();
-            openModalFamilia();
+            openmodalShow();
             const slug = $(this).data('slug');
             $.ajax({
                 url: `/admin/families/${slug}/show-full`,
                 method: 'GET',
                 success: function(data) {
-                    $('#fam-titulo').text(data.name ?? '-');
                     $('#fam-id').text(data.id ?? '-');
-                    $('#fam-slug').text(data.slug ?? '-');
+                    const slugText = data.slug ?? '-';
+                    $('#fam-slug').html(`
+                        <span class="badge badge-info">
+                            <i class="ri-link-m"></i>
+                            ${slugText}
+                        </span>
+                    `);
                     $('#fam-name').text(data.name ?? '-');
                     // Descripción
                     if (!data.description) {
@@ -178,8 +188,9 @@
                 `);
                     // Actualizar enlace de Editar
                     $('#modalEditBtn').attr('href', `/admin/families/${data.slug}/edit`);
-                    // Eliminar: la acción SIEMPRE debe ser /admin/families (destroyMultiple)
-                    $('#modalDeleteForm').attr('action', '/admin/families');
+                    // Eliminar: la acción debe ser /admin/families/{slug} (destroy individual por slug)
+                    let famSlug = (data.slug ?? '-');
+                    $('#modalDeleteForm').attr('action', `/admin/families/${famSlug}`);
                 },
                 error: function() {
                     $('#fam-id').text('Error');
@@ -195,38 +206,39 @@
         });
         $('#cancelButton').on('click', closeModal);
         $('#closeModal').on('click', closeModal);
-        $(document).on('mousedown', function(e) {
-            const modal = $('#modalFamilia');
+
+        // Listener ESC solo para modalShow
+        function escFamiliaListener(e) {
+            const modal = document.getElementById('modalShow');
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        }
+        // Listener click fuera solo para modalShow
+        function clickOutsideShowListener(e) {
+            const modal = $('#modalShow');
             const content = $('.modal-content');
             if (!modal.hasClass('hidden') && !content.is(e.target) && content.has(e.target).length === 0) {
                 closeModal();
             }
-        });
-            // === Eliminar desde la modal ===
-            $(document).on('submit', '#modalDeleteForm', function(e) {
-                e.preventDefault();
-                const form = $(this);
-                const action = form.attr('action');
-                // Obtener el id real (sin #)
-                let famId = $('#fam-id').text().replace('#', '');
-                // Usar el patrón global de confirmación
-                handleMultipleDelete({
-                    selectedIds: [famId],
-                    getNameCallback: function(id) {
-                        return $('#fam-name').text();
-                    },
-                    entityName: 'familia',
-                    deleteRoute: action,
-                    csrfToken: $('input[name="_token"]', form).val(),
-                    // Enviar como array families (igual que el index)
-                    extraData: { families: [famId] },
-                    onSuccess: function() {
-                        closeModal();
-                        if (typeof tableManager !== 'undefined') {
-                            tableManager.refresh();
-                        }
-                    }
-                });
+        }
+        // === Eliminar desde la modal ===
+        // Eliminar desde la modal: usar la modal de confirmación personalizada
+        $(document).on('submit', '#modalDeleteForm', function(e) {
+            e.preventDefault();
+            const form = this;
+            window.showConfirm({
+                type: 'danger',
+                header: 'Eliminar familia',
+                title: '¿Estás seguro?',
+                message: 'Esta acción no se puede deshacer.<br>Se eliminará la familia <strong>' + $(
+                    '#fam-name').text() + '</strong> del sistema.',
+                confirmText: 'Sí, eliminar',
+                cancelText: 'No, cancelar',
+                onConfirm: function() {
+                    form.submit();
+                }
             });
+        });
     </script>
 @endpush

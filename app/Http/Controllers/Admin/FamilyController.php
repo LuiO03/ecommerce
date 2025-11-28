@@ -372,7 +372,6 @@ class FamilyController extends Controller
             ->firstOrFail();
 
         return response()->json([
-            'titulo' => $family->name,
             'id' => '#' . $family->id,
             'slug' => $family->slug,
             'name' => $family->name,

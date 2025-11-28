@@ -118,14 +118,32 @@ window.showConfirm = function(options) {
     cancelBtn.addEventListener('click', closeModal);
     closeBtn.addEventListener('click', closeModal);
 
-    // 🖱️ Cerrar al hacer clic fuera
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeModal();
-    });
+    // 🖱️ Cerrar al hacer clic fuera SOLO la confirmación
+    function clickOutsideConfirmListener(e) {
+        if (e.target === modal) {
+            closeModalAndCleanup();
+            e.stopPropagation();
+        }
+    }
+    modal.addEventListener('click', clickOutsideConfirmListener);
 
-    // ⌨️ Cerrar con ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    // ⌨️ Cerrar con ESC SOLO la confirmación
+    function escConfirmListener(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModalAndCleanup();
+    }
+    document.addEventListener('keydown', escConfirmListener);
+
+    // Limpiar los listeners al cerrar la confirmación
+    function closeModalAndCleanup() {
+        closeModal();
+        document.removeEventListener('keydown', escConfirmListener);
+        modal.removeEventListener('click', clickOutsideConfirmListener);
+    }
+    cancelBtn.addEventListener('click', closeModalAndCleanup);
+    closeBtn.addEventListener('click', closeModalAndCleanup);
+    confirmBtn.addEventListener('click', function() {
+        closeModalAndCleanup();
+        if (typeof options.onConfirm === 'function') options.onConfirm();
     });
 };
 </script>
