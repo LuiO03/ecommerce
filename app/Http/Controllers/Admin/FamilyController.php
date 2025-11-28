@@ -335,6 +335,7 @@ class FamilyController extends Controller
         ->firstOrFail();
 
         return response()->json([
+            'titulo' => $family->name,
             'id' => $family->id,
             'slug' => $family->slug,
             'name' => $family->name,
@@ -346,10 +347,8 @@ class FamilyController extends Controller
             'deleted_by' => $family->deleted_by,
             'created_by_name' => $family->creator ? $family->creator->name : null,
             'updated_by_name' => $family->updater ? $family->updater->name : null,
-            'deleted_by_name' => $family->deleter ? $family->deleter->name : null,
             'created_at' => $family->created_at ? $family->created_at->format('d/m/Y H:i') : null,
             'updated_at' => $family->updated_at ? $family->updated_at->format('d/m/Y H:i') : null,
-            'deleted_at' => $family->deleted_at ? $family->deleted_at->format('d/m/Y H:i') : null,
         ]);
     }
 }

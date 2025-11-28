@@ -40,7 +40,7 @@
 
     /* === Tablas === */
     --color-table-header-bg: #ffffff;
-    --color-table-stripet-bg: #f9f9f9;
+    --color-table-striped-bg: #f9f9f9;
 
     /* === Scrollbar === */
     --scrollbar-track: #ffffff;
@@ -99,7 +99,7 @@
 
     /* === Tablas === */
     --color-table-header-bg: #181818;
-    --color-table-stripet-bg: #181818;
+    --color-table-striped-bg: #212121;
 
     /* === Scrollbar === */
     --scrollbar-track: #181818;
@@ -729,6 +729,10 @@
 
 .text-base-inverted {
     color: var(--color-bw-inverted);
+}
+
+.text-soft {
+    color: var(--color-text-soft);
 }
 
 .text-accent {
