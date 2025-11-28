@@ -8,7 +8,7 @@
             </button>
         </div>
         <div class="modal-show-body">
-            <span class="card-title" id="fam-name">Sin título</span>
+            <h3 class="modal-title-body" id="fam-name">Sin título</h3>
             <table class="modal-show-table">
                 <tr>
                     <th>ID</th>
@@ -16,7 +16,7 @@
                 </tr>
                 <tr>
                     <th>Slug</th>
-                    <td id="fam-slug" class="slug-mono">-</td>
+                    <td id="fam-slug">-</td>
                 </tr>
                 <tr>
                     <th>Descripción</th>
@@ -105,13 +105,8 @@
                 method: 'GET',
                 success: function(data) {
                     $('#fam-id').text(data.id ?? '-');
-                    const slugText = data.slug ?? '-';
-                    $('#fam-slug').html(`
-                        <span class="badge badge-info">
-                            <i class="ri-link-m"></i>
-                            ${slugText}
-                        </span>
-                    `);
+                    // Slug tipografía especial
+                    $('#fam-slug').html(`<span class='badge badge-primary slug-mono'>${data.slug ?? '-'}</span>`);
                     $('#fam-name').text(data.name ?? '-');
                     // Descripción
                     if (!data.description) {
@@ -156,8 +151,7 @@
                             </div>`
                         );
                     }
-                    // Slug tipografía especial
-                    $('#fam-slug').html(`<span class='slug-mono'>${data.slug ?? '-'}</span>`);
+                    
                     // Creado por + fecha
                     let creadoPor = (data.created_by_name || data.created_by_last_name) ?
                         `${data.created_by_name ?? ''} ${data.created_by_last_name ?? ''}`.trim() : (

@@ -79,6 +79,11 @@
     max-height: 70vh;
 }
 
+.modal-title-body{
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+}
+
 .modal-show-body::-webkit-scrollbar{
     width: 5px;
     background-color: var(--scrollbar-track);
