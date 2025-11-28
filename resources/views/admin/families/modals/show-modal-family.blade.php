@@ -48,7 +48,7 @@
                 <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
                 <span class="boton-text">Editar</span>
             </a>
-            <form id="modalDeleteForm" action="#" method="POST">
+            <form id="modalDeleteForm" action="/admin/families" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="boton boton-danger">
@@ -176,9 +176,10 @@
                         </span>
                     </div>
                 `);
-                    // Actualizar enlaces de Editar y Eliminar
+                    // Actualizar enlace de Editar
                     $('#modalEditBtn').attr('href', `/admin/families/${data.slug}/edit`);
-                    $('#modalDeleteForm').attr('action', `/admin/families/${data.slug}`);
+                    // Eliminar: la acción SIEMPRE debe ser /admin/families (destroyMultiple)
+                    $('#modalDeleteForm').attr('action', '/admin/families');
                 },
                 error: function() {
                     $('#fam-id').text('Error');
@@ -201,5 +202,31 @@
                 closeModal();
             }
         });
+            // === Eliminar desde la modal ===
+            $(document).on('submit', '#modalDeleteForm', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const action = form.attr('action');
+                // Obtener el id real (sin #)
+                let famId = $('#fam-id').text().replace('#', '');
+                // Usar el patrón global de confirmación
+                handleMultipleDelete({
+                    selectedIds: [famId],
+                    getNameCallback: function(id) {
+                        return $('#fam-name').text();
+                    },
+                    entityName: 'familia',
+                    deleteRoute: action,
+                    csrfToken: $('input[name="_token"]', form).val(),
+                    // Enviar como array families (igual que el index)
+                    extraData: { families: [famId] },
+                    onSuccess: function() {
+                        closeModal();
+                        if (typeof tableManager !== 'undefined') {
+                            tableManager.refresh();
+                        }
+                    }
+                });
+            });
     </script>
 @endpush

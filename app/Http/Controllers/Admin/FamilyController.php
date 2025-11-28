@@ -177,13 +177,15 @@ class FamilyController extends Controller
 
         // 📌 Si marca para eliminar imagen
         if ($request->input('remove_image') == '1') {
-            if ($family->image && Storage::disk('public')->exists($family->image)) {/* Lines 142-143 omitted */}
+            if ($family->image && Storage::disk('public')->exists($family->image)) {/* Lines 142-143 omitted */
+            }
             $imagePath = null;
         }
         // 📌 Si sube una nueva, eliminar la anterior y subir la nueva
         elseif ($request->hasFile('image')) {
 
-            if ($family->image && Storage::disk('public')->exists($family->image)) {/* Lines 150-151 omitted */}
+            if ($family->image && Storage::disk('public')->exists($family->image)) {/* Lines 150-151 omitted */
+            }
 
             $extension = $request->file('image')->getClientOriginalExtension();
             $filename = $slug . '-' . time() . '.' . $extension;
@@ -317,6 +319,44 @@ class FamilyController extends Controller
         ]);
     }
 
+    public function destroy(Family $family)
+    {
+        // 🔒 Validar relaciones bloqueantes (igual que destroyMultiple)
+        if ($family->categories()->exists()) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Acción no permitida',
+                'title' => 'Familia con categorías asociadas',
+                'message' => "La familia <strong>{$family->name}</strong> no se puede eliminar porque tiene categorías registradas.",
+            ]);
+
+            return redirect()->route('admin.families.index');
+        }
+
+        $name = $family->name;
+
+        // 🖼️ Eliminar imagen si existe
+        if ($family->image && Storage::disk('public')->exists($family->image)) {
+            Storage::disk('public')->delete($family->image);
+        }
+
+        // Registrar quién eliminó
+        $family->deleted_by = Auth::id();
+        $family->save();
+
+        // Eliminar registro definitivo
+        $family->delete(); // o forceDelete()
+
+        Session::flash('info', [
+            'type' => 'danger',
+            'header' => 'Registro eliminado',
+            'title' => 'Familia eliminada',
+            'message' => "La familia <strong>{$name}</strong> ha sido eliminada del sistema.",
+        ]);
+
+        return redirect()->route('admin.families.index');
+    }
+
     /**
      * Devuelve los datos completos de una familia por slug (JSON)
      */
@@ -327,13 +367,13 @@ class FamilyController extends Controller
             'updater:id,name,last_name',
             'deleter:id,name,last_name'
         ])
-        ->select('id', 'slug', 'name', 'description', 'status', 'image', 'created_by', 'updated_by', 'created_at', 'updated_at')
-        ->where('slug', $slug)
-        ->firstOrFail();
+            ->select('id', 'slug', 'name', 'description', 'status', 'image', 'created_by', 'updated_by', 'created_at', 'updated_at')
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         return response()->json([
             'titulo' => $family->name,
-            'id' => '#'.$family->id,
+            'id' => '#' . $family->id,
             'slug' => $family->slug,
             'name' => $family->name,
             'description' => $family->description,
