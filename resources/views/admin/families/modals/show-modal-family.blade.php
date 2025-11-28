@@ -1,15 +1,15 @@
 <!-- Modal para mostrar datos completos de la familia -->
 <div id="modalShow" class="modal-show hidden">
     <div class="modal-content">
-        <div class="show-modal-header" id="modalHeader">
+        <div class="modal-show-header" id="modalHeader">
             <h6>Detalles de la Familia</h6>
             <button type="button" id="closeModal" class="confirm-close ripple-btn">
                 <i class="ri-close-line"></i>
             </button>
         </div>
-        <div class="show-modal-body">
+        <div class="modal-show-body">
             <span class="card-title" id="fam-name">Sin título</span>
-            <table class="show-modal-table">
+            <table class="modal-show-table">
                 <tr>
                     <th>ID</th>
                     <td id="fam-id">-</td>
@@ -38,7 +38,7 @@
             <div class="modal-img-container">
                 <div id="fam-image">-</div>
             </div>
-            <div class="show-modal-actions">
+            <div class="modal-show-actions">
                 <a href="#" id="modalEditBtn" class="boton boton-warning" title="Editar familia">
                     <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
                     <span class="boton-text">Editar</span>
@@ -53,7 +53,7 @@
                 </form>
             </div>
         </div>
-        <div class="show-modal-footer">
+        <div class="modal-show-footer">
 
             <button type="button" class="boton boton-modal-close" id="cancelButton">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
