@@ -198,7 +198,11 @@
                             </td>
                             <td class="column-id-td">{{ $cat->id }}</td>
                             <td class="column-name-td">{{ $cat->name }}</td>
-                            <td class="column-description-td">{{ $cat->description ?? 'Sin descripción' }}</td>
+                            <td class="column-description-td">
+                                <span class="{{ $cat->description ? '' : 'text-muted-td' }}">
+                                    {{ $cat->description ?? 'Sin descripción' }}
+                                </span>
+                            </td>
                             <td class="column-family-td" data-family-id="{{ $cat->family_id ?? '' }}">
                                 @if($cat->family)
                                     <span class="badge badge-info">
@@ -235,7 +239,9 @@
                             </td>
 
                             <td class="column-date-td">
-                                {{ $cat->created_at ? $cat->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                <span class="{{ $cat->created_at ? '' : 'text-muted-td' }}">
+                                    {{ $cat->created_at ? $cat->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                </span>
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">

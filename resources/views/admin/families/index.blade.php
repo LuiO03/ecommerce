@@ -166,7 +166,11 @@
                                 <span class="id-text">{{ $family->id }}</span>
                             </td>
                             <td class="column-name-td">{{ $family->name }}</td>
-                            <td class="column-description-td">{{ $family->description ?? 'Sin descripción' }}</td>
+                            <td class="column-description-td">
+                                <span class="{{ $family->description ? '' : 'text-muted-td' }}">
+                                    {{ $family->description ?? 'Sin descripción' }}
+                                </span>
+                            </td>
                             <td class="column-status-td">
                                 <label class="switch-tabla">
                                     <input type="checkbox" class="switch-status" data-id="{{ $family->id }}"
@@ -175,7 +179,6 @@
                                 </label>
                             </td>
                             <td>{{ $family->created_at ? $family->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
-
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
                                     <button class="boton boton-info btn-ver-familia" data-slug="{{ $family->slug }}"

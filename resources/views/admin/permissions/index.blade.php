@@ -149,7 +149,9 @@
                                 <span class="badge badge-secondary">{{ $permission->modulo ?? 'Sin módulo' }}</span>
                             </td>
                             <td class="column-description-td">
-                                <span class="text-gray-700">{{ $permission->description ?? 'Sin descripción' }}</span>
+                                <span class="{{ $permission->description ? '' : 'text-muted-td' }}">
+                                    {{ $permission->description ?? 'Sin descripción' }}
+                                </span>
                             </td>
                             <td class="column-guard-td">{{ $permission->guard_name }}</td>
                             <td class="column-roles-td">

@@ -202,7 +202,11 @@
                                     <span>{{ $user->name }}</span>
                                 </div>
                             </td>
-                            <td class="column-last-name-td">{{ $user->last_name }}</td>
+                            <td class="column-last-name-td">
+                                <span class="{{ $user->last_name ? '' : 'text-muted-td' }}">
+                                    {{ $user->last_name ?? 'Sin apellidos' }}
+                                </span>
+                            </td>
                             <td class="column-email-td">{{ $user->email }}</td>
                             <td class="column-role-td" data-role="{{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'sin-rol' }}">
                                 @if($user->roles->isNotEmpty())
@@ -224,7 +228,11 @@
                                     <span class="slider"></span>
                                 </label>
                             </td>
-                            <td>{{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
+                            <td>
+                                <span class="{{ $user->created_at ? '' : 'text-muted-td' }}">
+                                    {{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                </span>
+                            </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
                                     <button class="boton-sm boton-info" data-id="{{ $user->id }}">

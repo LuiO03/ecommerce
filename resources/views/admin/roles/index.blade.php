@@ -147,7 +147,10 @@
                             </td>
                             <td class="column-name-td">
                                 {{ $role->name }}</td>
-                            <td class="column-description-td">{{ $role->description ?? 'Sin descripción' }}
+                            <td class="column-description-td">
+                                <span class="{{ $role->description ? '' : 'text-muted-td' }}">
+                                    {{ $role->description ?? 'Sin descripción' }}
+                                </span>
                             </td>
                             <td class="column-users-td"><span class="badge badge-info">{{ $role->users_count }}</span></td>
                             <td class="column-date-td">{{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>

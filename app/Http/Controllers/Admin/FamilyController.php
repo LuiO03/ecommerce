@@ -200,15 +200,12 @@ class FamilyController extends Controller
             'updated_by'  => Auth::id(),
         ]);
 
-        $name = $family->name;
-
-        Session::flash('info', [
-            'type' => 'danger',
-            'header' => 'Registro eliminado',
-            'title' => 'Familia eliminada',
-            'message' => "La familia <strong>{$name}</strong> ha sido eliminada del sistema.",
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Familia actualizada',
+            'message' => "La familia <strong>{$family->name}</strong> se ha actualizado correctamente.",
         ]);
-
+        Session::flash('highlightRow', $family->id);
         return redirect()->route('admin.families.index');
     }
 
@@ -326,17 +323,17 @@ class FamilyController extends Controller
     public function showFull($slug)
     {
         $family = Family::with([
-            'creator:id,name',
-            'updater:id,name',
-            'deleter:id,name'
+            'creator:id,name,last_name',
+            'updater:id,name,last_name',
+            'deleter:id,name,last_name'
         ])
-        ->select('id', 'slug', 'name', 'description', 'status', 'image', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at')
+        ->select('id', 'slug', 'name', 'description', 'status', 'image', 'created_by', 'updated_by', 'created_at', 'updated_at')
         ->where('slug', $slug)
         ->firstOrFail();
 
         return response()->json([
             'titulo' => $family->name,
-            'id' => $family->id,
+            'id' => '#'.$family->id,
             'slug' => $family->slug,
             'name' => $family->name,
             'description' => $family->description,
@@ -344,9 +341,10 @@ class FamilyController extends Controller
             'image' => $family->image,
             'created_by' => $family->created_by,
             'updated_by' => $family->updated_by,
-            'deleted_by' => $family->deleted_by,
             'created_by_name' => $family->creator ? $family->creator->name : null,
+            'created_by_last_name' => $family->creator ? $family->creator->last_name : null,
             'updated_by_name' => $family->updater ? $family->updater->name : null,
+            'updated_by_last_name' => $family->updater ? $family->updater->last_name : null,
             'created_at' => $family->created_at ? $family->created_at->format('d/m/Y H:i') : null,
             'updated_at' => $family->updated_at ? $family->updated_at->format('d/m/Y H:i') : null,
         ]);

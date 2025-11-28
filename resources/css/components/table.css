@@ -699,6 +699,11 @@ input[type="checkbox"]:indeterminate {
     font-size: 40px;
 }
 
+.text-muted-td {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
 /* =======================================================
    💫 ANIMACIONES
 ======================================================= */
