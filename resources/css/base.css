@@ -1,5 +1,9 @@
 /* ==== Tema global del sidebar-usuario ==== */
 :root {
+    /* === Shimmer Loader === */
+    --shimmer-bg: #e2e2e2;
+    --shimmer-gradient: #f5f5f5;
+    --shimmer-highlight: #e0e0e0;
     /* === Fondo y estructura === */
     --color-bg: #ffffff;
     --color-sidebar-bg: #ffffff;
@@ -54,6 +58,10 @@
 }
 
 .dark {
+    /* === Shimmer Loader (Dark) === */
+    --shimmer-bg: #23232b;
+    --shimmer-gradient: #353545;
+    --shimmer-highlight: #444455;
     /* === Fondo y estructura === */
     --color-bg: #111110;
     --color-sidebar-bg: #181818;

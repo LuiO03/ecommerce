@@ -87,14 +87,15 @@
         }
 
         function setLoadingModalFields() {
-            $('#fam-id').html('<span class="loader-modal">Cargando...</span>');
-            $('#fam-slug').html('<span class="loader-modal">Cargando...</span>');
-            $('#fam-name').html('<span class="loader-modal">Cargando...</span>');
-            $('#fam-description').html('<span class="loader-modal">Cargando...</span>');
-            $('#fam-status').html('<span class="loader-modal">Cargando...</span>');
-            $('#fam-image').html('<span class="loader-modal">Cargando...</span>');
-            $('#fam-created-by-fecha').html('<span class="loader-modal">Cargando...</span>');
-            $('#fam-updated-by-fecha').html('<span class="loader-modal">Cargando...</span>');
+            // Shimmer para cada celda
+            $('#fam-id').html('<div class="shimmer shimmer-cell"></div>');
+            $('#fam-slug').html('<div class="shimmer shimmer-cell" style="width:80px;"></div>');
+            $('#fam-name').html('<div class="shimmer shimmer-cell shimmer-title" style="width:120px;"></div>');
+            $('#fam-description').html('<div class="shimmer shimmer-cell" style="width:160px;"></div>');
+            $('#fam-status').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
+            $('#fam-image').html('<div class="shimmer shimmer-img"></div>');
+            $('#fam-created-by-fecha').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#fam-updated-by-fecha').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
         }
         $(document).on('click', '.btn-ver-familia', function() {
             setLoadingModalFields();

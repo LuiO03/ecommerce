@@ -1,3 +1,54 @@
+.shimmer-title {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* === SHIMMER LOADER === */
+
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    background: var(--shimmer-bg);
+}
+.shimmer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        var(--shimmer-bg) 0%,
+        var(--shimmer-gradient) 40%,
+        var(--shimmer-highlight) 50%,
+        var(--shimmer-gradient) 60%,
+        var(--shimmer-bg) 100%
+    );
+    animation: shimmerMove 1.2s infinite;
+    opacity: 0.8;
+}
+
+@keyframes shimmerMove {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.shimmer-cell {
+    height: 22px;
+    border-radius: 4px;
+    margin: 2px 0;
+}
+.shimmer-img {
+    width: 100%;
+    height: 90px;
+    border-radius: var(--radius-element);
+    margin-bottom: 8px;
+}
 .slug-mono {
     font-family: "Monaco", "Courier New", monospace;
 }
@@ -14,17 +65,84 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0);
+}
+/* === SHIMMER LOADER === */
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    background: var(--shimmer-bg);
+}
+.shimmer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        var(--shimmer-bg) 0%,
+        var(--shimmer-gradient) 40%,
+        var(--shimmer-highlight) 50%,
+        var(--shimmer-gradient) 60%,
+        var(--shimmer-bg) 100%
+    );
+    animation: shimmerMove 1.2s infinite;
+    opacity: 0.8;
+}
+.shimmer-cell {
+    height: 22px;
+    border-radius: 4px;
+    margin: 2px 0;
+}
+.shimmer-img {
+    width: 100%;
+    height: 90px;
+    border-radius: var(--radius-element);
+    margin-bottom: 8px;
+}
+.shimmer-title {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+@keyframes shimmerMove {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* === TEXTO Y TIPOGRAFÍA === */
+.slug-mono {
+    font-family: "Monaco", "Courier New", monospace;
+}
+.text-muted-null {
+    color: var(--color-text-soft);
+    font-style: italic;
+}
+
+/* === MODAL LAYOUT === */
+.modal-show {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0);
     z-index: 100;
     display: none;
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: opacity 0.4s ease, background-color 0.4s ease, backdrop-filter 0.4s ease;
+    transition: opacity 0.4s ease, background-color 0.4s ease,
+        backdrop-filter 0.4s ease;
     backdrop-filter: blur(0px);
     isolation: isolate;
     overflow: hidden;
 }
-
 .modal-show:not(.hidden) {
     display: flex;
     justify-content: center;
@@ -33,7 +151,6 @@
     background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px);
 }
-
 .modal-show .modal-content {
     border-radius: var(--radius-card);
     background-color: var(--color-sidebar-bg);
@@ -47,7 +164,6 @@
     flex-direction: column;
     overflow: hidden;
 }
-
 .modal-show-header {
     position: relative;
     display: flex;
@@ -60,67 +176,53 @@
     background-color: var(--color-accent);
     flex: 0 0 auto;
 }
-
-.animate-in {
-    animation: sweetIn 0.35s ease forwards;
-    animation-delay: 0.1s;
+.modal-title-body {
+    font-weight: bolder;
+    display: flex;
+    justify-content: center;
+    font-family: var(--font-secondary);
 }
-
-.animate-out {
-    animation: sweetOut 0.25s ease forwards;
-}
-
-.modal-show-body{
+.modal-show-body {
     padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
     overflow-y: auto;
-    max-height: 70vh;
+    max-height: 80vh;
 }
-
-.modal-title-body{
-    font-weight: bolder;
-    font-family: var(--font-secondary);
-}
-
-.modal-show-body::-webkit-scrollbar{
+.modal-show-body::-webkit-scrollbar {
     width: 5px;
     background-color: var(--scrollbar-track);
 }
-
 .modal-show-body::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-thumb);
     border-radius: 10px;
 }
-
 .modal-show-body::-webkit-scrollbar-thumb:hover {
     background-color: var(--scrollbar-hover);
 }
-
-.modal-show-footer{
+.modal-show-footer {
     width: 100%;
     display: flex;
     justify-content: center;
     gap: 10px;
     flex: 0 0 auto;
-    padding: 1rem;
+    padding: 8px 0px;
     border-top: 1px solid var(--color-border);
     background-color: var(--color-card-bg);
 }
 
+/* === TABLA === */
 .modal-show-table {
     width: 100%;
     font-size: var(--font-size-sm);
 }
-
 .modal-show-table th,
 .modal-show-table td {
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--color-cell-border);
     text-align: left;
 }
-
 .modal-show-table th {
     background-color: var(--color-table-header-bg);
     font-weight: bolder;
@@ -137,34 +239,38 @@
     background-color: var(--color-table-striped-bg);
 }
 
+/* === ACCIONES Y CELDAS === */
 .show-cell-content {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 2px;
 }
-
 .show-date {
     color: var(--color-accent);
     display: flex;
     align-items: center;
     gap: 4px;
 }
-
-.modal-img-container{
-    align-content: center;
-    border: 5px solid var(--color-border);
-    border-radius: var(--radius-element);
+.modal-show-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    padding: 0px;
 }
 
+/* === IMAGEN === */
 .modal-img {
     width: 100%;
     max-width: 100%;
     object-fit: cover;
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.07);
     display: block;
+    border: 5px solid var(--color-border);
+    border-radius: var(--radius-element);
 }
-
 .modal-img-placeholder {
     width: 100%;
     height: 90px;
@@ -176,18 +282,12 @@
     justify-content: center;
     font-size: 1.5rem;
     font-weight: 400;
+    border: 5px solid var(--color-border);
+    border-radius: var(--radius-element);
     gap: 10px;
 }
 
-.modal-show-actions{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex: 0 0 auto;
-    padding: 0px;
-}
-
+/* === ANIMACIONES === */
 @keyframes sweetIn {
     0% {
         transform: scale(0.7);
@@ -206,7 +306,6 @@
         opacity: 1;
     }
 }
-
 @keyframes sweetOut {
     0% {
         transform: scale(1);
