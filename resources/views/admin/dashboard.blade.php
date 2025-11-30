@@ -9,10 +9,10 @@
                     <img src="{{ asset('storage/' . auth()->user()->image) }}"
                         alt="{{ auth()->user()->name }}" class="dashboard-user-avatar">
                 @else
-                    <div class="dashboard-user-avatar"
-                        style="background-color: {{ auth()->user()->avatar_colors['background'] }}; color: {{ auth()->user()->avatar_colors['color'] }}; border-color: {{ auth()->user()->avatar_colors['color'] }};">
-                        {{ auth()->user()->initials }}
-                    </div>
+                        <div class="dashboard-user-avatar"
+                            style="background-color: {{ auth()->user()->avatar_colors['background'] ?? '#cccccc' }}; color: {{ auth()->user()->avatar_colors['color'] ?? '#333333' }}; border-color: {{ auth()->user()->avatar_colors['color'] ?? '#333333' }};">
+                            {{ auth()->user()->initials }}
+                        </div>
                 @endif
 
                 <div class="dashboard-user-info">

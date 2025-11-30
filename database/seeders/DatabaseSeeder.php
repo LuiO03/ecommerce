@@ -16,17 +16,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear 5 usuarios de prueba con datos aleatorios
-        User::factory(5)->create();
-        
+        // Crear 5 usuarios de prueba con datos aleatorios y slug
+        User::factory(5)->create()->each(function($user){
+            $user->slug = Str::slug($user->name . '-' . uniqid());
+            $user->save();
+        });
+
         // Crear usuario de prueba específico
         User::factory()->create([
             'name' => 'Test',
             'last_name' => 'User',
             'email' => 'test@example.com',
-            'slug' => Str::slug('Test User'),
+            'slug' => Str::slug('Test User-' . uniqid()),
             'status' => true,
         ]);
+
 
         $this->call([
             RolePermissionSeeder::class,
@@ -35,5 +39,5 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
         ]);
     }
-    
+
 }

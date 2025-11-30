@@ -58,23 +58,18 @@ Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseña
 * ✅ Protección CSRF en todas las operaciones
 ### 📊 **Exportación de Datos**
 * ✅ Excel con estilos profesionales y auto-ajuste de columnas
-* ✅ CSV para importación en otros sistemas
+
 
 
 - **[PHP ^8.2](https://www.php.net/)** - Motor del backend
 - **[Composer](https://getcomposer.org/)** - Gestor de dependencias PHP
 - **[Node.js](https://nodejs.org/)** (v18+) - Build tool frontend
-- **[MySQL](https://www.mysql.com/)** (8.0+) - Base de datos
-- **[Git](https://git-scm.com/)** - Control de versiones
-
 ### Extensiones PHP requeridas:
 ```
 php-mysql, php-mbstring, php-xml, php-curl, php-zip, php-gd
 ```
 
 ---
-
-## 💻 Instalación
 
 ### Método 1: Setup Automático (Recomendado)
 
@@ -137,18 +132,10 @@ User:  user@ecommerce.com / password
 
 ## 🏗️ Arquitectura del Proyecto
 
-### Jerarquía del Catálogo
 ```
 ┌─────────────┐
 │   Family    │  Nivel 1: Familias (ej: "Electrónica", "Ropa")
-└──────┬──────┘
-       │ 1:N
        ▼
-│  Category   │  Nivel 2: Categorías (con soporte para parent_id)
-└──────┬──────┘
-       │ 1:N
-       ▼
-       │ 1:N
        ▼
 ┌─────────────┐
 │   Variant   │  Nivel 4: Variantes (con Features)

@@ -19,6 +19,10 @@ class UserSeeder extends Seeder
             'email'     => '70098517@institutocajas.info',
         ];
 
+        // Antes de crear, agrega un slug si no existe
+        $data['slug'] = Str::slug($data['name'] . ' ' . ($data['last_name'] ?? '') . '-' . uniqid());
+
+
         // Crear o actualizar (evita duplicados)
         $user = User::updateOrCreate(
             ['email' => $data['email']],
@@ -33,6 +37,6 @@ class UserSeeder extends Seeder
         );
 
         // Asignar rol de superadministrador
-        $user->assignRole('superadministrador');
+        $user->assignRole('Superadministrador');
     }
 }

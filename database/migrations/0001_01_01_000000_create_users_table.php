@@ -14,37 +14,13 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('last_name', 100)->nullable();;
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
-
-            
-            // Optional fields
-            $table->string('address', 255)->nullable();
-            $table->string('dni', 20)->unique()->nullable();
-            $table->string('phone', 15)->nullable();
-            $table->string('image', 255)->nullable();
-            $table->boolean('status')->default(true);
-            $table->dateTime('last_login')->nullable();
-            $table->string('slug')->unique()->index();
-
-            // Auditoría
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->unsignedBigInteger('deleted_by')->nullable();
-
-            // Password and security
-            $table->dateTime('last_password_update')->nullable();
-            $table->integer('failed_attempts')->default(0);
-            $table->dateTime('blocked_until')->nullable();
-
-
             $table->timestamps();
-            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
