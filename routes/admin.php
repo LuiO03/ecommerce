@@ -48,6 +48,8 @@ Route::controller(FamilyController::class)->group(function () {
 
 // CATEGORIES
 Route::controller(CategoryController::class)->group(function () {
+    // Mostrar datos completos de categoría por slug
+    Route::get('/categories/{slug}/show', 'show')->name('admin.categories.show');
     Route::get('/categories', 'index')->name('admin.categories.index');
     Route::get('/categories/create', 'create')->name('admin.categories.create');
     Route::post('/categories', 'store')->name('admin.categories.store');

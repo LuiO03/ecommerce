@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\User;
 use App\Models\Family;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,34 @@ use App\Exports\CategoriesCsvExport;
 
 class CategoryController extends Controller
 {
+    /* ======================================================
+     |  SHOW
+     ====================================================== */
+    public function show($slug)
+    {
+        $category = Category::where('slug', $slug)
+            ->with(['family:id,name', 'parent:id,name'])
+            ->firstOrFail();
+
+        $createdBy = $category->created_by ? User::find($category->created_by) : null;
+        $updatedBy = $category->updated_by ? User::find($category->updated_by) : null;
+
+        return response()->json([
+            'id' => $category->id,
+            'slug' => $category->slug,
+            'name' => $category->name,
+            'description' => $category->description,
+            'status' => $category->status,
+            'family' => $category->family ? $category->family->name : 'Sin familia',
+            'parent' => $category->parent ? $category->parent->name : 'Sin padre',
+            'image' => $category->image,
+            'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
+            'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
+            'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
+            'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
+        ]);
+    }
+
     /* ======================================================
      |  INDEX
      ====================================================== */
@@ -202,7 +231,7 @@ class CategoryController extends Controller
     private function getSubcategoriesFlat($categoryId, $level = 0)
     {
         $subcategories = [];
-        
+
         $children = Category::where('parent_id', $categoryId)
             ->with('products')
             ->orderBy('name')

@@ -245,7 +245,7 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info" data-id="{{ $cat->id }}">
+                                    <button class="boton-sm boton-info btn-ver-categoria" data-slug="{{ $cat->slug }}">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
                                     <a href="{{ route('admin.categories.edit', $cat) }}"
@@ -434,4 +434,5 @@
             });
         </script>
     @endpush
+    @include('admin.categories.modals.show-modal-category')
 </x-admin-layout>

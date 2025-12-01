@@ -165,6 +165,7 @@
     flex-direction: column;
     overflow: hidden;
     gap: 1rem;
+    max-height: 90vh;
 }
 
 .modal-show-header {
@@ -191,8 +192,7 @@
     flex-direction: column;
     gap: 10px;
     overflow-y: auto;
-    height: 70vh;
-    max-height: 70vh;
+
 }
 
 .modal-show-body::-webkit-scrollbar {
@@ -221,7 +221,9 @@
 .modal-show-table {
     width: 100%;
     font-size: var(--font-size-sm);
+    height: fit-content;
 }
+
 .modal-show-table th,
 .modal-show-table td {
     padding: 0.5rem 0.75rem;

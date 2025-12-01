@@ -243,7 +243,7 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton boton-info btn-ver-usuario" data-slug="{{ $user->slug }}">
+                                    <button class="boton-sm boton-info btn-ver-usuario" data-slug="{{ $user->slug }}">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
                                     <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning">
