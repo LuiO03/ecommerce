@@ -355,6 +355,7 @@ class UserController extends Controller
             'status' => $user->status,
             'email_verified_at' => $user->email_verified_at,
             'image' => $user->image,
+            'last_login_at' => $user->last_login_at ? $user->last_login_at->format('d/m/Y H:i') : '—',
             'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
             'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
             'created_at' => $user->created_at?->format('d/m/Y H:i') ?? '—',

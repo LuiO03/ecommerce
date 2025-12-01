@@ -111,7 +111,7 @@
                     // Descripción
                     if (!data.description) {
                         $('#fam-description').html(
-                            '<span class="text-muted-null">Sin descripción</span>');
+                            '<span class="text-muted-null">Sin descripción registrada</span>');
                     } else {
                         $('#fam-description').text(data.description);
                     }

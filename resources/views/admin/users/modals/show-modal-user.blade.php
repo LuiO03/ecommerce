@@ -70,6 +70,10 @@
                     <td id="user-email-verif">-</td>
                 </tr>
                 <tr>
+                    <th>Última sesión</th>
+                    <td id="user-last-login-at">-</td>
+                </tr>
+                <tr>
                     <th>Creado por</th>
                     <td id="user-created-by-fecha">-</td>
                 </tr>
@@ -78,9 +82,6 @@
                     <td id="user-updated-by-fecha">-</td>
                 </tr>
             </table>
-
-
-
         </div>
 
         <div class="modal-show-footer">
@@ -157,6 +158,9 @@
                     } else {
                         $('#user-email').text(data.email);
                     }
+
+                    // Última sesión
+                    $('#user-last-login-at').text(data.last_login_at ?? '—');
 
                     // Descripción
                     if (!data.address) {

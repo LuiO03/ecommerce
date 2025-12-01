@@ -909,11 +909,6 @@ input[type="checkbox"]:indeterminate {
         font-size: var(--font-size-p);
     }
 
-    .tabla-filtros {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-
     .tabla-select-wrapper select {
         font-size: var(--font-size-sm);
         padding: 8px;

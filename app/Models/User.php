@@ -29,6 +29,7 @@ class User extends Authenticatable
         'background_style',
         'status',
         'last_login',
+        'last_login_at',
         'last_password_update',
         'failed_attempts',
         'blocked_until',
@@ -57,6 +58,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'last_login' => 'datetime',
+            'last_login_at' => 'datetime',
             'last_password_update' => 'datetime',
             'blocked_until' => 'datetime',
             'status' => 'boolean',
