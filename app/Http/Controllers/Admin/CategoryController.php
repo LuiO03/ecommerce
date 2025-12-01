@@ -21,28 +21,58 @@ class CategoryController extends Controller
      |  SHOW
      ====================================================== */
     public function show($slug)
-    {
-        $category = Category::where('slug', $slug)
-            ->with(['family:id,name', 'parent:id,name'])
-            ->firstOrFail();
+        {
+            $category = Category::where('slug', $slug)
+                ->with(['family:id,name', 'parent.family:id,name', 'parent:id,name,slug,status,family_id'])
+                ->firstOrFail();
 
-        $createdBy = $category->created_by ? User::find($category->created_by) : null;
-        $updatedBy = $category->updated_by ? User::find($category->updated_by) : null;
+            $createdBy = $category->created_by ? User::find($category->created_by) : null;
+            $updatedBy = $category->updated_by ? User::find($category->updated_by) : null;
 
-        return response()->json([
-            'id' => $category->id,
-            'slug' => $category->slug,
-            'name' => $category->name,
-            'description' => $category->description,
-            'status' => $category->status,
-            'family' => $category->family ? $category->family->name : 'Sin familia',
-            'parent' => $category->parent ? $category->parent->name : 'Sin padre',
-            'image' => $category->image,
-            'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
-            'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
-            'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
-            'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
-        ]);
+            // Herencia de familia
+            $familyName = $category->family ? $category->family->name : ($category->parent && $category->parent->family ? $category->parent->family->name : 'Sin familia');
+
+            // Subcategorías
+            $subcategories = Category::where('parent_id', $category->id)
+                ->select(['id', 'name', 'slug', 'status', 'family_id'])
+                ->with('family:id,name')
+                ->get()
+                ->map(function($subcat) use ($category) {
+                    return [
+                        'id' => $subcat->id,
+                        'name' => $subcat->name,
+                        'slug' => $subcat->slug,
+                        'status' => $subcat->status,
+                        'family' => $subcat->family ? $subcat->family->name : ($category->family ? $category->family->name : 'Sin familia'),
+                    ];
+                });
+
+            // Padre con enlace y estado
+            $parent = null;
+            if ($category->parent) {
+                $parent = [
+                    'name' => $category->parent->name,
+                    'slug' => $category->parent->slug,
+                    'status' => $category->parent->status,
+                    'family' => $category->parent->family ? $category->parent->family->name : 'Sin familia',
+                ];
+            }
+
+            return response()->json([
+                'id' => $category->id,
+                'slug' => $category->slug,
+                'name' => $category->name,
+                'description' => $category->description,
+                'status' => $category->status,
+                'family' => $familyName,
+                'parent' => $parent,
+                'image' => $category->image,
+                'subcategories' => $subcategories,
+                'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
+                'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
+                'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
+                'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
+            ]);
     }
 
     /* ======================================================

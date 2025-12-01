@@ -54,6 +54,10 @@
                     <td id="category-parent">-</td>
                 </tr>
                 <tr>
+                    <th>Subcategorías</th>
+                    <td id="category-subcategories">-</td>
+                </tr>
+                <tr>
                     <th>Estado</th>
                     <td id="category-status">-</td>
                 </tr>
@@ -111,76 +115,117 @@
 
         }
 
-        $(document).on('click', '.btn-ver-categoria', function() {
+        function renderCategoryModal(data) {
+            $('#category-id').text(data.id ?? '-');
+            $('#category-slug').html(`<span class='badge badge-primary slug-mono'>${data.slug}</span>`);
+            $('#category-name-title').text(data.name);
+            $('#category-name').text(data.name);
+            $('#category-description').text(data.description ?? 'Sin descripción');
+            $('#category-family').text(data.family ?? 'Sin familia');
+
+
+            // Mostrar/ocultar fila de padre
+            const parentRow = $('th:contains("Padre")').closest('tr');
+            if (data.parent) {
+                $('#category-parent').html(`
+                    <a href="#" class="link-categoria" data-slug="${data.parent.slug}">
+                        <span class="inline-block align-middle" style="width:10px;height:10px;border-radius:50%;background:${data.parent.status ? '#22c55e' : '#a3a3a3'};margin-right:6px;"></span>
+                        <span>${data.parent.name}</span>
+                    </a>
+                    <span class="badge badge-info ml-2">${data.parent.family}</span>
+                `);
+                parentRow.show();
+            } else {
+                parentRow.hide();
+            }
+
+            // Mostrar/ocultar fila de subcategorías
+            const subcatRow = $('th:contains("Subcategorías")').closest('tr');
+            if (data.subcategories && data.subcategories.length > 0) {
+                let html = '<ul class="subcat-list" style="margin:0;padding:0;list-style:none;">';
+                data.subcategories.forEach(function(subcat) {
+                    html += `<li style="margin-bottom:6px;">
+                        <a href="#" class="link-categoria" data-slug="${subcat.slug}">
+                            <span class="inline-block align-middle" style="width:10px;height:10px;border-radius:50%;background:${subcat.status ? 'var(--color-success)' : 'var(--color-danger)'};margin-right:6px;"></span>
+                            <span>${subcat.name}</span>
+                        </a>
+                        <span class="badge badge-info ml-1">${subcat.family}</span>
+                    </li>`;
+                });
+                html += '</ul>';
+                $('#category-subcategories').html(html);
+                subcatRow.show();
+            } else {
+                subcatRow.hide();
+            }
+
+            if (data.status) {
+                $('#category-status').html('<span class="badge boton-success"><i class="ri-eye-fill"></i> Activa</span>');
+            } else {
+                $('#category-status').html('<span class="badge boton-danger"><i class="ri-eye-off-fill"></i> Inactiva</span>');
+            }
+            if (data.image) {
+                const img = new Image();
+                img.src = `/storage/${data.image}`;
+                img.className = 'modal-img';
+                img.alt = 'Imagen de la categoría';
+                img.onerror = function() {
+                    $('#category-image').html(`<div class="modal-img-placeholder"><i class="ri-file-close-fill"></i> Imagen no disponible</div>`);
+                };
+                img.onload = function() {
+                    $('#category-image').html(img);
+                };
+            } else {
+                $('#category-image').html(`<div class="modal-img-placeholder"><i class="ri-image-add-fill"></i> Sin imagen</div>`);
+            }
+            // Creado por
+            $('#category-created-by-fecha').html(`
+                <div class="show-cell-content">
+                    <span class="font-bold">${data.created_by_name}</span>
+                    <span class="show-date"><i class="ri-time-fill"></i> ${data.created_at}</span>
+                </div>
+            `);
+            // Actualizado por
+            $('#category-updated-by-fecha').html(`
+                <div class="show-cell-content">
+                    <span class="font-bold">${data.updated_by_name}</span>
+                    <span class="show-date"><i class="ri-time-fill"></i> ${data.updated_at}</span>
+                </div>
+            `);
+            // Botón editar
+            $('#modalCategoryEditBtn').attr('href', `/admin/categories/${data.slug}/edit`);
+            // Botón eliminar
+            $('#modalCategoryDeleteForm').attr('action', `/admin/categories/${data.slug}`);
+        }
+
+        function loadCategoryModal(slug) {
             setLoadingCategoryFields();
             openCategoryModal();
-            const slug = $(this).data('slug');
             $.ajax({
                 url: `/admin/categories/${slug}/show`,
                 method: 'GET',
                 success: function(data) {
-                    $('#category-id').text(data.id ?? '-');
-                    $('#category-slug').html(
-                        `<span class='badge badge-primary slug-mono'>${data.slug}</span>`);
-                    $('#category-name-title').text(data.name);
-                    $('#category-name').text(data.name);
-                    $('#category-description').text(data.description ?? 'Sin descripción');
-                    $('#category-family').text(data.family ?? 'Sin familia');
-                    $('#category-parent').text(data.parent ?? 'Sin padre');
-                    if (data.status) {
-                        $('#category-status').html(
-                            '<span class="badge boton-success"><i class="ri-eye-fill"></i> Activa</span>'
-                            );
-                    } else {
-                        $('#category-status').html(
-                            '<span class="badge boton-danger"><i class="ri-eye-off-fill"></i> Inactiva</span>'
-                            );
-                    }
-                    if (data.image) {
-                        const img = new Image();
-                        img.src = `/storage/${data.image}`;
-                        img.className = 'modal-img';
-                        img.alt = 'Imagen de la categoría';
-                        img.onerror = function() {
-                            $('#category-image').html(
-                                `<div class="modal-img-placeholder"><i class="ri-file-close-fill"></i> Imagen no disponible</div>`
-                                );
-                        };
-                        img.onload = function() {
-                            $('#category-image').html(img);
-                        };
-                    } else {
-                        $('#category-image').html(
-                            `<div class="modal-img-placeholder"><i class="ri-image-add-fill"></i> Sin imagen</div>`
-                            );
-                    }
-                    // Creado por
-                    $('#category-created-by-fecha').html(`
-                        <div class="show-cell-content">
-                            <span class="font-bold">${data.created_by_name}</span>
-                            <span class="show-date"><i class="ri-time-fill"></i> ${data.created_at}</span>
-                        </div>
-                    `);
-
-                    // Actualizado por
-                    $('#category-updated-by-fecha').html(`
-                        <div class="show-cell-content">
-                            <span class="font-bold">${data.updated_by_name}</span>
-                            <span class="show-date"><i class="ri-time-fill"></i> ${data.updated_at}</span>
-                        </div>
-                    `);
-                    // Botón editar
-                    $('#modalCategoryEditBtn').attr('href', `/admin/categories/${data.slug}/edit`);
-                    // Botón eliminar
-                    $('#modalCategoryDeleteForm').attr('action', `/admin/categories/${data.slug}`);
+                    renderCategoryModal(data);
                 },
                 error: function() {
                     $('#category-name-title').text('Error');
                 }
             });
+        }
+
+        $(document).on('click', '.btn-ver-categoria', function() {
+            const slug = $(this).data('slug');
+            loadCategoryModal(slug);
+        });
+
+        $(document).on('click', '.link-categoria', function(e) {
+            e.preventDefault();
+            const slug = $(this).data('slug');
+            loadCategoryModal(slug);
         });
 
         $('#closeCategoryModal').on('click', closeCategoryModal);
+        $('#cancelUserButton').on('click', closeCategoryModal);
 
         function escCategoryListener(e) {
             if (e.key === "Escape") closeCategoryModal();

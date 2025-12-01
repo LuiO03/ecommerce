@@ -222,6 +222,11 @@
     width: 100%;
     font-size: var(--font-size-sm);
     height: fit-content;
+    transition: box-shadow 0.3s ease;
+}
+
+.modal-show-table:hover {
+    box-shadow: var(--shadow-material);
 }
 
 .modal-show-table th,
@@ -275,8 +280,9 @@
     object-fit: cover;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.07);
     display: block;
-    border: 5px solid var(--color-border);
-    border-radius: var(--radius-element);
+    border: 5px solid #E9E9E9;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-material);
 }
 .modal-img-placeholder {
     width: 100%;
@@ -289,7 +295,7 @@
     justify-content: center;
     font-size: var(--font-size-h3);
     font-weight: 400;
-    border: 5px solid var(--color-border);
+    border: 5px dashed var(--color-border);
     border-radius: var(--radius-element);
     gap: 10px;
 }
