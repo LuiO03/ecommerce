@@ -118,7 +118,7 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    
+
 }
 
 .selection-info {
@@ -163,6 +163,7 @@
     font-size: var(--font-size-h4);
     cursor: pointer;
     transition: transform 0.2s ease;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -230,7 +231,8 @@
 /* Contenedor para los filtros y selector de filas */
 .tabla-filtros {
     flex: 1 1 380px;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
     max-width: 100%;
 }
@@ -327,7 +329,6 @@
    📄 SELECT DE FILAS POR PÁGINA Y FILTROS
 ---------------------------- */
 .tabla-select-wrapper {
-    flex: 1 1 300px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -829,18 +830,18 @@ input[type="checkbox"]:indeterminate {
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .tabla-filtros {
         justify-self: stretch;
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 10px;
     }
-    
+
     .selection-info {
         justify-content: end;
         gap: 8px;
     }
-    
+
     .selection-actions {
         justify-content: start;
         flex-wrap: wrap;
@@ -852,16 +853,16 @@ input[type="checkbox"]:indeterminate {
     .tabla-controles {
         gap: 12px;
     }
-    
+
     .tabla-buscador {
         min-width: 200px;
     }
-    
+
     .tabla-filtros {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
     }
-    
+
     .selection-bar {
         padding: 7px 10px;
         display: none !important;
@@ -874,7 +875,7 @@ input[type="checkbox"]:indeterminate {
     .selection-info i {
         font-size: var(--font-size-h3);
     }
-    
+
     .selection-close {
         width: 28px;
         height: 28px;
@@ -887,37 +888,37 @@ input[type="checkbox"]:indeterminate {
     .tabla-controles {
         gap: 10px;
     }
-    
+
     .tabla-buscador {
         min-width: 160px;
     }
-    
+
     .tabla-buscador input {
         font-size: var(--font-size-sm, 14px);
         padding: 8px 10px 8px 35px;
     }
-    
+
     .tabla-buscador i {
         width: 35px;
         font-size: var(--font-size-p);
     }
-    
+
     .buscador-clear {
         width: 28px;
         height: 28px;
         font-size: var(--font-size-p);
     }
-    
+
     .tabla-filtros {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-    
+
     .tabla-select-wrapper select {
         font-size: var(--font-size-sm);
         padding: 8px;
     }
-    
+
     .tabla-select-wrapper i,
     .selector i {
         width: 30px;
@@ -1130,6 +1131,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 }
 
 .user-avatar-placeholder {
+    min-width: 32px;
     width: 32px;
     height: 32px;
     border-radius: 50%;

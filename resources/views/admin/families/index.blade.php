@@ -80,13 +80,13 @@
                         <i class="ri-filter-3-line selector-icon"></i>
                     </div>
                 </div>
+                <!-- Botón para limpiar filtros -->
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
             </div>
 
-            <!-- Botón para limpiar filtros -->
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->

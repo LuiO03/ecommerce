@@ -116,12 +116,12 @@
                         <i class="ri-node-tree selector-icon"></i>
                     </div>
                 </div>
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
             </div>
 
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
         </div>
 
         <!-- Barra contextual -->
@@ -295,11 +295,11 @@
                         pdf: '/admin/categories/export/pdf'
                     },
                     csrfToken: '{{ csrf_token() }}',
-                    
+
                     // Configuración de DataTable
                     pageLength: 10,
                     lengthMenu: [5, 10, 25, 50],
-                    
+
                     // Características (todas activadas por defecto)
                     features: {
                         selection: true,
@@ -309,7 +309,7 @@
                         responsive: true,
                         customPagination: true
                     },
-                    
+
                     // Callbacks personalizados (opcional)
                     callbacks: {
                         onDraw: () => {
@@ -330,18 +330,18 @@
                 // ========================================
                 // 🔍 FILTROS PERSONALIZADOS
                 // ========================================
-                
+
                 // Variables globales para los filtros
                 let currentFamilyFilter = '';
                 let currentLevelFilter = '';
-                
+
                 // Función de filtrado personalizado para DataTables
                 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                     // Solo aplicar a esta tabla
                     if (settings.nTable.id !== 'tabla') return true;
-                    
+
                     const row = tableManager.table.row(dataIndex).node();
-                    
+
                     // Filtro por Familia
                     if (currentFamilyFilter !== '') {
                         const rowFamilyId = $(row).find('.column-family-td').attr('data-family-id');
@@ -349,11 +349,11 @@
                             return false;
                         }
                     }
-                    
+
                     // Filtro por Nivel
                     if (currentLevelFilter !== '') {
                         const searchValue = $(row).find('.column-parent-td').attr('data-search');
-                        
+
                         if (currentLevelFilter === 'root' && searchValue !== 'Sin padre') {
                             return false;
                         }
@@ -361,18 +361,18 @@
                             return false;
                         }
                     }
-                    
+
                     return true;
                 });
-                
+
                 // Filtro por Familia
                 $('#familyFilter').on('change', function() {
                     currentFamilyFilter = this.value;
                     tableManager.table.draw();
-                    
+
                     // Actualizar estado de filtros activos
                     tableManager.checkFiltersActive();
-                    
+
                     console.log(`🔍 Filtro Familia: ${currentFamilyFilter || 'Todas'}`);
                 });
 
@@ -380,10 +380,10 @@
                 $('#levelFilter').on('change', function() {
                     currentLevelFilter = this.value;
                     tableManager.table.draw();
-                    
+
                     // Actualizar estado de filtros activos
                     tableManager.checkFiltersActive();
-                    
+
                     console.log(`🔍 Filtro Nivel: ${currentLevelFilter || 'Todos'}`);
                 });
 
@@ -395,7 +395,7 @@
                     currentLevelFilter = '';
                     $('#familyFilter').val('');
                     $('#levelFilter').val('');
-                    
+
                     console.log('🧹 Filtros personalizados limpiados');
                 });
 
@@ -422,7 +422,7 @@
                         }
                     }, 100);
                 @endif
-                
+
                 // ========================================
                 // 🛠️ API DISPONIBLES (Ejemplos de uso)
                 // ========================================

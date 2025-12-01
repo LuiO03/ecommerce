@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersCsvExport;
+use App\Exports\UsersExcelExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,8 +12,6 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
-use App\Exports\UsersExcelExport;
-use App\Exports\UsersCsvExport;
 
 class UserController extends Controller
 {
@@ -33,7 +33,7 @@ class UserController extends Controller
     public function exportExcel(Request $request)
     {
         $ids = $request->input('ids');
-        $filename = 'usuarios_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+        $filename = 'usuarios_'.now()->format('Y-m-d_H-i-s').'.xlsx';
 
         return Excel::download(new UsersExcelExport($ids), $filename);
     }
@@ -55,7 +55,7 @@ class UserController extends Controller
             return back()->with('error', 'No hay usuarios disponibles.');
         }
 
-        $filename = 'usuarios_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+        $filename = 'usuarios_'.now()->format('Y-m-d_H-i-s').'.pdf';
 
         return Pdf::view('admin.export.users-pdf', compact('users'))
             ->format('a4')
@@ -69,7 +69,7 @@ class UserController extends Controller
     public function exportCsv(Request $request)
     {
         $ids = $request->has('export_all') ? null : $request->input('ids');
-        $filename = 'usuarios_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        $filename = 'usuarios_'.now()->format('Y-m-d_H-i-s').'.csv';
 
         return Excel::download(new UsersCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
@@ -80,6 +80,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = \Spatie\Permission\Models\Role::all();
+
         return view('admin.users.create', compact('roles'));
     }
 
@@ -89,17 +90,17 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'      => 'required|string|max:255|min:3',
-            'email'     => 'required|email|unique:users,email',
-            'password'  => 'required|string|min:6',
-            'status'    => 'required|boolean',
-            'role'      => 'required|exists:roles,name',
+            'name' => 'required|string|max:255|min:3',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'status' => 'required|boolean',
+            'role' => 'required|exists:roles,name',
 
             'last_name' => 'nullable|string|max:255',
-            'dni'       => 'nullable|string|max:20|unique:users,dni',
-            'phone'     => 'nullable|string|max:15',
-            'address'   => 'nullable|string|max:255',
-            'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'dni' => 'nullable|string|max:20|unique:users,dni',
+            'phone' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         // Capitalizar nombre y apellido
@@ -113,26 +114,26 @@ class UserController extends Controller
         $imagePath = null;
         if ($request->hasFile('image')) {
             $ext = $request->file('image')->getClientOriginalExtension();
-            $filename = $slug . '-' . time() . '.' . $ext;
-            $imagePath = 'users/' . $filename;
+            $filename = $slug.'-'.time().'.'.$ext;
+            $imagePath = 'users/'.$filename;
 
             $request->file('image')->storeAs('users', $filename, 'public');
         }
 
         $user = User::create([
-            'name'        => $name,
-            'last_name'   => $lastName,
-            'email'       => $request->email,
-            'password'    => $request->password,
-            'slug'        => $slug,
-            'status'      => (bool)$request->status,
-            'address'     => $request->address,
-            'dni'         => $request->dni,
-            'phone'       => $request->phone,
-            'image'       => $imagePath,
+            'name' => $name,
+            'last_name' => $lastName,
+            'email' => $request->email,
+            'password' => $request->password,
+            'slug' => $slug,
+            'status' => (bool) $request->status,
+            'address' => $request->address,
+            'dni' => $request->dni,
+            'phone' => $request->phone,
+            'image' => $imagePath,
 
-            'created_by'  => Auth::id(),
-            'updated_by'  => Auth::id(),
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id(),
         ]);
 
         // Asignar rol
@@ -155,6 +156,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = \Spatie\Permission\Models\Role::all();
+
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
@@ -164,17 +166,17 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'name'      => 'required|string|max:255|min:3',
-            'email'     => 'required|email|unique:users,email,' . $user->id,
-            'status'    => 'required|boolean',
-            'role'      => 'required|exists:roles,name',
+            'name' => 'required|string|max:255|min:3',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'status' => 'required|boolean',
+            'role' => 'required|exists:roles,name',
 
             'last_name' => 'nullable|string|max:255',
-            'dni'       => 'nullable|string|max:20|unique:users,dni,' . $user->id,
-            'phone'     => 'nullable|string|max:15',
-            'address'   => 'nullable|string|max:255',
+            'dni' => 'nullable|string|max:20|unique:users,dni,'.$user->id,
+            'phone' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
 
-            'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         // Capitalizar nombre, apellido y dirección
@@ -199,22 +201,22 @@ class UserController extends Controller
                 Storage::disk('public')->delete($user->image);
             }
             $ext = $request->file('image')->getClientOriginalExtension();
-            $filename = $slug . '-' . time() . '.' . $ext;
-            $imagePath = 'users/' . $filename;
+            $filename = $slug.'-'.time().'.'.$ext;
+            $imagePath = 'users/'.$filename;
             $request->file('image')->storeAs('users', $filename, 'public');
         }
 
         $user->update([
-            'name'        => $name,
-            'last_name'   => $lastName,
-            'email'       => $request->email,
-            'slug'        => $slug,
-            'status'      => (bool)$request->status,
-            'address'     => $address,
-            'dni'         => $request->dni,
-            'phone'       => $request->phone,
-            'image'       => $imagePath,
-            'updated_by'  => Auth::id(),
+            'name' => $name,
+            'last_name' => $lastName,
+            'email' => $request->email,
+            'slug' => $slug,
+            'status' => (bool) $request->status,
+            'address' => $address,
+            'dni' => $request->dni,
+            'phone' => $request->phone,
+            'image' => $imagePath,
+            'updated_by' => Auth::id(),
         ]);
 
         // Sincronizar rol
@@ -273,13 +275,14 @@ class UserController extends Controller
 
         $userIds = $request->users;
 
-        if (!$userIds) {
+        if (! $userIds) {
             Session::flash('info', [
                 'type' => 'danger',
                 'header' => 'Error',
                 'title' => 'Sin selección',
                 'message' => 'No seleccionaste usuarios.',
             ]);
+
             return redirect()->route('admin.users.index');
         }
 
@@ -329,6 +332,33 @@ class UserController extends Controller
             'success' => true,
             'message' => 'Estado actualizado correctamente',
             'status' => $user->status,
+        ]);
+    }
+
+    public function show($slug)
+    {
+        $user = User::where('slug', $slug)->firstOrFail();
+
+        $createdBy = $user->created_by ? User::find($user->created_by) : null;
+        $updatedBy = $user->updated_by ? User::find($user->updated_by) : null;
+
+        return response()->json([
+            'id' => '#'.$user->id,
+            'slug' => $user->slug,
+            'name' => $user->name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'role' => $user->getRoleNames()->first(),
+            'dni' => $user->dni,
+            'phone' => $user->phone,
+            'address' => $user->address,
+            'status' => $user->status,
+            'email_verified_at' => $user->email_verified_at,
+            'image' => $user->image,
+            'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
+            'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
+            'created_at' => $user->created_at?->format('d/m/Y H:i') ?? '—',
+            'updated_at' => $user->updated_at?->format('d/m/Y H:i') ?? '—',
         ]);
     }
 }

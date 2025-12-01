@@ -108,13 +108,13 @@
                         <i class="ri-mail-check-line selector-icon"></i>
                     </div>
                 </div>
+                <!-- Botón para limpiar filtros -->
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
             </div>
 
-            <!-- Botón para limpiar filtros -->
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->
@@ -125,30 +125,38 @@
                         <i class="ri-file-excel-2-fill"></i>
                     </span>
                     <span class="boton-selection-text">Excel</span>
+                    l
+                    <span class="selection-badge" id="excelBadge">0</span>
                 </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-info">
+                <button id="exportSelectedCsv" class="boton-selection boton-orange">
                     <span class="boton-selection-icon">
                         <i class="ri-file-text-fill"></i>
                     </span>
                     <span class="boton-selection-text">CSV</span>
+                    l
+                    <span class="selection-badge" id="csvBadge">0</span>
                 </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-accent">
+                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
                     <span class="boton-selection-icon">
                         <i class="ri-file-pdf-2-fill"></i>
                     </span>
                     <span class="boton-selection-text">PDF</span>
-                </button>
-                <button id="deleteSelectedBtn" class="boton-selection boton-danger">
-                    <span class="boton-selection-icon">
-                        <i class="ri-delete-bin-6-line"></i>
-                    </span>
-                    <span class="boton-selection-text">Eliminar</span>
+                    l
+                    <span class="selection-badge" id="pdfBadge">0</span>
                 </button>
             </div>
+            <button id="deleteSelected" class="boton-selection boton-danger">
+                <span class="boton-selection-icon">
+                    <i class="ri-delete-bin-line"></i>
+                </span>
+                <span class="boton-selection-text">Eliminar</span>
+                l
+                <span class="selection-badge" id="deleteBadge">0</span>
+            </button>
             <div class="selection-info">
-                <span id="selectionCount"></span>
-                <button type="button" id="clearSelectionBtn" title="Deseleccionar todo">
-                    <i class="ri-close-line"></i>
+                <span id="selectionCount">0 seleccionados</span>
+                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
+                    <i class="ri-close-large-fill"></i>
                 </button>
             </div>
         </div>
@@ -235,7 +243,7 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info" data-id="{{ $user->id }}">
+                                    <button class="boton boton-info btn-ver-usuario" data-slug="{{ $user->slug }}">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
                                     <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning">
@@ -277,11 +285,11 @@
                         pdf: '/admin/users/export/pdf'
                     },
                     csrfToken: '{{ csrf_token() }}',
-                    
+
                     // Configuración de DataTable
                     pageLength: 10,
                     lengthMenu: [5, 10, 25, 50],
-                    
+
                     // Características (todas activadas por defecto)
                     features: {
                         selection: true,
@@ -291,7 +299,7 @@
                         responsive: true,
                         customPagination: true
                     },
-                    
+
                     // Callbacks personalizados (opcional)
                     callbacks: {
                         onDraw: () => {
@@ -312,18 +320,18 @@
                 // ========================================
                 // 🔍 FILTROS PERSONALIZADOS
                 // ========================================
-                
+
                 // Variables globales para los filtros
                 let currentRoleFilter = '';
                 let currentVerifiedFilter = '';
-                
+
                 // Función de filtrado personalizado para DataTables
                 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                     // Solo aplicar a esta tabla
                     if (settings.nTable.id !== 'tabla') return true;
-                    
+
                     const row = tableManager.table.row(dataIndex).node();
-                    
+
                     // Filtro por Rol
                     if (currentRoleFilter !== '') {
                         const rowRole = $(row).find('.column-role-td').attr('data-role');
@@ -331,7 +339,7 @@
                             return false;
                         }
                     }
-                    
+
                     // Filtro por Verificación de Email
                     if (currentVerifiedFilter !== '') {
                         const rowVerified = $(row).find('.column-status-td').attr('data-verified');
@@ -339,18 +347,18 @@
                             return false;
                         }
                     }
-                    
+
                     return true;
                 });
-                
+
                 // Filtro por Rol
                 $('#roleFilter').on('change', function() {
                     currentRoleFilter = this.value;
                     tableManager.table.draw();
-                    
+
                     // Actualizar estado de filtros activos
                     tableManager.checkFiltersActive();
-                    
+
                     console.log(`🔍 Filtro Rol: ${currentRoleFilter || 'Todos'}`);
                 });
 
@@ -358,10 +366,10 @@
                 $('#verifiedFilter').on('change', function() {
                     currentVerifiedFilter = this.value;
                     tableManager.table.draw();
-                    
+
                     // Actualizar estado de filtros activos
                     tableManager.checkFiltersActive();
-                    
+
                     console.log(`🔍 Filtro Verificación: ${currentVerifiedFilter === '1' ? 'Verificados' : currentVerifiedFilter === '0' ? 'Sin verificar' : 'Todos'}`);
                 });
 
@@ -373,7 +381,7 @@
                     currentVerifiedFilter = '';
                     $('#roleFilter').val('');
                     $('#verifiedFilter').val('');
-                    
+
                     console.log('🧹 Filtros personalizados limpiados');
                 });
 
@@ -403,4 +411,5 @@
             });
         </script>
     @endpush
+    @include('admin.users.modals.show-modal-user')
 </x-admin-layout>

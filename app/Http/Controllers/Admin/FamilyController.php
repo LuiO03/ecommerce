@@ -360,16 +360,19 @@ class FamilyController extends Controller
     /**
      * Devuelve los datos completos de una familia por slug (JSON)
      */
-    public function showFull($slug)
+    public function show($slug)
     {
         $family = Family::with([
             'creator:id,name,last_name',
-            'updater:id,name,last_name',
-            'deleter:id,name,last_name'
+            'updater:id,name,last_name'
         ])
-            ->select('id', 'slug', 'name', 'description', 'status', 'image', 'created_by', 'updated_by', 'created_at', 'updated_at')
-            ->where('slug', $slug)
-            ->firstOrFail();
+        ->select('id', 'slug', 'name', 'description', 'status', 'image', 'created_by', 'updated_by', 'created_at', 'updated_at')
+        ->where('slug', $slug)
+        ->firstOrFail();
+
+        // Definir correctamente
+        $createdBy = $family->creator;
+        $updatedBy = $family->updater;
 
         return response()->json([
             'id' => '#' . $family->id,
@@ -380,12 +383,25 @@ class FamilyController extends Controller
             'image' => $family->image,
             'created_by' => $family->created_by,
             'updated_by' => $family->updated_by,
-            'created_by_name' => $family->creator ? $family->creator->name : null,
-            'created_by_last_name' => $family->creator ? $family->creator->last_name : null,
-            'updated_by_name' => $family->updater ? $family->updater->name : null,
-            'updated_by_last_name' => $family->updater ? $family->updater->last_name : null,
-            'created_at' => $family->created_at ? $family->created_at->format('d/m/Y H:i') : null,
-            'updated_at' => $family->updated_at ? $family->updated_at->format('d/m/Y H:i') : null,
+
+            // Nombres
+            'created_by_name' => $createdBy
+                ? trim($createdBy->name . ' ' . $createdBy->last_name)
+                : 'Sistema',
+
+            'updated_by_name' => $updatedBy
+                ? trim($updatedBy->name . ' ' . $updatedBy->last_name)
+                : '—',
+
+            // Fechas
+            'created_at' => $family->created_at
+                ? $family->created_at->format('d/m/Y H:i')
+                : '-',
+
+            'updated_at' => $family->updated_at
+                ? $family->updated_at->format('d/m/Y H:i')
+                : '-',
         ]);
     }
+
 }

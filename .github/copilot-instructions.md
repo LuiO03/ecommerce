@@ -1,274 +1,69 @@
-# GECKОМERCE - Instrucciones para Agentes de IA
+# Guía para Agentes IA en GECKОМERCE
 
-## Arquitectura del Proyecto
+## Arquitectura y Componentes Clave
 
-**Stack:** Laravel 12 + Livewire 3 + Jetstream + TailwindCSS 3 + Flowbite + DataTables  
-**PHP:** ^8.2 | **Base de Datos:** MySQL
+- **Stack:** Laravel 12, Livewire 3, Jetstream, TailwindCSS 3, Flowbite, DataTables
+- **Estructura de Catálogo:**
+    - Familias → Categorías (anidables) → Productos → Variantes
+    - Auditoría automática en modelos principales (`created_by`, `updated_by`, `deleted_by`)
+- **Rutas Admin:**
+    - Definidas en `routes/admin.php` con prefijo `/admin` y middleware `['web', 'auth', 'verified']`
+    - No usar `->name('admin.')` en prefijos
 
-### Jerarquía del Catálogo
-```
-Family (Familias) 1:N → Category (Categorías) 1:N → Product (Productos) 1:N → Variant (Variantes)
-```
-- **Families**: Nivel superior (ej: "Electrónica", "Ropa")
-- **Categories**: Subcategorías con soporte para anidación (`parent_id`)
-- **Products**: Productos con SKU, precio, descuento, slug único
-- **Variants**: Variantes de productos con características (`features`)
+## Convenciones y Patrones
 
-### Auditoría Automática en Modelos
-Todos los modelos principales (`Family`, `Category`, etc.) incluyen:
-```php
-'created_by', 'updated_by', 'deleted_by' // Foreign keys a users table
-```
-**No implementes manualmente** - usa el patrón existente en `app/Models/Family.php`.
-
-## Rutas y Middleware
-
-### Admin Routes (`routes/admin.php`)
-**Prefijo:** `/admin` | **Middleware:** `['web', 'auth', 'verified']` (configurado en `bootstrap/app.php`)
-```php
-```
-
-**NO uses** `->name('admin.')` prefix - está comentado intencionalmente en `bootstrap/app.php`.
-
-## Convenciones de Desarrollo
-
-### 1. Slugs Únicos
-**Siempre usa** `Family::generateUniqueSlug()` como referencia:
-```php
-public static function generateUniqueSlug($name, $id = null) {
-    $slug = Str::slug($name);
-    while (self::where('slug', $slug)->when($id, fn($q) => $q->where('id', '!=', $id))->exists()) {
-        $slug = $originalSlug . '-' . $count++;
-    }
-    return $slug;
-}
-```
-
-### 2. Route Model Binding con Slug
-```php
-public function getRouteKeyName() {
-    return 'slug'; // Usa slug en lugar de id en URLs
-}
-
-### 3. Query Scopes Reutilizables
-Define scopes en modelos para consultas comunes:
-```php
-public function scopeForTable($query) {
-    return $query->select('id', 'name', 'description', 'status', 'created_at')->orderByDesc('id');
-}
+- **Slugs únicos:** Usa `Model::generateUniqueSlug()` (ver `Family.php`)
+- **Route Model Binding:** URLs usan `slug` en vez de `id`
+- **Scopes reutilizables:** Ejemplo: `scopeForTable()` para DataTables
+- **Auditoría:** No implementar manualmente, seguir patrón de `Family.php`
 
 ## Componentes Frontend
 
-### Admin Layout
-**Ubicación:** `app/View/Components/AdminLayout.php` → `resources/views/layouts/admin.blade.php`
-```blade
-<x-admin-layout :showMobileFab="true" :useSlotContainer="false">
-    <x-slot name="title">
-        <div class="page-icon card-success"><i class="ri-apps-line"></i></div>
-    </x-slot>
-    <x-slot name="action">
-        <a href="#" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Acción</span>
-        </a>
-    <!-- Contenido -->
-</x-admin-layout>
-```
+- **Layout Admin:**
+    - Blade: `<x-admin-layout>` en `resources/views/layouts/admin.blade.php`
+    - Iconos: Remix Icon (`ri-*`), no usar otros
+- **Alertas:**
+    - Componente `<x-alert>` (ver `docs/alert-component.md`)
+    - Parámetros: `type`, `title`, `items`, `dismissible`, `icon`, `data-persist-key`, `data-auto-dismiss`
 
-**Sistema:** Remix Icon (clases `ri-*-line` y `ri-*-fill`)  
-**NO uses** Font Awesome, Material Icons u otros.
+## JavaScript y DataTables
 
-### Componente Alert
-**Ver:** `docs/alert-component.md` | **Archivos:** `app/View/Components/Alert.php`, `resources/views/components/alert.blade.php`
-
-Componente reutilizable para banners contextuales (info, warning, danger, success):
-```blade
-{{-- Con lista de items --}}
-<x-alert 
-    type="info" 
-    title="Guía rápida:" 
-    :items="[
-        'Item 1 con <strong>HTML</strong>',
-        'Item 2 con <i class=\'ri-check-line\'></i> icono'
-    ]"
-/>
-<x-alert type="warning" title="Advertencia:">
-    Contenido personalizado del banner.
-</x-alert>
-
-<x-alert type="success" :dismissible="true" title="¡Éxito!">
-    Mensaje que puede cerrarse.
-</x-alert>
-```
-
-**Parámetros:**
-- `type`: `'info'` (default), `'warning'`, `'danger'`, `'success'`
-- `title`: Título del banner
-- `items`: Array de strings (soporta HTML)
-- `dismissible`: `true` para mostrar botón X
-- `icon`: Ícono personalizado (opcional)
-- `data-persist-key`: Clave localStorage (no vuelve a aparecer)
-- `data-auto-dismiss`: Tiempo en ms para auto-cierre
-
-## JavaScript Patterns
-### Eliminación Múltiple Global
-**Ver:** `docs/multiple-delete-global.md` | **Archivo:** `resources/js/modals/modal-confirm.js`
-
-```javascript
-// Llamada estándar desde cualquier vista
-handleMultipleDelete({
-    selectedIds: selectedIds,             // Set o Array
-    getNameCallback: getEntityNameById,   // Función para obtener nombre por ID
-    entityName: 'familia',                // Para mensajes en español
-    deleteRoute: '/admin/families',       // Ruta destroy-multiple
-    csrfToken: '{{ csrf_token() }}',
-});
-```
-
-**Backend requerido:**
-```php
-public function destroyMultiple(Request $request) {
-    $request->validate(['ids' => 'required|array']);
-    Entity::whereIn('id', $request->ids)->delete();
-    return response()->json(['success' => true]);
-}
-```
-
-**Ver:** `docs/quick-status-toggle.md`
-
-```html
-<label class="switch-tabla">
-    <input type="checkbox" class="toggle-estado" 
-           {{ $entity->status ? 'checked' : '' }}
-           data-entity-id="{{ $entity->id }}">
-    <span class="slider"></span>
-Controlador:
-```php
-public function updateStatus(Request $request, Entity $entity) {
-    $entity->save();
-    return response()->json(['success' => true, 'status' => $entity->status]);
-}
-## DataTables Integration
-
-**Patrón estándar:** Ver `resources/views/admin/families/index.blade.php` (líneas 1-100)
-- Export buttons (Excel, CSV, PDF)
-- Responsive design
-
-```javascript
-const tableManager = new DataTableManager('#tabla', {
-    moduleName: 'entities',
-    entityNameSingular: 'entidad',
-    deleteRoute: '/admin/entities',
-    statusRoute: '/admin/entities/{id}/status',
-    csrfToken: '{{ csrf_token() }}'
-});
-```
+- **Eliminación múltiple:**
+    - Usa `handleMultipleDelete` (ver `resources/js/modals/modal-confirm.js` y `docs/multiple-delete-global.md`)
+- **Toggle de estado rápido:**
+    - Patrón en `docs/quick-status-toggle.md`
+- **DataTables:**
+    - Patrón en `views/admin/families/index.blade.php` (export, responsive)
 
 ## Exportación de Datos
 
-### Excel/CSV
-**Paquete:** `maatwebsite/excel`
-```php
-use App\Exports\EntitiesExport;
+- **Excel/CSV:** `maatwebsite/excel` (ver `app/Exports/*Export.php`)
+- **PDF:** `spatie/laravel-pdf` (ver `admin/export/*.blade.php`)
 
-public function exportExcel(Request $request) {
-    $ids = $request->input('ids');
-    $filename = 'entidades_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
-    return Excel::download(new EntitiesExport($ids), $filename);
-}
-```
+## Flujos de Desarrollo
 
-**Clase Export:** Implementa `FromArray`, `WithStyles`, `WithColumnWidths`, `WithEvents` (ver `app/Exports/FamiliesExport.php`).
+- **Setup:**
+    - `composer install; npm install; cp .env.example .env; php artisan key:generate; php artisan migrate --seed; npm run build`
+- **Desarrollo local:**
+    - `composer dev` (servidor, queue, logs, vite concurrentes)
+- **Testing:**
+    - `composer test` (PHPUnit)
+- **Calidad:**
+    - `php artisan pail` (logs), `./vendor/bin/pint` (formatter)
 
-### PDF
-**Paquete:** `spatie/laravel-pdf` (usa Puppeteer)
-```php
-use Spatie\LaravelPdf\Facades\Pdf;
+## Helpers y Localización
 
-return Pdf::view('admin.export.entities-pdf', compact('entities'))
-    ->format('a4')
-    ->name('entidades_' . now()->format('Y-m-d_H-i-s') . '.pdf')
-    ->download();
-```
+- **Helpers globales:** `app/Helpers/helpers.php` (ej: `fecha_hoy()`)
+- **Localización:** Español (`lang/es.json`, `laravel-lang/common`)
 
-## Comandos de Desarrollo
+## Anti-Patrones
 
-### Setup Inicial
-```bash
-composer install
-npm install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate --seed
-npm run build
-```
-
-### Desarrollo Local
-```bash
-composer dev  # Ejecuta servidor, queue, logs y vite concurrentemente
-```
-**O manualmente:**
-```bash
-php artisan serve
-npm run dev
-php artisan queue:listen
-```
-
-### Testing
-```bash
-composer test  # Limpia config y ejecuta PHPUnit
-```
-
-### Code Quality
-```bash
-php artisan pail          # Log viewer en tiempo real
-./vendor/bin/pint         # Laravel Pint (PSR-12 formatter)
-```
-
-## Helpers Globales
-
-**Ubicación:** `app/Helpers/helpers.php` (auto-cargado en `composer.json`)
-
-```php
-fecha_hoy() // Retorna fecha formateada en español: "viernes, 15 de noviembre de 2025"
-```
-
-## Migraciones
-
-**Patrón estándar:** Ver `database/migrations/2025_10_15_233139_create_families_table.php`
-```php
-$table->string('slug')->unique()->index();
-$table->boolean('status')->default(false)->index();
-$table->softDeletes();
-
-// Auditoría
-$table->unsignedBigInteger('created_by')->nullable();
-$table->foreign('created_by')->references('id')->on('users')->nullOnDelete();
-```
-
-## Permisos y Roles
-
-**Paquete:** `spatie/laravel-permission`  
-**Configuración:** `config/permission.php`  
-**Seeder:** `database/seeders/RolePermissionSeeder.php`
-
-## Localización
-
-**Idioma principal:** Español (`es`)  
-**Archivos:** `lang/es.json`, `lang/es/**`  
-**Paquete:** `laravel-lang/common` + `laravel-lang/publisher`
-
-## Anti-Patrones ❌
-
-- **NO uses Livewire** actualmente (carpeta `app/Livewire/Admin` vacía)
-- **NO uses Vue/React** - solo Vanilla JS + jQuery (por DataTables)
-- **NO implementes autenticación custom** - usa Jetstream/Fortify
-- **NO modifiques `vite.config.js`** sin actualizar `resources/js/index.js`
-- **NO uses Bootstrap** - TailwindCSS + Flowbite exclusivamente
+- No usar Livewire, Vue, React, Bootstrap, ni iconos distintos a Remix Icon
+- No modificar autenticación ni `vite.config.js` sin actualizar `resources/js/index.js`
 
 ## Referencias Clave
 
-- **CRUD completo:** `app/Http/Controllers/Admin/FamilyController.php`
-- **Modelo base:** `app/Models/Family.php`
-- **Vista index:** `resources/views/admin/families/index.blade.php`
-- **Docs técnicas:** `docs/multiple-delete-global.md`, `docs/quick-status-toggle.md`
+- CRUD: `app/Http/Controllers/Admin/FamilyController.php`
+- Modelo base: `app/Models/Family.php`
+- Vista index: `resources/views/admin/families/index.blade.php`
+- Docs técnicas: `docs/multiple-delete-global.md`, `docs/quick-status-toggle.md`

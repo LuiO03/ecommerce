@@ -54,7 +54,6 @@
             </div>
         </div>
         <div class="modal-show-footer">
-
             <button type="button" class="boton boton-modal-close" id="cancelButton">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                 <span class="boton-text">Cerrar</span>
@@ -102,7 +101,7 @@
             openmodalShow();
             const slug = $(this).data('slug');
             $.ajax({
-                url: `/admin/families/${slug}/show-full`,
+                url: `/admin/families/${slug}/show`,
                 method: 'GET',
                 success: function(data) {
                     $('#fam-id').text(data.id ?? '-');
@@ -119,12 +118,12 @@
                     // Estado badge
                     if (data.status) {
                         $('#fam-status').html(
-                            '<span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> Activo</span>'
-                        );
+                            '<span class="badge boton-success"><i class="ri-eye-fill"></i> Activo</span>'
+                            );
                     } else {
                         $('#fam-status').html(
-                            '<span class="badge badge-danger"><i class="ri-close-circle-fill"></i> Inactivo</span>'
-                        );
+                            '<span class="badge boton-danger"><i class="ri-eye-off-fill"></i> Inactivo</span>'
+                            );
                     }
                     // Imagen fuera de la tabla
                     if (data.image) {
@@ -136,7 +135,7 @@
                         img.onerror = function() {
                             $('#fam-image').html(
                                 `<div class='modal-img-placeholder'>
-                                    <i class="ri-file-close-fill"></i> 
+                                    <i class="ri-file-close-fill"></i>
                                     Parece que la imagen ya no existe.
                                 </div>`
                             );
@@ -152,35 +151,24 @@
                             </div>`
                         );
                     }
-                    
-                    // Creado por + fecha
-                    let creadoPor = (data.created_by_name || data.created_by_last_name) ?
-                        `${data.created_by_name ?? ''} ${data.created_by_last_name ?? ''}`.trim() : (
-                            data.created_by ?? '-');
-                    let creadoEn = (data.created_at ?? '-');
+
+                // Creado por
                     $('#fam-created-by-fecha').html(`
-                    <div class="show-cell-content">
-                        <span class='font-bold'>${creadoPor}</span>
-                        <span class="show-date">
-                            <i class="ri-time-fill"></i>
-                            ${creadoEn}
-                        </span>
-                    </div>
-                `);
-                    // Actualizado por + fecha
-                    let actualizadoPor = (data.updated_by_name || data.updated_by_last_name) ?
-                        `${data.updated_by_name ?? ''} ${data.updated_by_last_name ?? ''}`.trim() : (
-                            data.updated_by ?? '-');
-                    let actualizadoEn = (data.updated_at ?? '-');
+                        <div class="show-cell-content">
+                            <span class="font-bold">${data.created_by_name}</span>
+                            <span class="show-date"><i class="ri-time-fill"></i> ${data.created_at}</span>
+                        </div>
+                    `);
+
+                    // Actualizado por
                     $('#fam-updated-by-fecha').html(`
-                    <div class="show-cell-content">
-                        <span class='font-bold'>${actualizadoPor}</span>
-                        <span class="show-date">
-                            <i class="ri-time-fill"></i>
-                            ${actualizadoEn}
-                        </span>
-                    </div>
-                `);
+                        <div class="show-cell-content">
+                            <span class="font-bold">${data.updated_by_name}</span>
+                            <span class="show-date"><i class="ri-time-fill"></i> ${data.updated_at}</span>
+                        </div>
+                    `);
+
+
                     // Actualizar enlace de Editar
                     $('#modalEditBtn').attr('href', `/admin/families/${data.slug}/edit`);
                     // Eliminar: la acción debe ser /admin/families/{slug} (destroy individual por slug)
@@ -202,21 +190,21 @@
         $('#cancelButton').on('click', closeModal);
         $('#closeModal').on('click', closeModal);
 
-        // Listener ESC solo para modalShow
+        // Cerrar modal con ESC
         function escFamiliaListener(e) {
-            const modal = document.getElementById('modalShow');
-            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            if (e.key === "Escape") {
                 closeModal();
             }
         }
-        // Listener click fuera solo para modalShow
+
+        // Cerrar modal haciendo clic fuera
         function clickOutsideShowListener(e) {
-            const modal = $('#modalShow');
-            const content = $('.modal-content');
-            if (!modal.hasClass('hidden') && !content.is(e.target) && content.has(e.target).length === 0) {
+            const modal = document.querySelector('#modalShow .modal-content');
+            if (modal && !modal.contains(e.target)) {
                 closeModal();
             }
         }
+
         // === Eliminar desde la modal ===
         // Eliminar desde la modal: usar la modal de confirmación personalizada
         $(document).on('submit', '#modalDeleteForm', function(e) {

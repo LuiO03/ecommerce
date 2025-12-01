@@ -163,6 +163,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    gap: 1rem;
 }
 .modal-show-header {
     position: relative;
@@ -183,7 +184,7 @@
     font-family: var(--font-secondary);
 }
 .modal-show-body {
-    padding: 1rem;
+    padding: 0px 1rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -314,5 +315,58 @@
     100% {
         transform: scale(0.8);
         opacity: 0;
+    }
+}
+
+/* ================================
+   MODAL SHOW HORIZONTAL (USUARIOS)
+   ================================ */
+.modal-horizontal .modal-content {
+    max-width: 800px;
+    width: 90%;
+}
+.modal-horizontal .modal-show-body {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.modal-horizontal .modal-show-table {
+    flex: 1;
+    flex-shrink: 0;
+}
+
+.modal-horizontal .modal-img-container{
+    flex: 0 0 250px;
+    min-width: 250px;
+    max-width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.modal-horizontal #user-image img,
+.modal-horizontal #user-image .modal-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* RESPONSIVE - MOBILE */
+@media (max-width: 768px) {
+    .modal-horizontal .modal-show-body {
+        flex-direction: column; /* Se convierte en vertical */
+        align-items: center;
+    }
+
+    .modal-horizontal .modal-img-container {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .modal-horizontal .modal-show-table {
+        width: 100%;
     }
 }
