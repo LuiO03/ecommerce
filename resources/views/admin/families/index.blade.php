@@ -154,8 +154,7 @@
                 <tbody>
                     @foreach ($families as $family)
                         <tr data-id="{{ $family->id }}" data-name="{{ $family->name }}">
-                            <td class="control" title="Expandir detalles">
-                            </td>
+                            <td class="control" title="Expandir detalles"></td>
                             <td class="column-check-td">
                                 <div>
                                     <input type="checkbox" class="check-row" id="check-row-{{ $family->id }}"

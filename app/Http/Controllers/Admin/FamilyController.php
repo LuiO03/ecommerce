@@ -298,7 +298,6 @@ class FamilyController extends Controller
         return redirect()->route('admin.families.index');
     }
 
-
     public function updateStatus(Request $request, $id)
     {
         $family = Family::findOrFail($id);

@@ -54,6 +54,30 @@
                         <i class="ri-arrow-down-s-line selector-icon"></i>
                     </div>
                 </div>
+
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="sortFilter">
+                            <option value="">Ordenar por</option>
+                            <option value="name-asc">Nombre (A-Z)</option>
+                            <option value="name-desc">Nombre (Z-A)</option>
+                            <option value="date-desc">Más recientes</option>
+                            <option value="date-asc">Más antiguos</option>
+                        </select>
+                        <i class="ri-sort-asc selector-icon"></i>
+                    </div>
+                </div>
+
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="statusFilter">
+                            <option value="">Todos los estados</option>
+                            <option value="1">Activos</option>
+                            <option value="0">Inactivos</option>
+                        </select>
+                        <i class="ri-filter-3-line selector-icon"></i>
+                    </div>
+                </div>
                 <!-- Botón para limpiar filtros -->
                 <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>

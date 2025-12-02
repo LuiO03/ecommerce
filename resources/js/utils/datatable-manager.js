@@ -137,7 +137,7 @@ class DataTableManager {
 
     initDataTable() {
         // Plugin de ordenamiento para fechas con "Sin fecha" al final
-        $.fn.dataTable.ext.type.order['date-null-last-pre'] = function(data) {
+        $.fn.dataTable.ext.type.order['date-null-last-pre'] = function (data) {
             if (!data || data === 'Sin fecha' || data.trim() === '') {
                 return 999999999999;
             }
@@ -282,7 +282,7 @@ class DataTableManager {
             }
         });
 
-        this.$table.on('click', 'td.control', function() {
+        this.$table.on('click', 'td.control', function () {
             $(this).find('.control-icon')
                 .toggleClass('ri-arrow-right-s-line ri-arrow-down-s-line');
         });
@@ -514,54 +514,72 @@ class DataTableManager {
         const nameColumn = this.config.columns.name;
         const dateColumn = this.config.columns.date;
 
-        // Filtro de ordenamiento
-        $('#sortFilter').on('change', (e) => {
-            const sortValue = $(e.currentTarget).val();
-            const wrapper = $(e.currentTarget).closest('.tabla-select-wrapper');
+        /* -------------------------------------------
+        1. Filtro de ORDENAMIENTO (sortFilter)
+        ------------------------------------------- */
+        const $sortFilter = $('#sortFilter');
+        if ($sortFilter.length) {
+            $sortFilter.on('change', (e) => {
+                const sortValue = $(e.currentTarget).val();
+                const wrapper = $(e.currentTarget).closest('.tabla-select-wrapper');
 
-            if (sortValue === "") {
-                wrapper.removeClass('filter-active');
-                this.table.order([[idColumn, 'desc']]).draw();
-            } else {
-                wrapper.addClass('filter-active');
+                if (sortValue === "") {
+                    wrapper.removeClass('filter-active');
+                    this.table.order([[idColumn, 'desc']]).draw();
+                } else {
+                    wrapper.addClass('filter-active');
 
-                switch(sortValue) {
-                    case 'name-asc':
-                        this.table.order([[nameColumn, 'asc']]).draw();
-                        break;
-                    case 'name-desc':
-                        this.table.order([[nameColumn, 'desc']]).draw();
-                        break;
-                    case 'date-desc':
-                        this.table.order([[dateColumn, 'desc']]).draw();
-                        break;
-                    case 'date-asc':
-                        this.table.order([[dateColumn, 'asc']]).draw();
-                        break;
+                    switch(sortValue) {
+                        case 'name-asc':
+                            this.table.order([[nameColumn, 'asc']]).draw();
+                            break;
+                        case 'name-desc':
+                            this.table.order([[nameColumn, 'desc']]).draw();
+                            break;
+                        case 'date-desc':
+                            this.table.order([[dateColumn, 'desc']]).draw();
+                            break;
+                        case 'date-asc':
+                            this.table.order([[dateColumn, 'asc']]).draw();
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        // Filtro por estado
-        $.fn.dataTable.ext.search.push((settings, data, dataIndex) => {
-            if (settings.nTable.id !== this.tableSelector.replace('#', '')) return true;
+        /* -------------------------------------------
+        2. Filtro por ESTADO (statusFilter)
+        ------------------------------------------- */
+        const $statusFilter = $('#statusFilter');
 
-            const selectedStatus = $('#statusFilter').val();
-            if (selectedStatus === "") return true;
+        if ($statusFilter.length) {
 
-            const statusCell = $(this.table.row(dataIndex).node())
-                .find('.switch-status').is(':checked') ? "1" : "0";
+            // Extensión de búsqueda para DataTables (solo si existe el filtro)
+            $.fn.dataTable.ext.search.push((settings, data, dataIndex) => {
+                if (settings.nTable.id !== this.tableSelector.replace('#', '')) return true;
 
-            return statusCell === selectedStatus;
-        });
+                const selectedStatus = $statusFilter.val();
+                if (selectedStatus === "") return true;
 
-        $('#statusFilter').on('change', (e) => {
-            const wrapper = $(e.currentTarget).closest('.tabla-select-wrapper');
-            wrapper.toggleClass('filter-active', $(e.currentTarget).val() !== "");
-            this.table.draw();
-        });
+                const statusCell = $(this.table.row(dataIndex).node())
+                    .find('.switch-status')
+                    .is(':checked')
+                    ? "1"
+                    : "0";
 
-        // Verificar estado inicial de TODOS los filtros
+                return statusCell === selectedStatus;
+            });
+
+            $statusFilter.on('change', (e) => {
+                const wrapper = $(e.currentTarget).closest('.tabla-select-wrapper');
+                wrapper.toggleClass('filter-active', $(e.currentTarget).val() !== "");
+                this.table.draw();
+            });
+        }
+
+        /* -------------------------------------------
+        3. Activar wrapper si un filtro YA tiene valor
+        ------------------------------------------- */
         $('select[id$="Filter"]').each(function() {
             const $select = $(this);
             if ($select.val() !== '') {
@@ -569,20 +587,28 @@ class DataTableManager {
             }
         });
 
-        // Limpiar filtros
-        $('#clearFiltersBtn').on('click', () => {
-            this.clearFilters();
-        });
+        /* -------------------------------------------
+        4. Botón para limpiar filtros (opcional)
+        ------------------------------------------- */
+        if ($('#clearFiltersBtn').length) {
+            $('#clearFiltersBtn').on('click', () => this.clearFilters());
+        }
 
-        // Verificar filtros activos automáticamente para CUALQUIER select que termine con 'Filter'
+        /* -------------------------------------------
+        5. Verificación genérica de filtros activos
+        ------------------------------------------- */
         const filterSelectors = ['#customSearch'];
+
         $('select[id$="Filter"]').each(function() {
             filterSelectors.push('#' + $(this).attr('id'));
         });
 
-        $(filterSelectors.join(', ')).on('input change keyup', () => {
-            this.checkFiltersActive();
-        });
+        // Solo si existen filtros
+        if (filterSelectors.length > 0) {
+            $(filterSelectors.join(', ')).on('input change keyup', () => {
+                this.checkFiltersActive();
+            });
+        }
 
         this.checkFiltersActive();
     }
@@ -593,7 +619,7 @@ class DataTableManager {
         // Detectar automáticamente TODOS los filtros que terminen con 'Filter'
         let anyFilterActive = hasSearch;
 
-        $('select[id$="Filter"]').each(function() {
+        $('select[id$="Filter"]').each(function () {
             const $select = $(this);
             const hasValue = $select.val() !== '';
 
@@ -614,7 +640,7 @@ class DataTableManager {
         const hasSearch = $('#customSearch').val().trim() !== '';
         let activeFiltersCount = hasSearch ? 1 : 0;
 
-        $('select[id$="Filter"]').each(function() {
+        $('select[id$="Filter"]').each(function () {
             if ($(this).val() !== '') {
                 activeFiltersCount++;
             }
@@ -626,7 +652,7 @@ class DataTableManager {
         $('#customSearch').val('').trigger('keyup');
 
         // Limpiar TODOS los selects que terminen con 'Filter'
-        $('select[id$="Filter"]').each(function() {
+        $('select[id$="Filter"]').each(function () {
             $(this).val('').trigger('change');
         });
 
