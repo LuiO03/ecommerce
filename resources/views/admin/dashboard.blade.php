@@ -82,17 +82,6 @@
             </div>
         </a>
 
-        <!-- Tarjeta: Permisos -->
-        <a href="{{ route('admin.permissions.index') }}" class="dashboard-card">
-            <div class="card-icon card-accent">
-                <i class="ri-key-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalPermissions }}</h1>
-                <p class="card-label">Permisos</p>
-            </div>
-        </a>
-
         <!-- Tarjeta: Roles -->
         <a href="{{ route('admin.roles.index') }}" class="dashboard-card">
             <div class="card-icon card-primary">

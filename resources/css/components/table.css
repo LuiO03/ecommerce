@@ -642,6 +642,18 @@ input[type="checkbox"]:indeterminate {
     align-items: center;
 }
 
+.column-roles-th,
+.column-roles-td{
+    max-width: 160px;
+    min-width: 160px;
+}
+
+.list-data-td{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 /* Fila seleccionada */
 .tabla-general tbody tr.row-selected {
     background-color: var(--color-inverse);
@@ -703,6 +715,7 @@ input[type="checkbox"]:indeterminate {
 .text-muted-td {
     color: var(--color-muted);
     font-style: italic;
+    width: fit-content;
 }
 
 /* =======================================================

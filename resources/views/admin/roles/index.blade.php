@@ -1,4 +1,3 @@
-
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
         <div class="page-icon card-primary"><i class="ri-shield-user-line"></i></div>
@@ -67,7 +66,8 @@
                     </div>
                 </div>
                 <!-- Botón para limpiar filtros -->
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
+                    title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                     <span class="boton-text">Limpiar filtros</span>
                 </button>
@@ -89,7 +89,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($roles as $role)
+                    @foreach ($roles as $role)
                         <tr data-id="{{ $role->id }}" data-name="{{ $role->name }}">
                             <td class="control" title="Expandir detalles"></td>
                             <td class="column-id-td">
@@ -102,24 +102,47 @@
                                     {{ $role->description ?? 'Sin descripción' }}
                                 </span>
                             </td>
-                            <td class="column-users-td"><span class="badge badge-info">{{ $role->users_count }}</span></td>
-                            <td class="column-date-td">{{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
+                            <td class="column-users-td"><span class="badge badge-info">{{ $role->users_count }}</span>
+                            </td>
+                            <td class="column-date-td">
+                                {{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <a href="{{ route('admin.roles.edit', $role) }}" class="boton boton-warning" title="Editar">
-                                        <span class="boton-icon"><i class="ri-edit-2-line"></i></span>
-                                        <span class="boton-text">Editar</span>
-                                    </a>
-                                    <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="delete-form" data-entity="rol">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="boton boton-danger" title="Eliminar">
-                                            <span class="boton-text">Borrar</span>
-                                            <span class="boton-icon"><i class="ri-delete-bin-6-line"></i></span>
+                                    {{-- === BOTÓN EDITAR === --}}
+                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador']))
+                                        <a href="{{ route('admin.roles.edit', $role) }}" class="boton boton-warning"
+                                            title="Editar">
+                                            <span class="boton-icon"><i class="ri-edit-2-fill"></i></span>
+                                            <span class="boton-text">Editar</span>
+                                        </a>
+                                    @else
+                                        <button class="boton boton-warning disabled" title="No editable" disabled>
+                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                            <span class="boton-text">Editar</span>
                                         </button>
-                                    </form>
-                                    <a href="{{ route('admin.roles.permissions', $role) }}" class="boton boton-primary" title="Ver detalle">
-                                        <span class="boton-icon"><i class="ri-key-2-line"></i></span>
+                                    @endif
+
+                                    {{-- === BOTÓN ELIMINAR === --}}
+                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador']) && $role->users_count == 0)
+                                        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
+                                        class="delete-form" data-entity="rol">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="boton boton-danger" title="Eliminar">
+                                                <span class="boton-text">Borrar</span>
+                                                <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button class="boton boton-danger disabled" title="No se puede eliminar"
+                                            disabled>
+                                            <span class="boton-text">Borrar</span>
+                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                        </button>
+                                    @endif
+                                    <a href="{{ route('admin.roles.permissions', $role) }}"
+                                        class="boton boton-primary" title="Ver detalle">
+                                        <span class="boton-icon"><i class="ri-key-2-fill"></i></span>
                                         <span class="boton-text">Permisos</span>
                                     </a>
                                 </div>
@@ -172,7 +195,8 @@
                             console.log('🗑️ Registros eliminados');
                         },
                         onExport: (type, format, count) => {
-                            console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
+                            console.log(
+                                `📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
                         }
                     }
                 });

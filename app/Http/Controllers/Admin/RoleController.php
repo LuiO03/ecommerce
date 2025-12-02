@@ -119,11 +119,22 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
+        if (in_array($role->name, ['Administrador', 'Superadministrador'])) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Protegido',
+                'title' => 'Rol del sistema',
+                'message' => "El rol <strong>{$role->name}</strong> no puede ser modificado.",
+            ]);
+            return redirect()->route('admin.roles.index');
+        }
+
         $permissions = Permission::orderBy('module')->get()->groupBy('module');
         $assigned = $role->permissions->pluck('name')->toArray();
 
         return view('admin.roles.edit', compact('role', 'permissions', 'assigned'));
     }
+
 
     public function update(Request $request, Role $role)
     {
@@ -199,31 +210,28 @@ class RoleController extends Controller
     public function permissions(Role $role)
     {
         $role->load('permissions');
-        // Agrupar todos los permisos por módulo
-        $allPermissions = Permission::where('guard_name', 'web')->orderBy('name')->get();
+
+        // Traer todos los permisos ordenados
+        $allPermissions = Permission::where('guard_name', 'web')
+            ->orderBy('module')
+            ->orderBy('name')
+            ->get();
+
         $modules = [];
+
         foreach ($allPermissions as $permission) {
-            $parts = explode(' ', $permission->name, 2);
-            if (count($parts) === 2) {
-                $action = $parts[0];
-                $module = $parts[1];
-                $modules[$module][] = [
-                    'id' => $permission->id,
-                    'name' => $permission->name,
-                    'action' => $action,
-                    'description' => $permission->description,
-                    'assigned' => $role->permissions->contains('id', $permission->id)
-                ];
-            } else {
-                $modules['Otros'][] = [
-                    'id' => $permission->id,
-                    'name' => $permission->name,
-                    'action' => $permission->name,
-                    'description' => $permission->description,
-                    'assigned' => $role->permissions->contains('id', $permission->id)
-                ];
-            }
+
+            $module = $permission->module ?? 'Otros';
+
+            $modules[$module][] = [
+                'id' => $permission->id,
+                'name' => $permission->name,
+                'action' => $permission->name, // ahora name completo es la acción
+                'description' => $permission->description,
+                'assigned' => $role->permissions->contains('id', $permission->id)
+            ];
         }
+
         return view('admin.roles.permissions', compact('role', 'modules'));
     }
 

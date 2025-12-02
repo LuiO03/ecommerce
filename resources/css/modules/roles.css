@@ -1,6 +1,6 @@
 .permissions-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
 }
 
@@ -47,12 +47,12 @@
 }
 
 .permissions-card {
-    flex: 1 1 300px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     background-color: var(--color-card-bg);
     padding: 1rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: fit-content;
 }
 
 .permissions-card:hover {

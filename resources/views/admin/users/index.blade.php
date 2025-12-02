@@ -253,15 +253,22 @@
                                     <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning">
                                         <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
                                     </a>
-                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                        class="delete-form" data-entity="usuario">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="boton-sm boton-danger disabled"
-                                            @if(Auth::id() === $user->id) disabled title="No puedes eliminar tu propia cuenta" @endif>
-                                            <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
+
+                                    @if (Auth::id() !== $user->id)
+                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                                            class="delete-form" data-entity="usuario">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="boton-sm boton-danger">
+                                                <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button class="boton-sm boton-danger disabled"
+                                            title="No puedes eliminar tu propia cuenta" disabled>
+                                            <span class="boton-sm-icon"><i class="ri-lock-fill"></i></span>
                                         </button>
-                                    </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

@@ -12,7 +12,6 @@
         'categories' => ['label' => 'Categorías', 'icon' => 'ri-price-tag-3-fill'],
         'products' => ['label' => 'Productos', 'icon' => 'ri-shopping-bag-3-fill'],
         'roles' => ['label' => 'Roles', 'icon' => 'ri-shield-user-fill'],
-        'permissions' => ['label' => 'Permisos', 'icon' => 'ri-lock-2-fill'],
         'brands' => ['label' => 'Marcas', 'icon' => 'ri-store-2-fill'],
     ];
 

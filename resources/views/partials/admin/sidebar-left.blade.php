@@ -90,7 +90,7 @@
                     <span>Familias</span>
                 </a>
             </li>
-            
+
             <li>
                 <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                     data-tooltip="Users">
@@ -104,14 +104,6 @@
                     data-tooltip="Roles">
                     <i class="ri-shield-user-line sidebar-icon"></i>
                     <span>Roles</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{  route('admin.permissions.index') }}" class="sidebar-link {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}"
-                    data-tooltip="Permisos">
-                    <i class="ri-key-line sidebar-icon"></i>
-                    <span>Permisos</span>
                 </a>
             </li>
 

@@ -18,9 +18,8 @@ class AdminController extends Controller
             'totalFamilies'   => Family::count(),
             'totalProducts'   => Product::count(),
             'totalUsers'      => User::count(),
-            'totalPermissions' => Permission::count(),
             'totalRoles'      => \Spatie\Permission\Models\Role::count(),
         ]);
     }
-    
+
 }
