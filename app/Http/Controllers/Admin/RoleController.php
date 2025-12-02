@@ -3,35 +3,47 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RolesExcelExport;
+use App\Exports\RolesCsvExport;
+use Spatie\LaravelPdf\Facades\Pdf;
 use App\Models\Role;
+
 
 class RoleController extends Controller
 {
-    /**
-     * Exportar roles a Excel
-     */
+    public function index()
+    {
+        $roles = Role::withCount('users')
+        ->orderBy('id', 'desc')
+        ->get();
+
+        return view('admin.roles.index', compact('roles'));
+    }
+
+    // ============================
+    //   EXPORTACIONES
+    // ============================
+
     public function exportExcel(Request $request)
     {
         $ids = $request->input('ids');
         $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\RolesExcelExport($ids), $filename);
+
+        return Excel::download(new RolesExcelExport($ids), $filename);
     }
 
-    /**
-     * Exportar roles a PDF
-     */
     public function exportPdf(Request $request)
     {
         if ($request->has('ids')) {
-            $roles = \App\Models\Role::whereIn('id', $request->ids)->get();
+            $roles = Role::whereIn('id', $request->ids)->get();
         } elseif ($request->has('export_all')) {
-            $roles = \App\Models\Role::all();
+            $roles = Role::all();
         } else {
             return back()->with('error', 'No se seleccionaron roles para exportar.');
         }
@@ -42,215 +54,126 @@ class RoleController extends Controller
 
         $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
-        return \Spatie\LaravelPdf\Facades\Pdf::view('admin.export.roles-pdf', compact('roles'))
+        return Pdf::view('admin.export.roles-pdf', compact('roles'))
             ->format('a4')
             ->name($filename)
             ->download();
     }
 
-    /**
-     * Exportar roles a CSV
-     */
     public function exportCsv(Request $request)
     {
         $ids = $request->has('export_all') ? null : $request->input('ids');
+
         $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.csv';
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\RolesExcelExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
-    }
-    /**
-     * Mostrar detalle de permisos por rol.
-     */
-    public function index()
-    {
-        $roles = Role::withCount('users')->orderBy('id', 'desc')->get();
-        return view('admin.roles.index', compact('roles'));
+
+        return Excel::download(new RolesCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
 
-    /**
-     * Show the form for creating a new role.
-     */
+    // ============================
+    //   CREAR
+    // ============================
+
     public function create()
     {
-        return view('admin.roles.create');
+        $permissions = Permission::orderBy('module')->get()->groupBy('module');
+
+        return view('admin.roles.create', compact('permissions'));
     }
 
-    /**
-     * Store a newly created role in storage.
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name',
-            'description' => 'nullable|string|max:255',
+        $request->validate([
+            'name'        => 'required|string|min:3|max:255|unique:roles,name',
+            'description' => 'nullable|string|max:500',
+            'permissions' => 'nullable|array',
         ]);
 
-        // Capitalizar nombre
-        $name = ucwords(mb_strtolower($validated['name']));
-        // Descripción: primera letra mayúscula, resto minúscula
-        $description = $validated['description'] ? ucfirst(mb_strtolower($validated['description'])) : null;
+        $name = ucwords(mb_strtolower($request->name));
 
-        DB::beginTransaction();
+        $role = Role::create([
+            'name'        => $name,
+            'description' => ucfirst($request->description),
+            'guard_name'  => 'web',
+            'created_by'  => Auth::id(),
+            'updated_by'  => Auth::id(),
+        ]);
 
-        try {
-            $role = Role::create([
-                'name' => $name,
-                'guard_name' => 'web',
-                'description' => $description,
-            ]);
-
-            DB::commit();
-
-            Session::flash('toast', [
-                'type' => 'success',
-                'title' => 'Rol creado',
-                'message' => "El rol <strong>{$role->name}</strong> fue creado correctamente.",
-            ]);
-
-            Session::flash('highlightRow', $role->id);
-
-            return redirect()->route('admin.roles.index', $role);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Session::flash('toast', [
-                'type' => 'danger',
-                'title' => 'Error al crear rol',
-                'message' => 'Ocurrió un error al intentar crear el rol. Por favor, inténtalo de nuevo.',
-            ]);
-
-            return back()->withInput();
+        if ($request->permissions) {
+            $role->syncPermissions($request->permissions);
         }
+
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Rol creado',
+            'message' => "El rol <strong>{$role->name}</strong> se ha creado correctamente.",
+        ]);
+
+        Session::flash('highlightRow', $role->id);
+
+        return redirect()->route('admin.roles.index');
     }
 
-    /**
-     * Show the form for editing the specified role.
-     */
+    // ============================
+    //   EDITAR
+    // ============================
+
     public function edit(Role $role)
     {
-        return view('admin.roles.edit', compact('role'));
+        $permissions = Permission::orderBy('module')->get()->groupBy('module');
+        $assigned = $role->permissions->pluck('name')->toArray();
+
+        return view('admin.roles.edit', compact('role', 'permissions', 'assigned'));
     }
 
-    /**
-     * Update the specified role in storage.
-     */
     public function update(Request $request, Role $role)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'description' => 'nullable|string|max:255',
+        $request->validate([
+            'name'        => 'required|string|min:3|max:255|unique:roles,name,' . $role->id,
+            'description' => 'nullable|string|max:500',
+            'permissions' => 'nullable|array',
         ]);
 
-        // Capitalizar nombre
-        $name = ucwords(mb_strtolower($validated['name']));
-        // Descripción: primera letra mayúscula, resto minúscula
-        $description = $validated['description'] ? ucfirst(mb_strtolower($validated['description'])) : null;
+        $name = ucwords(mb_strtolower($request->name));
 
-        DB::beginTransaction();
+        $role->update([
+            'name'        => $name,
+            'description' => ucfirst($request->description),
+            'updated_by'  => Auth::id(),
+        ]);
 
-        try {
-            $role->update([
-                'name' => $name,
-                'description' => $description,
-            ]);
+        // Sincronizar permisos
+        $role->syncPermissions($request->permissions ?? []);
 
-            DB::commit();
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Rol actualizado',
+            'message' => "El rol <strong>{$role->name}</strong> se ha actualizado correctamente.",
+        ]);
 
-            Session::flash('toast', [
-                'type' => 'success',
-                'title' => 'Rol actualizado',
-                'message' => "El rol <strong>{$role->name}</strong> ha sido actualizado correctamente.",
-            ]);
+        Session::flash('highlightRow', $role->id);
 
-            Session::flash('highlightRow', $role->id);
-
-            return redirect()->route('admin.roles.index', $role);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Session::flash('toast', [
-                'type' => 'danger',
-                'title' => 'Error al actualizar rol',
-                'message' => 'Ocurrió un error al intentar actualizar el rol. Por favor, inténtalo de nuevo.',
-            ]);
-
-            return back()->withInput();
-        }
+        return redirect()->route('admin.roles.index');
     }
 
-    /**
-     * Remove the specified role from storage.
-     */
+    // ============================
+    //   ELIMINAR 1 SOLO
+    // ============================
+
     public function destroy(Role $role)
     {
-        // Prevenir eliminar el rol de superadministrador
-        if ($role->id === 1) {
-            Session::flash('info', [
-                'type' => 'warning',
-                'header' => 'Acción no permitida',
-                'title' => 'No se puede eliminar este rol',
-                'message' => "El rol <strong>{$role->name}</strong> es el rol de superadministrador y no puede ser eliminado.",
-            ]);
+        $role->delete();
 
-            return redirect()->route('admin.roles.index');
-        }
+        Session::flash('info', [
+            'type' => 'danger',
+            'header' => 'Registro eliminado',
+            'title' => 'Rol eliminado',
+            'message' => "El rol <strong>{$role->name}</strong> fue eliminado.",
+        ]);
 
-        // Verificar si el usuario autenticado tiene este rol
-        $currentUser = Auth::user();
-        if ($currentUser && $currentUser->roles->contains('id', $role->id)) {
-            Session::flash('info', [
-                'type' => 'warning',
-                'header' => 'Acción no permitida',
-                'title' => 'No se puede eliminar este rol',
-                'message' => "No puedes eliminar el rol <strong>{$role->name}</strong> porque es tu rol actual.",
-            ]);
-
-            return redirect()->route('admin.roles.index');
-        }
-
-        // Verificar si hay usuarios asignados a este rol
-        $usersCount = User::role($role->name)->count();
-        if ($usersCount > 0) {
-            Session::flash('info', [
-                'type' => 'warning',
-                'header' => 'Acción no permitida',
-                'title' => 'No se puede eliminar este rol',
-                'message' => "El rol <strong>{$role->name}</strong> tiene {$usersCount} usuario(s) asignado(s). Reasígnalos primero.",
-            ]);
-
-            return redirect()->route('admin.roles.index');
-        }
-
-        DB::beginTransaction();
-
-        try {
-            $name = $role->name;
-
-            // Eliminar el rol y sus relaciones con permisos
-            $role->delete();
-
-            DB::commit();
-
-            Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Rol eliminado',
-                'title' => 'Registro eliminado',
-                'message' => "El rol <strong>{$name}</strong> ha sido eliminado correctamente.",
-            ]);
-
-            return redirect()->route('admin.roles.index');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            Session::flash('toast', [
-                'type' => 'danger',
-                'title' => 'Error al eliminar rol',
-                'message' => 'Ocurrió un error al intentar eliminar el rol. Por favor, inténtalo de nuevo.',
-            ]);
-
-            return redirect()->route('admin.roles.index');
-        }
+        return redirect()->route('admin.roles.index');
     }
-    /**
+
+        /**
      * Mostrar detalle de permisos por rol.
      */
     public function permissions(Role $role)

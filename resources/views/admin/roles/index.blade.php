@@ -54,18 +54,6 @@
                         <i class="ri-arrow-down-s-line selector-icon"></i>
                     </div>
                 </div>
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="sortFilter">
-                            <option value="">Ordenar por</option>
-                            <option value="name-asc">Nombre (A-Z)</option>
-                            <option value="name-desc">Nombre (Z-A)</option>
-                            <option value="date-desc">Más recientes</option>
-                            <option value="date-asc">Más antiguos</option>
-                        </select>
-                        <i class="ri-sort-asc selector-icon"></i>
-                    </div>
-                </div>
                 <!-- Botón para limpiar filtros -->
                 <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
@@ -128,7 +116,6 @@
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
                         <th class="column-description-th">Descripción</th>
-                        <th class="column-users-th">Usuarios</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -152,7 +139,6 @@
                                     {{ $role->description ?? 'Sin descripción' }}
                                 </span>
                             </td>
-                            <td class="column-users-td"><span class="badge badge-info">{{ $role->users_count }}</span></td>
                             <td class="column-date-td">{{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
