@@ -54,7 +54,6 @@
                         <i class="ri-arrow-down-s-line selector-icon"></i>
                     </div>
                 </div>
-
                 <div class="tabla-select-wrapper">
                     <div class="selector">
                         <select id="sortFilter">
@@ -67,17 +66,6 @@
                         <i class="ri-sort-asc selector-icon"></i>
                     </div>
                 </div>
-
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="statusFilter">
-                            <option value="">Todos los estados</option>
-                            <option value="1">Activos</option>
-                            <option value="0">Inactivos</option>
-                        </select>
-                        <i class="ri-filter-3-line selector-icon"></i>
-                    </div>
-                </div>
                 <!-- Botón para limpiar filtros -->
                 <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
@@ -86,60 +74,16 @@
             </div>
 
         </div>
-
-        <!-- Barra contextual de selección (oculta por defecto) -->
-        <div class="selection-bar" id="selectionBar">
-            <div class="selection-actions">
-                <button id="exportSelectedExcel" class="boton-selection boton-success">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-excel-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">Excel</span>
-                    <span class="selection-badge" id="excelBadge">0</span>
-                </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-text-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">CSV</span>
-                    <span class="selection-badge" id="csvBadge">0</span>
-                </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-pdf-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">PDF</span>
-                    <span class="selection-badge" id="pdfBadge">0</span>
-                </button>
-            </div>
-            <button id="deleteSelected" class="boton-selection boton-danger">
-                <span class="boton-selection-icon">
-                    <i class="ri-delete-bin-line"></i>
-                </span>
-                <span class="boton-selection-text">Eliminar</span>
-                <span class="selection-badge" id="deleteBadge">0</span>
-            </button>
-            <div class="selection-info">
-                <span id="selectionCount">0 seleccionados</span>
-                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
-                    <i class="ri-close-large-fill"></i>
-                </button>
-            </div>
-        </div>
         <!-- === Tabla === -->
         <div class="tabla-wrapper">
             <table id="tabla" class="tabla-general display">
                 <thead>
                     <tr>
                         <th class="control"></th>
-                        <th class="column-check-th column-not-order">
-                            <div>
-                                <input type="checkbox" id="checkAll" name="checkAll">
-                            </div>
-                        </th>
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
                         <th class="column-description-th">Descripción</th>
+                        <th class="column-users-th">Usuarios</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -148,11 +92,6 @@
                     @foreach($roles as $role)
                         <tr data-id="{{ $role->id }}" data-name="{{ $role->name }}">
                             <td class="control" title="Expandir detalles"></td>
-                            <td class="column-check-td">
-                                <div>
-                                    <input type="checkbox" class="check-row" id="check-row-{{ $role->id }}" name="roles[]" value="{{ $role->id }}">
-                                </div>
-                            </td>
                             <td class="column-id-td">
                                 <span class="id-text">{{ $role->id }}</span>
                             </td>
@@ -163,6 +102,7 @@
                                     {{ $role->description ?? 'Sin descripción' }}
                                 </span>
                             </td>
+                            <td class="column-users-td"><span class="badge badge-info">{{ $role->users_count }}</span></td>
                             <td class="column-date-td">{{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
@@ -217,7 +157,7 @@
                     pageLength: 10,
                     lengthMenu: [5, 10, 25, 50],
                     features: {
-                        selection: true,
+                        selection: false,
                         export: true,
                         filters: true,
                         statusToggle: false,

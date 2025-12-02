@@ -238,6 +238,17 @@ class UserController extends Controller
     // ======================
     public function destroy(User $user)
     {
+        if ($user->id === Auth::id()) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Acción prohibida',
+                'title' => 'No se puede eliminar',
+                'message' => 'No puedes eliminar tu propia cuenta mientras estés autenticado.',
+            ]);
+
+            return redirect()->route('admin.users.index');
+        }
+
         $name = $user->name;
 
         if ($user->image && Storage::disk('public')->exists($user->image)) {
@@ -259,53 +270,72 @@ class UserController extends Controller
         return redirect()->route('admin.users.index');
     }
 
+
     // =====================================
     //     ELIMINACIÓN MÚLTIPLE
     // =====================================
     public function destroyMultiple(Request $request)
     {
-        // Capitalizar nombre y dirección
-        $name = ucwords(mb_strtolower($request->name));
-        $address = $request->address ? ucfirst(mb_strtolower($request->address)) : null;
-
         $request->validate([
             'users' => 'sometimes|array|min:1',
             'users.*' => 'exists:users,id',
+            'ids' => 'sometimes|array|min:1',
+            'ids.*' => 'exists:users,id'
         ]);
 
-        $userIds = $request->users;
+        $userIds = $request->users ?? $request->ids;
 
-        if (! $userIds) {
+        if (empty($userIds)) {
             Session::flash('info', [
                 'type' => 'danger',
                 'header' => 'Error',
                 'title' => 'Sin selección',
                 'message' => 'No seleccionaste usuarios.',
             ]);
-
             return redirect()->route('admin.users.index');
         }
 
         $users = User::whereIn('id', $userIds)->get();
 
+        if ($users->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'No encontradas',
+                'message' => 'Los usuarios seleccionados no existen.',
+            ]);
+            return redirect()->route('admin.users.index');
+        }
+
+        $authId = Auth::id();
+        $usersToDelete = $users->reject(fn($user) => $user->id === $authId);
+        $excluded = $users->count() - $usersToDelete->count();
+
         $names = [];
 
-        foreach ($users as $user) {
+        foreach ($usersToDelete as $user) {
             $names[] = $user->name;
 
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
 
-            $user->deleted_by = Auth::id();
+            $user->deleted_by = $authId;
             $user->save();
+
+            $user->delete();
+        }
+
+        $message = 'Se eliminaron los siguientes usuarios:';
+        if ($excluded > 0) {
+            $message .= ' (Tu propio usuario no fue eliminado)';
         }
 
         Session::flash('info', [
             'type' => 'danger',
             'header' => 'Eliminación múltiple',
             'title' => 'Usuarios eliminados',
-            'message' => 'Se eliminaron los siguientes usuarios:',
+            'message' => $message,
             'list' => $names,
         ]);
 

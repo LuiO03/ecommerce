@@ -3,7 +3,7 @@
  * SUBMIT BUTTON LOADER - Módulo Global
  * ============================================================================
  * Sistema reutilizable para mostrar loading en botones de submit de formularios
- * 
+ *
  * @author GECKОМERCE
  * @version 1.0.0
  */

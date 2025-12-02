@@ -65,6 +65,30 @@
                         <i class="ri-sort-asc selector-icon"></i>
                     </div>
                 </div>
+                <div class="tabla-select-wrapper">
+    <div class="selector">
+        <select id="moduleFilter">
+            <option value="">Todos los módulos</option>
+            @foreach($permissions->pluck('module')->unique() as $module)
+                <option value="{{ $module }}">{{ $module }}</option>
+            @endforeach
+        </select>
+        <i class="ri-arrow-down-s-line selector-icon"></i>
+    </div>
+</div>
+
+<div class="tabla-select-wrapper">
+    <div class="selector">
+        <select id="roleFilter">
+            <option value="">Todos los roles</option>
+            @foreach(\Spatie\Permission\Models\Role::all() as $role)
+                <option value="{{ $role->name }}">{{ $role->name }}</option>
+            @endforeach
+        </select>
+        <i class="ri-arrow-down-s-line selector-icon"></i>
+    </div>
+</div>
+
             </div>
             <!-- Botón para limpiar filtros -->
             <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
@@ -126,7 +150,6 @@
                         <th class="column-name-th">Nombre</th>
                         <th class="column-modulo-th">Módulo</th>
                         <th class="column-description-th">Descripción</th>
-                        <th class="column-guard-th">Guard</th>
                         <th class="column-roles-th">Roles asignados</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
@@ -144,16 +167,15 @@
                             <td class="column-id-td">
                                 <span class="id-text">{{ $permission->id }}</span>
                             </td>
-                            <td class="column-name-td"><span class="badge badge-info">{{ $permission->name }}</span></td>
+                            <td class="column-name-td">{{ $permission->name }}</td>
                             <td class="column-modulo-td">
-                                <span class="badge badge-secondary">{{ $permission->modulo ?? 'Sin módulo' }}</span>
+                                <span class="badge badge-secondary">{{ $permission->module ?? 'Sin módulo' }}</span>
                             </td>
                             <td class="column-description-td">
                                 <span class="{{ $permission->description ? '' : 'text-muted-td' }}">
                                     {{ $permission->description ?? 'Sin descripción' }}
                                 </span>
                             </td>
-                            <td class="column-guard-td">{{ $permission->guard_name }}</td>
                             <td class="column-roles-td">
                                 @if($permission->roles->count())
                                     @foreach($permission->roles as $role)

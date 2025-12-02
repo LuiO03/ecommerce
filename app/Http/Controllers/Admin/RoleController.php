@@ -92,7 +92,7 @@ class RoleController extends Controller
 
         $role = Role::create([
             'name'        => $name,
-            'description' => ucfirst($request->description),
+            'description' => $request->description ? ucfirst($request->description) : null,
             'guard_name'  => 'web',
             'created_by'  => Auth::id(),
             'updated_by'  => Auth::id(),
@@ -137,7 +137,7 @@ class RoleController extends Controller
 
         $role->update([
             'name'        => $name,
-            'description' => ucfirst($request->description),
+            'description' => $request->description ? ucfirst($request->description) : null,
             'updated_by'  => Auth::id(),
         ]);
 
@@ -161,6 +161,26 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
+        if (in_array($role->name, ['Administrador', 'Superadministrador'])) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Protegido',
+                'title' => 'Rol del sistema',
+                'message' => "El rol <strong>{$role->name}</strong> no puede eliminarse.",
+            ]);
+            return redirect()->route('admin.roles.index');
+        }
+
+        if ($role->users()->count() > 0) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'No se puede eliminar',
+                'title' => 'Rol en uso',
+                'message' => "El rol <strong>{$role->name}</strong> tiene usuarios asignados y no puede eliminarse.",
+            ]);
+            return redirect()->route('admin.roles.index');
+        }
+
         $role->delete();
 
         Session::flash('info', [

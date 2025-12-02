@@ -13,65 +13,65 @@ class RolePermissionSeeder extends Seeder
         // === PERMISOS DEFINIDOS POR MÓDULO (CRUD + ESPECIALES) ===
         $permissions = [
             // --- Productos ---
-            'productos' => [
-                ['name' => 'ver productos', 'description' => 'Puede ver la lista de productos'],
-                ['name' => 'crear productos', 'description' => 'Puede crear nuevos productos'],
-                ['name' => 'editar productos', 'description' => 'Puede editar productos existentes'],
-                ['name' => 'eliminar productos', 'description' => 'Puede eliminar productos del sistema'],
-                ['name' => 'ajustar stock', 'description' => 'Puede modificar existencias en inventario'],
+            'Productos' => [
+                ['name' => 'Ver productos', 'description' => 'Puede ver la lista de productos'],
+                ['name' => 'Crear productos', 'description' => 'Puede crear nuevos productos'],
+                ['name' => 'Editar productos', 'description' => 'Puede editar productos existentes'],
+                ['name' => 'Eliminar productos', 'description' => 'Puede eliminar productos del sistema'],
+                ['name' => 'Ajustar stock', 'description' => 'Puede modificar existencias en inventario'],
             ],
 
             // --- Categorías ---
-            'categorías' => [
-                ['name' => 'ver categorías', 'description' => 'Puede ver la lista de categorías'],
-                ['name' => 'crear categorías', 'description' => 'Puede crear nuevas categorías'],
-                ['name' => 'editar categorías', 'description' => 'Puede editar categorías existentes'],
-                ['name' => 'eliminar categorías', 'description' => 'Puede eliminar categorías del sistema'],
+            'Categorías' => [
+                ['name' => 'Ver categorías', 'description' => 'Puede ver la lista de categorías'],
+                ['name' => 'Crear categorías', 'description' => 'Puede crear nuevas categorías'],
+                ['name' => 'Editar categorías', 'description' => 'Puede editar categorías existentes'],
+                ['name' => 'Eliminar categorías', 'description' => 'Puede eliminar categorías del sistema'],
                 // Permisos para jerarquía de categorías
-                ['name' => 'gestionar jerarquía de categorías', 'description' => 'Puede modificar el orden y la jerarquía de las categorías'],
-                ['name' => 'ver jerarquía de categorías', 'description' => 'Puede visualizar la estructura jerárquica de las categorías'],
+                ['name' => 'Gestionar jerarquía de categorías', 'description' => 'Puede modificar el orden y la jerarquía de las categorías'],
+                ['name' => 'Ver jerarquía de categorías', 'description' => 'Puede visualizar la estructura jerárquica de las categorías'],
             ],
 
             // --- Roles ---
-            'roles' => [
-                ['name' => 'ver roles', 'description' => 'Puede ver la lista de roles'],
-                ['name' => 'crear roles', 'description' => 'Puede crear nuevos roles'],
-                ['name' => 'editar roles', 'description' => 'Puede editar roles existentes'],
-                ['name' => 'eliminar roles', 'description' => 'Puede eliminar roles del sistema'],
-                ['name' => 'asignar permisos a roles', 'description' => 'Puede asignar o quitar permisos a los roles'],
+            'Roles' => [
+                ['name' => 'Ver roles', 'description' => 'Puede ver la lista de roles'],
+                ['name' => 'Crear roles', 'description' => 'Puede crear nuevos roles'],
+                ['name' => 'Editar roles', 'description' => 'Puede editar roles existentes'],
+                ['name' => 'Eliminar roles', 'description' => 'Puede eliminar roles del sistema'],
+                ['name' => 'Asignar permisos a roles', 'description' => 'Puede asignar o quitar permisos a los roles'],
             ],
 
             // --- Permisos ---
-            'permisos' => [
-                ['name' => 'ver permisos', 'description' => 'Puede ver la lista de permisos'],
-                ['name' => 'crear permisos', 'description' => 'Puede crear nuevos permisos'],
-                ['name' => 'editar permisos', 'description' => 'Puede editar permisos existentes'],
-                ['name' => 'eliminar permisos', 'description' => 'Puede eliminar permisos del sistema'],
+            'Permisos' => [
+                ['name' => 'Ver permisos', 'description' => 'Puede ver la lista de permisos'],
+                ['name' => 'Crear permisos', 'description' => 'Puede crear nuevos permisos'],
+                ['name' => 'Editar permisos', 'description' => 'Puede editar permisos existentes'],
+                ['name' => 'Eliminar permisos', 'description' => 'Puede eliminar permisos del sistema'],
             ],
 
             // --- Usuarios ---
-            'usuarios' => [
-                ['name' => 'ver usuarios', 'description' => 'Puede ver la lista de usuarios'],
-                ['name' => 'crear usuarios', 'description' => 'Puede crear nuevos usuarios'],
-                ['name' => 'editar usuarios', 'description' => 'Puede editar usuarios existentes'],
-                ['name' => 'eliminar usuarios', 'description' => 'Puede eliminar usuarios del sistema'],
-                ['name' => 'resetear contraseña de usuario', 'description' => 'Puede resetear contraseña de un usuario'],
+            'Usuarios' => [
+                ['name' => 'Ver usuarios', 'description' => 'Puede ver la lista de usuarios'],
+                ['name' => 'Crear usuarios', 'description' => 'Puede crear nuevos usuarios'],
+                ['name' => 'Editar usuarios', 'description' => 'Puede editar usuarios existentes'],
+                ['name' => 'Eliminar usuarios', 'description' => 'Puede eliminar usuarios del sistema'],
+                ['name' => 'Resetear contraseña de usuario', 'description' => 'Puede resetear contraseña de un usuario'],
             ],
 
             // --- Configuración (no CRUD) ---
-            'configuración' => [
-                ['name' => 'acceder configuración', 'description' => 'Puede acceder a la configuración global del sistema'],
-                ['name' => 'editar configuración', 'description' => 'Puede modificar parámetros avanzados del sistema'],
+            'Configuración' => [
+                ['name' => 'Acceder configuración', 'description' => 'Puede acceder a la configuración global del sistema'],
+                ['name' => 'Editar configuración', 'description' => 'Puede modificar parámetros avanzados del sistema'],
             ],
 
             // --- Reportes ---
-            'reportes' => [
-                ['name' => 'ver reportes', 'description' => 'Puede ver reportes del sistema'],
-                ['name' => 'exportar reportes', 'description' => 'Puede exportar reportes en PDF o Excel'],
+            'Reportes' => [
+                ['name' => 'Ver reportes', 'description' => 'Puede Ver reportes del sistema'],
+                ['name' => 'Exportar reportes', 'description' => 'Puede exportar reportes en PDF o Excel'],
             ],
         ];
 
-        // === CREAR PERMISOS ===
+        // === Crear PERMISOS ===
         foreach ($permissions as $module => $items) {
             foreach ($items as $perm) {
                 Permission::firstOrCreate(
@@ -84,7 +84,7 @@ class RolePermissionSeeder extends Seeder
             }
         }
 
-        // === CREAR ROLES ===
+        // === Crear ROLES ===
         $superadmin = Role::firstOrCreate(
             ['name' => 'Superadministrador'],
             [
@@ -133,43 +133,43 @@ class RolePermissionSeeder extends Seeder
         // Administrador → CRUD completo pero sin configuración avanzada
         $admin->syncPermissions([
             // Productos
-            'ver productos', 'crear productos', 'editar productos', 'eliminar productos',
+            'Ver productos', 'Crear productos', 'Editar productos', 'Eliminar productos',
 
             // Categorías
-            'ver categorías', 'crear categorías', 'editar categorías', 'eliminar categorías',
+            'Ver categorías', 'Crear categorías', 'Editar categorías', 'Eliminar categorías',
 
             // Usuarios
-            'ver usuarios', 'crear usuarios', 'editar usuarios', 'eliminar usuarios',
-            'resetear contraseña de usuario',
+            'Ver usuarios', 'Crear usuarios', 'Editar usuarios', 'Eliminar usuarios',
+            'Resetear contraseña de usuario',
 
             // Reportes
-            'ver reportes', 'exportar reportes',
+            'Ver reportes', 'Exportar reportes',
         ]);
 
         // Vendedor → Acceso limitado
         $vendedor->syncPermissions([
-            'ver productos',
-            'crear productos',
-            'editar productos',
+            'Ver productos',
+            'Crear productos',
+            'Editar productos',
 
-            'ver categorías',
+            'Ver categorías',
 
-            'ver usuarios',
+            'Ver usuarios',
         ]);
 
         // Supervisor → Solo lectura del sistema
         $supervisor->syncPermissions([
-            'ver productos',
-            'ver categorías',
-            'ver usuarios',
-            'ver reportes',
+            'Ver productos',
+            'Ver categorías',
+            'Ver usuarios',
+            'Ver reportes',
         ]);
 
         // Almacenero → Inventario + lectura básica
         $almacenero->syncPermissions([
-            'ver productos',
-            'editar productos',
-            'ajustar stock',
+            'Ver productos',
+            'Editar productos',
+            'Ajustar stock',
         ]);
     }
 }

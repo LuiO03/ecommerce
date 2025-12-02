@@ -59,9 +59,9 @@
             </div>
         @endif
 
-        <x-alert 
-            type="info" 
-            title="Guía rápida:" 
+        <x-alert
+            type="info"
+            title="Guía rápida:"
             :dismissible="true"
             :items="[
                 'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',

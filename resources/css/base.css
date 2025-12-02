@@ -66,7 +66,7 @@
     --color-bg: #111110;
     --color-sidebar-bg: #181818;
     --color-main-bg: #121212;
-    /* 
+    /*
     --color-sidebar-bg: #0F0F0F;
     --color-main-bg: #000000;
     */
@@ -169,7 +169,7 @@
     /* Colores pastel adaptados para modo oscuro */
     /* Los colores pastel en dark mode son más oscuros y menos saturados */
     /* para mantener buen contraste con el fondo oscuro */
-    
+
     --color-primary-pastel: #1a2447;
     --color-secondary-pastel: #2a2530;
     --color-success-pastel: #0d2b0d;
@@ -191,7 +191,7 @@
     --badge-accent-hover-bg: #3d31b2;
     --badge-accent-hover-text: #ffffff;
     --badge-accent-hover-border: #5E35B1;
-    
+
     /* Badge Primary - Azul tradicional (más oscuro/saturado) */
     --badge-primary-bg: #E3F2FD;
     --badge-primary-text: #0D47A1;
@@ -199,7 +199,7 @@
     --badge-primary-hover-bg: #1565C0;
     --badge-primary-hover-text: #ffffff;
     --badge-primary-hover-border: #0D47A1;
-    
+
     /* Badge Info - Cian claro (más claro/vibrante) */
     --badge-info-bg: #E0F7FA;
     --badge-info-text: #00838F;
@@ -207,7 +207,7 @@
     --badge-info-hover-bg: #00ACC1;
     --badge-info-hover-text: #ffffff;
     --badge-info-hover-border: #00838F;
-    
+
     /* Badge Secondary - Púrpura */
     --badge-secondary-bg: #F3E5F5;
     --badge-secondary-text: #4A148C;
@@ -215,7 +215,7 @@
     --badge-secondary-hover-bg: #7B1FA2;
     --badge-secondary-hover-text: #ffffff;
     --badge-secondary-hover-border: #6A1B9A;
-    
+
     /* Badge Success - Verde */
     --badge-success-bg: #E8F5E9;
     --badge-success-text: #1B5E20;
@@ -223,7 +223,7 @@
     --badge-success-hover-bg: #388E3C;
     --badge-success-hover-text: #ffffff;
     --badge-success-hover-border: #2E7D32;
-    
+
     /* Badge Warning - Ámbar */
     --badge-warning-bg: #FFF8E1;
     --badge-warning-text: #E65100;
@@ -231,7 +231,7 @@
     --badge-warning-hover-bg: #FB8C00;
     --badge-warning-hover-text: #ffffff;
     --badge-warning-hover-border: #F57C00;
-    
+
     /* Badge Danger - Rojo */
     --badge-danger-bg: #FFEBEE;
     --badge-danger-text: #B71C1C;
@@ -239,7 +239,7 @@
     --badge-danger-hover-bg: #D32F2F;
     --badge-danger-hover-text: #ffffff;
     --badge-danger-hover-border: #C62828;
-    
+
     /* Badge Gray - Neutral */
     --badge-gray-bg: #FAFAFA;
     --badge-gray-text: #424242;
@@ -247,7 +247,7 @@
     --badge-gray-hover-bg: #757575;
     --badge-gray-hover-text: #ffffff;
     --badge-gray-hover-border: #616161;
-    
+
     /* Badge Orange - Naranja */
     --badge-orange-bg: #FFF3E0;
     --badge-orange-text: #E65100;
@@ -255,7 +255,7 @@
     --badge-orange-hover-bg: #F57C00;
     --badge-orange-hover-text: #ffffff;
     --badge-orange-hover-border: #EF6C00;
-    
+
     /* Badge Pink - Rosa */
     --badge-pink-bg: #FCE4EC;
     --badge-pink-text: #AD1457;
@@ -283,13 +283,13 @@
     --badge-primary-hover-border: #1E88E5;
 
     /* Badge Info - Modo Oscuro (Cian/Turquesa vibrante) */
-    --badge-info-bg: #004D40;
-    --badge-info-text: #26C6DA;
-    --badge-info-border: #00897B;
-    --badge-info-hover-bg: #00796B;
+    --badge-info-bg: #1565C0;
+    --badge-info-text: #4DD0E1;
+    --badge-info-border: #64B5F6;
+    --badge-info-hover-bg: #0D47A1;
     --badge-info-hover-text: #ffffff;
-    --badge-info-hover-border: #4DD0E1;
-    
+    --badge-info-hover-border: #00e1ff;
+
     /* Badge Secondary - Modo Oscuro */
     --badge-secondary-bg: #4A148C;
     --badge-secondary-text: #CE93D8;
@@ -297,7 +297,7 @@
     --badge-secondary-hover-bg: #6A1B9A;
     --badge-secondary-hover-text: #ffffff;
     --badge-secondary-hover-border: #4A148C;
-    
+
     /* Badge Success - Modo Oscuro */
     --badge-success-bg: #1B5E20;
     --badge-success-text: #81C784;
@@ -305,7 +305,7 @@
     --badge-success-hover-bg: #2E7D32;
     --badge-success-hover-text: #ffffff;
     --badge-success-hover-border: #1B5E20;
-    
+
     /* Badge Warning - Modo Oscuro */
     --badge-warning-bg: #E65100;
     --badge-warning-text: #FFCC80;
@@ -313,7 +313,7 @@
     --badge-warning-hover-bg: #F57C00;
     --badge-warning-hover-text: #ffffff;
     --badge-warning-hover-border: #E65100;
-    
+
     /* Badge Danger - Modo Oscuro */
     --badge-danger-bg: #B71C1C;
     --badge-danger-text: #EF9A9A;
@@ -321,7 +321,7 @@
     --badge-danger-hover-bg: #C62828;
     --badge-danger-hover-text: #ffffff;
     --badge-danger-hover-border: #B71C1C;
-    
+
     /* Badge Gray - Modo Oscuro */
     --badge-gray-bg: #2C2C2C;
     --badge-gray-text: #BDBDBD;
@@ -329,7 +329,7 @@
     --badge-gray-hover-bg: #616161;
     --badge-gray-hover-text: #ffffff;
     --badge-gray-hover-border: #424242;
-    
+
     /* Badge Orange - Modo Oscuro */
     --badge-orange-bg: #E65100;
     --badge-orange-text: #FFCC80;
@@ -337,7 +337,7 @@
     --badge-orange-hover-bg: #F57C00;
     --badge-orange-hover-text: #ffffff;
     --badge-orange-hover-border: #E65100;
-    
+
     /* Badge Pink - Modo Oscuro */
     --badge-pink-bg: #880E4F;
     --badge-pink-text: #F48FB1;
@@ -418,7 +418,7 @@
     --font-size-xs: clamp(0.75rem, 1vw, 0.82rem);
 }
 
-/* Tipografías base para escritorio (≥ 992px) 
+/* Tipografías base para escritorio (≥ 992px)
 :root {
     --font-size-h1: 2.4rem;
     --font-size-h2: 1.625rem;
@@ -490,7 +490,7 @@
         font-weight: bolder;
         font-family: var(--font-secondary);
     }
-    
+
     h2 {
         font-family: var(--font-secondary);
         font-size: var(--font-size-h2);

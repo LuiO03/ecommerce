@@ -3,6 +3,12 @@
 @endpush
 
 <x-admin-layout :useSlotContainer="false">
+    <x-slot name="title">
+        <div class="page-icon card-danger">
+            <i class="ri-user-3-line"></i>
+        </div>
+        Perfil de usuario
+    </x-slot>
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-avatar-container {{ $user->background_style && $user->background_style !== '' ? $user->background_style : 'fondo-estilo-2' }}"

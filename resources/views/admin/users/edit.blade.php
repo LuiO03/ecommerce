@@ -15,11 +15,13 @@
             data-entity="usuario" style="margin: 0;">
             @csrf
             @method('DELETE')
-            <button class="boton boton-danger" type="submit">
+            <button class="boton boton-danger" type="submit"
+                @if (Auth::id() === $user->id) disabled title="No puedes eliminar tu propia cuenta" @endif>
                 <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                 <span class="boton-text">Eliminar</span>
             </button>
         </form>
+
     </x-slot>
 
     <!-- === FORMULARIO DE ACTUALIZACIÓN === -->
@@ -43,8 +45,7 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true"
-            :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
         <div class="form-row">
             <div class="form-column">
@@ -98,9 +99,8 @@
                         <select name="role" id="role" class="select-form" required
                             data-validate="required|selected">
                             <option value="" disabled>Seleccione un rol</option>
-                            @foreach($roles as $role)
-                                <option value="{{ $role->name }}" 
-                                    @selected(old('role', $user->roles->first()?->name) == $role->name)>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" @selected(old('role', $user->roles->first()?->name) == $role->name)>
                                     {{ ucfirst($role->name) }}
                                 </option>
                             @endforeach
@@ -207,26 +207,24 @@
                             data-validate="max:255">
                     </div>
                 </div>
-                
+
                 <!-- === DNI === -->
                 <div class="input-group">
                     <label for="dni" class="label-form">DNI</label>
                     <div class="input-icon-container">
                         <i class="ri-id-card-line input-icon"></i>
                         <input type="text" name="dni" id="dni" class="input-form"
-                            value="{{ old('dni', $user->dni) }}" placeholder="8 dígitos"
-                            data-validate="dni">
+                            value="{{ old('dni', $user->dni) }}" placeholder="8 dígitos" data-validate="dni">
                     </div>
                 </div>
-                
+
                 <!-- === Teléfono === -->
                 <div class="input-group">
                     <label for="phone" class="label-form">Teléfono</label>
                     <div class="input-icon-container">
                         <i class="ri-phone-line input-icon"></i>
                         <input type="text" name="phone" id="phone" class="input-form"
-                            value="{{ old('phone', $user->phone) }}" placeholder="9 dígitos"
-                            data-validate="phone">
+                            value="{{ old('phone', $user->phone) }}" placeholder="9 dígitos" data-validate="phone">
                     </div>
                 </div>
             </div>

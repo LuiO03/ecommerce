@@ -89,7 +89,17 @@
 .boton-form:disabled {
     opacity: 0.6;
     box-shadow: none;
-    color: var(--color-border);
+}
+
+.boton-sm[disabled],
+.boton-sm:disabled {
+    opacity: 0.6;
+    box-shadow: none;
+}
+.boton[disabled],
+.boton:disabled {
+    opacity: 0.6;
+    box-shadow: none;
 }
 
 .boton-form .boton-form-icon {

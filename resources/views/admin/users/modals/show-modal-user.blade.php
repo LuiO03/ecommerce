@@ -17,7 +17,7 @@
                         <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
                         <span class="boton-text">Editar</span>
                     </a>
-
+                    <!--
                     <form id="modalUserDeleteForm" action="#" method="POST" title="Eliminar usuario">
                         @csrf
                         @method('DELETE')
@@ -25,7 +25,7 @@
                             <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
                             <span class="boton-text">Eliminar</span>
                         </button>
-                    </form>
+                    </form> -->
                 </div>
             </div>
             <table class="modal-show-table">
@@ -189,19 +189,21 @@
                     if (data.status) {
                         $('#user-status').html(
                             '<span class="badge boton-success"><i class="ri-eye-fill"></i> Activo</span>'
-                            );
+                        );
                     } else {
                         $('#user-status').html(
                             '<span class="badge boton-danger"><i class="ri-eye-off-fill"></i> Inactivo</span>'
-                            );
+                        );
                     }
 
                     if (data.email_verified_at) {
                         $('#user-email-verif').html(
-                            '<span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> Verificado</span>');
+                            '<span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> Verificado</span>'
+                            );
                     } else {
                         $('#user-email-verif').html(
-                            '<span class="badge badge-warning"><i class="ri-close-circle-fill"></i> No verificado</span>');
+                            '<span class="badge badge-warning"><i class="ri-close-circle-fill"></i> No verificado</span>'
+                            );
                     }
 
                     // Imagen

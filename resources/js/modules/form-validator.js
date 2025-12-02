@@ -21,12 +21,13 @@ class FormValidator {
             errorClass: 'input-error',
             successClass: 'input-success', // ✅ NUEVO: Clase de éxito
             errorMessageClass: 'input-error-message',
+            enableSubmit: options.enableSubmit ?? true,
             ...options
         };
 
         this.fields = new Map();
         this.errors = new Map();
-        
+
         this.init();
     }
 
@@ -36,7 +37,40 @@ class FormValidator {
     init() {
         this.scanFields();
         this.attachEventListeners();
+        if (this.options.enableSubmit) {
+            this.setupSubmitControl();
+        }
         console.log('✅ FormValidator inicializado:', this.fields.size, 'campos');
+    }
+
+    setupSubmitControl() {
+        const submitBtn = this.form.querySelector('button[type="submit"],input[type="submit"]');
+        if (!submitBtn) return;
+
+        // Inicialmente deshabilitado
+        submitBtn.disabled = true;
+        // Guardar estado inicial
+        const initialData = new FormData(this.form);
+
+        const checkChanges = () => {
+            const currentData = new FormData(this.form);
+            let edited = false;
+
+            for (let [key, value] of currentData.entries()) {
+                if (initialData.get(key) !== value) {
+                    edited = true;
+                    break;
+                }
+            }
+
+            submitBtn.disabled = !edited;
+        };
+
+        this.form.addEventListener('input', checkChanges);
+        this.form.addEventListener('change', checkChanges);
+
+        // Inicialmente deshabilitar si no hay cambios
+        submitBtn.disabled = true;
     }
 
     // ========================================
@@ -45,16 +79,16 @@ class FormValidator {
     scanFields() {
         // Buscar campos con data-validate explícito
         const explicitInputs = this.form.querySelectorAll('[data-validate]');
-        
+
         // Buscar campos con required HTML (que no tengan data-validate)
         const requiredInputs = this.form.querySelectorAll('[required]:not([data-validate])');
-        
+
         // Combinar ambos
         const allInputs = [...explicitInputs, ...requiredInputs];
-        
+
         allInputs.forEach(input => {
             let rules = [];
-            
+
             // Si tiene data-validate, parsear
             if (input.dataset.validate) {
                 rules = this.parseRules(input.dataset.validate);
@@ -63,10 +97,10 @@ class FormValidator {
             else if (input.hasAttribute('required')) {
                 rules.push({ name: 'required', param: null });
             }
-            
-            const customMessages = input.dataset.validateMessages ? 
+
+            const customMessages = input.dataset.validateMessages ?
                 JSON.parse(input.dataset.validateMessages) : {};
-            
+
             // Detectar tipo de campo para getValue correcto
             const getValue = () => {
                 if (input.type === 'file') {
@@ -74,7 +108,7 @@ class FormValidator {
                 }
                 return input.value.trim();
             };
-            
+
             this.fields.set(input, {
                 rules,
                 customMessages,
@@ -117,16 +151,16 @@ class FormValidator {
         if (this.options.preventSubmitOnError) {
             this.form.addEventListener('submit', (e) => {
                 const isValid = this.validateAll();
-                
+
                 if (!isValid) {
                     e.preventDefault();
                     e.stopImmediatePropagation(); // Evitar que otros listeners se ejecuten
-                    
+
                     // Resetear submit loader si existe
                     if (window.submitLoaderInstance) {
                         window.submitLoaderInstance.resetButton();
                     }
-                    
+
                     if (this.options.scrollToFirstError) {
                         this.scrollToFirstError();
                     }
@@ -146,7 +180,7 @@ class FormValidator {
         const value = config.value();
         let isValid = true;
         let errorMessage = null;
-        
+
         // Si el campo es opcional (no required) y está vacío, skip validación
         const isEmpty = field.type === 'file' ? value.length === 0 : value === '';
         if (!config.isRequired && isEmpty) {
@@ -157,7 +191,7 @@ class FormValidator {
         // Ejecutar cada regla
         for (const rule of config.rules) {
             const validationResult = this.executeRule(rule, value, field);
-            
+
             if (!validationResult.valid) {
                 isValid = false;
                 errorMessage = config.customMessages[rule.name] || validationResult.message;
@@ -370,7 +404,7 @@ class FormValidator {
         // ========================================
         // 📁 VALIDACIONES DE ARCHIVOS/IMÁGENES
         // ========================================
-        
+
         // === ARCHIVO REQUERIDO ===
         fileRequired: (files) => ({
             valid: files && files.length > 0,
@@ -383,7 +417,7 @@ class FormValidator {
             const file = files[0];
             const maxSizeKB = parseInt(param);
             const fileSizeKB = file.size / 1024;
-            
+
             return {
                 valid: fileSizeKB <= maxSizeKB,
                 message: `El archivo no debe exceder ${maxSizeKB}KB (actual: ${Math.round(fileSizeKB)}KB)`
@@ -396,7 +430,7 @@ class FormValidator {
             const file = files[0];
             const maxSizeMB = parseFloat(param);
             const fileSizeMB = file.size / (1024 * 1024);
-            
+
             return {
                 valid: fileSizeMB <= maxSizeMB,
                 message: `El archivo no debe exceder ${maxSizeMB}MB (actual: ${fileSizeMB.toFixed(2)}MB)`
@@ -409,7 +443,7 @@ class FormValidator {
             const file = files[0];
             const allowedTypes = param.split(',').map(t => t.trim().toLowerCase());
             const fileExtension = file.name.split('.').pop().toLowerCase();
-            
+
             return {
                 valid: allowedTypes.includes(fileExtension),
                 message: `Solo se permiten archivos: ${allowedTypes.join(', ')}`
@@ -421,7 +455,7 @@ class FormValidator {
             if (!files || files.length === 0) return { valid: true };
             const file = files[0];
             const allowedMimes = param.split(',').map(m => m.trim().toLowerCase());
-            
+
             return {
                 valid: allowedMimes.includes(file.type.toLowerCase()),
                 message: `Tipo de archivo no permitido. Solo: ${allowedMimes.join(', ')}`
@@ -433,7 +467,7 @@ class FormValidator {
             if (!files || files.length === 0) return { valid: true };
             const file = files[0];
             const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-            
+
             return {
                 valid: imageTypes.includes(file.type.toLowerCase()),
                 message: 'Solo se permiten imágenes (JPG, PNG, GIF, WebP)'
@@ -453,26 +487,26 @@ class FormValidator {
     // ✅ MOSTRAR ÉXITO
     // ========================================
     showSuccess(field) {
-            if (!this.options.showSuccessIndicators) return;
+        if (!this.options.showSuccessIndicators) return;
 
-            // Agregar clase de éxito al input
-            field.classList.add(this.options.successClass);
-            field.classList.remove(this.options.errorClass);
+        // Agregar clase de éxito al input
+        field.classList.add(this.options.successClass);
+        field.classList.remove(this.options.errorClass);
 
-            console.log(`✅ Success aplicado a:`, field.tagName, field.name || field.id, `Clases:`, field.className);
+        console.log(`✅ Success aplicado a:`, field.tagName, field.name || field.id, `Clases:`, field.className);
 
-            // Agregar icono de check en inputs, selects y textareas (no en files)
-            if (field.type !== 'file') {
-                const parent = field.closest('.input-icon-container');
-                if (parent && !parent.querySelector('.validation-check-icon')) {
-                    const checkIcon = document.createElement('i');
-                    checkIcon.className = 'ri-checkbox-circle-fill validation-check-icon';
-                    parent.appendChild(checkIcon);
-                    console.log(`✅ Check icon agregado`);
-                }
-            } else {
-                console.log(`⚠️ No se agrega check (es FILE)`);
+        // Agregar icono de check en inputs, selects y textareas (no en files)
+        if (field.type !== 'file') {
+            const parent = field.closest('.input-icon-container');
+            if (parent && !parent.querySelector('.validation-check-icon')) {
+                const checkIcon = document.createElement('i');
+                checkIcon.className = 'ri-checkbox-circle-fill validation-check-icon';
+                parent.appendChild(checkIcon);
+                console.log(`✅ Check icon agregado`);
             }
+        } else {
+            console.log(`⚠️ No se agrega check (es FILE)`);
+        }
     }
 
     // ========================================
@@ -480,7 +514,7 @@ class FormValidator {
     // ========================================
     clearSuccess(field) {
         field.classList.remove(this.options.successClass);
-        
+
         const parent = field.closest('.input-icon-container');
         if (parent) {
             const checkIcon = parent.querySelector('.validation-check-icon');
@@ -510,7 +544,7 @@ class FormValidator {
             errorElement = document.createElement('span');
             errorElement.className = this.options.errorMessageClass;
             errorElement.innerHTML = `<i class="ri-error-warning-line"></i> <span class="error-text"></span>`;
-            
+
             // Insertar después del input-icon-container o directamente después del field
             const container = field.closest('.input-icon-container');
             if (container) {
@@ -533,7 +567,7 @@ class FormValidator {
 
         const parent = field.closest('.input-group') || field.parentElement;
         const errorElement = parent.querySelector(`.${this.options.errorMessageClass}`);
-        
+
         if (errorElement) {
             errorElement.style.display = 'none';
         }

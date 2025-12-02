@@ -172,6 +172,7 @@
                                 <input type="checkbox" id="checkAll" name="checkAll">
                             </div>
                         </th>
+                        <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
                         <th class="column-last-name-th">Apellidos</th>
                         <th class="column-email-th">Email</th>
@@ -192,6 +193,9 @@
                                     <input type="checkbox" class="check-row" id="check-row-{{ $user->id }}"
                                         name="users[]" value="{{ $user->id }}">
                                 </div>
+                            </td>
+                            <td class="column-id-td">
+                                <span class="id-text">{{ $user->id }}</span>
                             </td>
                             <td class="column-name-td">
                                 <div class="user-info">
@@ -253,11 +257,11 @@
                                         class="delete-form" data-entity="usuario">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="boton-sm boton-danger">
+                                        <button type="submit" class="boton-sm boton-danger disabled"
+                                            @if(Auth::id() === $user->id) disabled title="No puedes eliminar tu propia cuenta" @endif>
                                             <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                         </button>
                                     </form>
-
                                 </div>
                             </td>
                         </tr>
