@@ -8,7 +8,7 @@
         'Si no deseas cambiar tu contraseña, deja los campos en blanco.',
     ]" />
 
-    <div class="form-row">
+    <div class="form-columns-row">
         <div class="form-profile-column column-password">
             <!-- === Contraseña actual === -->
             <div class="input-group">

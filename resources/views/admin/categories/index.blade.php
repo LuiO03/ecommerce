@@ -387,18 +387,6 @@
                     console.log(`🔍 Filtro Nivel: ${currentLevelFilter || 'Todos'}`);
                 });
 
-                // Limpiar filtros personalizados cuando se presiona el botón
-                const originalClearHandler = $('#clearFiltersBtn').data('events')?.click;
-                $('#clearFiltersBtn').on('click', function() {
-                    // Limpiar filtros personalizados
-                    currentFamilyFilter = '';
-                    currentLevelFilter = '';
-                    $('#familyFilter').val('');
-                    $('#levelFilter').val('');
-
-                    console.log('🧹 Filtros personalizados limpiados');
-                });
-
                 // ========================================
                 // 🎨 RESALTAR FILA CREADA/EDITADA
                 // ========================================
@@ -431,6 +419,8 @@
                 // tableManager.refresh() - Refresca la tabla
                 // tableManager.clearSelection() - Limpia selección
                 // tableManager.destroy() - Destruye la instancia
+
+
             });
         </script>
     @endpush

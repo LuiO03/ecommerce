@@ -6,6 +6,7 @@
 @import "./modules/category-hierarchy.css";
 @import "./modules/roles.css";
 @import "./modules/profile.css";
+@import "./modules/ckeditor.css";
 
 
 @import "./components/breadcrumb.css";

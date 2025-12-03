@@ -52,7 +52,7 @@
             ]"
         />
 
-        <div class="form-row">
+        <div class="form-columns-row">
             <div class="form-column">
                 <!-- === Nombre === -->
                 <div class="input-group">

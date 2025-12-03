@@ -103,5 +103,16 @@
                 <p class="card-label">Usuarios</p>
             </div>
         </a>
+
+        <!-- Tarjeta: Posts -->
+        <a href="{{ route('admin.posts.index') }}" class="dashboard-card">
+            <div class="card-icon card-teal">
+                <i class="ri-file-text-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalPosts }}</h1>
+                <p class="card-label">Posts</p>
+            </div>
+        </a>
     </div>
 </x-admin-layout>

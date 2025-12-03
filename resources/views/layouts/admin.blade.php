@@ -17,7 +17,7 @@
         href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- Remix Icon -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
@@ -58,14 +58,14 @@
     <main id="mainContent" class="main-container">
         <div class="page-header">
             @include('partials.admin.breadcrumb')
-            
+
             <div class="page-title-row">
                 @isset($title)
                 <div class="page-title">
                     {{ $title ?? 'Sin título' }}
                 </div>
                 @endisset
-                
+
                 @isset($action)
                     <div class="page-action">
                         {{ $action }}
@@ -96,7 +96,7 @@
             });
         </script>
     @endif
-    
+
     @if (Session::has('toast'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {

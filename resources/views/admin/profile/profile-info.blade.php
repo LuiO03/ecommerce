@@ -5,7 +5,7 @@
 
     <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-    <div class="form-row">
+    <div class="form-columns-row">
 
         <div class="form-profile-column">
             <span class="card-title">Información Personal</span>

@@ -11,16 +11,23 @@
             <span class="boton-icon"><i class="ri-arrow-go-back-line"></i></span>
             <span class="boton-text">Volver</span>
         </a>
-        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="delete-form"
+        @if (Auth::id() !== $user->id)
+            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="delete-form"
             data-entity="usuario" style="margin: 0;">
             @csrf
             @method('DELETE')
-            <button class="boton boton-danger" type="submit"
-                @if (Auth::id() === $user->id) disabled title="No puedes eliminar tu propia cuenta" @endif>
+            <button class="boton boton-danger" type="submit">
                 <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                 <span class="boton-text">Eliminar</span>
             </button>
         </form>
+        @else
+            <button class="boton boton-danger" type="submit" disabled title="No puedes eliminar tu propia cuenta">
+                <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                <span class="boton-text">Eliminar</span>
+            </button>
+        @endif
+
 
     </x-slot>
 
@@ -47,7 +54,7 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-row">
+        <div class="form-columns-row">
             <div class="form-column">
                 <!-- === Nombre === -->
                 <div class="input-group">

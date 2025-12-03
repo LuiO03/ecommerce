@@ -36,7 +36,7 @@
 
             <div class="permissions-container">
                 @forelse($modules as $module => $perms)
-                    <div class="permissions-card">
+                    <div class="permissions-card ripple-card">
                         <div class="card-header flex items-center justify-between mb-2">
                             <span class="card-title">{{ ucfirst($module) }}</span>
 

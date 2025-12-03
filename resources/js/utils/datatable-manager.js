@@ -188,7 +188,7 @@ class DataTableManager {
             language: {
                 emptyTable: `
                     <div class="tabla-no-data">
-                        <i class="ri-database-2-line"></i>
+                        <i class="ri-folder-warning-line"></i>
                         <span>No hay datos disponibles en la tabla</span>
                     </div>
                 `,

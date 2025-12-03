@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\PostController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
@@ -94,6 +95,24 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/users/export/csv', 'exportCsv')->name('admin.users.export.csv');
 });
 
+// POSTS
+Route::controller(PostController::class)->group(function () {
+    Route::get('/posts/{slug}/show', 'show')->name('admin.posts.show');
+    Route::get('/posts', 'index')->name('admin.posts.index');
+    Route::get('/posts/create', 'create')->name('admin.posts.create');
+    Route::post('/posts', 'store')->name('admin.posts.store');
+    Route::get('/posts/{post}/edit', 'edit')->name('admin.posts.edit');
+    Route::put('/posts/{post}', 'update')->name('admin.posts.update');
+    Route::delete('/posts/{post}', 'destroy')->name('admin.posts.destroy');
+    Route::delete('/posts', 'destroyMultiple')->name('admin.posts.destroy-multiple');
+    Route::patch('/posts/{post}/status', 'updateStatus')->name('admin.posts.update-status');
+
+    // Exports
+    Route::post('/posts/export/excel', 'exportExcel')->name('admin.posts.export.excel');
+    Route::post('/posts/export/pdf', 'exportPdf')->name('admin.posts.export.pdf');
+    Route::post('/posts/export/csv', 'exportCsv')->name('admin.posts.export.csv');
+});
+
 // ROLES
 Route::controller(App\Http\Controllers\Admin\RoleController::class)->group(function () {
     Route::get('/roles', 'index')->name('admin.roles.index');
@@ -105,10 +124,10 @@ Route::controller(App\Http\Controllers\Admin\RoleController::class)->group(funct
     Route::patch('/roles/{role}', 'update')->name('admin.roles.update');
     Route::delete('/roles/{role}', 'destroy')->name('admin.roles.destroy');
 
-        // Exports
-        Route::post('/roles/export/excel', 'exportExcel')->name('admin.roles.export.excel');
-        Route::post('/roles/export/pdf', 'exportPdf')->name('admin.roles.export.pdf');
-        Route::post('/roles/export/csv', 'exportCsv')->name('admin.roles.export.csv');
+    // Exports
+    Route::post('/roles/export/excel', 'exportExcel')->name('admin.roles.export.excel');
+    Route::post('/roles/export/pdf', 'exportPdf')->name('admin.roles.export.pdf');
+    Route::post('/roles/export/csv', 'exportCsv')->name('admin.roles.export.csv');
 });
 
 // PERMISSIONS

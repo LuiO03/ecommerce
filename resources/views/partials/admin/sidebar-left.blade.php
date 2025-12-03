@@ -147,6 +147,15 @@
                 </ul>
             </li>
 
+            <!-- Posts -->
+            <li>
+                <a href="{{ route('admin.posts.index') }}" class="sidebar-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
+                    data-tooltip="Posts">
+                    <i class="ri-file-text-line sidebar-icon"></i>
+                    <span>Posts</span>
+                </a>
+            </li>
+
         </ul>
     </div>
 

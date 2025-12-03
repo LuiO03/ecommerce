@@ -378,6 +378,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50px;
     background-color: var(--color-input-bg);
     pointer-events: none;
     color: var(--color-text);
