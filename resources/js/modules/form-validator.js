@@ -556,6 +556,7 @@ class FormValidator {
 
         errorElement.querySelector('.error-text').textContent = message;
         errorElement.style.display = 'flex';
+
     }
 
     // ========================================

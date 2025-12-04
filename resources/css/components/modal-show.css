@@ -164,7 +164,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    gap: 1rem;
     max-height: 90vh;
 }
 
@@ -185,6 +184,7 @@
     display: flex;
     justify-content: center;
     font-family: var(--font-secondary);
+    padding: 1rem 0px;
 }
 .modal-show-body {
     padding: 0px 1rem;

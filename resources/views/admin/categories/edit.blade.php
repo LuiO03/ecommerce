@@ -1,6 +1,6 @@
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-info"><i class="ri-edit-circle-line"></i></div>
+        <div class="page-icon card-warning"><i class="ri-edit-circle-line"></i></div>
         <div class="page-edit-title">
             <span class="page-subtitle">Editar Categoría</span>
             {{ $category->name }}
@@ -28,21 +28,6 @@
         class="form-container" autocomplete="off" id="categoryForm">
         @csrf
         @method('PUT')
-
-        {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
-        @if ($errors->any())
-            <div class="form-error-banner">
-                <i class="ri-error-warning-line form-error-icon"></i>
-                <div>
-                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
 
         {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
         @if ($errors->any())

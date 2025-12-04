@@ -32,6 +32,34 @@
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
         <div class="form-row">
+            <!-- === Imagen principal === -->
+            <div class="image-upload-section">
+                <label class="label-form">Portada del post</label>
+                <input type="file" name="image" id="image" class="file-input" accept="image/*"
+                    data-validate="required|image|maxSizeMB:3">
+
+                <div class="image-preview-zone" id="imagePreviewZone">
+                    <div class="image-placeholder" id="imagePlaceholder">
+                        <i class="ri-image-add-line"></i>
+                        <p>Arrastra una imagen aquí</p>
+                        <span>o haz clic para seleccionar</span>
+                    </div>
+                    <img id="imagePreview" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
+                    <div class="image-overlay" id="imageOverlay" style="display: none;">
+                        <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
+                            <i class="ri-upload-2-line"></i>
+                            <span>Cambiar</span>
+                        </button>
+                        <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                            title="Eliminar imagen">
+                            <i class="ri-delete-bin-line"></i>
+                            <span>Eliminar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
             <!-- === Título === -->
             <div class="input-group">
                 <label for="title" class="label-form">
@@ -112,24 +140,21 @@
                     Contenido
                     <i class="ri-asterisk text-accent"></i>
                 </label>
-                <textarea name="content" id="content" class="textarea-form-post" rows="8" required
+                <textarea name="content" id="content" class="textarea-form-post" rows="8"
                     placeholder="Ingrese el contenido del post" data-validate="required|min:10">{{ old('content') }}</textarea>
             </div>
             <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+
             <script>
+                let editorInstance;
                 document.addEventListener("DOMContentLoaded", () => {
-                    ClassicEditor
-                        .create(document.querySelector('#content'), {
+                    ClassicEditor.create(document.querySelector('#content'), {
                             toolbar: [
                                 'undo', 'redo',
-                                '|',
                                 'heading',
-                                '|',
                                 'bold', 'italic', 'underline', 'strikethrough',
-                                '|',
                                 'blockQuote',
                                 'bulletedList', 'numberedList',
-                                '|',
                                 'link',
                                 'insertTable',
                             ],
@@ -141,8 +166,13 @@
                         })
                         .catch(error => console.error(error));
                 });
+                // Sincronizar contenido antes de enviar
+                document.getElementById('postForm').addEventListener('submit', function() {
+                    if (editorInstance) {
+                        document.querySelector('#content').value = editorInstance.getData();
+                    }
+                });
             </script>
-
         </div>
         <div class="form-columns-row">
             <div class="form-column">
@@ -165,10 +195,8 @@
 
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
-
                     <!-- Contenedor donde aparecerán los tags seleccionados -->
                     <div id="tagContainer" class="tag-container"></div>
-
                     <!-- Inputs ocultos para enviar al backend -->
                     <div id="tagHiddenInputs"></div>
                 </div>
@@ -245,41 +273,105 @@
             </script>
 
             <div class="form-column">
-                <!-- === Imagen principal === -->
-                <div class="image-upload-section">
-                    <label class="label-form">Imagen destacada</label>
-                    <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                        data-validate="image|maxSizeMB:3">
-
-                    <div class="image-preview-zone" id="imagePreviewZone">
-                        <div class="image-placeholder" id="imagePlaceholder">
-                            <i class="ri-image-add-line"></i>
-                            <p>Arrastra una imagen aquí</p>
-                            <span>o haz clic para seleccionar</span>
-                        </div>
-                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
-                            alt="Vista previa">
-                        <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
-                                <i class="ri-upload-2-line"></i>
-                                <span>Cambiar</span>
-                            </button>
-                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
-                                title="Eliminar imagen">
-                                <i class="ri-delete-bin-line"></i>
-                                <span>Eliminar</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- === Imágenes múltiples === -->
                 <div class="image-upload-section">
-                    <label class="label-form">Galería de imágenes</label>
-                    <input type="file" name="images[]" id="images" class="file-input" accept="image/*"
-                        multiple data-validate="image|maxSizeMB:3">
-                    <small>Puede subir varias imágenes</small>
+                    <label class="label-form">Imágenes adicionales</label>
+                    <div class="custom-dropzone" id="customDropzone">
+                        <i class="ri-multi-image-line"></i>
+                        <p>Arrastra imágenes aquí o haz clic</p>
+                        <input type="file" id="imageInput" accept="image/*" multiple hidden>
+                    </div>
+
+                    <div id="previewContainer" class="preview-container"></div>
+
                 </div>
+                <script>
+                    const dropzone = document.getElementById("customDropzone");
+                    const input = document.getElementById("imageInput");
+                    const previewContainer = document.getElementById("previewContainer");
+
+                    let selectedFiles = [];
+
+                    dropzone.addEventListener("click", () => input.click());
+
+                    dropzone.addEventListener("dragover", (e) => {
+                        e.preventDefault();
+                        dropzone.classList.add("dragover");
+                    });
+
+                    dropzone.addEventListener("dragleave", () => {
+                        dropzone.classList.remove("dragover");
+                    });
+
+                    dropzone.addEventListener("drop", (e) => {
+                        e.preventDefault();
+                        dropzone.classList.remove("dragover");
+                        handleFiles(e.dataTransfer.files);
+                    });
+
+                    input.addEventListener("change", (e) => handleFiles(e.target.files));
+
+                    function handleFiles(files) {
+                        [...files].forEach(file => {
+                            if (!file.type.startsWith("image/")) return;
+                            selectedFiles.push(file);
+                            previewImage(file);
+                        });
+                    }
+
+                    function previewImage(file) {
+                        const reader = new FileReader();
+
+                        reader.onload = (e) => {
+                            const div = document.createElement("div");
+                            div.classList.add("preview-item");
+
+                            // Calcular peso en KB o MB
+                            let size = file.size / 1024; // KB
+                            size = size > 1024 ?
+                                (size / 1024).toFixed(2) + " MB" :
+                                size.toFixed(1) + " KB";
+
+                            div.innerHTML = `
+                                <img src="${e.target.result}">
+                                <div class="overlay">
+                                    <span class="file-size">${size}</span>
+                                    <button class="delete-btn" title="Eliminar imagen">
+                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                        <span class="boton-text">Eliminar</span>
+                                    </button>
+
+                                </div>
+                            `;
+
+                            // Click eliminar
+                            div.querySelector(".delete-btn").addEventListener("click", (event) => {
+                                event.stopPropagation();
+                                selectedFiles = selectedFiles.filter(f => f !== file);
+                                div.remove();
+                            });
+
+                            previewContainer.appendChild(div);
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
+
+
+                    let deletedImages = [];
+                    document.querySelectorAll('.delete-existing-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const id = btn.dataset.id;
+
+                            deletedImages.push(id);
+
+                            document.getElementById("deletedImages").value = JSON.stringify(deletedImages);
+
+                            // Eliminar visualmente
+                            btn.closest('.preview-item').remove();
+                        });
+                    });
+                </script>
             </div>
         </div>
 

@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -19,52 +18,6 @@ use App\Exports\PostsCsvExport;
 
 class PostController extends Controller
 {
-    public function index()
-    {
-        $posts = Post::select([
-                'id', 'title', 'status', 'visibility','views', 'allow_comments', 'created_by', 'created_at'
-            ])
-            ->withCount('images')
-            ->orderBy('id', 'desc')
-            ->get();
-
-        return view('admin.posts.index', compact('posts'));
-    }
-
-    public function exportExcel(Request $request)
-    {
-        $ids = $request->input('ids');
-        $filename = 'posts_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
-        return Excel::download(new PostsExcelExport($ids), $filename);
-    }
-
-    public function exportCsv(Request $request)
-    {
-        $ids = $request->has('export_all') ? null : $request->input('ids');
-        $filename = 'posts_' . now()->format('Y-m-d_H-i-s') . '.csv';
-        return Excel::download(new PostsCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
-    }
-
-    public function exportPdf(Request $request)
-    {
-        if ($request->has('ids')) {
-            $posts = Post::whereIn('id', $request->ids)->get();
-        } elseif ($request->has('export_all')) {
-            $posts = Post::all();
-        } else {
-            return back()->with('error', 'No se seleccionaron posts para exportar.');
-        }
-
-        if ($posts->isEmpty()) {
-            return back()->with('error', 'No hay posts disponibles para exportar.');
-        }
-
-        $filename = 'posts_' . now()->format('Y-m-d_H-i-s') . '.pdf';
-        return Pdf::view('admin.export.posts-pdf', compact('posts'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
-    }
 
     public function create()
     {
@@ -77,13 +30,13 @@ class PostController extends Controller
         $request->validate([
             'title'           => 'required|string|max:255|unique:posts,title',
             'content'         => 'required|string|min:10',
-            'status'          => 'required|boolean',
-            'visibility'      => 'required|string|in:public,private',
+            'status'          => 'required|string|in:draft,pending,published,rejected',
+            'visibility'      => 'required|string|in:public,private,registered',
             'allow_comments'  => 'sometimes|boolean',
             'published_at'    => 'nullable|date',
             'tags'            => 'nullable|array',
             'tags.*'          => 'exists:tags,id',
-            'image'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image'           => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'images'          => 'nullable|array',
             'images.*'        => 'image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
@@ -95,9 +48,9 @@ class PostController extends Controller
             'title'          => $title,
             'slug'           => $slug,
             'content'        => $request->content,
-            'status'         => (bool) $request->status,
+            'status'         => $request->status,
             'visibility'     => $request->visibility,
-            'allow_comments' => $request->has('allow_comments'),
+            'allow_comments' => $request->boolean('allow_comments'),
             'published_at'   => null,
             'created_by'     => Auth::id(),
             'updated_by'     => Auth::id(),
@@ -141,6 +94,53 @@ class PostController extends Controller
 
         return redirect()->route('admin.posts.index');
     }
+    public function index()
+    {
+        $posts = Post::select([
+                'id', 'title', 'image', 'status', 'visibility','views', 'allow_comments', 'created_by', 'created_at'
+            ])
+            ->withCount('images')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('admin.posts.index', compact('posts'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $ids = $request->input('ids');
+        $filename = 'posts_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+        return Excel::download(new PostsExcelExport($ids), $filename);
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $ids = $request->has('export_all') ? null : $request->input('ids');
+        $filename = 'posts_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        return Excel::download(new PostsCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        if ($request->has('ids')) {
+            $posts = Post::whereIn('id', $request->ids)->get();
+        } elseif ($request->has('export_all')) {
+            $posts = Post::all();
+        } else {
+            return back()->with('error', 'No se seleccionaron posts para exportar.');
+        }
+
+        if ($posts->isEmpty()) {
+            return back()->with('error', 'No hay posts disponibles para exportar.');
+        }
+
+        $filename = 'posts_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+        return Pdf::view('admin.export.posts-pdf', compact('posts'))
+            ->format('a4')
+            ->name($filename)
+            ->download();
+    }
+
 
     public function edit(Post $post)
     {
@@ -154,8 +154,8 @@ class PostController extends Controller
         $request->validate([
             'title'           => 'required|string|max:255|unique:posts,title,' . $post->id,
             'content'         => 'required|string|min:10',
-            'status'          => 'required|boolean',
-            'visibility'      => 'required|string|in:public,private',
+            'status'          => 'required|string|in:draft,pending,published,rejected',
+            'visibility'      => 'required|string|in:public,private,registered',
             'allow_comments'  => 'sometimes|boolean',
             'published_at'    => 'nullable|date',
             'tags'            => 'nullable|array',
@@ -172,9 +172,9 @@ class PostController extends Controller
             'title'          => $title,
             'slug'           => $slug,
             'content'        => $request->content,
-            'status'         => (bool) $request->status,
+            'status'         => $request->status,
             'visibility'     => $request->visibility,
-            'allow_comments' => $request->has('allow_comments'),
+            'allow_comments' => $request->boolean('allow_comments'),
             'published_at'   => $request->published_at ?? $post->published_at,
             'updated_by'     => Auth::id(),
         ]);

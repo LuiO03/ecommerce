@@ -128,4 +128,21 @@ class Post extends Model
               ->orWhere('content', 'LIKE', "%$term%");
         });
     }
+
+    public static function generateUniqueSlug($title, $id = null)
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (self::where('slug', $slug)
+            ->when($id, fn($q) => $q->where('id', '!=', $id))
+            ->exists()
+        ) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
+    }
 }

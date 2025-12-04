@@ -22,7 +22,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
 
-
     <!-- CSS base del dashboard -->
     @vite(['resources/css/main.css'])
     <!-- CSS de Tailwind y JS global -->
@@ -61,9 +60,9 @@
 
             <div class="page-title-row">
                 @isset($title)
-                <div class="page-title">
-                    {{ $title ?? 'Sin título' }}
-                </div>
+                    <div class="page-title">
+                        {{ $title ?? 'Sin título' }}
+                    </div>
                 @endisset
 
                 @isset($action)
@@ -73,6 +72,7 @@
                 @endisset
             </div>
         </div>
+
         @if ($useSlotContainer)
             <div class="slot-container">{{ $slot }}</div>
         @else

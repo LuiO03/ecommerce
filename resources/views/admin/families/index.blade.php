@@ -33,6 +33,7 @@
             <span class="boton-text">Crear Familia</span>
         </a>
     </x-slot>
+
     <div class="actions-container">
         <!-- === Controles personalizados === -->
         <div class="tabla-controles">

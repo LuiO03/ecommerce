@@ -30,9 +30,9 @@
             </div>
         @endif
 
-        <x-alert 
-            type="info" 
-            title="Guía rápida:" 
+        <x-alert
+            type="info"
+            title="Guía rápida:"
             :dismissible="true"
             :items="[
                 'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
@@ -114,7 +114,7 @@
                     <div class="input-icon-container">
                         <i class="ri-price-tag-3-line input-icon"></i>
 
-                        <input type="text" name="name" id="name" class="input-form @error('name') input-error @enderror" 
+                        <input type="text" name="name" id="name" class="input-form @error('name') input-error @enderror"
                             value="{{ old('name') }}" placeholder="Ingrese el nombre"
                             data-validate="required|alphanumeric|min:3|max:100"
                             data-validate-messages='{"required":"El nombre es obligatorio","alphanumeric":"El nombre debe contener al menos una letra","min":"El nombre debe tener al menos 3 caracteres","max":"El nombre no puede exceder 100 caracteres"}'>

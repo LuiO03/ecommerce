@@ -1,6 +1,6 @@
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-info"><i class="ri-edit-circle-line"></i></div>
+        <div class="page-icon card-warning"><i class="ri-edit-circle-line"></i></div>
         <div class="page-edit-title">
             <span class="page-subtitle">Editar Rol</span>
             {{ $role->name }}

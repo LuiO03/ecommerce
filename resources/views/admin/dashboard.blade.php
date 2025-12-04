@@ -3,7 +3,7 @@
 @endpush
 <x-admin-layout :useSlotContainer="false">
     <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="targeta">
+        <div class="targeta ripple-card">
             <div class="targeta-usuario">
                 @if (auth()->user()->image)
                     <img src="{{ asset('storage/' . auth()->user()->image) }}"
@@ -106,8 +106,8 @@
 
         <!-- Tarjeta: Posts -->
         <a href="{{ route('admin.posts.index') }}" class="dashboard-card">
-            <div class="card-icon card-teal">
-                <i class="ri-file-text-line"></i>
+            <div class="card-icon card-orange">
+                <i class="ri-article-line"></i>
             </div>
             <div class="card-content">
                 <h1 class="card-count">{{ $totalPosts }}</h1>

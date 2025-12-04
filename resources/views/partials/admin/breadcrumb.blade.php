@@ -12,6 +12,7 @@
         'categories' => ['label' => 'Categorías', 'icon' => 'ri-price-tag-3-fill'],
         'products' => ['label' => 'Productos', 'icon' => 'ri-shopping-bag-3-fill'],
         'roles' => ['label' => 'Roles', 'icon' => 'ri-shield-user-fill'],
+        'posts' => ['label' => 'Posts', 'icon' => 'ri-article-fill'],
         'brands' => ['label' => 'Marcas', 'icon' => 'ri-store-2-fill'],
     ];
 

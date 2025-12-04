@@ -106,7 +106,7 @@ Route::controller(PostController::class)->group(function () {
     Route::delete('/posts/{post}', 'destroy')->name('admin.posts.destroy');
     Route::delete('/posts', 'destroyMultiple')->name('admin.posts.destroy-multiple');
     Route::patch('/posts/{post}/status', 'updateStatus')->name('admin.posts.update-status');
-
+    Route::post('/posts/upload-temp-image', 'uploadTemp')->name('admin.posts.upload-temp-image');
     // Exports
     Route::post('/posts/export/excel', 'exportExcel')->name('admin.posts.export.excel');
     Route::post('/posts/export/pdf', 'exportPdf')->name('admin.posts.export.pdf');

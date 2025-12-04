@@ -1,6 +1,6 @@
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
-        <div class="page-icon card-success">
+        <div class="page-icon card-orange">
             <i class="ri-file-text-line"></i>
         </div>
         Lista de Posts
@@ -130,11 +130,16 @@
                             </td>
                             <td class="column-id-td">{{ $post->id }}</td>
                             <td class="column-images-td">
-                                @if ($post->image)
-                                    <img src="{{ asset('storage/' . $post->image) }}" alt="Imagen del post" class="table-thumbnail">
-                                @else
-                                    <i class="ri-image-line"></i>
-                                @endif
+                                <div class="thumbnail-container">
+                                    @if ($post->image && Storage::disk('public')->exists($post->image))
+                                        <img src="{{ asset('storage/' . $post->image) }}" alt="Imagen del post"
+                                            class="table-thumbnail">
+                                    @else
+                                        <div class="table-no-thumbnail" title="Sin imagen">
+                                            <i class="ri-file-close-fill"></i>
+                                        </div>
+                                    @endif
+                                </div>
                             </td>
                             <td class="column-name-td">{{ $post->title }}</td>
                             <td class="column-images-td">{{ $post->images_count }}</td>
@@ -142,7 +147,8 @@
                             <td class="column-allow-comments-td">
                                 @if ($post->allow_comments)
                                     <span class="badge badge-success"><i class="ri-checkbox-circle-line"></i>
-                                        Sí</span>
+                                        Sí
+                                    </span>
                                 @else
                                     <span class="badge badge-danger"><i class="ri-close-circle-line"></i> No</span>
                                 @endif
