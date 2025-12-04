@@ -35,40 +35,64 @@
 
         <!-- ================= IMAGEN PRINCIPAL ================= -->
         <div class="form-row">
+            <!-- === Imagen === -->
             <div class="image-upload-section">
-                <label class="label-form">Portada del post</label>
+                <label class="label-form">Imagen de la familia</label>
+                <input type="file" name="image" id="image" class="file-input" accept="image/*"
+                    data-validate="image|maxSizeMB:3">
+                <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
 
-                <input type="file" name="image" id="image" class="file-input" accept="image/*">
-
-                <div class="image-preview-zone" id="imagePreviewZone">
-                    @if ($post->image)
-                        <img id="imagePreview" class="image-preview image-pulse" src="{{ asset('storage/' . $post->image) }}"
-                            alt="Vista previa">
-
-                        <div class="image-overlay" id="imageOverlay">
-                            <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
-                                <i class="ri-upload-2-line"></i>
-                                <span>Cambiar</span>
-                            </button>
-
-                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
-                                title="Eliminar imagen">
-                                <i class="ri-delete-bin-line"></i>
-                                <span>Eliminar</span>
-                            </button>
+                <!-- Zona de vista previa -->
+                <div class="image-preview-zone {{ $post->image && file_exists(public_path('storage/' . $post->image)) ? 'has-image' : '' }}"
+                    id="imagePreviewZone">
+                    @if ($post->image && file_exists(public_path('storage/' . $post->image)))
+                        <img id="imagePreview" class="image-preview image-pulse"
+                            src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->name }}">
+                        <!-- Placeholder oculto inicialmente (se mostrará al eliminar) -->
+                        <div class="image-placeholder" id="imagePlaceholder" style="display: none;">
+                            <i class="ri-image-add-line"></i>
+                            <p>Arrastra una imagen aquí</p>
+                            <span>o haz clic para seleccionar</span>
+                        </div>
+                    @elseif($post->image)
+                        <!-- Imagen no encontrada -->
+                        <div class="image-error" id="imageError">
+                            <i class="ri-folder-close-line"></i>
+                            <p>Imagen no encontrada</p>
+                            <span>Haz clic para subir una nueva</span>
                         </div>
                     @else
+                        <!-- Sin imagen -->
                         <div class="image-placeholder" id="imagePlaceholder">
                             <i class="ri-image-add-line"></i>
                             <p>Arrastra una imagen aquí</p>
                             <span>o haz clic para seleccionar</span>
                         </div>
-
-                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;">
-                        <div class="image-overlay" id="imageOverlay" style="display: none;"></div>
                     @endif
 
-                    <input type="hidden" name="delete_image" id="deleteImage" value="0">
+                    <!-- Imagen nueva cargada (oculta inicialmente) -->
+                    <img id="imagePreviewNew" class="image-preview image-pulse" style="display: none;"
+                        alt="Vista previa">
+
+                    <!-- Overlay único para todas las imágenes -->
+                    <div class="image-overlay" id="imageOverlay" style="display: none;">
+                        <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
+                            <i class="ri-upload-2-line"></i>
+                            <span>Cambiar</span>
+                        </button>
+                        <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                            title="Eliminar imagen">
+                            <i class="ri-delete-bin-line"></i>
+                            <span>Eliminar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Nombre del archivo -->
+                <div class="image-filename" id="imageFilename"
+                    style="{{ $post->image && file_exists(public_path('storage/' . $post->image)) ? 'display: flex;' : 'display: none;' }}">
+                    <i class="ri-file-image-line"></i>
+                    <span id="filenameText">{{ $post->image ? basename($post->image) : '' }}</span>
                 </div>
             </div>
         </div>
@@ -97,7 +121,8 @@
                         <option value="" disabled>Seleccione un estado</option>
                         <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>Borrador</option>
                         <option value="pending" {{ $post->status == 'pending' ? 'selected' : '' }}>Pendiente</option>
-                        <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>Publicado</option>
+                        <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>Publicado
+                        </option>
                         <option value="rejected" {{ $post->status == 'rejected' ? 'selected' : '' }}>Rechazado</option>
                     </select>
                     <i class="ri-arrow-down-s-line select-arrow"></i>
@@ -113,7 +138,8 @@
                     <select name="visibility" class="select-form" data-validate="required|selected">
                         <option value="" disabled>Seleccione visibilidad</option>
                         <option value="public" {{ $post->visibility == 'public' ? 'selected' : '' }}>Público</option>
-                        <option value="private" {{ $post->visibility == 'private' ? 'selected' : '' }}>Privado</option>
+                        <option value="private" {{ $post->visibility == 'private' ? 'selected' : '' }}>Privado
+                        </option>
                         <option value="registered" {{ $post->visibility == 'registered' ? 'selected' : '' }}>
                             Registrado
                         </option>
@@ -144,8 +170,7 @@
             <div class="input-group">
                 <label class="label-form">Contenido <i class="ri-asterisk text-accent"></i></label>
 
-                <textarea name="content" id="content" class="textarea-form-post" rows="8"
-                    >{{ old('content', $post->content) }}</textarea>
+                <textarea name="content" id="content" class="textarea-form-post" rows="8">{{ old('content', $post->content) }}</textarea>
             </div>
 
             <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
@@ -194,7 +219,8 @@
 
                     <div id="tagHiddenInputs">
                         @foreach ($post->tags as $tag)
-                            <input type="hidden" name="tags[]" value="{{ $tag->id }}" id="tag-hidden-{{ $tag->id }}">
+                            <input type="hidden" name="tags[]" value="{{ $tag->id }}"
+                                id="tag-hidden-{{ $tag->id }}">
                         @endforeach
                     </div>
                 </div>
@@ -264,16 +290,16 @@
                     <div id="previewContainer" class="preview-container">
                         @foreach ($post->images as $img)
                             <div class="preview-item existing-image">
-                                <img src="{{ Storage::url($img->image_path) }}">
-
+                                <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
                                 <div class="overlay">
                                     <span class="file-size">Existente</span>
-                                    <button type="button" class="delete-existing-btn boton-danger"
+                                    <button type="button" class="delete-btn" title="Eliminar imagen"
                                         data-id="{{ $img->id }}">
-                                        <i class="ri-delete-bin-line"></i>
-                                        Eliminar
+                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                        <span class="boton-text">Eliminar</span>
                                     </button>
                                 </div>
+
                             </div>
                         @endforeach
                     </div>
@@ -381,7 +407,9 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                initImageUpload({ mode: 'edit' });
+                initImageUpload({
+                    mode: 'edit'
+                });
 
                 initSubmitLoader({
                     formId: 'postForm',

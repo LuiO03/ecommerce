@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\CategoriesCsvExport;
+use App\Exports\CategoriesExcelExport;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\User;
 use App\Models\Family;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Spatie\LaravelPdf\Facades\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\CategoriesExcelExport;
-use App\Exports\CategoriesCsvExport;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class CategoryController extends Controller
 {
@@ -21,58 +21,63 @@ class CategoryController extends Controller
      |  SHOW
      ====================================================== */
     public function show($slug)
-        {
-            $category = Category::where('slug', $slug)
-                ->with(['family:id,name', 'parent.family:id,name', 'parent:id,name,slug,status,family_id'])
-                ->firstOrFail();
+    {
+        $category = Category::where('slug', $slug)
+            ->with(['family:id,name', 'parent.family:id,name', 'parent:id,name,slug,status,family_id'])
+            ->firstOrFail();
 
-            $createdBy = $category->created_by ? User::find($category->created_by) : null;
-            $updatedBy = $category->updated_by ? User::find($category->updated_by) : null;
+        $createdBy = $category->created_by ? User::find($category->created_by) : null;
+        $updatedBy = $category->updated_by ? User::find($category->updated_by) : null;
 
-            // Herencia de familia
-            $familyName = $category->family ? $category->family->name : ($category->parent && $category->parent->family ? $category->parent->family->name : 'Sin familia');
+        // Herencia de familia
+        $familyName = $category->family ? $category->family->name : ($category->parent && $category->parent->family ? $category->parent->family->name : 'Sin familia');
 
-            // Subcategorías
-            $subcategories = Category::where('parent_id', $category->id)
-                ->select(['id', 'name', 'slug', 'status', 'family_id'])
+        // Función recursiva para obtener subcategorías
+        $getSubcategoriesRecursive = function ($parentCategory) use (&$getSubcategoriesRecursive) {
+            $subs = Category::where('parent_id', $parentCategory->id)
                 ->with('family:id,name')
-                ->get()
-                ->map(function($subcat) use ($category) {
-                    return [
-                        'id' => $subcat->id,
-                        'name' => $subcat->name,
-                        'slug' => $subcat->slug,
-                        'status' => $subcat->status,
-                        'family' => $subcat->family ? $subcat->family->name : ($category->family ? $category->family->name : 'Sin familia'),
-                    ];
-                });
+                ->get();
 
-            // Padre con enlace y estado
-            $parent = null;
-            if ($category->parent) {
-                $parent = [
-                    'name' => $category->parent->name,
-                    'slug' => $category->parent->slug,
-                    'status' => $category->parent->status,
-                    'family' => $category->parent->family ? $category->parent->family->name : 'Sin familia',
+            return $subs->map(function ($sub) use ($getSubcategoriesRecursive) {
+                return [
+                    'id' => $sub->id,
+                    'name' => $sub->name,
+                    'slug' => $sub->slug,
+                    'status' => $sub->status,
+                    'family' => $sub->family ? $sub->family->name : 'Sin familia',
+                    'subcategories' => $getSubcategoriesRecursive($sub), // recursivo
                 ];
-            }
+            })->toArray();
+        };
 
-            return response()->json([
-                'id' => $category->id,
-                'slug' => $category->slug,
-                'name' => $category->name,
-                'description' => $category->description,
-                'status' => $category->status,
-                'family' => $familyName,
-                'parent' => $parent,
-                'image' => $category->image,
-                'subcategories' => $subcategories,
-                'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
-                'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
-                'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
-                'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
-            ]);
+        $subcategories = $getSubcategoriesRecursive($category);
+
+        // Padre con enlace y estado
+        $parent = null;
+        if ($category->parent) {
+            $parent = [
+                'name' => $category->parent->name,
+                'slug' => $category->parent->slug,
+                'status' => $category->parent->status,
+                'family' => $category->parent->family ? $category->parent->family->name : 'Sin familia',
+            ];
+        }
+
+        return response()->json([
+            'id' => $category->id,
+            'slug' => $category->slug,
+            'name' => $category->name,
+            'description' => $category->description,
+            'status' => $category->status,
+            'family' => $familyName,
+            'parent' => $parent,
+            'image' => $category->image,
+            'subcategories' => $subcategories, // ahora incluye todas las subcategorías recursivamente
+            'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
+            'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
+            'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
+            'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
+        ]);
     }
 
     /* ======================================================
@@ -82,11 +87,11 @@ class CategoryController extends Controller
     {
         $categories = Category::select([
             'id', 'name', 'slug', 'description', 'status',
-            'family_id', 'parent_id', 'created_at'
+            'family_id', 'parent_id', 'created_at',
         ])
-        ->orderBy('id', 'desc')
-        ->with(['family:id,name', 'parent:id,name'])
-        ->get();
+            ->orderBy('id', 'desc')
+            ->with(['family:id,name', 'parent:id,name'])
+            ->get();
 
         $families = Family::select('id', 'name')
             ->where('status', true)
@@ -102,7 +107,7 @@ class CategoryController extends Controller
     public function exportExcel(Request $request)
     {
         $ids = $request->input('ids');
-        $filename = 'categorias_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+        $filename = 'categorias_'.now()->format('Y-m-d_H-i-s').'.xlsx';
 
         return Excel::download(new CategoriesExcelExport($ids), $filename);
     }
@@ -111,7 +116,7 @@ class CategoryController extends Controller
     {
         $ids = $request->has('export_all') ? null : $request->input('ids');
 
-        $filename = 'categorias_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        $filename = 'categorias_'.now()->format('Y-m-d_H-i-s').'.csv';
 
         return Excel::download(
             new CategoriesCsvExport($ids),
@@ -136,7 +141,7 @@ class CategoryController extends Controller
             return back()->with('error', 'No hay categorías disponibles para exportar.');
         }
 
-        $filename = 'categorias_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+        $filename = 'categorias_'.now()->format('Y-m-d_H-i-s').'.pdf';
 
         return Pdf::view('admin.export.categories-pdf', compact('categories'))
             ->format('a4')
@@ -190,10 +195,10 @@ class CategoryController extends Controller
         $request->validate([
             'family_id' => 'required|exists:families,id',
             'parent_id' => 'nullable|exists:categories,id',
-            'name'      => 'required|string|max:255|min:3|unique:categories,name|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
+            'name' => 'required|string|max:255|min:3|unique:categories,name|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
-            'status'    => 'required|boolean',
-            'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'status' => 'required|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
@@ -204,21 +209,21 @@ class CategoryController extends Controller
         $imagePath = null;
         if ($request->hasFile('image')) {
             $ext = $request->file('image')->getClientOriginalExtension();
-            $filename = $slug . '-' . time() . '.' . $ext;
-            $imagePath = 'categories/' . $filename;
+            $filename = $slug.'-'.time().'.'.$ext;
+            $imagePath = 'categories/'.$filename;
             $request->file('image')->storeAs('categories', $filename, 'public');
         }
 
         $category = Category::create([
-            'family_id'   => $request->family_id,
-            'parent_id'   => $request->parent_id,
-            'name'        => $request->name,
-            'slug'        => $slug,
+            'family_id' => $request->family_id,
+            'parent_id' => $request->parent_id,
+            'name' => $request->name,
+            'slug' => $slug,
             'description' => $request->description,
-            'status'      => (bool) $request->status,
-            'image'       => $imagePath,
-            'created_by'  => Auth::id(),
-            'updated_by'  => Auth::id(),
+            'status' => (bool) $request->status,
+            'image' => $imagePath,
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id(),
         ]);
 
         Session::flash('toast', [
@@ -293,11 +298,11 @@ class CategoryController extends Controller
     {
         $request->validate([
             'family_id' => 'required|exists:families,id',
-            'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id,
-            'name'      => 'required|string|max:255|min:3|unique:categories,name,' . $category->id . '|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
+            'parent_id' => 'nullable|exists:categories,id|not_in:'.$category->id,
+            'name' => 'required|string|max:255|min:3|unique:categories,name,'.$category->id.'|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
-            'status'    => 'required|boolean',
-            'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'status' => 'required|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
@@ -321,20 +326,20 @@ class CategoryController extends Controller
             }
 
             $ext = $request->file('image')->getClientOriginalExtension();
-            $filename = $slug . '-' . time() . '.' . $ext;
-            $imagePath = 'categories/' . $filename;
+            $filename = $slug.'-'.time().'.'.$ext;
+            $imagePath = 'categories/'.$filename;
             $request->file('image')->storeAs('categories', $filename, 'public');
         }
 
         $category->update([
-            'family_id'   => $request->family_id,
-            'parent_id'   => $request->parent_id,
-            'name'        => $request->name,
-            'slug'        => $slug,
+            'family_id' => $request->family_id,
+            'parent_id' => $request->parent_id,
+            'name' => $request->name,
+            'slug' => $slug,
             'description' => $request->description,
-            'status'      => (bool) $request->status,
-            'image'       => $imagePath,
-            'updated_by'  => Auth::id(),
+            'status' => (bool) $request->status,
+            'image' => $imagePath,
+            'updated_by' => Auth::id(),
         ]);
 
         Session::flash('toast', [
@@ -360,6 +365,7 @@ class CategoryController extends Controller
                 'title' => 'Categoría con subcategorías',
                 'message' => "No se puede eliminar la categoría <strong>{$category->name}</strong> porque tiene subcategorías.",
             ]);
+
             return redirect()->route('admin.categories.index');
         }
 
@@ -370,6 +376,7 @@ class CategoryController extends Controller
                 'title' => 'Categoría con productos',
                 'message' => "La categoría <strong>{$category->name}</strong> tiene productos asociados.",
             ]);
+
             return redirect()->route('admin.categories.index');
         }
 
@@ -400,7 +407,7 @@ class CategoryController extends Controller
     public function destroyMultiple(Request $request)
     {
         $request->validate([
-            'ids'   => 'required|array|min:1',
+            'ids' => 'required|array|min:1',
             'ids.*' => 'exists:categories,id',
         ]);
 
@@ -413,11 +420,11 @@ class CategoryController extends Controller
                 'title' => 'No encontradas',
                 'message' => 'Las categorías seleccionadas no existen.',
             ]);
+
             return redirect()->route('admin.categories.index');
         }
 
-        $restricted = $categories->filter(fn($c) =>
-            $c->children()->exists() || $c->products()->exists()
+        $restricted = $categories->filter(fn ($c) => $c->children()->exists() || $c->products()->exists()
         );
 
         if ($restricted->isNotEmpty()) {
@@ -455,7 +462,7 @@ class CategoryController extends Controller
             'type' => 'danger',
             'header' => 'Registros eliminados',
             'title' => "Se eliminaron <strong>{$count}</strong> categorías",
-            'message' => "Lista de categorías eliminadas:",
+            'message' => 'Lista de categorías eliminadas:',
             'list' => $names,
         ]);
 
@@ -474,14 +481,14 @@ class CategoryController extends Controller
         ]);
 
         $category->update([
-            'status'     => $request->status,
+            'status' => $request->status,
             'updated_by' => Auth::id(),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Estado actualizado correctamente',
-            'status'  => $category->status,
+            'status' => $category->status,
         ]);
     }
 }

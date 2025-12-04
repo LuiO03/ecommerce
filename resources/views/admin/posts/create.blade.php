@@ -57,6 +57,11 @@
                         </button>
                     </div>
                 </div>
+                <!-- Nombre del archivo (temporal) -->
+                <div class="image-filename" id="imageFilename" style="display: none;">
+                    <i class="ri-file-image-line"></i>
+                    <span id="filenameText"></span>
+                </div>
             </div>
         </div>
         <div class="form-row">
@@ -279,11 +284,9 @@
                     <div class="custom-dropzone" id="customDropzone">
                         <i class="ri-multi-image-line"></i>
                         <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" id="imageInput" accept="image/*" multiple hidden>
+                        <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden>
                     </div>
-
                     <div id="previewContainer" class="preview-container"></div>
-
                 </div>
                 <script>
                     const dropzone = document.getElementById("customDropzone");
@@ -340,7 +343,6 @@
                                         <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                         <span class="boton-text">Eliminar</span>
                                     </button>
-
                                 </div>
                             `;
 

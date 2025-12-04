@@ -44,18 +44,13 @@
             </div>
         @endif
 
-        <x-alert
-            type="info"
-            title="Guía rápida:"
-            :dismissible="true"
-            :items="[
-                'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
-                'Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría',
-                'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)'
-            ]"
-        />
+        <x-alert type="info" title="Guía rápida:" :dismissible="true" :items="[
+            'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
+            'Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría',
+            'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)',
+        ]" />
 
-        <div class="form-row">
+        <div class="form-columns-row">
 
             <!-- ============================
                  COLUMNA IZQUIERDA
@@ -149,7 +144,8 @@
                         Descripción
                     </label>
                     <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4" data-validate="min:10|max:250">{{ old('description', $category->description) }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                            data-validate="min:10|max:250">{{ old('description', $category->description) }}</textarea>
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
                 </div>
@@ -252,106 +248,6 @@
                         <span id="filenameText">{{ $category->image ? basename($category->image) : '' }}</span>
                     </div>
                 </div>
-
-            </div>
-            {{-- SUBCATEGORÍAS --}}
-            <div class="form-column">
-                @if (count($subcategories) > 0)
-                    <div class="input-group">
-                        <label class="label-form">
-                            Subcategorías
-                            <span class="label-italic">({{ count($subcategories) }} total)</span>
-                        </label>
-
-                        <div class="subcategories-table-container">
-                            <table class="subcategories-table" id="table">
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                        <th class="text-center">Estado</th>
-                                        <th class="text-center">Productos</th>
-                                        <th class="text-center">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($subcategories as $subcat)
-                                        <tr>
-                                            <td>
-                                                {{ $subcat['id'] }}
-                                            </td>
-                                            <td>
-                                                <div class="subcategory-name">
-                                                    <span class="level-indent"
-                                                        style="margin-left: {{ $subcat['level'] * 1.5 }}rem;">
-                                                        @for ($i = 0; $i < $subcat['level']; $i++)
-                                                            @if ($i == $subcat['level'] - 1)
-                                                                <i class="ri-corner-down-right-line"></i>
-                                                            @endif
-                                                        @endfor
-                                                    </span>
-                                                    <i class="ri-folder-line folder-icon"></i>
-                                                    <span class="name-text">{{ $subcat['name'] }}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {{ $subcat['description'] }}
-                                            </td>
-                                            <td class="text-center">
-                                                @if ($subcat['status'])
-                                                    <span class="badge boton-success">
-                                                        <i class="ri-checkbox-circle-fill"></i>
-                                                        Activo
-                                                    </span>
-                                                @else
-                                                    <span class="badge boton-danger">
-                                                        <i class="ri-close-circle-fill"></i>
-                                                        Inactivo
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge badge-gray">
-                                                    <i class="ri-archive-line"></i>
-                                                    {{ $subcat['products_count'] }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="tabla-botones">
-                                                    <button class="boton-sm boton-info">
-                                                        <span class="boton-sm-icon"><i
-                                                                class="ri-eye-2-fill"></i></span>
-                                                    </button>
-                                                    <a href="{{ route('admin.categories.edit', $subcat['slug']) }}"
-                                                        class="boton-sm boton-warning">
-                                                        <span class="boton-sm-icon"><i
-                                                                class="ri-quill-pen-fill"></i></span>
-                                                    </a>
-                                                    <form
-                                                        action="{{ route('admin.categories.destroy', $subcat['slug']) }}"
-                                                        method="POST" class="delete-form" data-entity="categoría">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="boton-sm boton-danger">
-                                                            <span class="boton-sm-icon"><i
-                                                                    class="ri-delete-bin-2-fill"></i></span>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <x-alert type="warning" title="Importante:" :dismissible="true">
-                            Esta categoría tiene <strong>{{ count($subcategories) }} subcategoría(s)</strong>.
-                            Si cambias su familia o ubicación, todas sus subcategorías se verán afectadas.
-                        </x-alert>
-                    </div>
-                @endif
             </div>
         </div>
 
@@ -412,7 +308,103 @@
                 <span class="boton-form-text">Actualizar Categoría</span>
             </button>
         </div>
-
-
     </form>
+    {{-- SUBCATEGORÍAS --}}
+    <div class="form-row">
+        @if (count($subcategories) > 0)
+            <div class="input-group">
+                <label class="label-form">
+                    Subcategorías
+                    <span class="label-italic">({{ count($subcategories) }} total)</span>
+                </label>
+
+                <div class="subcategories-table-container">
+                    <table class="subcategories-table" id="table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Productos</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($subcategories as $subcat)
+                                <tr>
+                                    <td>
+                                        {{ $subcat['id'] }}
+                                    </td>
+                                    <td>
+                                        <div class="subcategory-name">
+                                            <span class="level-indent"
+                                                style="margin-left: {{ $subcat['level'] * 1.5 }}rem;">
+                                                @for ($i = 0; $i < $subcat['level']; $i++)
+                                                    @if ($i == $subcat['level'] - 1)
+                                                        <i class="ri-corner-down-right-line"></i>
+                                                    @endif
+                                                @endfor
+                                            </span>
+                                            <i class="ri-folder-line folder-icon"></i>
+                                            <span class="name-text">{{ $subcat['name'] }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {{ $subcat['description'] }}
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($subcat['status'])
+                                            <span class="badge boton-success">
+                                                <i class="ri-checkbox-circle-fill"></i>
+                                                Activo
+                                            </span>
+                                        @else
+                                            <span class="badge boton-danger">
+                                                <i class="ri-close-circle-fill"></i>
+                                                Inactivo
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-gray">
+                                            <i class="ri-archive-line"></i>
+                                            {{ $subcat['products_count'] }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="tabla-botones">
+                                            <button class="boton-sm boton-info">
+                                                <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
+                                            </button>
+                                            <a href="{{ route('admin.categories.edit', $subcat['slug']) }}"
+                                                class="boton-sm boton-warning btn-ver-categoria" data-slug="{{ $subcat['slug'] }}">
+                                                <span class="boton-sm-icon"><i class="ri-quill-pen-fill"></i></span>
+                                            </a>
+                                            <form action="{{ route('admin.categories.destroy', $subcat['slug']) }}"
+                                                method="POST" class="delete-form" data-entity="categoría">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="boton-sm boton-danger">
+                                                    <span class="boton-sm-icon"><i
+                                                            class="ri-delete-bin-2-fill"></i></span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <x-alert type="warning" title="Importante:" :dismissible="true">
+                    Esta categoría tiene <strong>{{ count($subcategories) }} subcategoría(s)</strong>.
+                    Si cambias su familia o ubicación, todas sus subcategorías se verán afectadas.
+                </x-alert>
+            </div>
+        @endif
+    </div>
+
+    @include('admin.categories.modals.show-modal-category')
 </x-admin-layout>
