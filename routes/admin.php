@@ -12,6 +12,27 @@ use Illuminate\Support\Facades\Route;
 // Dashboard
 Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 
+// POSTS
+Route::controller(PostController::class)->group(function () {
+    Route::get('/posts/{slug}/show', 'show')->name('admin.posts.show');
+    Route::get('/posts', 'index')->name('admin.posts.index');
+    Route::get('/posts/create', 'create')->name('admin.posts.create');
+    Route::post('/posts', 'store')->name('admin.posts.store');
+    Route::get('/posts/{post}/edit', 'edit')->name('admin.posts.edit');
+    Route::put('/posts/{post}', 'update')->name('admin.posts.update');
+    Route::delete('/posts/{post}', 'destroy')->name('admin.posts.destroy');
+    Route::delete('/posts', 'destroyMultiple')->name('admin.posts.destroy-multiple');
+    Route::patch('/posts/{post}/status', 'updateStatus')->name('admin.posts.update-status');
+    Route::post('/posts/upload-temp-image', 'uploadTemp')->name('admin.posts.upload-temp-image');
+    // Exports
+    Route::post('/posts/export/excel', 'exportExcel')->name('admin.posts.export.excel');
+    Route::post('/posts/export/pdf', 'exportPdf')->name('admin.posts.export.pdf');
+    Route::post('/posts/export/csv', 'exportCsv')->name('admin.posts.export.csv');
+
+    Route::post('/posts/{post}/approve','approve')->name('admin.posts.approve');
+    Route::post('/posts/{post}/reject', 'reject')->name('admin.posts.reject');
+});
+
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', 'index')->name('admin.profile.index');
     Route::put('/profile', 'update')->name('admin.profile.update');
@@ -93,24 +114,6 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/users/export/excel', 'exportExcel')->name('admin.users.export.excel');
     Route::post('/users/export/pdf', 'exportPdf')->name('admin.users.export.pdf');
     Route::post('/users/export/csv', 'exportCsv')->name('admin.users.export.csv');
-});
-
-// POSTS
-Route::controller(PostController::class)->group(function () {
-    Route::get('/posts/{slug}/show', 'show')->name('admin.posts.show');
-    Route::get('/posts', 'index')->name('admin.posts.index');
-    Route::get('/posts/create', 'create')->name('admin.posts.create');
-    Route::post('/posts', 'store')->name('admin.posts.store');
-    Route::get('/posts/{post}/edit', 'edit')->name('admin.posts.edit');
-    Route::put('/posts/{post}', 'update')->name('admin.posts.update');
-    Route::delete('/posts/{post}', 'destroy')->name('admin.posts.destroy');
-    Route::delete('/posts', 'destroyMultiple')->name('admin.posts.destroy-multiple');
-    Route::patch('/posts/{post}/status', 'updateStatus')->name('admin.posts.update-status');
-    Route::post('/posts/upload-temp-image', 'uploadTemp')->name('admin.posts.upload-temp-image');
-    // Exports
-    Route::post('/posts/export/excel', 'exportExcel')->name('admin.posts.export.excel');
-    Route::post('/posts/export/pdf', 'exportPdf')->name('admin.posts.export.pdf');
-    Route::post('/posts/export/csv', 'exportCsv')->name('admin.posts.export.csv');
 });
 
 // ROLES

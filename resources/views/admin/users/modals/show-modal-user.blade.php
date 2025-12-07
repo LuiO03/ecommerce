@@ -1,87 +1,88 @@
 <!-- Modal para mostrar datos completos del usuario -->
-<div id="modalUserShow" class="modal-show hidden modal-horizontal">
+<div id="modalShow" class="modal-show hidden modal-horizontal">
     <div class="modal-content">
         <div class="modal-show-header" id="modalHeader">
             <h6>Detalles del Usuario</h6>
-            <button type="button" id="closeUserModal" class="confirm-close ripple-btn">
+            <button type="button" id="closeModal" class="confirm-close ripple-btn">
                 <i class="ri-close-line"></i>
             </button>
         </div>
 
         <h3 class="modal-title-body" id="user-name-title">Sin nombre</h3>
         <div class="modal-show-body">
-            <div class="modal-img-container">
-                <div id="user-image">-</div>
-                <div class="modal-show-actions">
-                    <a href="#" id="modalUserEditBtn" class="boton boton-warning" title="Editar usuario">
-                        <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                        <span class="boton-text">Editar</span>
-                    </a>
-                    <!--
-                    <form id="modalUserDeleteForm" action="#" method="POST" title="Eliminar usuario">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="boton boton-danger">
-                            <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
-                            <span class="boton-text">Eliminar</span>
-                        </button>
-                    </form> -->
+            <div class="modal-show-row">
+                <div class="modal-img-container">
+                    <div id="user-image">-</div>
+                    <div class="modal-show-actions">
+                        <a href="#" id="modalUserEditBtn" class="boton boton-warning" title="Editar usuario">
+                            <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
+                            <span class="boton-text">Editar</span>
+                        </a>
+                        <form id="modalDeleteForm" action="#" method="POST" title="Eliminar usuario">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="boton boton-danger">
+                                <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                <span class="boton-text">Eliminar</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
+                <table class="modal-show-table">
+                    <tr>
+                        <th>ID</th>
+                        <td id="user-id">-</td>
+                    </tr>
+                    <tr>
+                        <th>Slug</th>
+                        <td id="user-slug">-</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre completo</th>
+                        <td id="user-fullname">-</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td id="user-email">-</td>
+                    </tr>
+                    <tr>
+                        <th>Rol</th>
+                        <td id="user-role">-</td>
+                    </tr>
+                    <tr>
+                        <th>DNI</th>
+                        <td id="user-dni">-</td>
+                    </tr>
+                    <tr>
+                        <th>Teléfono</th>
+                        <td id="user-phone">-</td>
+                    </tr>
+                    <tr>
+                        <th>Dirección</th>
+                        <td id="user-address">-</td>
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                        <td id="user-status">-</td>
+                    </tr>
+                    <tr>
+                        <th>Email verificado</th>
+                        <td id="user-email-verif">-</td>
+                    </tr>
+                    <tr>
+                        <th>Última sesión</th>
+                        <td id="user-last-login-at">-</td>
+                    </tr>
+                    <tr>
+                        <th>Creado por</th>
+                        <td id="user-created-by-fecha">-</td>
+                    </tr>
+                    <tr>
+                        <th>Actualizado por</th>
+                        <td id="user-updated-by-fecha">-</td>
+                    </tr>
+                </table>
             </div>
-            <table class="modal-show-table">
-                <tr>
-                    <th>ID</th>
-                    <td id="user-id">-</td>
-                </tr>
-                <tr>
-                    <th>Slug</th>
-                    <td id="user-slug">-</td>
-                </tr>
-                <tr>
-                    <th>Nombre completo</th>
-                    <td id="user-fullname">-</td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td id="user-email">-</td>
-                </tr>
-                <tr>
-                    <th>Rol</th>
-                    <td id="user-role">-</td>
-                </tr>
-                <tr>
-                    <th>DNI</th>
-                    <td id="user-dni">-</td>
-                </tr>
-                <tr>
-                    <th>Teléfono</th>
-                    <td id="user-phone">-</td>
-                </tr>
-                <tr>
-                    <th>Dirección</th>
-                    <td id="user-address">-</td>
-                </tr>
-                <tr>
-                    <th>Estado</th>
-                    <td id="user-status">-</td>
-                </tr>
-                <tr>
-                    <th>Email verificado</th>
-                    <td id="user-email-verif">-</td>
-                </tr>
-                <tr>
-                    <th>Última sesión</th>
-                    <td id="user-last-login-at">-</td>
-                </tr>
-                <tr>
-                    <th>Creado por</th>
-                    <td id="user-created-by-fecha">-</td>
-                </tr>
-                <tr>
-                    <th>Actualizado por</th>
-                    <td id="user-updated-by-fecha">-</td>
-                </tr>
-            </table>
         </div>
 
         <div class="modal-show-footer">
@@ -95,21 +96,21 @@
 @push('scripts')
     <script>
         function openUserModal() {
-            $('#modalUserShow').removeClass('hidden');
+            $('#modalShow').removeClass('hidden');
             $('.modal-content').removeClass('animate-out').addClass('animate-in');
-            $('#modalUserShow').appendTo('body');
+            $('#modalShow').appendTo('body');
 
             document.addEventListener('keydown', escUserListener);
-            document.addEventListener('mousedown', clickOutsideUserListener);
+            document.addEventListener('mousedown', clickOutsideShowListener);
         }
 
-        function closeUserModal() {
+        function closeModal() {
             $('.modal-content').removeClass('animate-in').addClass('animate-out');
             setTimeout(function() {
-                $('#modalUserShow').addClass('hidden');
+                $('#modalShow').addClass('hidden');
                 setLoadingUserFields();
                 document.removeEventListener('keydown', escUserListener);
-                document.removeEventListener('mousedown', clickOutsideUserListener);
+                document.removeEventListener('mousedown', clickOutsideShowListener);
             }, 250);
         }
 
@@ -253,7 +254,7 @@
                     $('#modalUserEditBtn').attr('href', `/admin/users/${data.slug}/edit`);
 
                     // Botón eliminar
-                    $('#modalUserDeleteForm').attr('action', `/admin/users/${data.slug}`);
+                    $('#modalDeleteForm').attr('action', `/admin/users/${data.slug}`);
                 },
 
                 error: function() {
@@ -262,24 +263,31 @@
             });
         });
 
-        $('#cancelUserButton').on('click', closeUserModal);
-        $('#closeUserModal').on('click', closeUserModal);
+        $('#cancelUserButton').on('click', closeModal);
+        $('#closeModal').on('click', closeModal);
 
         function escUserListener(e) {
-            if (e.key === "Escape") closeUserModal();
+            if (e.key === "Escape") closeModal();
         }
 
-        function clickOutsideUserListener(e) {
-            const modal = document.querySelector('#modalUserShow .modal-content');
-            if (modal && !modal.contains(e.target)) {
-                closeUserModal();
+        // Cerrar modal haciendo clic fuera
+        function clickOutsideShowListener(e) {
+            const overlay = document.getElementById('modalShow');
+            const content = document.querySelector('#modalShow .modal-content');
+
+            // Clic directo en el overlay (no en modal-content)
+            if (e.target === overlay) {
+                closeModal();
             }
         }
 
         // Confirmación eliminar
-        $(document).on('submit', '#modalUserDeleteForm', function(e) {
+        $(document).on('submit', '#modalDeleteForm', function(e) {
             e.preventDefault();
             const form = this;
+
+            // Desactivar cierre por clic afuera mientras se muestra la confirmación
+            document.removeEventListener('click', clickOutsideShowListener);
 
             window.showConfirm({
                 type: 'danger',
@@ -290,9 +298,18 @@
                 confirmText: 'Sí, eliminar',
                 cancelText: 'No, cancelar',
                 onConfirm: function() {
+                    // Restablecer cierre por clic afuera
+                    document.addEventListener('click', clickOutsideShowListener);
                     form.submit();
+                },
+                onCancel: function() {
+                    // Restablecer cierre por clic afuera
+                    restoreOutsideClick();
                 }
             });
         });
+        function restoreOutsideClick() {
+            document.addEventListener('click', clickOutsideShowListener);
+        }
     </script>
 @endpush

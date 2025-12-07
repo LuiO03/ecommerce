@@ -149,7 +149,6 @@
                     placeholder="Ingrese el contenido del post" data-validate="required|min:10">{{ old('content') }}</textarea>
             </div>
             <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
-
             <script>
                 let editorInstance;
                 document.addEventListener("DOMContentLoaded", () => {

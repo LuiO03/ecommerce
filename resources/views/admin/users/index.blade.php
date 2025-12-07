@@ -247,10 +247,10 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-usuario" data-slug="{{ $user->slug }}">
+                                    <button class="boton-sm boton-info btn-ver-usuario" data-slug="{{ $user->slug }}" title="Ver Usuario">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
-                                    <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning">
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning" title="Editar Usuario">
                                         <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
                                     </a>
 
@@ -259,7 +259,7 @@
                                             class="delete-form" data-entity="usuario">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="boton-sm boton-danger">
+                                            <button type="submit" class="boton-sm boton-danger" title="Eliminar Usuario">
                                                 <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                             </button>
                                         </form>

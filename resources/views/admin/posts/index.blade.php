@@ -96,6 +96,11 @@
                         <i class="ri-target-line selector-icon"></i>
                     </div>
                 </div>
+                <!-- Botón para limpiar filtros -->
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
             </div>
         </div>
 
@@ -110,7 +115,6 @@
                         <th class="column-id-th">ID</th>
                         <th class="column-images-th">Imagen</th>
                         <th class="column-name-th">Título</th>
-                        <th class="column-images-th">#Imág.</th>
                         <th class="column-views-th">Vistas</th>
                         <th class="column-allow-comments-th">Comentarios</th>
                         <th class="column-status-post-th">Estado</th>
@@ -142,7 +146,6 @@
                                 </div>
                             </td>
                             <td class="column-name-td">{{ $post->title }}</td>
-                            <td class="column-images-td">{{ $post->images_count }}</td>
                             <td class="column-views-td">{{ $post->views }}</td>
                             <td class="column-allow-comments-td">
                                 @if ($post->allow_comments)
@@ -192,20 +195,38 @@
                             <td class="column-created-td">{{ $post->created_at->format('d/m/Y H:i') }}</td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-post" data-id="{{ $post->id }}">
+                                    <button class="boton-sm boton-info btn-ver-post" data-slug="{{ $post->slug }}" title="Ver Post">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
-                                    <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning">
+                                    <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning" title="Editar Post">
                                         <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
                                     </a>
                                     <form action="{{ route('admin.posts.destroy', $post) }}" method="POST"
                                         class="delete-form" data-entity="post">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="boton-sm boton-danger">
+                                        <button type="submit" class="boton-sm boton-danger" title="Eliminar Post">
                                             <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                         </button>
                                     </form>
+
+                                    @if ($post->status === 'pending')
+                                        <form action="{{ route('admin.posts.approve', $post) }}" method="POST"
+                                            class="form-approve d-inline">
+                                            @csrf
+                                            <button type="button" class="boton-sm boton-success btn-approve" title="Aprobar Post">
+                                                <i class="ri-send-plane-fill"></i>
+                                            </button>
+                                        </form>
+
+                                        <form action="{{ route('admin.posts.reject', $post) }}" method="POST"
+                                            class="form-reject d-inline">
+                                            @csrf
+                                            <button type="button" class="boton-sm boton-danger btn-reject" title="Rechazar Post">
+                                                <i class="ri-close-circle-fill"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -228,12 +249,12 @@
                     entityNameSingular: 'post',
                     entityNamePlural: 'posts',
                     deleteRoute: '/admin/posts',
-                    csrfToken: '{{ csrf_token() }}',
                     exportRoutes: {
                         excel: '/admin/posts/export/excel',
                         csv: '/admin/posts/export/csv',
                         pdf: '/admin/posts/export/pdf'
                     },
+                    csrfToken: '{{ csrf_token() }}',
                     pageLength: 10,
                     lengthMenu: [5, 10, 25, 50],
                     features: {
@@ -289,9 +310,72 @@
                             tableManager.table.order([]).draw();
                     }
                 });
+
+                // ========================================
+                // 🎨 RESALTAR FILA CREADA/EDITADA
+                // ========================================
+                @if (Session::has('highlightRow'))
+                    const highlightId = {{ Session::get('highlightRow') }};
+                    setTimeout(() => {
+                        const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
+                        if (row.length) {
+                            row.addClass('row-highlight');
+
+                            // Scroll suave hacia la fila
+                            row[0].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+
+                            // Remover la clase después de la animación
+                            setTimeout(() => {
+                                row.removeClass('row-highlight');
+                            }, 3000);
+                        }
+                    }, 100);
+                @endif
+            });
+
+            document.addEventListener("DOMContentLoaded", () => {
+
+                // APROBAR
+                document.querySelectorAll(".btn-approve").forEach(btn => {
+                    btn.addEventListener("click", function() {
+
+                        const form = this.closest("form");
+                        const postTitle = this.closest("tr").dataset.name;
+
+                        showConfirm({
+                            type: "success",
+                            header: "¡Atención!",
+                            title: "¿Aprobar post?",
+                            message: `El post <b>${postTitle}</b> será publicado.`,
+                            onConfirm: () => form.submit()
+                        });
+                    });
+                });
+
+                // RECHAZAR
+                document.querySelectorAll(".btn-reject").forEach(btn => {
+                    btn.addEventListener("click", function() {
+
+                        const form = this.closest("form");
+                        const postTitle = this.closest("tr").dataset.name;
+
+                        showConfirm({
+                            type: "danger",
+                            header: "¡Atención!",
+                            title: "¿Rechazar post?",
+                            message: `El post <b>${postTitle}</b> será marcado como rechazado.`,
+                            onConfirm: () => form.submit()
+                        });
+                    });
+                });
+
             });
         </script>
-    @endpush
 
+        </script>
+    @endpush
     @include('admin.posts.modals.show-modal-post')
 </x-admin-layout>

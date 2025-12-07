@@ -1,6 +1,6 @@
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-warning"><i class="ri-edit-2-line"></i></div>
+        <div class="page-icon card-warning"><i class="ri-edit-circle-line"></i></div>
         Editar Post
     </x-slot>
 
@@ -169,18 +169,32 @@
         <div class="form-row">
             <div class="input-group">
                 <label class="label-form">Contenido <i class="ri-asterisk text-accent"></i></label>
-
                 <textarea name="content" id="content" class="textarea-form-post" rows="8">{{ old('content', $post->content) }}</textarea>
             </div>
-
             <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
             <script>
                 let editorInstance;
-                ClassicEditor.create(document.querySelector('#content'))
-                    .then(editor => editorInstance = editor)
-                    .catch(error => console.error(error));
-
-                document.getElementById('postForm').addEventListener('submit', () => {
+                document.addEventListener("DOMContentLoaded", () => {
+                    ClassicEditor.create(document.querySelector('#content'), {
+                            toolbar: [
+                                'undo', 'redo',
+                                'heading',
+                                'bold', 'italic', 'underline', 'strikethrough',
+                                'blockQuote',
+                                'bulletedList', 'numberedList',
+                                'link',
+                                'insertTable',
+                            ],
+                            table: {
+                                contentToolbar: [
+                                    'tableColumn', 'tableRow', 'mergeTableCells'
+                                ]
+                            }
+                        })
+                        .catch(error => console.error(error));
+                });
+                // Sincronizar contenido antes de enviar
+                document.getElementById('postForm').addEventListener('submit', function() {
                     if (editorInstance) {
                         document.querySelector('#content').value = editorInstance.getData();
                     }
@@ -188,8 +202,8 @@
             </script>
         </div>
 
-        <!-- ================= TAGS ================= -->
         <div class="form-columns-row">
+            <!-- ================= TAGS ================= -->
             <div class="form-column">
                 <div class="input-group">
                     <label class="label-form">Tags</label>
@@ -284,23 +298,36 @@
                     <div class="custom-dropzone" id="customDropzone">
                         <i class="ri-multi-image-line"></i>
                         <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" id="imageInput" accept="image/*" multiple hidden>
+                        <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden>
                     </div>
 
                     <div id="previewContainer" class="preview-container">
                         @foreach ($post->images as $img)
-                            <div class="preview-item existing-image">
-                                <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
-                                <div class="overlay">
-                                    <span class="file-size">Existente</span>
-                                    <button type="button" class="delete-btn" title="Eliminar imagen"
-                                        data-id="{{ $img->id }}">
-                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                        <span class="boton-text">Eliminar</span>
-                                    </button>
-                                </div>
+                            @php
+                                $fullPath = public_path('storage/' . $img->path);
+                                $exists = file_exists($fullPath);
+                            @endphp
 
-                            </div>
+                            @if ($exists)
+                                <div class="preview-item existing-image">
+                                    {{-- Imagen encontrada --}}
+                                    <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
+                                    <div class="overlay">
+                                        <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
+                                        <button type="button" class="delete-btn" title="Eliminar imagen"
+                                            data-id="{{ $img->id }}">
+                                            <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                            <span class="boton-text">Eliminar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            @else
+                                {{-- Imagen no encontrada --}}
+                                <div class="image-not-found-block">
+                                    <i class="ri-file-close-line"></i>
+                                    <p>Imagen no encontrada</p>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
 
@@ -407,17 +434,22 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                initImageUpload({
-                    mode: 'edit'
+                // Inicializar manejador de imágenes
+                const imageHandler = initImageUpload({
+                    mode: 'edit',
+                    hasExistingImage: {{ $post->image && file_exists(public_path('storage/' . $post->image)) ? 'true' : 'false' }},
+                    existingImageFilename: '{{ $post->image ? basename($post->image) : '' }}'
                 });
 
-                initSubmitLoader({
-                    formId: 'postForm',
+                // 1. Inicializar submit loader PRIMERO
+                const submitLoader = initSubmitLoader({
+                    formId: 'familyForm',
                     buttonId: 'submitBtn',
                     loadingText: 'Actualizando...'
                 });
 
-                initFormValidator('#postForm', {
+                // 2. Inicializar validación de formulario DESPUÉS
+                const formValidator = initFormValidator('#familyForm', {
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true

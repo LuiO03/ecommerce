@@ -1,75 +1,77 @@
 <!-- Modal para mostrar datos completos de la categoría -->
-<div id="modalCategoryShow" class="modal-show hidden modal-horizontal">
+<div id="modalShow" class="modal-show hidden modal-horizontal">
     <div class="modal-content">
         <div class="modal-show-header" id="modalHeader">
             <h6>Detalles de la Categoría</h6>
-            <button type="button" id="closeCategoryModal" class="confirm-close ripple-btn">
+            <button type="button" id="closeModal" class="confirm-close ripple-btn">
                 <i class="ri-close-line"></i>
             </button>
         </div>
 
         <h3 class="modal-title-body" id="category-name-title">Sin nombre</h3>
         <div class="modal-show-body">
-            <div class="modal-img-container">
-                <div id="category-image">-</div>
-                <div class="modal-show-actions">
-                    <a href="#" id="modalCategoryEditBtn" class="boton boton-warning" title="Editar categoría">
-                        <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                        <span class="boton-text">Editar</span>
-                    </a>
+            <div class="modal-show-row">
+                <div class="modal-img-container">
+                    <div id="category-image">-</div>
+                    <div class="modal-show-actions">
+                        <a href="#" id="modalCategoryEditBtn" class="boton boton-warning" title="Editar categoría">
+                            <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
+                            <span class="boton-text">Editar</span>
+                        </a>
 
-                    <form id="modalCategoryDeleteForm" action="#" method="POST" title="Eliminar categoría">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="boton boton-danger">
-                            <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
-                            <span class="boton-text">Eliminar</span>
-                        </button>
-                    </form>
+                        <form id="modalDeleteForm" action="#" method="POST" title="Eliminar categoría">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="boton boton-danger">
+                                <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                <span class="boton-text">Eliminar</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
+                <table class="modal-show-table">
+                    <tr>
+                        <th>ID</th>
+                        <td id="category-id">-</td>
+                    </tr>
+                    <tr>
+                        <th>Slug</th>
+                        <td id="category-slug">-</td>
+                    </tr>
+                    <tr>
+                        <th>Nombre</th>
+                        <td id="category-name">-</td>
+                    </tr>
+                    <tr>
+                        <th>Descripción</th>
+                        <td id="category-description">-</td>
+                    </tr>
+                    <tr>
+                        <th>Familia</th>
+                        <td id="category-family">-</td>
+                    </tr>
+                    <tr>
+                        <th>Padre</th>
+                        <td id="category-parent">-</td>
+                    </tr>
+                    <tr>
+                        <th>Subcategorías</th>
+                        <td id="category-subcategories">-</td>
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                        <td id="category-status">-</td>
+                    </tr>
+                    <tr>
+                        <th>Creado por</th>
+                        <td id="category-created-by-fecha">-</td>
+                    </tr>
+                    <tr>
+                        <th>Actualizado por</th>
+                        <td id="category-updated-by-fecha">-</td>
+                    </tr>
+                </table>
             </div>
-            <table class="modal-show-table">
-                <tr>
-                    <th>ID</th>
-                    <td id="category-id">-</td>
-                </tr>
-                <tr>
-                    <th>Slug</th>
-                    <td id="category-slug">-</td>
-                </tr>
-                <tr>
-                    <th>Nombre</th>
-                    <td id="category-name">-</td>
-                </tr>
-                <tr>
-                    <th>Descripción</th>
-                    <td id="category-description">-</td>
-                </tr>
-                <tr>
-                    <th>Familia</th>
-                    <td id="category-family">-</td>
-                </tr>
-                <tr>
-                    <th>Padre</th>
-                    <td id="category-parent">-</td>
-                </tr>
-                <tr>
-                    <th>Subcategorías</th>
-                    <td id="category-subcategories">-</td>
-                </tr>
-                <tr>
-                    <th>Estado</th>
-                    <td id="category-status">-</td>
-                </tr>
-                <tr>
-                    <th>Creado por</th>
-                    <td id="category-created-by-fecha">-</td>
-                </tr>
-                <tr>
-                    <th>Actualizado por</th>
-                    <td id="category-updated-by-fecha">-</td>
-                </tr>
-            </table>
         </div>
         <div class="modal-show-footer">
             <button type="button" class="boton boton-modal-close" id="cancelUserButton">
@@ -83,20 +85,20 @@
 @push('scripts')
     <script>
         function openCategoryModal() {
-            $('#modalCategoryShow').removeClass('hidden');
+            $('#modalShow').removeClass('hidden');
             $('.modal-content').removeClass('animate-out').addClass('animate-in');
-            $('#modalCategoryShow').appendTo('body');
+            $('#modalShow').appendTo('body');
             document.addEventListener('keydown', escCategoryListener);
-            document.addEventListener('mousedown', clickOutsideCategoryListener);
+            document.addEventListener('mousedown', clickOutsideShowListener);
         }
 
-        function closeCategoryModal() {
+        function closeModal() {
             $('.modal-content').removeClass('animate-in').addClass('animate-out');
             setTimeout(function() {
-                $('#modalCategoryShow').addClass('hidden');
+                $('#modalShow').addClass('hidden');
                 setLoadingCategoryFields();
                 document.removeEventListener('keydown', escCategoryListener);
-                document.removeEventListener('mousedown', clickOutsideCategoryListener);
+                document.removeEventListener('mousedown', clickOutsideShowListener);
             }, 250);
         }
 
@@ -195,7 +197,7 @@
             // Botón editar
             $('#modalCategoryEditBtn').attr('href', `/admin/categories/${data.slug}/edit`);
             // Botón eliminar
-            $('#modalCategoryDeleteForm').attr('action', `/admin/categories/${data.slug}`);
+            $('#modalDeleteForm').attr('action', `/admin/categories/${data.slug}`);
         }
 
         function loadCategoryModal(slug) {
@@ -224,24 +226,31 @@
             loadCategoryModal(slug);
         });
 
-        $('#closeCategoryModal').on('click', closeCategoryModal);
-        $('#cancelUserButton').on('click', closeCategoryModal);
+        $('#closeModal').on('click', closeModal);
+        $('#cancelUserButton').on('click', closeModal);
 
         function escCategoryListener(e) {
-            if (e.key === "Escape") closeCategoryModal();
+            if (e.key === "Escape") closeModal();
         }
 
-        function clickOutsideCategoryListener(e) {
-            const modal = document.querySelector('#modalCategoryShow .modal-content');
-            if (modal && !modal.contains(e.target)) {
-                closeCategoryModal();
+        function clickOutsideShowListener(e) {
+            const overlay = document.getElementById('modalShow');
+            const content = document.querySelector('#modalShow .modal-content');
+
+            // Clic directo en el overlay (no en modal-content)
+            if (e.target === overlay) {
+                closeModal();
             }
         }
 
         // Confirmación eliminar
-        $(document).on('submit', '#modalCategoryDeleteForm', function(e) {
+        $(document).on('submit', '#modalDeleteForm', function(e) {
             e.preventDefault();
             const form = this;
+
+            // Desactivar cierre por clic afuera mientras se muestra la confirmación
+            document.removeEventListener('click', clickOutsideShowListener);
+
             window.showConfirm({
                 type: 'danger',
                 header: 'Eliminar categoría',
@@ -250,10 +259,20 @@
                     '#category-name').text() + '</strong>.',
                 confirmText: 'Sí, eliminar',
                 cancelText: 'No, cancelar',
+
                 onConfirm: function() {
+                    // Restablecer cierre por clic afuera
+                    document.addEventListener('click', clickOutsideShowListener);
                     form.submit();
+                },
+                onCancel: function() {
+                    // Restablecer cierre por clic afuera
+                    restoreOutsideClick();
                 }
             });
         });
+        function restoreOutsideClick() {
+            document.addEventListener('click', clickOutsideShowListener);
+        }
     </script>
 @endpush

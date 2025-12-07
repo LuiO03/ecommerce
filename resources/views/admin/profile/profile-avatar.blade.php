@@ -13,37 +13,57 @@
             <input type="hidden" name="only_image" value="1">
             <div class="modal-avatar-left">
                 <div class="modal-avatar-preview" id="avatarPreview">
-                    @if ($user->image)
+                    @php
+                        $exists = $user->image && Storage::disk('public')->exists($user->image);
+                        $registered = $user->image != null;
+                    @endphp
+
+                    @if ($exists)
+                        {{-- Imagen válida --}}
                         <img src="{{ asset('storage/' . $user->image) }}" alt="Foto actual" id="avatarPreviewImg">
+                    @elseif ($registered && !$exists)
+                        {{-- Imagen registrada pero perdida --}}
+                        <i class="ri-file-close-line"></i>
+                    @else
+                        {{-- Sin imagen --}}
+                        <i class="ri-user-4-fill"></i>
                     @endif
                 </div>
+
                 <div id="avatarFileName" class="avatar-file-name">
-                    {{ basename($user->image) }}
+                    @if ($exists)
+                        {{ basename($user->image) }}
+                    @else
+                        Sin imagen
+                    @endif
                 </div>
             </div>
             <input type="file" name="image" id="imageModal" accept="image/*" class="hidden">
-                <div class="modal-avatar-actions">
-                    <button type="button" id="uploadSquareBtn" class="boton boton-primary">
-                        <span class="boton-icon"><i class="ri-crop-line"></i></span>
-                        <span class="boton-text">Subir imagen</span>
+            <div class="modal-avatar-actions">
+                <button type="button" id="uploadSquareBtn" class="boton-form boton-primary">
+                    <span class="boton-form-icon"><i class="ri-crop-line"></i></span>
+                    <span class="boton-form-text">Subir imagen</span>
+                </button>
+                <hr class="w-full my-0 border-default">
+                <button type="submit" class="boton-form boton-accent">
+                    <span class="boton-form-icon"><i class="ri-image-edit-fill"></i></span>
+                    <span class="boton-form-text">Guardar foto</span>
+                </button>
+                <hr class="w-full my-0 border-default">
+                @if ($exists)
+                    <button type="button" id="removeAvatarBtn" class="boton-form boton-danger">
+                        <span class="boton-form-icon"><i class="ri-delete-bin-line"></i></span>
+                        <span class="boton-form-text">Quitar foto</span>
                     </button>
-                    <button type="submit" class="boton boton-accent">
-                        <span class="boton-icon"><i class="ri-image-edit-fill"></i></span>
-                        <span class="boton-text">Guardar foto</span>
-                    </button>
-                    <button type="button" id="removeAvatarBtn" class="boton boton-danger">
-                        <span class="boton-icon"><i class="ri-delete-bin-line"></i></span>
-                        <span class="boton-text">Quitar foto</span>
-                    </button>
-
-                    <hr class="w-full my-0 border-default">
-                    
-                    <button type="button" class="boton boton-modal-close" id="cancelButtonAvatar">
-                        <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
-                        <span class="boton-text">Cerrar</span>
-                    </button>
-                </div>
+                @endif
+            </div>
         </form>
+        <div class="modal-show-footer">
+            <button type="button" class="boton boton-modal-close" id="cancelButtonAvatar">
+                <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
+                <span class="boton-text">Cerrar</span>
+            </button>
+        </div>
         <form method="POST" action="{{ route('admin.profile.removeImage') }}" id="removeAvatarForm"
             style="display:none;">
             @csrf

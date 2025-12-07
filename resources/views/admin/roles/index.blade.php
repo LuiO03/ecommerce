@@ -111,7 +111,7 @@
                                     {{-- === BOTÓN EDITAR === --}}
                                     @if (!in_array($role->name, ['Administrador', 'Superadministrador']))
                                         <a href="{{ route('admin.roles.edit', $role) }}" class="boton boton-warning"
-                                            title="Editar">
+                                            title="Editar rol">
                                             <span class="boton-icon"><i class="ri-edit-2-fill"></i></span>
                                             <span class="boton-text">Editar</span>
                                         </a>
@@ -128,7 +128,7 @@
                                         class="delete-form" data-entity="rol">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="boton boton-danger" title="Eliminar">
+                                            <button type="submit" class="boton boton-danger" title="Eliminar rol">
                                                 <span class="boton-text">Borrar</span>
                                                 <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                             </button>
@@ -141,7 +141,7 @@
                                         </button>
                                     @endif
                                     <a href="{{ route('admin.roles.permissions', $role) }}"
-                                        class="boton boton-primary" title="Ver detalle">
+                                        class="boton boton-primary" title="Ver y gestionar permisos">
                                         <span class="boton-icon"><i class="ri-key-2-fill"></i></span>
                                         <span class="boton-text">Permisos</span>
                                     </a>

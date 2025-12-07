@@ -16,7 +16,7 @@
                 <i id="confirmIcon" class="ri-error-warning-line confirm-icon"></i>
             </div>
             <div class="confirm-actions">
-                <button type="button" class="boton boton-modal-close" id="cancelButton">
+                <button type="button" class="boton boton-modal-close" id="confirmCancelButton">
                     <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                     <span class="boton-text">No, Cancelar</span>
                 </button>
@@ -41,7 +41,7 @@ window.showConfirm = function(options) {
 
     // Limpiar listeners previos
     const confirmBtnOld = document.getElementById('confirmButton');
-    const cancelBtnOld = document.getElementById('cancelButton');
+    const cancelBtnOld = document.getElementById('confirmCancelButton');
     const closeBtnOld = document.getElementById('closeModalBtn');
     const confirmBtn = confirmBtnOld.cloneNode(true);
     const cancelBtn = cancelBtnOld.cloneNode(true);
@@ -82,13 +82,13 @@ window.showConfirm = function(options) {
     if (modal.parentElement !== document.body) {
         document.body.appendChild(modal);
     }
-    
+
     // Reducir z-index del sidebar temporalmente
     const sidebar = document.getElementById('logo-sidebar');
     if (sidebar) {
         sidebar.style.zIndex = '1';
     }
-    
+
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     dialog.classList.remove('animate-out');
@@ -100,7 +100,7 @@ window.showConfirm = function(options) {
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            
+
             // Restaurar z-index del sidebar
             const sidebar = document.getElementById('logo-sidebar');
             if (sidebar) {

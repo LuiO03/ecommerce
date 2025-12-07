@@ -662,7 +662,7 @@
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
-    margin-top: 15px;
+    margin-top: 8px;
 }
 
 .preview-item {
@@ -772,6 +772,30 @@
 .remove-btn:hover {
     background: red;
     transform: scale(1.1);
+}
+
+.image-not-found-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-danger);
+    background: var(--color-danger-pastel);
+    border: 1px dashed var(--color-danger);
+    width: 140px;
+    height: 140px;
+    padding: 10px;
+    text-align: center;
+    border-radius: var(--radius-card);
+}
+
+.image-not-found-block i {
+    font-size: 32px;
+}
+
+.image-not-found-block p{
+    font-family: var(--font-secondary);
+    font-weight: bolder;
 }
 
 /* Animaciones */

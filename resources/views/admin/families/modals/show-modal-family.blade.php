@@ -106,7 +106,8 @@
                 success: function(data) {
                     $('#fam-id').text(data.id ?? '-');
                     // Slug tipografía especial
-                    $('#fam-slug').html(`<span class='badge badge-primary slug-mono'>${data.slug ?? '-'}</span>`);
+                    $('#fam-slug').html(
+                        `<span class='badge badge-primary slug-mono'>${data.slug ?? '-'}</span>`);
                     $('#fam-name').text(data.name ?? '-');
                     // Descripción
                     if (!data.description) {
@@ -119,11 +120,11 @@
                     if (data.status) {
                         $('#fam-status').html(
                             '<span class="badge boton-success"><i class="ri-eye-fill"></i> Activo</span>'
-                            );
+                        );
                     } else {
                         $('#fam-status').html(
                             '<span class="badge boton-danger"><i class="ri-eye-off-fill"></i> Inactivo</span>'
-                            );
+                        );
                     }
                     // Imagen fuera de la tabla
                     if (data.image) {
@@ -152,7 +153,7 @@
                         );
                     }
 
-                // Creado por
+                    // Creado por
                     $('#fam-created-by-fecha').html(`
                         <div class="show-cell-content">
                             <span class="font-bold">${data.created_by_name}</span>
@@ -167,7 +168,6 @@
                             <span class="show-date"><i class="ri-time-fill"></i> ${data.updated_at}</span>
                         </div>
                     `);
-
 
                     // Actualizar enlace de Editar
                     $('#modalEditBtn').attr('href', `/admin/families/${data.slug}/edit`);
@@ -199,8 +199,11 @@
 
         // Cerrar modal haciendo clic fuera
         function clickOutsideShowListener(e) {
-            const modal = document.querySelector('#modalShow .modal-content');
-            if (modal && !modal.contains(e.target)) {
+            const overlay = document.getElementById('modalShow');
+            const content = document.querySelector('#modalShow .modal-content');
+
+            // Clic directo en el overlay (no en modal-content)
+            if (e.target === overlay) {
                 closeModal();
             }
         }
@@ -210,18 +213,33 @@
         $(document).on('submit', '#modalDeleteForm', function(e) {
             e.preventDefault();
             const form = this;
+
+            // Desactivar cierre por clic afuera mientras se muestra la confirmación
+            document.removeEventListener('click', clickOutsideShowListener);
+
             window.showConfirm({
                 type: 'danger',
                 header: 'Eliminar familia',
                 title: '¿Estás seguro?',
-                message: 'Esta acción no se puede deshacer.<br>Se eliminará la familia <strong>' + $(
-                    '#fam-name').text() + '</strong> del sistema.',
+                message: 'Esta acción no se puede deshacer.<br>Se eliminará la familia <strong>' +
+                    $('#fam-name').text() + '</strong> del sistema.',
                 confirmText: 'Sí, eliminar',
                 cancelText: 'No, cancelar',
+
                 onConfirm: function() {
+                    // Restablecer cierre por clic afuera
+                    document.addEventListener('click', clickOutsideShowListener);
                     form.submit();
+                },
+                onCancel: function() {
+                    // Restablecer cierre por clic afuera
+                    restoreOutsideClick();
                 }
             });
         });
+
+        function restoreOutsideClick() {
+            document.addEventListener('click', clickOutsideShowListener);
+        }
     </script>
 @endpush
