@@ -270,17 +270,36 @@
                 // FILTRO POR ESTADO POR CLASE
                 // -----------------------------
                 const $statusFilterPost = $('#statusFilterPost');
+                const $visibilityFilterPost = $('#visibilityFilterPost');
 
                 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                    const selected = $statusFilterPost.val();
-                    if (!selected) return true; // si no hay filtro, mostrar todo
+                    // Filtro por estado (texto en columna Estado)
+                    const selectedStatus = $statusFilterPost.val();
+                    const selectedVisibility = $visibilityFilterPost.val();
+
+                    // Si no hay ningún filtro, mostrar todo
+                    if (!selectedStatus && !selectedVisibility) return true;
 
                     const row = tableManager.table.row(dataIndex).node();
-                    const status = $(row).find('.column-status-post-td').text().trim().toLowerCase();
-                    return status === selected.toLowerCase();
+                    // Estado: texto badge dentro de .column-status-post-td
+                    const statusText = $(row).find('.column-status-post-td').text().trim().toLowerCase();
+                    // Visibilidad: texto badge dentro de .column-visibility-td
+                    const visibilityText = $(row).find('.column-visibility-td').text().trim().toLowerCase();
+
+                    const statusOk = selectedStatus ? statusText === selectedStatus.toLowerCase() : true;
+                    const visibilityOk = selectedVisibility ? visibilityText === selectedVisibility.toLowerCase() : true;
+
+                    return statusOk && visibilityOk;
                 });
 
                 $statusFilterPost.on('change', function() {
+                    tableManager.table.draw();
+                });
+
+                // -----------------------------
+                // FILTRO POR VISIBILIDAD
+                // -----------------------------
+                $visibilityFilterPost.on('change', function() {
                     tableManager.table.draw();
                 });
 

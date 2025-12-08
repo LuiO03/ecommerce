@@ -72,9 +72,7 @@
                         <p>No hay imágenes disponibles</p>
                     </div>
                     <!-- 🔵 FIN DEL PLACEHOLDER -->
-
-
-
+                    <span id="mainImageBadge" class="main-image-badge hidden"><i class="ri-star-fill"></i> Principal</span>
                     <div class="modal-img-slider" id="post-image-slider">
                         <button class="slider-btn prev-btn"><i class="ri-arrow-left-s-line"></i></button>
                         <div class="slider-main" id="sliderMain">
@@ -137,6 +135,7 @@
         let brokenImagesGlobal = [];
         let currentSlideIndex = 0;
         let postSliderInterval;
+        let postSliderPauseTimeout;
 
         // Fallback universal
         const DEFAULT_IMAGE = "/storage/default.png";
@@ -259,6 +258,10 @@
 
             showSlide();
 
+            startAutoAdvance();
+        }
+
+        function startAutoAdvance() {
             clearInterval(postSliderInterval);
             postSliderInterval = setInterval(() => {
                 currentSlideIndex = (currentSlideIndex + 1) % postImagesGlobal.length;
@@ -266,10 +269,20 @@
             }, 5000);
         }
 
+        function pauseAutoAdvance(ms = 5000) {
+            // Pausa el auto-avance por "ms" milisegundos
+            clearInterval(postSliderInterval);
+            clearTimeout(postSliderPauseTimeout);
+            postSliderPauseTimeout = setTimeout(() => {
+                startAutoAdvance();
+            }, ms);
+        }
+
         function showSlide() {
             const mainImg = $("#sliderActiveImage");
             const shimmer = $("#shimmerPlaceholder");
             const thumbs = $("#sliderThumbnails .thumbnail-img");
+            const badge = $("#mainImageBadge");
 
             if (postImagesGlobal.length === 0) {
                 mainImg.attr("src", DEFAULT_IMAGE);
@@ -291,6 +304,13 @@
                 $(this).attr("src", DEFAULT_IMAGE);
             });
 
+            // Mostrar insignia "Principal" cuando es la primera imagen (la del post)
+            if (currentSlideIndex === 0) {
+                badge.removeClass('hidden');
+            } else {
+                badge.addClass('hidden');
+            }
+
         }
 
         // Botones slider
@@ -298,6 +318,7 @@
             if (postImagesGlobal.length) {
                 currentSlideIndex = (currentSlideIndex - 1 + postImagesGlobal.length) % postImagesGlobal.length;
                 showSlide();
+                pauseAutoAdvance();
             }
         });
 
@@ -305,7 +326,13 @@
             if (postImagesGlobal.length) {
                 currentSlideIndex = (currentSlideIndex + 1) % postImagesGlobal.length;
                 showSlide();
+                pauseAutoAdvance();
             }
+        });
+
+        // Pausar también cuando el usuario elige una miniatura específica
+        $(document).on('click', '#sliderThumbnails .thumbnail-img', function() {
+            pauseAutoAdvance();
         });
 
         // ========== MODAL FUNCTIONS ==========
