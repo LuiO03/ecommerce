@@ -73,6 +73,8 @@
                     </div>
                     <!-- 🔵 FIN DEL PLACEHOLDER -->
 
+
+
                     <div class="modal-img-slider" id="post-image-slider">
                         <button class="slider-btn prev-btn"><i class="ri-arrow-left-s-line"></i></button>
                         <div class="slider-main" id="sliderMain">
@@ -132,6 +134,7 @@
 @push('scripts')
     <script>
         let postImagesGlobal = [];
+        let brokenImagesGlobal = [];
         let currentSlideIndex = 0;
         let postSliderInterval;
 
@@ -146,28 +149,60 @@
         }
 
         // Construye la lista de imágenes con fallback
-        function sanitizeImages(images) {
-            if (!Array.isArray(images)) return [];
 
-            return images
-                .map(img => img?.path?.trim())
-                .filter(path => path && path.length > 3) // Debe tener ruta real
-                .map(path => ({
-                    path
-                }));
-        }
+            // Verifica si la imagen existe en el servidor
+            function checkImageExists(url) {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    img.onload = () => resolve(true);
+                    img.onerror = () => resolve(false);
+                    img.src = url;
+                });
+            }
+
+            // Sanitiza y filtra imágenes rotas
+            async function sanitizeImages(images) {
+                if (!Array.isArray(images)) return [];
+                const validImages = [];
+                brokenImagesGlobal = [];
+
+                for (const img of images) {
+                    const path = img?.path?.trim();
+                    if (path && path.length > 3) {
+                        const url = `/storage/${path}`;
+                        // eslint-disable-next-line no-await-in-loop
+                        const exists = await checkImageExists(url);
+                        if (exists) {
+                            validImages.push({ path });
+                        } else {
+                            brokenImagesGlobal.push(path);
+                        }
+                    }
+                }
+                return validImages;
+            }
 
 
-        function renderPostImagesSlider(imagesRaw) {
-            postImagesGlobal = sanitizeImages(imagesRaw);
+        async function renderPostImagesSlider(imagesRaw) {
+            postImagesGlobal = await sanitizeImages(imagesRaw);
 
             const mainImg = $("#sliderActiveImage");
             const thumbContainer = $("#sliderThumbnails");
             const shimmer = $("#shimmerPlaceholder");
             const slider = $("#post-image-slider");
             const placeholder = $("#post-no-image");
+            const brokenAlert = $("#brokenImagesAlert");
+            const brokenCount = $("#brokenImagesCount");
 
             thumbContainer.html("");
+
+            // Mostrar alerta si hay imágenes rotas
+            if (brokenImagesGlobal.length > 0) {
+                brokenAlert.removeClass("hidden");
+                brokenCount.html(`<span class='badge badge-danger'>${brokenImagesGlobal.length}</span> `);
+            } else {
+                brokenAlert.addClass("hidden");
+            }
 
             // 🔵 SI NO HAY NINGUNA IMAGEN → MOSTRAR PLACEHOLDER
             if (postImagesGlobal.length === 0) {
@@ -191,39 +226,36 @@
 
             currentSlideIndex = 0;
 
-            // Thumbnails
+
+            // Miniaturas válidas
             postImagesGlobal.forEach((img, index) => {
-                let thumb;
-
                 const path = img.path?.trim();
-
-                if (!path) {
-                    // 🔵 Si la imagen NO existe
-                    thumb = $(`<div class="thumbnail-placeholder"><i class="ri-image-line"></i></div>`);
-                } else {
-                    // Imagen normal
-                    thumb = $(`<img src="/storage/${path}" class="thumbnail-img">`);
-
-                    // Fallback automático si la miniatura no carga
-                    thumb.on("error", function() {
-                        $(this).replaceWith(
-                            `<div class="thumbnail-placeholder"><i class="ri-image-line"></i></div>`
-                        );
-                    });
-                }
-
-                // Resaltar la primera miniatura
+                let thumb = $(`<img src="/storage/${path}" class="thumbnail-img">`);
+                // Fallback automático si la miniatura no carga
+                thumb.on("error", function() {
+                    $(this).replaceWith(`<div class="thumbnail-placeholder"><i class="ri-image-line"></i></div>`);
+                });
                 if (index === 0) thumb.addClass("active-thumb");
-
-                // Al hacer clic en una miniatura → cambiar de slide
                 thumb.on("click", () => {
                     currentSlideIndex = index;
                     showSlide();
                 });
-
                 thumbContainer.append(thumb);
             });
 
+            // Miniaturas de imágenes rotas
+            brokenImagesGlobal.forEach(() => {
+                // Contenedor igual que la miniatura, fondo gris, ícono y texto
+                const brokenThumb = $(`
+                    <div class="thumbnail-img thumbnail-broken" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#b91c1c;position:relative;">
+                        <div style="text-align:center;width:100%;">
+                            <i class="ri-image-off-line" style="font-size:1.5em;"></i>
+                            <div style="font-size:0.8em;">No disponible</div>
+                        </div>
+                    </div>
+                `);
+                thumbContainer.append(brokenThumb);
+            });
 
             showSlide();
 
@@ -311,11 +343,15 @@
             fields.forEach(f => $(f).html('<div class="shimmer shimmer-cell"></div>'));
 
             $("#sliderActiveImage").attr("src", DEFAULT_IMAGE);
-            $("#sliderThumbnails").html("");
+            // Mostrar shimmer en miniaturas
+            let shimmerThumbs = '';
+            for (let i = 0; i < 4; i++) {
+                shimmerThumbs += '<div class="thumbnail-img shimmer shimmer-image" style="height:48px;width:48px;margin-right:4px;"></div>';
+            }
+            $("#sliderThumbnails").html(shimmerThumbs);
         }
 
-        function renderPostModal(data) {
-
+        async function renderPostModal(data) {
             function getStatusBadge(status) {
                 const map = {
                     draft: {
@@ -335,12 +371,10 @@
                         class: 'badge-danger'
                     }
                 };
-
                 const item = map[status] || {
                     text: status ? status : "Desconocido",
                     class: "badge-secondary"
                 };
-
                 return `<span class="badge ${item.class}">${item.text}</span>`;
             }
 
@@ -372,15 +406,11 @@
 
             // Construcción de imágenes principal + adicionales
             let images = [];
-
             if (data.image && data.image.trim() !== "") {
-                images.push({
-                    path: data.image
-                });
+                images.push({ path: data.image });
             }
-
             if (Array.isArray(data.images)) {
-                images = images.concat(sanitizeImages(data.images));
+                images = images.concat(data.images);
             }
 
             $("#post-created-by").html(`
@@ -416,7 +446,7 @@
                 $("#rejectForm").hide();
             }
 
-            renderPostImagesSlider(images);
+            await renderPostImagesSlider(images);
         }
 
         function loadPostModal(slug) {

@@ -98,6 +98,7 @@
     flex-direction: column;
     width: 150px;
     justify-content: center;
+    align-items: center;
     gap: 10px;
     height: 250px;
 }

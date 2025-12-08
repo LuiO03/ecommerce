@@ -41,18 +41,18 @@
             <input type="file" name="image" id="imageModal" accept="image/*" class="hidden">
             <div class="modal-avatar-actions">
                 <button type="button" id="uploadSquareBtn" class="boton-form boton-primary">
-                    <span class="boton-form-icon"><i class="ri-crop-line"></i></span>
+                    <span class="boton-form-icon"><i class="ri-image-circle-ai-fill"></i></span>
                     <span class="boton-form-text">Subir imagen</span>
                 </button>
                 <hr class="w-full my-0 border-default">
                 <button type="submit" class="boton-form boton-accent">
-                    <span class="boton-form-icon"><i class="ri-image-edit-fill"></i></span>
+                    <span class="boton-form-icon"><i class="ri-save-3-fill"></i></span>
                     <span class="boton-form-text">Guardar foto</span>
                 </button>
                 <hr class="w-full my-0 border-default">
                 @if ($exists)
                     <button type="button" id="removeAvatarBtn" class="boton-form boton-danger">
-                        <span class="boton-form-icon"><i class="ri-delete-bin-line"></i></span>
+                        <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
                         <span class="boton-form-text">Quitar foto</span>
                     </button>
                 @endif

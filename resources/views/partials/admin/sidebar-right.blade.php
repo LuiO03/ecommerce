@@ -39,9 +39,9 @@
                     </a>
                 </li>
                 <li>
-                    <form action="{{ route('logout') }}" method="POST">
+                    <form id="logoutFormRight" action="{{ route('logout') }}" method="POST" onsubmit="return false;">
                         @csrf
-                        <button type="submit" class="menu-item-logout">
+                        <button type="button" id="logoutBtnRight" class="menu-item-logout">
                             <i class="ri-shut-down-line sidebar-icon"></i>
                             <span>Cerrar sesión</span>
                         </button>
@@ -70,3 +70,29 @@
         </ul>
     </div>
 </aside>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtnRight = document.getElementById('logoutBtnRight');
+    const logoutFormRight = document.getElementById('logoutFormRight');
+    if (logoutBtnRight && logoutFormRight) {
+        logoutBtnRight.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (typeof window.showConfirm === 'function') {
+                window.showConfirm({
+                    type: 'danger',
+                    header: 'Cerrar sesión',
+                    title: '¿Deseas salir de tu cuenta?',
+                    message: 'Se cerrará tu sesión actual.',
+                    confirmText: 'Sí, salir',
+                    cancelText: 'Cancelar',
+                    onConfirm: function() {
+                        logoutFormRight.submit();
+                    }
+                });
+            } else {
+                logoutFormRight.submit();
+            }
+        });
+    }
+});
+</script>
