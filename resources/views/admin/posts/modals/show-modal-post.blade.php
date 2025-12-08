@@ -136,6 +136,8 @@
         let currentSlideIndex = 0;
         let postSliderInterval;
         let postSliderPauseTimeout;
+        let postModalRequest = null;
+        let isPostModalLoading = false;
 
         // Fallback universal
         const DEFAULT_IMAGE = "/storage/default.png";
@@ -246,10 +248,9 @@
             brokenImagesGlobal.forEach(() => {
                 // Contenedor igual que la miniatura, fondo gris, ícono y texto
                 const brokenThumb = $(`
-                    <div class="thumbnail-img thumbnail-broken" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#b91c1c;position:relative;">
+                    <div class="thumbnail-img thumbnail-broken" title="Imagen no disponible">
                         <div style="text-align:center;width:100%;">
-                            <i class="ri-image-off-line" style="font-size:1.5em;"></i>
-                            <div style="font-size:0.8em;">No disponible</div>
+                            <i class="ri-file-close-line"></i>
                         </div>
                     </div>
                 `);
@@ -357,6 +358,12 @@
                 setLoadingPostFields();
                 document.removeEventListener("keydown", escPostListener);
                 document.removeEventListener("mousedown", clickOutsideShowListener);
+                // Abortar solicitud en curso al cerrar para evitar errores visuales
+                if (postModalRequest) {
+                    try { postModalRequest.abort(); } catch (e) {}
+                    postModalRequest = null;
+                    isPostModalLoading = false;
+                }
             }, 250);
         }
 
@@ -480,15 +487,38 @@
             setLoadingPostFields();
             openPostModal();
 
+            // Si había una solicitud previa en curso, abortarla
+            if (postModalRequest) {
+                try { postModalRequest.abort(); } catch (e) {}
+                postModalRequest = null;
+            }
+
+            isPostModalLoading = true;
             $.ajax({
                 url: `/admin/posts/${slug}/show`,
                 method: "GET",
-                success: data => renderPostModal(data),
-                error: () => $("#post-title").text("Error al cargar datos")
+                beforeSend: function(xhr) {
+                    postModalRequest = xhr;
+                },
+                success: function(data) {
+                    postModalRequest = null;
+                    isPostModalLoading = false;
+                    renderPostModal(data);
+                },
+                error: function(xhr, textStatus) {
+                    postModalRequest = null;
+                    isPostModalLoading = false;
+                    if (textStatus === 'abort') return; // no mostrar error si fue por abort
+                    $("#post-title").text("Error al cargar datos");
+                }
             });
         }
 
         $(document).on("click", ".btn-ver-post", function() {
+            if (isPostModalLoading) {
+                // Evitar aperturas concurrentes mientras carga
+                return;
+            }
             loadPostModal($(this).data("slug"));
         });
 

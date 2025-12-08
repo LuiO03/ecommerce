@@ -168,6 +168,7 @@
                                 ]
                             }
                         })
+                        .then(editor => { editorInstance = editor; })
                         .catch(error => console.error(error));
                 });
                 // Sincronizar contenido antes de enviar
@@ -283,7 +284,7 @@
                     <div class="custom-dropzone" id="customDropzone">
                         <i class="ri-multi-image-line"></i>
                         <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden>
+                        <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden data-validate="image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                     </div>
                     <div id="previewContainer" class="preview-container"></div>
                 </div>

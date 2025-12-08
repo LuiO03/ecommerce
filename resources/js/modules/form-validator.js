@@ -37,9 +37,6 @@ class FormValidator {
     init() {
         this.scanFields();
         this.attachEventListeners();
-        if (this.options.enableSubmit) {
-            this.setupSubmitControl();
-        }
         console.log('✅ FormValidator inicializado:', this.fields.size, 'campos');
     }
 
@@ -146,6 +143,13 @@ class FormValidator {
                 field.addEventListener('input', () => this.validateField(field));
             });
         }
+
+        // Validación inmediata en inputs de archivo al seleccionar (change)
+        this.fields.forEach((config, field) => {
+            if (field.type === 'file') {
+                field.addEventListener('change', () => this.validateField(field));
+            }
+        });
 
         // Prevenir submit si hay errores
         if (this.options.preventSubmitOnError) {
@@ -466,11 +470,27 @@ class FormValidator {
         image: (files) => {
             if (!files || files.length === 0) return { valid: true };
             const file = files[0];
-            const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            const mime = (file.type || '').toLowerCase();
+            const byMime = mime ? allowedMimes.includes(mime) : false;
+            // Fallback por extensión cuando el navegador no provee MIME
+            const ext = (file.name.split('.').pop() || '').toLowerCase();
+            const allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            const byExt = allowedExts.includes(ext);
 
             return {
-                valid: imageTypes.includes(file.type.toLowerCase()),
+                valid: byMime || (!mime && byExt),
                 message: 'Solo se permiten imágenes (JPG, PNG, GIF, WebP)'
+            };
+        },
+
+        // === MÁXIMO NÚMERO DE ARCHIVOS ===
+        maxFiles: (files, param) => {
+            if (!files) return { valid: true };
+            const max = parseInt(param);
+            return {
+                valid: files.length <= max,
+                message: `No puede seleccionar más de ${max} archivos`
             };
         },
 
@@ -556,7 +576,6 @@ class FormValidator {
 
         errorElement.querySelector('.error-text').textContent = message;
         errorElement.style.display = 'flex';
-
     }
 
     // ========================================

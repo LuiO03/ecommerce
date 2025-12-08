@@ -517,6 +517,16 @@
     border-color: var(--color-accent);
 }
 
+.thumbnail-broken{
+    background-color: var(--color-danger-pastel);
+    display: flex;
+    border: 1px solid var(--color-danger);
+    align-items: center;
+    justify-content: center;
+    color: var(--color-danger);
+    font-size: 22px;
+}
+
 .slider-btn {
     position: absolute;
     top: 50%;
