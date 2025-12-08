@@ -579,11 +579,15 @@ class DataTableManager {
 
         /* -------------------------------------------
         3. Activar wrapper si un filtro YA tiene valor
+        (genérico: detecta TODOS los selects dentro de .tabla-filtros)
         ------------------------------------------- */
-        $('select[id$="Filter"]').each(function() {
+        $('.tabla-filtros .selector select').each(function() {
             const $select = $(this);
+            if ($select.attr('id') === 'entriesSelect') return; // no aplicar estilo al selector de paginación
             if ($select.val() !== '') {
                 $select.closest('.tabla-select-wrapper').addClass('filter-active');
+            } else {
+                $select.closest('.tabla-select-wrapper').removeClass('filter-active');
             }
         });
 
@@ -596,14 +600,16 @@ class DataTableManager {
 
         /* -------------------------------------------
         5. Verificación genérica de filtros activos
+        (escucha cambios en búsqueda y TODOS los selects de .tabla-filtros)
         ------------------------------------------- */
+        const $genericSelects = $('.tabla-filtros .selector select').filter(function(){
+            return $(this).attr('id') !== 'entriesSelect';
+        });
         const filterSelectors = ['#customSearch'];
-
-        $('select[id$="Filter"]').each(function() {
+        $genericSelects.each(function() {
             filterSelectors.push('#' + $(this).attr('id'));
         });
 
-        // Solo si existen filtros
         if (filterSelectors.length > 0) {
             $(filterSelectors.join(', ')).on('input change keyup', () => {
                 this.checkFiltersActive();
@@ -614,22 +620,17 @@ class DataTableManager {
     }
 
     checkFiltersActive() {
-        const hasSearch = $('#customSearch').val().trim() !== '';
+        const hasSearch = $('#customSearch').val()?.trim() !== '';
 
-        // Detectar automáticamente TODOS los filtros que terminen con 'Filter'
+        // Detectar TODOS los selects dentro de .tabla-filtros (sin depender del sufijo "Filter")
         let anyFilterActive = hasSearch;
 
-        $('select[id$="Filter"]').each(function () {
+        $('.tabla-filtros .selector select').each(function () {
             const $select = $(this);
-            const hasValue = $select.val() !== '';
-
-            // Aplicar clase 'filter-active' al wrapper del select
+            if ($select.attr('id') === 'entriesSelect') return; // ignorar selector de paginación
+            const hasValue = ($select.val() ?? '') !== '';
             $select.closest('.tabla-select-wrapper').toggleClass('filter-active', hasValue);
-
-            // Verificar si hay algún filtro activo
-            if (hasValue) {
-                anyFilterActive = true;
-            }
+            if (hasValue) anyFilterActive = true;
         });
 
         $('#clearFiltersBtn').toggleClass('active', anyFilterActive);
@@ -637,11 +638,12 @@ class DataTableManager {
 
     clearFilters() {
         // Contar filtros activos dinámicamente
-        const hasSearch = $('#customSearch').val().trim() !== '';
+        const hasSearch = $('#customSearch').val()?.trim() !== '';
         let activeFiltersCount = hasSearch ? 1 : 0;
 
-        $('select[id$="Filter"]').each(function () {
-            if ($(this).val() !== '') {
+        $('.tabla-filtros .selector select').each(function () {
+            if ($(this).attr('id') === 'entriesSelect') return; // no contar paginación como filtro
+            if (($(this).val() ?? '') !== '') {
                 activeFiltersCount++;
             }
         });
@@ -651,9 +653,11 @@ class DataTableManager {
         // Limpiar búsqueda
         $('#customSearch').val('').trigger('keyup');
 
-        // Limpiar TODOS los selects que terminen con 'Filter'
-        $('select[id$="Filter"]').each(function () {
-            $(this).val('').trigger('change');
+        // Limpiar TODOS los selects dentro de .tabla-filtros
+        $('.tabla-filtros .selector select').each(function () {
+            if ($(this).attr('id') === 'entriesSelect') return; // no limpiar paginación
+            $(this).val('');
+            $(this).trigger('change');
         });
 
         $('#clearFiltersBtn').addClass('clearing');
