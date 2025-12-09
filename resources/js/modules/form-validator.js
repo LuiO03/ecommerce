@@ -110,7 +110,10 @@ class FormValidator {
                 rules,
                 customMessages,
                 value: getValue,
-                isRequired: rules.some(r => r.name === 'required') || input.hasAttribute('required')
+                // Marcar como requerido si hay reglas equivalentes a "required"
+                isRequired: (
+                    rules.some(r => ['required', 'requiredText', 'fileRequired', 'selected'].includes(r.name))
+                ) || input.hasAttribute('required')
             });
         });
     }
@@ -133,7 +136,19 @@ class FormValidator {
         // Validar en blur (cuando pierde el foco)
         if (this.options.validateOnBlur) {
             this.fields.forEach((config, field) => {
-                field.addEventListener('blur', () => this.validateField(field));
+                field.addEventListener('blur', () => {
+                    // Si es textarea con CKEditor, sincronizar antes de validar
+                    if (field.tagName === 'TEXTAREA') {
+                        try {
+                            const editors = window._ckEditors || {};
+                            const inst = editors[field.id] || window.editorInstance;
+                            if (inst && typeof inst.getData === 'function') {
+                                field.value = inst.getData();
+                            }
+                        } catch (_) { /* noop */ }
+                    }
+                    this.validateField(field);
+                });
             });
         }
 
@@ -154,6 +169,18 @@ class FormValidator {
         // Prevenir submit si hay errores
         if (this.options.preventSubmitOnError) {
             this.form.addEventListener('submit', (e) => {
+                // Sincronizar CKEditor -> textarea antes de validar (si existe)
+                try {
+                    // Sincronizar todos los textareas que tengan instancia CKEditor registrada
+                    const editors = window._ckEditors || {};
+                    Object.keys(editors).forEach(id => {
+                        const ta = this.form.querySelector(`#${id}`);
+                        const inst = editors[id];
+                        if (ta && inst && typeof inst.getData === 'function') {
+                            ta.value = inst.getData();
+                        }
+                    });
+                } catch (_) { /* noop */ }
                 const isValid = this.validateAll();
 
                 if (!isValid) {
@@ -187,7 +214,9 @@ class FormValidator {
 
         // Si el campo es opcional (no required) y está vacío, skip validación
         const isEmpty = field.type === 'file' ? value.length === 0 : value === '';
-        if (!config.isRequired && isEmpty) {
+        // Considerar reglas "required" equivalentes (requiredText, fileRequired, selected)
+        const hasRequiredRule = Array.isArray(config.rules) && config.rules.some(r => ['required', 'requiredText', 'fileRequired', 'selected'].includes(r.name));
+        if (!hasRequiredRule && !config.isRequired && isEmpty) {
             this.clearError(field);
             return true;
         }
@@ -255,6 +284,18 @@ class FormValidator {
             message: 'Este campo es obligatorio'
         }),
 
+        // === OBLIGATORIO (solo texto visible; ignora etiquetas HTML/espacios) ===
+        requiredText: (value) => {
+            if (!value) return { valid: false, message: 'Este campo es obligatorio' };
+            const div = document.createElement('div');
+            div.innerHTML = value;
+            let text = (div.textContent || div.innerText || '').replace(/\u00A0|&nbsp;/g, ' ').trim();
+            return {
+                valid: text.length > 0,
+                message: 'Este campo es obligatorio'
+            };
+        },
+
         // === EMAIL ===
         email: (value) => {
             if (!value) return { valid: true }; // Skip si está vacío (usar required para obligar)
@@ -270,6 +311,18 @@ class FormValidator {
             valid: value.length >= parseInt(param),
             message: `Debe tener al menos ${param} caracteres`
         }),
+
+        // === LONGITUD MÍNIMA (solo texto visible; ignora HTML) ===
+        minText: (value, param) => {
+            const p = parseInt(param);
+            const div = document.createElement('div');
+            div.innerHTML = value || '';
+            let text = (div.textContent || div.innerText || '').replace(/\u00A0|&nbsp;/g, ' ').trim();
+            return {
+                valid: text.length >= p,
+                message: `Debe tener al menos ${param} caracteres`
+            };
+        },
 
         // === LONGITUD MÁXIMA ===
         max: (value, param) => ({
@@ -513,6 +566,21 @@ class FormValidator {
         field.classList.add(this.options.successClass);
         field.classList.remove(this.options.errorClass);
 
+        // Si es textarea con CKEditor, aplicar clase al editable y wrapper
+        if (field.tagName === 'TEXTAREA') {
+            const group = field.closest('.input-group');
+            const editable = group ? group.querySelector('.ck-editor__editable') : null;
+            if (editable) {
+                editable.classList.add(this.options.successClass);
+                editable.classList.remove(this.options.errorClass);
+            }
+            const wrapper = group ? group.querySelector('.ck-editor') : null;
+            if (wrapper) {
+                wrapper.classList.add(this.options.successClass);
+                wrapper.classList.remove(this.options.errorClass);
+            }
+        }
+
         console.log(`✅ Success aplicado a:`, field.tagName, field.name || field.id, `Clases:`, field.className);
 
         // Agregar icono de check en inputs, selects y textareas (no en files)
@@ -542,6 +610,19 @@ class FormValidator {
                 checkIcon.remove();
             }
         }
+
+        // Limpiar clases de CKEditor si aplica
+        if (field.tagName === 'TEXTAREA') {
+            const group = field.closest('.input-group');
+            const editable = group ? group.querySelector('.ck-editor__editable') : null;
+            if (editable) {
+                editable.classList.remove(this.options.successClass);
+            }
+            const wrapper = group ? group.querySelector('.ck-editor') : null;
+            if (wrapper) {
+                wrapper.classList.remove(this.options.successClass);
+            }
+        }
     }
 
     // ========================================
@@ -553,6 +634,21 @@ class FormValidator {
         // Agregar clase de error al input
         field.classList.add(this.options.errorClass);
         field.classList.remove(this.options.successClass); // ✅ NUEVO: Quitar clase de éxito
+
+        // Si es textarea con CKEditor, aplicar clase al editable y wrapper
+        if (field.tagName === 'TEXTAREA') {
+            const group = field.closest('.input-group');
+            const editable = group ? group.querySelector('.ck-editor__editable') : null;
+            if (editable) {
+                editable.classList.add(this.options.errorClass);
+                editable.classList.remove(this.options.successClass);
+            }
+            const wrapper = group ? group.querySelector('.ck-editor') : null;
+            if (wrapper) {
+                wrapper.classList.add(this.options.errorClass);
+                wrapper.classList.remove(this.options.successClass);
+            }
+        }
 
         if (!this.options.showErrorsInline) return;
 
@@ -590,6 +686,19 @@ class FormValidator {
 
         if (errorElement) {
             errorElement.style.display = 'none';
+        }
+
+        // Limpiar clases de CKEditor si aplica
+        if (field.tagName === 'TEXTAREA') {
+            const group = field.closest('.input-group');
+            const editable = group ? group.querySelector('.ck-editor__editable') : null;
+            if (editable) {
+                editable.classList.remove(this.options.errorClass);
+            }
+            const wrapper = group ? group.querySelector('.ck-editor') : null;
+            if (wrapper) {
+                wrapper.classList.remove(this.options.errorClass);
+            }
         }
     }
 

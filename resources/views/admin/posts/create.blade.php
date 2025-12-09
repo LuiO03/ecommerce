@@ -36,7 +36,7 @@
             <div class="image-upload-section">
                 <label class="label-form">Portada del post</label>
                 <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                    data-validate="required|image|maxSizeMB:3">
+                    data-validate="required|image|maxSizeMB:2">
 
                 <div class="image-preview-zone" id="imagePreviewZone">
                     <div class="image-placeholder" id="imagePlaceholder">
@@ -146,7 +146,7 @@
                     <i class="ri-asterisk text-accent"></i>
                 </label>
                 <textarea name="content" id="content" class="textarea-form-post" rows="8"
-                    placeholder="Ingrese el contenido del post" data-validate="required|min:10">{{ old('content') }}</textarea>
+                    placeholder="Ingrese el contenido del post" data-validate="requiredText|minText:10">{{ old('content') }}</textarea>
             </div>
             <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
             <script>
@@ -168,7 +168,16 @@
                                 ]
                             }
                         })
-                        .then(editor => { editorInstance = editor; })
+                        .then(editor => {
+                            editorInstance = editor;
+                            window.editorInstance = editor;
+                            // Registrar instancia global por id para soporte multi-editor
+                            window._ckEditors = window._ckEditors || {};
+                            const ta = document.querySelector('#content');
+                            if (ta) {
+                                window._ckEditors[ta.id] = editor;
+                            }
+                        })
                         .catch(error => console.error(error));
                 });
                 // Sincronizar contenido antes de enviar
@@ -408,12 +417,53 @@
                     loadingText: 'Guardando...'
                 });
 
-                // Inicializar validación de formulario
-                initFormValidator('#postForm', {
+                // Inicializar validación de formulario y enlazar con CKEditor
+                const formValidator = initFormValidator('#postForm', {
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true
                 });
+                window.postFormValidator = formValidator;
+
+                if (window.editorInstance) {
+                    const textarea = document.querySelector('#content');
+                    const editor = window.editorInstance;
+                    // Solo sincroniza el contenido en cambios, sin validar en vivo
+                    editor.model.document.on('change:data', () => {
+                        textarea.value = editor.getData();
+                    });
+                    // Valida únicamente cuando el editor pierde el foco
+                    editor.editing.view.document.on('blur', () => {
+                        // Sincronizar antes de validar para capturar vacío
+                        textarea.value = editor.getData();
+                        const isValid = formValidator.validateField(textarea);
+                        const group = textarea.closest('.input-group');
+                        const editable = group ? group.querySelector('.ck-editor__editable') : null;
+                        if (editable) {
+                            editable.classList.toggle('input-success', isValid);
+                            editable.classList.toggle('input-error', !isValid);
+                        }
+                        // Asegurar mensaje de error inline si es inválido
+                        if (!isValid && group) {
+                            let errorEl = group.querySelector('.input-error-message');
+                            if (!errorEl) {
+                                errorEl = document.createElement('div');
+                                errorEl.className = 'input-error-message';
+                                errorEl.innerHTML = '<i class="ri-error-warning-line"></i> <span class="error-text"></span>';
+                                group.appendChild(errorEl);
+                            }
+                            const textEl = errorEl.querySelector('.error-text');
+                            if (textEl) {
+                                // Determinar mensaje según contenido (vacío vs. insuficiente)
+                                const div = document.createElement('div');
+                                div.innerHTML = textarea.value || '';
+                                const plain = (div.textContent || div.innerText || '').replace(/\u00A0|&nbsp;/g, ' ').trim();
+                                textEl.textContent = plain.length === 0 ? 'Este campo es obligatorio' : 'Debe tener al menos 10 caracteres';
+                            }
+                            errorEl.style.display = 'flex';
+                        }
+                    });
+                }
             });
         </script>
     @endpush

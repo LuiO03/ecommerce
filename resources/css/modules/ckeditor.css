@@ -3,172 +3,204 @@
 ============================= */
 /* Fuerza a CKEditor a ocupar todo el ancho */
 .ck-editor {
-  width: 100% !important;
-  width: 100% !important;
-  max-width: 100% !important;
+    width: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 .ck-editor__editable {
-  min-height: 200px;
-  /* puedes ajustarlo */
-  width: 100% !important;
-  box-sizing: border-box;
+    min-height: 200px;
+    /* puedes ajustarlo */
+    width: 100% !important;
+    box-sizing: border-box;
 }
 
 /* Fondo y color dentro del área editable */
 .ck-editor__editable {
-  background-color: var(--color-input-bg) !important;
-  /* color de fondo */
-  color: var(--color-text) !important;
-  /* color de texto */
-  font-size: var(--font-size-p);
-  line-height: 1.6 !important;
-  padding: 0px 12px !important;
-
+    background-color: var(--color-input-bg) !important;
+    /* color de fondo */
+    color: var(--color-text) !important;
+    /* color de texto */
+    font-size: var(--font-size-p);
+    line-height: 1.6 !important;
+    padding: 0px 12px !important;
 }
 
 /* Cambiar el borde del área editable al hacer focus */
 .ck-editor__editable:focus {
-  border-color: var(--color-accent) !important; /* Cambia var(--color-accent) por el color que quieras */
-  outline: none !important;
+    border-color: var(
+        --color-accent
+    ) !important; /* Cambia var(--color-accent) por el color que quieras */
+    outline: none !important;
 }
 
 /* Cambiar el borde normal (sin focus) */
 .ck-editor__editable {
-  min-height: 200px;
-  width: 100% !important;
-  max-width: 100% !important;
-  border-top: 1px solid var(--color-input-border) !important; /* borde inferior */
-  border-left: 2px solid var(--color-input-border) !important; /* borde inferior */
-  border-right: 2px solid var(--color-input-border) !important; /* borde inferior */
-  border-bottom: 2px solid var(--color-input-border) !important;
+    min-height: 200px;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-top: 1px solid var(--color-input-border) !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+}
+
+.ck-editor{
+    border: 2px solid var(--color-input-border) !important;
+    border-radius: var(--radius-element) !important;
+    overflow: hidden;
+}
+
+.ck-editor:focus{
+    box-shadow: var(--shadow-material) !important;
+}
+
+/* Mantener color de foco acorde al estado si existe */
+.ck-editor__editable.input-error:focus {
+    border-color: var(--color-danger) !important;
+}
+.ck-editor__editable.input-success:focus {
+    border-color: var(--color-success) !important;
 }
 
 /* Cambiar la cabecera (toolbar) del CKEditor */
 .ck.ck-toolbar {
-  background-color: var(--color-table-header-bg) !important; /* fondo de toolbar */
-  border-top: 2px solid var(--color-input-border) !important; /* borde inferior */
-  border-left: 2px solid var(--color-input-border) !important; /* borde inferior */
-  border-right: 2px solid var(--color-input-border) !important; /* borde inferior */
-  transition: var(--transition-fondo-texto) !important;
+    background-color: var(--color-table-header-bg) !important; /* fondo de toolbar */
+    border:none !important; /* borde inferior */
+}
+
+.ck-editor.input-error .ck-editor__editable{
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+}
+
+/* Realce sutil del wrapper en estados para que se note más */
+.ck-editor.input-error {
+    box-shadow: 0 0 0 1px var(--color-danger) inset !important;
+}
+.ck-editor.input-success {
+    box-shadow: 0 0 0 1px var(--color-success) inset !important;
 }
 
 /* Cambiar color de botones dentro del toolbar */
 .ck.ck-toolbar .ck-button {
-  color: var(--color-text) !important; /* color de los iconos */
-  cursor: pointer;
+    color: var(--color-text) !important; /* color de los iconos */
+    cursor: pointer;
 }
 /* Botones activos en la toolbar */
 .ck.ck-toolbar .ck-button.ck-on {
-  background-color: var(--color-accent) !important; /* Fondo cuando está activo */
+    background-color: var(
+        --color-accent
+    ) !important; /* Fondo cuando está activo */
 
-  color: #fff !important; /* Color del ícono/texto */
+    color: #fff !important; /* Color del ícono/texto */
 }
 
 /* Opcional: borde redondeado o sombra */
 .ck.ck-toolbar .ck-button.ck-on {
-  border-radius: 4px;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 }
 /* Cambiar fondo de botones al hover */
 .ck.ck-toolbar .ck-button:hover {
-  background-color: var(--color-accent) !important;
-  color: #fff !important;
+    background-color: var(--color-accent) !important;
+    color: #fff !important;
 }
 
 @media (max-width: 768px) {
-  /* -------------------------
+    /* -------------------------
    CKEditor: responsive fixes
    Pegar al final de tu CSS
    ------------------------- */
-  .ck-editor__editable {
-    line-height: 1 !important;
-    padding: 0px 10px !important;
-  }
-
-  /* Asegura que el editor y sus partes internas ocupen el 100% */
-  .ck-editor,
-  .ck-editor__top,
-  .ck-editor__main,
-  .ck-editor__editable,
-  .ck-editor__editable p {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Toolbar: permitir que los botones se envuelvan y/o se desplacen */
-  .ck-editor .ck-toolbar,
-  .ck-editor__top .ck-toolbar,
-  .ck.ck-toolbar {
-    display: flex !important;
-    flex-wrap: wrap !important; /* los botones bajan de línea en pantallas pequeñas */
-    gap: 6px !important;
-    align-items: center !important;
-    overflow-x: auto !important; /* fallback: permite scroll horizontal */
-    -webkit-overflow-scrolling: touch !important;
-    padding: 6px !important;
-  }
-
-  /* Asegura que el contenedor de elementos de la toolbar pueda envolver */
-  .ck.ck-toolbar .ck-toolbar__items,
-  .ck.ck-toolbar .ck-toolbar__items > * {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    min-width: 0 !important;
-  }
-
-  /* Evitar min-width forzado que obliga al overflow */
-  .ck.ck-toolbar .ck-toolbar__item,
-  .ck.ck-toolbar .ck-toolbar__group {
-    min-width: 0 !important;
-    white-space: normal !important;
-  }
-
-  /* Reducir padding/tamaño de botones en pantallas pequeñas */
-  .ck.ck-toolbar .ck-button {
-    padding: 6px !important;
-    min-width: 0 !important;
-  }
-
-  /* Íconos más pequeños */
-  .ck.ck-toolbar .ck-button svg {
-    width: 18px !important;
-    height: 18px !important;
-  }
-
-  /* Evitar que los dropdowns sobrepasen la pantalla */
-  .ck .ck-dropdown__panel,
-  .ck .ck-balloon-panel,
-  .ck .ck-balloon-panel__content {
-    max-width: calc(100vw - 20px) !important;
-    box-sizing: border-box !important;
-    overflow: auto !important;
-  }
-
-  /* Editable: romper textos largos en varias líneas */
-  .ck-editor__editable {
-    word-wrap: break-word !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-  }
-
-  /* Mobile tweaks */
-  @media (max-width: 768px) {
     .ck-editor__editable {
-      min-height: 140px !important;
-      font-size: 14px !important;
+        line-height: 1 !important;
+        padding: 0px 10px !important;
     }
+
+    /* Asegura que el editor y sus partes internas ocupen el 100% */
+    .ck-editor,
+    .ck-editor__top,
+    .ck-editor__main,
+    .ck-editor__editable,
+    .ck-editor__editable p {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Toolbar: permitir que los botones se envuelvan y/o se desplacen */
+    .ck-editor .ck-toolbar,
+    .ck-editor__top .ck-toolbar,
     .ck.ck-toolbar {
-      gap: 4px !important;
-      padding: 4px !important;
+        display: flex !important;
+        flex-wrap: wrap !important; /* los botones bajan de línea en pantallas pequeñas */
+        gap: 6px !important;
+        align-items: center !important;
+        overflow-x: auto !important; /* fallback: permite scroll horizontal */
+        -webkit-overflow-scrolling: touch !important;
+        padding: 6px !important;
     }
+
+    /* Asegura que el contenedor de elementos de la toolbar pueda envolver */
+    .ck.ck-toolbar .ck-toolbar__items,
+    .ck.ck-toolbar .ck-toolbar__items > * {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        min-width: 0 !important;
+    }
+
+    /* Evitar min-width forzado que obliga al overflow */
+    .ck.ck-toolbar .ck-toolbar__item,
+    .ck.ck-toolbar .ck-toolbar__group {
+        min-width: 0 !important;
+        white-space: normal !important;
+    }
+
+    /* Reducir padding/tamaño de botones en pantallas pequeñas */
     .ck.ck-toolbar .ck-button {
-      padding: 4px !important;
+        padding: 6px !important;
+        min-width: 0 !important;
     }
+
+    /* Íconos más pequeños */
     .ck.ck-toolbar .ck-button svg {
-      width: 16px !important;
-      height: 16px !important;
+        width: 18px !important;
+        height: 18px !important;
     }
-  }
+
+    /* Evitar que los dropdowns sobrepasen la pantalla */
+    .ck .ck-dropdown__panel,
+    .ck .ck-balloon-panel,
+    .ck .ck-balloon-panel__content {
+        max-width: calc(100vw - 20px) !important;
+        box-sizing: border-box !important;
+        overflow: auto !important;
+    }
+
+    /* Editable: romper textos largos en varias líneas */
+    .ck-editor__editable {
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 768px) {
+        .ck-editor__editable {
+            min-height: 140px !important;
+            font-size: 14px !important;
+        }
+        .ck.ck-toolbar {
+            gap: 4px !important;
+            padding: 4px !important;
+        }
+        .ck.ck-toolbar .ck-button {
+            padding: 4px !important;
+        }
+        .ck.ck-toolbar .ck-button svg {
+            width: 16px !important;
+            height: 16px !important;
+        }
+    }
 }
