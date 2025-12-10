@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
         $data = [
             'name'      => 'Luis',
             'last_name' => 'Osorio',
+            'image'     => 'pikachu.jpg',
             'email'     => '70098517@institutocajas.info',
         ];
 
@@ -30,6 +31,7 @@ class UserSeeder extends Seeder
                 'name'      => $data['name'],
                 'last_name' => $data['last_name'],
                 'email'     => $data['email'],
+                'image'     => $data['image'],
                 'password'  => Hash::make('luis988434679kira'),
                 'slug'      => Str::slug($data['name'] . ' ' . $data['last_name'] . '-' . uniqid()),
                 'status'    => true,

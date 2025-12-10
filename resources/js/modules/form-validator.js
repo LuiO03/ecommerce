@@ -394,6 +394,17 @@ class FormValidator {
             };
         },
 
+        // === TELÉFONO INTERNACIONAL FLEXIBLE (dígitos, espacios, +, - y paréntesis) ===
+        phoneIntl: (value) => {
+            if (!value) return { valid: true };
+            const allowedChars = /^[0-9+\s()\-]+$/.test(value);
+            const digitsCount = (value.match(/\d/g) || []).length;
+            return {
+                valid: allowedChars && digitsCount >= 6,
+                message: 'Ingrese un teléfono válido (solo números, espacios, +, -, paréntesis y al menos 6 dígitos)'
+            };
+        },
+
         // === URL ===
         url: (value) => {
             if (!value) return { valid: true };

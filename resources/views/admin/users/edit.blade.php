@@ -95,7 +95,7 @@
                 </div>
             </div>
             <!-- === Rol === -->
-            <div class="input-group select-group">
+            <div class="input-group">
                 <label for="role" class="label-form">
                     Rol
                     <i class="ri-asterisk text-accent"></i>
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <!-- === Estado === -->
-            <div class="input-group select-group">
+            <div class="input-group">
                 <label for="status" class="label-form">
                     Estado
                     <i class="ri-asterisk text-accent"></i>

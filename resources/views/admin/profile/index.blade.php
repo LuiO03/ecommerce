@@ -13,7 +13,10 @@
         <div class="profile-header">
             <div class="profile-avatar-container {{ $user->background_style && $user->background_style !== '' ? $user->background_style : 'fondo-estilo-2' }}"
                 style="position: relative;">
-                @if ($user->image)
+                @php
+                    $profileHasImage = $user->image && Storage::disk('public')->exists($user->image);
+                @endphp
+                @if ($profileHasImage)
                     <img src="{{ asset('storage/' . $user->image) }}" alt="Foto de perfil" class="profile-avatar">
                 @else
                     <div class="profile-avatar"

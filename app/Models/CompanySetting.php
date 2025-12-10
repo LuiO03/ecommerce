@@ -35,8 +35,17 @@ class CompanySetting extends Model
         'youtube_url',
         'tiktok_url',
         'linkedin_url',
+        'facebook_enabled',
+        'instagram_enabled',
+        'twitter_enabled',
+        'youtube_enabled',
+        'tiktok_enabled',
+        'linkedin_enabled',
         'primary_color',
         'secondary_color',
+        'terms_conditions',
+        'privacy_policy',
+        'claims_book_information',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -44,6 +53,12 @@ class CompanySetting extends Model
 
     protected $casts = [
         'social_links' => 'array',
+        'facebook_enabled' => 'boolean',
+        'instagram_enabled' => 'boolean',
+        'twitter_enabled' => 'boolean',
+        'youtube_enabled' => 'boolean',
+        'tiktok_enabled' => 'boolean',
+        'linkedin_enabled' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -107,6 +122,12 @@ class CompanySetting extends Model
 
     public function socialLink(string $key, string $default = ''): string
     {
+        $toggleAttribute = sprintf('%s_enabled', $key);
+
+        if ($this->getAttribute($toggleAttribute) === false) {
+            return $default;
+        }
+
         $links = $this->social_links ?? [];
         return $links[$key] ?? $default;
     }

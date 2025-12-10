@@ -3,16 +3,19 @@
 
     <div class="sidebar-user-contenido">
         <div class="sidebar-cuerpo">
-            <div
-                class="fondo-usuario w-full {{ auth()->user()->background_style && auth()->user()->background_style !== '' ? auth()->user()->background_style : 'fondo-estilo-2' }}">
-                @if (auth()->user()->image)
-                    <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="{{ auth()->user()->name }}"
+            @php
+                $user = auth()->user();
+                $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
+            @endphp
+            <div class="fondo-usuario w-full {{ $user->background_style && $user->background_style !== '' ? $user->background_style : 'fondo-estilo-2' }}">
+                @if ($hasAvatarImage)
+                    <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}"
                         class="sidebar-avatar">
                 @else
                     <div class="sidebar-avatar"
-                        style="background-color: {{ auth()->user()->avatar_colors['background'] }};
-                                    color: {{ auth()->user()->avatar_colors['color'] }}; border-color: {{ auth()->user()->avatar_colors['color'] }};">
-                        {{ auth()->user()->initials }}
+                        style="background-color: {{ $user->avatar_colors['background'] }};
+                                    color: {{ $user->avatar_colors['color'] }}; border-color: {{ $user->avatar_colors['color'] }};">
+                        {{ $user->initials }}
                     </div>
                 @endif
             </div>

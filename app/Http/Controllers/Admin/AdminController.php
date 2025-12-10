@@ -8,6 +8,7 @@ use App\Models\Family;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\CompanySetting;
 use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
@@ -21,6 +22,8 @@ class AdminController extends Controller
             'totalUsers'      => User::count(),
             'totalRoles'      => \Spatie\Permission\Models\Role::count(),
             'totalPosts'      => Post::count(),
+            // enviar el nombre de la empresa a la vista
+            'companyName' => optional(CompanySetting::first())->name ?? 'Mi Empresa',
         ]);
     }
 

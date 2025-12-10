@@ -17,12 +17,16 @@ import { initImageUpload } from './utils/image-upload-handler.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
 import { initFormValidator } from './modules/form-validator.js';
+import { initCompanySettingsTabs, initCompanySettingsEditors, initCompanySettingsColorInputs } from './modules/company-settings-tabs.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
 window.initSubmitLoader = initSubmitLoader;
 window.initCategoryHierarchy = initCategoryHierarchy;
 window.initFormValidator = initFormValidator;
+window.initCompanySettingsTabs = initCompanySettingsTabs;
+window.initCompanySettingsEditors = initCompanySettingsEditors;
+window.initCompanySettingsColorInputs = initCompanySettingsColorInputs;
 
 
 // Si tienes funciones o inicializaciones globales

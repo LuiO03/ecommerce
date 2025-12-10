@@ -37,11 +37,7 @@ class CompanySettingController extends Controller
      */
     public function update(UpdateCompanySettingRequest $request)
     {
-        $setting = CompanySetting::query()->first();
-
-        if (!$setting) {
-            $setting = new CompanySetting();
-        }
+        $setting = CompanySetting::first() ?? new CompanySetting();
 
         $data = collect($request->validated());
         $removeLogo = $request->boolean('remove_logo');
@@ -55,21 +51,26 @@ class CompanySettingController extends Controller
         }
 
         if ($request->hasFile('logo')) {
-            if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-                Storage::disk('public')->delete($logoPath);
+            Storage::disk('public')->delete($logoPath);
+
+            $companyName = $data->get('name') ?? $setting->name ?? 'company-logo';
+            $slug = Str::slug($companyName, '-');
+            if ($slug === '') {
+                $slug = 'company-logo';
             }
 
-            $logoPath = $request->file('logo')->store('company', 'public');
+            $fileName = $slug . '.png';
+
+            $logoPath = $request->file('logo')->storeAs('company', $fileName, 'public');
         }
 
-        $socialLinks = [
-            'facebook' => $data->get('facebook_url'),
-            'instagram' => $data->get('instagram_url'),
-            'twitter' => $data->get('twitter_url'),
-            'youtube' => $data->get('youtube_url'),
-            'tiktok' => $data->get('tiktok_url'),
-            'linkedin' => $data->get('linkedin_url'),
-        ];
+        $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
+
+        $socialLinks = [];
+
+        foreach ($platforms as $platform) {
+            $socialLinks[$platform] = $data->get("{$platform}_url");
+        }
 
         $payload = $data
             ->except(['logo', 'remove_logo'])
@@ -79,6 +80,12 @@ class CompanySettingController extends Controller
             ->merge([
                 'logo_path' => $logoPath,
                 'social_links' => $socialLinks,
+                'facebook_enabled' => $request->boolean('facebook_enabled'),
+                'instagram_enabled' => $request->boolean('instagram_enabled'),
+                'twitter_enabled' => $request->boolean('twitter_enabled'),
+                'youtube_enabled' => $request->boolean('youtube_enabled'),
+                'tiktok_enabled' => $request->boolean('tiktok_enabled'),
+                'linkedin_enabled' => $request->boolean('linkedin_enabled'),
             ])
             ->toArray();
 

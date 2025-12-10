@@ -132,7 +132,6 @@
         gap: 6px !important;
         align-items: center !important;
         overflow-x: auto !important; /* fallback: permite scroll horizontal */
-        -webkit-overflow-scrolling: touch !important;
         padding: 6px !important;
     }
 

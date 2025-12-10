@@ -1,0 +1,30 @@
+<section id="companySettingsSectionLegal" class="settings-section" data-section="legal"
+    role="tabpanel" aria-labelledby="tab-legal">
+    <div class="card-title">
+        <i class="ri-file-shield-line"></i>
+        Documentación legal
+    </div>
+
+    <div class="form-row">
+        <div class="input-group">
+            <label for="terms_conditions" class="label-form">Términos y condiciones</label>
+            <textarea name="terms_conditions" id="terms_conditions" class="textarea-form" rows="6"
+                data-validate="requiredText|minText:20|max:12000">{{ old('terms_conditions', $setting->terms_conditions) }}</textarea>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group">
+            <label for="privacy_policy" class="label-form">Política de privacidad</label>
+            <textarea name="privacy_policy" id="privacy_policy" class="textarea-form" rows="6"
+                data-validate="requiredText|minText:20|max:12000">{{ old('privacy_policy', $setting->privacy_policy) }}</textarea>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="input-group">
+            <label for="claims_book_information" class="label-form">Libro de reclamaciones</label>
+            <textarea name="claims_book_information" id="claims_book_information" class="textarea-form" rows="6"
+                data-validate="requiredText|minText:10|max:8000">{{ old('claims_book_information', $setting->claims_book_information) }}</textarea>
+        </div>
+    </div>
+</section>

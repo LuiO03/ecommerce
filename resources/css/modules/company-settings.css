@@ -1,0 +1,251 @@
+/* === Layout lateral con pestañas deslizables para configuración de la empresa === */
+.settings-tabs-layout {
+	display: grid;
+	grid-template-columns: minmax(220px, 260px) 1fr;
+	gap: 15px;
+}
+
+.settings-tabs-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	background-color: var(--color-card-bg);
+	border: 1px solid var(--color-border);
+	border-radius: 1rem;
+	padding: 1rem;
+	position: sticky;
+	top: 1.5rem;
+	align-self: flex-start;
+}
+
+.settings-tab-button {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	width: 100%;
+	border: 1px solid transparent;
+	border-radius: 0.75rem;
+	background-color: transparent;
+	color: var(--color-text);
+	font-size: var(--font-size-p);
+	padding: 0.6rem 1rem;
+	cursor: pointer;
+	transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease,
+		box-shadow 0.25s ease;
+}
+
+.settings-tab-button i {
+	font-size: 1.1rem;
+	color: var(--color-muted);
+	transition: color 0.25s ease;
+}
+
+.settings-tab-button:hover {
+	background-color: var(--color-hover);
+	border-color: var(--color-border);
+}
+
+.settings-tab-button.is-active {
+	background-color: var(--color-accent);
+	color: #ffffff;
+	border-color: transparent;
+	box-shadow: 0 8px 18px var(--shadow-accent);
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
+.settings-tab-button.is-active i {
+	color: #ffffff;
+}
+
+.settings-tab-button:focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 2px;
+}
+
+.settings-tabs-sections {
+	position: relative;
+	overflow: hidden;
+	border: 1px solid var(--color-border);
+	border-radius: 1rem;
+	background-color: var(--color-card-bg);
+    height: fit-content;
+}
+
+.settings-tabs-slider {
+	display: flex;
+	width: 100%;
+	transition: transform 0.45s ease;
+	align-items: flex-start;
+}
+
+.settings-section {
+	flex: 0 0 100%;
+	padding: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.settings-section .form-row {
+	margin-top: 1.5rem;
+	gap: 1.5rem;
+}
+
+.settings-section .form-row:first-of-type {
+	margin-top: 0;
+}
+
+.settings-section .social-toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border: 1px dashed var(--color-border);
+    border-radius: 0.75rem;
+    background-color: rgba(61, 49, 178, 0.04);
+}
+
+.settings-section .social-toggle-label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--color-muted);
+}
+
+.color-input-wrapper {
+	display: grid;
+	grid-template-columns: auto 1fr auto auto;
+	align-items: center;
+	gap: 0.65rem;
+	border: 1px solid var(--color-border);
+	border-radius: 0.75rem;
+	padding: 0.6rem 0.75rem;
+	background-color: var(--color-main-bg);
+}
+
+.color-preview {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 0.7rem;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+	overflow: hidden;
+}
+
+
+.color-preview::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+	pointer-events: none;
+}
+
+.color-preview input[type='color'] {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.color-text-input {
+	font-family: var(--font-monospace, 'JetBrains Mono', monospace);
+	font-size: 0.95rem;
+	padding: 0.55rem 0.6rem;
+	border: 1px solid var(--color-border);
+	border-radius: 0.6rem;
+	width: 100%;
+}
+
+.color-picker-input {
+	appearance: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+.color-copy-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	border: 1px dashed var(--color-border);
+	border-radius: 0.6rem;
+	padding: 0.45rem 0.7rem;
+	font-size: 0.85rem;
+	color: var(--color-muted-strong, var(--color-text));
+	background-color: transparent;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.color-copy-btn:hover {
+	background-color: rgba(61, 49, 178, 0.08);
+	border-color: var(--color-accent);
+	color: var(--color-accent);
+}
+
+.color-copy-btn.is-copied {
+	border-color: var(--color-success, #10b981);
+	color: var(--color-success, #10b981);
+	background-color: rgba(16, 185, 129, 0.12);
+}
+
+@media (max-width: 1200px) {
+	.settings-tabs-layout {
+		grid-template-columns: minmax(200px, 220px) 1fr;
+		gap: 1.25rem;
+	}
+
+	.settings-tab-button {
+		font-size: 0.9rem;
+		padding: 0.7rem 0.9rem;
+	}
+}
+
+@media (max-width: 1024px) {
+	.settings-tabs-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.settings-tabs-nav {
+		position: static;
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding: 0.75rem;
+		gap: 0.5rem;
+	}
+
+	.settings-tab-button {
+		flex: 1 1 calc(50% - 0.5rem);
+	}
+}
+
+@media (max-width: 640px) {
+	.settings-tab-button {
+		flex: 1 1 100%;
+	}
+
+	.settings-section {
+		padding: 1.25rem 1rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.settings-tabs-slider {
+		transition: none;
+	}
+
+	.settings-tab-button {
+		transition: none;
+	}
+}

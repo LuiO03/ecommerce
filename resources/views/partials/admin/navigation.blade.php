@@ -23,14 +23,19 @@
     <div class="topbar-right">
         <div class="flex items-center ms-3">
             <a href="{{ route('admin.profile.index') }}" title="Perfil de usuario">
-                @if (auth()->user()->image)
-                    <img class="topbar-avatar" src="{{ asset('storage/' . auth()->user()->image) }}"
-                        alt="{{ auth()->user()->name }}">
+                @php
+                    $user = auth()->user();
+                    $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
+                @endphp
+
+                @if ($hasAvatarImage)
+                    <img class="topbar-avatar" src="{{ asset('storage/' . $user->image) }}"
+                        alt="{{ $user->name }}">
                 @else
                     <div class="topbar-avatar"
-                        style="background-color: {{ auth()->user()->avatar_colors['background'] }};
-                       color: {{ auth()->user()->avatar_colors['color'] }};">
-                        {{ auth()->user()->initials }}
+                        style="background-color: {{ $user->avatar_colors['background'] }};
+                       color: {{ $user->avatar_colors['color'] }};">
+                        {{ $user->initials }}
                     </div>
                 @endif
             </a>

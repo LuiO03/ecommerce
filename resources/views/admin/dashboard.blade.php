@@ -5,20 +5,24 @@
     <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="targeta ripple-card">
             <div class="targeta-usuario">
-                @if (auth()->user()->image)
-                    <img src="{{ asset('storage/' . auth()->user()->image) }}"
-                        alt="{{ auth()->user()->name }}" class="dashboard-user-avatar">
+                @php
+                    $dashboardUser = auth()->user();
+                    $dashboardHasImage = $dashboardUser->image && Storage::disk('public')->exists($dashboardUser->image);
+                @endphp
+                @if ($dashboardHasImage)
+                    <img src="{{ asset('storage/' . $dashboardUser->image) }}"
+                        alt="{{ $dashboardUser->name }}" class="dashboard-user-avatar">
                 @else
                         <div class="dashboard-user-avatar"
-                            style="background-color: {{ auth()->user()->avatar_colors['background'] ?? '#cccccc' }}; color: {{ auth()->user()->avatar_colors['color'] ?? '#333333' }}; border-color: {{ auth()->user()->avatar_colors['color'] ?? '#333333' }};">
-                            {{ auth()->user()->initials }}
+                            style="background-color: {{ $dashboardUser->avatar_colors['background'] ?? '#cccccc' }}; color: {{ $dashboardUser->avatar_colors['color'] ?? '#333333' }}; border-color: {{ $dashboardUser->avatar_colors['color'] ?? '#333333' }};">
+                            {{ $dashboardUser->initials }}
                         </div>
                 @endif
 
                 <div class="dashboard-user-info">
-                    <h2 class="dashboard-name">Buen día, {{ auth()->user()->name }}</h2>
+                    <h2 class="dashboard-name">Buen día, {{ $dashboardUser->name }}</h2>
                     <p>
-                        Eres <strong>{{ auth()->user()->roles->pluck('name')->join(', ') }}.</strong> <br>
+                        Eres <strong>{{ $dashboardUser->roles->pluck('name')->join(', ') }}.</strong> <br>
                         Puedes gestionar el sitio desde este panel de administración.
                     </p>
                 </div>
@@ -26,7 +30,8 @@
         </div>
 
         <div class="targeta">
-            <h2>Constantine</h2>
+            <!-- Nombre de la empresa y botón de cerrar sesión -->
+            <h1 class="dashboard-company-name">{{ $companyName }}</h1>
             <form action="{{ route('logout') }}" method="post">
                 @csrf
 

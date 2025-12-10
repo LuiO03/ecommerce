@@ -160,15 +160,16 @@
 
 @keyframes toastProgress {
     from {
-        transform: scaleX(1);
+        transform: scaleX(0);
     }
     to {
-        transform: scaleX(0);
+        transform: scaleX(1);
     }
 }
 
 .toast-progress {
     transform-origin: left;
+    transform: scaleX(0);
 }
 
 /* Responsividad */
@@ -178,7 +179,7 @@
         right: 10px;
         left: 10px;
     }
-    
+
     .toast {
         min-width: auto;
         max-width: 100%;
