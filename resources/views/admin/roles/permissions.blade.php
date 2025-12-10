@@ -1,6 +1,6 @@
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
-        <div class="page-icon card-primary"><i class="ri-shield-user-line"></i></div>
+        <div class="page-icon card-warning"><i class="ri-key-2-fill"></i></div>
 
         <div class="page-edit-title">
             <span class="page-subtitle">Gestione permisos para</span>

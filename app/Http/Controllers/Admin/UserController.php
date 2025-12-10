@@ -374,6 +374,7 @@ class UserController extends Controller
 
         return response()->json([
             'id' => '#'.$user->id,
+            'raw_id' => $user->id,
             'slug' => $user->slug,
             'name' => $user->name,
             'last_name' => $user->last_name,

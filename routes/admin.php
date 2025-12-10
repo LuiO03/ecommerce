@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\CompanySettingController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
@@ -47,6 +48,12 @@ Route::controller(ProfileController::class)->group(function () {
     Route::post('/profile/export/csv', 'exportCsv')->name('admin.profile.export.csv');
     // Cerrar sesión de otros dispositivos
     Route::post('/profile/logout-session', 'logoutSession')->name('admin.profile.logout-session');
+});
+
+// COMPANY SETTINGS
+Route::controller(CompanySettingController::class)->group(function () {
+    Route::get('/company-settings', 'edit')->name('admin.company-settings.edit');
+    Route::put('/company-settings', 'update')->name('admin.company-settings.update');
 });
 
 // FAMILIES

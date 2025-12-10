@@ -28,9 +28,7 @@
 
 /* Cambiar el borde del área editable al hacer focus */
 .ck-editor__editable:focus {
-    border-color: var(
-        --color-accent
-    ) !important; /* Cambia var(--color-accent) por el color que quieras */
+    border: 1px solid var(--color-accent) !important; /* Cambia var(--color-accent) por el color que quieras */
     outline: none !important;
 }
 
@@ -49,10 +47,6 @@
     border: 2px solid var(--color-input-border) !important;
     border-radius: var(--radius-element) !important;
     overflow: hidden;
-}
-
-.ck-editor:focus{
-    box-shadow: var(--shadow-material) !important;
 }
 
 /* Mantener color de foco acorde al estado si existe */

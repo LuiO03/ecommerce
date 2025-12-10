@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="modal-show-footer">
-            <button type="button" class="boton boton-modal-close" id="cancelButton">
+            <button type="button" class="boton boton-modal-close" id="cancelButton" title="Cerrar Ventana">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                 <span class="boton-text">Cerrar</span>
             </button>

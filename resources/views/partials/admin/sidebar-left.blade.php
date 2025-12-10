@@ -156,6 +156,15 @@
                 </a>
             </li>
 
+            <li>
+                <a href="{{ route('admin.company-settings.edit') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.company-settings.*') ? 'active' : '' }}"
+                    data-tooltip="Configuración">
+                    <i class="ri-building-4-line sidebar-icon"></i>
+                    <span>Empresa</span>
+                </a>
+            </li>
+
         </ul>
     </div>
 

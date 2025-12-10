@@ -11,6 +11,10 @@
         </a>
     </x-slot>
 
+    @php
+        $hasExistingImage = $post->image && file_exists(public_path('storage/' . $post->image));
+    @endphp
+
     <form action="{{ route('admin.posts.update', $post->slug) }}" method="POST" enctype="multipart/form-data"
         class="form-container" autocomplete="off" id="postForm">
         @csrf
@@ -39,13 +43,13 @@
             <div class="image-upload-section">
                 <label class="label-form">Imagen Principal</label>
                 <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                    data-validate="required|image|maxSizeMB:2">
+                    data-validate="{{ $hasExistingImage ? 'image|maxSizeMB:2' : 'required|image|maxSizeMB:2' }}">
                 <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
 
                 <!-- Zona de vista previa -->
-                <div class="image-preview-zone {{ $post->image && file_exists(public_path('storage/' . $post->image)) ? 'has-image' : '' }}"
+                <div class="image-preview-zone {{ $hasExistingImage ? 'has-image' : '' }}"
                     id="imagePreviewZone">
-                    @if ($post->image && file_exists(public_path('storage/' . $post->image)))
+                    @if ($hasExistingImage)
                         <img id="imagePreview" class="image-preview image-pulse"
                             src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->name }}">
                         <!-- Placeholder oculto inicialmente (se mostrará al eliminar) -->
@@ -90,7 +94,7 @@
 
                 <!-- Nombre del archivo -->
                 <div class="image-filename" id="imageFilename"
-                    style="{{ $post->image && file_exists(public_path('storage/' . $post->image)) ? 'display: flex;' : 'display: none;' }}">
+                    style="{{ $hasExistingImage ? 'display: flex;' : 'display: none;' }}">
                     <i class="ri-file-image-line"></i>
                     <span id="filenameText">{{ $post->image ? basename($post->image) : '' }}</span>
                 </div>
@@ -159,8 +163,8 @@
                         {{ $post->allow_comments == 0 ? 'checked' : '' }}>
 
                     <div class="switch-slider"></div>
-                    <label for="allowYes" class="switch-label">Sí</label>
-                    <label for="allowNo" class="switch-label">No</label>
+                    <label for="allowYes" class="switch-label"><i class="ri-checkbox-circle-line"></i> Sí</label>
+                    <label for="allowNo" class="switch-label"><i class="ri-close-circle-line"></i> No</label>
                 </div>
             </div>
         </div>

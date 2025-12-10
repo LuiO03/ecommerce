@@ -106,14 +106,14 @@
         </div>
 
         <div class="modal-show-footer">
-            <button type="button" class="boton boton-modal-close" id="cancelPostButton">
+            <button type="button" class="boton boton-modal-close" id="cancelPostButton" title="Cerrar Ventana">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                 <span class="boton-text">Cerrar</span>
             </button>
 
             <form id="approveForm" method="POST" action="#">
                 @csrf
-                <button type="submit" class="boton boton-success">
+                <button type="submit" class="boton boton-success" title="Aprobar Post">
                     <span class="boton-icon"><i class="ri-send-plane-fill"></i> </span>
                     <span class="boton-text">Aprobar Post</span>
                 </button>
@@ -121,7 +121,7 @@
 
             <form id="rejectForm" method="POST" action="#">
                 @csrf
-                <button type="submit" class="boton boton-danger">
+                <button type="submit" class="boton boton-danger" title="Rechazar Post">
                     <span class="boton-icon"><i class="ri-close-circle-fill"></i></span>
                     <span class="boton-text">Rechazar Post</span>
                 </button>

@@ -133,8 +133,8 @@
 
                     <div class="switch-slider"></div>
 
-                    <label for="allowYes" class="switch-label">Sí</label>
-                    <label for="allowNo" class="switch-label">No</label>
+                    <label for="allowYes" class="switch-label"><i class="ri-checkbox-circle-line"></i> Sí</label>
+                    <label for="allowNo" class="switch-label"><i class="ri-close-circle-line"></i> No</label>
                 </div>
             </div>
         </div>

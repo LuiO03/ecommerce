@@ -86,7 +86,7 @@
         </div>
 
         <div class="modal-show-footer">
-            <button type="button" class="boton boton-modal-close" id="cancelUserButton">
+            <button type="button" class="boton boton-modal-close" id="cancelUserButton" title="Cerrar Ventana">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                 <span class="boton-text">Cerrar</span>
             </button>
@@ -95,6 +95,8 @@
 </div>
 @push('scripts')
     <script>
+        const AUTH_USER_ID = @json(Auth::id());
+
         function openUserModal() {
             $('#modalShow').removeClass('hidden');
             $('.modal-content').removeClass('animate-out').addClass('animate-in');
@@ -255,6 +257,20 @@
 
                     // Botón eliminar
                     $('#modalDeleteForm').attr('action', `/admin/users/${data.slug}`);
+
+                    const deleteBtn = $('#modalDeleteForm button[type="submit"]');
+                    const deleteForm = $('#modalDeleteForm');
+                    const userNumericId = typeof data.raw_id !== 'undefined' ? Number(data.raw_id) : null;
+
+                    if (userNumericId !== null && userNumericId === Number(AUTH_USER_ID)) {
+                        deleteBtn.prop('disabled', true).addClass('disabled');
+                        deleteBtn.attr('title', 'No puedes eliminar tu propia cuenta');
+                        deleteForm.addClass('self-delete-disabled');
+                    } else {
+                        deleteBtn.prop('disabled', false).removeClass('disabled');
+                        deleteBtn.attr('title', 'Eliminar usuario');
+                        deleteForm.removeClass('self-delete-disabled');
+                    }
                 },
 
                 error: function() {
@@ -285,6 +301,10 @@
         $(document).on('submit', '#modalDeleteForm', function(e) {
             e.preventDefault();
             const form = this;
+
+            if ($(form).hasClass('self-delete-disabled')) {
+                return;
+            }
 
             // Desactivar cierre por clic afuera mientras se muestra la confirmación
             document.removeEventListener('click', clickOutsideShowListener);

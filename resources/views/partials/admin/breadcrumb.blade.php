@@ -14,6 +14,7 @@
         'roles' => ['label' => 'Roles', 'icon' => 'ri-shield-user-fill'],
         'posts' => ['label' => 'Posts', 'icon' => 'ri-article-fill'],
         'brands' => ['label' => 'Marcas', 'icon' => 'ri-store-2-fill'],
+        'company-settings' => ['label' => 'Empresa', 'icon' => 'ri-building-4-fill'],
     ];
 
     // Traducciones de acciones
@@ -47,7 +48,11 @@
         @if ($module && $module !== 'dashboard')
             <i class="ri-arrow-right-s-line breadcrumb-separator"></i>
             <li class="breadcrumb">
-                @if ($action === null || $action === 'index')
+                @php
+                    $moduleIndexRoute = 'admin.' . $module . '.index';
+                    $hasIndexRoute = Route::has($moduleIndexRoute);
+                @endphp
+                @if ($action === null || $action === 'index' || ! $hasIndexRoute)
                     {{-- Si ya estamos en la vista principal, no mostrar enlace --}}
                     <span class="breadcrumb-current ripple-btn">
                         <i class="{{ $moduleIcon }} breadcrumb-icon"></i>
@@ -55,7 +60,7 @@
                     </span>
                 @else
                     {{-- Si estamos en otra acción (create, edit, etc.), mostrar enlace --}}
-                    <a href="{{ route('admin.' . $module . '.index') }}" class="breadcrumb-link ripple-btn">
+                    <a href="{{ route($moduleIndexRoute) }}" class="breadcrumb-link ripple-btn">
                         <i class="{{ $moduleIcon }} breadcrumb-icon"></i>
                         <span>{{ $moduleLabel }}</span>
                     </a>

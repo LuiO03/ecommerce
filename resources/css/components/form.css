@@ -251,6 +251,7 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
+    gap: 8px;
     font-weight: bolder;
     font-size: var(--font-size-xs);
     transition: color 0.3s ease;
@@ -271,12 +272,14 @@
 #allowYes:checked ~ .switch-slider {
     left: 0;
     background-color: var(--color-success);
+    border-right: 2px solid var(--color-input-border);
     /* verde */
 }
 
 #allowNo:checked ~ .switch-slider {
     left: 50%;
     background-color: var(--color-danger);
+    border-left: 2px solid var(--color-input-border);
     /* rojo */
 }
 

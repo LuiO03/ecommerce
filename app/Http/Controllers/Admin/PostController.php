@@ -184,6 +184,83 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index');
     }
 
+    public function destroyMultiple(Request $request)
+    {
+        $request->validate([
+            'posts' => 'sometimes|array|min:1',
+            'posts.*' => 'exists:posts,id',
+            'ids' => 'sometimes|array|min:1',
+            'ids.*' => 'exists:posts,id'
+        ]);
+
+        $postIds = $request->posts ?? $request->ids;
+
+        if (empty($postIds)) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron posts para eliminar.',
+            ]);
+            return redirect()->route('admin.posts.index');
+        }
+
+        $posts = Post::with('images')->whereIn('id', $postIds)->get();
+
+        if ($posts->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'No encontrados',
+                'message' => 'Los posts seleccionados no existen.',
+            ]);
+            return redirect()->route('admin.posts.index');
+        }
+
+        // ===============================
+        //   🔥 Eliminación profesional
+        // ===============================
+
+        // Guarda títulos para el mensaje final
+        $titles = [];
+
+        foreach ($posts as $post) {
+            $titles[] = $post->title;
+
+            // 🖼️ Eliminar imágenes adicionales
+            foreach ($post->images as $img) {
+                if (Storage::disk('public')->exists($img->path)) {
+                    Storage::disk('public')->delete($img->path);
+                }
+                $img->delete();
+            }
+
+            // 🖼️ Eliminar imagen principal
+            if ($post->image && Storage::disk('public')->exists($post->image)) {
+                Storage::disk('public')->delete($post->image);
+            }
+
+            // Registrar quién eliminó
+            $post->deleted_by = Auth::id();
+            $post->save();
+
+            // Eliminar registro (soft delete)
+            $post->delete();
+        }
+
+        $count = count($titles);
+
+        Session::flash('info', [
+            'type' => 'danger',
+            'header' => 'Registros eliminados',
+            'title' => "Se eliminaron <strong>{$count}</strong> " . ($count === 1 ? 'post' : 'posts'),
+            'message' => "Lista de posts eliminados:",
+            'list' => $titles,
+        ]);
+
+        return redirect()->route('admin.posts.index');
+    }
+
     public function destroy(Post $post)
     {
         foreach ($post->images as $img) {
