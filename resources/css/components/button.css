@@ -3,7 +3,7 @@
     min-height: 35px;
     margin: 0px 0px;
     border: none;
-    text-wrap: nowrap;
+    white-space: nowrap;
     border-radius: var(--radius-element);
     cursor: pointer;
     display: flex;
@@ -235,7 +235,7 @@
     min-height: 35px;
     margin: 0px 0px;
     border: none;
-    text-wrap: nowrap;
+    white-space: nowrap;
     border-radius: var(--radius-element);
     cursor: pointer;
     display: flex;

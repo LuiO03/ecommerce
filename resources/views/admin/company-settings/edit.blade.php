@@ -2,7 +2,7 @@
 
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
-        <div class="page-icon card-primary"><i class="ri-building-4-line"></i></div>
+        <div class="page-icon card-purple"><i class="ri-building-4-line"></i></div>
         Configuración de la empresa
     </x-slot>
 

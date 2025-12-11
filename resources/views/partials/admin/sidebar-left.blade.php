@@ -59,15 +59,43 @@
             return '#';
         }
     }
+
+    $companySettings = company_setting();
+
+    $sidebarLogoUrl = null;
+
+    if ($companySettings && $companySettings->logo_path) {
+        $path = ltrim($companySettings->logo_path, '/');
+
+        // Si es URL externa
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            $sidebarLogoUrl = $path;
+        }
+        // Si es archivo local
+        elseif (Storage::disk('public')->exists($path)) {
+            $sidebarLogoUrl = asset('storage/' . $path);
+        }
+    }
+
+    $companyDisplayName = $companySettings?->name;
 @endphp
 
 <!-- SIDEBAR IZQUIERDO -->
 <aside id="logo-sidebar" class="sidebar-principal z-40 w-64 -translate-x-full sm:translate-x-0" aria-label="Sidebar">
 
     <div class="sidebar-header">
-        <a href="#" class="flex items-center gap-2">
-            <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Logo">
-            <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
+        <a href="{{ safe_route('admin.dashboard') }}" class="flex items-center gap-2">
+            @if ($sidebarLogoUrl)
+                <img src="{{ $sidebarLogoUrl }}" class="h-8" alt="{{ $companyDisplayName ?? 'Logo' }}">
+                @if ($companyDisplayName)
+                    <div class="sidebar-logo-texto">
+                        <strong>{{ $companyDisplayName }}</strong>
+                    </div>
+                @endif
+            @else
+                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Logo">
+                <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
+            @endif
         </a>
     </div>
 

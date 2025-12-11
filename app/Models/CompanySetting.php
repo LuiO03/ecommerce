@@ -63,6 +63,10 @@ class CompanySetting extends Model
 
     protected static function booted(): void
     {
+        static::retrieved(function (self $model): void {
+            $model->mergeSocialLinks();
+        });
+
         static::creating(function (self $model): void {
             if (Auth::check()) {
                 $model->created_by = Auth::id();
@@ -83,11 +87,12 @@ class CompanySetting extends Model
             }
         });
 
-        static::saved(function (): void {
+        static::saved(function (self $model): void {
+            $model->mergeSocialLinks();
             Cache::forget('company_settings');
         });
 
-        static::deleted(function (): void {
+        static::deleted(function (self $model): void {
             Cache::forget('company_settings');
         });
     }
@@ -103,6 +108,25 @@ class CompanySetting extends Model
         }
 
         return Storage::disk('public')->url($this->logo_path);
+    }
+
+    protected function mergeSocialLinks(): void
+    {
+        $links = $this->social_links ?? [];
+
+        $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
+
+        foreach ($platforms as $platform) {
+            $urlKey = sprintf('%s_url', $platform);
+            $existing = $links[$platform] ?? null;
+            $attributeValue = $this->getAttribute($urlKey);
+
+            if ($attributeValue && $attributeValue !== $existing) {
+                $links[$platform] = $attributeValue;
+            }
+        }
+
+        $this->social_links = $links;
     }
 
     public function creator()
