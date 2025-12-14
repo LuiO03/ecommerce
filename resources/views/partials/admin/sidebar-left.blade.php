@@ -89,7 +89,7 @@
                 <img src="{{ $sidebarLogoUrl }}" class="h-8" alt="{{ $companyDisplayName ?? 'Logo' }}">
                 @if ($companyDisplayName)
                     <div class="sidebar-logo-texto">
-                        <strong>{{ $companyDisplayName }}</strong>
+                        <strong>Gecko</strong><span>merce</span>
                     </div>
                 @endif
             @else
@@ -167,7 +167,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="sidebar-sublink" data-tooltip="Productos">
+                        <a href="{{ route('admin.products.index') }}" class="sidebar-sublink" data-tooltip="Productos">
                             <i class="ri-box-3-line sidebar-icon"></i>
                             <span>Productos</span>
                         </a>

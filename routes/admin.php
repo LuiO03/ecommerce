@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\FamilyController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PostController;
@@ -92,6 +93,23 @@ Route::controller(CategoryController::class)->group(function () {
     Route::post('/categories/export/excel', 'exportExcel')->name('admin.categories.export.excel');
     Route::post('/categories/export/pdf', 'exportPdf')->name('admin.categories.export.pdf');
     Route::post('/categories/export/csv', 'exportCsv')->name('admin.categories.export.csv');
+});
+
+// PRODUCTS
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/products/{slug}/show', 'show')->name('admin.products.show');
+    Route::get('/products', 'index')->name('admin.products.index');
+    Route::get('/products/create', 'create')->name('admin.products.create');
+    Route::post('/products', 'store')->name('admin.products.store');
+    Route::get('/products/{product}/edit', 'edit')->name('admin.products.edit');
+    Route::put('/products/{product}', 'update')->name('admin.products.update');
+    Route::delete('/products/{product}', 'destroy')->name('admin.products.destroy');
+    Route::delete('/products', 'destroyMultiple')->name('admin.products.destroy-multiple');
+    Route::patch('/products/{product}/status', 'updateStatus')->name('admin.products.update-status');
+
+    Route::post('/products/export/excel', 'exportExcel')->name('admin.products.export.excel');
+    Route::post('/products/export/pdf', 'exportPdf')->name('admin.products.export.pdf');
+    Route::post('/products/export/csv', 'exportCsv')->name('admin.products.export.csv');
 });
 
 // CATEGORY HIERARCHY MANAGER

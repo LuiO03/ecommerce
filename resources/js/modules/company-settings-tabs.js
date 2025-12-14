@@ -8,6 +8,7 @@ export function initCompanySettingsTabs() {
         return { destroy: () => {} };
     }
 
+    const sectionsWrapper = layout.querySelector('.settings-tabs-sections');
     const slider = layout.querySelector('.settings-tabs-slider');
     const tabButtons = layout.querySelectorAll('.settings-tab-button');
     const sections = slider ? slider.querySelectorAll('.settings-section') : [];
@@ -39,6 +40,7 @@ export function initCompanySettingsTabs() {
 
     let activeIndex = readStoredIndex();
     let resizeListener;
+    let sectionObserver = null;
 
     const updateSliderHeight = () => {
         const activeSection = sections[activeIndex];
@@ -46,7 +48,27 @@ export function initCompanySettingsTabs() {
             return;
         }
 
-        slider.style.height = `${activeSection.offsetHeight}px`;
+        const nextHeight = activeSection.scrollHeight;
+        slider.style.height = `${nextHeight}px`;
+        if (sectionsWrapper) {
+            sectionsWrapper.style.height = `${nextHeight}px`;
+        }
+    };
+
+    const attachObserver = () => {
+        if (!(window.ResizeObserver) || !sections[activeIndex]) {
+            updateSliderHeight();
+            return;
+        }
+
+        if (!sectionObserver) {
+            sectionObserver = new ResizeObserver(() => {
+                window.requestAnimationFrame(updateSliderHeight);
+            });
+        }
+
+        sectionObserver.disconnect();
+        sectionObserver.observe(sections[activeIndex]);
     };
 
     const persistActiveTab = () => {
@@ -86,7 +108,10 @@ export function initCompanySettingsTabs() {
 
         slider.style.transform = `translateX(-${nextIndex * 100}%)`;
 
-        requestAnimationFrame(updateSliderHeight);
+        requestAnimationFrame(() => {
+            updateSliderHeight();
+            attachObserver();
+        });
 
         sections[activeIndex].setAttribute('aria-hidden', 'true');
         sections[activeIndex].setAttribute('tabindex', '-1');
@@ -123,7 +148,8 @@ export function initCompanySettingsTabs() {
     });
 
     slider.style.transform = `translateX(-${activeIndex * 100}%)`;
-    slider.style.height = `${sections[activeIndex].offsetHeight}px`;
+    updateSliderHeight();
+    attachObserver();
 
     sections.forEach((section, index) => {
         const isActive = index === activeIndex;
@@ -144,6 +170,10 @@ export function initCompanySettingsTabs() {
 
             if (resizeListener) {
                 window.removeEventListener('resize', resizeListener);
+            }
+
+            if (sectionObserver) {
+                sectionObserver.disconnect();
             }
         }
     };

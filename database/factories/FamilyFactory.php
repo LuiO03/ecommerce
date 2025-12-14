@@ -20,7 +20,7 @@ class FamilyFactory extends Factory
         $name = $this->faker->unique()->words(2, true); // Ejemplo: "Moda Urbana"
         return [
             'name' => ucfirst($name),
-            'slug' => Str::slug($name),
+            'slug' => $this->faker->unique()->slug(),
             'description' => $this->faker->sentence(8),
             'image' => 'families/default.jpg',
             'status' => $this->faker->boolean(80), // 80% activos

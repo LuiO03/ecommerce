@@ -368,6 +368,10 @@
 .image-preview-zone.has-image {
     border: 3px dotted var(--color-accent);
     cursor: default;
+    align-items: center;
+    justify-content: center;
+    min-height: unset;
+    padding: 1.5rem;
 }
 
 .image-preview-zone.has-image:hover {
@@ -441,6 +445,14 @@
     object-fit: contain;
     max-height: 400px;
     border-radius: inherit;
+}
+
+.image-preview-zone.has-image .image-preview {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: clamp(160px, 40vh, 420px);
+    margin: 0 auto;
 }
 /* Animación de zoom pulsante */
 .image-pulse {
@@ -635,15 +647,15 @@
 }
 
 .tag-pill {
-    background: var(--color-info);
-    color: white;
+    background-color: var(--color-info-pastel);
+    color: var(--color-info);
     padding: 5px 12px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 5px;
     font-size: 13px;
-    border: 1px solid var(--color-info-pastel);
+    border: 1px solid var(--color-info);
 }
 
 .tag-pill i {

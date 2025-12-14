@@ -10,7 +10,17 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sku', 'name', 'slug', 'description', 'price', 'discount', 'status', 'category_id'
+        'sku',
+        'name',
+        'slug',
+        'description',
+        'price',
+        'discount',
+        'status',
+        'category_id',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     // 🔹 Relación con categoría
@@ -44,5 +54,31 @@ class Product extends Model
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public static function generateUniqueSlug(string $name, ?int $id = null): string
+    {
+        $slug = \Illuminate\Support\Str::slug($name);
+        $original = $slug;
+        $counter = 1;
+
+        while (self::where('slug', $slug)
+            ->when($id, fn ($query) => $query->where('id', '!=', $id))
+            ->exists()) {
+            $slug = $original . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }
