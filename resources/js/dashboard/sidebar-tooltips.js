@@ -37,10 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Posicionamiento preciso
                 const rect = link.getBoundingClientRect();
                 const sidebarWidth = sidebar.offsetWidth;
+                const tooltipHeight = tooltipEl.offsetHeight || rect.height;
+                const scrollOffset = window.scrollY || window.pageYOffset;
+                const verticalCenter = rect.top + rect.height / 2;
+                const topPosition = verticalCenter + scrollOffset - tooltipHeight / 2;
 
-                tooltipEl.style.top = `${rect.top + window.scrollY + rect.height / 2}px`;
+                tooltipEl.style.top = `${topPosition}px`;
                 tooltipEl.style.left = `${sidebarWidth + 12}px`;
-                tooltipEl.style.transform = "translateY(-50%)"; // centrado vertical exacto
+                tooltipEl.style.transform = "";
 
                 tooltipEl.classList.add("show");
             });

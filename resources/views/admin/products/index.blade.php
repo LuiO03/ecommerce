@@ -179,7 +179,6 @@
 							<td class="column-category-td" data-category-id="{{ $product->category_id ?? '' }}">
 								@if($product->category)
 									<span class="badge badge-info">
-										<i class="ri-price-tag-3-line"></i>
 										{{ $product->category->name }}
 									</span>
 								@else
@@ -217,7 +216,7 @@
 							</td>
 							<td class="column-status-td">
 								<label class="switch-tabla">
-									<input type="checkbox" class="switch-status" data-id="{{ $product->id }}" {{ $product->status ? 'checked' : '' }}>
+									<input type="checkbox" class="switch-status" data-id="{{ $product->id }}" data-key="{{ $product->slug }}" {{ $product->status ? 'checked' : '' }}>
 									<span class="slider"></span>
 								</label>
 							</td>

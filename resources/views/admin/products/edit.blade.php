@@ -12,7 +12,8 @@
             <span class="boton-icon"><i class="ri-arrow-go-back-line"></i></span>
             <span class="boton-text">Volver</span>
         </a>
-        <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="delete-form" data-entity="producto" style="margin: 0;">
+        <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="delete-form"
+            data-entity="producto" style="margin: 0;">
             @csrf
             @method('DELETE')
             <button class="boton boton-danger" type="submit">
@@ -23,12 +24,11 @@
     </x-slot>
 
     @php
-        $mainImage = $product->images->firstWhere('is_main', true);
-        $mainImageExists = $mainImage && file_exists(public_path('storage/' . $mainImage->path));
-        $galleryImages = $product->images->filter(fn($image) => !$image->is_main);
+        $sortedImages = $product->images->sortBy('order');
     @endphp
 
-    <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="form-container" autocomplete="off" id="productForm">
+    <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data"
+        class="form-container" autocomplete="off" id="productForm">
         @csrf
         @method('PUT')
 
@@ -49,43 +49,6 @@
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
         <div class="form-row">
-            <div class="image-upload-section">
-                <label class="label-form">Imagen principal</label>
-                <input type="file" name="main_image" id="mainImage" class="file-input" accept="image/*" data-validate="image|maxSize:2048">
-                <input type="hidden" name="remove_main_image" id="removeMainImageFlag" value="0">
-
-                <div class="image-preview-zone {{ $mainImageExists ? 'has-image' : '' }}" id="mainImagePreviewZone">
-                    <div class="image-placeholder" id="mainImagePlaceholder" style="{{ $mainImageExists || $mainImage ? 'display: none;' : 'display: flex;' }}">
-                        <i class="ri-image-add-line"></i>
-                        <p>Arrastra una imagen aquí</p>
-                        <span>o haz clic para seleccionar</span>
-                    </div>
-                    <div class="image-error" id="mainImageError" style="{{ $mainImage && !$mainImageExists ? 'display: flex;' : 'display: none;' }}">
-                        <i class="ri-folder-close-line"></i>
-                        <p>Imagen no encontrada</p>
-                        <span>Haz clic para subir una nueva</span>
-                    </div>
-                    <img id="mainImagePreview" class="image-preview image-pulse" style="{{ $mainImageExists ? 'display: block;' : 'display: none;' }}" src="{{ $mainImageExists ? asset('storage/' . $mainImage->path) : '' }}" alt="{{ $mainImageExists ? ($mainImage->alt ?? $product->name) : 'Imagen principal' }}">
-                    <img id="mainImagePreviewNew" class="image-preview image-pulse" style="display: none;" alt="Nueva imagen">
-                    <div class="image-overlay" id="mainImageOverlay" style="{{ $mainImageExists ? 'display: flex;' : 'display: none;' }}">
-                        <button type="button" class="overlay-btn" id="mainImageChangeBtn" title="Cambiar imagen">
-                            <i class="ri-upload-2-line"></i>
-                            <span>Cambiar</span>
-                        </button>
-                        <button type="button" class="overlay-btn overlay-btn-danger" id="mainImageRemoveBtn" title="Eliminar imagen">
-                            <i class="ri-delete-bin-line"></i>
-                            <span>Eliminar</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="image-filename" id="mainImageFilename" style="{{ $mainImageExists ? 'display: flex;' : 'display: none;' }}">
-                    <i class="ri-file-image-line"></i>
-                    <span id="mainImageFilenameText">{{ $mainImageExists ? basename($mainImage->path) : '' }}</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-row">
             <div class="input-group">
                 <label for="category_id" class="label-form">
                     Categoría
@@ -93,10 +56,12 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-archive-stack-line input-icon"></i>
-                    <select name="category_id" id="category_id" class="select-form" required data-validate="required|selected">
+                    <select name="category_id" id="category_id" class="select-form" required
+                        data-validate="required|selected">
                         <option value="" disabled>Seleccione una categoría</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->id }}" {{ (int) old('category_id', $product->category_id) === $category->id ? 'selected' : '' }}>
+                            <option value="{{ $category->id }}"
+                                {{ (int) old('category_id', $product->category_id) === $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                         @endforeach
@@ -111,7 +76,9 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-hashtag input-icon"></i>
-                    <input type="text" name="sku" id="sku" class="input-form" required value="{{ old('sku', $product->sku) }}" placeholder="Ej. PROD-001" data-validate="required|min:3|max:100">
+                    <input type="text" name="sku" id="sku" class="input-form" required
+                        value="{{ old('sku', $product->sku) }}" placeholder="Ej. PROD-001"
+                        data-validate="required|min:3|max:100">
                 </div>
             </div>
             <div class="input-group">
@@ -121,7 +88,9 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-price-tag-3-line input-icon"></i>
-                    <input type="text" name="name" id="name" class="input-form" required value="{{ old('name', $product->name) }}" placeholder="Nombre del producto" data-validate="required|min:3|max:255">
+                    <input type="text" name="name" id="name" class="input-form" required
+                        value="{{ old('name', $product->name) }}" placeholder="Nombre del producto"
+                        data-validate="required|min:3|max:255">
                 </div>
             </div>
             <div class="input-group">
@@ -130,11 +99,17 @@
                     <i class="ri-asterisk text-accent"></i>
                 </label>
                 <div class="binary-switch">
-                    <input type="radio" name="status" id="statusActive" value="1" class="switch-input switch-input-on" {{ old('status', (int) $product->status) == 1 ? 'checked' : '' }}>
-                    <input type="radio" name="status" id="statusInactive" value="0" class="switch-input switch-input-off" {{ old('status', (int) $product->status) == 0 ? 'checked' : '' }}>
+                    <input type="radio" name="status" id="statusActive" value="1"
+                        class="switch-input switch-input-on"
+                        {{ old('status', (int) $product->status) == 1 ? 'checked' : '' }}>
+                    <input type="radio" name="status" id="statusInactive" value="0"
+                        class="switch-input switch-input-off"
+                        {{ old('status', (int) $product->status) == 0 ? 'checked' : '' }}>
                     <div class="switch-slider"></div>
-                    <label for="statusActive" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i> Activo</label>
-                    <label for="statusInactive" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i> Inactivo</label>
+                    <label for="statusActive" class="switch-label switch-label-on"><i
+                            class="ri-checkbox-circle-line"></i> Activo</label>
+                    <label for="statusInactive" class="switch-label switch-label-off"><i
+                            class="ri-close-circle-line"></i> Inactivo</label>
                 </div>
             </div>
         </div>
@@ -147,62 +122,86 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-currency-line input-icon"></i>
-                    <input type="number" name="price" id="price" class="input-form" required min="0" step="0.01" value="{{ old('price', $product->price) }}" placeholder="0.00" data-validate="required|minValue:0">
+                    <input type="number" name="price" id="price" class="input-form" required min="0"
+                        step="0.01" value="{{ old('price', $product->price) }}" placeholder="0.00"
+                        data-validate="required|minValue:0">
                 </div>
             </div>
             <div class="input-group">
                 <label for="discount" class="label-form">Descuento (S/)</label>
                 <div class="input-icon-container">
                     <i class="ri-discount-percent-line input-icon"></i>
-                    <input type="number" name="discount" id="discount" class="input-form" min="0" step="0.01" value="{{ old('discount', $product->discount) }}" placeholder="Opcional" data-validate="minValue:0">
-                </div>
-            </div>
-            <div class="input-group">
-                <label for="description" class="label-form">Descripción</label>
-                <div class="input-icon-container">
-                    <textarea name="description" id="description" class="textarea-form" rows="4" placeholder="Describe el producto" data-validate="max:5000">{{ old('description', $product->description) }}</textarea>
-                    <i class="ri-file-text-line input-icon textarea-icon"></i>
+                    <input type="number" name="discount" id="discount" class="input-form" min="0"
+                        step="0.01" value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
+                        data-validate="minValue:0">
                 </div>
             </div>
         </div>
 
-        <div class="form-row">
-            <div class="image-upload-section w-full">
-                <label class="label-form">Galería de imágenes</label>
-                <div class="custom-dropzone" id="galleryDropzone">
-                    <i class="ri-multi-image-line"></i>
-                    <p>Arrastra imágenes aquí o haz clic</p>
-                    <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden data-validate="image|maxSize:2048">
-                </div>
-                <div id="galleryPreviewContainer" class="preview-container">
-                    @foreach ($galleryImages as $image)
-                        @php
-                            $exists = file_exists(public_path('storage/' . $image->path));
-                        @endphp
-                        @if ($exists)
-                            <div class="preview-item existing-image" data-id="{{ $image->id }}">
-                                <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $image->alt ?? $product->name }}">
+        <div class="form-columns-row">
+
+            <div class="form-column">
+                <div class="image-upload-section w-full">
+                    <label class="label-form">Galería de imágenes</label>
+                    <div class="custom-dropzone" id="galleryDropzone">
+                        <i class="ri-multi-image-line"></i>
+                        <p>Arrastra imágenes aquí o haz clic</p>
+                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
+                            data-validate="image|maxSize:2048">
+                    </div>
+                    <div id="galleryPreviewContainer" class="preview-container">
+                        @foreach ($sortedImages as $image)
+                            @php
+                                $fullPath = $image->path ? public_path('storage/' . $image->path) : null;
+                                $exists = $fullPath && file_exists($fullPath);
+                                $imageUrl = $exists ? asset('storage/' . $image->path) : asset('storage/default.png');
+                                $altText = $image->alt ?? $product->name;
+                            @endphp
+                            <div class="preview-item existing-image" data-type="existing"
+                                data-id="{{ $image->id }}" data-main="{{ $image->is_main ? 'true' : 'false' }}">
+                                @if ($exists)
+                                    <img src="{{ $imageUrl }}" alt="{{ $altText }}">
+                                @else
+                                    <div class="image-not-found-block">
+                                        <i class="ri-file-close-line"></i>
+                                        <p>Imagen no encontrada</p>
+                                    </div>
+                                @endif
                                 <div class="overlay">
-                                    <span class="file-size">Orden #{{ $image->order }}</span>
-                                    <button type="button" class="delete-btn delete-existing-gallery" data-id="{{ $image->id }}" title="Eliminar imagen">
-                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                        <span class="boton-text">Eliminar</span>
-                                    </button>
+                                    <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
+                                    <div class="overlay-actions">
+                                        <button type="button" class="mark-main-btn" title="Marcar como principal">
+                                            <i class="ri-star-smile-fill"></i>
+                                            <span>Principal</span>
+                                        </button>
+                                        <button type="button" class="delete-btn delete-existing-gallery"
+                                            data-id="{{ $image->id }}" title="Eliminar imagen">
+                                            <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                            <span class="boton-text">Eliminar</span>
+                                        </button>
+                                    </div>
                                 </div>
+                                <span class="primary-badge"
+                                    style="{{ $image->is_main ? 'display:flex;' : 'display:none;' }}">
+                                    <i class="ri-star-fill"></i>
+                                    Principal
+                                </span>
                             </div>
-                        @else
-                            <div class="image-not-found-block existing-image" data-id="{{ $image->id }}">
-                                <i class="ri-file-close-line"></i>
-                                <p>Imagen no encontrada</p>
-                                <button type="button" class="boton boton-danger boton-sm delete-existing-gallery" data-id="{{ $image->id }}">
-                                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                    <span class="boton-text">Eliminar</span>
-                                </button>
-                            </div>
-                        @endif
-                    @endforeach
+                        @endforeach
+                    </div>
+                    <div id="removedGalleryContainer"></div>
+                    <input type="hidden" name="primary_image" id="primaryImageInput" value="">
                 </div>
-                <div id="removedGalleryContainer"></div>
+            </div>
+            <div class="form-column">
+                <div class="input-group">
+                    <label for="description" class="label-form">Descripción</label>
+                    <div class="input-icon-container">
+                        <textarea name="description" id="description" class="textarea-form" rows="4"
+                            placeholder="Describe el producto" data-validate="max:5000">{{ old('description', $product->description) }}</textarea>
+                        <i class="ri-file-text-line input-icon textarea-icon"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -221,24 +220,6 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                initImageUpload({
-                    mode: 'edit',
-                    inputId: 'mainImage',
-                    previewZoneId: 'mainImagePreviewZone',
-                    placeholderId: 'mainImagePlaceholder',
-                    previewId: 'mainImagePreview',
-                    previewNewId: 'mainImagePreviewNew',
-                    overlayId: 'mainImageOverlay',
-                    changeBtnId: 'mainImageChangeBtn',
-                    removeBtnId: 'mainImageRemoveBtn',
-                    filenameContainerId: 'mainImageFilename',
-                    filenameTextId: 'mainImageFilenameText',
-                    errorContainerId: 'mainImageError',
-                    removeFlagId: 'removeMainImageFlag',
-                    hasExistingImage: {{ $mainImageExists ? 'true' : 'false' }},
-                    existingImageFilename: '{{ $mainImageExists ? basename($mainImage->path) : '' }}'
-                });
-
                 initSubmitLoader({
                     formId: 'productForm',
                     buttonId: 'submitBtn',
@@ -255,12 +236,15 @@
                 const galleryInput = document.getElementById('galleryInput');
                 const galleryPreviewContainer = document.getElementById('galleryPreviewContainer');
                 const removedGalleryContainer = document.getElementById('removedGalleryContainer');
-                const removedGalleryIds = new Set();
+                const primaryImageInput = document.getElementById('primaryImageInput');
+
                 let galleryFiles = [];
+                const removedGalleryIds = new Set();
+                let primaryState = null;
 
                 const refreshGalleryInput = () => {
                     const dataTransfer = new DataTransfer();
-                    galleryFiles.forEach(file => dataTransfer.items.add(file));
+                    galleryFiles.forEach(entry => dataTransfer.items.add(entry.file));
                     galleryInput.files = dataTransfer.files;
                 };
 
@@ -269,63 +253,200 @@
                     return size > 1024 ? `${(size / 1024).toFixed(2)} MB` : `${size.toFixed(1)} KB`;
                 };
 
-                const addGalleryPreview = (file) => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const item = document.createElement('div');
-                        item.classList.add('preview-item');
-                        item.innerHTML = `
-                            <img src="${event.target.result}" alt="${file.name}">
-                            <div class="overlay">
-                                <span class="file-size">${formatFileSize(file.size)}</span>
+                const getAllPreviewItems = () => Array.from(galleryPreviewContainer.querySelectorAll('.preview-item'));
+
+                const updatePrimaryBadges = () => {
+                    getAllPreviewItems().forEach(item => {
+                        const badge = item.querySelector('.primary-badge');
+                        const markBtn = item.querySelector('.mark-main-btn');
+                        if (!badge || !markBtn) return;
+
+                        let isActive = false;
+                        if (primaryState) {
+                            if (primaryState.type === 'existing' && item.dataset.type === 'existing') {
+                                isActive = Number(item.dataset.id) === primaryState.id;
+                            }
+                            if (primaryState.type === 'new' && item.dataset.type === 'new') {
+                                isActive = item.dataset.key === primaryState.key;
+                            }
+                        }
+
+                        badge.style.display = isActive ? 'flex' : 'none';
+                        markBtn.disabled = isActive;
+                    });
+                };
+
+                const setPrimaryState = (state) => {
+                    primaryState = state;
+                    updatePrimaryBadges();
+                };
+
+                const ensurePrimarySelection = () => {
+                    if (primaryState) {
+                        if (primaryState.type === 'existing') {
+                            const stillExists = getAllPreviewItems().some(item => item.dataset.type ===
+                                'existing' && Number(item.dataset.id) === primaryState.id);
+                            if (stillExists) {
+                                updatePrimaryBadges();
+                                return;
+                            }
+                        } else if (primaryState.type === 'new') {
+                            const stillExists = galleryFiles.some(entry => entry.key === primaryState.key);
+                            if (stillExists) {
+                                updatePrimaryBadges();
+                                return;
+                            }
+                        }
+                    }
+
+                    const allItems = getAllPreviewItems();
+                    if (allItems.length === 0) {
+                        primaryState = null;
+                        updatePrimaryBadges();
+                        return;
+                    }
+
+                    const firstExisting = allItems.find(item => item.dataset.type === 'existing');
+                    if (firstExisting) {
+                        setPrimaryState({
+                            type: 'existing',
+                            id: Number(firstExisting.dataset.id)
+                        });
+                        return;
+                    }
+
+                    if (galleryFiles.length > 0) {
+                        setPrimaryState({
+                            type: 'new',
+                            key: galleryFiles[0].key
+                        });
+                        return;
+                    }
+                };
+
+                const registerExistingPreviewEvents = () => {
+                    getAllPreviewItems()
+                        .filter(item => item.dataset.type === 'existing')
+                        .forEach(item => {
+                            const id = Number(item.dataset.id);
+                            const markButton = item.querySelector('.mark-main-btn');
+                            const deleteButton = item.querySelector('.delete-existing-gallery');
+
+                            if (item.dataset.main === 'true' && !primaryState) {
+                                primaryState = {
+                                    type: 'existing',
+                                    id
+                                };
+                            }
+
+                            markButton?.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                setPrimaryState({
+                                    type: 'existing',
+                                    id
+                                });
+                            });
+
+                            deleteButton?.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                if (!removedGalleryIds.has(id)) {
+                                    removedGalleryIds.add(id);
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = 'remove_gallery[]';
+                                    input.value = id;
+                                    removedGalleryContainer.appendChild(input);
+                                }
+
+                                item.remove();
+                                ensurePrimarySelection();
+                            });
+                        });
+                };
+
+                const buildNewPreviewItem = (dataUrl, file, key) => {
+                    const item = document.createElement('div');
+                    item.classList.add('preview-item');
+                    item.dataset.type = 'new';
+                    item.dataset.key = key;
+                    item.innerHTML = `
+                        <img src="${dataUrl}" alt="${file.name}">
+                        <div class="overlay">
+                            <span class="file-size">${formatFileSize(file.size)}</span>
+                            <div class="overlay-actions">
+                                <button type="button" class="mark-main-btn" title="Marcar como principal">
+                                    <i class="ri-star-smile-fill"></i>
+                                    <span>Principal</span>
+                                </button>
                                 <button type="button" class="delete-btn" title="Eliminar imagen">
                                     <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                     <span class="boton-text">Eliminar</span>
                                 </button>
                             </div>
-                        `;
-                        item.querySelector('.delete-btn').addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            galleryFiles = galleryFiles.filter(current => current !== file);
-                            item.remove();
-                            refreshGalleryInput();
+                        </div>
+                        <span class="primary-badge">
+                            <i class="ri-star-fill"></i>
+                            Principal
+                        </span>
+                    `;
+
+                    item.querySelector('.mark-main-btn').addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setPrimaryState({
+                            type: 'new',
+                            key
                         });
-                        galleryPreviewContainer.appendChild(item);
-                    };
-                    reader.readAsDataURL(file);
+                    });
+
+                    item.querySelector('.delete-btn').addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        galleryFiles = galleryFiles.filter(entry => entry.key !== key);
+                        item.remove();
+                        ensurePrimarySelection();
+                        refreshGalleryInput();
+                    });
+
+                    galleryPreviewContainer.appendChild(item);
+                };
+
+                const renderNewFiles = (entries) => {
+                    entries.forEach(({
+                        file,
+                        key
+                    }) => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            buildNewPreviewItem(event.target.result, file, key);
+                            updatePrimaryBadges();
+                        };
+                        reader.readAsDataURL(file);
+                    });
                 };
 
                 const handleGalleryFiles = (files) => {
+                    const newEntries = [];
                     [...files].forEach(file => {
                         if (!file.type.startsWith('image/')) {
                             return;
                         }
-                        galleryFiles.push(file);
-                        addGalleryPreview(file);
+                        const key = `new-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`;
+                        const entry = {
+                            file,
+                            key
+                        };
+                        galleryFiles.push(entry);
+                        newEntries.push(entry);
                     });
-                    refreshGalleryInput();
-                };
 
-                document.querySelectorAll('.delete-existing-gallery').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        event.stopPropagation();
-                        const imageId = button.dataset.id;
-                        if (!imageId) {
-                            return;
-                        }
-                        if (!removedGalleryIds.has(imageId)) {
-                            removedGalleryIds.add(imageId);
-                            const hidden = document.createElement('input');
-                            hidden.type = 'hidden';
-                            hidden.name = 'remove_gallery[]';
-                            hidden.value = imageId;
-                            hidden.id = `remove-gallery-${imageId}`;
-                            removedGalleryContainer.appendChild(hidden);
-                        }
-                        const wrapper = button.closest('.preview-item') || button.closest('.existing-image');
-                        wrapper?.remove();
-                    });
-                });
+                    refreshGalleryInput();
+                    renderNewFiles(newEntries);
+                    ensurePrimarySelection();
+                };
 
                 galleryDropzone.addEventListener('click', () => galleryInput.click());
                 galleryDropzone.addEventListener('dragover', (event) => {
@@ -341,6 +462,27 @@
                     handleGalleryFiles(event.dataTransfer.files);
                 });
                 galleryInput.addEventListener('change', (event) => handleGalleryFiles(event.target.files));
+
+                registerExistingPreviewEvents();
+                ensurePrimarySelection();
+                updatePrimaryBadges();
+
+                document.getElementById('productForm').addEventListener('submit', () => {
+                    ensurePrimarySelection();
+
+                    if (!primaryState) {
+                        primaryImageInput.value = '';
+                        return;
+                    }
+
+                    if (primaryState.type === 'existing') {
+                        primaryImageInput.value = `existing:${primaryState.id}`;
+                        return;
+                    }
+
+                    const index = galleryFiles.findIndex(entry => entry.key === primaryState.key);
+                    primaryImageInput.value = index >= 0 ? `new:${index}` : '';
+                });
             });
         </script>
     @endpush

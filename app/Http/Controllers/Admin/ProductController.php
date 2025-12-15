@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -62,9 +63,9 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'status' => 'required|boolean',
-            'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'gallery' => 'nullable|array',
+            'gallery' => 'required|array|min:1',
             'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'primary_image' => 'nullable|string',
         ]);
 
         $slug = Product::generateUniqueSlug($validated['name']);
@@ -82,8 +83,8 @@ class ProductController extends Controller
             'updated_by' => Auth::id(),
         ]);
 
-        $this->handleMainImageUpload($request, $product, $slug);
-        $this->handleGalleryUpload($request, $product, $slug);
+        $newImages = $this->handleGalleryUpload($request, $product, $slug);
+        $this->finalizeProductImages($product, $request->input('primary_image'), $newImages);
 
         Session::flash('toast', [
             'type' => 'success',
@@ -172,12 +173,11 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'status' => 'required|boolean',
-            'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'gallery' => 'nullable|array',
             'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
-            'remove_main_image' => 'sometimes|boolean',
             'remove_gallery' => 'sometimes|array',
             'remove_gallery.*' => 'integer|exists:product_images,id',
+            'primary_image' => 'nullable|string',
         ]);
 
         $slug = Product::generateUniqueSlug($validated['name'], $product->id);
@@ -194,13 +194,9 @@ class ProductController extends Controller
             'updated_by' => Auth::id(),
         ]);
 
-        if ($request->boolean('remove_main_image')) {
-            $this->removeMainImage($product);
-        }
-
-        $this->handleMainImageUpload($request, $product, $slug);
         $this->handleGalleryRemovals($request, $product);
-        $this->handleGalleryUpload($request, $product, $slug);
+        $newImages = $this->handleGalleryUpload($request, $product, $slug);
+        $this->finalizeProductImages($product, $request->input('primary_image'), $newImages);
 
         Session::flash('toast', [
             'type' => 'success',
@@ -334,39 +330,18 @@ class ProductController extends Controller
             'status' => $product->status,
         ]);
     }
-
-    protected function handleMainImageUpload(Request $request, Product $product, string $slug): void
-    {
-        if (!$request->hasFile('main_image')) {
-            return;
-        }
-
-        $this->removeMainImage($product);
-
-        $file = $request->file('main_image');
-        $extension = $file->getClientOriginalExtension();
-        $filename = $slug . '-main.' . $extension;
-        $path = 'products/' . $filename;
-
-        $file->storeAs('products', $filename, 'public');
-
-        ProductImage::create([
-            'product_id' => $product->id,
-            'path' => $path,
-            'alt' => $product->name,
-            'is_main' => true,
-            'order' => 0,
-        ]);
-    }
-
-    protected function handleGalleryUpload(Request $request, Product $product, string $slug): void
+    protected function handleGalleryUpload(Request $request, Product $product, string $slug): array
     {
         if (!$request->hasFile('gallery')) {
-            return;
+            return [];
         }
 
+        $created = [];
+        $currentMaxOrder = ProductImage::where('product_id', $product->id)->max('order');
+        $orderCounter = is_numeric($currentMaxOrder) ? (int) $currentMaxOrder : -1;
+
         foreach ($request->file('gallery') as $index => $file) {
-            if (!$file->isValid()) {
+            if (!$file || !$file->isValid()) {
                 continue;
             }
 
@@ -375,17 +350,20 @@ class ProductController extends Controller
             $path = 'products/' . $filename;
             $file->storeAs('products', $filename, 'public');
 
-            $nextOrder = ProductImage::where('product_id', $product->id)->max('order');
-            $order = is_numeric($nextOrder) ? ((int) $nextOrder + 1) : 1;
+            $order = ++$orderCounter;
 
-            ProductImage::create([
+            $image = ProductImage::create([
                 'product_id' => $product->id,
                 'path' => $path,
                 'alt' => $product->name,
                 'is_main' => false,
                 'order' => $order,
             ]);
+
+            $created[(int) $index] = $image;
         }
+
+        return $created;
     }
 
     protected function handleGalleryRemovals(Request $request, Product $product): void
@@ -407,19 +385,52 @@ class ProductController extends Controller
         }
     }
 
-    protected function removeMainImage(Product $product): void
+    protected function finalizeProductImages(Product $product, ?string $primaryReference, array $newImages): void
     {
-        $mainImage = $product->images()->where('is_main', true)->first();
+        $images = $product->images()->orderBy('order')->get();
+
+        if ($images->isEmpty()) {
+            throw ValidationException::withMessages([
+                'gallery' => 'Debe proporcionar al menos una imagen para el producto.',
+            ]);
+        }
+
+        $mainImage = null;
+
+        if ($primaryReference) {
+            if (str_starts_with($primaryReference, 'existing:')) {
+                $id = (int) substr($primaryReference, 9);
+                $mainImage = $images->firstWhere('id', $id);
+            } elseif (str_starts_with($primaryReference, 'new:')) {
+                $index = (int) substr($primaryReference, 4);
+                $mainImage = $newImages[$index] ?? null;
+            }
+        }
 
         if (!$mainImage) {
-            return;
+            $mainImage = $images->first();
         }
 
-        if (Storage::disk('public')->exists($mainImage->path)) {
-            Storage::disk('public')->delete($mainImage->path);
+        if (!$mainImage) {
+            throw ValidationException::withMessages([
+                'gallery' => 'Ocurrió un problema al establecer la imagen principal.',
+            ]);
         }
 
-        $mainImage->delete();
+        $product->images()->where('id', '!=', $mainImage->id)->update(['is_main' => false]);
+
+        $mainImage->is_main = true;
+        $mainImage->order = 0;
+        $mainImage->save();
+
+        $order = 1;
+        foreach ($images->where('id', '!=', $mainImage->id) as $image) {
+            if ($image->order !== $order) {
+                $image->order = $order;
+                $image->save();
+            }
+            $order++;
+        }
     }
 
     protected function removeAllImages(Product $product): void

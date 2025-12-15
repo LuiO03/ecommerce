@@ -681,9 +681,24 @@ class DataTableManager {
         this.$table.on('change', '.switch-status', (e) => {
             const $switch = $(e.currentTarget);
             const id = $switch.data('id');
+            const routeKey = $switch.data('key') ?? id;
+            const placeholder = this.config.statusRoute.includes('{key}') ? '{key}' : '{id}';
             const isChecked = $switch.is(':checked');
-            const url = this.config.statusRoute.replace('{id}', id);
             const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (routeKey === undefined || routeKey === null) {
+                console.error('❌ switch-status sin data-key ni data-id definido.');
+                $switch.prop('checked', !isChecked);
+                return;
+            }
+
+            if (!this.config.statusRoute || !this.config.statusRoute.includes(placeholder)) {
+                console.error('❌ statusRoute inválida o sin placeholder esperado:', this.config.statusRoute);
+                $switch.prop('checked', !isChecked);
+                return;
+            }
+
+            const url = this.config.statusRoute.replace(placeholder, encodeURIComponent(routeKey));
 
             $.ajax({
                 url: url,

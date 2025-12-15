@@ -283,10 +283,10 @@
     --badge-primary-hover-border: #1E88E5;
 
     /* Badge Info - Modo Oscuro (Cian/Turquesa vibrante) */
-    --badge-info-bg: #1565C0;
+    --badge-info-bg: #0D47A1;
     --badge-info-text: #4DD0E1;
-    --badge-info-border: #64B5F6;
-    --badge-info-hover-bg: #0D47A1;
+    --badge-info-border: #1d71d2;
+    --badge-info-hover-bg: #1565C0;
     --badge-info-hover-text: #ffffff;
     --badge-info-hover-border: #00e1ff;
 
@@ -352,7 +352,7 @@
     --font-primary: "Lato", sans-serif;
     --font-secondary: "Poppins", sans-serif;
 
-    --max-width: 1200px;
+    --max-width: 1280px;
     --fw-regular: 400;
     --fw-bold: 700;
 
@@ -901,8 +901,8 @@
 /* Badge Info - Azul Profesional */
 .badge-info {
     background-color: var(--badge-info-bg);
-    color: var(--badge-info-text);
     border-color: var(--badge-info-border);
+    color: var(--badge-info-text);
 }
 
 .badge-info:hover {

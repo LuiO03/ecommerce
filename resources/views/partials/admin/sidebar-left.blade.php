@@ -104,7 +104,8 @@
             @foreach ($links as $link)
             @endforeach
             <li>
-                <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                <a href="{{ route('admin.dashboard') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                     data-tooltip="Dashboard">
                     <i class="ri-dashboard-line sidebar-icon"></i>
                     <span>Dashboard</span>
@@ -120,18 +121,28 @@
             </li>
 
             <li>
-                <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                    data-tooltip="Users">
+                <a href="{{ route('admin.users.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" data-tooltip="Users">
                     <i class="ri-id-card-line sidebar-icon"></i>
                     <span>Usuarios</span>
                 </a>
             </li>
 
             <li>
-                <a href="{{  route('admin.roles.index') }}" class="sidebar-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
+                <a href="{{ route('admin.roles.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
                     data-tooltip="Roles">
                     <i class="ri-shield-user-line sidebar-icon"></i>
                     <span>Roles</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.categories.hierarchy') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.categories.hierarchy') ? 'active' : '' }}"
+                    data-tooltip="Gestor Jerárquico">
+                    <i aria-busy=""class="ri-node-tree sidebar-icon"></i>
+                    <span>Gestor Jerárquico</span>
                 </a>
             </li>
 
@@ -144,14 +155,7 @@
                 </button>
 
                 <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
-                    <li>
-                        <a href="{{ route('admin.categories.hierarchy') }}"
-                            class="sidebar-sublink {{ request()->routeIs('admin.categories.hierarchy') ? 'active' : '' }}"
-                            data-tooltip="Gestor Jerárquico">
-                            <i aria-busy=""class="ri-node-tree sidebar-icon"></i>
-                            <span>Gestor Jerárquico</span>
-                        </a>
-                    </li>
+
                     <li>
                         <a href="{{ route('admin.categories.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
@@ -167,7 +171,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.products.index') }}" class="sidebar-sublink" data-tooltip="Productos">
+                        <a href="{{ route('admin.products.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.products.index') ? 'active' : '' }}"
+                            data-tooltip="Productos">
                             <i class="ri-box-3-line sidebar-icon"></i>
                             <span>Productos</span>
                         </a>
@@ -177,7 +183,8 @@
 
             <!-- Posts -->
             <li>
-                <a href="{{ route('admin.posts.index') }}" class="sidebar-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
+                <a href="{{ route('admin.posts.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
                     data-tooltip="Posts">
                     <i class="ri-article-line sidebar-icon"></i>
                     <span>Posts</span>

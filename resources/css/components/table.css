@@ -750,6 +750,7 @@ input[type="checkbox"]:indeterminate {
     color: var(--color-muted);
     font-style: italic;
     width: fit-content;
+    font-size: 12px !important;
 }
 
 /* =======================================================

@@ -31,36 +31,6 @@
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
         <div class="form-row">
-            <div class="image-upload-section">
-                <label class="label-form">Imagen principal</label>
-                <input type="file" name="main_image" id="mainImage" class="file-input" accept="image/*" data-validate="image|maxSize:2048">
-
-                <div class="image-preview-zone" id="mainImagePreviewZone">
-                    <div class="image-placeholder" id="mainImagePlaceholder">
-                        <i class="ri-image-add-line"></i>
-                        <p>Arrastra una imagen aquí</p>
-                        <span>o haz clic para seleccionar</span>
-                    </div>
-                    <img id="mainImagePreview" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
-                    <div class="image-overlay" id="mainImageOverlay" style="display: none;">
-                        <button type="button" class="overlay-btn" id="mainImageChangeBtn" title="Cambiar imagen">
-                            <i class="ri-upload-2-line"></i>
-                            <span>Cambiar</span>
-                        </button>
-                        <button type="button" class="overlay-btn overlay-btn-danger" id="mainImageRemoveBtn" title="Eliminar imagen">
-                            <i class="ri-delete-bin-line"></i>
-                            <span>Eliminar</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="image-filename" id="mainImageFilename" style="display: none;">
-                    <i class="ri-file-image-line"></i>
-                    <span id="mainImageFilenameText"></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-row">
             <div class="input-group">
                 <label for="category_id" class="label-form">
                     Categoría
@@ -150,6 +120,7 @@
                     <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden data-validate="image|maxSize:2048">
                 </div>
                 <div id="galleryPreviewContainer" class="preview-container"></div>
+                <input type="hidden" name="primary_image" id="primaryImageInput">
             </div>
         </div>
 
@@ -172,19 +143,6 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                initImageUpload({
-                    mode: 'create',
-                    inputId: 'mainImage',
-                    previewZoneId: 'mainImagePreviewZone',
-                    placeholderId: 'mainImagePlaceholder',
-                    previewId: 'mainImagePreview',
-                    overlayId: 'mainImageOverlay',
-                    changeBtnId: 'mainImageChangeBtn',
-                    removeBtnId: 'mainImageRemoveBtn',
-                    filenameContainerId: 'mainImageFilename',
-                    filenameTextId: 'mainImageFilenameText'
-                });
-
                 initSubmitLoader({
                     formId: 'productForm',
                     buttonId: 'submitBtn',
@@ -200,11 +158,14 @@
                 const galleryDropzone = document.getElementById('galleryDropzone');
                 const galleryInput = document.getElementById('galleryInput');
                 const galleryPreviewContainer = document.getElementById('galleryPreviewContainer');
+                const primaryImageInput = document.getElementById('primaryImageInput');
+
                 let galleryFiles = [];
+                let primaryState = null; // { key }
 
                 const refreshGalleryInput = () => {
                     const dataTransfer = new DataTransfer();
-                    galleryFiles.forEach(file => dataTransfer.items.add(file));
+                    galleryFiles.forEach(item => dataTransfer.items.add(item.file));
                     galleryInput.files = dataTransfer.files;
                 };
 
@@ -213,30 +174,91 @@
                     return size > 1024 ? `${(size / 1024).toFixed(2)} MB` : `${size.toFixed(1)} KB`;
                 };
 
-                const addGalleryPreview = (file) => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const item = document.createElement('div');
-                        item.classList.add('preview-item');
-                        item.innerHTML = `
-                            <img src="${event.target.result}" alt="${file.name}">
-                            <div class="overlay">
-                                <span class="file-size">${formatFileSize(file.size)}</span>
+                const setPrimaryState = (key) => {
+                    primaryState = key ? { key } : null;
+                    updatePrimaryBadges();
+                };
+
+                const ensurePrimarySelection = () => {
+                    if (primaryState) {
+                        const exists = galleryFiles.some(item => item.key === primaryState.key);
+                        if (exists) {
+                            return;
+                        }
+                    }
+                    if (galleryFiles.length === 0) {
+                        setPrimaryState(null);
+                        return;
+                    }
+                    setPrimaryState(galleryFiles[0].key);
+                };
+
+                const updatePrimaryBadges = () => {
+                    galleryPreviewContainer.querySelectorAll('.preview-item').forEach(item => {
+                        const badge = item.querySelector('.primary-badge');
+                        const markBtn = item.querySelector('.mark-main-btn');
+                        if (!badge || !markBtn) return;
+                        const key = item.dataset.key;
+                        const isActive = primaryState && primaryState.key === key;
+                        badge.style.display = isActive ? 'flex' : 'none';
+                        markBtn.disabled = isActive;
+                    });
+                };
+
+                const buildPreviewItem = (dataUrl, file, key) => {
+                    const item = document.createElement('div');
+                    item.classList.add('preview-item');
+                    item.dataset.type = 'new';
+                    item.dataset.key = key;
+                    item.innerHTML = `
+                        <img src="${dataUrl}" alt="${file.name}">
+                        <div class="overlay">
+                            <span class="file-size">${formatFileSize(file.size)}</span>
+                            <div class="overlay-actions">
+                                <button type="button" class="mark-main-btn" title="Marcar como principal">
+                                    <i class="ri-star-smile-fill"></i>
+                                    <span>Principal</span>
+                                </button>
                                 <button type="button" class="delete-btn" title="Eliminar imagen">
                                     <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                     <span class="boton-text">Eliminar</span>
                                 </button>
                             </div>
-                        `;
-                        item.querySelector('.delete-btn').addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            galleryFiles = galleryFiles.filter(current => current !== file);
-                            item.remove();
-                            refreshGalleryInput();
-                        });
-                        galleryPreviewContainer.appendChild(item);
-                    };
-                    reader.readAsDataURL(file);
+                        </div>
+                        <span class="primary-badge">
+                            <i class="ri-star-fill"></i>
+                            Principal
+                        </span>
+                    `;
+
+                    item.querySelector('.delete-btn').addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        galleryFiles = galleryFiles.filter(current => current.key !== key);
+                        item.remove();
+                        ensurePrimarySelection();
+                        refreshGalleryInput();
+                    });
+
+                    item.querySelector('.mark-main-btn').addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setPrimaryState(key);
+                    });
+
+                    return item;
+                };
+
+                const renderGalleryPreviews = () => {
+                    galleryPreviewContainer.innerHTML = '';
+                    galleryFiles.forEach(({ file, key }) => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            const item = buildPreviewItem(event.target.result, file, key);
+                            galleryPreviewContainer.appendChild(item);
+                            updatePrimaryBadges();
+                        };
+                        reader.readAsDataURL(file);
+                    });
                 };
 
                 const handleGalleryFiles = (files) => {
@@ -244,10 +266,12 @@
                         if (!file.type.startsWith('image/')) {
                             return;
                         }
-                        galleryFiles.push(file);
-                        addGalleryPreview(file);
+                        const key = `new-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`;
+                        galleryFiles.push({ file, key });
                     });
+                    ensurePrimarySelection();
                     refreshGalleryInput();
+                    renderGalleryPreviews();
                 };
 
                 galleryDropzone.addEventListener('click', () => galleryInput.click());
@@ -264,6 +288,17 @@
                     handleGalleryFiles(event.dataTransfer.files);
                 });
                 galleryInput.addEventListener('change', (event) => handleGalleryFiles(event.target.files));
+
+                document.getElementById('productForm').addEventListener('submit', () => {
+                    ensurePrimarySelection();
+                    if (!primaryState || galleryFiles.length === 0) {
+                        primaryImageInput.value = '';
+                        return;
+                    }
+
+                    const primaryIndex = galleryFiles.findIndex(item => item.key === primaryState.key);
+                    primaryImageInput.value = primaryIndex >= 0 ? `new:${primaryIndex}` : '';
+                });
             });
         </script>
     @endpush

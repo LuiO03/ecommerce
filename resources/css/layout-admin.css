@@ -190,16 +190,21 @@
     color: white !important;
 }
 
+.sidebar-link span{
+    text-wrap: nowrap;
+}
+
 .sidebar-sublink.active, .sidebar-sublink.active:hover {
-    background-color: var(--color-dark-inverse);
+    background-color: var(--color-accent);
     font-weight: bold;
-    font-family: var(--font-secondary);
-    color: var(--color-normal);
+    color: white;
     border-radius: 0.5rem;
+    font-family: var(--font-secondary);
+    box-shadow: 0 8px 18px var(--shadow-accent);
 }
 
 .sidebar-sublink.active .sidebar-icon {
-    color: var(--color-normal) !important;
+    color: white !important;
 }
 
 /* === Subenlaces === */
@@ -629,6 +634,11 @@
         justify-content: start;
         padding-left: 16px;
         width: 100%;
+        transition: padding 0.3s ease;
+    }
+
+    .sidebar-principal.collapsed .sidebar-link.active:hover{
+        padding-left: 20px;
     }
 
     .sidebar-principal.collapsed .sidebar-header {
@@ -678,7 +688,7 @@
         font-family: var(--font-secondary);
         font-weight: bold;
         pointer-events: none;
-        transform: translateY(-50%) scale(0.95);
+        transform: none;
         transition: opacity 0.2s ease, transform 0.2s ease;
         border: 2px solid var(--color-accent);
     }
@@ -696,13 +706,13 @@
     }
 
     @keyframes tooltipIn {
-        0% { opacity: 0; transform: translateY(-50%) scale(0.9); }
-        100% { opacity: 1; transform: translateY(-50%) scale(1); }
+        0% { opacity: 0; transform: scale(0.9); }
+        100% { opacity: 1; transform: scale(1); }
     }
 
     @keyframes tooltipOut {
-        0% { opacity: 1; transform: translateY(-50%) scale(1); }
-        100% { opacity: 0; transform: translateY(-50%) scale(0.9); }
+        0% { opacity: 1; transform: scale(1); }
+        100% { opacity: 0; transform: scale(0.9); }
     }
 }
 
