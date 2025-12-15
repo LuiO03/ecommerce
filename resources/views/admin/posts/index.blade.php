@@ -135,8 +135,9 @@
                             <td class="column-id-td">{{ $post->id }}</td>
                             <td class="column-images-td">
                                 <div class="thumbnail-container">
-                                    @if ($post->image && Storage::disk('public')->exists($post->image))
-                                        <img src="{{ asset('storage/' . $post->image) }}" alt="Imagen del post"
+                                    @php $mainImagePath = $post->main_image_path; @endphp
+                                    @if ($mainImagePath && Storage::disk('public')->exists($mainImagePath))
+                                        <img src="{{ asset('storage/' . $mainImagePath) }}" alt="Imagen del post"
                                             class="table-thumbnail">
                                     @else
                                         <div class="table-no-thumbnail" title="Sin imagen">

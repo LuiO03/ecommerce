@@ -18,7 +18,6 @@ return new class extends Migration
             $table->decimal('price', 10, 2)->nullable(); // precio diferente del producto base
             $table->integer('stock')->default(0);
             $table->boolean('status')->default(true);
-            $table->string('image_path')->nullable();
 
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             // Auditoría

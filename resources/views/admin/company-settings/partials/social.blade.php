@@ -20,14 +20,14 @@
                     <span class="social-toggle-label">Visibilidad</span>
                     <div class="binary-switch">
                         <input type="radio" name="facebook_enabled" id="facebook_enabled_yes"
-                            value="1"
+                            value="1" class="switch-input switch-input-on"
                             {{ old('facebook_enabled', $setting->facebook_enabled) ? 'checked' : '' }}>
                         <input type="radio" name="facebook_enabled" id="facebook_enabled_no"
-                            value="0"
+                            value="0" class="switch-input switch-input-off"
                             {{ old('facebook_enabled', $setting->facebook_enabled) ? '' : 'checked' }}>
                         <div class="switch-slider"></div>
-                        <label for="facebook_enabled_yes" class="switch-label"><i class="ri-eye-line"></i> Mostrar</label>
-                        <label for="facebook_enabled_no" class="switch-label"><i class="ri-eye-off-line"></i> Ocultar</label>
+                        <label for="facebook_enabled_yes" class="switch-label switch-label-on"><i class="ri-eye-line"></i> Mostrar</label>
+                        <label for="facebook_enabled_no" class="switch-label switch-label-off"><i class="ri-eye-off-line"></i> Ocultar</label>
                     </div>
                 </div>
             </div>
@@ -45,14 +45,14 @@
                     <span class="social-toggle-label">Visibilidad</span>
                     <div class="binary-switch">
                         <input type="radio" name="instagram_enabled" id="instagram_enabled_yes"
-                            value="1"
+                            value="1" class="switch-input switch-input-on"
                             {{ old('instagram_enabled', $setting->instagram_enabled) ? 'checked' : '' }}>
                         <input type="radio" name="instagram_enabled" id="instagram_enabled_no"
-                            value="0"
+                            value="0" class="switch-input switch-input-off"
                             {{ old('instagram_enabled', $setting->instagram_enabled) ? '' : 'checked' }}>
                         <div class="switch-slider"></div>
-                        <label for="instagram_enabled_yes" class="switch-label"><i class="ri-eye-line"></i> Mostrar</label>
-                        <label for="instagram_enabled_no" class="switch-label"><i class="ri-eye-off-line"></i> Ocultar</label>
+                        <label for="instagram_enabled_yes" class="switch-label switch-label-on"><i class="ri-eye-line"></i> Mostrar</label>
+                        <label for="instagram_enabled_no" class="switch-label switch-label-off"><i class="ri-eye-off-line"></i> Ocultar</label>
                     </div>
                 </div>
             </div>
@@ -69,14 +69,14 @@
                     <span class="social-toggle-label">Visibilidad</span>
                     <div class="binary-switch">
                         <input type="radio" name="twitter_enabled" id="twitter_enabled_yes"
-                            value="1"
+                            value="1" class="switch-input switch-input-on"
                             {{ old('twitter_enabled', $setting->twitter_enabled) ? 'checked' : '' }}>
                         <input type="radio" name="twitter_enabled" id="twitter_enabled_no"
-                            value="0"
+                            value="0" class="switch-input switch-input-off"
                             {{ old('twitter_enabled', $setting->twitter_enabled) ? '' : 'checked' }}>
                         <div class="switch-slider"></div>
-                        <label for="twitter_enabled_yes" class="switch-label"><i class="ri-eye-line"></i> Mostrar</label>
-                        <label for="twitter_enabled_no" class="switch-label"><i class="ri-eye-off-line"></i> Ocultar</label>
+                        <label for="twitter_enabled_yes" class="switch-label switch-label-on"><i class="ri-eye-line"></i> Mostrar</label>
+                        <label for="twitter_enabled_no" class="switch-label switch-label-off"><i class="ri-eye-off-line"></i> Ocultar</label>
                     </div>
                 </div>
             </div>
@@ -95,14 +95,14 @@
                     <span class="social-toggle-label">Visibilidad</span>
                     <div class="binary-switch">
                         <input type="radio" name="youtube_enabled" id="youtube_enabled_yes"
-                            value="1"
+                            value="1" class="switch-input switch-input-on"
                             {{ old('youtube_enabled', $setting->youtube_enabled) ? 'checked' : '' }}>
                         <input type="radio" name="youtube_enabled" id="youtube_enabled_no"
-                            value="0"
+                            value="0" class="switch-input switch-input-off"
                             {{ old('youtube_enabled', $setting->youtube_enabled) ? '' : 'checked' }}>
                         <div class="switch-slider"></div>
-                        <label for="youtube_enabled_yes" class="switch-label"><i class="ri-eye-line"></i> Mostrar</label>
-                        <label for="youtube_enabled_no" class="switch-label"><i class="ri-eye-off-line"></i> Ocultar</label>
+                        <label for="youtube_enabled_yes" class="switch-label switch-label-on"><i class="ri-eye-line"></i> Mostrar</label>
+                        <label for="youtube_enabled_no" class="switch-label switch-label-off"><i class="ri-eye-off-line"></i> Ocultar</label>
                     </div>
                 </div>
             </div>
@@ -119,14 +119,14 @@
                     <span class="social-toggle-label">Visibilidad</span>
                     <div class="binary-switch">
                         <input type="radio" name="tiktok_enabled" id="tiktok_enabled_yes"
-                            value="1"
+                            value="1" class="switch-input switch-input-on"
                             {{ old('tiktok_enabled', $setting->tiktok_enabled) ? 'checked' : '' }}>
                         <input type="radio" name="tiktok_enabled" id="tiktok_enabled_no"
-                            value="0"
+                            value="0" class="switch-input switch-input-off"
                             {{ old('tiktok_enabled', $setting->tiktok_enabled) ? '' : 'checked' }}>
                         <div class="switch-slider"></div>
-                        <label for="tiktok_enabled_yes" class="switch-label"><i class="ri-eye-line"></i> Mostrar</label>
-                        <label for="tiktok_enabled_no" class="switch-label"><i class="ri-eye-off-line"></i> Ocultar</label>
+                        <label for="tiktok_enabled_yes" class="switch-label switch-label-on"><i class="ri-eye-line"></i> Mostrar</label>
+                        <label for="tiktok_enabled_no" class="switch-label switch-label-off"><i class="ri-eye-off-line"></i> Ocultar</label>
                     </div>
                 </div>
             </div>
@@ -145,14 +145,14 @@
                     <span class="social-toggle-label">Visibilidad</span>
                     <div class="binary-switch">
                         <input type="radio" name="linkedin_enabled" id="linkedin_enabled_yes"
-                            value="1"
+                            value="1" class="switch-input switch-input-on"
                             {{ old('linkedin_enabled', $setting->linkedin_enabled) ? 'checked' : '' }}>
                         <input type="radio" name="linkedin_enabled" id="linkedin_enabled_no"
-                            value="0"
+                            value="0" class="switch-input switch-input-off"
                             {{ old('linkedin_enabled', $setting->linkedin_enabled) ? '' : 'checked' }}>
                         <div class="switch-slider"></div>
-                        <label for="linkedin_enabled_yes" class="switch-label"><i class="ri-eye-line"></i> Mostrar</label>
-                        <label for="linkedin_enabled_no" class="switch-label"><i class="ri-eye-off-line"></i> Ocultar</label>
+                        <label for="linkedin_enabled_yes" class="switch-label switch-label-on"><i class="ri-eye-line"></i> Mostrar</label>
+                        <label for="linkedin_enabled_no" class="switch-label switch-label-off"><i class="ri-eye-off-line"></i> Ocultar</label>
                     </div>
                 </div>
             </div>

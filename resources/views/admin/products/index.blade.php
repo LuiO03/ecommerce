@@ -1,7 +1,7 @@
 <x-admin-layout :showMobileFab="true">
 	<x-slot name="title">
-		<div class="page-icon card-primary">
-			<i class="ri-shopping-bag-3-line"></i>
+		<div class="page-icon card-danger">
+			<i class="ri-box-3-line"></i>
 		</div>
 		Lista de Productos
 	</x-slot>
@@ -190,19 +190,17 @@
 								@endif
 							</td>
 							<td class="column-price-td">
-								<span class="badge badge-success-light">
-									<i class="ri-currency-line"></i>
+								<span class="badge">
 									{{ number_format($product->price, 2) }}
 								</span>
 							</td>
 							<td class="column-discount-td">
 								@if(!is_null($product->discount) && (float) $product->discount > 0)
-									<span class="badge badge-warning-light">
-										<i class="ri-discount-percent-line"></i>
+									<span class="badge badge-warning">
 										{{ number_format($product->discount, 2) }}
 									</span>
 								@else
-									<span class="text-muted-td">—</span>
+									<span class="text-muted-td">Sin descuento</span>
 								@endif
 							</td>
 							<td class="column-variants-td">
@@ -212,7 +210,7 @@
 								</span>
 							</td>
 							<td class="column-images-td">
-								<span class="badge badge-secondary-light">
+								<span class="badge badge-secondary">
 									<i class="ri-image-line"></i>
 									{{ $product->images_count }}
 								</span>

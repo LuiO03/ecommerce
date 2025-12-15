@@ -59,8 +59,16 @@ class PostController extends Controller
             $img = $request->file('image');
             $filename = $slug.'-main.'.$img->getClientOriginalExtension();
             $img->storeAs('posts', $filename, 'public');
-            $post->image = "posts/$filename";
-            $post->save();
+            PostImage::where('post_id', $post->id)->update(['is_main' => false]);
+
+            PostImage::create([
+                'post_id' => $post->id,
+                'path' => "posts/$filename",
+                'alt' => $title,
+                'description' => null,
+                'is_main' => true,
+                'order' => 0,
+            ]);
         }
 
         if ($request->tags) {
@@ -73,11 +81,13 @@ class PostController extends Controller
                 $path = "posts/$filename";
                 $img->storeAs('posts', $filename, 'public');
 
-                $order = PostImage::where('post_id', $post->id)->max('order') + 1;
+                $order = (PostImage::where('post_id', $post->id)->max('order') ?? -1) + 1;
                 PostImage::create([
                     'post_id' => $post->id,
                     'path' => $path,
+                    'alt' => $post->title,
                     'description' => null,
+                    'is_main' => false,
                     'order' => $order,
                 ]);
             }
@@ -97,9 +107,10 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::select([
-            'id', 'title', 'slug', 'image', 'status', 'visibility', 'views', 'allow_comments', 'created_by', 'created_at',
+            'id', 'title', 'slug', 'status', 'visibility', 'views', 'allow_comments', 'created_by', 'created_at',
         ])
             ->withCount('images')
+            ->with(['mainImage:id,post_id,path'])
             ->orderBy('id', 'desc')
             ->get();
 
@@ -109,7 +120,7 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $tags = Tag::orderBy('name')->get();
-        $post->load('images');
+        $post->load(['images' => fn ($query) => $query->orderByDesc('is_main')->orderBy('order')]);
 
         return view('admin.posts.edit', compact('post', 'tags'));
     }
@@ -128,6 +139,7 @@ class PostController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'remove_image' => 'sometimes|boolean',
         ]);
 
         $title = ucfirst(mb_strtolower($request->title));
@@ -144,15 +156,48 @@ class PostController extends Controller
             'updated_by' => Auth::id(),
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($post->image && Storage::disk('public')->exists($post->image)) {
-                Storage::disk('public')->delete($post->image);
+        $mainImage = $post->images()->where('is_main', true)->first();
+
+        if ($request->input('remove_image') === '1' && $mainImage) {
+            if (Storage::disk('public')->exists($mainImage->path)) {
+                Storage::disk('public')->delete($mainImage->path);
             }
+
+            $mainImage->delete();
+            $mainImage = null;
+        }
+
+        if ($request->hasFile('image')) {
             $img = $request->file('image');
             $filename = $slug.'-main.'.$img->getClientOriginalExtension();
+            $path = "posts/$filename";
             $img->storeAs('posts', $filename, 'public');
-            $post->image = "posts/$filename";
-            $post->save();
+
+            PostImage::where('post_id', $post->id)
+                ->when($mainImage, fn ($query) => $query->where('id', '!=', $mainImage->id))
+                ->update(['is_main' => false]);
+
+            if ($mainImage) {
+                if (Storage::disk('public')->exists($mainImage->path)) {
+                    Storage::disk('public')->delete($mainImage->path);
+                }
+
+                $mainImage->update([
+                    'path' => $path,
+                    'alt' => $title,
+                    'is_main' => true,
+                    'order' => 0,
+                ]);
+            } else {
+                PostImage::create([
+                    'post_id' => $post->id,
+                    'path' => $path,
+                    'alt' => $title,
+                    'description' => null,
+                    'is_main' => true,
+                    'order' => 0,
+                ]);
+            }
         }
 
         $post->tags()->sync($request->tags ?? []);
@@ -163,11 +208,13 @@ class PostController extends Controller
                 $path = "posts/$filename";
                 $img->storeAs('posts', $filename, 'public');
 
-                $order = PostImage::where('post_id', $post->id)->max('order') + 1;
+                $order = (PostImage::where('post_id', $post->id)->max('order') ?? -1) + 1;
                 PostImage::create([
                     'post_id' => $post->id,
                     'path' => $path,
+                    'alt' => $post->title,
                     'description' => null,
+                    'is_main' => false,
                     'order' => $order,
                 ]);
             }
@@ -235,11 +282,6 @@ class PostController extends Controller
                 $img->delete();
             }
 
-            // 🖼️ Eliminar imagen principal
-            if ($post->image && Storage::disk('public')->exists($post->image)) {
-                Storage::disk('public')->delete($post->image);
-            }
-
             // Registrar quién eliminó
             $post->deleted_by = Auth::id();
             $post->save();
@@ -270,10 +312,6 @@ class PostController extends Controller
             $img->delete();
         }
 
-        if ($post->image && Storage::disk('public')->exists($post->image)) {
-            Storage::disk('public')->delete($post->image);
-        }
-
         $name = $post->title;
         $post->deleted_by = Auth::id();
         $post->save();
@@ -296,7 +334,7 @@ class PostController extends Controller
             'updater:id,name,last_name',
             'reviewer:id,name,last_name',
             'tags:id,name',
-            'images',
+            'images' => fn ($query) => $query->orderByDesc('is_main')->orderBy('order'),
         ])->where('slug', $slug)->firstOrFail();
 
 
@@ -310,7 +348,8 @@ class PostController extends Controller
             'views' => $post->views,
             'allow_comments' => $post->allow_comments,
             'published_at' => $post->published_at?->format('d/m/Y H:i') ?? '—',
-            'image' => $post->image,
+            'image' => $post->main_image_path,
+            'main_image' => $post->main_image_path,
             'tags' => $post->tags->pluck('name'),
             'images' => $post->images,
             'created_by_name' => $post->creator ? $post->creator->name.' '.$post->creator->last_name : 'Sistema',

@@ -26,7 +26,6 @@ return new class extends Migration
 
             $table->string('title', 255);
             $table->text('content');
-            $table->string('image')->nullable();
 
             $table->enum('status', ['draft','pending','published','rejected'])
                   ->default('pending');
@@ -68,7 +67,9 @@ return new class extends Migration
 
             $table->unsignedBigInteger('post_id');
             $table->string('path', 255);
+            $table->string('alt', 255)->nullable();
             $table->string('description', 255)->nullable();
+            $table->boolean('is_main')->default(false);
             $table->integer('order')->default(0);
 
             $table->timestamps();

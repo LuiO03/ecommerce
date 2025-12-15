@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             'slug' => $this->faker->unique()->slug(),
             'description' => $this->faker->text(),
             'price' => $this->faker->randomFloat(2, 5, 500),
-            // Estado (activo/inactivo)
+            'discount' => $this->faker->optional()->randomFloat(2, 1, 100),
             'status' => $this->faker->boolean(80), // 80% de probabilidad de ser true
             'category_id' => $this->faker->numberBetween(1, 10), // Asumiendo que hay al menos 10 categorías
         ];

@@ -127,14 +127,14 @@
                 <label class="label-form">Permitir comentarios</label>
                 <div class="binary-switch">
                     <input type="radio" name="allow_comments" id="allowYes" value="1"
-                        {{ old('allow_comments', 1) == 1 ? 'checked' : '' }}>
+                        class="switch-input switch-input-on" {{ old('allow_comments', 1) == 1 ? 'checked' : '' }}>
                     <input type="radio" name="allow_comments" id="allowNo" value="0"
-                        {{ old('allow_comments', 1) == 0 ? 'checked' : '' }}>
+                        class="switch-input switch-input-off" {{ old('allow_comments', 1) == 0 ? 'checked' : '' }}>
 
                     <div class="switch-slider"></div>
 
-                    <label for="allowYes" class="switch-label"><i class="ri-checkbox-circle-line"></i> Sí</label>
-                    <label for="allowNo" class="switch-label"><i class="ri-close-circle-line"></i> No</label>
+                    <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i> Sí</label>
+                    <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i> No</label>
                 </div>
             </div>
         </div>

@@ -719,8 +719,24 @@ class FormValidator {
     scrollToFirstError() {
         const firstErrorField = Array.from(this.errors.keys())[0];
         if (firstErrorField) {
-            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            firstErrorField.focus();
+            const scrollTarget = firstErrorField.closest('.input-group, .image-upload-section, .file-group, .form-row, .form-column') || firstErrorField;
+            if (scrollTarget instanceof HTMLElement) {
+                scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            const isHidden = firstErrorField instanceof HTMLElement ? firstErrorField.offsetParent === null : false;
+            if (!isHidden && firstErrorField.focus) {
+                firstErrorField.focus();
+                return;
+            }
+
+            const focusable = scrollTarget instanceof HTMLElement
+                ? scrollTarget.querySelector('input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+                : null;
+
+            if (focusable && focusable.focus) {
+                focusable.focus();
+            }
         }
     }
 

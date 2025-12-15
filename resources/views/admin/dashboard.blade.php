@@ -44,12 +44,12 @@
     </div>
     <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 dashboard-cards">
         <!-- Tarjeta: Productos -->
-        <a href="" class="dashboard-card">
+        <a href="{{ route('admin.products.index') }}" class="dashboard-card">
             <div class="card-icon card-danger">
                 <i class="ri-box-3-line"></i>
             </div>
             <div class="card-content">
-                <h1 class="card-count">24</h1>
+                <h1 class="card-count">{{ $totalProducts }}</h1>
                 <p class="card-label">Productos</p>
             </div>
         </a>

@@ -50,6 +50,34 @@
             'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)',
         ]" />
 
+        <div class="form-row">
+            <div class="input-group">
+                <label for="family_select" class="label-form">
+                    Familia
+                    <i class="ri-asterisk text-accent"></i>
+                </label>
+                <div class="input-icon-container">
+                    <i class="ri-stack-line input-icon"></i>
+                    <select name="family_id" id="family_select" class="select-form" required
+                        data-validate="required|selected"
+                        data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
+                        <option value="" disabled>Seleccione una familia</option>
+                        @foreach ($families as $family)
+                            <option value="{{ $family->id }}" @selected(old('family_id', $category->family_id) == $family->id)>
+                                {{ $family->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <i class="ri-arrow-down-s-line select-arrow"></i>
+                </div>
+                @error('family_id')
+                    <span class="input-error-message">
+                        <i class="ri-error-warning-fill"></i>
+                        {{ $message }}
+                    </span>
+                @enderror
+            </div>
+        </div>
         <div class="form-columns-row">
 
             <!-- ============================
@@ -57,32 +85,7 @@
             ============================= -->
             <div class="form-column">
                 {{-- FAMILIA (OBLIGATORIO) --}}
-                <div class="input-group">
-                    <label for="family_select" class="label-form">
-                        Familia
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-stack-line input-icon"></i>
-                        <select name="family_id" id="family_select" class="select-form" required
-                            data-validate="required|selected"
-                            data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
-                            <option value="" disabled>Seleccione una familia</option>
-                            @foreach ($families as $family)
-                                <option value="{{ $family->id }}" @selected(old('family_id', $category->family_id) == $family->id)>
-                                    {{ $family->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
-                    @error('family_id')
-                        <span class="input-error-message">
-                            <i class="ri-error-warning-fill"></i>
-                            {{ $message }}
-                        </span>
-                    @enderror
-                </div>
+
 
                 {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
                 <div class="input-group">

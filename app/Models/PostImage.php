@@ -14,8 +14,15 @@ class PostImage extends Model
     protected $fillable = [
         'post_id',
         'path',
+        'alt',
         'description',
+        'is_main',
         'order',
+    ];
+
+    protected $casts = [
+        'is_main' => 'boolean',
+        'order' => 'integer',
     ];
 
     /**

@@ -10,7 +10,7 @@
         'users' => ['label' => 'Usuarios', 'icon' => 'ri-user-3-fill'],
         'profile' => ['label' => 'Perfil', 'icon' => 'ri-user-3-fill'],
         'categories' => ['label' => 'Categorías', 'icon' => 'ri-price-tag-3-fill'],
-        'products' => ['label' => 'Productos', 'icon' => 'ri-shopping-bag-3-fill'],
+        'products' => ['label' => 'Productos', 'icon' => 'ri-box-3-fill'],
         'roles' => ['label' => 'Roles', 'icon' => 'ri-shield-user-fill'],
         'posts' => ['label' => 'Posts', 'icon' => 'ri-article-fill'],
         'brands' => ['label' => 'Marcas', 'icon' => 'ri-store-2-fill'],

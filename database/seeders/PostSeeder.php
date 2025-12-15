@@ -36,16 +36,24 @@ class PostSeeder extends Seeder
             $post->tags()->sync($postTags);
 
             // Imagen destacada
-            $post->image = "posts/" . Str::slug($title) . "-main.jpg";
-            $post->save();
+            PostImage::create([
+                'post_id'     => $post->id,
+                'path'        => 'posts/' . Str::slug($title) . '-main.jpg',
+                'alt'         => $title,
+                'description' => $faker->sentence(),
+                'is_main'     => true,
+                'order'       => 0,
+            ]);
 
             // Agregar imágenes múltiples
             for ($j = 1; $j <= rand(1, 3); $j++) {
                 PostImage::create([
                     'post_id'     => $post->id,
-                    'path'        => "posts/" . Str::slug($title) . "-$j.jpg",
+                    'path'        => 'posts/' . Str::slug($title) . '-' . $j . '.jpg',
+                    'alt'         => $title,
                     'description' => $faker->sentence(),
-                    'order'       => $j - 1,
+                    'is_main'     => false,
+                    'order'       => $j,
                 ]);
             }
         }

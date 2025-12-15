@@ -19,7 +19,6 @@ class Post extends Model
     protected $fillable = [
         'title',
         'content',
-        'image',
         'status',
         'slug',
         'views',
@@ -31,6 +30,10 @@ class Post extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+    ];
+
+    protected $appends = [
+        'main_image_path',
     ];
 
     /**
@@ -53,6 +56,11 @@ class Post extends Model
     public function images()
     {
         return $this->hasMany(PostImage::class);
+    }
+
+    public function mainImage()
+    {
+        return $this->hasOne(PostImage::class)->where('is_main', true)->orderBy('order');
     }
 
     // Muchos a muchos con tags
@@ -149,5 +157,27 @@ class Post extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function getMainImagePathAttribute(): ?string
+    {
+        if ($this->relationLoaded('mainImage') && $this->mainImage) {
+            return $this->mainImage->path;
+        }
+
+        if ($this->relationLoaded('images')) {
+            $image = $this->images
+                ->sortBy(fn ($img) => [$img->is_main ? 0 : 1, $img->order])
+                ->first();
+
+            return $image?->path;
+        }
+
+        $image = $this->images()
+            ->orderByDesc('is_main')
+            ->orderBy('order')
+            ->first();
+
+        return $image?->path;
     }
 }

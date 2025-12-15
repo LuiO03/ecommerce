@@ -12,7 +12,8 @@
     </x-slot>
 
     @php
-        $hasExistingImage = $post->image && file_exists(public_path('storage/' . $post->image));
+        $mainImagePath = $post->main_image_path;
+        $hasExistingImage = $mainImagePath && file_exists(public_path('storage/' . $mainImagePath));
     @endphp
 
     <form action="{{ route('admin.posts.update', $post->slug) }}" method="POST" enctype="multipart/form-data"
@@ -41,7 +42,7 @@
         <div class="form-row">
             <!-- === Imagen === -->
             <div class="image-upload-section">
-                <label class="label-form">Imagen Principal</label>
+                <label class="label-form">Portada del post</label>
                 <input type="file" name="image" id="image" class="file-input" accept="image/*"
                     data-validate="{{ $hasExistingImage ? 'image|maxSizeMB:2' : 'required|image|maxSizeMB:2' }}">
                 <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
@@ -51,14 +52,14 @@
                     id="imagePreviewZone">
                     @if ($hasExistingImage)
                         <img id="imagePreview" class="image-preview image-pulse"
-                            src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->name }}">
+                            src="{{ asset('storage/' . $mainImagePath) }}" alt="{{ $post->title }}">
                         <!-- Placeholder oculto inicialmente (se mostrará al eliminar) -->
                         <div class="image-placeholder" id="imagePlaceholder" style="display: none;">
                             <i class="ri-image-add-line"></i>
                             <p>Arrastra una imagen aquí</p>
                             <span>o haz clic para seleccionar</span>
                         </div>
-                    @elseif($post->image)
+                    @elseif($mainImagePath)
                         <!-- Imagen no encontrada -->
                         <div class="image-error" id="imageError">
                             <i class="ri-folder-close-line"></i>
@@ -96,7 +97,7 @@
                 <div class="image-filename" id="imageFilename"
                     style="{{ $hasExistingImage ? 'display: flex;' : 'display: none;' }}">
                     <i class="ri-file-image-line"></i>
-                    <span id="filenameText">{{ $post->image ? basename($post->image) : '' }}</span>
+                    <span id="filenameText">{{ $mainImagePath ? basename($mainImagePath) : '' }}</span>
                 </div>
             </div>
         </div>
@@ -158,13 +159,13 @@
                 <label class="label-form">Permitir comentarios</label>
                 <div class="binary-switch">
                     <input type="radio" name="allow_comments" id="allowYes" value="1"
-                        {{ $post->allow_comments == 1 ? 'checked' : '' }}>
+                        class="switch-input switch-input-on" {{ $post->allow_comments == 1 ? 'checked' : '' }}>
                     <input type="radio" name="allow_comments" id="allowNo" value="0"
-                        {{ $post->allow_comments == 0 ? 'checked' : '' }}>
+                        class="switch-input switch-input-off" {{ $post->allow_comments == 0 ? 'checked' : '' }}>
 
                     <div class="switch-slider"></div>
-                    <label for="allowYes" class="switch-label"><i class="ri-checkbox-circle-line"></i> Sí</label>
-                    <label for="allowNo" class="switch-label"><i class="ri-close-circle-line"></i> No</label>
+                    <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i> Sí</label>
+                    <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i> No</label>
                 </div>
             </div>
         </div>
@@ -452,8 +453,8 @@
                 // Inicializar manejador de imágenes
                 const imageHandler = initImageUpload({
                     mode: 'edit',
-                    hasExistingImage: {{ $post->image && file_exists(public_path('storage/' . $post->image)) ? 'true' : 'false' }},
-                    existingImageFilename: '{{ $post->image ? basename($post->image) : '' }}'
+                    hasExistingImage: {{ $mainImagePath && file_exists(public_path('storage/' . $mainImagePath)) ? 'true' : 'false' }},
+                    existingImageFilename: '{{ $mainImagePath ? basename($mainImagePath) : '' }}'
                 });
 
                 // 1. Inicializar submit loader PRIMERO
@@ -504,16 +505,6 @@
                                 textEl.textContent = plain.length === 0 ? 'Este campo es obligatorio' : 'Debe tener al menos 10 caracteres';
                             }
                             errorEl.style.display = 'flex';
-                        }
-                        // Icono de validación en la esquina
-                        if (group) {
-                            let checkIcon = group.querySelector('.validation-check-icon');
-                            if (!checkIcon) {
-                                checkIcon = document.createElement('i');
-                                checkIcon.className = 'ri-check-double-line validation-check-icon';
-                                group.appendChild(checkIcon);
-                            }
-                            checkIcon.style.display = isValid ? 'block' : 'none';
                         }
                     });
                 }

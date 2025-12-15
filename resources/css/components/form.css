@@ -271,49 +271,23 @@
     background-color: var(--color-accent);
 }
 
-#allowYes:checked ~ .switch-slider,
-#facebook_enabled_yes:checked ~ .switch-slider,
-#instagram_enabled_yes:checked ~ .switch-slider,
-#twitter_enabled_yes:checked ~ .switch-slider,
-#youtube_enabled_yes:checked ~ .switch-slider,
-#tiktok_enabled_yes:checked ~ .switch-slider,
-#linkedin_enabled_yes:checked ~ .switch-slider {
+.binary-switch .switch-input-on:checked ~ .switch-slider {
     left: 0;
     background-color: var(--color-success);
     border-right: 2px solid var(--color-input-border);
-    /* verde */
 }
 
-#allowNo:checked ~ .switch-slider,
-#facebook_enabled_no:checked ~ .switch-slider,
-#instagram_enabled_no:checked ~ .switch-slider,
-#twitter_enabled_no:checked ~ .switch-slider,
-#youtube_enabled_no:checked ~ .switch-slider,
-#tiktok_enabled_no:checked ~ .switch-slider,
-#linkedin_enabled_no:checked ~ .switch-slider {
+.binary-switch .switch-input-off:checked ~ .switch-slider {
     left: 50%;
     background-color: var(--color-danger);
     border-left: 2px solid var(--color-input-border);
-    /* rojo */
 }
 
-#allowYes:checked ~ label[for="allowYes"],
-#facebook_enabled_yes:checked ~ label[for="facebook_enabled_yes"],
-#instagram_enabled_yes:checked ~ label[for="instagram_enabled_yes"],
-#twitter_enabled_yes:checked ~ label[for="twitter_enabled_yes"],
-#youtube_enabled_yes:checked ~ label[for="youtube_enabled_yes"],
-#tiktok_enabled_yes:checked ~ label[for="tiktok_enabled_yes"],
-#linkedin_enabled_yes:checked ~ label[for="linkedin_enabled_yes"] {
+.binary-switch .switch-input-on:checked ~ .switch-label-on {
     color: var(--color-success-pastel);
 }
 
-#allowNo:checked ~ label[for="allowNo"],
-#facebook_enabled_no:checked ~ label[for="facebook_enabled_no"],
-#instagram_enabled_no:checked ~ label[for="instagram_enabled_no"],
-#twitter_enabled_no:checked ~ label[for="twitter_enabled_no"],
-#youtube_enabled_no:checked ~ label[for="youtube_enabled_no"],
-#tiktok_enabled_no:checked ~ label[for="tiktok_enabled_no"],
-#linkedin_enabled_no:checked ~ label[for="linkedin_enabled_no"] {
+.binary-switch .switch-input-off:checked ~ .switch-label-off {
     color: var(--color-danger-pastel);
 }
 
@@ -371,7 +345,6 @@
     align-items: center;
     justify-content: center;
     min-height: unset;
-    padding: 1.5rem;
 }
 
 .image-preview-zone.has-image:hover {
@@ -442,7 +415,7 @@
 .image-preview {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     max-height: 400px;
     border-radius: inherit;
 }
@@ -450,13 +423,11 @@
 .image-preview-zone.has-image .image-preview {
     width: auto;
     height: auto;
-    max-width: 100%;
-    max-height: clamp(160px, 40vh, 420px);
     margin: 0 auto;
 }
 /* Animación de zoom pulsante */
 .image-pulse {
-    animation: imagePulse 10s ease-in-out infinite;
+    animation: imagePulse 25s ease-in-out infinite;
 }
 
 @keyframes imagePulse {
@@ -483,9 +454,7 @@
     gap: 15px;
     opacity: 0;
     transition: opacity 0.3s ease;
-    border-radius: inherit;
-    -webkit-backdrop-filter: blur(2px) brightness(0.7);
-    backdrop-filter: blur(2px) brightness(0.7);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .image-preview-zone.has-image:hover .image-overlay {

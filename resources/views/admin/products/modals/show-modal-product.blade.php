@@ -10,23 +10,25 @@
 		<h3 class="modal-title-body" id="product-name-title">—</h3>
 		<div class="modal-show-body">
 			<div class="modal-show-row">
-				<div class="modal-img-container" id="product-main-image"></div>
+				<div class="modal-img-container">
+                    <div id="product-main-image">-</div>
+                    <div class="modal-show-actions">
+                        <a href="#" id="modalProductEditBtn" class="boton boton-warning" title="Editar producto">
+                            <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
+                            <span class="boton-text">Editar</span>
+                        </a>
 
-				<div class="modal-show-actions">
-					<a href="#" id="modalProductEditBtn" class="boton boton-warning" title="Editar producto">
-						<span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-						<span class="boton-text">Editar</span>
-					</a>
+                        <form id="modalProductDeleteForm" action="#" method="POST" title="Eliminar producto">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="boton boton-danger">
+                                <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                <span class="boton-text">Eliminar</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
-					<form id="modalProductDeleteForm" action="#" method="POST" title="Eliminar producto">
-						@csrf
-						@method('DELETE')
-						<button type="submit" class="boton boton-danger">
-							<span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
-							<span class="boton-text">Eliminar</span>
-						</button>
-					</form>
-				</div>
 
 				<table class="modal-show-table">
 					<tr>

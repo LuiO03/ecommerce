@@ -468,14 +468,24 @@
 
             $("#modalPostEditBtn").attr("href", `/admin/posts/${data.slug}/edit`);
             $("#modalDeleteForm").attr("action", `/admin/posts/${data.slug}`);
+                // Construcción de imágenes principal + adicionales
+                let images = Array.isArray(data.images) ? [...data.images] : [];
+                const mainPath = data.main_image || data.image;
 
-            $("#approveForm").attr("action", `/admin/posts/${data.slug}/approve`);
-            $("#rejectForm").attr("action", `/admin/posts/${data.slug}/reject`);
+                if (images.length) {
+                    images.sort((a, b) => {
+                        const aMain = a?.is_main ? 1 : 0;
+                        const bMain = b?.is_main ? 1 : 0;
+                        if (aMain === bMain) {
+                            return (a?.order ?? 0) - (b?.order ?? 0);
+                        }
+                        return bMain - aMain;
+                    });
+                }
 
-            if (data.status === "pending") {
-                $("#approveForm").show();
-                $("#rejectForm").show();
-            } else {
+                if (mainPath && !images.some(img => img?.path === mainPath)) {
+                    images.unshift({ path: mainPath, is_main: true, order: 0 });
+                }
                 $("#approveForm").hide();
                 $("#rejectForm").hide();
             }
