@@ -8,23 +8,21 @@ export function initCompanySettingsTabs() {
         return { destroy: () => {} };
     }
 
-    const sectionsWrapper = layout.querySelector('.settings-tabs-sections');
-    const slider = layout.querySelector('.settings-tabs-slider');
-    const tabButtons = layout.querySelectorAll('.settings-tab-button');
-    const sections = slider ? slider.querySelectorAll('.settings-section') : [];
+    const tabButtons = Array.from(layout.querySelectorAll('.settings-tab-button'));
+    const sections = Array.from(layout.querySelectorAll('.settings-section'));
 
-    if (!slider || sections.length === 0 || tabButtons.length === 0) {
+    if (!tabButtons.length || !sections.length) {
         return { destroy: () => {} };
     }
 
     const storageKey = 'companySettings.activeTab';
-    const allButtons = Array.from(tabButtons);
 
     const findIndexByTarget = (target) => {
         if (!target) {
             return -1;
         }
-        return allButtons.findIndex((button) => button.dataset.target === target);
+
+        return tabButtons.findIndex((button) => button.dataset.target === target);
     };
 
     const readStoredIndex = () => {
@@ -39,45 +37,13 @@ export function initCompanySettingsTabs() {
     };
 
     let activeIndex = readStoredIndex();
-    let resizeListener;
-    let sectionObserver = null;
-
-    const updateSliderHeight = () => {
-        const activeSection = sections[activeIndex];
-        if (!activeSection) {
-            return;
-        }
-
-        const nextHeight = activeSection.scrollHeight;
-        slider.style.height = `${nextHeight}px`;
-        if (sectionsWrapper) {
-            sectionsWrapper.style.height = `${nextHeight}px`;
-        }
-    };
-
-    const attachObserver = () => {
-        if (!(window.ResizeObserver) || !sections[activeIndex]) {
-            updateSliderHeight();
-            return;
-        }
-
-        if (!sectionObserver) {
-            sectionObserver = new ResizeObserver(() => {
-                window.requestAnimationFrame(updateSliderHeight);
-            });
-        }
-
-        sectionObserver.disconnect();
-        sectionObserver.observe(sections[activeIndex]);
-    };
+    if (activeIndex < 0 || activeIndex >= tabButtons.length) {
+        activeIndex = 0;
+    }
 
     const persistActiveTab = () => {
         const activeButton = tabButtons[activeIndex];
-        if (!activeButton) {
-            return;
-        }
-
-        const target = activeButton.dataset.target;
+        const target = activeButton && activeButton.dataset ? activeButton.dataset.target : null;
 
         if (!target) {
             return;
@@ -90,36 +56,41 @@ export function initCompanySettingsTabs() {
         }
     };
 
+    const updateButtons = () => {
+        tabButtons.forEach((button, index) => {
+            const isActive = index === activeIndex;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            button.setAttribute('tabindex', isActive ? '0' : '-1');
+        });
+    };
+
+    const updateSections = () => {
+        sections.forEach((section, index) => {
+            const isActive = index === activeIndex;
+
+            section.classList.toggle('is-active', isActive);
+            section.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+            section.setAttribute('tabindex', isActive ? '0' : '-1');
+
+            if (isActive) {
+                section.classList.remove('fade-in');
+                void section.offsetWidth;
+                section.classList.add('fade-in');
+            } else {
+                section.classList.remove('fade-in');
+            }
+        });
+    };
+
     const switchToIndex = (nextIndex) => {
-        if (nextIndex === activeIndex || !sections[nextIndex]) {
+        if (nextIndex === activeIndex || nextIndex < 0 || nextIndex >= sections.length) {
             return;
         }
 
-        const previousButton = tabButtons[activeIndex];
-        const nextButton = tabButtons[nextIndex];
-
-        previousButton.classList.remove('is-active');
-        previousButton.setAttribute('aria-selected', 'false');
-        previousButton.setAttribute('tabindex', '-1');
-
-        nextButton.classList.add('is-active');
-        nextButton.setAttribute('aria-selected', 'true');
-        nextButton.setAttribute('tabindex', '0');
-
-        slider.style.transform = `translateX(-${nextIndex * 100}%)`;
-
-        requestAnimationFrame(() => {
-            updateSliderHeight();
-            attachObserver();
-        });
-
-        sections[activeIndex].setAttribute('aria-hidden', 'true');
-        sections[activeIndex].setAttribute('tabindex', '-1');
-
-        sections[nextIndex].setAttribute('aria-hidden', 'false');
-        sections[nextIndex].setAttribute('tabindex', '0');
-
         activeIndex = nextIndex;
+        updateButtons();
+        updateSections();
         persistActiveTab();
     };
 
@@ -137,44 +108,28 @@ export function initCompanySettingsTabs() {
         }
     };
 
+    const buttonListeners = new Map();
+
     tabButtons.forEach((button, index) => {
-        const isActive = index === activeIndex;
-        button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        button.setAttribute('tabindex', isActive ? '0' : '-1');
-        button.classList.toggle('is-active', isActive);
+        const clickHandler = () => switchToIndex(index);
+        const keydownHandler = (event) => handleKeydown(event);
 
-        button.addEventListener('click', () => switchToIndex(index));
-        button.addEventListener('keydown', handleKeydown);
+        button.addEventListener('click', clickHandler);
+        button.addEventListener('keydown', keydownHandler);
+
+        buttonListeners.set(button, { clickHandler, keydownHandler });
     });
 
-    slider.style.transform = `translateX(-${activeIndex * 100}%)`;
-    updateSliderHeight();
-    attachObserver();
-
-    sections.forEach((section, index) => {
-        const isActive = index === activeIndex;
-        section.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-        section.setAttribute('tabindex', isActive ? '0' : '-1');
-    });
-
-    resizeListener = () => updateSliderHeight();
-    window.addEventListener('resize', resizeListener, { passive: true });
-
+    updateButtons();
+    updateSections();
     persistActiveTab();
 
     return {
         destroy: () => {
-            tabButtons.forEach((button) => {
-                button.replaceWith(button.cloneNode(true));
+            buttonListeners.forEach((handlers, button) => {
+                button.removeEventListener('click', handlers.clickHandler);
+                button.removeEventListener('keydown', handlers.keydownHandler);
             });
-
-            if (resizeListener) {
-                window.removeEventListener('resize', resizeListener);
-            }
-
-            if (sectionObserver) {
-                sectionObserver.disconnect();
-            }
         }
     };
 }

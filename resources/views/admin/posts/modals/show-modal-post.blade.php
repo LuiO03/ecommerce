@@ -12,82 +12,30 @@
 
         <div class="modal-show-body">
             <div class="modal-show-row">
-                <table class="modal-show-table">
-                    <tr>
-                        <th>ID</th>
-                        <td id="post-id">-</td>
-                    </tr>
-                    <tr>
-                        <th>Slug</th>
-                        <td id="post-slug">-</td>
-                    </tr>
-                    <tr>
-                        <th>Título</th>
-                        <td id="post-title-cell">-</td>
-                    </tr>
-                    <tr>
-                        <th>Estado</th>
-                        <td id="post-status">-</td>
-                    </tr>
-                    <tr>
-                        <th>Visibilidad</th>
-                        <td id="post-visibility">-</td>
-                    </tr>
-                    <tr>
-                        <th>Vistas</th>
-                        <td id="post-views">-</td>
-                    </tr>
-                    <tr>
-                        <th>Comentarios Permitidos</th>
-                        <td id="post-allow-comments">-</td>
-                    </tr>
-                    <tr>
-                        <th>Publicado</th>
-                        <td id="post-published-at">-</td>
-                    </tr>
-                    <tr>
-                        <th>Tags</th>
-                        <td id="post-tags">-</td>
-                    </tr>
-
-                    <tr>
-                        <th>Creado por</th>
-                        <td id="post-created-by">-</td>
-                    </tr>
-                    <tr>
-                        <th>Actualizado por</th>
-                        <td id="post-updated-by">-</td>
-                    </tr>
-                    <tr>
-                        <th>Revisado por</th>
-                        <td id="post-reviewed-by">-</td>
-                    </tr>
-                </table>
                 <div class="modal-img-container">
-                    <div class="slider-thumbnails" id="sliderThumbnails"></div>
-
-                    <!-- 🔵 BLOQUE PLACEHOLDER PARA CUANDO NO HAY IMÁGENES -->
-                    <div id="post-no-image" class="modal-img-placeholder hidden">
-                        <i class="ri-image-line"></i>
-                        <p>No hay imágenes disponibles</p>
-                    </div>
-                    <!-- 🔵 FIN DEL PLACEHOLDER -->
-                    <span id="mainImageBadge" class="main-image-badge hidden"><i class="ri-star-fill"></i> Principal</span>
-                    <div class="modal-img-slider" id="post-image-slider">
-                        <button class="slider-btn prev-btn"><i class="ri-arrow-left-s-line"></i></button>
-                        <div class="slider-main" id="sliderMain">
-                            <div class="shimmer shimmer-image" id="shimmerPlaceholder"></div>
-                            <img src="/storage/default.png" id="sliderActiveImage" alt="Imagen principal">
+                    <div id="post-image-slider" class="modal-img-slider hidden" aria-live="polite">
+                        <div class="slider-main">
+                            <button type="button" class="slider-btn prev-btn hidden" id="post-slider-prev" aria-label="Imagen anterior">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </button>
+                            <div class="slider-track" id="post-slider-track"></div>
+                            <button type="button" class="slider-btn next-btn hidden" id="post-slider-next" aria-label="Imagen siguiente">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </button>
                         </div>
-                        <button class="slider-btn next-btn"><i class="ri-arrow-right-s-line"></i></button>
+                        <div class="slider-thumbnails hidden" id="post-slider-thumbs"></div>
+                    </div>
+                    <div id="post-image-placeholder" class="modal-img-placeholder">
+                        <i class="ri-image-add-fill"></i>
+                        Sin imágenes registradas
                     </div>
                     <div class="modal-show-actions">
-                        <a href="#" id="modalPostEditBtn" class="boton boton-warning">
+                        <a href="#" id="modalPostEditBtn" class="boton boton-warning" title="Editar post">
                             <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
                             <span class="boton-text">Editar</span>
                         </a>
 
-                        <form id="modalDeleteForm" action="#" method="POST">
+                        <form id="modalDeleteForm" action="#" method="POST" title="Eliminar post">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="boton boton-danger">
@@ -97,540 +45,593 @@
                         </form>
                     </div>
                 </div>
+
+                <table class="modal-show-table">
+                    <tr>
+                        <th>ID</th>
+                        <td id="post-id">—</td>
+                    </tr>
+                    <tr>
+                        <th>Slug</th>
+                        <td id="post-slug">—</td>
+                    </tr>
+                    <tr>
+                        <th>Título</th>
+                        <td id="post-title-cell">—</td>
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                        <td id="post-status">—</td>
+                    </tr>
+                    <tr>
+                        <th>Visibilidad</th>
+                        <td id="post-visibility">—</td>
+                    </tr>
+                    <tr>
+                        <th>Vistas</th>
+                        <td id="post-views">—</td>
+                    </tr>
+                    <tr>
+                        <th>Comentarios Permitidos</th>
+                        <td id="post-allow-comments">—</td>
+                    </tr>
+                    <tr>
+                        <th>Publicado</th>
+                        <td id="post-published-at">—</td>
+                    </tr>
+                    <tr>
+                        <th>Tags</th>
+                        <td id="post-tags">—</td>
+                    </tr>
+                    <tr>
+                        <th>Creado por</th>
+                        <td id="post-created-by">—</td>
+                    </tr>
+                    <tr>
+                        <th>Actualizado por</th>
+                        <td id="post-updated-by">—</td>
+                    </tr>
+                    <tr>
+                        <th>Revisado por</th>
+                        <td id="post-reviewed-by">—</td>
+                    </tr>
+                </table>
             </div>
-            <hr class="w-full my-0 border-default">
+
             <div class="modal-content-section">
                 <h3 class="card-title">Contenido</h3>
-                <div id="post-content" class="post-content"></div>
+                <div id="post-content" class="post-content">Sin contenido</div>
             </div>
         </div>
 
         <div class="modal-show-footer">
-            <button type="button" class="boton boton-modal-close" id="cancelPostButton" title="Cerrar Ventana">
+            <button type="button" class="boton boton-modal-close" id="cancelPostButton" title="Cerrar ventana">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                 <span class="boton-text">Cerrar</span>
             </button>
-
-            <form id="approveForm" method="POST" action="#">
-                @csrf
-                <button type="submit" class="boton boton-success" title="Aprobar Post">
-                    <span class="boton-icon"><i class="ri-send-plane-fill"></i> </span>
-                    <span class="boton-text">Aprobar Post</span>
-                </button>
-            </form>
-
-            <form id="rejectForm" method="POST" action="#">
-                @csrf
-                <button type="submit" class="boton boton-danger" title="Rechazar Post">
-                    <span class="boton-icon"><i class="ri-close-circle-fill"></i></span>
-                    <span class="boton-text">Rechazar Post</span>
-                </button>
-            </form>
         </div>
     </div>
 </div>
 @push('scripts')
     <script>
-        let postImagesGlobal = [];
-        let brokenImagesGlobal = [];
-        let currentSlideIndex = 0;
-        let postSliderInterval;
-        let postSliderPauseTimeout;
+        const postPlaceholderContent = '<i class="ri-image-add-fill"></i> Sin imágenes registradas';
+        const postSliderAutoDelay = 4500;
+        let postSliderState = null;
+        let currentPostModalSlug = null;
+        let pendingPostModalSlug = null;
         let postModalRequest = null;
         let isPostModalLoading = false;
 
-        // Fallback universal
-        const DEFAULT_IMAGE = "/storage/default.png";
-
-        // Reemplaza imágenes rotas automáticamente
-        function applyImageFallback($img) {
-            $img.on("error", function() {
-                $(this).attr("src", DEFAULT_IMAGE);
-            });
+        function escapeHtml(value) {
+            if (value === null || value === undefined) {
+                return '';
+            }
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
-        // Construye la lista de imágenes con fallback
-
-            // Verifica si la imagen existe en el servidor
-            function checkImageExists(url) {
-                return new Promise(resolve => {
-                    const img = new Image();
-                    img.onload = () => resolve(true);
-                    img.onerror = () => resolve(false);
-                    img.src = url;
-                });
-            }
-
-            // Sanitiza y filtra imágenes rotas
-            async function sanitizeImages(images) {
-                if (!Array.isArray(images)) return [];
-                const validImages = [];
-                brokenImagesGlobal = [];
-
-                for (const img of images) {
-                    const path = img?.path?.trim();
-                    if (path && path.length > 3) {
-                        const url = `/storage/${path}`;
-                        // eslint-disable-next-line no-await-in-loop
-                        const exists = await checkImageExists(url);
-                        if (exists) {
-                            validImages.push({ path });
-                        } else {
-                            brokenImagesGlobal.push(path);
-                        }
-                    }
-                }
-                return validImages;
-            }
-
-
-        async function renderPostImagesSlider(imagesRaw) {
-            postImagesGlobal = await sanitizeImages(imagesRaw);
-
-            const mainImg = $("#sliderActiveImage");
-            const thumbContainer = $("#sliderThumbnails");
-            const shimmer = $("#shimmerPlaceholder");
-            const slider = $("#post-image-slider");
-            const placeholder = $("#post-no-image");
-            const brokenAlert = $("#brokenImagesAlert");
-            const brokenCount = $("#brokenImagesCount");
-
-            thumbContainer.html("");
-
-            // Mostrar alerta si hay imágenes rotas
-            if (brokenImagesGlobal.length > 0) {
-                brokenAlert.removeClass("hidden");
-                brokenCount.html(`<span class='badge badge-danger'>${brokenImagesGlobal.length}</span> `);
-            } else {
-                brokenAlert.addClass("hidden");
-            }
-
-            // 🔵 SI NO HAY NINGUNA IMAGEN → MOSTRAR PLACEHOLDER
-            if (postImagesGlobal.length === 0) {
-                slider.addClass("hidden");
-                thumbContainer.addClass("hidden");
-
-                placeholder.removeClass("hidden"); // Mostrar bloque "no hay imágenes"
-
-                mainImg.attr("src", DEFAULT_IMAGE);
-                shimmer.hide();
-                return;
-            }
-
-            // 🔵 SI HAY IMÁGENES → Apagar placeholder y mostrar slider
-            placeholder.addClass("hidden");
-            slider.removeClass("hidden");
-            thumbContainer.removeClass("hidden");
-
-            shimmer.show();
-            mainImg.hide();
-
-            currentSlideIndex = 0;
-
-
-            // Miniaturas válidas
-            postImagesGlobal.forEach((img, index) => {
-                const path = img.path?.trim();
-                let thumb = $(`<img src="/storage/${path}" class="thumbnail-img">`);
-                // Fallback automático si la miniatura no carga
-                thumb.on("error", function() {
-                    $(this).replaceWith(`<div class="thumbnail-placeholder"><i class="ri-image-line"></i></div>`);
-                });
-                if (index === 0) thumb.addClass("active-thumb");
-                thumb.on("click", () => {
-                    currentSlideIndex = index;
-                    showSlide();
-                });
-                thumbContainer.append(thumb);
-            });
-
-            // Miniaturas de imágenes rotas
-            brokenImagesGlobal.forEach(() => {
-                // Contenedor igual que la miniatura, fondo gris, ícono y texto
-                const brokenThumb = $(`
-                    <div class="thumbnail-img thumbnail-broken" title="Imagen no disponible">
-                        <div style="text-align:center;width:100%;">
-                            <i class="ri-file-close-line"></i>
-                        </div>
-                    </div>
-                `);
-                thumbContainer.append(brokenThumb);
-            });
-
-            showSlide();
-
-            startAutoAdvance();
-        }
-
-        function startAutoAdvance() {
-            clearInterval(postSliderInterval);
-            postSliderInterval = setInterval(() => {
-                currentSlideIndex = (currentSlideIndex + 1) % postImagesGlobal.length;
-                showSlide();
-            }, 5000);
-        }
-
-        function pauseAutoAdvance(ms = 5000) {
-            // Pausa el auto-avance por "ms" milisegundos
-            clearInterval(postSliderInterval);
-            clearTimeout(postSliderPauseTimeout);
-            postSliderPauseTimeout = setTimeout(() => {
-                startAutoAdvance();
-            }, ms);
-        }
-
-        function showSlide() {
-            const mainImg = $("#sliderActiveImage");
-            const shimmer = $("#shimmerPlaceholder");
-            const thumbs = $("#sliderThumbnails .thumbnail-img");
-            const badge = $("#mainImageBadge");
-
-            if (postImagesGlobal.length === 0) {
-                mainImg.attr("src", DEFAULT_IMAGE);
-                shimmer.hide();
-                return;
-            }
-
-            let imgPath = postImagesGlobal[currentSlideIndex]?.path || DEFAULT_IMAGE;
-
-            mainImg.attr("src", `/storage/${imgPath}`);
-            applyImageFallback(mainImg);
-
-            mainImg.show();
-            shimmer.hide();
-
-            thumbs.removeClass("active-thumb");
-            $(thumbs[currentSlideIndex]).addClass("active-thumb");
-            mainImg.on("error", function() {
-                $(this).attr("src", DEFAULT_IMAGE);
-            });
-
-            // Mostrar insignia "Principal" cuando es la primera imagen (la del post)
-            if (currentSlideIndex === 0) {
-                badge.removeClass('hidden');
-            } else {
-                badge.addClass('hidden');
-            }
-
-        }
-
-        // Botones slider
-        $(".prev-btn").on("click", () => {
-            if (postImagesGlobal.length) {
-                currentSlideIndex = (currentSlideIndex - 1 + postImagesGlobal.length) % postImagesGlobal.length;
-                showSlide();
-                pauseAutoAdvance();
-            }
-        });
-
-        $(".next-btn").on("click", () => {
-            if (postImagesGlobal.length) {
-                currentSlideIndex = (currentSlideIndex + 1) % postImagesGlobal.length;
-                showSlide();
-                pauseAutoAdvance();
-            }
-        });
-
-        // Pausar también cuando el usuario elige una miniatura específica
-        $(document).on('click', '#sliderThumbnails .thumbnail-img', function() {
-            pauseAutoAdvance();
-        });
-
-        // ========== MODAL FUNCTIONS ==========
         function openPostModal() {
-            $("#modalShow").removeClass("hidden");
-            $(".modal-content").removeClass("animate-out").addClass("animate-in");
+            $('#modalShow').removeClass('hidden');
+            $('#modalShow .modal-content').removeClass('animate-out').addClass('animate-in');
             $('#modalShow').appendTo('body');
-
-            // 🔵 IMPORTANTE: ocultar botones desde ya
-            $("#approveForm").hide();
-            $("#rejectForm").hide();
-
-            document.addEventListener("keydown", escPostListener);
-            document.addEventListener("mousedown", clickOutsideShowListener);
+            $('#approveForm').hide();
+            $('#rejectForm').hide();
+            document.addEventListener('keydown', escPostListener);
+            document.addEventListener('mousedown', clickOutsidePostListener);
         }
 
+        function closePostModal() {
+            destroyPostSlider({ restorePlaceholder: false });
+            pendingPostModalSlug = null;
+            currentPostModalSlug = null;
 
-        function closeModal() {
-            $(".modal-content").removeClass("animate-in").addClass("animate-out");
+            if (postModalRequest) {
+                try {
+                    postModalRequest.abort();
+                } catch (error) {}
+                postModalRequest = null;
+                isPostModalLoading = false;
+            }
+
+            const $content = $('#modalShow .modal-content');
+            $content.removeClass('animate-in').addClass('animate-out');
             setTimeout(() => {
-                $("#modalShow").addClass("hidden");
+                $('#modalShow').addClass('hidden');
                 setLoadingPostFields();
-                document.removeEventListener("keydown", escPostListener);
-                document.removeEventListener("mousedown", clickOutsideShowListener);
-                // Abortar solicitud en curso al cerrar para evitar errores visuales
-                if (postModalRequest) {
-                    try { postModalRequest.abort(); } catch (e) {}
-                    postModalRequest = null;
-                    isPostModalLoading = false;
-                }
+                document.removeEventListener('keydown', escPostListener);
+                document.removeEventListener('mousedown', clickOutsidePostListener);
             }, 250);
         }
 
-        function setLoadingPostFields() {
-            const fields = [
-                "#post-id", "#post-slug", "#post-title", "#post-title-cell", "#post-content",
-                "#post-status", "#post-visibility", "#post-views", "#post-allow-comments",
-                "#post-published-at", "#post-tags", "#post-created-by", "#post-updated-by", "#post-reviewed-by"
-            ];
-
-            fields.forEach(f => $(f).html('<div class="shimmer shimmer-cell"></div>'));
-
-            $("#sliderActiveImage").attr("src", DEFAULT_IMAGE);
-            // Mostrar shimmer en miniaturas
-            let shimmerThumbs = '';
-            for (let i = 0; i < 4; i++) {
-                shimmerThumbs += '<div class="thumbnail-img shimmer shimmer-image" style="height:48px;width:48px;margin-right:4px;"></div>';
+        function destroyPostSlider({ restorePlaceholder = true } = {}) {
+            if (postSliderState?.intervalId) {
+                clearInterval(postSliderState.intervalId);
             }
-            $("#sliderThumbnails").html(shimmerThumbs);
+            postSliderState = null;
+
+            const $slider = $('#post-image-slider');
+            const $track = $('#post-slider-track');
+            const $thumbs = $('#post-slider-thumbs');
+            const $prev = $('#post-slider-prev');
+            const $next = $('#post-slider-next');
+            const $placeholder = $('#post-image-placeholder');
+
+            $slider.addClass('hidden');
+            $track.empty();
+            $thumbs.empty().addClass('hidden');
+            $prev.off('.postSlider').addClass('hidden');
+            $next.off('.postSlider').addClass('hidden');
+            $thumbs.off('.postSlider');
+
+            if (restorePlaceholder) {
+                $placeholder.removeClass('hidden').html(postPlaceholderContent);
+            }
         }
 
-        async function renderPostModal(data) {
-            function getStatusBadge(status) {
-                const map = {
-                    draft: {
-                        text: '<i class="ri-pencil-line"></i> Borrador',
-                        class: 'badge-gray'
-                    },
-                    pending: {
-                        text: '<i class="ri-time-line"></i> Pendiente',
-                        class: 'badge-warning'
-                    },
-                    published: {
-                        text: '<i class="ri-check-line"></i> Publicado',
-                        class: 'badge-success'
-                    },
-                    rejected: {
-                        text: '<i class="ri-close-line"></i> Rechazado',
-                        class: 'badge-danger'
-                    }
-                };
-                const item = map[status] || {
-                    text: status ? status : "Desconocido",
-                    class: "badge-secondary"
-                };
-                return `<span class="badge ${item.class}">${item.text}</span>`;
+        function setLoadingPostFields() {
+            destroyPostSlider({ restorePlaceholder: false });
+            currentPostModalSlug = null;
+
+            $('#post-title').html('<div class="shimmer shimmer-cell shimmer-title" style="width: 220px;"></div>');
+            $('#post-id').html('<div class="shimmer shimmer-cell" style="width: 60px;"></div>');
+            $('#post-slug').html('<div class="shimmer shimmer-cell" style="width: 120px;"></div>');
+            $('#post-title-cell').html('<div class="shimmer shimmer-cell" style="width: 180px;"></div>');
+            $('#post-status').html('<div class="shimmer shimmer-cell" style="width: 150px;"></div>');
+            $('#post-visibility').html('<div class="shimmer shimmer-cell" style="width: 120px;"></div>');
+            $('#post-views').html('<div class="shimmer shimmer-cell" style="width: 80px;"></div>');
+            $('#post-allow-comments').html('<div class="shimmer shimmer-cell" style="width: 110px;"></div>');
+            $('#post-published-at').html('<div class="shimmer shimmer-cell" style="width: 140px;"></div>');
+            $('#post-tags').html('<div class="shimmer shimmer-cell" style="width: 220px;"></div>');
+            $('#post-created-by').html('<div class="shimmer shimmer-cell" style="width: 220px;"></div>');
+            $('#post-updated-by').html('<div class="shimmer shimmer-cell" style="width: 220px;"></div>');
+            $('#post-reviewed-by').html('<div class="shimmer shimmer-cell" style="width: 220px;"></div>');
+            $('#post-content').html('<div class="shimmer shimmer-cell" style="height: 120px;"></div>');
+            $('#post-gallery').html('<div class="shimmer shimmer-img" style="width:100%;height:120px;"></div>');
+            $('#post-image-placeholder').removeClass('hidden').html('<div class="shimmer shimmer-img"></div>');
+            $('#modalPostEditBtn').attr('href', '#');
+            $('#modalDeleteForm').attr('action', '#');
+        }
+
+        function loadValidImages(images) {
+            const candidates = Array.isArray(images) ? images : [];
+
+            if (!candidates.length) {
+                return Promise.resolve([]);
             }
 
-            $("#post-id").text(data.id);
-            $("#post-slug").html(`<span class="badge badge-primary">${data.slug}</span>`);
-            $("#post-title").text(data.title);
-            $("#post-title-cell").text(data.title);
-            $("#post-content").html(data.content ?? "Sin contenido");
+            const loaders = candidates.map((image) => new Promise((resolve) => {
+                if (!image || !image.url) {
+                    return resolve(null);
+                }
 
-            $("#post-status").html(getStatusBadge(data.status));
+                const probe = new Image();
+                probe.onload = () => resolve({ ...image });
+                probe.onerror = () => resolve(null);
+                probe.src = image.url;
+            }));
 
-            $("#post-visibility").text(data.visibility);
-            $("#post-views").text(data.views);
+            return Promise.all(loaders).then(results => results.filter(Boolean));
+        }
 
-            $("#post-allow-comments").html(
-                data.allow_comments ?
-                `<span class="badge boton-success"><i class="ri-checkbox-circle-line"></i> Sí</span>` :
-                `<span class="badge boton-danger"><i class="ri-close-circle-line"></i> No</span>`
-            );
+        function initializePostSlider(images, postTitle) {
+            const $slider = $('#post-image-slider');
+            const $placeholder = $('#post-image-placeholder');
+            const $track = $('#post-slider-track');
+            const $thumbs = $('#post-slider-thumbs');
+            const $prev = $('#post-slider-prev');
+            const $next = $('#post-slider-next');
 
-            $("#post-published-at").text(data.published_at ?? "—");
+            destroyPostSlider({ restorePlaceholder: false });
 
-            // Tags
-            $("#post-tags").html(
-                data.tags.length ?
-                data.tags.map(t => `<span class="badge badge-warning">${t}</span>`).join(" ") :
-                "—"
-            );
-
-            // Construcción de imágenes principal + adicionales
-            let images = [];
-            if (data.image && data.image.trim() !== "") {
-                images.push({ path: data.image });
-            }
-            if (Array.isArray(data.images)) {
-                images = images.concat(data.images);
+            if (!images.length) {
+                $placeholder.removeClass('hidden').html(postPlaceholderContent);
+                return;
             }
 
-            $("#post-created-by").html(`
-                <div class="show-cell-content">
-                    <span class="font-bold">${data.created_by_name}</span>
-                    <span class="show-date"><i class="ri-time-fill"></i> ${data.created_at}</span>
-                </div>
-                `);
-            $("#post-updated-by").html(`
-                <div class="show-cell-content">
-                    <span class="font-bold">${data.updated_by_name}</span>
-                    <span class="show-date"><i class="ri-time-fill"></i> ${data.updated_at}</span>
-                </div>
-                `);
-            $("#post-reviewed-by").html(`
-                <div class="show-cell-content">
-                    <span class="font-bold">${data.reviewed_by_name}</span>
-                    <span class="show-date"><i class="ri-time-fill"></i> ${data.reviewed_at}</span>
-                </div>
+            const safeTitle = escapeHtml(postTitle ?? 'Post');
+            $placeholder.addClass('hidden').html(postPlaceholderContent);
+            $slider.removeClass('hidden');
+
+            images.forEach((image, index) => {
+                const altLabel = image.alt ? escapeHtml(image.alt) : `${safeTitle} imagen ${index + 1}`;
+                $track.append(`
+                    <div class="slider-item${index === 0 ? ' active' : ''}" data-index="${index}" aria-hidden="${index === 0 ? 'false' : 'true'}">
+                        <img src="${image.url}" alt="${altLabel}" class="modal-img">
+                    </div>
                 `);
 
-            $("#modalPostEditBtn").attr("href", `/admin/posts/${data.slug}/edit`);
-            $("#modalDeleteForm").attr("action", `/admin/posts/${data.slug}`);
-                // Construcción de imágenes principal + adicionales
-                let images = Array.isArray(data.images) ? [...data.images] : [];
-                const mainPath = data.main_image || data.image;
+                if (images.length > 1) {
+                    $thumbs.append(`
+                        <button type="button" class="thumbnail-img${index === 0 ? ' active-thumb' : ''}" data-index="${index}" aria-label="Mostrar imagen ${index + 1}">
+                            <img src="${image.url}" alt="${altLabel}">
+                        </button>
+                    `);
+                }
+            });
 
-                if (images.length) {
-                    images.sort((a, b) => {
-                        const aMain = a?.is_main ? 1 : 0;
-                        const bMain = b?.is_main ? 1 : 0;
-                        if (aMain === bMain) {
-                            return (a?.order ?? 0) - (b?.order ?? 0);
-                        }
-                        return bMain - aMain;
+            postSliderState = {
+                currentIndex: 0,
+                total: images.length,
+                intervalId: null,
+                $track,
+                $thumbs,
+                $prev,
+                $next
+            };
+
+            const state = postSliderState;
+            state.$track.css('transform', 'translateX(0%)');
+
+            state.updateActive = (index) => {
+                state.currentIndex = index;
+                state.$track.find('.slider-item').each(function () {
+                    const itemIndex = Number($(this).data('index'));
+                    const isActive = itemIndex === index;
+                    $(this).toggleClass('active', isActive).attr('aria-hidden', isActive ? 'false' : 'true');
+                });
+                state.$track.css('transform', `translateX(-${index * 100}%)`);
+
+                if (state.total > 1) {
+                    state.$thumbs.find('.thumbnail-img').each(function () {
+                        const thumbIndex = Number($(this).data('index'));
+                        $(this).toggleClass('active-thumb', thumbIndex === index);
                     });
                 }
+            };
 
-                if (mainPath && !images.some(img => img?.path === mainPath)) {
-                    images.unshift({ path: mainPath, is_main: true, order: 0 });
+            state.stopAuto = () => {
+                if (state.intervalId) {
+                    clearInterval(state.intervalId);
+                    state.intervalId = null;
                 }
-                $("#approveForm").hide();
-                $("#rejectForm").hide();
+            };
+
+            state.startAuto = () => {
+                state.stopAuto();
+                if (state.total <= 1) {
+                    return;
+                }
+                state.intervalId = setInterval(() => {
+                    const nextIndex = (state.currentIndex + 1) % state.total;
+                    state.updateActive(nextIndex);
+                }, postSliderAutoDelay);
+            };
+
+            state.updateActive(0);
+
+            if (state.total > 1) {
+                state.$prev.removeClass('hidden');
+                state.$next.removeClass('hidden');
+                state.$thumbs.removeClass('hidden');
+                state.startAuto();
+            } else {
+                state.$prev.addClass('hidden');
+                state.$next.addClass('hidden');
+                state.$thumbs.addClass('hidden');
             }
 
-            await renderPostImagesSlider(images);
+            state.$prev.off('.postSlider').on('click.postSlider', () => {
+                state.stopAuto();
+                const nextIndex = (state.currentIndex - 1 + state.total) % state.total;
+                state.updateActive(nextIndex);
+            });
+
+            state.$next.off('.postSlider').on('click.postSlider', () => {
+                state.stopAuto();
+                const nextIndex = (state.currentIndex + 1) % state.total;
+                state.updateActive(nextIndex);
+            });
+
+            state.$thumbs.off('.postSlider').on('click.postSlider', '.thumbnail-img', function () {
+                const targetIndex = Number($(this).data('index'));
+                state.stopAuto();
+                state.updateActive(targetIndex);
+            });
+        }
+
+        function renderPostGallery(images) {
+            const $gallery = $('#post-gallery');
+
+            if (!images.length) {
+                $gallery.html('<p class="label-hint"><i class="ri-information-line"></i> No se registraron imágenes para este post.</p>');
+                return;
+            }
+
+            const cards = images.map((image, index) => {
+                const orderLabel = typeof image.order === 'number' ? image.order : index + 1;
+                const altAttr = escapeHtml(image.alt ?? 'Imagen del post');
+                const altLabel = image.alt ? `<p class="gallery-card-alt">${escapeHtml(image.alt)}</p>` : '';
+                const mainBadge = image.is_main
+                    ? '<span class="badge badge-warning-light"><i class="ri-star-smile-fill"></i> Principal</span>'
+                    : '';
+
+                return `
+                    <article class="modal-gallery-card">
+                        <div class="gallery-card-image">
+                            <img src="${image.url}" alt="${altAttr}">
+                        </div>
+                        <div class="gallery-card-meta">
+                            <span class="badge badge-secondary-light">#${orderLabel}</span>
+                            ${mainBadge}
+                        </div>
+                        ${altLabel}
+                    </article>
+                `;
+            }).join('');
+
+            $gallery.html(`<div class="modal-gallery-grid">${cards}</div>`);
+        }
+
+        function renderPostModal(data) {
+            currentPostModalSlug = data.slug ?? null;
+            const safeSlug = escapeHtml(data.slug ?? '—');
+            const safeTitle = data.title ?? 'Sin título';
+
+            $('#post-id').text(data.id ?? '—');
+            $('#post-slug').html(`<span class="badge badge-primary slug-mono">${safeSlug}</span>`);
+            $('#post-title').text(safeTitle);
+            $('#post-title-cell').text(safeTitle);
+            $('#post-content').html(data.content ?? 'Sin contenido');
+
+            const statusBadge = (status) => {
+                const mapping = {
+                    draft: { label: '<i class="ri-pencil-line"></i> Borrador', klass: 'badge-gray' },
+                    pending: { label: '<i class="ri-time-line"></i> Pendiente', klass: 'badge-warning' },
+                    published: { label: '<i class="ri-check-line"></i> Publicado', klass: 'badge-success' },
+                    rejected: { label: '<i class="ri-close-line"></i> Rechazado', klass: 'badge-danger' }
+                };
+                const config = mapping[status] ?? { label: escapeHtml(String(status ?? 'Desconocido')), klass: 'badge-secondary' };
+                return `<span class="badge ${config.klass}">${config.label}</span>`;
+            };
+
+            $('#post-status').html(statusBadge(data.status));
+            $('#post-visibility').text(data.visibility ?? '—');
+            $('#post-views').text(data.views ?? '0');
+
+            $('#post-allow-comments').html(data.allow_comments
+                ? '<span class="badge boton-success"><i class="ri-checkbox-circle-line"></i> Sí</span>'
+                : '<span class="badge boton-danger"><i class="ri-close-circle-line"></i> No</span>'
+            );
+
+            $('#post-published-at').text(data.published_at ?? '—');
+
+            const tags = Array.isArray(data.tags) ? data.tags : [];
+            $('#post-tags').html(tags.length
+                ? tags.map(tag => `<span class="badge badge-warning">${escapeHtml(tag)}</span>`).join(' ')
+                : '—'
+            );
+
+            $('#post-created-by').html(`
+                <div class="show-cell-content">
+                    <span class="font-bold">${escapeHtml(data.created_by_name ?? 'Sistema')}</span>
+                    <span class="show-date"><i class="ri-time-fill"></i> ${escapeHtml(data.created_at ?? '—')}</span>
+                </div>
+            `);
+
+            $('#post-updated-by').html(`
+                <div class="show-cell-content">
+                    <span class="font-bold">${escapeHtml(data.updated_by_name ?? '—')}</span>
+                    <span class="show-date"><i class="ri-time-fill"></i> ${escapeHtml(data.updated_at ?? '—')}</span>
+                </div>
+            `);
+
+            $('#post-reviewed-by').html(`
+                <div class="show-cell-content">
+                    <span class="font-bold">${escapeHtml(data.reviewed_by_name ?? 'Sin revisión')}</span>
+                    <span class="show-date"><i class="ri-time-fill"></i> ${escapeHtml(data.reviewed_at ?? '—')}</span>
+                </div>
+            `);
+
+            $('#modalPostEditBtn').attr('href', `/admin/posts/${data.slug}/edit`);
+            $('#modalDeleteForm').attr('action', `/admin/posts/${data.slug}`);
+
+            const rawImages = Array.isArray(data.images) ? data.images : [];
+
+            loadValidImages(rawImages)
+                .then((validImages) => {
+                    if (currentPostModalSlug !== (data.slug ?? null)) {
+                        return;
+                    }
+
+                    const sourceImages = validImages.length
+                        ? validImages
+                        : rawImages.filter((image) => image && image.url);
+
+                    const sortedImages = [...sourceImages].sort((a, b) => {
+                        if (a.is_main && !b.is_main) {
+                            return -1;
+                        }
+                        if (!a.is_main && b.is_main) {
+                            return 1;
+                        }
+                        const orderA = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER;
+                        const orderB = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER;
+                        return orderA - orderB;
+                    });
+
+                    initializePostSlider(sortedImages, data.title);
+                    renderPostGallery(sortedImages);
+                })
+                .catch(() => {
+                    if (currentPostModalSlug !== (data.slug ?? null)) {
+                        return;
+                    }
+                    destroyPostSlider();
+                    $('#post-image-placeholder').removeClass('hidden').html('<i class="ri-error-warning-line"></i> Error al cargar la galería');
+                    $('#post-gallery').html('<p class="label-hint"><i class="ri-error-warning-line"></i> No se pudieron renderizar las imágenes.</p>');
+                });
+
+            pendingPostModalSlug = null;
         }
 
         function loadPostModal(slug) {
+            pendingPostModalSlug = slug;
             setLoadingPostFields();
             openPostModal();
 
-            // Si había una solicitud previa en curso, abortarla
             if (postModalRequest) {
-                try { postModalRequest.abort(); } catch (e) {}
+                try {
+                    postModalRequest.abort();
+                } catch (error) {}
                 postModalRequest = null;
             }
 
             isPostModalLoading = true;
+
             $.ajax({
                 url: `/admin/posts/${slug}/show`,
-                method: "GET",
-                beforeSend: function(xhr) {
+                method: 'GET',
+                beforeSend(xhr) {
                     postModalRequest = xhr;
                 },
-                success: function(data) {
+                success(response) {
                     postModalRequest = null;
                     isPostModalLoading = false;
-                    renderPostModal(data);
+
+                    if (!response || response.slug !== slug || slug !== pendingPostModalSlug) {
+                        return;
+                    }
+
+                    renderPostModal(response);
                 },
-                error: function(xhr, textStatus) {
+                error(_, textStatus) {
                     postModalRequest = null;
                     isPostModalLoading = false;
-                    if (textStatus === 'abort') return; // no mostrar error si fue por abort
-                    $("#post-title").text("Error al cargar datos");
+                    pendingPostModalSlug = null;
+                    currentPostModalSlug = null;
+                    destroyPostSlider();
+
+                    if (textStatus === 'abort') {
+                        return;
+                    }
+
+                    $('#post-title').text('Error al cargar');
+                    $('#post-content').text('No se pudo obtener la información del post.');
+                    $('#post-image-placeholder').removeClass('hidden').html('<i class="ri-error-warning-line"></i> Error al cargar la galería');
+                    $('#post-gallery').html('<p class="label-hint"><i class="ri-error-warning-line"></i> Ocurrió un problema al cargar las imágenes.</p>');
                 }
             });
         }
 
-        $(document).on("click", ".btn-ver-post", function() {
+        $(document).on('click', '.btn-ver-post', function () {
             if (isPostModalLoading) {
-                // Evitar aperturas concurrentes mientras carga
                 return;
             }
-            loadPostModal($(this).data("slug"));
+            loadPostModal($(this).data('slug'));
         });
 
-        $("#closeModal, #cancelPostButton").on("click", closeModal);
+        $('#closeModal, #cancelPostButton').on('click', closePostModal);
 
-        function escPostListener(e) {
-            if (e.key === "Escape") closeModal();
+        function escPostListener(event) {
+            if (event.key === 'Escape') {
+                closePostModal();
+            }
         }
 
-        // Cerrar modal haciendo clic fuera
-        function clickOutsideShowListener(e) {
+        function clickOutsidePostListener(event) {
             const overlay = document.getElementById('modalShow');
             const content = document.querySelector('#modalShow .modal-content');
 
-            // Clic directo en el overlay (no en modal-content)
-            if (e.target === overlay) {
-                closeModal();
+            if (event.target === overlay && !content.contains(event.target)) {
+                closePostModal();
             }
         }
 
-        $(document).on("submit", "#rejectForm", function(e) {
-            e.preventDefault();
+        $(document).on('submit', '#rejectForm', function (event) {
+            event.preventDefault();
             const form = this;
 
-            // Desactiva el cierre por clic afuera temporalmente
-            document.removeEventListener("click", clickOutsideShowListener);
+            document.removeEventListener('mousedown', clickOutsidePostListener);
 
             window.showConfirm({
-                type: "danger",
-                header: "Rechazar Post",
-                title: "¿Estás seguro?",
+                type: 'danger',
+                header: 'Rechazar Post',
+                title: '¿Estás seguro?',
                 message: 'Vas a rechazar el post <strong>' + $('#post-title').text() + '</strong>.',
-                confirmText: "Sí, rechazar",
-                cancelText: "No, cancelar",
-                onConfirm: function() {
-                    document.addEventListener('click', clickOutsideShowListener);
+                confirmText: 'Sí, rechazar',
+                cancelText: 'No, cancelar',
+                onConfirm() {
+                    document.addEventListener('mousedown', clickOutsidePostListener);
                     form.submit();
                 },
-                onCancel: function() {
-                    // Restablecer cierre por clic afuera
+                onCancel() {
                     restoreOutsideClick();
                 }
             });
         });
 
-
-        $(document).on("submit", "#approveForm", function(e) {
-            e.preventDefault();
+        $(document).on('submit', '#approveForm', function (event) {
+            event.preventDefault();
             const form = this;
 
-            // Desactiva cierre por clic afuera
-            document.removeEventListener("click", clickOutsideShowListener);
+            document.removeEventListener('mousedown', clickOutsidePostListener);
 
             window.showConfirm({
-                type: "success",
-                header: "Aprobar Post",
-                title: "¿Confirmar aprobación?",
+                type: 'success',
+                header: 'Aprobar Post',
+                title: '¿Confirmar aprobación?',
                 message: 'Vas a aprobar el post <strong>' + $('#post-title').text() + '</strong>.',
-                confirmText: "Sí, aprobar",
-                cancelText: "Cancelar",
-                onConfirm: function() {
-                    document.addEventListener('click', clickOutsideShowListener);
+                confirmText: 'Sí, aprobar',
+                cancelText: 'Cancelar',
+                onConfirm() {
+                    document.addEventListener('mousedown', clickOutsidePostListener);
                     form.submit();
                 },
-                onCancel: function() {
-                    // Restablecer cierre por clic afuera
+                onCancel() {
                     restoreOutsideClick();
                 }
             });
         });
 
-
-        // Confirmación antes de eliminar
-        $(document).on("submit", "#modalDeleteForm", function(e) {
-            e.preventDefault();
+        $(document).on('submit', '#modalDeleteForm', function (event) {
+            event.preventDefault();
             const form = this;
 
-            // Desactivar cierre por clic afuera mientras se muestra la confirmación
-            document.removeEventListener('click', clickOutsideShowListener);
+            document.removeEventListener('mousedown', clickOutsidePostListener);
 
             window.showConfirm({
-                type: "danger",
-                header: "Eliminar Post",
-                title: "¿Estás seguro?",
-                message: 'Esta acción no se puede deshacer.<br>Se eliminará el post <strong>' +
-                    $('#post-title').text() + '</strong> del sistema.',
-                confirmText: "Sí, eliminar",
-                cancelText: "No, cancelar",
-                onConfirm: function() {
-                    // Restablecer cierre por clic afuera
-                    document.addEventListener('click', clickOutsideShowListener);
+                type: 'danger',
+                header: 'Eliminar Post',
+                title: '¿Estás seguro?',
+                message: 'Esta acción no se puede deshacer.<br>Se eliminará el post <strong>' + $('#post-title').text() + '</strong> del sistema.',
+                confirmText: 'Sí, eliminar',
+                cancelText: 'No, cancelar',
+                onConfirm() {
+                    document.addEventListener('mousedown', clickOutsidePostListener);
                     form.submit();
                 },
-                onCancel: function() {
-                    // Restablecer cierre por clic afuera
+                onCancel() {
                     restoreOutsideClick();
                 }
             });
         });
 
         function restoreOutsideClick() {
-            document.addEventListener('click', clickOutsideShowListener);
+            document.addEventListener('mousedown', clickOutsidePostListener);
         }
     </script>
 @endpush

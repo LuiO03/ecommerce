@@ -66,7 +66,6 @@
 
 /* Boton Form */
 .boton-form {
-    flex: 1 1 150px;
     min-height: 35px;
     display: inline-flex;
     max-width: fit-content;

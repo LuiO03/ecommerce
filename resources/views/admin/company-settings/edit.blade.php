@@ -60,21 +60,23 @@
             </div>
 
             <div class="settings-tabs-sections" id="companySettingsSections">
-                <div class="settings-tabs-slider">
-                    @include('admin.company-settings.partials.general')
+                @include('admin.company-settings.partials.general')
 
-                    @include('admin.company-settings.partials.contact')
+                @include('admin.company-settings.partials.contact')
 
-                    @include('admin.company-settings.partials.social')
+                @include('admin.company-settings.partials.social')
 
-                    @include('admin.company-settings.partials.identity')
+                @include('admin.company-settings.partials.identity')
 
-                    @include('admin.company-settings.partials.legal')
-                </div>
+                @include('admin.company-settings.partials.legal')
             </div>
         </div>
 
         <div class="form-footer">
+            <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">
+                <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
+                <span class="boton-form-text">Volver al inicio</span>
+            </a>
             <button class="boton-form boton-accent" type="submit" id="submitBtn">
                 <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
                 <span class="boton-form-text">Guardar cambios</span>

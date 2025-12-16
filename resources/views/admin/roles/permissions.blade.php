@@ -89,11 +89,12 @@
             </div>
 
             <div class="form-footer">
-                <a href="{{ route('admin.roles.index') }}" class="boton-form boton-volver">
-                    <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
+                <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                    <span class="boton-form-icon">
+                        <i class="ri-arrow-left-circle-fill"></i>
+                    </span>
                     <span class="boton-form-text">Cancelar</span>
                 </a>
-
                 <button class="boton-form boton-accent" type="submit" id="submitBtn">
                     <span class="boton-form-icon"><i class="ri-loop-left-line"></i></span>
                     <span class="boton-form-text">Guardar cambios</span>

@@ -1,7 +1,6 @@
 <section id="companySettingsSectionSocial" class="settings-section" data-section="social"
     role="tabpanel" aria-labelledby="tab-social">
     <div class="card-title">
-        <i class="ri-share-forward-fill"></i>
         Redes sociales
     </div>
 

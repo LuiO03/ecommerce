@@ -104,6 +104,50 @@
             </div>
         </div>
 
+        <!-- Barra contextual de selección (oculta por defecto) -->
+        <div class="selection-bar" id="selectionBar">
+            <div class="selection-actions">
+                <button id="exportSelectedExcel" class="boton-selection boton-success">
+                    <span class="boton-selection-icon">
+                        <i class="ri-file-excel-2-line"></i>
+                    </span>
+                    <span class="boton-selection-text">Excel</span>
+                    l
+                    <span class="selection-badge" id="excelBadge">0</span>
+                </button>
+                <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                    <span class="boton-selection-icon">
+                        <i class="ri-file-text-line"></i>
+                    </span>
+                    <span class="boton-selection-text">CSV</span>
+                    l
+                    <span class="selection-badge" id="csvBadge">0</span>
+                </button>
+                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                    <span class="boton-selection-icon">
+                        <i class="ri-file-pdf-2-line"></i>
+                    </span>
+                    <span class="boton-selection-text">PDF</span>
+                    l
+                    <span class="selection-badge" id="pdfBadge">0</span>
+                </button>
+            </div>
+            <button id="deleteSelected" class="boton-selection boton-danger">
+                <span class="boton-selection-icon">
+                    <i class="ri-delete-bin-line"></i>
+                </span>
+                <span class="boton-selection-text">Eliminar</span>
+                l
+                <span class="selection-badge" id="deleteBadge">0</span>
+            </button>
+            <div class="selection-info">
+                <span id="selectionCount">0 seleccionados</span>
+                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
+                    <i class="ri-close-large-fill"></i>
+                </button>
+            </div>
+        </div>
+
         <div class="tabla-wrapper">
             <table id="tabla" class="tabla-general display">
                 <thead>

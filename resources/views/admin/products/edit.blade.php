@@ -139,7 +139,6 @@
         </div>
 
         <div class="form-columns-row">
-
             <div class="form-column">
                 <div class="input-group">
                     <label for="description" class="label-form">Descripción</label>
@@ -206,8 +205,10 @@
         </div>
 
         <div class="form-footer">
-            <a href="{{ route('admin.products.index') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
             <button type="submit" class="boton-form boton-accent" id="submitBtn">

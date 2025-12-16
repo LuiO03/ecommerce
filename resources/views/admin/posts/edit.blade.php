@@ -39,7 +39,7 @@
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
         <!-- ================= IMAGEN PRINCIPAL ================= -->
-        <div class="form-row">
+        <div class="form-row-fit">
             <!-- === Imagen === -->
             <div class="image-upload-section">
                 <label class="label-form">Portada del post</label>
@@ -103,8 +103,7 @@
         </div>
 
         <!-- ================= CAMPOS PRINCIPALES ================= -->
-        <div class="form-row">
-
+        <div class="form-row-fill">
             <!-- Título -->
             <div class="input-group">
                 <label for="title" class="label-form">
@@ -171,7 +170,7 @@
         </div>
 
         <!-- ================= CONTENIDO ================= -->
-        <div class="form-row">
+        <div class="form-row-fit">
             <div class="input-group">
                 <label class="label-form">Contenido <i class="ri-asterisk text-accent"></i></label>
                 <textarea name="content" id="content" class="textarea-form-post" rows="8"
@@ -435,8 +434,10 @@
 
         <!-- ================= FOOTER ================= -->
         <div class="form-footer">
-            <a href="{{ route('admin.posts.index') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
 

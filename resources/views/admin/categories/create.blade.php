@@ -41,7 +41,7 @@
             ]"
         />
 
-        <div class="form-row">
+        <div class="form-columns-row">
 
             <!-- ============================
                  COLUMNA IZQUIERDA
@@ -254,8 +254,10 @@
              FOOTER
         ============================= -->
         <div class="form-footer">
-            <a href="{{ route('admin.categories.index') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"> <i class="ri-arrow-left-circle-fill"></i> </span>
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
 

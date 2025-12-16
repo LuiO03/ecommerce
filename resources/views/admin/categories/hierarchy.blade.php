@@ -73,7 +73,7 @@
                     <div class="tree-buttons">
                         <button type="button" id="expandAll" class="boton-single" title="Expandir todo">
                             <i class="ri-expand-diagonal-line"></i>
-                            
+
                         </button>
 
                         <button type="button" id="collapseAll" class="boton-single" title="Colapsar todo">
@@ -244,7 +244,7 @@
                                     <span class="boton-form-icon"><i class="ri-file-copy-fill"></i></span>
                                     <span class="boton-form-text">Duplicar Seleccionados</span>
                                 </button>
-    
+
                                 <button type="button" id="bulkDelete" class="boton-form boton-danger btn-block">
                                     <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
                                     <span class="boton-form-text">Eliminar Seleccionados</span>

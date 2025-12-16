@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-row">
+        <div class="form-row-fit">
             <!-- === Título === -->
             <div class="input-group">
                 <label for="title" class="label-form">
@@ -387,8 +387,10 @@
         </div>
 
         <div class="form-footer">
-            <a href="{{ route('admin.posts.index') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
             <button type="reset" class="boton-form boton-warning">

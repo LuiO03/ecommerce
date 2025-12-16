@@ -31,7 +31,7 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-row">
+        <div class="form-row-fit">
             <!-- === Nombre === -->
             <div class="input-group">
                 <label for="name" class="label-form">
@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-row">
+        <div class="form-row-fill">
             <!-- === Contraseña === -->
             <div class="input-group">
                 <label for="password" class="label-form">
@@ -193,8 +193,10 @@
         </div>
 
         <div class="form-footer">
-            <a href="{{ route('admin.users.index') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"> <i class="ri-arrow-left-circle-fill"></i> </span>
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
             <!-- boton para limpiar contenido -->

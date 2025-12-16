@@ -60,8 +60,10 @@
         </div>
 
         <div class="form-footer">
-            <a href="{{ route('admin.roles.index') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
             <button type="reset" class="boton-form boton-warning">

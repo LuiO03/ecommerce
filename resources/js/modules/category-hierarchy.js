@@ -12,48 +12,61 @@ class CategoryHierarchyManager {
         this.currentCategory = null;
         this.config = window.hierarchyConfig || {};
         this.sortableInstances = [];
-        
+
         this.init();
     }
-    
+
     init() {
         if (!document.getElementById('categoryTree')) return;
-        
+
         console.log('🚀 Inicializando Category Hierarchy Manager nativo...');
-        
+
         this.loadTreeData();
         this.initControls();
         this.initBulkOperations();
         this.initModals();
     }
-    
+
     // ========================================
     // 🌳 CARGAR DATOS DEL ÁRBOL
     // ========================================
     async loadTreeData() {
         const container = document.getElementById('categoryTree');
-        
+
         // Mostrar spinner de carga
         this.showLoadingSpinner(container);
-        
+
         try {
             const response = await fetch(this.config.treeDataUrl);
-            this.treeData = await response.json();
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}`);
+            }
+
+            const payload = await response.json();
+            this.treeData = Array.isArray(payload) ? payload : [];
+
+            if (this.treeData.length === 0) {
+                this.showEmptyState(container);
+                container.classList.add('loaded');
+                console.log('ℹ️ No se encontraron familias activas para mostrar.');
+                return;
+            }
+
             this.renderTree();
-            
+
             console.log('✅ Árbol cargado:', this.treeData.length, 'familias');
         } catch (error) {
             console.error('❌ Error cargando árbol:', error);
             this.showErrorState(container);
         }
     }
-    
+
     // ========================================
     // ⏳ MOSTRAR SPINNER DE CARGA
     // ========================================
     showLoadingSpinner(container) {
         if (!container) return;
-        
+
         container.innerHTML = `
             <div class="tree-loading-state">
                 <div class="loading-spinner"></div>
@@ -61,13 +74,13 @@ class CategoryHierarchyManager {
             </div>
         `;
     }
-    
+
     // ========================================
     // ❌ MOSTRAR ESTADO DE ERROR
     // ========================================
     showErrorState(container) {
         if (!container) return;
-        
+
         container.innerHTML = `
             <div class="tree-error-state">
                 <i class="ri-error-warning-line"></i>
@@ -79,23 +92,41 @@ class CategoryHierarchyManager {
             </div>
         `;
     }
-    
+
+    // ========================================
+    // 📭 MOSTRAR ESTADO VACÍO
+    // ========================================
+    showEmptyState(container) {
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="tree-empty-state">
+                <i class="ri-folder-reduce-line tree-empty-state-icon"></i>
+                <p>No hay familias activas ni categorías para mostrar.</p>
+                <a href="/admin/families" class="boton-form boton-primary">
+                    <span class="boton-form-icon"><i class="ri-settings-5-line"></i></span>
+                    <span class="boton-form-text">Gestionar familias</span>
+                </a>
+            </div>
+        `;
+    }
+
     // ========================================
     // 🎨 RENDERIZAR ÁRBOL COMPLETO
     // ========================================
     renderTree() {
         const container = document.getElementById('categoryTree');
         if (!container || !this.treeData) return;
-        
+
         container.innerHTML = '';
-        
+
         this.treeData.forEach(family => {
             container.appendChild(this.createFamilyCard(family));
         });
-        
+
         container.classList.add('loaded');
     }
-    
+
     // ========================================
     // 🎴 CREAR TARJETA DE FAMILIA
     // ========================================
@@ -103,7 +134,7 @@ class CategoryHierarchyManager {
         const card = document.createElement('div');
         card.className = 'family-card';
         card.dataset.familyId = family.li_attr['data-id'];
-        
+
         const header = document.createElement('div');
         header.className = 'family-header';
         header.innerHTML = `
@@ -118,28 +149,28 @@ class CategoryHierarchyManager {
                 <div class="family-count">${family.children.length} categorías</div>
             </div>
         `;
-        
+
         header.addEventListener('click', () => this.toggleFamily(card));
-        
+
         const children = document.createElement('div');
         children.className = 'family-children';
-        
+
         if (family.children && family.children.length > 0) {
             family.children.forEach(category => {
                 children.appendChild(this.createCategoryItem(category));
             });
         }
-        
+
         // Inicializar Sortable para TODAS las familias (incluso vacías)
         // Esto permite arrastrar categorías a familias sin hijos
         this.initSortable(children);
-        
+
         card.appendChild(header);
         card.appendChild(children);
-        
+
         return card;
     }
-    
+
     // ========================================
     // 📦 CREAR ITEM DE CATEGORÍA
     // ========================================
@@ -148,15 +179,15 @@ class CategoryHierarchyManager {
         item.className = 'category-item';
         item.dataset.categoryId = category.li_attr['data-id'];
         item.dataset.categoryData = JSON.stringify(category);
-        
+
         const card = document.createElement('div');
         const hasChildren = category.children && category.children.length > 0;
         const productsCount = category.li_attr['data-products-count'] || 0;
         const isActive = category.li_attr['data-status'] === '1';
-        
+
         // Clase diferente para categorías padre vs hoja
         card.className = hasChildren ? 'category-card category-parent' : 'category-card category-leaf';
-        
+
         card.innerHTML = `
             <div class="category-drag-handle">
                 <i class="ri-draggable"></i>
@@ -193,16 +224,16 @@ class CategoryHierarchyManager {
                 </button>
             </div>
         `;
-        
+
         // Event listeners
         card.addEventListener('click', (e) => this.handleCategoryClick(e, item, category));
-        
+
         const checkbox = card.querySelector('.category-checkbox');
         checkbox.addEventListener('click', (e) => {
             e.stopPropagation();
             this.toggleCheckbox(item);
         });
-        
+
         if (hasChildren) {
             const toggle = card.querySelector('.category-toggle');
             toggle.addEventListener('click', (e) => {
@@ -210,7 +241,7 @@ class CategoryHierarchyManager {
                 this.toggleCategory(item);
             });
         }
-        
+
         // Botones de acción
         const editBtn = card.querySelector('[data-action="edit"]');
         editBtn.addEventListener('click', (e) => {
@@ -218,32 +249,32 @@ class CategoryHierarchyManager {
             const slug = category.li_attr['data-slug'];
             window.location.href = this.config.editCategoryUrl.replace(':id', slug);
         });
-        
+
         const deleteBtn = card.querySelector('[data-action="delete"]');
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const slug = category.li_attr['data-slug'];
             this.deleteCategory(slug, category.text, category.li_attr['data-id']);
         });
-        
+
         item.appendChild(card);
-        
+
         // Subcategorías
         if (hasChildren) {
             const children = document.createElement('div');
             children.className = 'category-children';
-            
+
             category.children.forEach(child => {
                 children.appendChild(this.createCategoryItem(child));
             });
-            
+
             this.initSortable(children);
             item.appendChild(children);
         }
-        
+
         return item;
     }
-    
+
     // ========================================
     // 🎮 INICIALIZAR SORTABLE (Drag & Drop)
     // ========================================
@@ -259,7 +290,7 @@ class CategoryHierarchyManager {
             swapThreshold: 0.65,
             direction: 'vertical',
             forceFallback: true,
-            
+
             // Indicador visual de dónde se soltará
             onMove: (evt) => {
                 const target = evt.related;
@@ -269,14 +300,14 @@ class CategoryHierarchyManager {
                 }
                 return true;
             },
-            
+
             onChange: (evt) => {
                 // Limpiar indicadores previos
                 document.querySelectorAll('.drop-target-indicator').forEach(el => {
                     el.classList.remove('drop-target-indicator');
                 });
             },
-            
+
             onEnd: async (evt) => {
                 // Limpiar indicadores al soltar
                 document.querySelectorAll('.drop-target-indicator').forEach(el => {
@@ -286,16 +317,16 @@ class CategoryHierarchyManager {
                 const movedItem = evt.item;
                 const categoryId = movedItem.dataset.categoryId;
                 const categoryData = JSON.parse(movedItem.dataset.categoryData);
-                
+
                 // Determinar el nuevo padre
                 const newParentContainer = evt.to;
                 let newParentId = null;
                 let newFamilyId = null;
-                
+
                 // Buscar el contenedor padre
                 const parentItem = newParentContainer.closest('.category-item');
                 const parentFamily = newParentContainer.closest('.family-card');
-                
+
                 if (parentItem) {
                     // Se movió dentro de otra categoría (subcategoría)
                     newParentId = parentItem.dataset.categoryId;
@@ -309,31 +340,31 @@ class CategoryHierarchyManager {
                     console.warn('⚠️ No se pudo determinar el destino');
                     return;
                 }
-                
+
                 // Verificar si realmente cambió de posición
                 const oldParentId = categoryData.li_attr['data-parent-id'] || null;
                 const oldFamilyId = categoryData.li_attr['data-family-id'];
-                
+
                 if (oldParentId == newParentId && oldFamilyId == newFamilyId) {
                     console.log('ℹ️ Solo cambió el orden, no la jerarquía');
                     return;
                 }
-                
+
                 console.log('🎯 Moviendo categoría:', {
                     categoryId,
                     categoryName: categoryData.text,
                     from: { familyId: oldFamilyId, parentId: oldParentId },
                     to: { familyId: newFamilyId, parentId: newParentId }
                 });
-                
+
                 // Persistir el cambio en el backend
                 await this.saveCategoryMove(categoryId, newFamilyId, newParentId);
             }
         });
-        
+
         this.sortableInstances.push(sortable);
     }
-    
+
     // ========================================
     // 💾 GUARDAR MOVIMIENTO DE CATEGORÍA
     // ========================================
@@ -352,9 +383,9 @@ class CategoryHierarchyManager {
                     parent_id: newParentId
                 })
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 // Mostrar toast de éxito
                 if (typeof window.showToast === 'function') {
@@ -365,17 +396,17 @@ class CategoryHierarchyManager {
                         duration: 3000
                     });
                 }
-                
+
                 // Recargar datos del árbol para reflejar cambios
                 await this.loadTreeData();
-                
+
             } else {
                 throw new Error(data.message || 'Error al mover categoría');
             }
-            
+
         } catch (error) {
             console.error('❌ Error al guardar movimiento:', error);
-            
+
             // Mostrar toast de error
             if (typeof window.showToast === 'function') {
                 window.showToast({
@@ -385,23 +416,23 @@ class CategoryHierarchyManager {
                     duration: 4000
                 });
             }
-            
+
             // Recargar para revertir cambios visuales
             await this.loadTreeData();
         }
     }
-    
+
     // ========================================
     // 🎯 CONTROLES DE EXPANSIÓN
     // ========================================
     toggleFamily(card) {
         card.classList.toggle('collapsed');
     }
-    
+
     toggleCategory(item) {
         item.classList.toggle('collapsed');
     }
-    
+
     // ========================================
     // ✅ MANEJO DE CHECKBOXES
     // ========================================
@@ -409,13 +440,13 @@ class CategoryHierarchyManager {
         const checkbox = item.querySelector('.category-checkbox');
         const card = item.querySelector('.category-card');
         const categoryId = item.dataset.categoryId;
-        
+
         // Si hay una categoría seleccionada individualmente (clic normal), limpiarla
         if (this.currentCategory) {
             this.clearSingleSelection();
             this.currentCategory = null;
         }
-        
+
         if (this.selectedNodes.has(categoryId)) {
             this.selectedNodes.delete(categoryId);
             checkbox.checked = false;
@@ -425,35 +456,35 @@ class CategoryHierarchyManager {
             checkbox.checked = true;
             card.classList.add('selected');
         }
-        
+
         this.updateSelection();
     }
-    
+
     // ========================================
     // 🖱️ MANEJO DE CLICS EN CATEGORÍAS
     // ========================================
     handleCategoryClick(e, item, category) {
         // Ignorar si se hizo clic en botones específicos
-        if (e.target.closest('.category-checkbox') || 
+        if (e.target.closest('.category-checkbox') ||
             e.target.closest('.category-toggle') ||
             e.target.closest('.category-actions')) {
             return;
         }
-        
+
         // Limpiar selecciones múltiples (checkboxes) si existen
         if (this.selectedNodes.size > 0) {
             this.clearCheckboxSelections();
         }
-        
+
         // Deseleccionar otros (solo para selección individual)
         document.querySelectorAll('.category-card.selected').forEach(card => {
             card.classList.remove('selected');
         });
-        
+
         item.querySelector('.category-card').classList.add('selected');
         this.showSingleInfo(category);
     }
-    
+
     // ========================================
     // 🧹 MÉTODOS AUXILIARES DE LIMPIEZA
     // ========================================
@@ -465,24 +496,24 @@ class CategoryHierarchyManager {
         document.querySelectorAll('.category-card.selected').forEach(card => {
             card.classList.remove('selected');
         });
-        
+
         const deselectBtn = document.getElementById('deselectAll');
         if (deselectBtn) deselectBtn.style.display = 'none';
     }
-    
+
     clearSingleSelection() {
         document.querySelectorAll('.category-card.selected').forEach(card => {
             card.classList.remove('selected');
         });
     }
-    
+
     // ========================================
     // 📊 ACTUALIZAR SELECCIÓN
     // ========================================
     updateSelection() {
         const count = this.selectedNodes.size;
         const deselectBtn = document.getElementById('deselectAll');
-        
+
         if (count === 0) {
             this.showPanel('empty');
             if (deselectBtn) deselectBtn.style.display = 'none';
@@ -492,7 +523,7 @@ class CategoryHierarchyManager {
             if (deselectBtn) deselectBtn.style.display = 'inline-flex';
         }
     }
-    
+
     // ========================================
     // 🎨 PANELES DE INFORMACIÓN
     // ========================================
@@ -500,7 +531,7 @@ class CategoryHierarchyManager {
         document.getElementById('emptyPanel').style.display = 'none';
         document.getElementById('infoPanel').style.display = 'none';
         document.getElementById('bulkPanel').style.display = 'none';
-        
+
         if (panel === 'empty') {
             document.getElementById('emptyPanel').style.display = 'flex';
         } else if (panel === 'single') {
@@ -509,58 +540,58 @@ class CategoryHierarchyManager {
             document.getElementById('bulkPanel').style.display = 'flex';
         }
     }
-    
+
     showSingleInfo(category) {
         const liAttr = category.li_attr;
-        
+
         // Almacenar los datos de la categoría actual para uso en botones
         this.currentCategory = {
             id: liAttr['data-id'],
             slug: liAttr['data-slug'],
             name: category.text.replace(/\(\d+\)/, '').trim()
         };
-        
+
         document.getElementById('infoName').textContent = this.currentCategory.name;
         document.getElementById('infoId').textContent = this.currentCategory.id;
-        
+
         // Obtener la familia (si es subcategoría, obtener la familia del padre raíz)
         const familyName = this.getRootFamilyName(category);
         document.getElementById('infoFamily').textContent = familyName;
-        
+
         // Mostrar nombre del padre o indicar que es raíz
         const parentName = this.getParentName(category);
         document.getElementById('infoParent').textContent = parentName || 'Raíz';
-        
+
         document.getElementById('infoChildren').textContent = category.children ? category.children.length : 0;
         document.getElementById('infoProducts').textContent = liAttr['data-products-count'] || 0;
-        document.getElementById('infoStatus').innerHTML = liAttr['data-status'] === '1' 
-            ? '<span class="badge boton-success"><i class="ri-checkbox-circle-fill"></i>Activo</span>' 
+        document.getElementById('infoStatus').innerHTML = liAttr['data-status'] === '1'
+            ? '<span class="badge boton-success"><i class="ri-checkbox-circle-fill"></i>Activo</span>'
             : '<span class="badge boton-danger"><i class="ri-close-circle-fill"></i>Inactivo</span>';
         document.getElementById('infoSlug').textContent = liAttr['data-slug'] || '-';
-        
+
         const editUrl = this.config.editCategoryUrl.replace(':id', this.currentCategory.slug);
         document.getElementById('editCategory').setAttribute('href', editUrl);
-        
+
         this.showPanel('single');
     }
-    
+
     showBulkPanel(count) {
         document.getElementById('bulkCount').textContent = count;
         this.showPanel('bulk');
     }
-    
+
     getFamilyName(familyId) {
         const family = this.treeData.find(f => f.li_attr['data-id'] === familyId);
         return family ? family.text : '-';
     }
-    
+
     getRootFamilyName(category) {
         // Si tiene family-id directo, usarlo
         const directFamilyId = category.li_attr['data-family-id'];
         if (directFamilyId) {
             return this.getFamilyName(directFamilyId);
         }
-        
+
         // Si es subcategoría, buscar la familia recorriendo hacia arriba
         const parentId = category.li_attr['data-parent-id'];
         if (parentId) {
@@ -569,10 +600,10 @@ class CategoryHierarchyManager {
                 return this.getRootFamilyName(parent);
             }
         }
-        
+
         return '-';
     }
-    
+
     findCategoryInTree(categoryId) {
         for (const family of this.treeData) {
             const found = this.findCategoryById(family.children, categoryId);
@@ -580,11 +611,11 @@ class CategoryHierarchyManager {
         }
         return null;
     }
-    
+
     getParentName(category) {
         const parentId = category.li_attr['data-parent-id'];
         if (!parentId) return null;
-        
+
         // Buscar el padre en el árbol de datos
         for (const family of this.treeData) {
             const found = this.findCategoryById(family.children, parentId);
@@ -594,10 +625,10 @@ class CategoryHierarchyManager {
         }
         return null;
     }
-    
+
     findCategoryById(categories, id) {
         if (!categories) return null;
-        
+
         for (const cat of categories) {
             if (cat.li_attr['data-id'] === id) {
                 return cat;
@@ -609,7 +640,7 @@ class CategoryHierarchyManager {
         }
         return null;
     }
-    
+
     // ========================================
     // 🎮 CONTROLES GENERALES
     // ========================================
@@ -617,37 +648,37 @@ class CategoryHierarchyManager {
         // Búsqueda
         const searchInput = document.getElementById('treeSearch');
         const clearSearch = document.getElementById('clearTreeSearch');
-        
+
         let searchTimeout;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             const value = e.target.value.toLowerCase();
-            
+
             searchTimeout = setTimeout(() => {
                 this.searchTree(value);
                 clearSearch.style.display = value ? 'block' : 'none';
             }, 300);
         });
-        
+
         clearSearch.addEventListener('click', () => {
             searchInput.value = '';
             this.searchTree('');
             clearSearch.style.display = 'none';
         });
-        
+
         // Expandir/Colapsar todo
         document.getElementById('expandAll').addEventListener('click', () => {
             document.querySelectorAll('.family-card, .category-item').forEach(el => {
                 el.classList.remove('collapsed');
             });
         });
-        
+
         document.getElementById('collapseAll').addEventListener('click', () => {
             document.querySelectorAll('.family-card, .category-item').forEach(el => {
                 el.classList.add('collapsed');
             });
         });
-        
+
         // Cerrar paneles
         document.getElementById('closeInfo')?.addEventListener('click', () => {
             this.showPanel('empty');
@@ -655,7 +686,7 @@ class CategoryHierarchyManager {
                 card.classList.remove('selected');
             });
         });
-        
+
         document.getElementById('closeBulk')?.addEventListener('click', () => {
             this.selectedNodes.clear();
             document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
@@ -690,36 +721,36 @@ class CategoryHierarchyManager {
             }
         });
     }
-    
+
     // ========================================
     // 🔍 BÚSQUEDA EN EL ÁRBOL
     // ========================================
     searchTree(query) {
         const familyCards = document.querySelectorAll('.family-card');
         const categoryItems = document.querySelectorAll('.category-item');
-        
+
         if (!query) {
             // Si no hay búsqueda, mostrar todo
             familyCards.forEach(card => card.style.display = '');
             categoryItems.forEach(item => item.style.display = '');
             return;
         }
-        
+
         // Ocultar todo inicialmente
         familyCards.forEach(card => card.style.display = 'none');
         categoryItems.forEach(item => item.style.display = 'none');
-        
+
         // Buscar en categorías
         categoryItems.forEach(item => {
             const name = item.querySelector('.category-name')?.textContent.toLowerCase();
-            
+
             if (name && name.includes(query)) {
                 // Mostrar el item encontrado
                 item.style.display = '';
-                
+
                 // Expandir el item si tiene hijos
                 item.classList.remove('collapsed');
-                
+
                 // Mostrar y expandir todos los ancestros
                 let parent = item.parentElement;
                 while (parent) {
@@ -736,15 +767,15 @@ class CategoryHierarchyManager {
                 }
             }
         });
-        
+
         // Buscar en familias
         familyCards.forEach(card => {
             const name = card.querySelector('.family-name')?.textContent.toLowerCase();
-            
+
             if (name && name.includes(query)) {
                 card.style.display = '';
                 card.classList.remove('collapsed');
-                
+
                 // Mostrar todas las categorías hijas de esta familia
                 const childCategories = card.querySelectorAll('.category-item');
                 childCategories.forEach(child => {
@@ -759,14 +790,14 @@ class CategoryHierarchyManager {
             }
         });
     }
-    
+
     // ========================================
     // 🗑️ ELIMINAR CATEGORÍA
     // ========================================
     async deleteCategory(slug, name, id = null) {
         // Limpiar el nombre (remover conteo de productos)
         const cleanName = name.replace(/\(\d+\)/, '').trim();
-        
+
         // Usar el sistema global de confirmación
         window.showConfirm({
             type: 'danger',
@@ -780,7 +811,7 @@ class CategoryHierarchyManager {
             }
         });
     }
-    
+
     // ========================================
     // 💾 EJECUTAR ELIMINACIÓN
     // ========================================
@@ -790,7 +821,7 @@ class CategoryHierarchyManager {
             const formData = new FormData();
             formData.append('_method', 'DELETE');
             formData.append('_token', this.config.csrfToken);
-            
+
             const response = await fetch(`/admin/categories/${slug}`, {
                 method: 'POST',
                 headers: {
@@ -799,9 +830,9 @@ class CategoryHierarchyManager {
                 },
                 body: formData
             });
-            
+
             const data = await response.json();
-            
+
             if (response.ok && data.success) {
                 // Mostrar toast de éxito
                 if (typeof window.showToast === 'function') {
@@ -812,21 +843,21 @@ class CategoryHierarchyManager {
                         duration: 4000
                     });
                 }
-                
+
                 // Recargar el árbol para reflejar cambios
                 await this.loadTreeData();
-                
+
                 // Cerrar el panel de información si estaba abierto
                 this.showPanel('empty');
-                
+
             } else {
                 // Error del servidor
                 throw new Error(data.message || 'Error al eliminar la categoría');
             }
-            
+
         } catch (error) {
             console.error('❌ Error al eliminar categoría:', error);
-            
+
             // Mostrar modal de error
             if (typeof window.showInfoModal === 'function') {
                 window.showInfoModal({
@@ -838,7 +869,7 @@ class CategoryHierarchyManager {
             }
         }
     }
-    
+
     // ========================================
     // 📦 OPERACIONES MASIVAS
     // ========================================
@@ -847,119 +878,119 @@ class CategoryHierarchyManager {
         document.getElementById('bulkFamilyTarget')?.addEventListener('change', (e) => {
             this.loadCategoriesForFamily(e.target.value);
         });
-        
+
         // Preview de movimiento
         document.getElementById('previewMove')?.addEventListener('click', () => {
             this.previewBulkMove();
         });
-        
+
         // Ejecutar movimiento
         document.getElementById('executeBulkMove')?.addEventListener('click', () => {
             this.executeBulkMove();
         });
-        
+
         // Duplicar
         document.getElementById('bulkDuplicate')?.addEventListener('click', () => {
             this.bulkDuplicate();
         });
-        
+
         // Eliminar
         document.getElementById('bulkDelete')?.addEventListener('click', () => {
             this.bulkDelete();
         });
     }
-    
+
     loadCategoriesForFamily(familyValue) {
         const categorySelect = document.getElementById('bulkCategoryTarget');
-        
+
         if (!familyValue || familyValue === 'root') {
             categorySelect.disabled = true;
             categorySelect.innerHTML = '<option value="">Sin categoría padre (raíz de familia)</option>';
             return;
         }
-        
+
         // Extraer el ID de la familia
         const familyId = familyValue.replace('family_', '');
-        
+
         console.log('🔍 Buscando familia con ID:', familyId);
         console.log('📊 Datos del árbol:', this.treeData);
-        
+
         // Buscar la familia en los datos del árbol (comparar como string)
         const family = this.treeData.find(f => String(f.li_attr['data-id']) === String(familyId));
-        
+
         console.log('✅ Familia encontrada:', family);
-        
+
         if (!family || !family.children || family.children.length === 0) {
             categorySelect.disabled = true;
             categorySelect.innerHTML = '<option value="">Esta familia no tiene categorías</option>';
             return;
         }
-        
+
         // Habilitar y llenar el select de categorías
         categorySelect.disabled = false;
         categorySelect.innerHTML = '<option value="">Sin categoría padre (raíz de familia)</option>';
-        
+
         console.log('📦 Agregando categorías al select:', family.children.length);
-        
+
         // Agregar categorías recursivamente
         this.addCategoriesToSelect(family.children, categorySelect, 0);
     }
-    
+
     addCategoriesToSelect(categories, selectElement, level) {
         categories.forEach(category => {
             const option = document.createElement('option');
             const indent = '\u00a0\u00a0'.repeat(level); // Espacios para indentación
             const categoryName = category.text.replace(/\(\d+\)/, '').trim();
-            
+
             option.value = `category_${category.li_attr['data-id']}`;
             option.textContent = `${indent}${level > 0 ? '\u2514 ' : ''}${categoryName}`;
-            
+
             selectElement.appendChild(option);
-            
+
             // Agregar subcategorías recursivamente
             if (category.children && category.children.length > 0) {
                 this.addCategoriesToSelect(category.children, selectElement, level + 1);
             }
         });
     }
-    
+
     async previewBulkMove() {
         const familyTarget = document.getElementById('bulkFamilyTarget').value;
         const categoryTarget = document.getElementById('bulkCategoryTarget').value;
-        
+
         if (!familyTarget) {
             alert('⚠️ Selecciona una familia destino');
             return;
         }
-        
+
         console.log('👁️ Preview movimiento masivo');
         console.log('Familia:', familyTarget);
         console.log('Categoría padre:', categoryTarget || 'Raíz de familia');
         // Mostrar modal de preview
     }
-    
+
     async executeBulkMove() {
         const familyTarget = document.getElementById('bulkFamilyTarget').value;
         const categoryTarget = document.getElementById('bulkCategoryTarget').value;
-        
+
         if (!familyTarget) {
             alert('⚠️ Selecciona una familia destino');
             return;
         }
-        
+
         console.log('➡️ Ejecutar movimiento masivo');
         console.log('Familia:', familyTarget);
         console.log('Categoría padre:', categoryTarget || 'Raíz de familia');
     }
-    
+
     async bulkDuplicate() {
         console.log('📋 Duplicar seleccionados');
     }
-    
+
     async bulkDelete() {
         console.log('🗑️ Eliminar seleccionados');
     }
-    
+
     // ========================================
     // 🎭 MODALES
     // ========================================
@@ -968,7 +999,7 @@ class CategoryHierarchyManager {
         document.getElementById('closePreviewModal')?.addEventListener('click', () => {
             document.getElementById('previewModal').style.display = 'none';
         });
-        
+
         document.getElementById('cancelPreview')?.addEventListener('click', () => {
             document.getElementById('previewModal').style.display = 'none';
         });
@@ -982,7 +1013,7 @@ function initHierarchyManager() {
     if (!document.getElementById('categoryTree')) {
         return;
     }
-    
+
     console.log('🚀 Inicializando CategoryHierarchyManager...');
     window.hierarchyManager = new CategoryHierarchyManager();
 }

@@ -58,21 +58,21 @@
         </div>
         <div class="profile-content">
             <div id="tab-info" class="profile-tab-content">
-                @include('admin.profile.profile-info')
+                @include('admin.profile.partials.profile-info')
             </div>
             <div id="tab-password" class="profile-tab-content hidden">
-                @include('admin.profile.profile-password')
+                @include('admin.profile.partials.profile-password')
             </div>
             <div id="tab-export" class="profile-tab-content hidden">
-                @include('admin.profile.profile-export')
+                @include('admin.profile.partials.profile-export')
             </div>
                <div id="tab-sessions" class="profile-tab-content hidden">
-                   @include('admin.profile.profile-sessions')
+                   @include('admin.profile.partials.profile-sessions')
                </div>
         </div>
     </div>
     <!-- Modal para cambiar imagen -->
-    @include('admin.profile.profile-avatar')
+    @include('admin.profile.partials.profile-avatar')
 
     <script>
         document.querySelectorAll('.profile-tab-btn').forEach(btn => {

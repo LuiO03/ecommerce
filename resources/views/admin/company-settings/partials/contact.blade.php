@@ -1,7 +1,6 @@
 <section id="companySettingsSectionContact" class="settings-section" data-section="contact"
     role="tabpanel" aria-labelledby="tab-contact">
     <div class="card-title">
-        <i class="ri-contacts-book-line"></i>
         Contacto
     </div>
 

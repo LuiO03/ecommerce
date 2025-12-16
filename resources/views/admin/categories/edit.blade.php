@@ -50,42 +50,38 @@
             'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)',
         ]" />
 
-        <div class="form-row">
-            <div class="input-group">
-                <label for="family_select" class="label-form">
-                    Familia
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-stack-line input-icon"></i>
-                    <select name="family_id" id="family_select" class="select-form" required
-                        data-validate="required|selected"
-                        data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
-                        <option value="" disabled>Seleccione una familia</option>
-                        @foreach ($families as $family)
-                            <option value="{{ $family->id }}" @selected(old('family_id', $category->family_id) == $family->id)>
-                                {{ $family->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                </div>
-                @error('family_id')
-                    <span class="input-error-message">
-                        <i class="ri-error-warning-fill"></i>
-                        {{ $message }}
-                    </span>
-                @enderror
-            </div>
-        </div>
         <div class="form-columns-row">
-
             <!-- ============================
                  COLUMNA IZQUIERDA
             ============================= -->
             <div class="form-column">
                 {{-- FAMILIA (OBLIGATORIO) --}}
-
+                <div class="input-group">
+                    <label for="family_select" class="label-form">
+                        Familia
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-stack-line input-icon"></i>
+                        <select name="family_id" id="family_select" class="select-form" required
+                            data-validate="required|selected"
+                            data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
+                            <option value="" disabled>Seleccione una familia</option>
+                            @foreach ($families as $family)
+                                <option value="{{ $family->id }}" @selected(old('family_id', $category->family_id) == $family->id)>
+                                    {{ $family->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                    @error('family_id')
+                        <span class="input-error-message">
+                            <i class="ri-error-warning-fill"></i>
+                            {{ $message }}
+                        </span>
+                    @enderror
+                </div>
 
                 {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
                 <div class="input-group">
@@ -301,11 +297,12 @@
              FOOTER
         ============================= -->
         <div class="form-footer">
-            <a href="{{ route('admin.categories.index') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"> <i class="ri-arrow-left-circle-fill"></i> </span>
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
-
             <button class="boton-form boton-accent" type="submit" id="submitBtn">
                 <span class="boton-form-icon"> <i class="ri-loop-left-line"></i> </span>
                 <span class="boton-form-text">Actualizar Categoría</span>
@@ -313,7 +310,7 @@
         </div>
     </form>
     {{-- SUBCATEGORÍAS --}}
-    <div class="form-row">
+    <div class="form-row-fit">
         @if (count($subcategories) > 0)
             <div class="input-group">
                 <label class="label-form">
@@ -381,7 +378,8 @@
                                                 <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                             </button>
                                             <a href="{{ route('admin.categories.edit', $subcat['slug']) }}"
-                                                class="boton-sm boton-warning btn-ver-categoria" data-slug="{{ $subcat['slug'] }}">
+                                                class="boton-sm boton-warning btn-ver-categoria"
+                                                data-slug="{{ $subcat['slug'] }}">
                                                 <span class="boton-sm-icon"><i class="ri-quill-pen-fill"></i></span>
                                             </a>
                                             <form action="{{ route('admin.categories.destroy', $subcat['slug']) }}"

@@ -1,12 +1,11 @@
-<section id="companySettingsSectionGeneral" class="settings-section" data-section="general" role="tabpanel"
+<section id="companySettingsSectionGeneral" class="settings-section is-active" data-section="general" role="tabpanel"
     aria-labelledby="tab-general">
 
     <span class="card-title">
-        <i class="ri-information-line"></i>
         Información general
     </span>
 
-    <div class="form-row">
+    <div class="form-row-fit">
         <div class="input-group">
             <label for="name" class="label-form">
                 Nombre comercial
