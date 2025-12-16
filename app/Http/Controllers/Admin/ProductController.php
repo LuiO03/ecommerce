@@ -112,13 +112,11 @@ class ProductController extends Controller
         $gallery = $product->images->map(fn ($image) => [
             'id' => $image->id,
             'path' => $image->path,
-            'url' => Storage::disk('public')->exists($image->path)
-                ? Storage::disk('public')->url($image->path)
-                : null,
+            'url' => $this->resolveProductImageUrl($image->path),
             'alt' => $image->alt,
             'is_main' => (bool) $image->is_main,
             'order' => $image->order,
-        ]);
+        ])->values();
 
         return response()->json([
             'id' => $product->id,
@@ -444,5 +442,28 @@ class ProductController extends Controller
 
             $image->delete();
         }
+    }
+
+    protected function resolveProductImageUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        $normalized = ltrim(str_replace('\\', '/', $path), '/');
+
+        if (str_starts_with($normalized, 'public/')) {
+            $normalized = substr($normalized, 7);
+        }
+
+        if (str_starts_with($normalized, 'storage/')) {
+            $normalized = substr($normalized, 8);
+        }
+
+        return asset('storage/' . ltrim($normalized, '/'));
     }
 }

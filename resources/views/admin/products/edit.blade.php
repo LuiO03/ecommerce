@@ -141,6 +141,14 @@
         <div class="form-columns-row">
 
             <div class="form-column">
+                <div class="input-group">
+                    <label for="description" class="label-form">Descripción</label>
+                    <div class="input-icon-container">
+                        <textarea name="description" id="description" class="textarea-form" rows="4"
+                            placeholder="Describe el producto" data-validate="max:5000">{{ old('description', $product->description) }}</textarea>
+                        <i class="ri-file-text-line input-icon textarea-icon"></i>
+                    </div>
+                </div>
                 <div class="image-upload-section w-full">
                     <label class="label-form">Galería de imágenes</label>
                     <div class="custom-dropzone" id="galleryDropzone">
@@ -193,16 +201,8 @@
                     <input type="hidden" name="primary_image" id="primaryImageInput" value="">
                 </div>
             </div>
-            <div class="form-column">
-                <div class="input-group">
-                    <label for="description" class="label-form">Descripción</label>
-                    <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" rows="4"
-                            placeholder="Describe el producto" data-validate="max:5000">{{ old('description', $product->description) }}</textarea>
-                        <i class="ri-file-text-line input-icon textarea-icon"></i>
-                    </div>
-                </div>
-            </div>
+
+
         </div>
 
         <div class="form-footer">
