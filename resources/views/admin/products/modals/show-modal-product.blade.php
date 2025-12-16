@@ -1,8 +1,8 @@
-<div id="modalShowProduct" class="modal-show hidden modal-horizontal">
+<div id="modalShow" class="modal-show hidden modal-horizontal">
     <div class="modal-content">
         <div class="modal-show-header">
             <h6>Detalles del Producto</h6>
-            <button type="button" id="closeProductModal" class="confirm-close ripple-btn">
+            <button type="button" id="closeModal" class="confirm-close ripple-btn">
                 <i class="ri-close-line"></i>
             </button>
         </div>
@@ -85,7 +85,7 @@
                             <span class="boton-text">Editar</span>
                         </a>
 
-                        <form id="modalProductDeleteForm" action="#" method="POST" title="Eliminar producto">
+                        <form id="modalDeleteForm" action="#" method="POST" title="Eliminar producto">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="boton boton-danger">
@@ -100,7 +100,7 @@
         </div>
 
         <div class="modal-show-footer">
-            <button type="button" class="boton boton-modal-close" id="cancelProductModal" title="Cerrar ventana">
+            <button type="button" class="boton boton-modal-close" id="cancelButton" title="Cerrar ventana">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
                 <span class="boton-text">Cerrar</span>
             </button>
@@ -128,27 +128,27 @@
         }
 
         function openProductModal() {
-            $('#modalShowProduct').removeClass('hidden');
-            $('#modalShowProduct .modal-content').removeClass('animate-out').addClass('animate-in');
+            $('#modalShow').removeClass('hidden');
+            $('#modalShow .modal-content').removeClass('animate-out').addClass('animate-in');
 
-            $('#modalShowProduct').appendTo('body');
+            $('#modalShow').appendTo('body');
             document.addEventListener('keydown', escProductListener);
-            document.addEventListener('mousedown', clickOutsideProductListener);
+            document.addEventListener('mousedown', clickOutsideShowListener);
         }
 
-        function closeProductModal() {
+        function closeModal() {
             destroyProductSlider({
                 restorePlaceholder: false
             });
             pendingProductModalSlug = null;
             currentProductModalSlug = null;
-            const $content = $('#modalShowProduct .modal-content');
+            const $content = $('#modalShow .modal-content');
             $content.removeClass('animate-in').addClass('animate-out');
             setTimeout(() => {
-                $('#modalShowProduct').addClass('hidden');
+                $('#modalShow').addClass('hidden');
                 setLoadingProductFields();
                 document.removeEventListener('keydown', escProductListener);
-                document.removeEventListener('mousedown', clickOutsideProductListener);
+                document.removeEventListener('mousedown', clickOutsideShowListener);
             }, 250);
         }
 
@@ -408,8 +408,7 @@
 
             $('#product-price').html(`
 				<span class="badge badge-success-light">
-					<i class="ri-currency-line"></i>
-					${Number(data.price ?? 0).toFixed(2)}
+					S/. ${Number(data.price ?? 0).toFixed(2)}
 				</span>
 			`);
 
@@ -510,7 +509,7 @@
                 });
 
             $('#modalProductEditBtn').attr('href', `/admin/products/${data.slug}/edit`);
-            $('#modalProductDeleteForm').attr('action', `/admin/products/${data.slug}`);
+            $('#modalDeleteForm').attr('action', `/admin/products/${data.slug}`);
             pendingProductModalSlug = null;
         }
 
@@ -547,27 +546,27 @@
             loadProductModal(slug);
         });
 
-        $('#closeProductModal, #cancelProductModal').on('click', closeProductModal);
+        $('#cancelButton, #closeModal').on('click', closeModal);
 
         function escProductListener(event) {
             if (event.key === 'Escape') {
-                closeProductModal();
+                closeModal();
             }
         }
 
-        function clickOutsideProductListener(event) {
-            const overlay = document.getElementById('modalShowProduct');
-            const content = document.querySelector('#modalShowProduct .modal-content');
+        function clickOutsideShowListener(event) {
+            const overlay = document.getElementById('modalShow');
+            const content = document.querySelector('#modalShow .modal-content');
             if (event.target === overlay && !content.contains(event.target)) {
-                closeProductModal();
+                closeModal();
             }
         }
 
-        $(document).on('submit', '#modalProductDeleteForm', function(event) {
+        $(document).on('submit', '#modalDeleteForm', function(event) {
             event.preventDefault();
             const form = this;
 
-            document.removeEventListener('mousedown', clickOutsideProductListener);
+            document.removeEventListener('click', clickOutsideShowListener);
 
             window.showConfirm({
                 type: 'danger',
@@ -578,13 +577,16 @@
                 confirmText: 'Sí, eliminar',
                 cancelText: 'No, cancelar',
                 onConfirm: function() {
-                    document.addEventListener('mousedown', clickOutsideProductListener);
+                    document.addEventListener('click', clickOutsideShowListener);
                     form.submit();
                 },
                 onCancel: function() {
-                    document.addEventListener('mousedown', clickOutsideProductListener);
+                    restoreOutsideClick();
                 }
             });
         });
+        function restoreOutsideClick() {
+            document.addEventListener('click', clickOutsidePostListener);
+        }
     </script>
 @endpush

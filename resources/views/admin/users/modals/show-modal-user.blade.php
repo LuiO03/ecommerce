@@ -218,7 +218,7 @@
 
                         img.onerror = function() {
                             $('#user-image').html(`
-                            <div class="modal-img-placeholder">
+                            <div class="modal-foto-placeholder">
                                 <i class="ri-file-close-fill"></i> Imagen no disponible
                             </div>
                         `);
@@ -230,7 +230,7 @@
 
                     } else {
                         $('#user-image').html(`
-                        <div class="modal-img-placeholder">
+                        <div class="modal-foto-placeholder">
                             <i class="ri-image-add-fill"></i> Sin imagen
                         </div>
                     `);

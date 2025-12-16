@@ -285,9 +285,19 @@
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-material);
 }
-.modal-img-placeholder {
-    width: 100%;
+
+.modal-img-placeholder{
     min-height: 220px;
+    border-radius: var(--radius-card);
+}
+
+.modal-foto-placeholder{
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+}
+
+.modal-img-placeholder, .modal-foto-placeholder {
+    width: 100%;
     background: var(--color-card-bg);
     font-family: var(--font-secondary);
     color: var(--color-text);
@@ -299,12 +309,11 @@
     font-size: var(--font-size-h5);
     font-weight: bold;
     border: 5px dashed var(--color-border);
-    border-radius: var(--radius-card);
-    gap: 10px;
+    gap: 5px;
     padding: 0 16px;
 }
 
-.modal-img-placeholder i {
+.modal-img-placeholder i, .modal-foto-placeholder i {
     font-size: 48px;
     color: var(--color-text-soft);
 }
