@@ -26,7 +26,7 @@
             <div class="input-group">
                 <label for="value" class="label-form">Nombre</label>
                 <div class="input-icon-container option-feature-value">
-                    <i class="ri-price-tag-3-line input-icon"></i>
+                    <i class="ri-shape-2-line input-icon"></i>
                     <input type="text"
                            class="input-form"
                            name="features[{{ $index }}][value]"

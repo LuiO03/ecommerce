@@ -18,20 +18,20 @@ class OptionSeeder extends Seeder
                 'type' => 1,
                 'features' => [
                     [
-                        'value' => 's',
+                        'value' => 'S',
                         'description' => 'Talla pequeña'
                     ]
                     ,
                     [
-                        'value' => 'm',
+                        'value' => 'M',
                         'description' => 'Talla mediana'
                     ],
                     [
-                        'value' => 'l',
+                        'value' => 'L',
                         'description' => 'Talla grande'
                     ],
                     [
-                        'value' => 'xl',
+                        'value' => 'XL',
                         'description' => 'Talla extra grande'
                     ],
                 ]
@@ -63,15 +63,15 @@ class OptionSeeder extends Seeder
                 'type' => 3,
                 'features' => [
                     [
-                        'value' => 'masculino',
+                        'value' => 'Masculino',
                         'description' => 'Ropa para hombres'
                     ],
                     [
-                        'value' => 'femenino',
+                        'value' => 'Femenino',
                         'description' => 'Ropa para mujeres'
                     ],
                     [
-                        'value' => 'unisex',
+                        'value' => 'Unisex',
                         'description' => 'Ropa para todos'
                     ],
                 ]

@@ -4,8 +4,11 @@
 
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-warning"><i class="ri-equalizer-line"></i></div>
-        Editar opción
+        <div class="page-icon card-warning"><i class="ri-edit-circle-line"></i></div>
+        <div class="page-edit-title">
+            <span class="page-subtitle">Editar opción</span>
+            {{ $option->name }}
+        </div>
     </x-slot>
     <x-slot name="action">
         <a href="{{ route('admin.options.index') }}" class="boton boton-secondary">

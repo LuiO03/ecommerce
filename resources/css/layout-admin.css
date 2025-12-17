@@ -503,7 +503,7 @@
 .page-edit-title{
     display: flex;
     flex-direction: column;
-    gap: 0px;
+    gap: 5px;
     line-height: 1;
 }
 

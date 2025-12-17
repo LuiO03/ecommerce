@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-warning"><i class="ri-key-2-fill"></i></div>
@@ -18,11 +22,26 @@
     <div class="actions-container">
 
         <!-- Buscador + botón global -->
-        <div class="flex items-center gap-4 mb-2">
-            <div class="module-search">
+        <div class="actions-bar">
+            <div class="module-search flex-1">
                 <i class="ri-search-eye-line"></i>
                 <input type="text" id="searchPerm" placeholder="Buscar módulo o acción..." autocomplete="off">
-                <i class="ri-close-circle-fill" id="clearSearchPerm"></i>
+                <button type="button" class="module-search-clear" id="clearSearchPerm" aria-label="Limpiar búsqueda"
+                    hidden>
+                    <i class="ri-close-circle-fill"></i>
+                </button>
+            </div>
+
+            <div class="tabla-select-wrapper" title="Ordenar permisos">
+                <div class="selector">
+                    <select id="permissionSort">
+                        <option value="created_desc">Más recientes</option>
+                        <option value="created_asc">Más antiguos</option>
+                        <option value="alpha_asc">A - Z</option>
+                        <option value="alpha_desc">Z - A</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
+                </div>
             </div>
 
             <button type="button" class="boton boton-accent" id="toggleAllBtn">
@@ -31,7 +50,8 @@
             </button>
         </div>
 
-        <form method="POST" action="{{ route('admin.roles.update-permissions', $role) }}" autocomplete="off" class="form-container">
+        <form method="POST" action="{{ route('admin.roles.update-permissions', $role) }}" autocomplete="off"
+            class="form-container" id="permissionForm">
             @csrf
 
             <div class="permissions-container">
@@ -40,7 +60,8 @@
                         <div class="card-header flex items-center justify-between mb-2">
                             <span class="card-title">{{ ucfirst($module) }}</span>
 
-                            <button type="button" class="boton boton-danger select-all-btn" data-module="{{ $module }}">
+                            <button type="button" class="boton boton-danger select-all-btn"
+                                data-module="{{ $module }}">
                                 <span class="boton-icon"><i class="ri-checkbox-multiple-fill"></i></span>
                                 <span class="boton-text select-all-text">Selecc. todo</span>
                             </button>
@@ -49,15 +70,18 @@
                         <div class="card-body">
                             <ul class="p-0">
                                 @foreach ($perms as $perm)
-                                    <li class="perm-row perm-row-custom"
-                                        data-module="{{ $module }}"
-                                        data-action="{{ explode('.', $perm['action'])[1] ?? $perm['action'] }}
-"
-                                    >
+                                    @php
+                                        $actionParts = explode('.', $perm['action']);
+                                        $actionLabel = $actionParts[1] ?? $perm['action'];
+                                        $createdTs = $perm['created_at'] ?? 0;
+                                    @endphp
+                                    <li class="perm-row perm-row-custom" data-module="{{ $module }}"
+                                        data-action="{{ $actionLabel }}" data-label="{{ $actionLabel }}"
+                                        data-created="{{ $createdTs }}">
                                         <div class="perm-info">
                                             <span class="permissions-name perm-highlight"
                                                 title="{{ $perm['description'] ?? '' }}">
-                                                {{ explode('.', $perm['action'])[1] ?? $perm['action'] }}
+                                                {{ $actionLabel }}
 
                                             </span>
 
@@ -70,9 +94,7 @@
 
                                         <label class="switch-tabla perm-toggle"
                                             title="{{ $perm['description'] ?? '' }}">
-                                            <input type="checkbox"
-                                                name="permissions[]"
-                                                value="{{ $perm['id'] }}"
+                                            <input type="checkbox" name="permissions[]" value="{{ $perm['id'] }}"
                                                 class="toggle-estado perm-checkbox"
                                                 {{ $perm['assigned'] ? 'checked' : '' }}>
                                             <span class="slider"></span>
@@ -105,106 +127,174 @@
 
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
 
-            const searchInput = document.getElementById('searchPerm');
-            const clearBtn = document.getElementById('clearSearchPerm');
+                const searchInput = document.getElementById('searchPerm');
+                const clearBtn = document.getElementById('clearSearchPerm');
+                const sortSelect = document.getElementById('permissionSort');
 
-            // --- Buscador dinámico ---
-            searchInput.addEventListener('input', function() {
-                const val = this.value.toLowerCase();
+                function handleSearch() {
+                    if (!searchInput) return;
 
-                document.querySelectorAll('.perm-row').forEach(row => {
-                    const mod = row.dataset.module.toLowerCase();
-                    const act = row.dataset.action.toLowerCase();
+                    const val = (searchInput.value || '').toLowerCase();
+                    const rows = document.querySelectorAll('.perm-row');
 
-                    let match = mod.includes(val) || act.includes(val);
+                    rows.forEach(row => {
+                        const mod = (row.dataset.module || '').toLowerCase();
+                        const act = (row.dataset.action || '').toLowerCase();
+                        const match = !val || mod.includes(val) || act.includes(val);
 
-                    // Resaltar coincidencias
-                    row.querySelectorAll('.perm-highlight').forEach(el => {
-                        const text = el.textContent;
-                        if (val && text.toLowerCase().includes(val)) {
-                            el.innerHTML = text.replace(new RegExp(`(${val})`, 'gi'), '<mark class="perm-mark">$1</mark>');
-                        } else {
-                            el.innerHTML = text;
-                        }
+                        row.querySelectorAll('.perm-highlight').forEach(el => {
+                            const text = el.textContent;
+                            if (val && text.toLowerCase().includes(val)) {
+                                el.innerHTML = text.replace(new RegExp(`(${val})`, 'gi'),
+                                    '<mark class="perm-mark">$1</mark>');
+                            } else {
+                                el.innerHTML = text;
+                            }
+                        });
+
+                        row.style.display = match ? '' : 'none';
                     });
 
-                    row.style.display = match ? '' : 'none';
-                });
-            });
+                    if (clearBtn) {
+                        clearBtn.hidden = !val;
+                    }
+                }
 
-            clearBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                searchInput.dispatchEvent(new Event('input'));
-            });
+                function compareRows(a, b, mode) {
+                    const labelA = (a.dataset.label || '').toLowerCase();
+                    const labelB = (b.dataset.label || '').toLowerCase();
+                    const createdA = parseInt(a.dataset.created || '0', 10);
+                    const createdB = parseInt(b.dataset.created || '0', 10);
 
-            // --- Global toggle ---
-            const toggleAllBtn = document.getElementById('toggleAllBtn');
-            const toggleAllText = document.getElementById('toggleAllText');
+                    switch (mode) {
+                        case 'alpha_asc':
+                            return labelA.localeCompare(labelB);
+                        case 'alpha_desc':
+                            return labelB.localeCompare(labelA);
+                        case 'created_asc':
+                            if (createdA === createdB) {
+                                return labelA.localeCompare(labelB);
+                            }
+                            return createdA - createdB;
+                        case 'created_desc':
+                        default:
+                            if (createdA === createdB) {
+                                return labelA.localeCompare(labelB);
+                            }
+                            return createdB - createdA;
+                    }
+                }
 
-            toggleAllBtn.addEventListener('click', function() {
-                const boxes = document.querySelectorAll('.perm-checkbox');
-                const allChecked = [...boxes].every(cb => cb.checked);
+                function sortPermissions(mode) {
+                    const lists = document.querySelectorAll('.permissions-card .card-body ul');
+                    lists.forEach(list => {
+                        const items = Array.from(list.querySelectorAll('.perm-row'));
+                        items.sort((a, b) => compareRows(a, b, mode));
+                        items.forEach(item => list.appendChild(item));
+                    });
+                }
 
-                boxes.forEach(cb => cb.checked = !allChecked);
+                if (searchInput) {
+                    searchInput.addEventListener('input', handleSearch);
+                }
 
-                document.querySelectorAll('.permissions-card').forEach(card =>
-                    card.classList.add('card-modified')
-                );
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => {
+                        if (!searchInput) return;
+                        searchInput.value = '';
+                        handleSearch();
+                        searchInput.focus();
+                        clearBtn.hidden = true;
+                    });
+                }
 
-                updateAllBtnText();
-                updateModuleBtnText();
-            });
+                if (sortSelect) {
+                    sortSelect.addEventListener('change', () => {
+                        sortPermissions(sortSelect.value);
+                        handleSearch();
+                    });
+                }
 
-            function updateAllBtnText() {
-                const boxes = document.querySelectorAll('.perm-checkbox');
-                const allChecked = [...boxes].every(cb => cb.checked);
-                toggleAllText.textContent = allChecked ? 'Desmarcar todo' : 'Marcar todo';
-            }
+                // --- Global toggle ---
+                const toggleAllBtn = document.getElementById('toggleAllBtn');
+                const toggleAllText = document.getElementById('toggleAllText');
 
-            // --- Selección por módulo ---
-            document.querySelectorAll('.select-all-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const module = btn.dataset.module;
-                    const boxes = document.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
+                toggleAllBtn.addEventListener('click', function() {
+                    const boxes = document.querySelectorAll('.perm-checkbox');
                     const allChecked = [...boxes].every(cb => cb.checked);
 
                     boxes.forEach(cb => cb.checked = !allChecked);
 
-                    const card = btn.closest('.permissions-card');
-                    if (card) card.classList.add('card-modified');
+                    document.querySelectorAll('.permissions-card').forEach(card =>
+                        card.classList.add('card-modified')
+                    );
 
                     updateAllBtnText();
                     updateModuleBtnText();
                 });
-            });
 
-            function updateModuleBtnText() {
-                document.querySelectorAll('.permissions-card').forEach(card => {
-                    const module = card.querySelector('.select-all-btn').dataset.module;
-                    const boxes = card.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
-                    const txt = card.querySelector('.select-all-text');
+                function updateAllBtnText() {
+                    const boxes = document.querySelectorAll('.perm-checkbox');
+                    const allChecked = [...boxes].every(cb => cb.checked);
+                    toggleAllText.textContent = allChecked ? 'Desmarcar todo' : 'Marcar todo';
+                }
 
-                    const allChecked = [...boxes].length > 0 && [...boxes].every(cb => cb.checked);
+                // --- Selección por módulo ---
+                document.querySelectorAll('.select-all-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const module = btn.dataset.module;
+                        const boxes = document.querySelectorAll(
+                            `.perm-row[data-module="${module}"] .perm-checkbox`);
+                        const allChecked = [...boxes].every(cb => cb.checked);
 
-                    txt.textContent = allChecked ? 'Deselecc. todo' : 'Selecc. todo';
+                        boxes.forEach(cb => cb.checked = !allChecked);
+
+                        const card = btn.closest('.permissions-card');
+                        if (card) card.classList.add('card-modified');
+
+                        updateAllBtnText();
+                        updateModuleBtnText();
+                    });
                 });
-            }
 
-            document.querySelectorAll('.perm-checkbox').forEach(cb => {
-                cb.addEventListener('change', function() {
-                    const card = cb.closest('.permissions-card');
-                    card.classList.add('card-modified');
-                    updateAllBtnText();
-                    updateModuleBtnText();
+                function updateModuleBtnText() {
+                    document.querySelectorAll('.permissions-card').forEach(card => {
+                        const module = card.querySelector('.select-all-btn').dataset.module;
+                        const boxes = card.querySelectorAll(
+                        `.perm-row[data-module="${module}"] .perm-checkbox`);
+                        const txt = card.querySelector('.select-all-text');
+
+                        const allChecked = [...boxes].length > 0 && [...boxes].every(cb => cb.checked);
+
+                        txt.textContent = allChecked ? 'Deselecc. todo' : 'Selecc. todo';
+                    });
+                }
+
+                document.querySelectorAll('.perm-checkbox').forEach(cb => {
+                    cb.addEventListener('change', function() {
+                        const card = cb.closest('.permissions-card');
+                        card.classList.add('card-modified');
+                        updateAllBtnText();
+                        updateModuleBtnText();
+                    });
+                });
+
+                updateModuleBtnText();
+                updateAllBtnText();
+                if (sortSelect) {
+                    sortPermissions(sortSelect.value);
+                }
+                handleSearch();
+
+                const submitLoader = initSubmitLoader({
+                    formId: 'permissionForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Actualizando...'
                 });
             });
-
-            updateModuleBtnText();
-            updateAllBtnText();
-        });
-    </script>
+        </script>
     @endpush
 </x-admin-layout>

@@ -228,7 +228,8 @@ class RoleController extends Controller
                 'name' => $permission->name,
                 'action' => $permission->name, // ahora name completo es la acción
                 'description' => $permission->description,
-                'assigned' => $role->permissions->contains('id', $permission->id)
+                'created_at' => optional($permission->created_at)->timestamp ?? 0,
+                'assigned' => $role->permissions->contains('id', $permission->id),
             ];
         }
 

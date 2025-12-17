@@ -109,11 +109,6 @@
     font-size: var(--font-size-p);
 }
 
-.card-header{
-    display: flex;
-    flex-direction: column;
-}
-
 .card-title{
     font-weight: bolder;
     font-family: var(--font-secondary);
