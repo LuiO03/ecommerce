@@ -1,9 +1,12 @@
 <section id="companySettingsSectionGeneral" class="settings-section is-active" data-section="general" role="tabpanel"
     aria-labelledby="tab-general">
 
-    <span class="card-title">
-        Información general
-    </span>
+    <div class="card-header">
+        <span class="card-title">Información general</span>
+        <p class="card-description">
+            Configura la información básica de tu empresa que se mostrará en el sitio web y en los documentos oficiales.
+        </p>
+    </div>
 
     <div class="form-row-fit">
         <div class="input-group">

@@ -70,6 +70,23 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'reportes.index', 'description' => 'Puede ver reportes del sistema'],
                 ['name' => 'reportes.export', 'description' => 'Puede exportar reportes (PDF, Excel)'],
             ],
+
+            // --- Posts ---
+            'posts' => [
+                ['name' => 'posts.index', 'description' => 'Puede ver la lista de posts'],
+                ['name' => 'posts.create', 'description' => 'Puede crear nuevos posts'],
+                ['name' => 'posts.edit', 'description' => 'Puede editar posts existentes'],
+                ['name' => 'posts.delete', 'description' => 'Puede eliminar posts del sistema'],
+                ['name' => 'posts.review', 'description' => 'Puede revisar posts pendientes'],
+            ],
+
+            // --- Opciones ---
+            'opciones' => [
+                ['name' => 'opciones.index', 'description' => 'Puede ver la lista de opciones'],
+                ['name' => 'opciones.create', 'description' => 'Puede crear nuevas opciones'],
+                ['name' => 'opciones.edit', 'description' => 'Puede editar opciones existentes'],
+                ['name' => 'opciones.delete', 'description' => 'Puede eliminar opciones del sistema'],
+            ],
         ];
 
         // === CREAR PERMISOS ===

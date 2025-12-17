@@ -8,7 +8,10 @@
     <div class="form-columns-row">
 
         <div class="form-profile-column">
-            <span class="card-title">Información Personal</span>
+            <div class="card-header">
+                <span class="card-title">Información Personal</span>
+                <p class="card-description">Actualiza la información de tu perfil y dirección de contacto.</p>
+            </div>
             <!-- === Nombre === -->
             <div class="input-group">
                 <label for="name" class="label-form">
@@ -50,7 +53,10 @@
         </div>
 
         <div class="form-profile-column">
-            <span class="card-title">Información Adicional</span>
+            <div class="card-header">
+                <span class="card-title">Información Adicional</span>
+                <p class="card-description">Proporciona información adicional para tu perfil.</p>
+            </div>
             <!-- === Dirección === -->
             <div class="input-group">
                 <label for="address" class="label-form">Dirección</label>
@@ -93,7 +99,8 @@
             const saveBackgroundBtn = document.getElementById('saveBackgroundBtn');
             document.querySelectorAll('.gallery-option').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove('selected'));
+                    document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove(
+                        'selected'));
                     this.classList.add('selected');
                     const bgInput = document.getElementById('background_style');
                     bgInput.value = this.dataset.style;
@@ -128,7 +135,10 @@
     @method('PUT')
     <input type="hidden" name="only_background" value="1">
     <div class="form-profile-column">
-        <span class="card-title">Fondo de perfil</span>
+        <div class="card-header">
+            <span class="card-title">Fondo de perfil</span>
+            <p class="card-description">Elige un diseño para el fondo de tu perfil.</p>
+        </div>
         <label for="background_style" class="label-form">Elige tu fondo</label>
         <div class="background-gallery">
             @php

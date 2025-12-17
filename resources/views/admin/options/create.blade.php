@@ -4,7 +4,7 @@
 
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-primary"><i class="ri-slideshow-3-line"></i></div>
+        <div class="page-icon card-success"><i class="ri-slideshow-3-line"></i></div>
         Nueva opción
     </x-slot>
     <x-slot name="action">
@@ -16,6 +16,7 @@
 
     <form action="{{ route('admin.options.store') }}" method="POST" class="form-container" id="optionForm" autocomplete="off">
         @csrf
+
         @include('admin.options.partials.form', ['option' => null, 'typeLabels' => $typeLabels])
 
         <div class="form-footer">

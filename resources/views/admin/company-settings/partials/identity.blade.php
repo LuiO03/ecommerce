@@ -21,8 +21,11 @@
 
 <section id="companySettingsSectionIdentity" class="settings-section" data-section="identity" role="tabpanel"
     aria-labelledby="tab-identity">
-    <div class="card-title">
-        Identidad visual
+    <div class="card-header">
+        <span class="card-title">Identidad visual</span>
+        <p class="card-description">
+            Configura los colores y el logotipo de tu empresa para personalizar la apariencia del sitio web y los documentos oficiales.
+        </p>
     </div>
     <div class="form-row-fit">
         <div class="input-group">

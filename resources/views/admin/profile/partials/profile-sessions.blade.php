@@ -1,7 +1,10 @@
 
 
 <div class="form-profile-column">
-    <span class="card-title">Dispositivos y sesiones activas</span>
+    <div class="card-header">
+        <span class="card-title">Dispositivos y sesiones activas</span>
+        <p class="card-description">Administra tus dispositivos y sesiones activas para mantener la seguridad de tu cuenta.</p>
+    </div>
     @if (isset($sessions) && count($sessions) > 0)
         <ul class="sessions-list">
             @foreach ($sessions as $session)
@@ -42,11 +45,11 @@
                             </div>
                             <div class="sessions-meta">
                                 <span class="sessions-ip">
-                                    <i class="ri-map-pin-line"></i> 
+                                    <i class="ri-map-pin-line"></i>
                                     {{ $session->ip_address ?? 'IP desconocida' }}
                                 </span>
                                 <span class="sessions-last-active">
-                                    <i class="ri-time-line"></i> 
+                                    <i class="ri-time-line"></i>
                                     {{ $session->last_activity ? \Carbon\Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '' }}
                                 </span>
                             </div>

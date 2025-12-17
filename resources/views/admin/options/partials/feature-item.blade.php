@@ -16,22 +16,25 @@
             <i class="ri-shape-2-line"></i>
             Valor #<span data-role="feature-number">{{ $index + 1 }}</span>
         </span>
-        <button type="button" class="option-feature-remove" data-action="remove-feature" title="Eliminar valor">
-            <i class="ri-delete-bin-6-line"></i>
+        <button type="button" class="boton-sm boton-danger" data-action="remove-feature" title="Eliminar valor">
+            <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
         </button>
     </div>
 
-    <div class="option-feature-card-body">
+    <div class="form-row-fit">
         <div class="option-feature-value-row">
-            <div class="input-icon-container option-feature-value">
-                <i class="ri-price-tag-3-line input-icon"></i>
-                <input type="text"
-                       class="input-form"
-                       name="features[{{ $index }}][value]"
-                       placeholder="Valor (obligatorio)"
-                       value="{{ $value }}"
-                       data-role="feature-value"
-                       required>
+            <div class="input-group">
+                <label for="value" class="label-form">Nombre</label>
+                <div class="input-icon-container option-feature-value">
+                    <i class="ri-price-tag-3-line input-icon"></i>
+                    <input type="text"
+                           class="input-form"
+                           name="features[{{ $index }}][value]"
+                           placeholder="Valor (obligatorio)"
+                           value="{{ $value }}"
+                           data-role="feature-value"
+                           required>
+                </div>
             </div>
             <div class="option-feature-color" data-role="color-wrapper">
                 <input type="color" class="option-feature-color-picker" value="{{ $colorHex }}" data-role="color-input"
@@ -39,13 +42,16 @@
                 <span class="option-feature-color-hex" data-role="color-hex">{{ $colorHex }}</span>
             </div>
         </div>
-        <div class="input-icon-container option-feature-description">
-            <textarea class="textarea-form"
-                      name="features[{{ $index }}][description]"
-                      rows="2"
-                      placeholder="Descripción opcional"
-                      data-role="feature-description">{{ $description }}</textarea>
-            <i class="ri-align-left input-icon"></i>
+        <div class="input-group">
+            <label for="description" class="label-form label-textarea">Descripción</label>
+            <div class="input-icon-container option-feature-description">
+                <textarea class="textarea-form"
+                          name="features[{{ $index }}][description]"
+                          rows="2"
+                          placeholder="Descripción opcional"
+                          data-role="feature-description">{{ $description }}</textarea>
+                <i class="ri-align-left input-icon"></i>
+            </div>
         </div>
     </div>
 </div>
