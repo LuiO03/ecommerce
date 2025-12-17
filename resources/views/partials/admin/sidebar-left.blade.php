@@ -138,11 +138,11 @@
             </li>
 
             <li>
-                <a href="{{ route('admin.categories.hierarchy') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.categories.hierarchy') ? 'active' : '' }}"
-                    data-tooltip="Gestor Jerárquico">
-                    <i aria-busy=""class="ri-node-tree sidebar-icon"></i>
-                    <span>Gestor Jerárquico</span>
+                <a href="{{ route('admin.options.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.options.*') ? 'active' : '' }}"
+                    data-tooltip="Opciones">
+                    <i class="ri-settings-3-line sidebar-icon"></i>
+                    <span>Opciones</span>
                 </a>
             </li>
 

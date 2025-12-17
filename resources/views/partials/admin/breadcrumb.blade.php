@@ -14,6 +14,7 @@
         'roles' => ['label' => 'Roles', 'icon' => 'ri-shield-user-fill'],
         'posts' => ['label' => 'Posts', 'icon' => 'ri-article-fill'],
         'brands' => ['label' => 'Marcas', 'icon' => 'ri-store-2-fill'],
+        'options' => ['label' => 'Opciones', 'icon' => 'ri-settings-3-fill'],
         'company-settings' => ['label' => 'Empresa', 'icon' => 'ri-building-4-fill'],
     ];
 

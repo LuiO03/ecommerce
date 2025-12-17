@@ -168,6 +168,9 @@
         }
 
         function destroyPostSlider({ restorePlaceholder = true } = {}) {
+            if (postSliderState?.cleanup) {
+                postSliderState.cleanup();
+            }
             if (postSliderState?.intervalId) {
                 clearInterval(postSliderState.intervalId);
             }
@@ -183,8 +186,8 @@
             $slider.addClass('hidden');
             $track.empty();
             $thumbs.empty().addClass('hidden');
-            $prev.off('.postSlider').addClass('hidden');
-            $next.off('.postSlider').addClass('hidden');
+            $prev.off('.postSlider').addClass('hidden').css('top', '');
+            $next.off('.postSlider').addClass('hidden').css('top', '');
             $thumbs.off('.postSlider');
 
             if (restorePlaceholder) {
@@ -241,6 +244,7 @@
             const $slider = $('#post-image-slider');
             const $placeholder = $('#post-image-placeholder');
             const $track = $('#post-slider-track');
+            const $main = $slider.find('.slider-main');
             const $thumbs = $('#post-slider-thumbs');
             const $prev = $('#post-slider-prev');
             const $next = $('#post-slider-next');
@@ -280,11 +284,55 @@
                 $track,
                 $thumbs,
                 $prev,
-                $next
+                $next,
+                $main,
+                minHeight: parseFloat($main.css('min-height')) || 0
             };
 
             const state = postSliderState;
             state.$track.css('transform', 'translateX(0%)');
+
+            state.syncLayout = () => {
+                window.requestAnimationFrame(() => {
+                    if (postSliderState !== state) {
+                        return;
+                    }
+
+                    const mainNode = state.$main.get(0);
+                    if (!mainNode) {
+                        return;
+                    }
+
+                    const activeImg = state.$track.find('.slider-item.active img').get(0);
+                    if (!activeImg) {
+                        state.$main.css('height', '');
+                        state.$prev.css('top', '');
+                        state.$next.css('top', '');
+                        return;
+                    }
+
+                    const imgRect = activeImg.getBoundingClientRect();
+                    const mainRect = mainNode.getBoundingClientRect();
+
+                    const renderedHeight = activeImg.offsetHeight || imgRect.height || 0;
+                    if (renderedHeight) {
+                        const targetHeight = Math.max(renderedHeight, state.minHeight);
+                        state.$main.css('height', `${targetHeight}px`);
+                    } else {
+                        state.$main.css('height', '');
+                    }
+
+                    if (!imgRect.height) {
+                        state.$prev.css('top', '');
+                        state.$next.css('top', '');
+                        return;
+                    }
+
+                    const offsetY = imgRect.top - mainRect.top + (imgRect.height / 2);
+                    state.$prev.css('top', `${offsetY}px`);
+                    state.$next.css('top', `${offsetY}px`);
+                });
+            };
 
             state.updateActive = (index) => {
                 state.currentIndex = index;
@@ -301,6 +349,8 @@
                         $(this).toggleClass('active-thumb', thumbIndex === index);
                     });
                 }
+
+                state.syncLayout();
             };
 
             state.stopAuto = () => {
@@ -320,6 +370,26 @@
                     state.updateActive(nextIndex);
                 }, postSliderAutoDelay);
             };
+
+            const handleWindowResize = () => state.syncLayout();
+            state.cleanup = () => {
+                state.stopAuto();
+                state.$track.find('.slider-item img').off('.postSlider');
+                $(window).off('resize.postSlider', handleWindowResize);
+                state.$main.css('height', '');
+                state.$prev.css('top', '');
+                state.$next.css('top', '');
+            };
+
+            const repositionAfterLoad = () => state.syncLayout();
+            state.$track.find('.slider-item img').each(function () {
+                if (this.complete && this.naturalHeight) {
+                    return;
+                }
+                $(this).on('load.postSlider error.postSlider', repositionAfterLoad);
+            });
+
+            $(window).on('resize.postSlider', handleWindowResize);
 
             state.updateActive(0);
 
@@ -611,7 +681,7 @@
             event.preventDefault();
             const form = this;
 
-            document.removeEventListener('mousedown', clickOutsidePostListener);
+            document.removeEventListener('click', clickOutsidePostListener);
 
             window.showConfirm({
                 type: 'danger',
@@ -621,7 +691,7 @@
                 confirmText: 'Sí, eliminar',
                 cancelText: 'No, cancelar',
                 onConfirm() {
-                    document.addEventListener('mousedown', clickOutsidePostListener);
+                    document.addEventListener('click', clickOutsidePostListener);
                     form.submit();
                 },
                 onCancel() {
@@ -631,7 +701,7 @@
         });
 
         function restoreOutsideClick() {
-            document.addEventListener('mousedown', clickOutsidePostListener);
+            document.addEventListener('click', clickOutsidePostListener);
         }
     </script>
 @endpush

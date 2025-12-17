@@ -48,7 +48,7 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-row">
+        <div class="form-row-fill">
             <div class="input-group">
                 <label for="category_id" class="label-form">
                     Categoría
@@ -114,7 +114,7 @@
             </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-row-fit">
             <div class="input-group">
                 <label for="price" class="label-form">
                     Precio (S/)

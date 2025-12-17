@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CompanySettingController;
+use App\Http\Controllers\Admin\OptionController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
@@ -55,6 +56,16 @@ Route::controller(ProfileController::class)->group(function () {
 Route::controller(CompanySettingController::class)->group(function () {
     Route::get('/company-settings', 'edit')->name('admin.company-settings.edit');
     Route::put('/company-settings', 'update')->name('admin.company-settings.update');
+});
+
+// OPTIONS & FEATURES
+Route::controller(OptionController::class)->group(function () {
+    Route::get('/options', 'index')->name('admin.options.index');
+    Route::get('/options/create', 'create')->name('admin.options.create');
+    Route::post('/options', 'store')->name('admin.options.store');
+    Route::get('/options/{option}/edit', 'edit')->name('admin.options.edit');
+    Route::put('/options/{option}', 'update')->name('admin.options.update');
+    Route::delete('/options/{option}', 'destroy')->name('admin.options.destroy');
 });
 
 // FAMILIES

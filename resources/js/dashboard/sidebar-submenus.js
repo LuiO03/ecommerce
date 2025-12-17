@@ -1,33 +1,112 @@
+const SUBMENU_STORAGE_KEY = 'admin.sidebar.openSubmenu';
 
+function closeSubmenu(container) {
+    if (!container) {
+        return;
+    }
+    container.classList.remove('open');
+    const trigger = container.previousElementSibling;
+    if (trigger && trigger.classList.contains('submenu-btn')) {
+        trigger.classList.remove('rounded-top');
+        const arrow = trigger.querySelector('.submenu-arrow');
+        if (arrow) {
+            arrow.classList.remove('rotate-180');
+        }
+    }
+}
 
-const submenuButtons = document.querySelectorAll(".submenu-btn");
+function openSubmenu(container) {
+    if (!container) {
+        return;
+    }
+    container.classList.add('open');
+    const trigger = container.previousElementSibling;
+    if (trigger && trigger.classList.contains('submenu-btn')) {
+        trigger.classList.add('rounded-top');
+        const arrow = trigger.querySelector('.submenu-arrow');
+        if (arrow) {
+            arrow.classList.add('rotate-180');
+        }
+    }
+}
+
+function rememberOpenSubmenu(id) {
+    try {
+        if (id) {
+            localStorage.setItem(SUBMENU_STORAGE_KEY, id);
+        } else {
+            localStorage.removeItem(SUBMENU_STORAGE_KEY);
+        }
+    } catch (error) {
+        console.warn('No se pudo guardar el submenú en localStorage:', error);
+    }
+}
+
+const submenuButtons = document.querySelectorAll('.submenu-btn');
+
 submenuButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener('click', () => {
         const submenu = btn.nextElementSibling;
-        const arrow = btn.querySelector(".submenu-arrow");
+        if (!submenu || !submenu.classList.contains('sidebar-submenu')) {
+            return;
+        }
 
-        // Cierra los demás submenús
-        document.querySelectorAll(".sidebar-submenu").forEach((otherMenu) => {
-            if (otherMenu !== submenu && otherMenu.classList.contains("open")) {
-                otherMenu.classList.remove("open");
-                const otherArrow =
-                    otherMenu.previousElementSibling.querySelector(
-                        ".submenu-arrow"
-                    );
-                otherArrow.classList.remove("rotate-180");
+        const isOpening = !submenu.classList.contains('open');
 
-                // Quitar border-radius al botón cerrado
-                otherArrow
-                    .closest(".submenu-btn")
-                    .classList.remove("rounded-top");
+        // Cierra submenús abiertos previamente
+        document.querySelectorAll('.sidebar-submenu.open').forEach((otherMenu) => {
+            if (otherMenu !== submenu) {
+                closeSubmenu(otherMenu);
             }
         });
 
-        // Alternar estado actual
-        submenu.classList.toggle("open");
-        arrow.classList.toggle("rotate-180");
-
-        // Añadir o quitar clase de border-radius al botón
-        btn.classList.toggle("rounded-top");
+        if (isOpening) {
+            openSubmenu(submenu);
+            rememberOpenSubmenu(submenu.id || '');
+            // Scroll suave hasta el botón
+            btn.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        } else {
+            closeSubmenu(submenu);
+            rememberOpenSubmenu(null);
+        }
     });
+});
+
+// Restaurar submenú abierto y desplazar hacia el elemento activo al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    let targetToFocus = null;
+
+    try {
+        const savedSubmenuId = localStorage.getItem(SUBMENU_STORAGE_KEY);
+        if (savedSubmenuId) {
+            const savedSubmenu = document.getElementById(savedSubmenuId);
+            if (savedSubmenu) {
+                // Cierra para evitar animaciones conflictivas
+                document.querySelectorAll('.sidebar-submenu.open').forEach(closeSubmenu);
+                openSubmenu(savedSubmenu);
+            }
+        }
+    } catch (error) {
+        console.warn('No se pudo restaurar el submenú desde localStorage:', error);
+    }
+
+    // Encontrar elemento activo más prioritario (subenlace > enlace principal)
+    const activeSubLink = document.querySelector('.sidebar-sublink.active');
+    const activeLink = document.querySelector('.sidebar-link.active');
+
+    if (activeSubLink) {
+        targetToFocus = activeSubLink;
+        const parentSubmenu = activeSubLink.closest('.sidebar-submenu');
+        if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
+            openSubmenu(parentSubmenu);
+        }
+    } else if (activeLink) {
+        targetToFocus = activeLink;
+    }
+
+    if (targetToFocus) {
+        setTimeout(() => {
+            targetToFocus.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        }, 150);
+    }
 });

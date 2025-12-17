@@ -155,6 +155,9 @@
         function destroyProductSlider({
             restorePlaceholder = true
         } = {}) {
+            if (productSliderState?.cleanup) {
+                productSliderState.cleanup();
+            }
             if (productSliderState?.intervalId) {
                 clearInterval(productSliderState.intervalId);
             }
@@ -170,8 +173,8 @@
             $slider.addClass('hidden');
             $track.empty();
             $thumbs.empty().addClass('hidden');
-            $prev.off('.productSlider').addClass('hidden');
-            $next.off('.productSlider').addClass('hidden');
+            $prev.off('.productSlider').addClass('hidden').css('top', '');
+            $next.off('.productSlider').addClass('hidden').css('top', '');
             $thumbs.off('.productSlider');
 
             if (restorePlaceholder) {
@@ -229,6 +232,7 @@
             const $slider = $('#product-image-slider');
             const $placeholder = $('#product-image-placeholder');
             const $track = $('#product-slider-track');
+            const $main = $slider.find('.slider-main');
             const $thumbs = $('#product-slider-thumbs');
             const $prev = $('#product-slider-prev');
             const $next = $('#product-slider-next');
@@ -270,11 +274,55 @@
                 $track,
                 $thumbs,
                 $prev,
-                $next
+                $next,
+                $main,
+                minHeight: parseFloat($main.css('min-height')) || 0
             };
 
             const state = productSliderState;
             state.$track.css('transform', 'translateX(0%)');
+
+            state.syncLayout = () => {
+                window.requestAnimationFrame(() => {
+                    if (productSliderState !== state) {
+                        return;
+                    }
+
+                    const mainNode = state.$main.get(0);
+                    if (!mainNode) {
+                        return;
+                    }
+
+                    const activeImg = state.$track.find('.slider-item.active img').get(0);
+                    if (!activeImg) {
+                        state.$main.css('height', '');
+                        state.$prev.css('top', '');
+                        state.$next.css('top', '');
+                        return;
+                    }
+
+                    const imgRect = activeImg.getBoundingClientRect();
+                    const mainRect = mainNode.getBoundingClientRect();
+
+                     const renderedHeight = activeImg.offsetHeight || imgRect.height || 0;
+                     if (renderedHeight) {
+                        const targetHeight = Math.max(renderedHeight, state.minHeight);
+                        state.$main.css('height', `${targetHeight}px`);
+                    } else {
+                        state.$main.css('height', '');
+                    }
+
+                    if (!imgRect.height) {
+                        state.$prev.css('top', '');
+                        state.$next.css('top', '');
+                        return;
+                    }
+
+                    const offsetY = imgRect.top - mainRect.top + (imgRect.height / 2);
+                    state.$prev.css('top', `${offsetY}px`);
+                    state.$next.css('top', `${offsetY}px`);
+                });
+            };
 
             state.updateActive = (index) => {
                 state.currentIndex = index;
@@ -291,6 +339,8 @@
                         $(this).toggleClass('active-thumb', thumbIndex === index);
                     });
                 }
+
+                state.syncLayout();
             };
 
             state.stopAuto = () => {
@@ -310,6 +360,26 @@
                     state.updateActive(nextIndex);
                 }, productSliderAutoDelay);
             };
+
+            const handleWindowResize = () => state.syncLayout();
+            state.cleanup = () => {
+                state.stopAuto();
+                state.$track.find('.slider-item img').off('.productSlider');
+                $(window).off('resize.productSlider', handleWindowResize);
+                state.$main.css('height', '');
+                state.$prev.css('top', '');
+                state.$next.css('top', '');
+            };
+
+            const repositionAfterLoad = () => state.syncLayout();
+            state.$track.find('.slider-item img').each(function() {
+                if (this.complete && this.naturalHeight) {
+                    return;
+                }
+                $(this).on('load.productSlider error.productSlider', repositionAfterLoad);
+            });
+
+            $(window).on('resize.productSlider', handleWindowResize);
 
             state.updateActive(0);
 

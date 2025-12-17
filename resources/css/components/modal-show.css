@@ -46,8 +46,8 @@
 .shimmer-img {
     width: 100%;
     height: 90px;
-    border-radius: var(--radius-element);
-    margin-bottom: 8px;
+    border-radius: var(--radius-card);
+    margin: 10px 0px;
 }
 .slug-mono {
     font-family: "Monaco", "Courier New", monospace;
@@ -393,7 +393,7 @@
 
 /* Estilos seguros y bonitos para contenido HTML */
 .post-content {
-    font-size: 0.95rem;
+    font-size: var(--font-size-xs);
     line-height: 1.55;
     padding-right: 8px;
 }
@@ -561,16 +561,13 @@
 .slider-main {
     width: 100%;
     overflow: hidden;
-    position: relative;
-    border-radius: var(--radius-card);
+    height: fit-content;
     min-height: 220px;
-    background-color: var(--color-card-bg);
+    position: relative;
 }
 
 .slider-track {
-    position: relative;
     width: 100%;
-    height: 100%;
     display: flex;
     transition: transform 0.45s ease;
 }
@@ -588,6 +585,7 @@
 .slider-item .modal-img {
     border-radius: var(--radius-card);
     border-width: 4px;
+    position: relative;
 }
 
 .slider-thumbnails {
@@ -632,12 +630,6 @@
 
 .thumbnail-img.active-thumb {
     border-color: var(--color-accent);
-    transform: translateY(-2px);
-}
-
-.thumbnail-img:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 3px;
 }
 
 .slider-btn {
@@ -650,7 +642,7 @@
     padding: 6px 10px;
     font-size: 20px;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: var(--radius-card);
     z-index: 10;
     transition: background-color 0.2s ease;
 }

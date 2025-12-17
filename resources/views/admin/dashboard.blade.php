@@ -119,5 +119,16 @@
                 <p class="card-label">Posts</p>
             </div>
         </a>
+
+        <!-- Tarjeta: Opciones -->
+        <a href="{{ route('admin.options.index') }}" class="dashboard-card">
+            <div class="card-icon card-teal">
+                <i class="ri-settings-3-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalOptions }}</h1>
+                <p class="card-label">Opciones</p>
+            </div>
+        </a>
     </div>
 </x-admin-layout>

@@ -18,6 +18,7 @@ import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
 import { initFormValidator } from './modules/form-validator.js';
 import { initCompanySettingsTabs, initCompanySettingsEditors, initCompanySettingsColorInputs } from './modules/company-settings-tabs.js';
+import { initOptionFeatureForm } from './modules/options-feature-form.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
@@ -27,6 +28,7 @@ window.initFormValidator = initFormValidator;
 window.initCompanySettingsTabs = initCompanySettingsTabs;
 window.initCompanySettingsEditors = initCompanySettingsEditors;
 window.initCompanySettingsColorInputs = initCompanySettingsColorInputs;
+window.initOptionFeatureForm = initOptionFeatureForm;
 
 
 // Si tienes funciones o inicializaciones globales

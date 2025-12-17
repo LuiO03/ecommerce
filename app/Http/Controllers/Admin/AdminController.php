@@ -8,8 +8,10 @@ use App\Models\Family;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Post;
+use Spatie\Permission\Models\Role;
 use App\Models\CompanySetting;
 use Spatie\Permission\Models\Permission;
+use App\Models\Option;
 
 class AdminController extends Controller
 {
@@ -20,8 +22,9 @@ class AdminController extends Controller
             'totalFamilies'   => Family::count(),
             'totalProducts'   => Product::count(),
             'totalUsers'      => User::count(),
-            'totalRoles'      => \Spatie\Permission\Models\Role::count(),
+            'totalRoles'      => Role::count(),
             'totalPosts'      => Post::count(),
+            'totalOptions'    => Option::count(),
             // enviar el nombre de la empresa a la vista
             'companyName' => optional(CompanySetting::first())->name ?? 'Mi Empresa',
         ]);
