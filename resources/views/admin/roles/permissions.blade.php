@@ -1,7 +1,3 @@
-@php
-    use Illuminate\Support\Str;
-@endphp
-
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-warning"><i class="ri-key-2-fill"></i></div>
@@ -34,8 +30,6 @@
             <div class="tabla-select-wrapper" title="Ordenar permisos">
                 <div class="selector">
                     <select id="permissionSort">
-                        <option value="created_desc">Más recientes</option>
-                        <option value="created_asc">Más antiguos</option>
                         <option value="alpha_asc">A - Z</option>
                         <option value="alpha_desc">Z - A</option>
                     </select>
@@ -55,7 +49,7 @@
 
             <div class="permissions-container">
                 @forelse($modules as $module => $perms)
-                    <div class="permissions-card ripple-card">
+                    <div class="permissions-card ripple-card" data-module-name="{{ $module }}">
                         <div class="card-header flex items-center justify-between mb-2">
                             <span class="card-title">{{ ucfirst($module) }}</span>
 
@@ -188,12 +182,69 @@
                 }
 
                 function sortPermissions(mode) {
-                    const lists = document.querySelectorAll('.permissions-card .card-body ul');
-                    lists.forEach(list => {
+                    const container = document.querySelector('.permissions-container');
+                    if (!container) return;
+
+                    const cards = Array.from(container.querySelectorAll('.permissions-card'));
+
+                    cards.forEach(card => {
+                        const list = card.querySelector('.card-body ul');
+                        if (!list) return;
+
                         const items = Array.from(list.querySelectorAll('.perm-row'));
                         items.sort((a, b) => compareRows(a, b, mode));
                         items.forEach(item => list.appendChild(item));
+
+                        const createdValues = items.map(item => parseInt(item.dataset.created || '0', 10));
+                        const latest = createdValues.length ? Math.max(...createdValues) : 0;
+                        const oldest = createdValues.length ? Math.min(...createdValues) : 0;
+                        card.dataset.latestCreated = String(latest);
+                        card.dataset.oldestCreated = String(oldest);
                     });
+
+                    const comparator = buildCardComparator(mode);
+                    if (comparator) {
+                        cards.sort(comparator);
+                        cards.forEach(card => container.appendChild(card));
+                    }
+                }
+
+                function buildCardComparator(mode) {
+                    switch (mode) {
+                        case 'alpha_asc':
+                            return (a, b) => (
+                                (a.dataset.moduleName || '').toLowerCase()
+                                    .localeCompare((b.dataset.moduleName || '').toLowerCase())
+                            );
+                        case 'alpha_desc':
+                            return (a, b) => (
+                                (b.dataset.moduleName || '').toLowerCase()
+                                    .localeCompare((a.dataset.moduleName || '').toLowerCase())
+                            );
+                        case 'created_asc':
+                            return (a, b) => {
+                                const oldestA = parseInt(a.dataset.oldestCreated || '0', 10);
+                                const oldestB = parseInt(b.dataset.oldestCreated || '0', 10);
+                                if (oldestA === oldestB) {
+                                    const nameA = (a.dataset.moduleName || '').toLowerCase();
+                                    const nameB = (b.dataset.moduleName || '').toLowerCase();
+                                    return nameA.localeCompare(nameB);
+                                }
+                                return oldestA - oldestB;
+                            };
+                        case 'created_desc':
+                        default:
+                            return (a, b) => {
+                                const latestA = parseInt(a.dataset.latestCreated || '0', 10);
+                                const latestB = parseInt(b.dataset.latestCreated || '0', 10);
+                                if (latestA === latestB) {
+                                    const nameA = (a.dataset.moduleName || '').toLowerCase();
+                                    const nameB = (b.dataset.moduleName || '').toLowerCase();
+                                    return nameA.localeCompare(nameB);
+                                }
+                                return latestB - latestA;
+                            };
+                    }
                 }
 
                 if (searchInput) {
@@ -245,8 +296,7 @@
                 document.querySelectorAll('.select-all-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const module = btn.dataset.module;
-                        const boxes = document.querySelectorAll(
-                            `.perm-row[data-module="${module}"] .perm-checkbox`);
+                        const boxes = document.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
                         const allChecked = [...boxes].every(cb => cb.checked);
 
                         boxes.forEach(cb => cb.checked = !allChecked);
@@ -262,8 +312,7 @@
                 function updateModuleBtnText() {
                     document.querySelectorAll('.permissions-card').forEach(card => {
                         const module = card.querySelector('.select-all-btn').dataset.module;
-                        const boxes = card.querySelectorAll(
-                        `.perm-row[data-module="${module}"] .perm-checkbox`);
+                        const boxes = card.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
                         const txt = card.querySelector('.select-all-text');
 
                         const allChecked = [...boxes].length > 0 && [...boxes].every(cb => cb.checked);

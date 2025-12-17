@@ -83,7 +83,7 @@
                         <footer class="option-card-footer">
                             <span>
                                 <i class="ri-price-tag-2-line"></i>
-                                {{ $option->features->count() }} {{ Str::plural('valor', $option->features->count()) }}
+                                {{ $option->features->count() }} {{ Str::plural('valores', $option->features->count()) }}
                             </span>
                             <span>
                                 <i class="ri-time-line"></i>
