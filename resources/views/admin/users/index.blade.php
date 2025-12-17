@@ -400,24 +400,39 @@
                 // 🎨 RESALTAR FILA CREADA/EDITADA
                 // ========================================
                 @if (Session::has('highlightRow'))
-                    const highlightId = {{ Session::get('highlightRow') }};
-                    setTimeout(() => {
-                        const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
-                        if (row.length) {
-                            row.addClass('row-highlight');
+                    (function() {
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
+                            ? performance.getEntriesByType('navigation')
+                            : [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
+                            ? performance.navigation.type
+                            : null;
+                        const navType = navEntries.length ? navEntries[0].type : legacyNav;
+                        const isBackNavigation = navType === 'back_forward' || navType === 2;
 
-                            // Scroll suave hacia la fila
-                            row[0].scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center'
-                            });
-
-                            // Remover la clase después de la animación
-                            setTimeout(() => {
-                                row.removeClass('row-highlight');
-                            }, 3000);
+                        if (isBackNavigation) {
+                            return;
                         }
-                    }, 100);
+
+                        const highlightId = {{ Session::get('highlightRow') }};
+                        setTimeout(() => {
+                            const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
+                            if (row.length) {
+                                row.addClass('row-highlight');
+
+                                // Scroll suave hacia la fila
+                                row[0].scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
+
+                                // Remover la clase después de la animación
+                                setTimeout(() => {
+                                    row.removeClass('row-highlight');
+                                }, 3000);
+                            }
+                        }, 100);
+                    })();
                 @endif
             });
         </script>

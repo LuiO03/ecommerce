@@ -100,6 +100,19 @@
     @if (Session::has('toast'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
+                    ? performance.getEntriesByType('navigation')
+                    : [];
+                const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
+                    ? performance.navigation.type
+                    : null;
+                const navType = navEntries.length ? navEntries[0].type : legacyNav;
+                const isBackNavigation = navType === 'back_forward' || navType === 2;
+
+                if (isBackNavigation) {
+                    return;
+                }
+
                 const toast = @json(Session::get('toast'));
                 window.showToast(toast);
             });
