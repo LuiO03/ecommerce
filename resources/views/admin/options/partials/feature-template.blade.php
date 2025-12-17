@@ -22,9 +22,9 @@
                        data-role="feature-value"
                        required>
             </div>
-            <div class="option-feature-color" data-role="color-wrapper">
-                <input type="color" class="option-feature-color-picker" value="__COLOR__" data-role="color-input" aria-label="Seleccionar color">
-                <span class="option-feature-color-hex" data-role="color-hex">__COLOR__</span>
+            <div class="option-feature-color__COLOR_WRAPPER_CLASS__" data-role="color-wrapper">
+                <input type="color" class="option-feature-color-picker" value="__COLOR__" data-role="color-input" aria-label="Seleccionar color" __COLOR_DISABLED__>
+                <span class="option-feature-color-hex" data-role="color-hex">__COLOR_LABEL__</span>
             </div>
         </div>
         <div class="input-icon-container option-feature-description">

@@ -19,7 +19,8 @@ return new class extends Migration
             }
 
             if (!Schema::hasColumn('options', 'description')) {
-                $table->text('description')->nullable()->after('type');
+                $position = Schema::hasColumn('options', 'slug') ? 'slug' : 'name';
+                $table->text('description')->nullable()->after($position);
             }
 
             if (!Schema::hasColumn('options', 'created_by')) {

@@ -15,7 +15,6 @@ class OptionSeeder extends Seeder
         $options = [
             [
                 'name' => 'Talla',
-                'type' => 1,
                 'features' => [
                     [
                         'value' => 'S',
@@ -38,7 +37,6 @@ class OptionSeeder extends Seeder
             ],
             [
                 'name' => 'Color',
-                'type' => 2,
                 'features' => [
                     [
                         'value' => '#FF0000',
@@ -60,7 +58,6 @@ class OptionSeeder extends Seeder
             ],
             [
                 'name' => 'Sexo',
-                'type' => 3,
                 'features' => [
                     [
                         'value' => 'Masculino',
@@ -85,7 +82,6 @@ class OptionSeeder extends Seeder
             $optionModel = Option::create([
                 'name' => $name,
                 'slug' => $slug,
-                'type' => $option['type'],
             ]);
 
             foreach ($option['features'] as $feature) {

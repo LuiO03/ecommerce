@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Feature;
 use App\Models\Option;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class OptionController extends Controller
 {
@@ -21,15 +25,13 @@ class OptionController extends Controller
 
         return view('admin.options.index', [
             'options' => $options,
-            'typeLabels' => Option::typeLabels(),
+            'colorSlug' => Option::COLOR_SLUG,
         ]);
     }
 
     public function create()
     {
-        return view('admin.options.create', [
-            'typeLabels' => Option::typeLabels(),
-        ]);
+        return view('admin.options.create');
     }
 
     public function store(Request $request)
@@ -44,8 +46,7 @@ class OptionController extends Controller
         DB::transaction(function () use (&$option, $fields, $features) {
             $option = Option::create([
                 'name' => $fields['name'],
-                'slug' => Option::generateUniqueSlug($fields['name']),
-                'type' => $fields['type'],
+                'slug' => $fields['slug'],
                 'description' => $fields['description'],
                 'created_by' => Auth::id(),
                 'updated_by' => Auth::id(),
@@ -74,7 +75,6 @@ class OptionController extends Controller
 
         return view('admin.options.edit', [
             'option' => $option,
-            'typeLabels' => Option::typeLabels(),
         ]);
     }
 
@@ -88,8 +88,7 @@ class OptionController extends Controller
         DB::transaction(function () use ($option, $fields, $features) {
             $option->update([
                 'name' => $fields['name'],
-                'slug' => Option::generateUniqueSlug($fields['name'], $option->id),
-                'type' => $fields['type'],
+                'slug' => $fields['slug'],
                 'description' => $fields['description'],
                 'updated_by' => Auth::id(),
             ]);
@@ -161,11 +160,53 @@ class OptionController extends Controller
         return redirect()->route('admin.options.index');
     }
 
+    public function storeFeature(Request $request, Option $option)
+    {
+        $payload = $this->validateFeaturePayload($request, $option);
+
+        $feature = $option->features()->create($payload);
+
+        $option->forceFill(['updated_by' => Auth::id()])->save();
+        $option->refresh();
+
+        return response()->json([
+            'message' => 'Valor agregado correctamente.',
+            'feature' => [
+                'id' => $feature->id,
+                'value' => $feature->value,
+                'description' => $feature->description,
+                'is_color' => $option->isColor(),
+                'delete_url' => route('admin.options.features.destroy', [$option, $feature]),
+            ],
+            'meta' => [
+                'count' => $option->features()->count(),
+                'updated_human' => optional($option->updated_at)->diffForHumans() ?? 'sin fecha',
+            ],
+        ], 201);
+    }
+
+    public function destroyFeature(Option $option, Feature $feature)
+    {
+        if ($feature->option_id !== $option->id) {
+            abort(404);
+        }
+
+        $feature->delete();
+
+        $option->forceFill(['updated_by' => Auth::id()])->save();
+        $option->refresh();
+
+        return response()->json([
+            'message' => 'Valor eliminado correctamente.',
+            'meta' => [
+                'count' => $option->features()->count(),
+                'updated_human' => optional($option->updated_at)->diffForHumans() ?? 'sin fecha',
+            ],
+        ]);
+    }
+
     private function validateOptionRequest(Request $request, ?Option $option = null): array
     {
-        $typeLabels = Option::typeLabels();
-        $typeValues = array_keys($typeLabels);
-
         $nameRule = Rule::unique('options', 'name');
         if ($option) {
             $nameRule->ignore($option->id);
@@ -173,7 +214,6 @@ class OptionController extends Controller
 
         $rules = [
             'name' => ['required', 'string', 'min:2', 'max:120', $nameRule],
-            'type' => ['required', 'integer', Rule::in($typeValues)],
             'description' => ['nullable', 'string', 'max:600'],
             'features' => ['required', 'array', 'min:1'],
             'features.*.value' => ['required', 'string', 'max:120', 'distinct:strict'],
@@ -190,7 +230,6 @@ class OptionController extends Controller
 
         $attributes = [
             'name' => 'nombre',
-            'type' => 'tipo',
             'description' => 'descripción',
             'features' => 'valores',
             'features.*.value' => 'valor',
@@ -199,19 +238,30 @@ class OptionController extends Controller
 
         $validator = Validator::make($request->all(), $rules, [], $attributes);
 
-        $validator->after(function ($validator) use ($request) {
-            $type = (int) $request->input('type');
+        $validator->after(function ($validator) use ($request, $option) {
+            $requestedSlug = Str::slug($request->input('name'));
+            $isColor = ($option?->isColor() ?? false) || $requestedSlug === Option::COLOR_SLUG;
 
-            if ($type === Option::TYPE_COLOR) {
-                foreach ($request->input('features', []) as $index => $feature) {
-                    $value = $feature['value'] ?? '';
-                    if ($value === '') {
-                        continue;
-                    }
+            if (!$isColor) {
+                return;
+            }
 
-                    if (!preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $value)) {
-                        $validator->errors()->add("features.$index.value", 'Debe ser un color hexadecimal válido (#RRGGBB).');
-                    }
+            $duplicateColor = Option::where('slug', Option::COLOR_SLUG)
+                ->when($option, fn ($query) => $query->where('id', '!=', $option->id))
+                ->exists();
+
+            if ($duplicateColor) {
+                $validator->errors()->add('name', 'Ya existe una opción de color registrada.');
+            }
+
+            foreach ($request->input('features', []) as $index => $feature) {
+                $value = $feature['value'] ?? '';
+                if ($value === '') {
+                    continue;
+                }
+
+                if (!preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $value)) {
+                    $validator->errors()->add("features.$index.value", 'Debe ser un color hexadecimal válido (#RRGGBB).');
                 }
             }
         });
@@ -223,27 +273,105 @@ class OptionController extends Controller
         $description = $description !== null ? trim($description) : null;
         $description = $description === '' ? null : $description;
 
+        $requestedSlug = Str::slug($name);
+        $isColor = ($option?->isColor() ?? false) || $requestedSlug === Option::COLOR_SLUG;
+        $slug = $isColor ? Option::COLOR_SLUG : Option::generateUniqueSlug($name, $option?->id);
+
+        if ($option && $option->isColor()) {
+            $slug = Option::COLOR_SLUG;
+            $isColor = true;
+        }
+
         return [
             'fields' => [
                 'name' => $name,
-                'type' => (int) $validated['type'],
+                'slug' => $slug,
                 'description' => $description,
             ],
-            'features' => $this->formatFeatures($validated['features'], (int) $validated['type'], $option),
+            'features' => $this->formatFeatures($validated['features'], $isColor),
+            'is_color' => $isColor,
         ];
     }
 
-    private function formatFeatures(array $features, int $type, ?Option $option = null): array
+    private function validateFeaturePayload(Request $request, Option $option): array
+    {
+        $validator = Validator::make($request->all(), [
+            'value' => ['required', 'string', 'max:120'],
+            'description' => ['nullable', 'string', 'max:255'],
+        ], [], [
+            'value' => 'valor',
+            'description' => 'descripción',
+        ]);
+
+        $data = $validator->validate();
+
+        try {
+            $normalizedValue = $this->normalizeFeatureValue($data['value'], $option->isColor());
+        } catch (InvalidArgumentException $exception) {
+            throw ValidationException::withMessages(['value' => $exception->getMessage()]);
+        }
+
+        $description = $this->normalizeFeatureDescription($data['description'] ?? null);
+
+        if ($option->features()->where('value', $normalizedValue)->exists()) {
+            throw ValidationException::withMessages([
+                'value' => 'Este valor ya existe en la opción.',
+            ]);
+        }
+
+        return [
+            'value' => $normalizedValue,
+            'description' => $description,
+        ];
+    }
+
+    private function normalizeFeatureValue(string $value, bool $isColor): string
+    {
+        $trimmed = trim($value);
+
+        if ($trimmed === '') {
+            throw new InvalidArgumentException('Debe ingresar un valor.');
+        }
+
+        if ($isColor) {
+            $formatted = strtoupper(ltrim($trimmed, '#'));
+
+            if (preg_match('/^([0-9A-F]{3}|[0-9A-F]{6})$/', $formatted) !== 1) {
+                throw new InvalidArgumentException('Debe ser un color hexadecimal válido (#RRGGBB).');
+            }
+
+            if (strlen($formatted) === 3) {
+                $formatted = $formatted[0] . $formatted[0]
+                    . $formatted[1] . $formatted[1]
+                    . $formatted[2] . $formatted[2];
+            }
+
+            return '#' . $formatted;
+        }
+
+        return ucwords(mb_strtolower($trimmed));
+    }
+
+    private function normalizeFeatureDescription(?string $description): ?string
+    {
+        if ($description === null) {
+            return null;
+        }
+
+        $clean = trim($description);
+
+        return $clean === '' ? null : $clean;
+    }
+
+    private function formatFeatures(array $features, bool $isColor): array
     {
         return collect($features)
-            ->map(function ($feature) use ($type, $option) {
+            ->map(function ($feature) use ($isColor) {
                 $id = isset($feature['id']) ? (int) $feature['id'] : null;
                 $value = trim((string) ($feature['value'] ?? ''));
 
-                if ($type === Option::TYPE_COLOR) {
+                if ($isColor) {
                     $value = $this->normalizeColor($value);
-                } elseif ($type === Option::TYPE_SIZE) {
-                    $value = mb_strtoupper($value);
                 } else {
                     $value = ucwords(mb_strtolower($value));
                 }

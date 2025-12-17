@@ -1,11 +1,10 @@
 @php
     use App\Models\Option;
+    use Illuminate\Support\Str;
 
     $optionInstance = $option ?? null;
-    $typeLabels = $typeLabels ?? Option::typeLabels();
-    $typeKeys = array_keys($typeLabels);
-    $defaultType = $typeKeys[0] ?? Option::TYPE_SIZE;
-    $selectedType = (int) old('type', $optionInstance?->type ?? $defaultType);
+    $requestedName = old('name', $optionInstance?->name);
+    $isColorOption = $optionInstance?->isColor() ?? (Str::slug($requestedName ?? '') === Option::COLOR_SLUG);
 
     $featuresDataset = old('features');
 
@@ -67,25 +66,6 @@
         </div>
 
         <div class="input-group">
-            <label for="type" class="label-form">
-                Tipo de selección
-                <i class="ri-asterisk text-accent"></i>
-            </label>
-            <div class="input-icon-container">
-                <i class="ri-stack-line input-icon"></i>
-                <select id="type" name="type" class="select-form" required data-validate="required|selected">
-                    <option value="" disabled {{ $selectedType ? '' : 'selected' }}>Selecciona un tipo</option>
-                    @foreach ($typeLabels as $value => $label)
-                        <option value="{{ $value }}" {{ (int) $value === $selectedType ? 'selected' : '' }}>
-                            {{ $label }}
-                        </option>
-                    @endforeach
-                </select>
-                <i class="ri-arrow-down-s-line select-arrow"></i>
-            </div>
-        </div>
-
-        <div class="input-group">
             <label for="description" class="label-form label-textarea">
                 Descripción
             </label>
@@ -140,17 +120,21 @@
         </button>
     </header>
 
-    <div class="option-features-list"
-         id="featureList"
-         data-color-type="{{ Option::TYPE_COLOR }}"
-         data-size-type="{{ Option::TYPE_SIZE }}"
-         data-gender-type="{{ Option::TYPE_GENDER }}">
+        <div class="option-features-list"
+            id="featureList"
+            data-is-color="{{ $isColorOption ? 'true' : 'false' }}"
+            data-color-slug="{{ Option::COLOR_SLUG }}"
+            data-color-locked="{{ ($optionInstance?->slug === Option::COLOR_SLUG) ? 'true' : 'false' }}">
         @foreach ($featuresDataset as $index => $feature)
-            @include('admin.options.partials.feature-item', ['index' => $index, 'feature' => $feature])
+            @include('admin.options.partials.feature-item', [
+                'index' => $index,
+                'feature' => $feature,
+                'isColorOption' => $isColorOption,
+            ])
         @endforeach
     </div>
 </section>
 
 <script type="text/template" id="featureRowTemplate">
-    @include('admin.options.partials.feature-template')
+    @include('admin.options.partials.feature-template', ['isColorTemplate' => $isColorOption])
 </script>

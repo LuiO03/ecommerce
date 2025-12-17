@@ -17,7 +17,7 @@
     <form action="{{ route('admin.options.store') }}" method="POST" class="form-container" id="optionForm" autocomplete="off">
         @csrf
 
-        @include('admin.options.partials.form', ['option' => null, 'typeLabels' => $typeLabels])
+        @include('admin.options.partials.form', ['option' => null])
 
         <div class="form-footer">
             <a href="{{ route('admin.options.index') }}" class="boton-form boton-volver">
@@ -41,8 +41,8 @@
                 initOptionFeatureForm({
                     containerId: 'featureList',
                     addButtonId: 'addFeatureBtn',
-                    typeSelectId: 'type',
-                    templateId: 'featureRowTemplate'
+                    templateId: 'featureRowTemplate',
+                    nameInputId: 'name'
                 });
 
                 initSubmitLoader({

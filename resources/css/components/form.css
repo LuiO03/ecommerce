@@ -107,11 +107,13 @@
 }
 
 /* === Input / Textarea === */
-.input-group input,
+.input-group input[type="password"],
+.input-group input[type="text"],
+.input-group input[type="email"],
 .input-group textarea,
 .select-form {
     width: 100%;
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     font-size: var(--font-size-sm);
     background: var(--color-input-bg);
     border: 2px solid var(--color-input-border);
@@ -149,6 +151,8 @@
     border-color: var(--color-accent);
     outline: none;
     box-shadow: var(--shadow-material);
+    box-shadow: 0 0 0 3px var(--shadow-accent);
+    outline: none;
 }
 
 .input-group:focus-within .input-icon,
@@ -513,14 +517,13 @@
     padding: 8px 12px;
     background: var(--color-input-bg);
     border: 1px solid var(--color-input-border);
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     font-size: var(--font-size-xs);
     color: var(--color-text);
     font-family: var(--font-secondary);
 }
 
 .image-filename i {
-    color: var(--color-accent);
     font-size: 1.2rem;
 }
 

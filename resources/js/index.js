@@ -19,6 +19,7 @@ import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
 import { initFormValidator } from './modules/form-validator.js';
 import { initCompanySettingsTabs, initCompanySettingsEditors, initCompanySettingsColorInputs } from './modules/company-settings-tabs.js';
 import { initOptionFeatureForm } from './modules/options-feature-form.js';
+import { initOptionInlineManager } from './modules/options-inline-manager.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
@@ -29,6 +30,7 @@ window.initCompanySettingsTabs = initCompanySettingsTabs;
 window.initCompanySettingsEditors = initCompanySettingsEditors;
 window.initCompanySettingsColorInputs = initCompanySettingsColorInputs;
 window.initOptionFeatureForm = initOptionFeatureForm;
+window.initOptionInlineManager = initOptionInlineManager;
 
 
 // Si tienes funciones o inicializaciones globales

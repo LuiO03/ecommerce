@@ -1,4 +1,4 @@
-function normalizeColorValue(value) {
+export function normalizeColorValue(value) {
     const raw = String(value || '').trim().replace(/^#/, '').toUpperCase();
 
     if (!raw) {
@@ -25,11 +25,30 @@ function escapeHtml(value) {
         .replace(/'/g, '&#039;');
 }
 
+function slugify(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+function normaliseTextValue(value) {
+    const compact = String(value || '')
+        .trim()
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+    return compact.replace(/\b\w/g, (match) => match.toUpperCase());
+}
+
 export function initOptionFeatureForm({
     containerId,
     addButtonId,
-    typeSelectId,
     templateId,
+    nameInputId,
+    isColor,
 } = {}) {
     const container = document.getElementById(containerId);
     if (!container) {
@@ -39,19 +58,21 @@ export function initOptionFeatureForm({
     const templateNode = document.getElementById(templateId);
     const templateContent = templateNode ? templateNode.textContent.trim() : '';
     const addButton = document.getElementById(addButtonId);
-    const typeSelect = document.getElementById(typeSelectId);
-
-    const colorType = Number(container.dataset.colorType || 0);
-    const sizeType = Number(container.dataset.sizeType || 0);
+    const nameInput = nameInputId ? document.getElementById(nameInputId) : null;
 
     const state = {
         template: templateContent,
-        colorType,
-        sizeType,
+        isColor: typeof isColor === 'boolean' ? isColor : container.dataset.isColor === 'true',
+        colorSlug: container.dataset.colorSlug || 'color',
+        colorLocked: container.dataset.colorLocked === 'true',
     };
 
     if (!state.template) {
         console.warn('[options-feature-form] Plantilla no encontrada.');
+    }
+
+    function getFeatureCards() {
+        return Array.from(container.querySelectorAll('.option-feature-card'));
     }
 
     function renderTemplate(data, index) {
@@ -60,6 +81,9 @@ export function initOptionFeatureForm({
         }
 
         const color = data.color || '#000000';
+        const wrapperClass = state.isColor ? '' : ' is-hidden';
+        const disabledAttr = state.isColor ? '' : ' disabled';
+        const colorLabel = state.isColor ? escapeHtml(color) : '';
 
         let html = state.template
             .replace(/__INDEX__/g, index)
@@ -67,15 +91,14 @@ export function initOptionFeatureForm({
             .replace(/__NUMBER__/g, index + 1)
             .replace(/__VALUE__/g, escapeHtml(data.value ?? ''))
             .replace(/__DESCRIPTION__/g, escapeHtml(data.description ?? ''))
-            .replace(/__COLOR__/g, escapeHtml(color));
+            .replace(/__COLOR__/g, escapeHtml(color))
+            .replace(/__COLOR_WRAPPER_CLASS__/g, wrapperClass)
+            .replace(/__COLOR_DISABLED__/g, disabledAttr)
+            .replace(/__COLOR_LABEL__/g, colorLabel);
 
         const wrapper = document.createElement('div');
         wrapper.innerHTML = html.trim();
         return wrapper.firstElementChild;
-    }
-
-    function getFeatureCards() {
-        return Array.from(container.querySelectorAll('.option-feature-card'));
     }
 
     function reindexFeatures() {
@@ -111,17 +134,75 @@ export function initOptionFeatureForm({
         });
     }
 
+    function syncColorControls() {
+        getFeatureCards().forEach((card) => {
+            const wrapper = card.querySelector('[data-role="color-wrapper"]');
+            const valueInput = card.querySelector('[data-role="feature-value"]');
+            const colorInput = wrapper?.querySelector('[data-role="color-input"]');
+            const hexLabel = wrapper?.querySelector('[data-role="color-hex"]');
+
+            if (!wrapper || !valueInput) {
+                return;
+            }
+
+            if (!state.isColor) {
+                wrapper.classList.add('is-hidden');
+                wrapper.classList.remove('has-error');
+                if (colorInput) {
+                    colorInput.disabled = true;
+                }
+                if (hexLabel) {
+                    hexLabel.textContent = '';
+                }
+                return;
+            }
+
+            const normalized = normalizeColorValue(valueInput.value);
+            const safeColor = normalized ?? '#000000';
+
+            wrapper.classList.remove('is-hidden');
+            wrapper.classList.toggle('has-error', !normalized && valueInput.value.trim() !== '');
+
+            if (colorInput) {
+                colorInput.disabled = false;
+                colorInput.value = safeColor;
+            }
+            if (hexLabel) {
+                hexLabel.textContent = safeColor;
+            }
+            if (normalized) {
+                valueInput.value = normalized;
+            }
+        });
+    }
+
+    function setColorMode(next) {
+        const target = Boolean(next);
+        if (state.isColor === target) {
+            return;
+        }
+        state.isColor = target;
+        container.dataset.isColor = target ? 'true' : 'false';
+        if (!state.isColor) {
+            getFeatureCards().forEach((card) => {
+                const valueInput = card.querySelector('[data-role="feature-value"]');
+                if (valueInput) {
+                    valueInput.value = normaliseTextValue(valueInput.value);
+                }
+            });
+        }
+        syncColorControls();
+    }
+
     function buildFeature(data = {}) {
         const cards = getFeatureCards();
         const index = cards.length;
-        const isColor = Number(typeSelect?.value) === state.colorType;
-
         const normalizedColor = normalizeColorValue(data.value ?? '');
         const prepared = {
             id: data.id ?? '',
             value: data.value ?? '',
             description: data.description ?? '',
-            color: isColor ? (normalizedColor ?? '#000000') : '#000000',
+            color: state.isColor ? (normalizedColor ?? '#000000') : '#000000',
         };
 
         const element = renderTemplate(prepared, index);
@@ -144,42 +225,6 @@ export function initOptionFeatureForm({
         syncColorControls();
     }
 
-    function syncColorControls() {
-        const isColor = Number(typeSelect?.value) === state.colorType;
-        getFeatureCards().forEach((card) => {
-            const wrapper = card.querySelector('[data-role="color-wrapper"]');
-            if (!wrapper) {
-                return;
-            }
-
-            if (!isColor) {
-                wrapper.classList.add('is-hidden');
-                wrapper.classList.remove('has-error');
-                return;
-            }
-
-            const valueInput = card.querySelector('[data-role="feature-value"]');
-            const colorInput = wrapper.querySelector('[data-role="color-input"]');
-            const hexLabel = wrapper.querySelector('[data-role="color-hex"]');
-
-            const normalized = normalizeColorValue(valueInput?.value ?? '');
-            const safeColor = normalized ?? '#000000';
-
-            wrapper.classList.remove('is-hidden');
-            wrapper.classList.toggle('has-error', !normalized && (valueInput?.value?.trim() ?? '') !== '');
-
-            if (colorInput) {
-                colorInput.value = safeColor;
-            }
-            if (hexLabel) {
-                hexLabel.textContent = safeColor;
-            }
-            if (valueInput && normalized) {
-                valueInput.value = normalized;
-            }
-        });
-    }
-
     function handleAddFeature() {
         buildFeature();
     }
@@ -195,6 +240,10 @@ export function initOptionFeatureForm({
     }
 
     function handleColorInput(event) {
+        if (!state.isColor) {
+            return;
+        }
+
         const target = event.target;
         if (!target.matches('[data-role="color-input"]')) {
             return;
@@ -207,8 +256,8 @@ export function initOptionFeatureForm({
         const normalized = normalizeColorValue(target.value);
         const safeColor = normalized ?? '#000000';
 
-        if (valueInput) {
-            valueInput.value = normalized ?? valueInput.value;
+        if (valueInput && normalized) {
+            valueInput.value = normalized;
         }
         if (hexLabel) {
             hexLabel.textContent = safeColor;
@@ -221,27 +270,24 @@ export function initOptionFeatureForm({
             return;
         }
 
-        const currentType = Number(typeSelect?.value) || 0;
-        if (currentType === state.sizeType) {
-            input.value = input.value.toUpperCase();
+        if (!state.isColor) {
+            return;
         }
 
-        if (currentType === state.colorType) {
-            const card = input.closest('.option-feature-card');
-            const wrapper = card?.querySelector('[data-role="color-wrapper"]');
-            const hexLabel = wrapper?.querySelector('[data-role="color-hex"]');
-            const colorInput = wrapper?.querySelector('[data-role="color-input"]');
-            const normalized = normalizeColorValue(input.value);
+        const card = input.closest('.option-feature-card');
+        const wrapper = card?.querySelector('[data-role="color-wrapper"]');
+        const hexLabel = wrapper?.querySelector('[data-role="color-hex"]');
+        const colorInput = wrapper?.querySelector('[data-role="color-input"]');
+        const normalized = normalizeColorValue(input.value);
 
-            if (colorInput) {
-                colorInput.value = normalized ?? '#000000';
-            }
-            if (hexLabel) {
-                hexLabel.textContent = normalized ?? '#000000';
-            }
-
-            wrapper?.classList.toggle('has-error', !normalized && input.value.trim() !== '');
+        if (colorInput) {
+            colorInput.value = normalized ?? '#000000';
         }
+        if (hexLabel) {
+            hexLabel.textContent = normalized ?? '#000000';
+        }
+
+        wrapper?.classList.toggle('has-error', !normalized && input.value.trim() !== '');
     }
 
     function handleValueBlur(event) {
@@ -250,15 +296,12 @@ export function initOptionFeatureForm({
             return;
         }
 
-        const currentType = Number(typeSelect?.value) || 0;
-        if (currentType === state.colorType) {
+        if (state.isColor) {
             const normalized = normalizeColorValue(input.value);
             input.value = normalized ?? '#000000';
             syncColorControls();
-        } else if (currentType === state.sizeType) {
-            input.value = input.value.toUpperCase();
         } else {
-            input.value = input.value.trim();
+            input.value = normaliseTextValue(input.value);
         }
     }
 
@@ -271,10 +314,13 @@ export function initOptionFeatureForm({
     container.addEventListener('change', handleColorInput);
     container.addEventListener('blur', handleValueBlur, true);
 
-    if (typeSelect) {
-        typeSelect.addEventListener('change', () => {
-            syncColorControls();
-        });
+    if (nameInput && !state.colorLocked) {
+        const updateColorMode = () => {
+            const slug = slugify(nameInput.value);
+            setColorMode(slug === state.colorSlug);
+        };
+        nameInput.addEventListener('input', updateColorMode);
+        updateColorMode();
     }
 
     if (!getFeatureCards().length) {
@@ -288,5 +334,6 @@ export function initOptionFeatureForm({
         add: buildFeature,
         reindex: reindexFeatures,
         syncColorControls,
+        setColorMode,
     };
 }

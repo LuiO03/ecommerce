@@ -384,6 +384,7 @@
     /* contenido interno de la tarjeta */
     --radius-element: 3px;
     /* botones, inputs, etc */
+    --radius-input: 0.65rem;
 }
 
 /* ==== Estructura base ==== */

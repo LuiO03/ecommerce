@@ -12,7 +12,7 @@
 .options-grid {
     display: grid;
     gap: 1.25rem;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
 }
 
 .option-card {
@@ -108,6 +108,24 @@
     box-shadow: 0 8px 18px rgba(99, 102, 241, 0.18);
 }
 
+.option-feature-pill.is-new {
+    animation: optionFeaturePop 0.6s ease forwards;
+}
+
+@keyframes optionFeaturePop {
+    0% {
+        transform: scale(0.92);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 .option-feature-pill.is-color {
     border-color: rgba(15, 118, 110, 0.35);
     background: rgba(13, 148, 136, 0.1);
@@ -120,6 +138,26 @@
     border-radius: 50%;
     box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.15);
     background: var(--pill-color, #64748b);
+}
+
+.option-feature-pill .pill-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-left: 0.2rem;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    color: var(--color-text-soft);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.option-feature-pill .pill-remove:hover {
+    background: rgba(244, 63, 94, 0.12);
+    color: var(--color-danger, #dc2626);
 }
 
 .option-feature-pill .pill-description {
@@ -139,6 +177,55 @@
 .option-card-footer i {
     margin-right: 0.35rem;
     color: var(--color-muted-strong);
+}
+
+.option-feature-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.option-feature-form.is-busy {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.option-feature-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.option-feature-form.is-color .option-feature-fields {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+}
+
+.feature-field-color {
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 10px 12px;
+    border-radius: var(--radius-input);
+    border: 2px dashed var(--color-input-border);
+    background: var(--color-input-bg);
+}
+
+.option-feature-form.is-color .feature-field-color {
+    display: inline-flex;
+}
+
+.feature-field-color input[type="color"] {
+    border: none;
+    width: 28px;
+    height: 30px;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.feature-color-hex {
+    font-size: var(--font-size-xs);
 }
 
 .options-empty {
@@ -347,6 +434,14 @@
         width: 100%;
         justify-content: space-between;
     }
+
+    .option-feature-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .option-feature-form.is-color .option-feature-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 640px) {
@@ -366,5 +461,9 @@
     .option-card-footer {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .option-feature-fields {
+        grid-template-columns: 1fr;
     }
 }

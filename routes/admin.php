@@ -66,6 +66,8 @@ Route::controller(OptionController::class)->group(function () {
     Route::get('/options/{option}/edit', 'edit')->name('admin.options.edit');
     Route::put('/options/{option}', 'update')->name('admin.options.update');
     Route::delete('/options/{option}', 'destroy')->name('admin.options.destroy');
+    Route::post('/options/{option}/features', 'storeFeature')->name('admin.options.features.store');
+    Route::delete('/options/{option}/features/{feature}', 'destroyFeature')->name('admin.options.features.destroy');
 });
 
 // FAMILIES

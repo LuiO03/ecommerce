@@ -14,25 +14,13 @@ class Option extends Model
     protected $fillable = [
         'name',
         'slug',
-        'type',
         'description',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    public const TYPE_SIZE = 1;
-    public const TYPE_COLOR = 2;
-    public const TYPE_GENDER = 3;
-
-    public static function typeLabels(): array
-    {
-        return [
-            self::TYPE_SIZE => 'Talla',
-            self::TYPE_COLOR => 'Color',
-            self::TYPE_GENDER => 'Sexo',
-        ];
-    }
+    public const COLOR_SLUG = 'color';
 
     public static function generateUniqueSlug(string $name, ?int $id = null): string
     {
@@ -80,5 +68,10 @@ class Option extends Model
     public function deleter()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function isColor(): bool
+    {
+        return $this->slug === static::COLOR_SLUG;
     }
 }

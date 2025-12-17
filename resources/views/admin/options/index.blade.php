@@ -29,13 +29,20 @@
         @else
             <div class="options-grid">
                 @foreach ($options as $option)
-                    <article class="option-card" data-option-slug="{{ $option->slug }}">
+                    @php
+                        $isColorOption = $option->isColor();
+                    @endphp
+                    <article class="option-card"
+                        data-option-inline="true"
+                        data-option-slug="{{ $option->slug }}"
+                        data-option-is-color="{{ $isColorOption ? 'true' : 'false' }}"
+                        data-create-url="{{ route('admin.options.features.store', $option) }}">
                         <header class="option-card-header">
                             <div>
                                 <h3>{{ $option->name }}</h3>
                                 <span class="option-type-badge">
-                                    <i class="ri-shapes-line"></i>
-                                    {{ $typeLabels[$option->type] ?? 'Sin tipo' }}
+                                    <i class="{{ $isColorOption ? 'ri-palette-line' : 'ri-price-tag-3-line' }}"></i>
+                                    {{ $isColorOption ? 'Color' : 'Texto' }}
                                 </span>
                             </div>
                             <div class="option-card-actions">
@@ -57,16 +64,18 @@
                             <p class="option-card-description">{{ $option->description }}</p>
                         @endif
 
-                        <div class="option-feature-pills">
+                        <div class="option-feature-pills" data-role="feature-list">
                             @forelse ($option->features as $feature)
                                 @php
-                                    $isColor = (int) $option->type === Option::TYPE_COLOR;
+                                    $isColor = $option->isColor();
                                     $displayValue = $feature->value;
                                     $colorPreview = $isColor && preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $displayValue)
                                         ? strtoupper($displayValue)
                                         : null;
                                 @endphp
-                                <div class="option-feature-pill {{ $colorPreview ? 'is-color' : '' }}">
+                                <div class="option-feature-pill {{ $colorPreview ? 'is-color' : '' }}"
+                                    data-feature-id="{{ $feature->id }}"
+                                    data-delete-url="{{ route('admin.options.features.destroy', [$option, $feature]) }}">
                                     @if ($colorPreview)
                                         <span class="pill-color" style="--pill-color: {{ $colorPreview }}"></span>
                                     @endif
@@ -74,20 +83,76 @@
                                     @if ($feature->description)
                                         <span class="pill-description">{{ $feature->description }}</span>
                                     @endif
+                                    <button type="button" class="pill-remove" data-action="feature-remove"
+                                        aria-label="Eliminar valor">
+                                        <i class="ri-close-line"></i>
+                                    </button>
                                 </div>
                             @empty
-                                <p class="option-feature-empty">Sin valores registrados.</p>
+                                <p class="option-feature-empty" data-role="feature-empty">Sin valores registrados.</p>
                             @endforelse
+                        </div>
+
+                        <div class="option-feature-inline">
+                            <form id="featureForm-{{ $option->id }}" class="option-feature-form" data-role="feature-form"
+                                data-option-is-color="{{ $isColorOption ? 'true' : 'false' }}"
+                                data-create-url="{{ route('admin.options.features.store', $option) }}"
+                                novalidate>
+                                <div class="option-feature-fields">
+                                    <div class="input-group">
+                                        <label class="sr-only label-form" for="feature-value-{{ $option->id }}">Valor</label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-price-tag-3-line input-icon"></i>
+                                            <input type="text" id="feature-value-{{ $option->id }}" data-role="feature-value"
+                                                name="feature_value"
+                                                placeholder="Nuevo valor" maxlength="120" autocomplete="off"
+                                                data-validate="required|max:120" required>
+                                        </div>
+                                    </div>
+                                    <div class="feature-field feature-field-color">
+                                        <label class="sr-only" for="feature-color-{{ $option->id }}">Color</label>
+                                        <input type="color" id="feature-color-{{ $option->id }}"
+                                            data-role="feature-color" name="feature_color" value="#000000">
+                                        <span class="feature-color-hex" data-role="feature-color-hex">#000000</span>
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="sr-only label-form" for="feature-description-{{ $option->id }}">Descripción</label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-align-left input-icon"></i>
+                                            <input type="text" id="feature-description-{{ $option->id }}"
+                                                data-role="feature-description" name="feature_description"
+                                                placeholder="Descripción (opcional)" maxlength="255" autocomplete="off"
+                                                data-validate="max:255">
+                                        </div>
+                                    </div>
+                                    <button type="submit" id="featureSubmit-{{ $option->id }}" class="boton boton-primary"
+                                        data-role="feature-submit" title="Agregar valor">
+                                        <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
+                                        <span class="boton-text">Agregar</span>
+                                    </button>
+                                </div>
+                                <span class="input-error-message" data-role="feature-feedback" aria-live="polite" style="display: none;">
+                                    <i class="ri-error-warning-line"></i>
+                                    <span class="error-text" data-role="feature-feedback-text"></span>
+                                </span>
+                            </form>
                         </div>
 
                         <footer class="option-card-footer">
                             <span>
                                 <i class="ri-price-tag-2-line"></i>
-                                {{ $option->features->count() }} {{ Str::plural('valores', $option->features->count()) }}
+                                <span data-role="feature-count"
+                                    data-label-singular="valor"
+                                    data-label-plural="valores"
+                                    data-count="{{ $option->features->count() }}">
+                                    {{ $option->features->count() }} {{ Str::plural('valor', $option->features->count()) }}
+                                </span>
                             </span>
-                            <span>
+                            <span data-role="updated-wrapper">
                                 <i class="ri-time-line"></i>
-                                Actualizado {{ optional($option->updated_at)->diffForHumans() ?? 'sin fecha' }}
+                                <span data-role="updated-text">
+                                    Actualizado {{ optional($option->updated_at)->diffForHumans() ?? 'sin fecha' }}
+                                </span>
                             </span>
                         </footer>
                     </article>
@@ -112,6 +177,10 @@
                         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         setTimeout(() => card.classList.remove('is-highlighted'), 3200);
                     }
+                }
+
+                if (typeof window.initOptionInlineManager === 'function') {
+                    window.initOptionInlineManager();
                 }
 
                 const deleteForm = document.getElementById('deleteOptionForm');
