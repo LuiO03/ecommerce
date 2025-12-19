@@ -289,14 +289,16 @@
 
 .preview-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 15px;
     margin-top: 8px;
 }
 
 .preview-item {
     position: relative;
-    height: 140px;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: 100%;
     cursor: pointer;
     overflow: hidden;
     border-radius: var(--radius-card);
@@ -423,30 +425,6 @@
     transform: scale(1.05);
 }
 
-/* Botón eliminar */
-.remove-btn {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: rgba(255, 0, 0, 0.85);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 26px;
-    height: 26px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 17px;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.remove-btn:hover {
-    background: red;
-    transform: scale(1.1);
-}
-
 .image-not-found-block {
     display: flex;
     flex-direction: column;
@@ -454,7 +432,9 @@
     align-items: center;
     color: var(--color-danger);
     background: var(--color-danger-pastel);
-    height: 140px;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: 100%;
     padding: 10px;
     text-align: center;
     border-radius: var(--radius-card);
