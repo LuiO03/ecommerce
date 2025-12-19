@@ -6,7 +6,7 @@
     <x-slot name="title">
         <div class="page-icon card-warning"><i class="ri-edit-circle-line"></i></div>
         <div class="page-edit-title">
-            <span class="page-subtitle">Editar opción</span>
+            <span class="page-subtitle">Editar Opción</span>
             {{ $option->name }}
         </div>
     </x-slot>

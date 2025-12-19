@@ -162,10 +162,12 @@
                     `);
 
                     // Actualizado por
+                    const updatedLabel = data.updated_at_human ?? data.updated_at ?? '—';
+
                     $('#fam-updated-by-fecha').html(`
                         <div class="show-cell-content">
                             <span class="font-bold">${data.updated_by_name}</span>
-                            <span class="show-date"><i class="ri-time-fill"></i> ${data.updated_at}</span>
+                            <span class="show-date"><i class="ri-time-fill"></i> ${updatedLabel}</span>
                         </div>
                     `);
 

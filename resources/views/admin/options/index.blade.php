@@ -32,9 +32,7 @@
                     @php
                         $isColorOption = $option->isColor();
                     @endphp
-                    <article class="option-card"
-                        data-option-inline="true"
-                        data-option-slug="{{ $option->slug }}"
+                    <article class="option-card ripple-card" data-option-inline="true" data-option-slug="{{ $option->slug }}"
                         data-option-is-color="{{ $isColorOption ? 'true' : 'false' }}"
                         data-create-url="{{ route('admin.options.features.store', $option) }}">
                         <header class="option-card-header">
@@ -46,15 +44,13 @@
                                 </span>
                             </div>
                             <div class="option-card-actions">
-                                <a href="{{ route('admin.options.edit', $option) }}" class="boton-sm boton-warning" title="Editar">
+                                <a href="{{ route('admin.options.edit', $option) }}" class="boton-sm boton-warning"
+                                    title="Editar">
                                     <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
                                 </a>
-                                <button type="button"
-                                        class="boton-sm boton-danger"
-                                        data-action="delete-option"
-                                        data-action-url="{{ route('admin.options.destroy', $option) }}"
-                                        data-name="{{ $option->name }}"
-                                        title="Eliminar">
+                                <button type="button" class="boton-sm boton-danger" data-action="delete-option"
+                                    data-action-url="{{ route('admin.options.destroy', $option) }}"
+                                    data-name="{{ $option->name }}" title="Eliminar">
                                     <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                 </button>
                             </div>
@@ -69,9 +65,10 @@
                                 @php
                                     $isColor = $option->isColor();
                                     $displayValue = $feature->value;
-                                    $colorPreview = $isColor && preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $displayValue)
-                                        ? strtoupper($displayValue)
-                                        : null;
+                                    $colorPreview =
+                                        $isColor && preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $displayValue)
+                                            ? strtoupper($displayValue)
+                                            : null;
                                 @endphp
                                 <div class="option-feature-pill {{ $colorPreview ? 'is-color' : '' }}"
                                     data-feature-id="{{ $feature->id }}"
@@ -93,45 +90,61 @@
                             @endforelse
                         </div>
 
+                        <hr class="w-full my-0 border-default">
+
                         <div class="option-feature-inline">
-                            <form id="featureForm-{{ $option->id }}" class="option-feature-form" data-role="feature-form"
-                                data-option-is-color="{{ $isColorOption ? 'true' : 'false' }}"
-                                data-create-url="{{ route('admin.options.features.store', $option) }}"
-                                novalidate>
+                            <form id="featureForm-{{ $option->id }}" class="option-feature-form"
+                                data-role="feature-form" data-option-is-color="{{ $isColorOption ? 'true' : 'false' }}"
+                                data-create-url="{{ route('admin.options.features.store', $option) }}" novalidate>
                                 <div class="option-feature-fields">
-                                    <div class="input-group">
-                                        <label class="sr-only label-form" for="feature-value-{{ $option->id }}">Valor</label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-price-tag-3-line input-icon"></i>
-                                            <input type="text" id="feature-value-{{ $option->id }}" data-role="feature-value"
-                                                name="feature_value"
-                                                placeholder="Nuevo valor" maxlength="120" autocomplete="off"
-                                                data-validate="required|max:120" required>
+                                    @if ($isColorOption)
+                                        <div class="input-group">
+                                            <label class="label-form"
+                                                for="feature-value-{{ $option->id }}">Color</label>
+                                            <div class="feature-field feature-field-color">
+                                                <input type="color" id="feature-color-{{ $option->id }}"
+                                                    data-role="feature-color" name="feature_color" value="#000000">
+                                                <span class="feature-color-hex"
+                                                    data-role="feature-color-hex">#000000</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="feature-field feature-field-color">
-                                        <label class="sr-only" for="feature-color-{{ $option->id }}">Color</label>
-                                        <input type="color" id="feature-color-{{ $option->id }}"
-                                            data-role="feature-color" name="feature_color" value="#000000">
-                                        <span class="feature-color-hex" data-role="feature-color-hex">#000000</span>
-                                    </div>
+                                    @else
+                                        <div class="input-group">
+                                            <label class="label-form"
+                                                for="feature-value-{{ $option->id }}">Valor</label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-price-tag-3-line input-icon"></i>
+                                                <input type="text" id="feature-value-{{ $option->id }}"
+                                                    data-role="feature-value" name="feature_value"
+                                                    placeholder="Nuevo valor" maxlength="120" autocomplete="off"
+                                                    data-validate="required|max:120" required>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="input-group">
-                                        <label class="sr-only label-form" for="feature-description-{{ $option->id }}">Descripción</label>
+                                        <label class="label-form"
+                                            for="feature-description-{{ $option->id }}">Descripción</label>
                                         <div class="input-icon-container">
                                             <i class="ri-align-left input-icon"></i>
                                             <input type="text" id="feature-description-{{ $option->id }}"
                                                 data-role="feature-description" name="feature_description"
-                                                placeholder="Descripción (opcional)" maxlength="255" autocomplete="off"
-                                                data-validate="max:255">
+                                                placeholder="Descripción (opcional)" maxlength="255"
+                                                autocomplete="off" data-validate="max:255">
                                         </div>
                                     </div>
-                                    <button type="submit" id="featureSubmit-{{ $option->id }}" class="boton boton-primary"
-                                        data-role="feature-submit" title="Agregar valor">
+                                    <div class="input-group">
+                                        <label class="label-form">Acción</label>
+
+                                    <button type="submit" id="featureSubmit-{{ $option->id }}"
+                                        class="boton boton-success" data-role="feature-submit" title="Agregar valor">
                                         <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
                                         <span class="boton-text">Agregar</span>
                                     </button>
+                                    </div>
                                 </div>
-                                <span class="input-error-message" data-role="feature-feedback" aria-live="polite" style="display: none;">
+                                <span class="input-error-message" data-role="feature-feedback" aria-live="polite"
+                                    style="display: none;">
                                     <i class="ri-error-warning-line"></i>
                                     <span class="error-text" data-role="feature-feedback-text"></span>
                                 </span>
@@ -140,16 +153,15 @@
 
                         <footer class="option-card-footer">
                             <span>
-                                <i class="ri-price-tag-2-line"></i>
-                                <span data-role="feature-count"
-                                    data-label-singular="valor"
-                                    data-label-plural="valores"
-                                    data-count="{{ $option->features->count() }}">
-                                    {{ $option->features->count() }} {{ Str::plural('valor', $option->features->count()) }}
+                                <i class="ri-price-tag-2-fill"></i>
+                                <span data-role="feature-count" data-label-singular="valor"
+                                    data-label-plural="valores" data-count="{{ $option->features->count() }}">
+                                    {{ $option->features->count() }}
+                                    {{ Str::plural('valores', $option->features->count()) }}
                                 </span>
                             </span>
                             <span data-role="updated-wrapper">
-                                <i class="ri-time-line"></i>
+                                <i class="ri-time-fill"></i>
                                 <span data-role="updated-text">
                                     Actualizado {{ optional($option->updated_at)->diffForHumans() ?? 'sin fecha' }}
                                 </span>
@@ -174,7 +186,10 @@
                     const card = document.querySelector(`[data-option-slug="${highlightSlug}"]`);
                     if (card) {
                         card.classList.add('is-highlighted');
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
                         setTimeout(() => card.classList.remove('is-highlighted'), 3200);
                     }
                 }

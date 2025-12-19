@@ -400,6 +400,9 @@ class FamilyController extends Controller
             'updated_at' => $family->updated_at
                 ? $family->updated_at->format('d/m/Y H:i')
                 : '-',
+            'updated_at_human' => $family->updated_at
+                ? $family->updated_at->diffForHumans()
+                : '—',
         ]);
     }
 

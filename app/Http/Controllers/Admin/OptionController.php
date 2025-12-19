@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Feature;
 use App\Models\Option;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -185,10 +184,18 @@ class OptionController extends Controller
         ], 201);
     }
 
-    public function destroyFeature(Option $option, Feature $feature)
+    public function destroyFeature(Option $option, $featureId)
     {
-        if ($feature->option_id !== $option->id) {
-            abort(404);
+        $feature = $option->features()->find($featureId);
+
+        if (!$feature) {
+            return response()->json([
+                'message' => 'El valor ya no se encuentra disponible.',
+                'meta' => [
+                    'count' => $option->features()->count(),
+                    'updated_human' => optional($option->updated_at)->diffForHumans() ?? 'sin fecha',
+                ],
+            ]);
         }
 
         $feature->delete();

@@ -1,6 +1,6 @@
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-success"><i class="ri-add-circle-line"></i></div>
+        <div class="page-icon card-success"><i class="ri-add-large-line"></i></div>
         Nueva Familia
     </x-slot>
     <x-slot name="action">

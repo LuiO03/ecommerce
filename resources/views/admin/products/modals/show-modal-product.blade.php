@@ -457,7 +457,7 @@
             const safeCreatedBy = escapeHtml(data.created_by_name ?? 'Sistema');
             const safeUpdatedBy = escapeHtml(data.updated_by_name ?? '—');
             const safeCreatedAt = escapeHtml(data.created_at ?? '—');
-            const safeUpdatedAt = escapeHtml(data.updated_at ?? '—');
+            const safeUpdatedAt = escapeHtml(data.updated_at_human ?? data.updated_at ?? '—');
 
             $('#product-id').text(data.id ?? '—');
             $('#product-slug').html(`<span class="badge badge-primary slug-mono">${safeSlug}</span>`);

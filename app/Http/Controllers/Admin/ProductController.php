@@ -147,6 +147,7 @@ class ProductController extends Controller
                 : '—',
             'created_at' => optional($product->created_at)?->format('d/m/Y H:i') ?? '—',
             'updated_at' => optional($product->updated_at)?->format('d/m/Y H:i') ?? '—',
+            'updated_at_human' => optional($product->updated_at)?->diffForHumans() ?? '—',
         ]);
     }
 

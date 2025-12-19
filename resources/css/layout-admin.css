@@ -191,7 +191,7 @@
 }
 
 .sidebar-link span{
-    text-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .sidebar-sublink.active, .sidebar-sublink.active:hover {

@@ -1,0 +1,491 @@
+/* === SECCIÓN DE CARGA DE IMAGEN === */
+
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.image-preview-zone {
+    width: 100%;
+    min-height: 320px;
+    border: 3px dashed var(--color-input-border);
+    border-radius: var(--radius-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-main-bg);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.image-preview-zone:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-sidebar);
+}
+
+.image-preview-zone.drag-over {
+    border-color: var(--color-accent);
+    background-color: var(--color-success-pastel);
+    color: var(--color-success);
+    transform: scale(1.02);
+}
+
+.image-preview-zone.has-image {
+    border: 3px dotted var(--color-accent);
+    cursor: default;
+    align-items: center;
+    justify-content: center;
+    min-height: unset;
+}
+
+.image-preview-zone.has-image:hover {
+    background-color: var(--color-input-bg);
+}
+
+/* Placeholder */
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    color: var(--color-input-placeholder);
+    text-align: center;
+    padding: 20px;
+}
+
+.image-placeholder i {
+    font-size: 5rem;
+    color: var(--color-input-border);
+}
+
+.image-placeholder p {
+    font-size: var(--font-size-h5);
+    font-weight: bolder;
+    margin: 0;
+    font-family: var(--font-secondary);
+    color: var(--color-text);
+}
+
+.image-placeholder span {
+    font-size: var(--font-size-xs);
+    color: var(--color-input-placeholder);
+}
+
+/* Error de imagen */
+.image-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    color: var(--color-danger);
+    text-align: center;
+    padding: 20px;
+}
+
+.image-error i {
+    font-size: 5rem;
+    color: var(--color-danger);
+}
+
+.image-error p {
+    font-size: var(--font-size-h5);
+    font-weight: bolder;
+    margin: 0;
+    font-family: var(--font-secondary);
+    color: var(--color-danger);
+}
+
+.image-error span {
+    font-size: var(--font-size-xs);
+    color: var(--color-text);
+}
+
+/* Vista previa de imagen */
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 400px;
+    border-radius: inherit;
+}
+
+.image-preview-zone.has-image .image-preview {
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+}
+/* Animación de zoom pulsante */
+.image-pulse {
+    animation: imagePulse 25s ease-in-out infinite;
+}
+
+@keyframes imagePulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+
+/* === OVERLAY HOVER === */
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: none;
+    align-items: start;
+    justify-content: end;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+}
+
+.image-preview-zone.has-image:hover .image-overlay {
+    opacity: 1;
+}
+
+.overlay-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: var(--color-info);
+    color: white;
+    border: none;
+    border-radius: var(--radius-element);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: bold;
+}
+
+.overlay-btn i {
+    font-size: 1.2rem;
+}
+
+.overlay-btn:hover {
+    background: var(--color-inverse);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-material);
+    color: var(--color-normal);
+}
+
+.overlay-btn-danger {
+    background: var(--color-danger);
+    border: 1px solid transparent;
+}
+
+.overlay-btn-danger:hover {
+    border-color: white;
+}
+
+/* Botones de acción */
+.image-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Nombre de archivo temporal */
+.image-filename {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--radius-input);
+    font-size: var(--font-size-xs);
+    color: var(--color-text);
+    font-family: var(--font-secondary);
+}
+
+.image-filename i {
+    font-size: 1.2rem;
+}
+
+.image-filename span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+/* Ícono dentro del botón */
+.upload-icon {
+    font-size: 1.3rem;
+    margin-left: 8px;
+    color: var(--color-input-border);
+    transition: color 0.2s ease;
+}
+
+.file-label:hover .upload-icon {
+    color: var(--color-accent);
+}
+
+/* Texto cuando se selecciona un archivo */
+.file-label.selected {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+/* Mostrar nombre del archivo */
+.file-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* === Zona de carga con Dropzone personalizada === */
+
+.custom-dropzone {
+    border: 3px dashed var(--color-input-border);
+    padding: 35px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    background: var(--color-bg);
+}
+
+.custom-dropzone.dragover {
+    border-color: var(--color-success);
+    background: var(--color-success-pastel);
+    transform: scale(1.02);
+}
+
+.custom-dropzone:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-sidebar);
+}
+
+.custom-dropzone i {
+    font-size: 3rem;
+    color: var(--color-input-border);
+}
+
+.custom-dropzone p {
+    font-size: var(--font-size-h5);
+    font-weight: bolder;
+    margin: 0;
+    font-family: var(--font-secondary);
+    color: var(--color-text);
+}
+
+.preview-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.preview-item {
+    position: relative;
+    height: 140px;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-material);
+    border: 2px solid whitesmoke;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+/* Blur al hacer hover */
+.preview-item:hover img {
+    filter: blur(2px) brightness(0.7);
+}
+
+/* Overlay semi-transparente */
+.preview-item .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: .3s ease;
+    border-radius: var(--radius-card);
+}
+
+/* Mostrar overlay */
+.preview-item:hover .overlay {
+    opacity: 1;
+}
+
+/* Peso */
+.overlay .file-size {
+    color: white;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.overlay-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.overlay .mark-main-btn {
+    background: var(--color-orange);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.overlay .mark-main-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.overlay .mark-main-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* Botón eliminar */
+.overlay .delete-btn {
+    background: var(--color-danger);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.overlay .delete-btn:hover {
+    background: rgba(255, 0, 0, 0.9);
+}
+
+.primary-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--color-orange);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: var(--shadow-material);
+    z-index: 12;
+}
+
+.primary-badge i {
+    font-size: 14px;
+}
+
+.image-wrapper {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    position: relative;
+    transition: .25s;
+}
+
+.image-wrapper:hover {
+    transform: scale(1.05);
+}
+
+/* Botón eliminar */
+.remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(255, 0, 0, 0.85);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 17px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.remove-btn:hover {
+    background: red;
+    transform: scale(1.1);
+}
+
+.image-not-found-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-danger);
+    background: var(--color-danger-pastel);
+    height: 140px;
+    padding: 10px;
+    text-align: center;
+    border-radius: var(--radius-card);
+}
+
+.image-not-found-block i {
+    font-size: 32px;
+}
+
+.image-not-found-block p{
+    font-weight: bolder;
+    font-size: var(--font-size-xs);
+    line-height: 1.1;
+}
+
+/* Animaciones */
+.fade-in {
+    animation: fadeIn .25s ease forwards;
+}
+
+.fade-out {
+    animation: fadeOut .2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(.9); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(.9); }
+}
+

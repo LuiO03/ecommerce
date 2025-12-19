@@ -1,6 +1,6 @@
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-success"><i class="ri-add-circle-line"></i></div>
+        <div class="page-icon card-success"><i class="ri-add-large-line"></i></div>
         Nuevo Usuario
     </x-slot>
     <x-slot name="action">
@@ -199,7 +199,7 @@
                 </span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
-            <!-- boton para limpiar contenido -->
+            <!-- botón para limpiar contenido -->
             <button type="reset" class="boton-form boton-warning">
                 <span class="boton-form-icon"> <i class="ri-paint-brush-fill"></i> </span>
                 <span class="boton-form-text">Limpiar</span>

@@ -4,8 +4,8 @@
 
 <x-admin-layout>
     <x-slot name="title">
-        <div class="page-icon card-success"><i class="ri-slideshow-3-line"></i></div>
-        Nueva opción
+        <div class="page-icon card-success"><i class="ri-add-large-line"></i></div>
+        Nueva Opción
     </x-slot>
     <x-slot name="action">
         <a href="{{ route('admin.options.index') }}" class="boton boton-secondary">

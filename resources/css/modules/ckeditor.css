@@ -45,7 +45,7 @@
 
 .ck-editor{
     border: 2px solid var(--color-input-border) !important;
-    border-radius: var(--radius-element) !important;
+    border-radius: var(--radius-input) !important;
     overflow: hidden;
 }
 

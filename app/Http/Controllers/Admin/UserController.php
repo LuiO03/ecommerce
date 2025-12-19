@@ -391,6 +391,7 @@ class UserController extends Controller
             'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
             'created_at' => $user->created_at?->format('d/m/Y H:i') ?? '—',
             'updated_at' => $user->updated_at?->format('d/m/Y H:i') ?? '—',
+            'updated_at_human' => $user->updated_at?->diffForHumans() ?? '—',
         ]);
     }
 }

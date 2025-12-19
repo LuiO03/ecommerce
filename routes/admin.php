@@ -59,7 +59,9 @@ Route::controller(CompanySettingController::class)->group(function () {
 });
 
 // OPTIONS & FEATURES
-Route::controller(OptionController::class)->group(function () {
+Route::controller(OptionController::class)
+    ->scopeBindings()
+    ->group(function () {
     Route::get('/options', 'index')->name('admin.options.index');
     Route::get('/options/create', 'create')->name('admin.options.create');
     Route::post('/options', 'store')->name('admin.options.store');
@@ -68,7 +70,7 @@ Route::controller(OptionController::class)->group(function () {
     Route::delete('/options/{option}', 'destroy')->name('admin.options.destroy');
     Route::post('/options/{option}/features', 'storeFeature')->name('admin.options.features.store');
     Route::delete('/options/{option}/features/{feature}', 'destroyFeature')->name('admin.options.features.destroy');
-});
+    });
 
 // FAMILIES
 Route::controller(FamilyController::class)->group(function () {

@@ -357,6 +357,7 @@ class PostController extends Controller
             'reviewed_by_name' => $post->reviewer ? $post->reviewer->name.' '.$post->reviewer->last_name : 'Sin revisión',
             'created_at' => $post->created_at->format('d/m/Y H:i') ?? '—',
             'updated_at' => $post->updated_at->format('d/m/Y H:i') ?? '—',
+            'updated_at_human' => $post->updated_at?->diffForHumans() ?? '—',
             'reviewed_at' => $post->reviewed_at?->format('d/m/Y H:i') ?? '—',
         ]);
     }

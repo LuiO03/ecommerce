@@ -502,10 +502,12 @@
                 </div>
             `);
 
+            const updatedLabel = escapeHtml(data.updated_at_human ?? data.updated_at ?? '—');
+
             $('#post-updated-by').html(`
                 <div class="show-cell-content">
                     <span class="font-bold">${escapeHtml(data.updated_by_name ?? '—')}</span>
-                    <span class="show-date"><i class="ri-time-fill"></i> ${escapeHtml(data.updated_at ?? '—')}</span>
+                    <span class="show-date"><i class="ri-time-fill"></i> ${updatedLabel}</span>
                 </div>
             `);
 

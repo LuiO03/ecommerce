@@ -77,6 +77,7 @@ class CategoryController extends Controller
             'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
             'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
             'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
+            'updated_at_human' => $category->updated_at ? $category->updated_at->diffForHumans() : '—',
         ]);
     }
 
