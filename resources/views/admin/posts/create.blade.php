@@ -31,38 +31,104 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-row">
-            <!-- === Imagen principal === -->
+            <div class="form-row-fit">
+            <!-- === Imágenes múltiples === -->
             <div class="image-upload-section">
-                <label class="label-form">Portada del post</label>
-                <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                    data-validate="required|image|maxSizeMB:2">
-
-                <div class="image-preview-zone" id="imagePreviewZone">
-                    <div class="image-placeholder" id="imagePlaceholder">
-                        <i class="ri-image-add-line"></i>
-                        <p>Arrastra una imagen aquí</p>
-                        <span>o haz clic para seleccionar</span>
-                    </div>
-                    <img id="imagePreview" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
-                    <div class="image-overlay" id="imageOverlay" style="display: none;">
-                        <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
-                            <i class="ri-upload-2-line"></i>
-                            <span>Cambiar</span>
-                        </button>
-                        <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
-                            title="Eliminar imagen">
-                            <i class="ri-delete-bin-line"></i>
-                            <span>Eliminar</span>
-                        </button>
-                    </div>
+                <label class="label-form">Imágenes del post</label>
+                <div class="custom-dropzone" id="customDropzone">
+                    <i class="ri-multi-image-line"></i>
+                    <p>Arrastra imágenes aquí o haz clic</p>
+                    <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden
+                        data-validate="image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                 </div>
-                <!-- Nombre del archivo (temporal) -->
-                <div class="image-filename" id="imageFilename" style="display: none;">
-                    <i class="ri-file-image-line"></i>
-                    <span id="filenameText"></span>
-                </div>
+                <div id="previewContainer" class="preview-container"></div>
             </div>
+            <script>
+                const dropzone = document.getElementById("customDropzone");
+                const input = document.getElementById("imageInput");
+                const previewContainer = document.getElementById("previewContainer");
+
+                let selectedFiles = [];
+
+                dropzone.addEventListener("click", () => input.click());
+
+                dropzone.addEventListener("dragover", (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add("dragover");
+                });
+
+                dropzone.addEventListener("dragleave", () => {
+                    dropzone.classList.remove("dragover");
+                });
+
+                dropzone.addEventListener("drop", (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove("dragover");
+                    handleFiles(e.dataTransfer.files);
+                });
+
+                input.addEventListener("change", (e) => handleFiles(e.target.files));
+
+                function handleFiles(files) {
+                    [...files].forEach(file => {
+                        if (!file.type.startsWith("image/")) return;
+                        selectedFiles.push(file);
+                        previewImage(file);
+                    });
+                }
+
+                function previewImage(file) {
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        const div = document.createElement("div");
+                        div.classList.add("preview-item");
+
+                        // Calcular peso en KB o MB
+                        let size = file.size / 1024; // KB
+                        size = size > 1024 ?
+                            (size / 1024).toFixed(2) + " MB" :
+                            size.toFixed(1) + " KB";
+
+                        div.innerHTML = `
+                                <img src="${e.target.result}">
+                                <div class="overlay">
+                                    <span class="file-size">${size}</span>
+                                    <button class="delete-btn" title="Eliminar imagen">
+                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                        <span class="boton-text">Eliminar</span>
+                                    </button>
+                                </div>
+                            `;
+
+                        // Click eliminar
+                        div.querySelector(".delete-btn").addEventListener("click", (event) => {
+                            event.stopPropagation();
+                            selectedFiles = selectedFiles.filter(f => f !== file);
+                            div.remove();
+                        });
+
+                        previewContainer.appendChild(div);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+
+
+                let deletedImages = [];
+                document.querySelectorAll('.delete-existing-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.dataset.id;
+
+                        deletedImages.push(id);
+
+                        document.getElementById("deletedImages").value = JSON.stringify(deletedImages);
+
+                        // Eliminar visualmente
+                        btn.closest('.preview-item').remove();
+                    });
+                });
+            </script>
         </div>
         <div class="form-row-fit">
             <!-- === Título === -->
@@ -133,12 +199,15 @@
 
                     <div class="switch-slider"></div>
 
-                    <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i> Sí</label>
-                    <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i> No</label>
+                    <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i>
+                        Sí</label>
+                    <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
+                        No</label>
                 </div>
             </div>
         </div>
-        <div class="form-row">
+
+        <div class="form-row-fit">
             <!-- === Contenido === -->
             <div class="input-group">
                 <label for="content" class="label-form">
@@ -188,32 +257,31 @@
                 });
             </script>
         </div>
-        <div class="form-columns-row">
-            <div class="form-column">
-                <div class="input-group">
-                    <label class="label-form">Tags</label>
 
-                    <div class="input-icon-container">
-                        <i class="ri-focus-2-line input-icon"></i>
+        <div class="form-row-fill">
+            <div class="input-group">
+                <label class="label-form">Tags</label>
 
-                        <select id="tagSelect" class="select-form">
-                            <option value="">Selecciona un tag</option>
+                <div class="input-icon-container">
+                    <i class="ri-focus-2-line input-icon"></i>
 
-                            @foreach ($tags as $tag)
-                                <option value="{{ $tag->id }}"
-                                    {{ collect(old('tags'))->contains($tag->id) ? 'selected' : '' }}>
-                                    {{ $tag->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <select id="tagSelect" class="select-form">
+                        <option value="">Selecciona un tag</option>
 
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
-                    <!-- Contenedor donde aparecerán los tags seleccionados -->
-                    <div id="tagContainer" class="tag-container"></div>
-                    <!-- Inputs ocultos para enviar al backend -->
-                    <div id="tagHiddenInputs"></div>
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->id }}"
+                                {{ collect(old('tags'))->contains($tag->id) ? 'selected' : '' }}>
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <i class="ri-arrow-down-s-line select-arrow"></i>
                 </div>
+                <!-- Contenedor donde aparecerán los tags seleccionados -->
+                <div id="tagContainer" class="tag-container"></div>
+                <!-- Inputs ocultos para enviar al backend -->
+                <div id="tagHiddenInputs"></div>
             </div>
             <script>
                 document.addEventListener("DOMContentLoaded", () => {
@@ -285,105 +353,6 @@
                     }
                 });
             </script>
-
-            <div class="form-column">
-                <!-- === Imágenes múltiples === -->
-                <div class="image-upload-section">
-                    <label class="label-form">Imágenes adicionales</label>
-                    <div class="custom-dropzone" id="customDropzone">
-                        <i class="ri-multi-image-line"></i>
-                        <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden data-validate="image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
-                    </div>
-                    <div id="previewContainer" class="preview-container"></div>
-                </div>
-                <script>
-                    const dropzone = document.getElementById("customDropzone");
-                    const input = document.getElementById("imageInput");
-                    const previewContainer = document.getElementById("previewContainer");
-
-                    let selectedFiles = [];
-
-                    dropzone.addEventListener("click", () => input.click());
-
-                    dropzone.addEventListener("dragover", (e) => {
-                        e.preventDefault();
-                        dropzone.classList.add("dragover");
-                    });
-
-                    dropzone.addEventListener("dragleave", () => {
-                        dropzone.classList.remove("dragover");
-                    });
-
-                    dropzone.addEventListener("drop", (e) => {
-                        e.preventDefault();
-                        dropzone.classList.remove("dragover");
-                        handleFiles(e.dataTransfer.files);
-                    });
-
-                    input.addEventListener("change", (e) => handleFiles(e.target.files));
-
-                    function handleFiles(files) {
-                        [...files].forEach(file => {
-                            if (!file.type.startsWith("image/")) return;
-                            selectedFiles.push(file);
-                            previewImage(file);
-                        });
-                    }
-
-                    function previewImage(file) {
-                        const reader = new FileReader();
-
-                        reader.onload = (e) => {
-                            const div = document.createElement("div");
-                            div.classList.add("preview-item");
-
-                            // Calcular peso en KB o MB
-                            let size = file.size / 1024; // KB
-                            size = size > 1024 ?
-                                (size / 1024).toFixed(2) + " MB" :
-                                size.toFixed(1) + " KB";
-
-                            div.innerHTML = `
-                                <img src="${e.target.result}">
-                                <div class="overlay">
-                                    <span class="file-size">${size}</span>
-                                    <button class="delete-btn" title="Eliminar imagen">
-                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                        <span class="boton-text">Eliminar</span>
-                                    </button>
-                                </div>
-                            `;
-
-                            // Click eliminar
-                            div.querySelector(".delete-btn").addEventListener("click", (event) => {
-                                event.stopPropagation();
-                                selectedFiles = selectedFiles.filter(f => f !== file);
-                                div.remove();
-                            });
-
-                            previewContainer.appendChild(div);
-                        };
-
-                        reader.readAsDataURL(file);
-                    }
-
-
-                    let deletedImages = [];
-                    document.querySelectorAll('.delete-existing-btn').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const id = btn.dataset.id;
-
-                            deletedImages.push(id);
-
-                            document.getElementById("deletedImages").value = JSON.stringify(deletedImages);
-
-                            // Eliminar visualmente
-                            btn.closest('.preview-item').remove();
-                        });
-                    });
-                </script>
-            </div>
         </div>
 
         <div class="form-footer">
@@ -451,7 +420,8 @@
                             if (!errorEl) {
                                 errorEl = document.createElement('div');
                                 errorEl.className = 'input-error-message';
-                                errorEl.innerHTML = '<i class="ri-error-warning-line"></i> <span class="error-text"></span>';
+                                errorEl.innerHTML =
+                                    '<i class="ri-error-warning-line"></i> <span class="error-text"></span>';
                                 group.appendChild(errorEl);
                             }
                             const textEl = errorEl.querySelector('.error-text');
@@ -459,8 +429,10 @@
                                 // Determinar mensaje según contenido (vacío vs. insuficiente)
                                 const div = document.createElement('div');
                                 div.innerHTML = textarea.value || '';
-                                const plain = (div.textContent || div.innerText || '').replace(/\u00A0|&nbsp;/g, ' ').trim();
-                                textEl.textContent = plain.length === 0 ? 'Este campo es obligatorio' : 'Debe tener al menos 10 caracteres';
+                                const plain = (div.textContent || div.innerText || '').replace(/\u00A0|&nbsp;/g,
+                                    ' ').trim();
+                                textEl.textContent = plain.length === 0 ? 'Este campo es obligatorio' :
+                                    'Debe tener al menos 10 caracteres';
                             }
                             errorEl.style.display = 'flex';
                         }

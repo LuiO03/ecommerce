@@ -38,69 +38,130 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <!-- ================= IMAGEN PRINCIPAL ================= -->
+
         <div class="form-row-fit">
-            <!-- === Imagen === -->
+            <!-- ================= IMÁGENES ================= -->
             <div class="image-upload-section">
-                <label class="label-form">Portada del post</label>
-                <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                    data-validate="{{ $hasExistingImage ? 'image|maxSizeMB:2' : 'required|image|maxSizeMB:2' }}">
-                <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
+                <label class="label-form">Imágenes del post</label>
 
-                <!-- Zona de vista previa -->
-                <div class="image-preview-zone {{ $hasExistingImage ? 'has-image' : '' }}" id="imagePreviewZone">
-                    @if ($hasExistingImage)
-                        <img id="imagePreview" class="image-preview image-pulse"
-                            src="{{ asset('storage/' . $mainImagePath) }}" alt="{{ $post->title }}">
-                        <!-- Placeholder oculto inicialmente (se mostrará al eliminar) -->
-                        <div class="image-placeholder" id="imagePlaceholder" style="display: none;">
-                            <i class="ri-image-add-line"></i>
-                            <p>Arrastra una imagen aquí</p>
-                            <span>o haz clic para seleccionar</span>
-                        </div>
-                    @elseif($mainImagePath)
-                        <!-- Imagen no encontrada -->
-                        <div class="image-error" id="imageError">
-                            <i class="ri-folder-close-line"></i>
-                            <p>Imagen no encontrada</p>
-                            <span>Haz clic para subir una nueva</span>
-                        </div>
-                    @else
-                        <!-- Sin imagen -->
-                        <div class="image-placeholder" id="imagePlaceholder">
-                            <i class="ri-image-add-line"></i>
-                            <p>Arrastra una imagen aquí</p>
-                            <span>o haz clic para seleccionar</span>
-                        </div>
-                    @endif
-
-                    <!-- Imagen nueva cargada (oculta inicialmente) -->
-                    <img id="imagePreviewNew" class="image-preview image-pulse" style="display: none;"
-                        alt="Vista previa">
-
-                    <!-- Overlay único para todas las imágenes -->
-                    <div class="image-overlay" id="imageOverlay" style="display: none;">
-                        <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
-                            <i class="ri-upload-2-line"></i>
-                            <span>Cambiar</span>
-                        </button>
-                        <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
-                            title="Eliminar imagen">
-                            <i class="ri-delete-bin-line"></i>
-                            <span>Eliminar</span>
-                        </button>
-                    </div>
+                <div class="custom-dropzone" id="customDropzone">
+                    <i class="ri-multi-image-line"></i>
+                    <p>Arrastra imágenes aquí o haz clic</p>
+                    <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden>
                 </div>
 
-                <!-- Nombre del archivo -->
-                <div class="image-filename" id="imageFilename"
-                    style="{{ $hasExistingImage ? 'display: flex;' : 'display: none;' }}">
-                    <i class="ri-file-image-line"></i>
-                    <span id="filenameText">{{ $mainImagePath ? basename($mainImagePath) : '' }}</span>
+                <div id="previewContainer" class="preview-container">
+                    @foreach ($post->images as $img)
+                        @php
+                            $fullPath = public_path('storage/' . $img->path);
+                            $exists = file_exists($fullPath);
+                        @endphp
+
+                        <div class="preview-item existing-image">
+                            @if ($exists)
+                                {{-- Imagen encontrada --}}
+                                <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
+                            @else
+                                {{-- Imagen no encontrada --}}
+                                <i class="ri-file-close-line"></i>
+                                <p>Imagen no encontrada</p>
+                            @endif
+                            <div class="overlay">
+                                <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
+                                <button type="button" class="delete-btn" title="Eliminar imagen"
+                                    data-id="{{ $img->id }}">
+                                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                    <span class="boton-text">Eliminar</span>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
+
+                <input type="hidden" name="deletedImages" id="deletedImages">
             </div>
-        </div>
 
+            <script>
+                const dropzone = document.getElementById("customDropzone");
+                const input = document.getElementById("imageInput");
+                const previewContainer = document.getElementById("previewContainer");
+
+                let selectedFiles = [];
+                let deletedImages = [];
+
+                dropzone.addEventListener("click", () => input.click());
+                dropzone.addEventListener("dragover", e => {
+                    e.preventDefault();
+                    dropzone.classList.add("dragover");
+                });
+                dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+                dropzone.addEventListener("drop", e => {
+                    e.preventDefault();
+                    dropzone.classList.remove("dragover");
+                    handleFiles(e.dataTransfer.files);
+                });
+                input.addEventListener("change", e => handleFiles(e.target.files));
+
+                function handleFiles(files) {
+                    [...files].forEach(file => {
+                        if (!file.type.startsWith("image/")) return;
+                        selectedFiles.push(file);
+                        previewImage(file);
+                    });
+                }
+
+                function previewImage(file) {
+                    const reader = new FileReader();
+
+                    reader.onload = e => {
+                        const div = document.createElement("div");
+                        div.classList.add("preview-item");
+
+                        let size = file.size / 1024;
+                        size = size > 1024 ? (size / 1024).toFixed(2) + " MB" : size.toFixed(1) + " KB";
+
+                        div.innerHTML = `
+                                <img src="${e.target.result}">
+                                <div class="overlay">
+                                    <span class="file-size">${size}</span>
+                                    <button class="delete-btn" title="Eliminar imagen">
+                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                        <span class="boton-text">Eliminar</span>
+                                    </button>
+                                </div>
+                            `;
+
+                        div.querySelector(".delete-btn").addEventListener("click", ev => {
+                            ev.stopPropagation();
+                            selectedFiles = selectedFiles.filter(f => f !== file);
+                            div.remove();
+                        });
+
+                        previewContainer.appendChild(div);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+
+                document.querySelectorAll(".delete-existing-btn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const id = btn.dataset.id;
+                        deletedImages.push(id);
+
+                        document.getElementById("deletedImages").value =
+                            JSON.stringify(deletedImages);
+
+                        btn.closest(".preview-item").remove();
+                    });
+                });
+
+                // imagen principal eliminar
+                document.getElementById("removeImageBtn")?.addEventListener("click", () => {
+                    document.getElementById("deleteImage").value = 1;
+                    document.getElementById("imagePreview").style.display = "none";
+                });
+            </script>
+        </div>
         <!-- ================= CAMPOS PRINCIPALES ================= -->
         <div class="form-row-fill">
             <!-- Título -->
@@ -218,44 +279,41 @@
             </script>
         </div>
 
-        <div class="form-columns-row">
+        <div class="form-row-fill">
             <!-- ================= TAGS ================= -->
-            <div class="form-column">
-                <div class="input-group">
-                    <label class="label-form">Tags</label>
+            <div class="input-group">
+                <label class="label-form">Tags</label>
 
-                    <div class="input-icon-container">
-                        <i class="ri-price-tag-3-line input-icon"></i>
+                <div class="input-icon-container">
+                    <i class="ri-price-tag-3-line input-icon"></i>
 
-                        <select id="tagSelect" class="select-form">
-                            <option value="">Selecciona un tag</option>
+                    <select id="tagSelect" class="select-form">
+                        <option value="">Selecciona un tag</option>
 
-                            @foreach ($tags as $tag)
-                                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                            @endforeach
-                        </select>
-
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
-
-                    <div id="tagContainer" class="tag-container">
-                        @foreach ($post->tags as $tag)
-                            <div class="tag-pill" data-id="{{ $tag->id }}">
-                                {{ $tag->name }}
-                                <i class="ri-close-line remove-tag"></i>
-                            </div>
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                         @endforeach
-                    </div>
+                    </select>
 
-                    <div id="tagHiddenInputs">
-                        @foreach ($post->tags as $tag)
-                            <input type="hidden" name="tags[]" value="{{ $tag->id }}"
-                                id="tag-hidden-{{ $tag->id }}">
-                        @endforeach
-                    </div>
+                    <i class="ri-arrow-down-s-line select-arrow"></i>
+                </div>
+
+                <div id="tagContainer" class="tag-container">
+                    @foreach ($post->tags as $tag)
+                        <div class="tag-pill" data-id="{{ $tag->id }}">
+                            {{ $tag->name }}
+                            <i class="ri-close-line remove-tag"></i>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div id="tagHiddenInputs">
+                    @foreach ($post->tags as $tag)
+                        <input type="hidden" name="tags[]" value="{{ $tag->id }}"
+                            id="tag-hidden-{{ $tag->id }}">
+                    @endforeach
                 </div>
             </div>
-
             <script>
                 document.addEventListener("DOMContentLoaded", () => {
                     const select = document.getElementById("tagSelect");
@@ -305,130 +363,6 @@
                     });
                 });
             </script>
-
-            <!-- ================= IMÁGENES ADICIONALES ================= -->
-            <div class="form-column">
-                <div class="image-upload-section">
-                    <label class="label-form">Imágenes adicionales</label>
-
-                    <div class="custom-dropzone" id="customDropzone">
-                        <i class="ri-multi-image-line"></i>
-                        <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden>
-                    </div>
-
-                    <div id="previewContainer" class="preview-container">
-                        @foreach ($post->images as $img)
-                            @php
-                                $fullPath = public_path('storage/' . $img->path);
-                                $exists = file_exists($fullPath);
-                            @endphp
-
-                            <div class="preview-item existing-image">
-                                @if ($exists)
-                                    {{-- Imagen encontrada --}}
-                                    <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
-                                @else
-                                    {{-- Imagen no encontrada --}}
-                                    <i class="ri-file-close-line"></i>
-                                    <p>Imagen no encontrada</p>
-                                @endif
-                                <div class="overlay">
-                                    <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
-                                    <button type="button" class="delete-btn" title="Eliminar imagen"
-                                        data-id="{{ $img->id }}">
-                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                        <span class="boton-text">Eliminar</span>
-                                    </button>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <input type="hidden" name="deletedImages" id="deletedImages">
-                </div>
-
-                <script>
-                    const dropzone = document.getElementById("customDropzone");
-                    const input = document.getElementById("imageInput");
-                    const previewContainer = document.getElementById("previewContainer");
-
-                    let selectedFiles = [];
-                    let deletedImages = [];
-
-                    dropzone.addEventListener("click", () => input.click());
-                    dropzone.addEventListener("dragover", e => {
-                        e.preventDefault();
-                        dropzone.classList.add("dragover");
-                    });
-                    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
-                    dropzone.addEventListener("drop", e => {
-                        e.preventDefault();
-                        dropzone.classList.remove("dragover");
-                        handleFiles(e.dataTransfer.files);
-                    });
-                    input.addEventListener("change", e => handleFiles(e.target.files));
-
-                    function handleFiles(files) {
-                        [...files].forEach(file => {
-                            if (!file.type.startsWith("image/")) return;
-                            selectedFiles.push(file);
-                            previewImage(file);
-                        });
-                    }
-
-                    function previewImage(file) {
-                        const reader = new FileReader();
-
-                        reader.onload = e => {
-                            const div = document.createElement("div");
-                            div.classList.add("preview-item");
-
-                            let size = file.size / 1024;
-                            size = size > 1024 ? (size / 1024).toFixed(2) + " MB" : size.toFixed(1) + " KB";
-
-                            div.innerHTML = `
-                                <img src="${e.target.result}">
-                                <div class="overlay">
-                                    <span class="file-size">${size}</span>
-                                    <button class="delete-btn" title="Eliminar imagen">
-                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                        <span class="boton-text">Eliminar</span>
-                                    </button>
-                                </div>
-                            `;
-
-                            div.querySelector(".delete-btn").addEventListener("click", ev => {
-                                ev.stopPropagation();
-                                selectedFiles = selectedFiles.filter(f => f !== file);
-                                div.remove();
-                            });
-
-                            previewContainer.appendChild(div);
-                        };
-
-                        reader.readAsDataURL(file);
-                    }
-
-                    document.querySelectorAll(".delete-existing-btn").forEach(btn => {
-                        btn.addEventListener("click", () => {
-                            const id = btn.dataset.id;
-                            deletedImages.push(id);
-
-                            document.getElementById("deletedImages").value =
-                                JSON.stringify(deletedImages);
-
-                            btn.closest(".preview-item").remove();
-                        });
-                    });
-
-                    // imagen principal eliminar
-                    document.getElementById("removeImageBtn")?.addEventListener("click", () => {
-                        document.getElementById("deleteImage").value = 1;
-                        document.getElementById("imagePreview").style.display = "none";
-                    });
-                </script>
-            </div>
         </div>
 
         <!-- ================= FOOTER ================= -->

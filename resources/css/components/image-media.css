@@ -294,6 +294,13 @@
     margin-top: 8px;
 }
 
+/* grid para moviles */
+@media (max-width: 600px) {
+    .preview-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+
 /* Vista previa de cada imagen como también imagen no encontrada */
 .preview-item {
     position: relative;
@@ -323,6 +330,12 @@
     font-weight: bolder;
     font-size: var(--font-size-xs);
     line-height: 1.1;
+    padding: 5px;
+}
+
+.preview-item.primary-main {
+    grid-column: span 2;
+    grid-row: span 2;
 }
 
 .preview-item.dragging {
@@ -369,6 +382,10 @@
 .drag-handle.drag-disabled {
     cursor: default;
     opacity: 0.7;
+}
+
+.preview-item.primary-main .drag-handle {
+    display: none;
 }
 
 .preview-item img {

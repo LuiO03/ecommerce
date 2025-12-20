@@ -330,10 +330,13 @@
                         badge.style.display = isActive ? 'flex' : 'none';
                         markBtn.disabled = isActive;
                         dragHandle.draggable = !isActive;
+
                         if (isActive) {
                             dragHandle.classList.add('drag-disabled');
+                            item.classList.add('primary-main');
                         } else {
                             dragHandle.classList.remove('drag-disabled');
+                            item.classList.remove('primary-main');
                         }
                     });
                 };
