@@ -313,19 +313,7 @@
     cursor: grabbing;
 }
 
-.preview-item.drag-over-before,
-.preview-item.drag-over-after {
-    border-color: var(--color-accent);
-    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
-}
 
-.preview-item.drag-over-before {
-    transform: translateY(-8px);
-}
-
-.preview-item.drag-over-after {
-    transform: translateY(8px);
-}
 
 .drag-handle {
     position: absolute;

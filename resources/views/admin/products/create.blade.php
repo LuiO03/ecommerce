@@ -184,13 +184,6 @@
                 let galleryFiles = [];
                 let primaryState = null; // { key }
                 let currentDragKey = null;
-                let dropTargetState = null; // { key, isBefore }
-
-                const clearDragIndicators = () => {
-                    galleryPreviewContainer.querySelectorAll('.preview-item').forEach(item => {
-                        item.classList.remove('drag-over-before', 'drag-over-after');
-                    });
-                };
 
                 const refreshGalleryInput = () => {
                     const dataTransfer = new DataTransfer();
@@ -286,7 +279,6 @@
                         event.stopPropagation();
                         item.classList.remove('dragging');
                         currentDragKey = null;
-                        clearDragIndicators();
                     });
 
                     item.querySelector('.delete-btn').addEventListener('click', (event) => {
@@ -353,108 +345,46 @@
                 });
                 galleryInput.addEventListener('change', (event) => handleGalleryFiles(event.target.files));
 
-                galleryPreviewContainer.addEventListener('dragenter', (event) => {
-                    if (!currentDragKey) {
-                        return;
-                    }
-                    event.preventDefault();
-                });
-
                 galleryPreviewContainer.addEventListener('dragover', (event) => {
-                    if (!currentDragKey) {
-                        return;
-                    }
                     event.preventDefault();
-                    const targetItem = event.target.closest('.preview-item');
-                    clearDragIndicators();
-                    dropTargetState = null;
-                    if (targetItem && targetItem.dataset.key !== currentDragKey) {
-                        const rect = targetItem.getBoundingClientRect();
-                        const isBefore = event.clientY < rect.top + rect.height / 2;
-                        targetItem.classList.add(isBefore ? 'drag-over-before' : 'drag-over-after');
-                        dropTargetState = {
-                            key: targetItem.dataset.key,
-                            isBefore
-                        };
-                    }
-                });
+                    if (!currentDragKey) return;
 
-                galleryPreviewContainer.addEventListener('dragleave', (event) => {
-                    if (!currentDragKey) {
-                        return;
-                    }
-                    const nextTarget = event.relatedTarget;
-                    if (!nextTarget || !galleryPreviewContainer.contains(nextTarget)) {
-                        clearDragIndicators();
-                        dropTargetState = null;
+                    const draggingItem = galleryPreviewContainer.querySelector(`[data-key="${currentDragKey}"]`);
+                    const targetItem = event.target.closest('.preview-item');
+
+                    if (targetItem && targetItem !== draggingItem && galleryPreviewContainer.contains(targetItem)) {
+                        const items = Array.from(galleryPreviewContainer.children);
+                        const currentIndex = items.indexOf(draggingItem);
+                        const targetIndex = items.indexOf(targetItem);
+
+                        if (currentIndex < targetIndex) {
+                            galleryPreviewContainer.insertBefore(draggingItem, targetItem.nextSibling);
+                        } else {
+                            galleryPreviewContainer.insertBefore(draggingItem, targetItem);
+                        }
                     }
                 });
 
                 galleryPreviewContainer.addEventListener('drop', (event) => {
-                    if (!currentDragKey) {
-                        return;
-                    }
                     event.preventDefault();
-                    const fromKey = currentDragKey;
-                    const fromIndex = galleryFiles.findIndex(item => item.key === fromKey);
-                    if (fromIndex < 0) {
-                        clearDragIndicators();
-                        currentDragKey = null;
-                        return;
-                    }
+                    if (!currentDragKey) return;
 
-                    let insertIndex = galleryFiles.length;
-                    let targetItem = null;
+                    const newOrderKeys = Array.from(galleryPreviewContainer.querySelectorAll('.preview-item'))
+                        .map(item => item.dataset.key);
 
-                    if (dropTargetState && dropTargetState.key !== fromKey) {
-                        const targetIndex = galleryFiles.findIndex(item => item.key === dropTargetState.key);
-                        if (targetIndex >= 0) {
-                            insertIndex = targetIndex + (dropTargetState.isBefore ? 0 : 1);
-                            targetItem = galleryPreviewContainer.querySelector(`.preview-item[data-key="${dropTargetState.key}"]`);
-                        }
-                    } else if (!dropTargetState) {
-                        insertIndex = galleryFiles.length;
-                    } else {
-                        insertIndex = fromIndex;
-                    }
+                    const newGalleryFiles = [];
+                    newOrderKeys.forEach(key => {
+                        const fileItem = galleryFiles.find(item => item.key === key);
+                        if (fileItem) newGalleryFiles.push(fileItem);
+                    });
 
-                    const [moved] = galleryFiles.splice(fromIndex, 1);
-                    if (insertIndex > fromIndex) {
-                        insertIndex -= 1;
-                    }
-                    galleryFiles.splice(insertIndex, 0, moved);
-
+                    galleryFiles = newGalleryFiles;
                     refreshGalleryInput();
                     ensurePrimarySelection();
-                    clearDragIndicators();
+
                     currentDragKey = null;
-                    dropTargetState = null;
-
-                    const movingItem = galleryPreviewContainer.querySelector(`.preview-item[data-key="${fromKey}"]`);
-                    if (!movingItem) {
-                        updatePrimaryBadges();
-                        return;
-                    }
-
-                    if (!targetItem) {
-                        galleryPreviewContainer.appendChild(movingItem);
-                        updatePrimaryBadges();
-                        return;
-                    }
-
-                    if (targetItem === movingItem) {
-                        updatePrimaryBadges();
-                        return;
-                    }
-
-                    const rect = targetItem.getBoundingClientRect();
-                    const isBefore = dropTargetState ? dropTargetState.isBefore : event.clientY < rect.top + rect.height / 2;
-                    if (isBefore) {
-                        galleryPreviewContainer.insertBefore(movingItem, targetItem);
-                    } else {
-                        galleryPreviewContainer.insertBefore(movingItem, targetItem.nextSibling);
-                    }
-
+                    const draggingItem = galleryPreviewContainer.querySelector('.dragging');
+                    if (draggingItem) draggingItem.classList.remove('dragging');
                     updatePrimaryBadges();
                 });
 
