@@ -48,8 +48,7 @@
                 <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
 
                 <!-- Zona de vista previa -->
-                <div class="image-preview-zone {{ $hasExistingImage ? 'has-image' : '' }}"
-                    id="imagePreviewZone">
+                <div class="image-preview-zone {{ $hasExistingImage ? 'has-image' : '' }}" id="imagePreviewZone">
                     @if ($hasExistingImage)
                         <img id="imagePreview" class="image-preview image-pulse"
                             src="{{ asset('storage/' . $mainImagePath) }}" alt="{{ $post->title }}">
@@ -163,8 +162,10 @@
                         class="switch-input switch-input-off" {{ $post->allow_comments == 0 ? 'checked' : '' }}>
 
                     <div class="switch-slider"></div>
-                    <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i> Sí</label>
-                    <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i> No</label>
+                    <label for="allowYes" class="switch-label switch-label-on"><i
+                            class="ri-checkbox-circle-line"></i> Sí</label>
+                    <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
+                        No</label>
                 </div>
             </div>
         </div>
@@ -199,12 +200,12 @@
                         .then(editor => {
                             editorInstance = editor;
                             window.editorInstance = editor;
-                                // Registrar instancia global por id para soporte multi-editor
-                                window._ckEditors = window._ckEditors || {};
-                                const ta = document.querySelector('#content');
-                                if (ta) {
-                                    window._ckEditors[ta.id] = editor;
-                                }
+                            // Registrar instancia global por id para soporte multi-editor
+                            window._ckEditors = window._ckEditors || {};
+                            const ta = document.querySelector('#content');
+                            if (ta) {
+                                window._ckEditors[ta.id] = editor;
+                            }
                         })
                         .catch(error => console.error(error));
                 });
@@ -323,26 +324,24 @@
                                 $exists = file_exists($fullPath);
                             @endphp
 
-                            @if ($exists)
-                                <div class="preview-item existing-image">
+                            <div class="preview-item existing-image">
+                                @if ($exists)
                                     {{-- Imagen encontrada --}}
                                     <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
-                                    <div class="overlay">
-                                        <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
-                                        <button type="button" class="delete-btn" title="Eliminar imagen"
-                                            data-id="{{ $img->id }}">
-                                            <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                            <span class="boton-text">Eliminar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            @else
-                                {{-- Imagen no encontrada --}}
-                                <div class="image-not-found-block">
+                                @else
+                                    {{-- Imagen no encontrada --}}
                                     <i class="ri-file-close-line"></i>
                                     <p>Imagen no encontrada</p>
+                                @endif
+                                <div class="overlay">
+                                    <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
+                                    <button type="button" class="delete-btn" title="Eliminar imagen"
+                                        data-id="{{ $img->id }}">
+                                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                        <span class="boton-text">Eliminar</span>
+                                    </button>
                                 </div>
-                            @endif
+                            </div>
                         @endforeach
                     </div>
 
@@ -495,15 +494,18 @@
                             if (!errorEl) {
                                 errorEl = document.createElement('div');
                                 errorEl.className = 'input-error-message';
-                                errorEl.innerHTML = '<i class="ri-error-warning-line"></i> <span class="error-text"></span>';
+                                errorEl.innerHTML =
+                                    '<i class="ri-error-warning-line"></i> <span class="error-text"></span>';
                                 group.appendChild(errorEl);
                             }
                             const textEl = errorEl.querySelector('.error-text');
                             if (textEl) {
                                 const div = document.createElement('div');
                                 div.innerHTML = textarea.value || '';
-                                const plain = (div.textContent || div.innerText || '').replace(/\u00A0|&nbsp;/g, ' ').trim();
-                                textEl.textContent = plain.length === 0 ? 'Este campo es obligatorio' : 'Debe tener al menos 10 caracteres';
+                                const plain = (div.textContent || div.innerText || '').replace(/\u00A0|&nbsp;/g,
+                                    ' ').trim();
+                                textEl.textContent = plain.length === 0 ? 'Este campo es obligatorio' :
+                                    'Debe tener al menos 10 caracteres';
                             }
                             errorEl.style.display = 'flex';
                         }
