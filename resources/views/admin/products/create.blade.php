@@ -248,13 +248,13 @@
                         <div class="overlay">
                             <span class="file-size">${formatFileSize(file.size)}</span>
                             <div class="overlay-actions">
-                                <button type="button" class="mark-main-btn" title="Marcar como principal">
-                                    <i class="ri-star-smile-fill"></i>
-                                    <span>Principal</span>
+                                <button type="button" class="boton-form boton-orange mark-main-btn" title="Marcar como principal">
+                                    <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
+                                    <span class="boton-form-text">Principal</span>
                                 </button>
-                                <button type="button" class="delete-btn" title="Eliminar imagen">
-                                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                    <span class="boton-text">Eliminar</span>
+                                <button type="button" class="boton-form boton-danger delete-btn" title="Eliminar imagen">
+                                    <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                    <span class="boton-form-text">Eliminar</span>
                                 </button>
                             </div>
                         </div>

@@ -304,7 +304,24 @@
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-material);
     border: 2px solid whitesmoke;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-danger);
+    background: var(--color-danger-pastel);
+    text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.preview-item i {
+    font-size: 32px;
+}
+
+.preview-item p{
+    font-weight: bolder;
+    font-size: var(--font-size-xs);
+    line-height: 1.1;
 }
 
 .preview-item.dragging {
@@ -408,15 +425,12 @@
     align-items: center;
 }
 
+.overlay-actions i{
+    font-size: inherit;
+}
+
 .overlay .mark-main-btn {
-    background: var(--color-orange);
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    font-size: 13px;
-    border-radius: 5px;
     cursor: pointer;
-    transition: .2s;
 }
 
 .overlay .mark-main-btn:hover:not(:disabled) {
@@ -426,22 +440,6 @@
 .overlay .mark-main-btn:disabled {
     opacity: 0.6;
     cursor: default;
-}
-
-/* Botón eliminar */
-.overlay .delete-btn {
-    background: var(--color-danger);
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    font-size: 13px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.overlay .delete-btn:hover {
-    background: rgba(255, 0, 0, 0.9);
 }
 
 .primary-badge {
@@ -479,30 +477,7 @@
     transform: scale(1.05);
 }
 
-.image-not-found-block {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: var(--color-danger);
-    background: var(--color-danger-pastel);
-    aspect-ratio: 1 / 1;
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    text-align: center;
-    border-radius: var(--radius-card);
-}
 
-.image-not-found-block i {
-    font-size: 32px;
-}
-
-.image-not-found-block p{
-    font-weight: bolder;
-    font-size: var(--font-size-xs);
-    line-height: 1.1;
-}
 
 /* Animaciones */
 .fade-in {

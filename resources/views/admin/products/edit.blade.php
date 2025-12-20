@@ -166,25 +166,26 @@
                             @endphp
                             <div class="preview-item existing-image" data-type="existing"
                                 data-id="{{ $image->id }}" data-main="{{ $image->is_main ? 'true' : 'false' }}">
+                                <button type="button" class="drag-handle" title="Reordenar imagen">
+                                    <i class="ri-drag-move-2-line"></i>
+                                </button>
                                 @if ($exists)
                                     <img src="{{ $imageUrl }}" alt="{{ $altText }}">
                                 @else
-                                    <div class="image-not-found-block">
-                                        <i class="ri-file-close-line"></i>
-                                        <p>Imagen no encontrada</p>
-                                    </div>
+                                    <i class="ri-file-close-line"></i>
+                                    <p>Imagen no encontrada</p>
                                 @endif
                                 <div class="overlay">
                                     <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
                                     <div class="overlay-actions">
-                                        <button type="button" class="mark-main-btn" title="Marcar como principal">
-                                            <i class="ri-star-smile-fill"></i>
-                                            <span>Principal</span>
+                                        <button type="button" class="boton-form boton-orange mark-main-btn" title="Marcar como principal">
+                                            <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
+                                            <span class="boton-form-text">Principal</span>
                                         </button>
-                                        <button type="button" class="delete-btn delete-existing-gallery"
+                                        <button type="button" class="boton-form boton-danger delete-existing-gallery"
                                             data-id="{{ $image->id }}" title="Eliminar imagen">
-                                            <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                            <span class="boton-text">Eliminar</span>
+                                            <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                            <span class="boton-form-text">Eliminar</span>
                                         </button>
                                     </div>
                                 </div>
@@ -242,6 +243,7 @@
                 let galleryFiles = [];
                 const removedGalleryIds = new Set();
                 let primaryState = null;
+                let currentDragItem = null;
 
                 const refreshGalleryInput = () => {
                     const dataTransfer = new DataTransfer();
@@ -255,6 +257,106 @@
                 };
 
                 const getAllPreviewItems = () => Array.from(galleryPreviewContainer.querySelectorAll('.preview-item'));
+
+                const clearDragIndicators = () => {
+                    getAllPreviewItems().forEach(item => {
+                        item.classList.remove('drag-over-before', 'drag-over-after');
+                    });
+                };
+
+                const attachDragHandlers = (item) => {
+                    const dragHandle = item.querySelector('.drag-handle');
+                    if (!dragHandle || item.dataset.dragInit === 'true') {
+                        return;
+                    }
+
+                    item.dataset.dragInit = 'true';
+                    dragHandle.draggable = true;
+                    dragHandle.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    });
+
+                    dragHandle.addEventListener('dragstart', (event) => {
+                        event.stopPropagation();
+                        const type = item.dataset.type;
+                        currentDragItem = type === 'existing'
+                            ? {
+                                type,
+                                id: Number(item.dataset.id)
+                            }
+                            : {
+                                type,
+                                key: item.dataset.key
+                            };
+                        item.classList.add('dragging');
+                        event.dataTransfer.effectAllowed = 'move';
+                        const payload = type === 'existing'
+                            ? `existing:${item.dataset.id}`
+                            : `new:${item.dataset.key}`;
+                        event.dataTransfer.setData('text/plain', payload);
+                        if (event.dataTransfer.setDragImage) {
+                            const offsetX = Math.max(item.clientWidth - 32, 32);
+                            const offsetY = 32;
+                            event.dataTransfer.setDragImage(item, offsetX, offsetY);
+                        }
+                    });
+
+                    dragHandle.addEventListener('dragend', (event) => {
+                        event.stopPropagation();
+                        item.classList.remove('dragging');
+                        currentDragItem = null;
+                        clearDragIndicators();
+                    });
+                };
+
+                const parseDragData = (value) => {
+                    if (!value) {
+                        return null;
+                    }
+                    const [type, raw] = value.split(':');
+                    if (type === 'existing' && raw) {
+                        return {
+                            type,
+                            id: Number(raw)
+                        };
+                    }
+                    if (type === 'new' && raw) {
+                        return {
+                            type,
+                            key: raw
+                        };
+                    }
+                    return null;
+                };
+
+                const findItemElement = (descriptor) => {
+                    if (!descriptor) {
+                        return null;
+                    }
+                    if (descriptor.type === 'existing') {
+                        return galleryPreviewContainer.querySelector(
+                            `.preview-item[data-type="existing"][data-id="${descriptor.id}"]`
+                        );
+                    }
+                    if (descriptor.type === 'new') {
+                        return galleryPreviewContainer.querySelector(
+                            `.preview-item[data-type="new"][data-key="${descriptor.key}"]`
+                        );
+                    }
+                    return null;
+                };
+
+                const syncNewFilesOrder = () => {
+                    if (!galleryFiles.length) {
+                        return;
+                    }
+                    const lookup = new Map(galleryFiles.map(entry => [entry.key, entry]));
+                    const orderedKeys = getAllPreviewItems()
+                        .filter(item => item.dataset.type === 'new')
+                        .map(item => item.dataset.key);
+                    galleryFiles = orderedKeys.map(key => lookup.get(key)).filter(Boolean);
+                };
 
                 const updatePrimaryBadges = () => {
                     getAllPreviewItems().forEach(item => {
@@ -329,6 +431,13 @@
                     getAllPreviewItems()
                         .filter(item => item.dataset.type === 'existing')
                         .forEach(item => {
+                            if (item.dataset.eventsBound === 'true') {
+                                return;
+                            }
+
+                            item.dataset.eventsBound = 'true';
+                            attachDragHandlers(item);
+
                             const id = Number(item.dataset.id);
                             const markButton = item.querySelector('.mark-main-btn');
                             const deleteButton = item.querySelector('.delete-existing-gallery');
@@ -374,6 +483,9 @@
                     item.dataset.type = 'new';
                     item.dataset.key = key;
                     item.innerHTML = `
+                        <button type="button" class="drag-handle" title="Reordenar imagen">
+                            <i class="ri-drag-move-2-line"></i>
+                        </button>
                         <img src="${dataUrl}" alt="${file.name}">
                         <div class="overlay">
                             <span class="file-size">${formatFileSize(file.size)}</span>
@@ -412,6 +524,7 @@
                         refreshGalleryInput();
                     });
 
+                    attachDragHandlers(item);
                     galleryPreviewContainer.appendChild(item);
                 };
 
@@ -464,11 +577,83 @@
                 });
                 galleryInput.addEventListener('change', (event) => handleGalleryFiles(event.target.files));
 
+                galleryPreviewContainer.addEventListener('dragenter', (event) => {
+                    if (!currentDragItem && event.dataTransfer) {
+                        currentDragItem = parseDragData(event.dataTransfer.getData('text/plain'));
+                    }
+                    if (!currentDragItem) {
+                        return;
+                    }
+                    event.preventDefault();
+                });
+
+                galleryPreviewContainer.addEventListener('dragover', (event) => {
+                    if (!currentDragItem) {
+                        return;
+                    }
+                    event.preventDefault();
+                    const targetItem = event.target.closest('.preview-item');
+                    const movingItem = findItemElement(currentDragItem);
+                    clearDragIndicators();
+                    if (targetItem && movingItem && targetItem !== movingItem) {
+                        const rect = targetItem.getBoundingClientRect();
+                        const isBefore = event.clientY < rect.top + rect.height / 2;
+                        targetItem.classList.add(isBefore ? 'drag-over-before' : 'drag-over-after');
+                    }
+                });
+
+                galleryPreviewContainer.addEventListener('dragleave', (event) => {
+                    if (!currentDragItem) {
+                        return;
+                    }
+                    const nextTarget = event.relatedTarget;
+                    if (!nextTarget || !galleryPreviewContainer.contains(nextTarget)) {
+                        clearDragIndicators();
+                    }
+                });
+
+                galleryPreviewContainer.addEventListener('drop', (event) => {
+                    if (!currentDragItem) {
+                        return;
+                    }
+                    event.preventDefault();
+                    const descriptor = parseDragData(event.dataTransfer.getData('text/plain')) || currentDragItem;
+                    const movingItem = findItemElement(descriptor);
+                    if (!movingItem) {
+                        clearDragIndicators();
+                        currentDragItem = null;
+                        return;
+                    }
+
+                    const targetItem = event.target.closest('.preview-item');
+                    if (!targetItem) {
+                        galleryPreviewContainer.appendChild(movingItem);
+                    } else if (targetItem !== movingItem) {
+                        const rect = targetItem.getBoundingClientRect();
+                        const isBefore = event.clientY < rect.top + rect.height / 2;
+                        if (isBefore) {
+                            galleryPreviewContainer.insertBefore(movingItem, targetItem);
+                        } else {
+                            galleryPreviewContainer.insertBefore(movingItem, targetItem.nextSibling);
+                        }
+                    }
+
+                    movingItem.classList.remove('dragging');
+                    syncNewFilesOrder();
+                    refreshGalleryInput();
+                    ensurePrimarySelection();
+                    updatePrimaryBadges();
+                    clearDragIndicators();
+                    currentDragItem = null;
+                });
+
                 registerExistingPreviewEvents();
                 ensurePrimarySelection();
                 updatePrimaryBadges();
 
                 document.getElementById('productForm').addEventListener('submit', () => {
+                    syncNewFilesOrder();
+                    refreshGalleryInput();
                     ensurePrimarySelection();
 
                     if (!primaryState) {
