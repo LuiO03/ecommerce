@@ -304,6 +304,60 @@
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-material);
     border: 2px solid whitesmoke;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.preview-item.dragging {
+    opacity: 0.75;
+    border-color: var(--color-accent);
+    cursor: grabbing;
+}
+
+.preview-item.drag-over-before,
+.preview-item.drag-over-after {
+    border-color: var(--color-accent);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
+}
+
+.preview-item.drag-over-before {
+    transform: translateY(-8px);
+}
+
+.preview-item.drag-over-after {
+    transform: translateY(8px);
+}
+
+.drag-handle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-input);
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: grab;
+    transition: background 0.2s ease, transform 0.2s ease;
+    z-index: 20;
+    outline: none;
+}
+
+.drag-handle:hover {
+    background: rgba(0, 0, 0, 0.75);
+    transform: translateY(-1px);
+}
+
+.preview-item.dragging .drag-handle {
+    cursor: grabbing;
+}
+
+.drag-handle i {
+    pointer-events: none;
+    font-size: 1.2rem;
 }
 
 .preview-item img {

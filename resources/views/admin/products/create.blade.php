@@ -183,6 +183,13 @@
 
                 let galleryFiles = [];
                 let primaryState = null; // { key }
+                let currentDragKey = null;
+
+                const clearDragIndicators = () => {
+                    galleryPreviewContainer.querySelectorAll('.preview-item').forEach(item => {
+                        item.classList.remove('drag-over-before', 'drag-over-after');
+                    });
+                };
 
                 const refreshGalleryInput = () => {
                     const dataTransfer = new DataTransfer();
@@ -234,6 +241,9 @@
                     item.dataset.type = 'new';
                     item.dataset.key = key;
                     item.innerHTML = `
+                        <button type="button" class="drag-handle" title="Reordenar imagen">
+                            <i class="ri-draggable"></i>
+                        </button>
                         <img src="${dataUrl}" alt="${file.name}">
                         <div class="overlay">
                             <span class="file-size">${formatFileSize(file.size)}</span>
@@ -254,6 +264,31 @@
                         </span>
                     `;
 
+                    const dragHandle = item.querySelector('.drag-handle');
+                    dragHandle.draggable = true;
+                    dragHandle.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    });
+                    dragHandle.addEventListener('dragstart', (event) => {
+                        event.stopPropagation();
+                        currentDragKey = key;
+                        item.classList.add('dragging');
+                        event.dataTransfer.effectAllowed = 'move';
+                        event.dataTransfer.setData('text/plain', key);
+                        if (event.dataTransfer.setDragImage) {
+                            const offsetX = item.clientWidth - 32;
+                            const offsetY = 32;
+                            event.dataTransfer.setDragImage(item, offsetX, offsetY);
+                        }
+                    });
+                    dragHandle.addEventListener('dragend', (event) => {
+                        event.stopPropagation();
+                        item.classList.remove('dragging');
+                        currentDragKey = null;
+                        clearDragIndicators();
+                    });
+
                     item.querySelector('.delete-btn').addEventListener('click', (event) => {
                         event.stopPropagation();
                         galleryFiles = galleryFiles.filter(current => current.key !== key);
@@ -271,36 +306,36 @@
                     return item;
                 };
 
-                const renderGalleryPreviews = () => {
-                    galleryPreviewContainer.innerHTML = '';
-                    galleryFiles.forEach(({
-                        file,
-                        key
-                    }) => {
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                            const item = buildPreviewItem(event.target.result, file, key);
-                            galleryPreviewContainer.appendChild(item);
-                            updatePrimaryBadges();
-                        };
-                        reader.readAsDataURL(file);
-                    });
+                const appendGalleryPreview = (file, key) => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const item = buildPreviewItem(event.target.result, file, key);
+                        galleryPreviewContainer.appendChild(item);
+                        updatePrimaryBadges();
+                    };
+                    reader.readAsDataURL(file);
                 };
 
                 const handleGalleryFiles = (files) => {
+                    const newEntries = [];
                     [...files].forEach(file => {
                         if (!file.type.startsWith('image/')) {
                             return;
                         }
                         const key = `new-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`;
-                        galleryFiles.push({
+                        const entry = {
                             file,
                             key
-                        });
+                        };
+                        galleryFiles.push(entry);
+                        newEntries.push(entry);
                     });
                     ensurePrimarySelection();
                     refreshGalleryInput();
-                    renderGalleryPreviews();
+                    newEntries.forEach(({
+                        file,
+                        key
+                    }) => appendGalleryPreview(file, key));
                 };
 
                 galleryDropzone.addEventListener('click', () => galleryInput.click());
@@ -317,6 +352,102 @@
                     handleGalleryFiles(event.dataTransfer.files);
                 });
                 galleryInput.addEventListener('change', (event) => handleGalleryFiles(event.target.files));
+
+                galleryPreviewContainer.addEventListener('dragenter', (event) => {
+                    if (!currentDragKey) {
+                        return;
+                    }
+                    event.preventDefault();
+                });
+
+                galleryPreviewContainer.addEventListener('dragover', (event) => {
+                    if (!currentDragKey) {
+                        return;
+                    }
+                    event.preventDefault();
+                    const targetItem = event.target.closest('.preview-item');
+                    clearDragIndicators();
+                    if (targetItem && targetItem.dataset.key !== currentDragKey) {
+                        const rect = targetItem.getBoundingClientRect();
+                        const isBefore = event.clientY < rect.top + rect.height / 2;
+                        targetItem.classList.add(isBefore ? 'drag-over-before' : 'drag-over-after');
+                    }
+                });
+
+                galleryPreviewContainer.addEventListener('dragleave', (event) => {
+                    if (!currentDragKey) {
+                        return;
+                    }
+                    const nextTarget = event.relatedTarget;
+                    if (!nextTarget || !galleryPreviewContainer.contains(nextTarget)) {
+                        clearDragIndicators();
+                    }
+                });
+
+                galleryPreviewContainer.addEventListener('drop', (event) => {
+                    if (!currentDragKey) {
+                        return;
+                    }
+                    event.preventDefault();
+                    const fromKey = event.dataTransfer.getData('text/plain') || currentDragKey;
+                    const fromIndex = galleryFiles.findIndex(item => item.key === fromKey);
+                    if (fromIndex < 0) {
+                        clearDragIndicators();
+                        currentDragKey = null;
+                        return;
+                    }
+
+                    const targetItem = event.target.closest('.preview-item');
+                    let insertIndex = galleryFiles.length;
+                    if (!targetItem) {
+                        insertIndex = galleryFiles.length;
+                    } else if (targetItem.dataset.key === fromKey) {
+                        insertIndex = fromIndex;
+                    } else {
+                        const rect = targetItem.getBoundingClientRect();
+                        const isBefore = event.clientY < rect.top + rect.height / 2;
+                        const targetIndex = galleryFiles.findIndex(item => item.key === targetItem.dataset.key);
+                        insertIndex = targetIndex + (isBefore ? 0 : 1);
+                    }
+
+                    const [moved] = galleryFiles.splice(fromIndex, 1);
+                    if (insertIndex > fromIndex) {
+                        insertIndex -= 1;
+                    }
+                    galleryFiles.splice(insertIndex, 0, moved);
+
+                    refreshGalleryInput();
+                    ensurePrimarySelection();
+                    clearDragIndicators();
+                    currentDragKey = null;
+
+                    const movingItem = galleryPreviewContainer.querySelector(`.preview-item[data-key="${fromKey}"]`);
+                    if (!movingItem) {
+                        updatePrimaryBadges();
+                        return;
+                    }
+
+                    if (!targetItem) {
+                        galleryPreviewContainer.appendChild(movingItem);
+                        updatePrimaryBadges();
+                        return;
+                    }
+
+                    if (targetItem === movingItem) {
+                        updatePrimaryBadges();
+                        return;
+                    }
+
+                    const rect = targetItem.getBoundingClientRect();
+                    const isBefore = event.clientY < rect.top + rect.height / 2;
+                    if (isBefore) {
+                        galleryPreviewContainer.insertBefore(movingItem, targetItem);
+                    } else {
+                        galleryPreviewContainer.insertBefore(movingItem, targetItem.nextSibling);
+                    }
+
+                    updatePrimaryBadges();
+                });
 
                 document.getElementById('productForm').addEventListener('submit', () => {
                     ensurePrimarySelection();
