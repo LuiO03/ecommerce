@@ -184,6 +184,7 @@
                 let galleryFiles = [];
                 let primaryState = null; // { key }
                 let currentDragKey = null;
+                let dropTargetState = null; // { key, isBefore }
 
                 const clearDragIndicators = () => {
                     galleryPreviewContainer.querySelectorAll('.preview-item').forEach(item => {
@@ -248,13 +249,13 @@
                         <div class="overlay">
                             <span class="file-size">${formatFileSize(file.size)}</span>
                             <div class="overlay-actions">
-                                <button type="button" class="boton-form boton-orange mark-main-btn" title="Marcar como principal">
-                                    <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
-                                    <span class="boton-form-text">Principal</span>
+                                <button type="button" class="mark-main-btn" title="Marcar como principal">
+                                    <i class="ri-star-smile-fill"></i>
+                                    <span>Principal</span>
                                 </button>
-                                <button type="button" class="boton-form boton-danger delete-btn" title="Eliminar imagen">
-                                    <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                    <span class="boton-form-text">Eliminar</span>
+                                <button type="button" class="delete-btn" title="Eliminar imagen">
+                                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                    <span class="boton-text">Eliminar</span>
                                 </button>
                             </div>
                         </div>
@@ -275,7 +276,6 @@
                         currentDragKey = key;
                         item.classList.add('dragging');
                         event.dataTransfer.effectAllowed = 'move';
-                        event.dataTransfer.setData('text/plain', key);
                         if (event.dataTransfer.setDragImage) {
                             const offsetX = item.clientWidth - 32;
                             const offsetY = 32;
@@ -367,10 +367,15 @@
                     event.preventDefault();
                     const targetItem = event.target.closest('.preview-item');
                     clearDragIndicators();
+                    dropTargetState = null;
                     if (targetItem && targetItem.dataset.key !== currentDragKey) {
                         const rect = targetItem.getBoundingClientRect();
                         const isBefore = event.clientY < rect.top + rect.height / 2;
                         targetItem.classList.add(isBefore ? 'drag-over-before' : 'drag-over-after');
+                        dropTargetState = {
+                            key: targetItem.dataset.key,
+                            isBefore
+                        };
                     }
                 });
 
@@ -381,6 +386,7 @@
                     const nextTarget = event.relatedTarget;
                     if (!nextTarget || !galleryPreviewContainer.contains(nextTarget)) {
                         clearDragIndicators();
+                        dropTargetState = null;
                     }
                 });
 
@@ -389,7 +395,7 @@
                         return;
                     }
                     event.preventDefault();
-                    const fromKey = event.dataTransfer.getData('text/plain') || currentDragKey;
+                    const fromKey = currentDragKey;
                     const fromIndex = galleryFiles.findIndex(item => item.key === fromKey);
                     if (fromIndex < 0) {
                         clearDragIndicators();
@@ -397,17 +403,19 @@
                         return;
                     }
 
-                    const targetItem = event.target.closest('.preview-item');
                     let insertIndex = galleryFiles.length;
-                    if (!targetItem) {
+                    let targetItem = null;
+
+                    if (dropTargetState && dropTargetState.key !== fromKey) {
+                        const targetIndex = galleryFiles.findIndex(item => item.key === dropTargetState.key);
+                        if (targetIndex >= 0) {
+                            insertIndex = targetIndex + (dropTargetState.isBefore ? 0 : 1);
+                            targetItem = galleryPreviewContainer.querySelector(`.preview-item[data-key="${dropTargetState.key}"]`);
+                        }
+                    } else if (!dropTargetState) {
                         insertIndex = galleryFiles.length;
-                    } else if (targetItem.dataset.key === fromKey) {
-                        insertIndex = fromIndex;
                     } else {
-                        const rect = targetItem.getBoundingClientRect();
-                        const isBefore = event.clientY < rect.top + rect.height / 2;
-                        const targetIndex = galleryFiles.findIndex(item => item.key === targetItem.dataset.key);
-                        insertIndex = targetIndex + (isBefore ? 0 : 1);
+                        insertIndex = fromIndex;
                     }
 
                     const [moved] = galleryFiles.splice(fromIndex, 1);
@@ -420,6 +428,7 @@
                     ensurePrimarySelection();
                     clearDragIndicators();
                     currentDragKey = null;
+                    dropTargetState = null;
 
                     const movingItem = galleryPreviewContainer.querySelector(`.preview-item[data-key="${fromKey}"]`);
                     if (!movingItem) {
@@ -439,7 +448,7 @@
                     }
 
                     const rect = targetItem.getBoundingClientRect();
-                    const isBefore = event.clientY < rect.top + rect.height / 2;
+                    const isBefore = dropTargetState ? dropTargetState.isBefore : event.clientY < rect.top + rect.height / 2;
                     if (isBefore) {
                         galleryPreviewContainer.insertBefore(movingItem, targetItem);
                     } else {
