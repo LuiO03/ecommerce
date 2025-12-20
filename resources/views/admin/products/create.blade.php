@@ -188,6 +188,49 @@
                 let currentDragKey = null;
                 let isReordering = false;
 
+                const movePrimaryToStart = () => {
+                    if (!primaryState) return;
+
+                    const primaryKey = primaryState.key;
+                    if (!primaryKey) return;
+
+                    const primaryItem = galleryPreviewContainer.querySelector(`.preview-item[data-key="${primaryKey}"]`);
+                    if (!primaryItem) return;
+
+                    const siblings = [...galleryPreviewContainer.children];
+                    const positions = new Map(siblings.map(el => [el.dataset.key, el.getBoundingClientRect()]));
+
+                    galleryPreviewContainer.insertBefore(primaryItem, galleryPreviewContainer.firstChild);
+
+                    const index = galleryFiles.findIndex(item => item.key === primaryKey);
+                    if (index > 0) {
+                        const [entry] = galleryFiles.splice(index, 1);
+                        galleryFiles.unshift(entry);
+                        refreshGalleryInput();
+                    }
+
+                    siblings.forEach(el => {
+                        const key = el.dataset.key;
+                        const oldRect = positions.get(key);
+                        const newRect = el.getBoundingClientRect();
+
+                        if (!oldRect || (oldRect.left === newRect.left && oldRect.top === newRect.top)) {
+                            return;
+                        }
+
+                        const dx = oldRect.left - newRect.left;
+                        const dy = oldRect.top - newRect.top;
+
+                        el.style.transition = 'none';
+                        el.style.transform = `translate(${dx}px, ${dy}px)`;
+
+                        requestAnimationFrame(() => {
+                            el.style.transition = 'transform 0.3s ease';
+                            el.style.transform = '';
+                        });
+                    });
+                };
+
                 const refreshGalleryInput = () => {
                     const dataTransfer = new DataTransfer();
                     galleryAltContainer.innerHTML = '';
@@ -211,9 +254,8 @@
                 };
 
                 const setPrimaryState = (key) => {
-                    primaryState = key ? {
-                        key
-                    } : null;
+                    primaryState = key ? { key } : null;
+                    movePrimaryToStart();
                     updatePrimaryBadges();
                 };
 
@@ -235,11 +277,20 @@
                     galleryPreviewContainer.querySelectorAll('.preview-item').forEach(item => {
                         const badge = item.querySelector('.primary-badge');
                         const markBtn = item.querySelector('.mark-main-btn');
-                        if (!badge || !markBtn) return;
+                        const dragHandle = item.querySelector('.drag-handle');
+                        if (!badge || !markBtn || !dragHandle) return;
+
                         const key = item.dataset.key;
                         const isActive = primaryState && primaryState.key === key;
+
                         badge.style.display = isActive ? 'flex' : 'none';
                         markBtn.disabled = isActive;
+                        dragHandle.draggable = !isActive;
+                        if (isActive) {
+                            dragHandle.classList.add('drag-disabled');
+                        } else {
+                            dragHandle.classList.remove('drag-disabled');
+                        }
                     });
                 };
 
@@ -399,8 +450,9 @@
 
                     const draggingItem = galleryPreviewContainer.querySelector(`[data-key="${currentDragKey}"]`);
                     const targetItem = event.target.closest('.preview-item');
+                    const isTargetPrimary = targetItem && primaryState && targetItem.dataset.key === primaryState.key;
 
-                    if (targetItem && targetItem !== draggingItem && galleryPreviewContainer.contains(targetItem)) {
+                    if (targetItem && !isTargetPrimary && targetItem !== draggingItem && galleryPreviewContainer.contains(targetItem)) {
                         isReordering = true;
                         const items = Array.from(galleryPreviewContainer.children);
                         const currentIndex = items.indexOf(draggingItem);

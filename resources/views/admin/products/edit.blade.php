@@ -261,11 +261,61 @@
 
                 const getAllPreviewItems = () => Array.from(galleryPreviewContainer.querySelectorAll('.preview-item'));
 
+                const movePrimaryToStart = () => {
+                    if (!primaryState) return;
+
+                    let primaryItem = null;
+
+                    if (primaryState.type === 'existing') {
+                        primaryItem = galleryPreviewContainer.querySelector(`.preview-item[data-type="existing"][data-id="${primaryState.id}"]`);
+                    } else if (primaryState.type === 'new') {
+                        primaryItem = galleryPreviewContainer.querySelector(`.preview-item[data-type="new"][data-key="${primaryState.key}"]`);
+                    }
+
+                    if (!primaryItem) return;
+
+                    const siblings = [...galleryPreviewContainer.children];
+                    const positions = new Map(siblings.map(el => [el.dataset.key || `existing-${el.dataset.id}`, el.getBoundingClientRect()]));
+
+                    galleryPreviewContainer.insertBefore(primaryItem, galleryPreviewContainer.firstChild);
+
+                    if (primaryState.type === 'new') {
+                        const index = galleryFiles.findIndex(entry => entry.key === primaryState.key);
+                        if (index > 0) {
+                            const [entry] = galleryFiles.splice(index, 1);
+                            galleryFiles.unshift(entry);
+                            refreshGalleryInput();
+                        }
+                    }
+
+                    siblings.forEach(el => {
+                        const key = el.dataset.key || `existing-${el.dataset.id}`;
+                        const oldRect = positions.get(key);
+                        const newRect = el.getBoundingClientRect();
+
+                        if (!oldRect || (oldRect.left === newRect.left && oldRect.top === newRect.top)) {
+                            return;
+                        }
+
+                        const dx = oldRect.left - newRect.left;
+                        const dy = oldRect.top - newRect.top;
+
+                        el.style.transition = 'none';
+                        el.style.transform = `translate(${dx}px, ${dy}px)`;
+
+                        requestAnimationFrame(() => {
+                            el.style.transition = 'transform 0.3s ease';
+                            el.style.transform = '';
+                        });
+                    });
+                };
+
                 const updatePrimaryBadges = () => {
                     getAllPreviewItems().forEach(item => {
                         const badge = item.querySelector('.primary-badge');
                         const markBtn = item.querySelector('.mark-main-btn');
-                        if (!badge || !markBtn) return;
+                        const dragHandle = item.querySelector('.drag-handle');
+                        if (!badge || !markBtn || !dragHandle) return;
 
                         let isActive = false;
                         if (primaryState) {
@@ -279,11 +329,18 @@
 
                         badge.style.display = isActive ? 'flex' : 'none';
                         markBtn.disabled = isActive;
+                        dragHandle.draggable = !isActive;
+                        if (isActive) {
+                            dragHandle.classList.add('drag-disabled');
+                        } else {
+                            dragHandle.classList.remove('drag-disabled');
+                        }
                     });
                 };
 
                 const setPrimaryState = (state) => {
                     primaryState = state;
+                    movePrimaryToStart();
                     updatePrimaryBadges();
                 };
 
@@ -341,10 +398,10 @@
                             const dragHandle = item.querySelector('.drag-handle');
 
                             if (item.dataset.main === 'true' && !primaryState) {
-                                primaryState = {
+                                setPrimaryState({
                                     type: 'existing',
                                     id
-                                };
+                                });
                             }
 
                             if (dragHandle) {
@@ -561,7 +618,17 @@
                     const draggingItem = galleryPreviewContainer.querySelector(`[data-key="${currentDragKey}"]`);
                     const targetItem = event.target.closest('.preview-item');
 
-                    if (targetItem && targetItem !== draggingItem && galleryPreviewContainer.contains(targetItem)) {
+                    let isTargetPrimary = false;
+                    if (targetItem && primaryState) {
+                        if (primaryState.type === 'existing' && targetItem.dataset.type === 'existing') {
+                            isTargetPrimary = Number(targetItem.dataset.id) === primaryState.id;
+                        }
+                        if (primaryState.type === 'new' && targetItem.dataset.type === 'new') {
+                            isTargetPrimary = targetItem.dataset.key === primaryState.key;
+                        }
+                    }
+
+                    if (targetItem && !isTargetPrimary && targetItem !== draggingItem && galleryPreviewContainer.contains(targetItem)) {
                         isReordering = true;
                         const items = Array.from(galleryPreviewContainer.children);
                         const currentIndex = items.indexOf(draggingItem);
