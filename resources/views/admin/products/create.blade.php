@@ -139,6 +139,7 @@
                     </div>
                     <div id="galleryPreviewContainer" class="preview-container"></div>
                     <input type="hidden" name="primary_image" id="primaryImageInput">
+                    <div id="galleryAltContainer"></div>
                 </div>
             </div>
         </div>
@@ -180,14 +181,27 @@
                 const galleryInput = document.getElementById('galleryInput');
                 const galleryPreviewContainer = document.getElementById('galleryPreviewContainer');
                 const primaryImageInput = document.getElementById('primaryImageInput');
+                const galleryAltContainer = document.getElementById('galleryAltContainer');
 
                 let galleryFiles = [];
                 let primaryState = null; // { key }
                 let currentDragKey = null;
+                let isReordering = false;
 
                 const refreshGalleryInput = () => {
                     const dataTransfer = new DataTransfer();
-                    galleryFiles.forEach(item => dataTransfer.items.add(item.file));
+                    galleryAltContainer.innerHTML = '';
+
+                    galleryFiles.forEach((item, index) => {
+                        dataTransfer.items.add(item.file);
+
+                        const altInput = document.createElement('input');
+                        altInput.type = 'hidden';
+                        altInput.name = 'gallery_alt[]';
+                        altInput.value = item.alt || '';
+                        galleryAltContainer.appendChild(altInput);
+                    });
+
                     galleryInput.files = dataTransfer.files;
                 };
 
@@ -243,11 +257,11 @@
                             <span class="file-size">${formatFileSize(file.size)}</span>
                             <div class="overlay-actions">
                                 <button type="button" class="mark-main-btn" title="Marcar como principal">
-                                    <i class="ri-star-smile-fill"></i>
+                                    <i class="ri-star-line"></i>
                                     <span>Principal</span>
                                 </button>
                                 <button type="button" class="delete-btn" title="Eliminar imagen">
-                                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                    <span class="boton-icon"><i class="ri-delete-bin-6-line"></i></span>
                                     <span class="boton-text">Eliminar</span>
                                 </button>
                             </div>
@@ -310,10 +324,24 @@
 
                 const handleGalleryFiles = (files) => {
                     const newEntries = [];
+                    let duplicateCount = 0;
+
                     [...files].forEach(file => {
                         if (!file.type.startsWith('image/')) {
                             return;
                         }
+
+                        const isDuplicate = galleryFiles.some(existing =>
+                            existing.file.name === file.name &&
+                            existing.file.size === file.size &&
+                            existing.file.lastModified === file.lastModified
+                        );
+
+                        if (isDuplicate) {
+                            duplicateCount++;
+                            return;
+                        }
+
                         const key = `new-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`;
                         const entry = {
                             file,
@@ -322,6 +350,11 @@
                         galleryFiles.push(entry);
                         newEntries.push(entry);
                     });
+
+                    if (duplicateCount > 0) {
+                        alert(`${duplicateCount} imagen(es) ya existen en la galería y fueron omitidas.`);
+                    }
+
                     ensurePrimarySelection();
                     refreshGalleryInput();
                     newEntries.forEach(({
@@ -329,6 +362,21 @@
                         key
                     }) => appendGalleryPreview(file, key));
                 };
+
+                // Paste support
+                document.addEventListener('paste', (event) => {
+                    const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+                    const files = [];
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].kind === 'file' && items[i].type.startsWith('image/')) {
+                            files.push(items[i].getAsFile());
+                        }
+                    }
+                    if (files.length > 0) {
+                        event.preventDefault();
+                        handleGalleryFiles(files);
+                    }
+                });
 
                 galleryDropzone.addEventListener('click', () => galleryInput.click());
                 galleryDropzone.addEventListener('dragover', (event) => {
@@ -347,21 +395,52 @@
 
                 galleryPreviewContainer.addEventListener('dragover', (event) => {
                     event.preventDefault();
-                    if (!currentDragKey) return;
+                    if (!currentDragKey || isReordering) return;
 
                     const draggingItem = galleryPreviewContainer.querySelector(`[data-key="${currentDragKey}"]`);
                     const targetItem = event.target.closest('.preview-item');
 
                     if (targetItem && targetItem !== draggingItem && galleryPreviewContainer.contains(targetItem)) {
+                        isReordering = true;
                         const items = Array.from(galleryPreviewContainer.children);
                         const currentIndex = items.indexOf(draggingItem);
                         const targetIndex = items.indexOf(targetItem);
 
-                        if (currentIndex < targetIndex) {
-                            galleryPreviewContainer.insertBefore(draggingItem, targetItem.nextSibling);
-                        } else {
-                            galleryPreviewContainer.insertBefore(draggingItem, targetItem);
+                        if (currentIndex !== targetIndex) {
+                            // FLIP Animation
+                            const siblings = [...galleryPreviewContainer.children];
+                            const positions = new Map(siblings.map(el => [el.dataset.key, el.getBoundingClientRect()]));
+
+                            if (currentIndex < targetIndex) {
+                                galleryPreviewContainer.insertBefore(draggingItem, targetItem.nextSibling);
+                            } else {
+                                galleryPreviewContainer.insertBefore(draggingItem, targetItem);
+                            }
+
+                            siblings.forEach(el => {
+                                if (el === draggingItem) return;
+
+                                const oldRect = positions.get(el.dataset.key);
+                                const newRect = el.getBoundingClientRect();
+
+                                if (oldRect && (oldRect.left !== newRect.left || oldRect.top !== newRect.top)) {
+                                    const dx = oldRect.left - newRect.left;
+                                    const dy = oldRect.top - newRect.top;
+
+                                    el.style.transition = 'none';
+                                    el.style.transform = `translate(${dx}px, ${dy}px)`;
+
+                                    requestAnimationFrame(() => {
+                                        el.style.transition = 'transform 0.3s ease';
+                                        el.style.transform = '';
+                                    });
+                                }
+                            });
                         }
+
+                        setTimeout(() => {
+                            isReordering = false;
+                        }, 250);
                     }
                 });
 
