@@ -31,7 +31,7 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-            <div class="form-row-fit">
+        <div class="form-row-fit">
             <!-- === Imágenes múltiples === -->
             <div class="image-upload-section">
                 <label class="label-form">Imágenes del post</label>
@@ -42,90 +42,351 @@
                         data-validate="image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                 </div>
                 <div id="previewContainer" class="preview-container"></div>
+                <input type="hidden" name="primary_image" id="primaryImageInput" value="">
             </div>
             <script>
-                const dropzone = document.getElementById("customDropzone");
-                const input = document.getElementById("imageInput");
-                const previewContainer = document.getElementById("previewContainer");
+                document.addEventListener('DOMContentLoaded', () => {
+                    const dropzone = document.getElementById('customDropzone');
+                    const input = document.getElementById('imageInput');
+                    const previewContainer = document.getElementById('previewContainer');
+                    const primaryImageInput = document.getElementById('primaryImageInput');
 
-                let selectedFiles = [];
+                    let galleryFiles = [];
+                    let primaryState = null; // { key }
+                    let currentDragKey = null;
+                    let isReordering = false;
 
-                dropzone.addEventListener("click", () => input.click());
+                    const movePrimaryToStart = () => {
+                        if (!primaryState) return;
 
-                dropzone.addEventListener("dragover", (e) => {
-                    e.preventDefault();
-                    dropzone.classList.add("dragover");
-                });
+                        const primaryKey = primaryState.key;
+                        if (!primaryKey) return;
 
-                dropzone.addEventListener("dragleave", () => {
-                    dropzone.classList.remove("dragover");
-                });
+                        const primaryItem = previewContainer.querySelector(`.preview-item[data-key="${primaryKey}"]`);
+                        if (!primaryItem) return;
 
-                dropzone.addEventListener("drop", (e) => {
-                    e.preventDefault();
-                    dropzone.classList.remove("dragover");
-                    handleFiles(e.dataTransfer.files);
-                });
+                        const siblings = [...previewContainer.children];
+                        const positions = new Map(siblings.map(el => [el.dataset.key, el.getBoundingClientRect()]));
 
-                input.addEventListener("change", (e) => handleFiles(e.target.files));
+                        previewContainer.insertBefore(primaryItem, previewContainer.firstChild);
 
-                function handleFiles(files) {
-                    [...files].forEach(file => {
-                        if (!file.type.startsWith("image/")) return;
-                        selectedFiles.push(file);
-                        previewImage(file);
-                    });
-                }
+                        const index = galleryFiles.findIndex(item => item.key === primaryKey);
+                        if (index > 0) {
+                            const [entry] = galleryFiles.splice(index, 1);
+                            galleryFiles.unshift(entry);
+                            refreshInputFiles();
+                        }
 
-                function previewImage(file) {
-                    const reader = new FileReader();
+                        siblings.forEach(el => {
+                            const key = el.dataset.key;
+                            const oldRect = positions.get(key);
+                            const newRect = el.getBoundingClientRect();
 
-                    reader.onload = (e) => {
-                        const div = document.createElement("div");
-                        div.classList.add("preview-item");
+                            if (!oldRect || (oldRect.left === newRect.left && oldRect.top === newRect.top)) {
+                                return;
+                            }
 
-                        // Calcular peso en KB o MB
-                        let size = file.size / 1024; // KB
-                        size = size > 1024 ?
-                            (size / 1024).toFixed(2) + " MB" :
-                            size.toFixed(1) + " KB";
+                            const dx = oldRect.left - newRect.left;
+                            const dy = oldRect.top - newRect.top;
 
-                        div.innerHTML = `
-                                <img src="${e.target.result}">
-                                <div class="overlay">
-                                    <span class="file-size">${size}</span>
-                                    <button class="delete-btn" title="Eliminar imagen">
+                            el.style.transition = 'none';
+                            el.style.transform = `translate(${dx}px, ${dy}px)`;
+
+                            requestAnimationFrame(() => {
+                                el.style.transition = 'transform 0.3s ease';
+                                el.style.transform = '';
+                            });
+                        });
+                    };
+
+                    const refreshInputFiles = () => {
+                        const dataTransfer = new DataTransfer();
+
+                        galleryFiles.forEach(item => {
+                            dataTransfer.items.add(item.file);
+                        });
+
+                        input.files = dataTransfer.files;
+                    };
+
+                    const formatFileSize = (bytes) => {
+                        let size = bytes / 1024;
+                        return size > 1024 ? `${(size / 1024).toFixed(2)} MB` : `${size.toFixed(1)} KB`;
+                    };
+
+                    const setPrimaryState = (key) => {
+                        primaryState = key ? { key } : null;
+                        movePrimaryToStart();
+                        updatePrimaryBadges();
+                    };
+
+                    const ensurePrimarySelection = () => {
+                        if (primaryState) {
+                            const exists = galleryFiles.some(item => item.key === primaryState.key);
+                            if (exists) {
+                                return;
+                            }
+                        }
+
+                        if (galleryFiles.length === 0) {
+                            primaryState = null;
+                            updatePrimaryBadges();
+                            return;
+                        }
+
+                        setPrimaryState(galleryFiles[0].key);
+                    };
+
+                    const updatePrimaryBadges = () => {
+                        previewContainer.querySelectorAll('.preview-item').forEach(item => {
+                            const badge = item.querySelector('.primary-badge');
+                            const markBtn = item.querySelector('.mark-main-btn');
+                            const dragHandle = item.querySelector('.drag-handle');
+                            if (!badge || !markBtn || !dragHandle) return;
+
+                            const key = item.dataset.key;
+                            const isActive = primaryState && primaryState.key === key;
+
+                            badge.style.display = isActive ? 'flex' : 'none';
+                            markBtn.disabled = isActive;
+                            dragHandle.draggable = !isActive;
+
+                            if (isActive) {
+                                dragHandle.classList.add('drag-disabled');
+                                item.classList.add('primary-main');
+                            } else {
+                                dragHandle.classList.remove('drag-disabled');
+                                item.classList.remove('primary-main');
+                            }
+                        });
+                    };
+
+                    const buildPreviewItem = (dataUrl, file, key) => {
+                        const item = document.createElement('div');
+                        item.classList.add('preview-item');
+                        item.dataset.type = 'new';
+                        item.dataset.key = key;
+                        item.innerHTML = `
+                            <button type="button" class="drag-handle" title="Reordenar imagen">
+                                <i class="ri-draggable"></i>
+                            </button>
+                            <img src="${dataUrl}" alt="${file.name}">
+                            <div class="overlay">
+                                <span class="file-size">${formatFileSize(file.size)}</span>
+                                <div class="overlay-actions">
+                                    <button type="button" class="mark-main-btn" title="Marcar como portada del post">
+                                        <i class="ri-gallery-line"></i>
+                                        <span>Portada</span>
+                                    </button>
+                                    <button type="button" class="delete-btn" title="Eliminar imagen">
                                         <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                         <span class="boton-text">Eliminar</span>
                                     </button>
                                 </div>
-                            `;
+                            </div>
+                            <span class="primary-badge">
+                                <i class="ri-gallery-fill"></i>
+                                Portada
+                            </span>
+                        `;
 
-                        // Click eliminar
-                        div.querySelector(".delete-btn").addEventListener("click", (event) => {
+                        const dragHandle = item.querySelector('.drag-handle');
+                        dragHandle.draggable = true;
+                        dragHandle.addEventListener('click', (event) => {
+                            event.preventDefault();
                             event.stopPropagation();
-                            selectedFiles = selectedFiles.filter(f => f !== file);
-                            div.remove();
+                        });
+                        dragHandle.addEventListener('dragstart', (event) => {
+                            event.stopPropagation();
+                            currentDragKey = key;
+                            item.classList.add('dragging');
+                            event.dataTransfer.effectAllowed = 'move';
+                            if (event.dataTransfer.setDragImage) {
+                                const offsetX = item.clientWidth - 32;
+                                const offsetY = 32;
+                                event.dataTransfer.setDragImage(item, offsetX, offsetY);
+                            }
+                        });
+                        dragHandle.addEventListener('dragend', (event) => {
+                            event.stopPropagation();
+                            item.classList.remove('dragging');
+                            currentDragKey = null;
                         });
 
-                        previewContainer.appendChild(div);
+                        item.querySelector('.delete-btn').addEventListener('click', (event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            galleryFiles = galleryFiles.filter(current => current.key !== key);
+                            item.remove();
+                            ensurePrimarySelection();
+                            refreshInputFiles();
+                        });
+
+                        item.querySelector('.mark-main-btn').addEventListener('click', (event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            setPrimaryState(key);
+                        });
+
+                        return item;
                     };
 
-                    reader.readAsDataURL(file);
-                }
+                    const appendPreview = (file, key) => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            const item = buildPreviewItem(event.target.result, file, key);
+                            previewContainer.appendChild(item);
+                            updatePrimaryBadges();
+                        };
+                        reader.readAsDataURL(file);
+                    };
 
+                    const handleFiles = (files) => {
+                        const newEntries = [];
+                        let duplicateCount = 0;
 
-                let deletedImages = [];
-                document.querySelectorAll('.delete-existing-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const id = btn.dataset.id;
+                        [...files].forEach(file => {
+                            if (!file.type.startsWith('image/')) return;
 
-                        deletedImages.push(id);
+                            const isDuplicate = galleryFiles.some(existing =>
+                                existing.file.name === file.name &&
+                                existing.file.size === file.size &&
+                                existing.file.lastModified === file.lastModified
+                            );
 
-                        document.getElementById("deletedImages").value = JSON.stringify(deletedImages);
+                            if (isDuplicate) {
+                                duplicateCount++;
+                                return;
+                            }
 
-                        // Eliminar visualmente
-                        btn.closest('.preview-item').remove();
+                            const key = `new-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`;
+                            const entry = { file, key };
+                            galleryFiles.push(entry);
+                            newEntries.push(entry);
+                        });
+
+                        if (duplicateCount > 0) {
+                            alert(`${duplicateCount} imagen(es) ya existen en la galería y fueron omitidas.`);
+                        }
+
+                        ensurePrimarySelection();
+                        refreshInputFiles();
+                        newEntries.forEach(({ file, key }) => appendPreview(file, key));
+                    };
+
+                    // Soporte de pegado desde el portapapeles
+                    document.addEventListener('paste', (event) => {
+                        const items = (event.clipboardData || event.originalEvent?.clipboardData)?.items || [];
+                        const files = [];
+                        for (let i = 0; i < items.length; i++) {
+                            if (items[i].kind === 'file' && items[i].type.startsWith('image/')) {
+                                files.push(items[i].getAsFile());
+                            }
+                        }
+                        if (files.length > 0) {
+                            event.preventDefault();
+                            handleFiles(files);
+                        }
+                    });
+
+                    dropzone.addEventListener('click', () => input.click());
+                    dropzone.addEventListener('dragover', (event) => {
+                        event.preventDefault();
+                        dropzone.classList.add('dragover');
+                    });
+                    dropzone.addEventListener('dragleave', () => {
+                        dropzone.classList.remove('dragover');
+                    });
+                    dropzone.addEventListener('drop', (event) => {
+                        event.preventDefault();
+                        dropzone.classList.remove('dragover');
+                        handleFiles(event.dataTransfer.files);
+                    });
+                    input.addEventListener('change', (event) => handleFiles(event.target.files));
+
+                    previewContainer.addEventListener('dragover', (event) => {
+                        event.preventDefault();
+                        if (!currentDragKey || isReordering) return;
+
+                        const draggingItem = previewContainer.querySelector(`[data-key="${currentDragKey}"]`);
+                        const targetItem = event.target.closest('.preview-item');
+                        const isTargetPrimary = targetItem && primaryState && targetItem.dataset.key === primaryState.key;
+
+                        if (targetItem && !isTargetPrimary && targetItem !== draggingItem && previewContainer.contains(targetItem)) {
+                            isReordering = true;
+                            const items = Array.from(previewContainer.children);
+                            const currentIndex = items.indexOf(draggingItem);
+                            const targetIndex = items.indexOf(targetItem);
+
+                            if (currentIndex !== targetIndex) {
+                                const siblings = [...previewContainer.children];
+                                const positions = new Map(siblings.map(el => [el.dataset.key, el.getBoundingClientRect()]));
+
+                                if (currentIndex < targetIndex) {
+                                    previewContainer.insertBefore(draggingItem, targetItem.nextSibling);
+                                } else {
+                                    previewContainer.insertBefore(draggingItem, targetItem);
+                                }
+
+                                siblings.forEach(el => {
+                                    if (el === draggingItem) return;
+
+                                    const oldRect = positions.get(el.dataset.key);
+                                    const newRect = el.getBoundingClientRect();
+
+                                    if (oldRect && (oldRect.left !== newRect.left || oldRect.top !== newRect.top)) {
+                                        const dx = oldRect.left - newRect.left;
+                                        const dy = oldRect.top - newRect.top;
+
+                                        el.style.transition = 'none';
+                                        el.style.transform = `translate(${dx}px, ${dy}px)`;
+
+                                        requestAnimationFrame(() => {
+                                            el.style.transition = 'transform 0.3s ease';
+                                            el.style.transform = '';
+                                        });
+                                    }
+                                });
+                            }
+
+                            setTimeout(() => {
+                                isReordering = false;
+                            }, 250);
+                        }
+                    });
+
+                    previewContainer.addEventListener('drop', (event) => {
+                        event.preventDefault();
+                        if (!currentDragKey) return;
+
+                        const newOrderKeys = Array.from(previewContainer.querySelectorAll('.preview-item'))
+                            .map(item => item.dataset.key);
+
+                        const newGalleryFiles = [];
+                        newOrderKeys.forEach(key => {
+                            const fileItem = galleryFiles.find(item => item.key === key);
+                            if (fileItem) newGalleryFiles.push(fileItem);
+                        });
+
+                        galleryFiles = newGalleryFiles;
+                        refreshInputFiles();
+                        ensurePrimarySelection();
+
+                        currentDragKey = null;
+                        const draggingItem = previewContainer.querySelector('.dragging');
+                        if (draggingItem) draggingItem.classList.remove('dragging');
+                        updatePrimaryBadges();
+                    });
+
+                    document.getElementById('postForm').addEventListener('submit', () => {
+                        ensurePrimarySelection();
+                        if (!primaryState || galleryFiles.length === 0) {
+                            primaryImageInput.value = '';
+                            return;
+                        }
+
+                        const primaryIndex = galleryFiles.findIndex(item => item.key === primaryState.key);
+                        primaryImageInput.value = primaryIndex >= 0 ? `new:${primaryIndex}` : '';
                     });
                 });
             </script>

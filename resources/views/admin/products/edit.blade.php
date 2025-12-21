@@ -178,7 +178,7 @@
                                     </div>
                                 @endif
                                 <div class="overlay">
-                                    <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
+                                    <span class="file-size"></span>
                                     <div class="overlay-actions">
                                         <button type="button" class="mark-main-btn" title="Marcar como principal">
                                             <i class="ri-star-smile-fill"></i>

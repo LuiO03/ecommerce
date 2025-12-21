@@ -38,6 +38,7 @@ class PostController extends Controller
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'primary_image' => 'nullable|string',
         ]);
 
         $title = ucfirst(mb_strtolower($request->title));
@@ -75,23 +76,8 @@ class PostController extends Controller
             $post->tags()->sync($request->tags);
         }
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $img) {
-                $filename = $slug.'-'.time().'-'.$index.'.'.$img->getClientOriginalExtension();
-                $path = "posts/$filename";
-                $img->storeAs('posts', $filename, 'public');
-
-                $order = (PostImage::where('post_id', $post->id)->max('order') ?? -1) + 1;
-                PostImage::create([
-                    'post_id' => $post->id,
-                    'path' => $path,
-                    'alt' => $post->title,
-                    'description' => null,
-                    'is_main' => false,
-                    'order' => $order,
-                ]);
-            }
-        }
+        $newImages = $this->handleAdditionalImagesUpload($request, $post, $slug);
+        $this->finalizePostImages($post, $request->input('primary_image'), $newImages);
 
         Session::flash('toast', [
             'type' => 'success',
@@ -140,6 +126,7 @@ class PostController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
             'remove_image' => 'sometimes|boolean',
+            'primary_image' => 'nullable|string',
         ]);
 
         $title = ucfirst(mb_strtolower($request->title));
@@ -202,23 +189,25 @@ class PostController extends Controller
 
         $post->tags()->sync($request->tags ?? []);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $img) {
-                $filename = $slug.'-'.time().'-'.$index.'.'.$img->getClientOriginalExtension();
-                $path = "posts/$filename";
-                $img->storeAs('posts', $filename, 'public');
+        // Eliminar imágenes adicionales marcadas desde la galería
+        if ($request->filled('deletedImages')) {
+            $ids = json_decode($request->input('deletedImages'), true) ?? [];
+            if (is_array($ids) && !empty($ids)) {
+                $images = PostImage::where('post_id', $post->id)
+                    ->whereIn('id', $ids)
+                    ->get();
 
-                $order = (PostImage::where('post_id', $post->id)->max('order') ?? -1) + 1;
-                PostImage::create([
-                    'post_id' => $post->id,
-                    'path' => $path,
-                    'alt' => $post->title,
-                    'description' => null,
-                    'is_main' => false,
-                    'order' => $order,
-                ]);
+                foreach ($images as $image) {
+                    if (Storage::disk('public')->exists($image->path)) {
+                        Storage::disk('public')->delete($image->path);
+                    }
+                    $image->delete();
+                }
             }
         }
+
+        $newImages = $this->handleAdditionalImagesUpload($request, $post, $slug);
+        $this->finalizePostImages($post, $request->input('primary_image'), $newImages);
 
         Session::flash('toast', [
             'type' => 'success',
@@ -229,6 +218,94 @@ class PostController extends Controller
         Session::flash('highlightRow', $post->id);
 
         return redirect()->route('admin.posts.index');
+    }
+
+    /**
+     * Maneja la subida de imágenes adicionales (galería) y devuelve un mapa index => PostImage
+     * para poder resolver referencias "new:X" provenientes del front.
+     */
+    protected function handleAdditionalImagesUpload(Request $request, Post $post, string $slug): array
+    {
+        if (! $request->hasFile('images')) {
+            return [];
+        }
+
+        $created = [];
+        $currentMaxOrder = PostImage::where('post_id', $post->id)->max('order');
+        $orderCounter = is_numeric($currentMaxOrder) ? (int) $currentMaxOrder : -1;
+
+        foreach ($request->file('images') as $index => $img) {
+            if (! $img || ! $img->isValid()) {
+                continue;
+            }
+
+            $filename = $slug.'-'.time().'-'.$index.'.'.$img->getClientOriginalExtension();
+            $path = "posts/$filename";
+            $img->storeAs('posts', $filename, 'public');
+
+            $order = ++$orderCounter;
+
+            $image = PostImage::create([
+                'post_id' => $post->id,
+                'path' => $path,
+                'alt' => $post->title,
+                'description' => null,
+                'is_main' => false,
+                'order' => $order,
+            ]);
+
+            $created[(int) $index] = $image;
+        }
+
+        return $created;
+    }
+
+    /**
+     * Ajusta la imagen principal del post y normaliza el orden de las imágenes
+     * usando la referencia "primary_image" enviada desde la galería.
+     */
+    protected function finalizePostImages(Post $post, ?string $primaryReference, array $newImages): void
+    {
+        $images = $post->images()->orderBy('order')->get();
+
+        if ($images->isEmpty()) {
+            return;
+        }
+
+        $mainImage = null;
+
+        if ($primaryReference) {
+            if (str_starts_with($primaryReference, 'existing:')) {
+                $id = (int) substr($primaryReference, 9);
+                $mainImage = $images->firstWhere('id', $id);
+            } elseif (str_starts_with($primaryReference, 'new:')) {
+                $index = (int) substr($primaryReference, 4);
+                $mainImage = $newImages[$index] ?? null;
+            }
+        }
+
+        if (! $mainImage) {
+            $mainImage = $images->firstWhere('is_main', true) ?: $images->first();
+        }
+
+        if (! $mainImage) {
+            return;
+        }
+
+        $post->images()->where('id', '!=', $mainImage->id)->update(['is_main' => false]);
+
+        $mainImage->is_main = true;
+        $mainImage->order = 0;
+        $mainImage->save();
+
+        $order = 1;
+        foreach ($images->where('id', '!=', $mainImage->id) as $image) {
+            if ($image->order !== $order) {
+                $image->order = $order;
+                $image->save();
+            }
+            $order++;
+        }
     }
 
     public function destroyMultiple(Request $request)

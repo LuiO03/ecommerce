@@ -490,7 +490,8 @@
     padding: 4px 12px;
     border-radius: 999px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: bold;
+    font-family: var(--font-secondary);
     box-shadow: var(--shadow-material);
     z-index: 12;
 }
