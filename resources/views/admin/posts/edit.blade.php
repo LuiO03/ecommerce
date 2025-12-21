@@ -47,7 +47,8 @@
                 <div class="custom-dropzone" id="customDropzone">
                     <i class="ri-multi-image-line"></i>
                     <p>Arrastra imágenes aquí o haz clic</p>
-                    <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden>
+                    <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden
+                        data-validate="image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                 </div>
 
                 <div id="previewContainer" class="preview-container">
@@ -132,7 +133,7 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-file-text-line input-icon"></i>
-                    <input type="text" name="title" id="title" class="input-form"
+                    <input type="text" name="title" id="title" class="input-form" placeholder="Ingrese el título del post"
                         value="{{ old('title', $post->title) }}" data-validate="required|min:3|max:255">
                 </div>
             </div>
@@ -197,7 +198,7 @@
             <div class="input-group">
                 <label class="label-form">Contenido <i class="ri-asterisk text-accent"></i></label>
                 <textarea name="content" id="content" class="textarea-form-post" rows="8"
-                    data-validate="requiredText|minText:10">{{ old('content', $post->content) }}</textarea>
+                    data-validate="requiredText|minText:10" placeholder="Ingrese el contenido del post">{{ old('content', $post->content) }}</textarea>
             </div>
             <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
             <script>

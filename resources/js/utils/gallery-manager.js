@@ -92,6 +92,10 @@ export function initPostGalleryCreate() {
         });
 
         input.files = dataTransfer.files;
+
+        // Actualizar numeración visual de las imágenes
+        galleryUpdateIndexBadges(previewContainer);
+
         // Forzar revalidación de inputs de archivo (FormValidator escucha 'change')
         try {
             input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -248,6 +252,8 @@ export function initPostGalleryCreate() {
         reader.onload = (event) => {
             const item = buildPreviewItem(event.target.result, file, key);
             previewContainer.appendChild(item);
+            // Actualizar numeración y portada al agregar
+            galleryUpdateIndexBadges(previewContainer);
             updatePrimaryBadges();
         };
         reader.readAsDataURL(file);
@@ -387,12 +393,21 @@ export function initPostGalleryCreate() {
         currentDragKey = null;
         const draggingItem = previewContainer.querySelector('.dragging');
         if (draggingItem) draggingItem.classList.remove('dragging');
+
+        // Actualizar numeración tras el reordenamiento
+        galleryUpdateIndexBadges(previewContainer);
         updatePrimaryBadges();
     });
 
     // Registrar esta galería para que el validador pueda mapear Files a índice visual
+    // Se usa una "firma" estable (nombre + tamaño + lastModified) para evitar problemas
+    // con posibles copias de File al reconstruir FileList via DataTransfer.
     registerGalleryRegistry(input, previewContainer, (file) => {
-        const entry = galleryFiles.find(item => item.file === file);
+        const entry = galleryFiles.find(item =>
+            item.file.name === file.name &&
+            item.file.size === file.size &&
+            item.file.lastModified === file.lastModified
+        );
         return entry ? entry.key : null;
     });
 
@@ -896,7 +911,11 @@ export function initPostGalleryEdit() {
 
     // Registrar esta galería para que el validador pueda mapear Files a índice visual
     registerGalleryRegistry(input, previewContainer, (file) => {
-        const entry = galleryFiles.find(item => item.file === file);
+        const entry = galleryFiles.find(item =>
+            item.file.name === file.name &&
+            item.file.size === file.size &&
+            item.file.lastModified === file.lastModified
+        );
         return entry ? entry.key : null;
     });
 
@@ -1184,6 +1203,11 @@ export function initGalleryCreateWithConfig(config) {
             galleryAnimateRemoval(item, () => {
                 ensurePrimarySelection();
                 refreshInputFiles();
+
+                // Revalidar input de archivos si el formulario tiene FormValidator
+                if (input && input.form && input.form.__validator) {
+                    input.form.__validator.validateField(input);
+                }
             });
         });
 
@@ -1238,6 +1262,10 @@ export function initGalleryCreateWithConfig(config) {
 
         ensurePrimarySelection();
         refreshInputFiles();
+        // Validar después de actualizar la lista de archivos (soporta drop, paste, etc.)
+        if (input && input.form && input.form.__validator) {
+            input.form.__validator.validateField(input);
+        }
         newEntries.forEach(({ file, key }) => appendPreview(file, key));
     };
 
@@ -1331,20 +1359,29 @@ export function initGalleryCreateWithConfig(config) {
             if (fileItem) newGalleryFiles.push(fileItem);
         });
 
-    galleryFiles = newGalleryFiles;
-    refreshInputFiles();
-    ensurePrimarySelection();
+        galleryFiles = newGalleryFiles;
+        refreshInputFiles();
+        ensurePrimarySelection();
 
         currentDragKey = null;
         const draggingItem = previewContainer.querySelector('.dragging');
         if (draggingItem) draggingItem.classList.remove('dragging');
         galleryUpdateIndexBadges(previewContainer);
         updatePrimaryBadges();
+
+        // Revalidar input de archivos para refrescar índices en mensajes de error
+        if (input && input.form && input.form.__validator) {
+            input.form.__validator.validateField(input);
+        }
     });
 
     // Registrar esta galería genérica (create) para mapear Files -> índice visual
     registerGalleryRegistry(input, previewContainer, (file) => {
-        const entry = galleryFiles.find(item => item.file === file);
+        const entry = galleryFiles.find(item =>
+            item.file.name === file.name &&
+            item.file.size === file.size &&
+            item.file.lastModified === file.lastModified
+        );
         return entry ? entry.key : null;
     });
 
@@ -1407,7 +1444,6 @@ export function initGalleryEditWithConfig(config) {
         const dataTransfer = new DataTransfer();
         galleryFiles.forEach(entry => dataTransfer.items.add(entry.file));
         input.files = dataTransfer.files;
-
         // Actualizar badges de índice en edición cuando cambian los archivos nuevos
         galleryUpdateIndexBadges(previewContainer);
     };
@@ -1622,6 +1658,12 @@ export function initGalleryEditWithConfig(config) {
                         ensurePrimarySelection();
                         // Recalcular numeración cuando se elimina una imagen existente
                         galleryUpdateIndexBadges(previewContainer);
+
+                        // Revalidar input de archivos para que maxFiles
+                        // tenga en cuenta también la eliminación de imágenes existentes
+                        if (input && input.form && input.form.__validator) {
+                            input.form.__validator.validateField(input);
+                        }
                     });
                 });
             });
@@ -1699,13 +1741,30 @@ export function initGalleryEditWithConfig(config) {
             galleryAnimateRemoval(item, () => {
                 ensurePrimarySelection();
                 refreshInputFiles();
+
+                // Revalidar input de archivos si el formulario tiene FormValidator
+                if (input && input.form && input.form.__validator) {
+                    input.form.__validator.validateField(input);
+                }
             });
         });
 
         previewContainer.appendChild(item);
     };
 
-        const renderNewFiles = (entries) => {
+    // Renderizar nuevas imágenes y, una vez que todas estén en el DOM,
+    // disparar la validación del input de archivos para que los índices (#N)
+    // y el conteo total (maxFiles) se calculen con la galería completa.
+    const renderNewFiles = (entries) => {
+        if (!entries || entries.length === 0) {
+            if (input && input.form && input.form.__validator) {
+                input.form.__validator.validateField(input);
+            }
+            return;
+        }
+
+        let pending = entries.length;
+
         entries.forEach(({ file, key }) => {
             const reader = new FileReader();
             reader.onload = (event) => {
@@ -1713,6 +1772,11 @@ export function initGalleryEditWithConfig(config) {
                 // Numerar nuevamente al agregar nuevas imágenes en edición
                 galleryUpdateIndexBadges(previewContainer);
                 updatePrimaryBadges();
+
+                pending -= 1;
+                if (pending === 0 && input && input.form && input.form.__validator) {
+                    input.form.__validator.validateField(input);
+                }
             };
             reader.readAsDataURL(file);
         });
@@ -1860,11 +1924,20 @@ export function initGalleryEditWithConfig(config) {
         // Actualizar numeración tras reordenar en edición
         galleryUpdateIndexBadges(previewContainer);
         updatePrimaryBadges();
+
+        // Revalidar input de archivos para refrescar índices en mensajes de error
+        if (input && input.form && input.form.__validator) {
+            input.form.__validator.validateField(input);
+        }
     });
 
     // Registrar esta galería genérica (edit) para mapear Files -> índice visual
     registerGalleryRegistry(input, previewContainer, (file) => {
-        const entry = galleryFiles.find(item => item.file === file);
+        const entry = galleryFiles.find(item =>
+            item.file.name === file.name &&
+            item.file.size === file.size &&
+            item.file.lastModified === file.lastModified
+        );
         return entry ? entry.key : null;
     });
 
@@ -2261,7 +2334,11 @@ export function initProductGalleryCreate() {
 
     // Registrar la galería de productos (create) para mapear Files -> índice visual
     registerGalleryRegistry(galleryInput, galleryPreviewContainer, (file) => {
-        const entry = galleryFiles.find(item => item.file === file);
+        const entry = galleryFiles.find(item =>
+            item.file.name === file.name &&
+            item.file.size === file.size &&
+            item.file.lastModified === file.lastModified
+        );
         return entry ? entry.key : null;
     });
 

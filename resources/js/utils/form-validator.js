@@ -3,6 +3,29 @@
 // Validación escalable con reglas reutilizables
 // ========================================
 
+// Helper: obtener índice visual (#N) para un File dentro de una galería,
+// teniendo en cuenta imágenes existentes + nuevas (vista de edición).
+function getGalleryFileIndex(field, file, fallbackIndex) {
+    if (!field || !file) {
+        return typeof fallbackIndex === 'number' ? fallbackIndex + 1 : null;
+    }
+
+    try {
+        const registries = window._galleryRegistries || {};
+        const registry = registries[field.id];
+        if (registry && typeof registry.getIndexForFile === 'function') {
+            const idx = registry.getIndexForFile(file);
+            if (typeof idx === 'number' && idx > 0) {
+                return idx; // ya viene 1-based
+            }
+        }
+    } catch (_) {
+        // noop: caemos al fallback
+    }
+
+    return typeof fallbackIndex === 'number' ? fallbackIndex + 1 : null;
+}
+
 class FormValidator {
     constructor(formSelector, options = {}) {
         this.form = document.querySelector(formSelector);
@@ -160,9 +183,18 @@ class FormValidator {
         }
 
         // Validación inmediata en inputs de archivo al seleccionar (change)
+        // Nota: para inputs dentro de .image-upload-section (galerías),
+        // la validación se dispara manualmente desde gallery-manager,
+        // una vez que los previews ya fueron renderizados.
         this.fields.forEach((config, field) => {
             if (field.type === 'file') {
-                field.addEventListener('change', () => this.validateField(field));
+                const isGalleryFile = typeof field.closest === 'function'
+                    ? field.closest('.image-upload-section')
+                    : null;
+
+                if (!isGalleryFile) {
+                    field.addEventListener('change', () => this.validateField(field));
+                }
             }
         });
 
@@ -211,6 +243,7 @@ class FormValidator {
         const value = config.value();
         let isValid = true;
         let errorMessage = null;
+        let errorMeta = null;
 
         // Si el campo es opcional (no required) y está vacío, skip validación
         const isEmpty = field.type === 'file' ? value.length === 0 : value === '';
@@ -228,6 +261,11 @@ class FormValidator {
             if (!validationResult.valid) {
                 isValid = false;
                 errorMessage = config.customMessages[rule.name] || validationResult.message;
+                // Meta opcional: ej. índices de imágenes inválidas en galerías
+                errorMeta = {
+                    rule: rule.name,
+                    invalidIndexes: validationResult.invalidIndexes || null
+                };
                 break; // Detener en el primer error
             }
         }
@@ -238,7 +276,7 @@ class FormValidator {
             this.showSuccess(field); // ✅ NUEVO: Mostrar indicador de éxito
         } else {
             this.clearSuccess(field); // ✅ NUEVO: Limpiar éxito antes de mostrar error
-            this.showError(field, errorMessage);
+            this.showError(field, errorMessage, errorMeta);
         }
 
         return isValid;
@@ -490,20 +528,13 @@ class FormValidator {
                 return { valid: true };
             }
 
-            // Intentar mapear a índices de galería (#N)
-            let indexes = [];
-            try {
-                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
-                    const reg = window._galleryRegistries[field.id];
-                    if (typeof reg.getIndexForFile === 'function') {
-                        indexes = invalidFiles
-                            .map(f => reg.getIndexForFile(f))
-                            .filter(i => i != null);
-                    }
-                }
-            } catch (e) {
-                indexes = [];
-            }
+            // Índices basados en la posición visual dentro de la galería (si existe)
+            let indexes = invalidFiles
+                .map(f => {
+                    const rawIndex = list.indexOf(f);
+                    return getGalleryFileIndex(field, f, rawIndex);
+                })
+                .filter(i => i > 0);
 
             if (indexes.length > 0) {
                 const plural = indexes.length > 1;
@@ -512,7 +543,8 @@ class FormValidator {
                 const etiquetas = indexes.map(i => `#${i}`).join(', ');
                 return {
                     valid: false,
-                    message: `${sujeto} ${etiquetas} ${verbo} exceder ${maxSizeKB}KB`
+                    message: `${sujeto} ${etiquetas} ${verbo} exceder ${maxSizeKB}KB`,
+                    invalidIndexes: indexes
                 };
             }
 
@@ -536,19 +568,12 @@ class FormValidator {
                 return { valid: true };
             }
 
-            let indexes = [];
-            try {
-                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
-                    const reg = window._galleryRegistries[field.id];
-                    if (typeof reg.getIndexForFile === 'function') {
-                        indexes = invalidFiles
-                            .map(f => reg.getIndexForFile(f))
-                            .filter(i => i != null);
-                    }
-                }
-            } catch (e) {
-                indexes = [];
-            }
+            const indexes = invalidFiles
+                .map(f => {
+                    const rawIndex = list.indexOf(f);
+                    return getGalleryFileIndex(field, f, rawIndex);
+                })
+                .filter(i => i > 0);
 
             if (indexes.length > 0) {
                 const plural = indexes.length > 1;
@@ -557,7 +582,8 @@ class FormValidator {
                 const etiquetas = indexes.map(i => `#${i}`).join(', ');
                 return {
                     valid: false,
-                    message: `${sujeto} ${etiquetas} ${verbo} exceder ${maxSizeMB}MB`
+                    message: `${sujeto} ${etiquetas} ${verbo} exceder ${maxSizeMB}MB`,
+                    invalidIndexes: indexes
                 };
             }
 
@@ -583,19 +609,12 @@ class FormValidator {
                 return { valid: true };
             }
 
-            let indexes = [];
-            try {
-                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
-                    const reg = window._galleryRegistries[field.id];
-                    if (typeof reg.getIndexForFile === 'function') {
-                        indexes = invalidFiles
-                            .map(f => reg.getIndexForFile(f))
-                            .filter(i => i != null);
-                    }
-                }
-            } catch (e) {
-                indexes = [];
-            }
+            const indexes = invalidFiles
+                .map(f => {
+                    const rawIndex = list.indexOf(f);
+                    return getGalleryFileIndex(field, f, rawIndex);
+                })
+                .filter(i => i > 0);
 
             if (indexes.length > 0) {
                 const plural = indexes.length > 1;
@@ -604,7 +623,8 @@ class FormValidator {
                 const etiquetas = indexes.map(i => `#${i}`).join(', ');
                 return {
                     valid: false,
-                    message: `${sujeto} ${etiquetas} ${verbo} extensión no permitida. Solo se permiten: ${allowedTypes.join(', ')}`
+                    message: `${sujeto} ${etiquetas} ${verbo} extensión no permitida. Solo se permiten: ${allowedTypes.join(', ')}`,
+                    invalidIndexes: indexes
                 };
             }
 
@@ -630,19 +650,12 @@ class FormValidator {
                 return { valid: true };
             }
 
-            let indexes = [];
-            try {
-                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
-                    const reg = window._galleryRegistries[field.id];
-                    if (typeof reg.getIndexForFile === 'function') {
-                        indexes = invalidFiles
-                            .map(f => reg.getIndexForFile(f))
-                            .filter(i => i != null);
-                    }
-                }
-            } catch (e) {
-                indexes = [];
-            }
+            const indexes = invalidFiles
+                .map(f => {
+                    const rawIndex = list.indexOf(f);
+                    return getGalleryFileIndex(field, f, rawIndex);
+                })
+                .filter(i => i > 0);
 
             if (indexes.length > 0) {
                 const plural = indexes.length > 1;
@@ -650,7 +663,8 @@ class FormValidator {
                 const etiquetas = indexes.map(i => `#${i}`).join(', ');
                 return {
                     valid: false,
-                    message: `${sujeto} ${etiquetas} tienen un tipo de archivo no permitido. Solo: ${allowedMimes.join(', ')}`
+                    message: `${sujeto} ${etiquetas} tienen un tipo de archivo no permitido. Solo: ${allowedMimes.join(', ')}`,
+                    invalidIndexes: indexes
                 };
             }
 
@@ -681,19 +695,12 @@ class FormValidator {
                 return { valid: true };
             }
 
-            let indexes = [];
-            try {
-                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
-                    const reg = window._galleryRegistries[field.id];
-                    if (typeof reg.getIndexForFile === 'function') {
-                        indexes = invalidFiles
-                            .map(f => reg.getIndexForFile(f))
-                            .filter(i => i != null);
-                    }
-                }
-            } catch (e) {
-                indexes = [];
-            }
+            const indexes = invalidFiles
+                .map(f => {
+                    const rawIndex = list.indexOf(f);
+                    return getGalleryFileIndex(field, f, rawIndex);
+                })
+                .filter(i => i > 0);
 
             if (indexes.length > 0) {
                 const plural = indexes.length > 1;
@@ -701,7 +708,8 @@ class FormValidator {
                 const etiquetas = indexes.map(i => `#${i}`).join(', ');
                 return {
                     valid: false,
-                    message: `${sujeto} ${etiquetas} no son imágenes válidas. Solo se permiten imágenes (JPG, PNG, GIF, WebP)`
+                    message: `${sujeto} ${etiquetas} no son imágenes válidas. Solo se permiten imágenes (JPG, PNG, GIF, WebP)`,
+                    invalidIndexes: indexes
                 };
             }
 
@@ -713,12 +721,33 @@ class FormValidator {
         },
 
         // === MÁXIMO NÚMERO DE ARCHIVOS ===
-        maxFiles: (files, param) => {
-            if (!files) return { valid: true };
+        // En galerías de imágenes de edición, cuenta imágenes existentes + nuevas
+        maxFiles: (files, param, field) => {
             const max = parseInt(param);
+
+            // Intentar contar desde el DOM de la galería (imágenes existentes + nuevas)
+            let total = 0;
+            if (field && typeof field.closest === 'function') {
+                const gallerySection = field.closest('.image-upload-section');
+                if (gallerySection) {
+                    const previewContainer = gallerySection.querySelector('.preview-container');
+                    if (previewContainer) {
+                        total = previewContainer.querySelectorAll('.preview-item').length;
+                    }
+                }
+            }
+
+            // Fallback: si no hay galería asociada, usar solo el FileList
+            if (!total && files) {
+                total = files.length;
+            }
+
+            // Si sigue siendo 0, no hay archivos que validar
+            if (!total) return { valid: true };
+
             return {
-                valid: files.length <= max,
-                message: `No puede seleccionar más de ${max} archivos (actual: ${files.length})`
+                valid: total <= max,
+                message: `No puede seleccionar más de ${max} archivos (actual: ${total})`
             };
         },
 
@@ -803,7 +832,7 @@ class FormValidator {
     // ========================================
     // ❌ MOSTRAR ERROR
     // ========================================
-    showError(field, message) {
+    showError(field, message, meta = null) {
         this.errors.set(field, message);
 
         // Agregar clase de error al input
@@ -827,26 +856,74 @@ class FormValidator {
 
         if (!this.options.showErrorsInline) return;
 
+        // Buscar posible contenedor especial (galería de imágenes)
+        const gallerySection = field.type === 'file'
+            ? field.closest('.image-upload-section')
+            : null;
+
         // Buscar o crear mensaje de error
         const parent = field.closest('.input-group') || field.parentElement;
         let errorElement = parent.querySelector(`.${this.options.errorMessageClass}`);
+
+        // Si no se encontró en el parent estándar y es galería, buscar en toda la sección
+        if (!errorElement && gallerySection) {
+            errorElement = gallerySection.querySelector(`.${this.options.errorMessageClass}`);
+        }
 
         if (!errorElement) {
             errorElement = document.createElement('span');
             errorElement.className = this.options.errorMessageClass;
             errorElement.innerHTML = `<i class="ri-error-warning-line"></i> <span class="error-text"></span>`;
 
-            // Insertar después del input-icon-container o directamente después del field
-            const container = field.closest('.input-icon-container');
-            if (container) {
-                container.after(errorElement);
+            // Caso especial: inputs de archivo de galería
+            if (gallerySection) {
+                const previewContainer = gallerySection.querySelector('.preview-container');
+                if (previewContainer && previewContainer.parentNode) {
+                    // Insertar el mensaje inmediatamente ANTES del contenedor de previews
+                    previewContainer.parentNode.insertBefore(errorElement, previewContainer);
+                } else {
+                    // Fallback si por alguna razón no existe el contenedor
+                    field.after(errorElement);
+                }
             } else {
-                field.after(errorElement);
+                // Caso general: después del input-icon-container o después del campo
+                const container = field.closest('.input-icon-container');
+                if (container) {
+                    container.after(errorElement);
+                } else {
+                    field.after(errorElement);
+                }
             }
         }
 
         errorElement.querySelector('.error-text').textContent = message;
         errorElement.style.display = 'flex';
+
+        // Marcar previews de galería que están involucradas en el error
+        if (field.type === 'file' && gallerySection) {
+            const previewContainer = gallerySection.querySelector('.preview-container');
+            if (previewContainer) {
+                // Limpiar marcas previas
+                previewContainer.querySelectorAll('.preview-item.image-error-state').forEach(item => {
+                    item.classList.remove('image-error-state');
+                });
+
+                // Aplicar marcas nuevas según índices inválidos (si los hay)
+                const indexes = meta && Array.isArray(meta.invalidIndexes)
+                    ? meta.invalidIndexes
+                    : null;
+
+                if (indexes && indexes.length > 0) {
+                    const items = Array.from(previewContainer.querySelectorAll('.preview-item'));
+                    indexes.forEach(idx => {
+                        const pos = idx - 1;
+                        if (pos >= 0 && pos < items.length) {
+                            items[pos].classList.add('image-error-state');
+                        }
+                    });
+                }
+            }
+        }
     }
 
     // ========================================
@@ -857,10 +934,31 @@ class FormValidator {
         field.classList.remove(this.options.errorClass);
 
         const parent = field.closest('.input-group') || field.parentElement;
-        const errorElement = parent.querySelector(`.${this.options.errorMessageClass}`);
+        let errorElement = parent.querySelector(`.${this.options.errorMessageClass}`);
+
+        // Caso especial: inputs de archivo asociados a galería
+        if (!errorElement && field.type === 'file') {
+            const gallerySection = field.closest('.image-upload-section');
+            if (gallerySection) {
+                errorElement = gallerySection.querySelector(`.${this.options.errorMessageClass}`);
+            }
+        }
 
         if (errorElement) {
             errorElement.style.display = 'none';
+        }
+
+        // Limpiar marcas de error en previews de galería
+        if (field.type === 'file') {
+            const gallerySection = field.closest('.image-upload-section');
+            if (gallerySection) {
+                const previewContainer = gallerySection.querySelector('.preview-container');
+                if (previewContainer) {
+                    previewContainer.querySelectorAll('.preview-item.image-error-state').forEach(item => {
+                        item.classList.remove('image-error-state');
+                    });
+                }
+            }
         }
 
         // Limpiar clases de CKEditor si aplica
@@ -936,6 +1034,10 @@ export function initFormValidator(formSelector, options = {}) {
     // === Habilitar botón submit solo si hay cambios en formularios de edición ===
     const form = document.querySelector(formSelector);
     if (!form) return validator;
+
+    // Exponer instancia en el formulario para integraciones externas (galerías, etc.)
+    // Permite que otros módulos puedan forzar la revalidación de campos concretos.
+    form.__validator = validator;
 
     // Detectar si es formulario de edición por id o atributo personalizado
     const isEditForm = form.hasAttribute('data-edit-form') || /Form$/.test(form.id);
