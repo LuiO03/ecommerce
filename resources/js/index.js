@@ -20,6 +20,7 @@ import { initFormValidator } from './modules/form-validator.js';
 import { initCompanySettingsTabs, initCompanySettingsEditors, initCompanySettingsColorInputs } from './modules/company-settings-tabs.js';
 import { initOptionFeatureForm } from './modules/options-feature-form.js';
 import { initOptionInlineManager } from './modules/options-inline-manager.js';
+import { initPostGalleryCreate, initPostGalleryEdit, initProductGalleryCreate, initProductGalleryEdit } from './modules/gallery-manager.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
@@ -31,6 +32,10 @@ window.initCompanySettingsEditors = initCompanySettingsEditors;
 window.initCompanySettingsColorInputs = initCompanySettingsColorInputs;
 window.initOptionFeatureForm = initOptionFeatureForm;
 window.initOptionInlineManager = initOptionInlineManager;
+window.initPostGalleryCreate = initPostGalleryCreate;
+window.initPostGalleryEdit = initPostGalleryEdit;
+window.initProductGalleryCreate = initProductGalleryCreate;
+window.initProductGalleryEdit = initProductGalleryEdit;
 
 
 // Si tienes funciones o inicializaciones globales
