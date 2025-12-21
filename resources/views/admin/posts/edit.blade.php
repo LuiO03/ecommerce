@@ -398,6 +398,8 @@
                             const reader = new FileReader();
                             reader.onload = (event) => {
                                 buildNewPreviewItem(event.target.result, file, key);
+                                // Asegurar que solo la portada actual muestre la etiqueta
+                                updatePrimaryBadges();
                             };
                             reader.readAsDataURL(file);
                         });
@@ -433,6 +435,8 @@
 
                         refreshInputFiles();
                         renderNewFiles(newEntries);
+                        // Mantener la portada existente o elegir la primera si no hay
+                        ensurePrimarySelection();
                     };
 
                     // Soporte de pegado desde portapapeles
