@@ -82,6 +82,12 @@ export function initPostGalleryCreate() {
                 el.style.transform = '';
             });
         });
+
+        // Revalidar input para que los índices (#N) en mensajes de error
+        // reflejen la nueva posición al marcar una imagen como principal
+        if (input && input.form && input.form.__validator) {
+            input.form.__validator.validateField(input);
+        }
     };
 
     const refreshInputFiles = () => {
@@ -530,6 +536,12 @@ export function initPostGalleryEdit() {
                 el.style.transform = '';
             });
         });
+
+        // Revalidar input para que los índices (#N) en mensajes de error
+        // reflejen la nueva posición al marcar una imagen como principal
+        if (input && input.form && input.form.__validator) {
+            input.form.__validator.validateField(input);
+        }
     };
 
     const updatePrimaryBadges = () => {
@@ -1094,6 +1106,12 @@ export function initGalleryCreateWithConfig(config) {
                 el.style.transform = '';
             });
         });
+
+        // Revalidar el input de archivos para que los índices (#N)
+        // de los mensajes de error reflejen la nueva posición de la portada
+        if (input && input.form && input.form.__validator) {
+            input.form.__validator.validateField(input);
+        }
     };
 
     const updatePrimaryBadges = () => {
@@ -1514,6 +1532,12 @@ export function initGalleryEditWithConfig(config) {
 
         // Recalcular numeración después de mover la portada al inicio
         galleryUpdateIndexBadges(previewContainer);
+
+        // Revalidar el input de archivos para que los índices (#N)
+        // de los mensajes de error reflejen la nueva posición de la portada
+        if (input && input.form && input.form.__validator) {
+            input.form.__validator.validateField(input);
+        }
     };
 
     const updatePrimaryBadges = () => {
