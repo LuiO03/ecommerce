@@ -69,7 +69,7 @@
 
 .input-error:focus {
     border-color: var(--color-danger) !important;
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
 }
 
 /* Icono de error en el input */
@@ -259,7 +259,7 @@ select.input-success:focus {
 .textarea-form,
 .select-form,
 .image-preview-zone {
-    transition: 
+    transition:
         border-color 0.3s ease,
         box-shadow 0.3s ease;
 }

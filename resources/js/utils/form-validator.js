@@ -480,71 +480,235 @@ class FormValidator {
         }),
 
         // === TAMAÑO MÁXIMO (en KB) ===
-        maxSize: (files, param) => {
+        maxSize: (files, param, field) => {
             if (!files || files.length === 0) return { valid: true };
-            const file = files[0];
             const maxSizeKB = parseInt(param);
-            const fileSizeKB = file.size / 1024;
+            const list = Array.from(files);
+            const invalidFiles = list.filter(f => (f.size / 1024) > maxSizeKB);
 
+            if (invalidFiles.length === 0) {
+                return { valid: true };
+            }
+
+            // Intentar mapear a índices de galería (#N)
+            let indexes = [];
+            try {
+                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
+                    const reg = window._galleryRegistries[field.id];
+                    if (typeof reg.getIndexForFile === 'function') {
+                        indexes = invalidFiles
+                            .map(f => reg.getIndexForFile(f))
+                            .filter(i => i != null);
+                    }
+                }
+            } catch (e) {
+                indexes = [];
+            }
+
+            if (indexes.length > 0) {
+                const plural = indexes.length > 1;
+                const sujeto = plural ? 'Las imágenes' : 'La imagen';
+                const verbo = plural ? 'no deben' : 'no debe';
+                const etiquetas = indexes.map(i => `#${i}`).join(', ');
+                return {
+                    valid: false,
+                    message: `${sujeto} ${etiquetas} ${verbo} exceder ${maxSizeKB}KB`
+                };
+            }
+
+            // Fallback genérico por archivo
+            const invalidFile = invalidFiles[0];
+            const fileSizeKB = invalidFile.size / 1024;
             return {
-                valid: fileSizeKB <= maxSizeKB,
-                message: `El archivo no debe exceder ${maxSizeKB}KB (actual: ${Math.round(fileSizeKB)}KB)`
+                valid: false,
+                message: `El archivo "${invalidFile.name}" no debe exceder ${maxSizeKB}KB (actual: ${Math.round(fileSizeKB)}KB)`
             };
         },
 
         // === TAMAÑO MÁXIMO (en MB) - MÁS INTUITIVO ===
-        maxSizeMB: (files, param) => {
+        maxSizeMB: (files, param, field) => {
             if (!files || files.length === 0) return { valid: true };
-            const file = files[0];
             const maxSizeMB = parseFloat(param);
-            const fileSizeMB = file.size / (1024 * 1024);
+            const list = Array.from(files);
+            const invalidFiles = list.filter(f => (f.size / (1024 * 1024)) > maxSizeMB);
 
+            if (invalidFiles.length === 0) {
+                return { valid: true };
+            }
+
+            let indexes = [];
+            try {
+                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
+                    const reg = window._galleryRegistries[field.id];
+                    if (typeof reg.getIndexForFile === 'function') {
+                        indexes = invalidFiles
+                            .map(f => reg.getIndexForFile(f))
+                            .filter(i => i != null);
+                    }
+                }
+            } catch (e) {
+                indexes = [];
+            }
+
+            if (indexes.length > 0) {
+                const plural = indexes.length > 1;
+                const sujeto = plural ? 'Las imágenes' : 'La imagen';
+                const verbo = plural ? 'no deben' : 'no debe';
+                const etiquetas = indexes.map(i => `#${i}`).join(', ');
+                return {
+                    valid: false,
+                    message: `${sujeto} ${etiquetas} ${verbo} exceder ${maxSizeMB}MB`
+                };
+            }
+
+            const invalidFile = invalidFiles[0];
+            const fileSizeMB = invalidFile.size / (1024 * 1024);
             return {
-                valid: fileSizeMB <= maxSizeMB,
-                message: `El archivo no debe exceder ${maxSizeMB}MB (actual: ${fileSizeMB.toFixed(2)}MB)`
+                valid: false,
+                message: `El archivo "${invalidFile.name}" no debe exceder ${maxSizeMB}MB (actual: ${fileSizeMB.toFixed(2)}MB)`
             };
         },
 
         // === TIPOS DE ARCHIVO PERMITIDOS ===
-        fileTypes: (files, param) => {
+        fileTypes: (files, param, field) => {
             if (!files || files.length === 0) return { valid: true };
-            const file = files[0];
             const allowedTypes = param.split(',').map(t => t.trim().toLowerCase());
-            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const list = Array.from(files);
+            const invalidFiles = list.filter(f => {
+                const ext = (f.name.split('.').pop() || '').toLowerCase();
+                return !allowedTypes.includes(ext);
+            });
 
+            if (invalidFiles.length === 0) {
+                return { valid: true };
+            }
+
+            let indexes = [];
+            try {
+                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
+                    const reg = window._galleryRegistries[field.id];
+                    if (typeof reg.getIndexForFile === 'function') {
+                        indexes = invalidFiles
+                            .map(f => reg.getIndexForFile(f))
+                            .filter(i => i != null);
+                    }
+                }
+            } catch (e) {
+                indexes = [];
+            }
+
+            if (indexes.length > 0) {
+                const plural = indexes.length > 1;
+                const sujeto = plural ? 'Las imágenes' : 'La imagen';
+                const verbo = plural ? 'tienen' : 'tiene';
+                const etiquetas = indexes.map(i => `#${i}`).join(', ');
+                return {
+                    valid: false,
+                    message: `${sujeto} ${etiquetas} ${verbo} extensión no permitida. Solo se permiten: ${allowedTypes.join(', ')}`
+                };
+            }
+
+            const invalidFile = invalidFiles[0];
+            const fileExtension = (invalidFile.name.split('.').pop() || '').toLowerCase();
             return {
-                valid: allowedTypes.includes(fileExtension),
-                message: `Solo se permiten archivos: ${allowedTypes.join(', ')}`
+                valid: false,
+                message: `El archivo "${invalidFile.name}" tiene extensión .${fileExtension} no permitida. Solo se permiten: ${allowedTypes.join(', ')}`
             };
         },
 
         // === MIME TYPES PERMITIDOS ===
-        mimeTypes: (files, param) => {
+        mimeTypes: (files, param, field) => {
             if (!files || files.length === 0) return { valid: true };
-            const file = files[0];
             const allowedMimes = param.split(',').map(m => m.trim().toLowerCase());
+            const list = Array.from(files);
+            const invalidFiles = list.filter(f => {
+                const mime = (f.type || '').toLowerCase();
+                return mime && !allowedMimes.includes(mime);
+            });
 
+            if (invalidFiles.length === 0) {
+                return { valid: true };
+            }
+
+            let indexes = [];
+            try {
+                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
+                    const reg = window._galleryRegistries[field.id];
+                    if (typeof reg.getIndexForFile === 'function') {
+                        indexes = invalidFiles
+                            .map(f => reg.getIndexForFile(f))
+                            .filter(i => i != null);
+                    }
+                }
+            } catch (e) {
+                indexes = [];
+            }
+
+            if (indexes.length > 0) {
+                const plural = indexes.length > 1;
+                const sujeto = plural ? 'Las imágenes' : 'La imagen';
+                const etiquetas = indexes.map(i => `#${i}`).join(', ');
+                return {
+                    valid: false,
+                    message: `${sujeto} ${etiquetas} tienen un tipo de archivo no permitido. Solo: ${allowedMimes.join(', ')}`
+                };
+            }
+
+            const invalidFile = invalidFiles[0];
+            const mime = (invalidFile.type || '').toLowerCase();
             return {
-                valid: allowedMimes.includes(file.type.toLowerCase()),
-                message: `Tipo de archivo no permitido. Solo: ${allowedMimes.join(', ')}`
+                valid: false,
+                message: `El archivo "${invalidFile.name}" es de tipo ${mime || 'desconocido'}, no permitido. Solo: ${allowedMimes.join(', ')}`
             };
         },
 
         // === SOLO IMÁGENES ===
-        image: (files) => {
+        image: (files, _param, field) => {
             if (!files || files.length === 0) return { valid: true };
-            const file = files[0];
             const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-            const mime = (file.type || '').toLowerCase();
-            const byMime = mime ? allowedMimes.includes(mime) : false;
-            // Fallback por extensión cuando el navegador no provee MIME
-            const ext = (file.name.split('.').pop() || '').toLowerCase();
             const allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-            const byExt = allowedExts.includes(ext);
 
+            const list = Array.from(files);
+            const invalidFiles = list.filter(file => {
+                const mime = (file.type || '').toLowerCase();
+                const byMime = mime ? allowedMimes.includes(mime) : false;
+                const ext = (file.name.split('.').pop() || '').toLowerCase();
+                const byExt = allowedExts.includes(ext);
+                return !(byMime || (!mime && byExt));
+            });
+
+            if (invalidFiles.length === 0) {
+                return { valid: true };
+            }
+
+            let indexes = [];
+            try {
+                if (window._galleryRegistries && field && field.id && window._galleryRegistries[field.id]) {
+                    const reg = window._galleryRegistries[field.id];
+                    if (typeof reg.getIndexForFile === 'function') {
+                        indexes = invalidFiles
+                            .map(f => reg.getIndexForFile(f))
+                            .filter(i => i != null);
+                    }
+                }
+            } catch (e) {
+                indexes = [];
+            }
+
+            if (indexes.length > 0) {
+                const plural = indexes.length > 1;
+                const sujeto = plural ? 'Las imágenes' : 'La imagen';
+                const etiquetas = indexes.map(i => `#${i}`).join(', ');
+                return {
+                    valid: false,
+                    message: `${sujeto} ${etiquetas} no son imágenes válidas. Solo se permiten imágenes (JPG, PNG, GIF, WebP)`
+                };
+            }
+
+            const invalidFile = invalidFiles[0];
             return {
-                valid: byMime || (!mime && byExt),
-                message: 'Solo se permiten imágenes (JPG, PNG, GIF, WebP)'
+                valid: false,
+                message: `El archivo "${invalidFile.name}" no es una imagen válida. Solo se permiten imágenes (JPG, PNG, GIF, WebP)`
             };
         },
 
@@ -554,7 +718,7 @@ class FormValidator {
             const max = parseInt(param);
             return {
                 valid: files.length <= max,
-                message: `No puede seleccionar más de ${max} archivos`
+                message: `No puede seleccionar más de ${max} archivos (actual: ${files.length})`
             };
         },
 

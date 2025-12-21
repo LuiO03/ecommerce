@@ -16,11 +16,18 @@ import './modules/category-hierarchy.js';
 import { initImageUpload } from './utils/image-upload-handler.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
-import { initFormValidator } from './modules/form-validator.js';
+import { initFormValidator } from './utils/form-validator.js';
 import { initCompanySettingsTabs, initCompanySettingsEditors, initCompanySettingsColorInputs } from './modules/company-settings-tabs.js';
 import { initOptionFeatureForm } from './modules/options-feature-form.js';
 import { initOptionInlineManager } from './modules/options-inline-manager.js';
-import { initPostGalleryCreate, initPostGalleryEdit, initProductGalleryCreate, initProductGalleryEdit } from './modules/gallery-manager.js';
+import {
+  initPostGalleryCreate,
+  initPostGalleryEdit,
+  initProductGalleryCreate,
+  initProductGalleryEdit,
+  initGalleryCreateWithConfig,
+  initGalleryEditWithConfig
+} from './utils/gallery-manager.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
@@ -36,6 +43,8 @@ window.initPostGalleryCreate = initPostGalleryCreate;
 window.initPostGalleryEdit = initPostGalleryEdit;
 window.initProductGalleryCreate = initProductGalleryCreate;
 window.initProductGalleryEdit = initProductGalleryEdit;
+window.initGalleryCreateWithConfig = initGalleryCreateWithConfig;
+window.initGalleryEditWithConfig = initGalleryEditWithConfig;
 
 
 // Si tienes funciones o inicializaciones globales

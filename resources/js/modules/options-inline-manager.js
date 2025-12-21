@@ -1,5 +1,5 @@
 import { normalizeColorValue } from './options-feature-form.js';
-import FormValidator from './form-validator.js';
+import FormValidator from '../utils/form-validator.js';
 import { SubmitButtonLoader } from '../utils/submit-button-loader.js';
 
 function getCsrfToken() {

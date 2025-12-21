@@ -6,6 +6,25 @@
     width: 100% !important;
     width: 100% !important;
     max-width: 100% !important;
+    border: 2px solid var(--color-input-border) !important;
+    border-radius: var(--radius-input) !important;
+    overflow: hidden;
+}
+
+/* Cambiar el borde de .ck-editor al hacer focus a  .ck-editor__editable*/
+.ck-editor:focus-within {
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 0 0 3px var(--shadow-accent) !important;
+}
+
+/* Mantener color de foco acorde al estado si existe */
+.ck-editor.input-error {
+    border-color: var(--color-danger) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+.ck-editor.input-success{
+    border-color: var(--color-success) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
 }
 
 .ck-editor__editable {
@@ -18,22 +37,10 @@
 /* Fondo y color dentro del área editable */
 .ck-editor__editable {
     background-color: var(--color-input-bg) !important;
-    /* color de fondo */
     color: var(--color-text) !important;
-    /* color de texto */
     font-size: var(--font-size-p);
     line-height: 1.6 !important;
     padding: 0px 12px !important;
-}
-
-/* Cambiar el borde del área editable al hacer focus */
-.ck-editor__editable:focus {
-    border: 1px solid var(--color-accent) !important; /* Cambia var(--color-accent) por el color que quieras */
-    outline: none !important;
-}
-
-/* Cambiar el borde normal (sin focus) */
-.ck-editor__editable {
     min-height: 200px;
     width: 100% !important;
     max-width: 100% !important;
@@ -43,19 +50,7 @@
     border-bottom: none !important;
 }
 
-.ck-editor{
-    border: 2px solid var(--color-input-border) !important;
-    border-radius: var(--radius-input) !important;
-    overflow: hidden;
-}
 
-/* Mantener color de foco acorde al estado si existe */
-.ck-editor__editable.input-error:focus {
-    border-color: var(--color-danger) !important;
-}
-.ck-editor__editable.input-success:focus {
-    border-color: var(--color-success) !important;
-}
 
 /* Cambiar la cabecera (toolbar) del CKEditor */
 .ck.ck-toolbar {
@@ -84,10 +79,7 @@
 }
 /* Botones activos en la toolbar */
 .ck.ck-toolbar .ck-button.ck-on {
-    background-color: var(
-        --color-accent
-    ) !important; /* Fondo cuando está activo */
-
+    background-color: var(--color-accent) !important; /* Fondo cuando está activo */
     color: #fff !important; /* Color del ícono/texto */
 }
 

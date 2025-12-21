@@ -1,6 +1,33 @@
 // Gestor de galerías de imágenes para productos y posts
 // Cada inicializador asume que el DOM ya está cargado.
 
+// Registro global opcional para que otros módulos (p.ej. validador de formularios)
+// puedan conocer el índice visual (#N) de una imagen dada (File) dentro de la galería.
+function registerGalleryRegistry(input, previewContainer, getKeyForFile) {
+    if (!input || !previewContainer || !getKeyForFile || !input.id) return;
+
+    window._galleryRegistries = window._galleryRegistries || {};
+    window._galleryRegistries[input.id] = {
+        getIndexForFile(file) {
+            if (!file) return null;
+            let key;
+            try {
+                key = getKeyForFile(file);
+            } catch (e) {
+                key = null;
+            }
+            if (!key) return null;
+
+            const items = Array.from(previewContainer.querySelectorAll('.preview-item'));
+            const target = items.find(el => el.dataset.key === key);
+            if (!target) return null;
+
+            const index = items.indexOf(target);
+            return index >= 0 ? index + 1 : null; // 1-based para coincidir con el badge #N
+        }
+    };
+}
+
 export function initPostGalleryCreate() {
     const dropzone = document.getElementById('customDropzone');
     const input = document.getElementById('imageInput');
@@ -65,6 +92,14 @@ export function initPostGalleryCreate() {
         });
 
         input.files = dataTransfer.files;
+        // Forzar revalidación de inputs de archivo (FormValidator escucha 'change')
+        try {
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        } catch (e) {
+            const evt = document.createEvent('HTMLEvents');
+            evt.initEvent('change', true, false);
+            input.dispatchEvent(evt);
+        }
     };
 
     const animateRemoval = (item, callback) => {
@@ -355,6 +390,12 @@ export function initPostGalleryCreate() {
         updatePrimaryBadges();
     });
 
+    // Registrar esta galería para que el validador pueda mapear Files a índice visual
+    registerGalleryRegistry(input, previewContainer, (file) => {
+        const entry = galleryFiles.find(item => item.file === file);
+        return entry ? entry.key : null;
+    });
+
     const form = document.getElementById('postForm');
     if (form) {
         form.addEventListener('submit', () => {
@@ -389,6 +430,14 @@ export function initPostGalleryEdit() {
         const dataTransfer = new DataTransfer();
         galleryFiles.forEach(entry => dataTransfer.items.add(entry.file));
         input.files = dataTransfer.files;
+        // Forzar revalidación cuando cambian las imágenes nuevas en edición
+        try {
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        } catch (e) {
+            const evt = document.createEvent('HTMLEvents');
+            evt.initEvent('change', true, false);
+            input.dispatchEvent(evt);
+        }
     };
 
     const animateRemoval = (item, callback) => {
@@ -845,6 +894,12 @@ export function initPostGalleryEdit() {
         updatePrimaryBadges();
     });
 
+    // Registrar esta galería para que el validador pueda mapear Files a índice visual
+    registerGalleryRegistry(input, previewContainer, (file) => {
+        const entry = galleryFiles.find(item => item.file === file);
+        return entry ? entry.key : null;
+    });
+
     registerExistingEvents();
     ensurePrimarySelection();
     updatePrimaryBadges();
@@ -879,6 +934,21 @@ const GALLERY_DUPLICATE_MESSAGE = 'imagen(es) ya existen en la galería y fueron
 function galleryFormatFileSize(bytes) {
     let size = bytes / 1024;
     return size > 1024 ? `${(size / 1024).toFixed(2)} MB` : `${size.toFixed(1)} KB`;
+}
+
+function galleryUpdateIndexBadges(container) {
+    if (!container) return;
+
+    const items = Array.from(container.querySelectorAll('.preview-item'));
+    items.forEach((item, index) => {
+        let badge = item.querySelector('.index-badge');
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.classList.add('index-badge');
+            item.appendChild(badge);
+        }
+        badge.textContent = `#${index + 1}`;
+    });
 }
 
 function galleryAnimateRemoval(item, callback) {
@@ -960,6 +1030,8 @@ export function initGalleryCreateWithConfig(config) {
         });
 
         input.files = dataTransfer.files;
+
+        galleryUpdateIndexBadges(previewContainer);
     };
 
     const movePrimaryToStart = () => {
@@ -1130,6 +1202,7 @@ export function initGalleryCreateWithConfig(config) {
         reader.onload = (event) => {
             const item = buildPreviewItem(event.target.result, file, key);
             previewContainer.appendChild(item);
+            galleryUpdateIndexBadges(previewContainer);
             updatePrimaryBadges();
         };
         reader.readAsDataURL(file);
@@ -1258,14 +1331,21 @@ export function initGalleryCreateWithConfig(config) {
             if (fileItem) newGalleryFiles.push(fileItem);
         });
 
-        galleryFiles = newGalleryFiles;
-        refreshInputFiles();
-        ensurePrimarySelection();
+    galleryFiles = newGalleryFiles;
+    refreshInputFiles();
+    ensurePrimarySelection();
 
         currentDragKey = null;
         const draggingItem = previewContainer.querySelector('.dragging');
         if (draggingItem) draggingItem.classList.remove('dragging');
+        galleryUpdateIndexBadges(previewContainer);
         updatePrimaryBadges();
+    });
+
+    // Registrar esta galería genérica (create) para mapear Files -> índice visual
+    registerGalleryRegistry(input, previewContainer, (file) => {
+        const entry = galleryFiles.find(item => item.file === file);
+        return entry ? entry.key : null;
     });
 
     const form = formId ? document.getElementById(formId) : null;
@@ -1327,6 +1407,9 @@ export function initGalleryEditWithConfig(config) {
         const dataTransfer = new DataTransfer();
         galleryFiles.forEach(entry => dataTransfer.items.add(entry.file));
         input.files = dataTransfer.files;
+
+        // Actualizar badges de índice en edición cuando cambian los archivos nuevos
+        galleryUpdateIndexBadges(previewContainer);
     };
 
     const syncDeletedInput = () => {
@@ -1392,6 +1475,9 @@ export function initGalleryEditWithConfig(config) {
                 el.style.transform = '';
             });
         });
+
+        // Recalcular numeración después de mover la portada al inicio
+        galleryUpdateIndexBadges(previewContainer);
     };
 
     const updatePrimaryBadges = () => {
@@ -1534,6 +1620,8 @@ export function initGalleryEditWithConfig(config) {
 
                     galleryAnimateRemoval(item, () => {
                         ensurePrimarySelection();
+                        // Recalcular numeración cuando se elimina una imagen existente
+                        galleryUpdateIndexBadges(previewContainer);
                     });
                 });
             });
@@ -1617,11 +1705,13 @@ export function initGalleryEditWithConfig(config) {
         previewContainer.appendChild(item);
     };
 
-    const renderNewFiles = (entries) => {
+        const renderNewFiles = (entries) => {
         entries.forEach(({ file, key }) => {
             const reader = new FileReader();
             reader.onload = (event) => {
                 buildNewPreviewItem(event.target.result, file, key);
+                // Numerar nuevamente al agregar nuevas imágenes en edición
+                galleryUpdateIndexBadges(previewContainer);
                 updatePrimaryBadges();
             };
             reader.readAsDataURL(file);
@@ -1767,11 +1857,21 @@ export function initGalleryEditWithConfig(config) {
         currentDragKey = null;
         const draggingItem = previewContainer.querySelector('.dragging');
         if (draggingItem) draggingItem.classList.remove('dragging');
+        // Actualizar numeración tras reordenar en edición
+        galleryUpdateIndexBadges(previewContainer);
         updatePrimaryBadges();
+    });
+
+    // Registrar esta galería genérica (edit) para mapear Files -> índice visual
+    registerGalleryRegistry(input, previewContainer, (file) => {
+        const entry = galleryFiles.find(item => item.file === file);
+        return entry ? entry.key : null;
     });
 
     registerExistingEvents();
     ensurePrimarySelection();
+    // Numerar imágenes existentes al cargar la vista de edición
+    galleryUpdateIndexBadges(previewContainer);
     updatePrimaryBadges();
 
     const form = formId ? document.getElementById(formId) : null;
@@ -2157,6 +2257,12 @@ export function initProductGalleryCreate() {
         const draggingItem = galleryPreviewContainer.querySelector('.dragging');
         if (draggingItem) draggingItem.classList.remove('dragging');
         updatePrimaryBadges();
+    });
+
+    // Registrar la galería de productos (create) para mapear Files -> índice visual
+    registerGalleryRegistry(galleryInput, galleryPreviewContainer, (file) => {
+        const entry = galleryFiles.find(item => item.file === file);
+        return entry ? entry.key : null;
     });
 
     const form = document.getElementById('productForm');
