@@ -31,268 +31,271 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-row-fit">
-            <!-- === Imágenes múltiples === -->
-            <div class="image-upload-section">
-                <label class="label-form">Imágenes del post</label>
-                <div class="custom-dropzone" id="customDropzone">
-                    <i class="ri-multi-image-line"></i>
-                    <p>Arrastra imágenes aquí o haz clic</p>
-                    <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden
-                        data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+        <div class="form-body">
+            <div class="form-row-fit">
+                <!-- === Imágenes múltiples === -->
+                <div class="image-upload-section">
+                    <label class="label-form">Imágenes del post</label>
+                    <div class="custom-dropzone" id="customDropzone">
+                        <i class="ri-multi-image-line"></i>
+                        <p>Arrastra imágenes aquí o haz clic</p>
+                        <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden
+                            data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                    </div>
+                    <div id="previewContainer" class="preview-container"></div>
+                    <input type="hidden" name="primary_image" id="primaryImageInput" value="">
                 </div>
-                <div id="previewContainer" class="preview-container"></div>
-                <input type="hidden" name="primary_image" id="primaryImageInput" value="">
-            </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    if (window.initGalleryCreateWithConfig) {
-                        window.initGalleryCreateWithConfig({
-                            dropzoneId: 'customDropzone',
-                            inputId: 'imageInput',
-                            previewContainerId: 'previewContainer',
-                            primaryInputId: 'primaryImageInput',
-                            formId: 'postForm',
-                            labels: {
-                                markTitle: 'Marcar como portada del post',
-                                markText: 'Portada',
-                                markIconClass: 'ri-gallery-line',
-                                badgeIconClass: 'ri-gallery-fill',
-                                badgeText: 'Portada',
-                                deleteTitle: 'Eliminar imagen',
-                                deleteIconClass: 'ri-delete-bin-6-fill',
-                                deleteText: 'Eliminar'
-                            }
-                        });
-                    }
-                });
-            </script>
-        </div>
-        <div class="form-row-fit">
-            <!-- === Título === -->
-            <div class="input-group">
-                <label for="title" class="label-form">
-                    Título
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-file-text-line input-icon"></i>
-                    <input type="text" name="title" id="title" class="input-form" required
-                        value="{{ old('title') }}" placeholder="Ingrese el título del post"
-                        data-validate="required|min:3|max:255">
-                </div>
-            </div>
-            <!-- === Estado === -->
-            <div class="input-group">
-                <label for="status" class="label-form">
-                    Estado
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-focus-2-line input-icon"></i>
-                    <select name="status" id="status" class="select-form" required
-                        data-validate="required|selected">
-                        <option value="" disabled selected>Seleccione un estado</option>
-                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Borrador</option>
-                        <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pendiente
-                        </option>
-                        <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Publicado
-                        </option>
-                        <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rechazado
-                        </option>
-                    </select>
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                </div>
-            </div>
-
-            <!-- === Visibilidad === -->
-            <div class="input-group">
-                <label for="visibility" class="label-form">
-                    Visibilidad
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-eye-line input-icon"></i>
-                    <select name="visibility" id="visibility" class="select-form" required
-                        data-validate="required|selected">
-                        <option value="" disabled selected>Seleccione visibilidad</option>
-                        <option value="public" {{ old('visibility') == 'public' ? 'selected' : '' }}>Público
-                        </option>
-                        <option value="private" {{ old('visibility') == 'private' ? 'selected' : '' }}>Privado
-                        </option>
-                        <option value="registered" {{ old('visibility') == 'registered' ? 'selected' : '' }}>
-                            Registrado</option>
-                    </select>
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                </div>
-            </div>
-            <!-- === Permitir comentarios === -->
-            <div class="input-group">
-                <label class="label-form">Permitir comentarios</label>
-                <div class="binary-switch">
-                    <input type="radio" name="allow_comments" id="allowYes" value="1"
-                        class="switch-input switch-input-on" {{ old('allow_comments', 1) == 1 ? 'checked' : '' }}>
-                    <input type="radio" name="allow_comments" id="allowNo" value="0"
-                        class="switch-input switch-input-off" {{ old('allow_comments', 1) == 0 ? 'checked' : '' }}>
-
-                    <div class="switch-slider"></div>
-
-                    <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i>
-                        Sí</label>
-                    <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
-                        No</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-row-fit">
-            <!-- === Contenido === -->
-            <div class="input-group">
-                <label for="content" class="label-form">
-                    Contenido
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <textarea name="content" id="content" class="textarea-form-post" rows="8"
-                    placeholder="Ingrese el contenido del post" data-validate="requiredText|minText:10">{{ old('content') }}</textarea>
-            </div>
-            <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
-            <script>
-                let editorInstance;
-                document.addEventListener("DOMContentLoaded", () => {
-                    ClassicEditor.create(document.querySelector('#content'), {
-                            toolbar: [
-                                'undo', 'redo',
-                                'heading',
-                                'bold', 'italic', 'underline', 'strikethrough',
-                                'blockQuote',
-                                'bulletedList', 'numberedList',
-                                'link',
-                                'insertTable',
-                            ],
-                            table: {
-                                contentToolbar: [
-                                    'tableColumn', 'tableRow', 'mergeTableCells'
-                                ]
-                            }
-                        })
-                        .then(editor => {
-                            editorInstance = editor;
-                            window.editorInstance = editor;
-                            // Registrar instancia global por id para soporte multi-editor
-                            window._ckEditors = window._ckEditors || {};
-                            const ta = document.querySelector('#content');
-                            if (ta) {
-                                window._ckEditors[ta.id] = editor;
-                            }
-                        })
-                        .catch(error => console.error(error));
-                });
-                // Sincronizar contenido antes de enviar
-                document.getElementById('postForm').addEventListener('submit', function() {
-                    if (editorInstance) {
-                        document.querySelector('#content').value = editorInstance.getData();
-                    }
-                });
-            </script>
-        </div>
-
-        <div class="form-row-fill">
-            <div class="input-group">
-                <label class="label-form">Tags</label>
-
-                <div class="input-icon-container">
-                    <i class="ri-focus-2-line input-icon"></i>
-
-                    <select id="tagSelect" class="select-form">
-                        <option value="">Selecciona un tag</option>
-
-                        @foreach ($tags as $tag)
-                            <option value="{{ $tag->id }}"
-                                {{ collect(old('tags'))->contains($tag->id) ? 'selected' : '' }}>
-                                {{ $tag->name }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                </div>
-                <!-- Contenedor donde aparecerán los tags seleccionados -->
-                <div id="tagContainer" class="tag-container"></div>
-                <!-- Inputs ocultos para enviar al backend -->
-                <div id="tagHiddenInputs"></div>
-            </div>
-            <script>
-                document.addEventListener("DOMContentLoaded", () => {
-
-                    const select = document.getElementById("tagSelect");
-                    const tagContainer = document.getElementById("tagContainer");
-                    const hiddenInputs = document.getElementById("tagHiddenInputs");
-
-                    // Set para evitar duplicados
-                    const selectedTags = new Set();
-
-                    // Si viene con old('tags'), agregarlos automáticamente
-                    @if (old('tags'))
-                        @foreach (old('tags') as $oldTag)
-                            selectedTags.add("{{ $oldTag }}");
-                        @endforeach
-                    @endif
-
-                    // Inicializar pills de old()
-                    @foreach ($tags as $tag)
-                        @if (collect(old('tags'))->contains($tag->id))
-                            addTagPill("{{ $tag->id }}", "{{ $tag->name }}");
-                            addHiddenInput("{{ $tag->id }}");
-                        @endif
-                    @endforeach
-
-                    // Evento al seleccionar un tag
-                    select.addEventListener("change", () => {
-                        const tagId = select.value;
-                        const tagName = select.options[select.selectedIndex].text;
-
-                        if (!tagId || selectedTags.has(tagId)) return;
-
-                        selectedTags.add(tagId);
-
-                        addTagPill(tagId, tagName);
-                        addHiddenInput(tagId);
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        if (window.initGalleryCreateWithConfig) {
+                            window.initGalleryCreateWithConfig({
+                                dropzoneId: 'customDropzone',
+                                inputId: 'imageInput',
+                                previewContainerId: 'previewContainer',
+                                primaryInputId: 'primaryImageInput',
+                                formId: 'postForm',
+                                labels: {
+                                    markTitle: 'Marcar como portada del post',
+                                    markText: 'Portada',
+                                    markIconClass: 'ri-gallery-line',
+                                    badgeIconClass: 'ri-gallery-fill',
+                                    badgeText: 'Portada',
+                                    deleteTitle: 'Eliminar imagen',
+                                    deleteIconClass: 'ri-delete-bin-6-fill',
+                                    deleteText: 'Eliminar'
+                                }
+                            });
+                        }
                     });
+                </script>
+            </div>
+        </div>
+        <div class="form-body">
+            <div class="form-row-fit">
+                <!-- === Título === -->
+                <div class="input-group">
+                    <label for="title" class="label-form">
+                        Título
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-file-text-line input-icon"></i>
+                        <input type="text" name="title" id="title" class="input-form" required
+                            value="{{ old('title') }}" placeholder="Ingrese el título del post"
+                            data-validate="required|min:3|max:255">
+                    </div>
+                </div>
+                <!-- === Estado === -->
+                <div class="input-group">
+                    <label for="status" class="label-form">
+                        Estado
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-focus-2-line input-icon"></i>
+                        <select name="status" id="status" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled selected>Seleccione un estado</option>
+                            <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Borrador</option>
+                            <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pendiente
+                            </option>
+                            <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Publicado
+                            </option>
+                            <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rechazado
+                            </option>
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
 
-                    // Crear la cápsula del tag
-                    function addTagPill(id, name) {
-                        const pill = document.createElement("div");
-                        pill.classList.add("tag-pill");
-                        pill.setAttribute("data-id", id);
+                <!-- === Visibilidad === -->
+                <div class="input-group">
+                    <label for="visibility" class="label-form">
+                        Visibilidad
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-eye-line input-icon"></i>
+                        <select name="visibility" id="visibility" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled selected>Seleccione visibilidad</option>
+                            <option value="public" {{ old('visibility') == 'public' ? 'selected' : '' }}>Público
+                            </option>
+                            <option value="private" {{ old('visibility') == 'private' ? 'selected' : '' }}>Privado
+                            </option>
+                            <option value="registered" {{ old('visibility') == 'registered' ? 'selected' : '' }}>
+                                Registrado</option>
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
+                <!-- === Permitir comentarios === -->
+                <div class="input-group">
+                    <label class="label-form">Permitir comentarios</label>
+                    <div class="binary-switch">
+                        <input type="radio" name="allow_comments" id="allowYes" value="1"
+                            class="switch-input switch-input-on" {{ old('allow_comments', 1) == 1 ? 'checked' : '' }}>
+                        <input type="radio" name="allow_comments" id="allowNo" value="0"
+                            class="switch-input switch-input-off" {{ old('allow_comments', 1) == 0 ? 'checked' : '' }}>
 
-                        pill.innerHTML = `
-                            ${name}
-                            <i class="ri-close-line remove-tag"></i>
-                        `;
+                        <div class="switch-slider"></div>
 
-                        // Evento para eliminar el tag
-                        pill.querySelector(".remove-tag").addEventListener("click", () => {
-                            selectedTags.delete(id);
-                            pill.remove();
-                            document.getElementById("tag-hidden-" + id)?.remove();
+                        <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i>
+                            Sí</label>
+                        <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
+                            No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row-fit">
+                <!-- === Contenido === -->
+                <div class="input-group">
+                    <label for="content" class="label-form">
+                        Contenido
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <textarea name="content" id="content" class="textarea-form-post" rows="8"
+                        placeholder="Ingrese el contenido del post" data-validate="requiredText|minText:10">{{ old('content') }}</textarea>
+                </div>
+                <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+                <script>
+                    let editorInstance;
+                    document.addEventListener("DOMContentLoaded", () => {
+                        ClassicEditor.create(document.querySelector('#content'), {
+                                toolbar: [
+                                    'undo', 'redo',
+                                    'heading',
+                                    'bold', 'italic', 'underline', 'strikethrough',
+                                    'blockQuote',
+                                    'bulletedList', 'numberedList',
+                                    'link',
+                                    'insertTable',
+                                ],
+                                table: {
+                                    contentToolbar: [
+                                        'tableColumn', 'tableRow', 'mergeTableCells'
+                                    ]
+                                }
+                            })
+                            .then(editor => {
+                                editorInstance = editor;
+                                window.editorInstance = editor;
+                                // Registrar instancia global por id para soporte multi-editor
+                                window._ckEditors = window._ckEditors || {};
+                                const ta = document.querySelector('#content');
+                                if (ta) {
+                                    window._ckEditors[ta.id] = editor;
+                                }
+                            })
+                            .catch(error => console.error(error));
+                    });
+                    // Sincronizar contenido antes de enviar
+                    document.getElementById('postForm').addEventListener('submit', function() {
+                        if (editorInstance) {
+                            document.querySelector('#content').value = editorInstance.getData();
+                        }
+                    });
+                </script>
+            </div>
+
+            <div class="form-row-fill">
+                <div class="input-group">
+                    <label class="label-form">Tags</label>
+
+                    <div class="input-icon-container">
+                        <i class="ri-focus-2-line input-icon"></i>
+
+                        <select id="tagSelect" class="select-form">
+                            <option value="">Selecciona un tag</option>
+
+                            @foreach ($tags as $tag)
+                                <option value="{{ $tag->id }}"
+                                    {{ collect(old('tags'))->contains($tag->id) ? 'selected' : '' }}>
+                                    {{ $tag->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                    <!-- Contenedor donde aparecerán los tags seleccionados -->
+                    <div id="tagContainer" class="tag-container"></div>
+                    <!-- Inputs ocultos para enviar al backend -->
+                    <div id="tagHiddenInputs"></div>
+                </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+
+                        const select = document.getElementById("tagSelect");
+                        const tagContainer = document.getElementById("tagContainer");
+                        const hiddenInputs = document.getElementById("tagHiddenInputs");
+
+                        // Set para evitar duplicados
+                        const selectedTags = new Set();
+
+                        // Si viene con old('tags'), agregarlos automáticamente
+                        @if (old('tags'))
+                            @foreach (old('tags') as $oldTag)
+                                selectedTags.add("{{ $oldTag }}");
+                            @endforeach
+                        @endif
+
+                        // Inicializar pills de old()
+                        @foreach ($tags as $tag)
+                            @if (collect(old('tags'))->contains($tag->id))
+                                addTagPill("{{ $tag->id }}", "{{ $tag->name }}");
+                                addHiddenInput("{{ $tag->id }}");
+                            @endif
+                        @endforeach
+
+                        // Evento al seleccionar un tag
+                        select.addEventListener("change", () => {
+                            const tagId = select.value;
+                            const tagName = select.options[select.selectedIndex].text;
+
+                            if (!tagId || selectedTags.has(tagId)) return;
+
+                            selectedTags.add(tagId);
+
+                            addTagPill(tagId, tagName);
+                            addHiddenInput(tagId);
                         });
 
-                        tagContainer.appendChild(pill);
-                    }
+                        // Crear la cápsula del tag
+                        function addTagPill(id, name) {
+                            const pill = document.createElement("div");
+                            pill.classList.add("tag-pill");
+                            pill.setAttribute("data-id", id);
 
-                    // Crear input hidden para enviar al backend
-                    function addHiddenInput(id) {
-                        const input = document.createElement("input");
-                        input.type = "hidden";
-                        input.name = "tags[]";
-                        input.value = id;
-                        input.id = "tag-hidden-" + id;
-                        hiddenInputs.appendChild(input);
-                    }
-                });
-            </script>
+                            pill.innerHTML = `
+                                ${name}
+                                <i class="ri-close-line remove-tag"></i>
+                            `;
+
+                            // Evento para eliminar el tag
+                            pill.querySelector(".remove-tag").addEventListener("click", () => {
+                                selectedTags.delete(id);
+                                pill.remove();
+                                document.getElementById("tag-hidden-" + id)?.remove();
+                            });
+
+                            tagContainer.appendChild(pill);
+                        }
+
+                        // Crear input hidden para enviar al backend
+                        function addHiddenInput(id) {
+                            const input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = "tags[]";
+                            input.value = id;
+                            input.id = "tag-hidden-" + id;
+                            hiddenInputs.appendChild(input);
+                        }
+                    });
+                </script>
+            </div>
         </div>
-
         <div class="form-footer">
             <a href="{{ url()->previous() }}" class="boton-form boton-volver">
                 <span class="boton-form-icon">

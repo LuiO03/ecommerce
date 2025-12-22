@@ -15,7 +15,7 @@
         </a>
     </x-slot>
 
-    <div class="actions-container">
+    <div class="form-container">
         <!-- Buscador + botón global -->
         <div class="actions-bar">
             <div class="module-search flex-1">

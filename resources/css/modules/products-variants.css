@@ -5,12 +5,11 @@
     --variant-card-bg: rgba(15, 23, 42, 0.9);
     --variant-card-bg-soft: rgba(15, 23, 42, 0.75);
     --variant-card-shadow: 0 18px 45px rgba(15, 23, 42, 0.46);
-    --variant-accent: var(--color-accent, #6366f1);
+    --variant-accent: #6366f1;
     --variant-accent-soft: rgba(99, 102, 241, 0.14);
 }
 
 .product-variants-section {
-    margin-top: 2.5rem;
     padding: 1.6rem 1.5rem 1.8rem;
     border-radius: 1.35rem;
     border: 1px solid var(--variant-card-border);

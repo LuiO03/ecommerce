@@ -1,10 +1,12 @@
 <section id="companySettingsSectionLegal" class="settings-section" data-section="legal"
     role="tabpanel" aria-labelledby="tab-legal">
-    <div class="card-header">
-        <span class="card-title">Aspectos legales</span>
-        <p class="card-description">
-            Configura los documentos legales de tu empresa que se mostrarán en el sitio web y estarán disponibles para los usuarios.
-        </p>
+    <div class="form-body">
+        <div class="card-header">
+            <span class="card-title">Aspectos legales</span>
+            <p class="card-description">
+                Configura los documentos legales de tu empresa que se mostrarán en el sitio web y estarán disponibles para los usuarios.
+            </p>
+        </div>
     </div>
 
     <div class="form-columns-row">

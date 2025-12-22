@@ -73,11 +73,7 @@
             </div>
         </div>
 
-        @if ($useSlotContainer)
-            <div class="slot-container">{{ $slot }}</div>
-        @else
-            <div class="slot-prime">{{ $slot }}</div>
-        @endif
+        <div class="slot-container">{{ $slot }}</div>
     </main>
 
     @include('partials.admin.modal-info')

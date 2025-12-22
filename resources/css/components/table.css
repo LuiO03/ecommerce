@@ -7,6 +7,18 @@
     flex-direction: column;
     gap: 20px;
     font-size: var(--font-size-p);
+    padding: 16px;
+    background-color: var(--color-sidebar-bg);
+    border-radius: var(--radius-card);
+    border: 2px solid var(--color-border);
+}
+
+@media (max-width: 768px){
+    .actions-container{
+        padding: 0px;
+        border: none;
+        background-color: transparent;
+    }
 }
 
 /* =======================================================

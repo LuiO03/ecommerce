@@ -1,10 +1,13 @@
 <section id="companySettingsSectionSocial" class="settings-section" data-section="social"
     role="tabpanel" aria-labelledby="tab-social">
-    <div class="card-header">
-        <span class="card-title">Redes sociales</span>
-        <p class="card-description">
-            Configura los enlaces a las redes sociales de tu empresa y controla su visibilidad en el sitio web.
-        </p>
+
+    <div class="form-body">
+        <div class="card-header">
+            <span class="card-title">Redes sociales</span>
+            <p class="card-description">
+                Configura los enlaces a las redes sociales de tu empresa y controla su visibilidad en el sitio web.
+            </p>
+        </div>
     </div>
 
     <div class="form-columns-row">

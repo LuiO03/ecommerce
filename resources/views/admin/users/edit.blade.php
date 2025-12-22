@@ -54,98 +54,100 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-row-fit">
-            <!-- === Nombre === -->
-            <div class="input-group">
-                <label for="name" class="label-form">
-                    Nombre
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-user-line input-icon"></i>
-                    <input type="text" name="name" id="name" class="input-form"
-                        placeholder="Ingrese el nombre" required value="{{ old('name', $user->name) }}"
-                        data-validate="required|min:3|max:255|alpha">
+        <div class="form-body">
+            <div class="form-row-fit">
+                <!-- === Nombre === -->
+                <div class="input-group">
+                    <label for="name" class="label-form">
+                        Nombre
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-user-line input-icon"></i>
+                        <input type="text" name="name" id="name" class="input-form"
+                            placeholder="Ingrese el nombre" required value="{{ old('name', $user->name) }}"
+                            data-validate="required|min:3|max:255|alpha">
+                    </div>
                 </div>
-            </div>
 
-            <!-- === Apellido === -->
-            <div class="input-group">
-                <label for="last_name" class="label-form">Apellido</label>
-                <div class="input-icon-container">
-                    <i class="ri-user-line input-icon"></i>
-                    <input type="text" name="last_name" id="last_name" class="input-form"
-                        value="{{ old('last_name', $user->last_name) }}" placeholder="Ingrese el apellido"
-                        data-validate="min:3|max:255|alpha">
+                <!-- === Apellido === -->
+                <div class="input-group">
+                    <label for="last_name" class="label-form">Apellido</label>
+                    <div class="input-icon-container">
+                        <i class="ri-user-line input-icon"></i>
+                        <input type="text" name="last_name" id="last_name" class="input-form"
+                            value="{{ old('last_name', $user->last_name) }}" placeholder="Ingrese el apellido"
+                            data-validate="min:3|max:255|alpha">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-row-fill">
-            <!-- === Email === -->
-            <div class="input-group">
-                <label for="email" class="label-form">
-                    Email
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-mail-line input-icon"></i>
-                    <input type="email" name="email" id="email" class="input-form" required
-                        value="{{ old('email', $user->email) }}" placeholder="usuario@ejemplo.com"
-                        data-validate="required|email">
+            <div class="form-row-fill">
+                <!-- === Email === -->
+                <div class="input-group">
+                    <label for="email" class="label-form">
+                        Email
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-mail-line input-icon"></i>
+                        <input type="email" name="email" id="email" class="input-form" required
+                            value="{{ old('email', $user->email) }}" placeholder="usuario@ejemplo.com"
+                            data-validate="required|email">
+                    </div>
                 </div>
-            </div>
-            <!-- === Rol === -->
-            <div class="input-group">
-                <label for="role" class="label-form">
-                    Rol
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-shield-user-line input-icon"></i>
-                    <select name="role" id="role" class="select-form" required
-                        data-validate="required|selected">
-                        <option value="" disabled>Seleccione un rol</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->name }}" @selected(old('role', $user->roles->first()?->name) == $role->name)>
-                                {{ ucfirst($role->name) }}
+                <!-- === Rol === -->
+                <div class="input-group">
+                    <label for="role" class="label-form">
+                        Rol
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-shield-user-line input-icon"></i>
+                        <select name="role" id="role" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled>Seleccione un rol</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" @selected(old('role', $user->roles->first()?->name) == $role->name)>
+                                    {{ ucfirst($role->name) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
+                <!-- === Estado === -->
+                <div class="input-group">
+                    <label for="status" class="label-form">
+                        Estado
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-focus-2-line input-icon"></i>
+                        <select name="status" id="status" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled>Seleccione un estado</option>
+
+                            <option value="1" @selected(old('status', $user->status) == 1)>
+                                Activo
                             </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
+
+                            <option value="0" @selected(old('status', $user->status) == 0)>
+                                Inactivo
+                            </option>
+                        </select>
+
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
                 </div>
-            </div>
-            <!-- === Estado === -->
-            <div class="input-group">
-                <label for="status" class="label-form">
-                    Estado
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-focus-2-line input-icon"></i>
-                    <select name="status" id="status" class="select-form" required
-                        data-validate="required|selected">
-                        <option value="" disabled>Seleccione un estado</option>
-
-                        <option value="1" @selected(old('status', $user->status) == 1)>
-                            Activo
-                        </option>
-
-                        <option value="0" @selected(old('status', $user->status) == 0)>
-                            Inactivo
-                        </option>
-                    </select>
-
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                </div>
-            </div>
-            <!-- === Dirección === -->
-            <div class="input-group">
-                <label for="address" class="label-form">Dirección</label>
-                <div class="input-icon-container">
-                    <i class="ri-map-pin-line input-icon"></i>
-                    <input type="text" name="address" id="address" class="input-form"
-                        value="{{ old('address', $user->address) }}" placeholder="Ingrese la dirección"
-                        data-validate="max:255">
+                <!-- === Dirección === -->
+                <div class="input-group">
+                    <label for="address" class="label-form">Dirección</label>
+                    <div class="input-icon-container">
+                        <i class="ri-map-pin-line input-icon"></i>
+                        <input type="text" name="address" id="address" class="input-form"
+                            value="{{ old('address', $user->address) }}" placeholder="Ingrese la dirección"
+                            data-validate="max:255">
+                    </div>
                 </div>
             </div>
         </div>

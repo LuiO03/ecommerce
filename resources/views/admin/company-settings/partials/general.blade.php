@@ -1,34 +1,38 @@
 <section id="companySettingsSectionGeneral" class="settings-section is-active" data-section="general" role="tabpanel"
     aria-labelledby="tab-general">
 
-    <div class="card-header">
-        <span class="card-title">Información general</span>
-        <p class="card-description">
-            Configura la información básica de tu empresa que se mostrará en el sitio web y en los documentos oficiales.
-        </p>
+    <div class="form-body">
+        <div class="card-header">
+            <span class="card-title">Información general</span>
+            <p class="card-description">
+                Configura la información básica de tu empresa que se mostrará en el sitio web y en los documentos oficiales.
+            </p>
+        </div>
     </div>
 
-    <div class="form-row-fit">
-        <div class="input-group">
-            <label for="name" class="label-form">
-                Nombre comercial
-                <i class="ri-asterisk text-accent"></i>
-            </label>
-            <div class="input-icon-container">
-                <i class="ri-store-2-line input-icon"></i>
-                <input type="text" name="name" id="name" class="input-form" required
-                    value="{{ old('name', $setting->name) }}" placeholder="Ej. GeckoCommerce"
-                    data-validate="required|min:3|max:255">
+    <div class="form-body">
+        <div class="form-row-fit">
+            <div class="input-group">
+                <label for="name" class="label-form">
+                    Nombre comercial
+                    <i class="ri-asterisk text-accent"></i>
+                </label>
+                <div class="input-icon-container">
+                    <i class="ri-store-2-line input-icon"></i>
+                    <input type="text" name="name" id="name" class="input-form" required
+                        value="{{ old('name', $setting->name) }}" placeholder="Ej. GeckoCommerce"
+                        data-validate="required|min:3|max:255">
+                </div>
             </div>
-        </div>
 
-        <div class="input-group">
-            <label for="legal_name" class="label-form">Razón social</label>
-            <div class="input-icon-container">
-                <i class="ri-briefcase-4-line input-icon"></i>
-                <input type="text" name="legal_name" id="legal_name" class="input-form"
-                    value="{{ old('legal_name', $setting->legal_name) }}" placeholder="Ej. GeckoCommerce S.A.C."
-                    data-validate="max:255">
+            <div class="input-group">
+                <label for="legal_name" class="label-form">Razón social</label>
+                <div class="input-icon-container">
+                    <i class="ri-briefcase-4-line input-icon"></i>
+                    <input type="text" name="legal_name" id="legal_name" class="input-form"
+                        value="{{ old('legal_name', $setting->legal_name) }}" placeholder="Ej. GeckoCommerce S.A.C."
+                        data-validate="max:255">
+                </div>
             </div>
         </div>
     </div>

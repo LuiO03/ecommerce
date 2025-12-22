@@ -31,95 +31,97 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-row-fit">
-            <!-- === Nombre === -->
-            <div class="input-group">
-                <label for="name" class="label-form">
-                    Nombre
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-user-line input-icon"></i>
-                    <input type="text" name="name" id="name" class="input-form" required
-                        value="{{ old('name') }}" placeholder="Ingrese el nombre"
-                        data-validate="required|min:3|max:255|alpha">
+        <div class="form-body">
+            <div class="form-row-fit">
+                <!-- === Nombre === -->
+                <div class="input-group">
+                    <label for="name" class="label-form">
+                        Nombre
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-user-line input-icon"></i>
+                        <input type="text" name="name" id="name" class="input-form" required
+                            value="{{ old('name') }}" placeholder="Ingrese el nombre"
+                            data-validate="required|min:3|max:255|alpha">
+                    </div>
                 </div>
-            </div>
 
-            <!-- === Apellido === -->
-            <div class="input-group">
-                <label for="last_name" class="label-form">Apellido</label>
-                <div class="input-icon-container">
-                    <i class="ri-user-line input-icon"></i>
-                    <input type="text" name="last_name" id="last_name" class="input-form"
-                        value="{{ old('last_name') }}" placeholder="Ingrese el apellido"
-                        data-validate="min:3|max:255|alpha">
+                <!-- === Apellido === -->
+                <div class="input-group">
+                    <label for="last_name" class="label-form">Apellido</label>
+                    <div class="input-icon-container">
+                        <i class="ri-user-line input-icon"></i>
+                        <input type="text" name="last_name" id="last_name" class="input-form"
+                            value="{{ old('last_name') }}" placeholder="Ingrese el apellido"
+                            data-validate="min:3|max:255|alpha">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-row-fill">
-            <!-- === Contraseña === -->
-            <div class="input-group">
-                <label for="password" class="label-form">
-                    Contraseña
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-lock-line input-icon"></i>
-                    <input type="password" name="password" id="password" class="input-form password-input" required
-                        placeholder="Mínimo 6 caracteres" data-validate="required|min:6">
-                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
-                        <i class="ri-eye-line"></i>
-                    </button>
+            <div class="form-row-fill">
+                <!-- === Contraseña === -->
+                <div class="input-group">
+                    <label for="password" class="label-form">
+                        Contraseña
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-lock-line input-icon"></i>
+                        <input type="password" name="password" id="password" class="input-form password-input" required
+                            placeholder="Mínimo 6 caracteres" data-validate="required|min:6">
+                        <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                            <i class="ri-eye-line"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <!-- === Email === -->
-            <div class="input-group">
-                <label for="email" class="label-form">
-                    Email
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-mail-line input-icon"></i>
-                    <input type="email" name="email" id="email" class="input-form" required
-                        value="{{ old('email') }}" placeholder="usuario@ejemplo.com" data-validate="required|email">
+                <!-- === Email === -->
+                <div class="input-group">
+                    <label for="email" class="label-form">
+                        Email
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-mail-line input-icon"></i>
+                        <input type="email" name="email" id="email" class="input-form" required
+                            value="{{ old('email') }}" placeholder="usuario@ejemplo.com" data-validate="required|email">
+                    </div>
                 </div>
-            </div>
-            <!-- === Estado === -->
-            <div class="input-group">
-                <label for="status" class="label-form">
-                    Estado
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-focus-2-line input-icon"></i>
-                    <select name="status" id="status" class="select-form" required
-                        data-validate="required|selected">
-                        <option value="" disabled selected>Seleccione un estado</option>
-                        <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Activo</option>
-                        <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactivo</option>
-                    </select>
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
+                <!-- === Estado === -->
+                <div class="input-group">
+                    <label for="status" class="label-form">
+                        Estado
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-focus-2-line input-icon"></i>
+                        <select name="status" id="status" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled selected>Seleccione un estado</option>
+                            <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Activo</option>
+                            <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactivo</option>
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
                 </div>
-            </div>
-            <!-- === Rol === -->
-            <div class="input-group">
-                <label for="role" class="label-form">
-                    Rol
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-shield-user-line input-icon"></i>
-                    <select name="role" id="role" class="select-form" required
-                        data-validate="required|selected">
-                        <option value="" disabled selected>Seleccione un rol</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
-                                {{ ucfirst($role->name) }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <i class="ri-arrow-down-s-line select-arrow"></i>
+                <!-- === Rol === -->
+                <div class="input-group">
+                    <label for="role" class="label-form">
+                        Rol
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-shield-user-line input-icon"></i>
+                        <select name="role" id="role" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled selected>Seleccione un rol</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>
+                                    {{ ucfirst($role->name) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
                 </div>
             </div>
         </div>

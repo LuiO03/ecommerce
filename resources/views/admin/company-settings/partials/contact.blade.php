@@ -1,12 +1,13 @@
 <section id="companySettingsSectionContact" class="settings-section" data-section="contact"
     role="tabpanel" aria-labelledby="tab-contact">
-    <div class="card-header">
-        <span class="card-title">Información de contacto</span>
-        <p class="card-description">
-            Configura los datos de contacto de tu empresa que se mostrarán en el sitio web y en los documentos oficiales.
-        </p>
+    <div class="form-body">
+        <div class="card-header">
+            <span class="card-title">Información de contacto</span>
+            <p class="card-description">
+                Configura los datos de contacto de tu empresa que se mostrarán en el sitio web y en los documentos oficiales.
+            </p>
+        </div>
     </div>
-
     <div class="form-columns-row">
         <div class="form-column">
             <div class="input-group">
