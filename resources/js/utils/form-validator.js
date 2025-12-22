@@ -511,11 +511,31 @@ class FormValidator {
         // 📁 VALIDACIONES DE ARCHIVOS/IMÁGENES
         // ========================================
 
-        // === ARCHIVO REQUERIDO ===
-        fileRequired: (files) => ({
-            valid: files && files.length > 0,
-            message: 'Debe seleccionar un archivo'
-        }),
+        // === ARCHIVO / GALERÍA REQUERIDO ===
+        // Para galerías de imágenes (.image-upload-section), considera
+        // tanto imágenes existentes como nuevas (preview-item en el DOM).
+        fileRequired: (files, _param, field) => {
+            if (field && typeof field.closest === 'function') {
+                const gallerySection = field.closest('.image-upload-section');
+                if (gallerySection) {
+                    const previewContainer = gallerySection.querySelector('.preview-container');
+                    const totalItems = previewContainer
+                        ? previewContainer.querySelectorAll('.preview-item').length
+                        : 0;
+
+                    return {
+                        valid: totalItems > 0,
+                        message: 'Debe subir al menos una imagen'
+                    };
+                }
+            }
+
+            const hasFiles = files && files.length > 0;
+            return {
+                valid: hasFiles,
+                message: 'Debe seleccionar al menos un archivo'
+            };
+        },
 
         // === TAMAÑO MÁXIMO (en KB) ===
         maxSize: (files, param, field) => {

@@ -154,7 +154,7 @@
                         <i class="ri-multi-image-line"></i>
                         <p>Arrastra imágenes aquí o haz clic</p>
                         <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
-                            data-validate="image|maxSize:2048">
+                            data-validate="fileRequired|image|maxSize:2048">
                     </div>
                     <div id="galleryPreviewContainer" class="preview-container">
                         @foreach ($sortedImages as $image)
@@ -203,9 +203,264 @@
                     <input type="hidden" name="primary_image" id="primaryImageInput" value="">
                 </div>
             </div>
-
-
         </div>
+
+        <section class="product-variants-section">
+            <div class="product-variants-section-inner">
+                <div class="variants-header">
+                    <div class="variants-header-main">
+                        <div class="variants-header-icon">
+                            <i class="ri-shape-2-line"></i>
+                        </div>
+                        <div class="variants-header-text">
+                            <h3>Variantes del producto</h3>
+                            <p>
+                                Ajusta combinaciones como <span>talla</span>, <span>color</span> o presentación, con su
+                                propio SKU, precio y stock.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="variants-header-actions">
+                        <span class="variants-summary-chip" data-role="variants-summary">
+                            <i class="ri-shape-line"></i>
+                            <span data-role="variants-count">0</span>
+                            variantes
+                        </span>
+                        <button type="button" class="boton boton-primary" id="addVariantBtn">
+                            <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
+                            <span class="boton-text">Agregar variante</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="variants-body" id="variantsContainer">
+                    <p class="variants-empty" id="variantsEmpty">
+                        <i class="ri-lightbulb-flash-line"></i>
+                        Aún no has agregado variantes para este producto. Puedes crearlas para controlar stock y precios por
+                        combinación.
+                    </p>
+
+                    @php
+                        $variants = $product->variants ?? collect();
+                    @endphp
+
+                    @foreach ($variants as $variant)
+                        @php
+                            $rowKey = 'e' . $variant->id;
+                            $selectedFeatureIds = collect(old("variants.$rowKey.features", $variant->features->pluck('id')->all()))
+                                ->map(fn ($id) => (int) $id)
+                                ->all();
+                        @endphp
+                        <div class="variant-row" data-role="variant-row">
+                            <div class="variant-row-header">
+                                <div class="variant-row-title">
+                                    <span class="variant-chip">
+                                        <i class="ri-shape-2-line"></i>
+                                        <span data-role="variant-index">#{{ $loop->iteration }}</span>
+                                    </span>
+                                    <span class="variant-subtitle">SKU específico, precio opcional y stock dedicado.</span>
+                                </div>
+                                <button type="button" class="variant-remove-btn" data-action="remove-variant"
+                                    title="Quitar variante">
+                                    <i class="ri-delete-bin-6-line"></i>
+                                </button>
+                            </div>
+
+                            <div class="variant-row-fields">
+                                <div class="input-group">
+                                    <label for="variant_sku_{{ $rowKey }}" class="label-form">SKU variante</label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-hashtag input-icon"></i>
+                                        <input type="text" id="variant_sku_{{ $rowKey }}"
+                                            name="variants[{{ $rowKey }}][sku]" class="input-form"
+                                            value="{{ old("variants.$rowKey.sku", $variant->sku) }}"
+                                            placeholder="Ej. PROD-001-RED-M" data-validate="max:100">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="variant_price_{{ $rowKey }}" class="label-form">Precio (S/)</label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-currency-line input-icon"></i>
+                                        <input type="number" id="variant_price_{{ $rowKey }}"
+                                            name="variants[{{ $rowKey }}][price]" class="input-form" min="0"
+                                            step="0.01"
+                                            value="{{ old("variants.$rowKey.price", $variant->price) }}"
+                                            placeholder="Usar precio base" data-validate="minValue:0">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="variant_stock_{{ $rowKey }}" class="label-form">Stock</label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-stack-line input-icon"></i>
+                                        <input type="number" id="variant_stock_{{ $rowKey }}"
+                                            name="variants[{{ $rowKey }}][stock]" class="input-form" min="0"
+                                            step="1"
+                                            value="{{ old("variants.$rowKey.stock", $variant->stock) }}"
+                                            placeholder="0" data-validate="minValue:0">
+                                    </div>
+                                </div>
+                                <div class="input-group variant-status-group">
+                                    <label class="label-form">Estado</label>
+                                    <div class="binary-switch">
+                                        @php
+                                            $statusOld = old("variants.$rowKey.status", $variant->status ? 1 : 0);
+                                        @endphp
+                                        <input type="radio" name="variants[{{ $rowKey }}][status]"
+                                            id="variant_status_on_{{ $rowKey }}" value="1"
+                                            class="switch-input switch-input-on"
+                                            {{ (int) $statusOld === 1 ? 'checked' : '' }}>
+                                        <input type="radio" name="variants[{{ $rowKey }}][status]"
+                                            id="variant_status_off_{{ $rowKey }}" value="0"
+                                            class="switch-input switch-input-off"
+                                            {{ (int) $statusOld === 0 ? 'checked' : '' }}>
+                                        <div class="switch-slider"></div>
+                                        <label for="variant_status_on_{{ $rowKey }}"
+                                            class="switch-label switch-label-on">
+                                            <i class="ri-checkbox-circle-line"></i> Activa
+                                        </label>
+                                        <label for="variant_status_off_{{ $rowKey }}"
+                                            class="switch-label switch-label-off">
+                                            <i class="ri-close-circle-line"></i> Inactiva
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (isset($options) && $options->isNotEmpty())
+                                <div class="variant-options">
+                                    @foreach ($options as $option)
+                                        @php
+                                            $isColorOption = $option->isColor();
+                                        @endphp
+                                        <div class="variant-option-group" data-option-id="{{ $option->id }}">
+                                            <div class="variant-option-heading">
+                                                <span class="variant-option-name">
+                                                    <i class="{{ $isColorOption ? 'ri-palette-line' : 'ri-price-tag-3-line' }}"></i>
+                                                    {{ $option->name }}
+                                                </span>
+                                            </div>
+                                            <div class="variant-option-chips">
+                                                @foreach ($option->features as $feature)
+                                                    @php
+                                                        $isChecked = in_array($feature->id, $selectedFeatureIds, true);
+                                                    @endphp
+                                                    <label class="variant-feature-chip{{ $isChecked ? ' is-selected' : '' }}">
+                                                        <input type="checkbox" class="variant-feature-input" value="{{ $feature->id }}"
+                                                            name="variants[{{ $rowKey }}][features][]"
+                                                            {{ $isChecked ? 'checked' : '' }}>
+                                                        <span class="chip-label">
+                                                            {{ $feature->value }}
+                                                        </span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <input type="hidden" name="variants[{{ $rowKey }}][id]" value="{{ $variant->id }}">
+                        </div>
+                    @endforeach
+                </div>
+
+                <template id="variantRowTemplate">
+                    <div class="variant-row" data-role="variant-row">
+                        <div class="variant-row-header">
+                            <div class="variant-row-title">
+                                <span class="variant-chip">
+                                    <i class="ri-shape-2-line"></i>
+                                    <span data-role="variant-index">#1</span>
+                                </span>
+                                <span class="variant-subtitle">SKU específico, precio opcional y stock dedicado.</span>
+                            </div>
+                            <button type="button" class="variant-remove-btn" data-action="remove-variant"
+                                title="Quitar variante">
+                                <i class="ri-delete-bin-6-line"></i>
+                            </button>
+                        </div>
+
+                        <div class="variant-row-fields">
+                            <div class="input-group">
+                                <label for="variant_sku___KEY__" class="label-form">SKU variante</label>
+                                <div class="input-icon-container">
+                                    <i class="ri-hashtag input-icon"></i>
+                                    <input type="text" id="variant_sku___KEY__" name="variants[__KEY__][sku]"
+                                        class="input-form" placeholder="Ej. PROD-001-RED-M" data-validate="max:100">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="variant_price___KEY__" class="label-form">Precio (S/)</label>
+                                <div class="input-icon-container">
+                                    <i class="ri-currency-line input-icon"></i>
+                                    <input type="number" id="variant_price___KEY__" name="variants[__KEY__][price]"
+                                        class="input-form" min="0" step="0.01" placeholder="Usar precio base"
+                                        data-validate="minValue:0">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="variant_stock___KEY__" class="label-form">Stock</label>
+                                <div class="input-icon-container">
+                                    <i class="ri-stack-line input-icon"></i>
+                                    <input type="number" id="variant_stock___KEY__" name="variants[__KEY__][stock]"
+                                        class="input-form" min="0" step="1" placeholder="0"
+                                        data-validate="minValue:0">
+                                </div>
+                            </div>
+                            <div class="input-group variant-status-group">
+                                <label class="label-form">Estado</label>
+                                <div class="binary-switch">
+                                    <input type="radio" name="variants[__KEY__][status]"
+                                        id="variant_status_on___KEY__" value="1"
+                                        class="switch-input switch-input-on" checked>
+                                    <input type="radio" name="variants[__KEY__][status]"
+                                        id="variant_status_off___KEY__" value="0"
+                                        class="switch-input switch-input-off">
+                                    <div class="switch-slider"></div>
+                                    <label for="variant_status_on___KEY__" class="switch-label switch-label-on">
+                                        <i class="ri-checkbox-circle-line"></i> Activa
+                                    </label>
+                                    <label for="variant_status_off___KEY__" class="switch-label switch-label-off">
+                                        <i class="ri-close-circle-line"></i> Inactiva
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (isset($options) && $options->isNotEmpty())
+                            <div class="variant-options">
+                                @foreach ($options as $option)
+                                    @php
+                                        $isColorOption = $option->isColor();
+                                    @endphp
+                                    <div class="variant-option-group" data-option-id="{{ $option->id }}">
+                                        <div class="variant-option-heading">
+                                            <span class="variant-option-name">
+                                                <i class="{{ $isColorOption ? 'ri-palette-line' : 'ri-price-tag-3-line' }}"></i>
+                                                {{ $option->name }}
+                                            </span>
+                                        </div>
+                                        <div class="variant-option-chips">
+                                            @foreach ($option->features as $feature)
+                                                <label class="variant-feature-chip">
+                                                    <input type="checkbox" class="variant-feature-input" value="{{ $feature->id }}"
+                                                        name="variants[__KEY__][features][]">
+                                                    <span class="chip-label">
+                                                        {{ $feature->value }}
+                                                    </span>
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <input type="hidden" name="variants[__KEY__][id]" value="">
+                    </div>
+                </template>
+            </div>
+        </section>
 
         <div class="form-footer">
             <a href="{{ url()->previous() }}" class="boton-form boton-volver">
@@ -257,6 +512,15 @@
                             deleteIconClass: 'ri-delete-bin-6-fill',
                             deleteText: 'Eliminar'
                         }
+                    });
+                }
+
+                if (window.initProductVariantsManager) {
+                    window.initProductVariantsManager({
+                        containerId: 'variantsContainer',
+                        emptyStateId: 'variantsEmpty',
+                        addButtonId: 'addVariantBtn',
+                        templateId: 'variantRowTemplate',
                     });
                 }
             });

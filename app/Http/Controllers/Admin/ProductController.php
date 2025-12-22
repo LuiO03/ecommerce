@@ -6,12 +6,16 @@ use App\Exports\ProductsCsvExport;
 use App\Exports\ProductsExcelExport;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Option;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -50,7 +54,11 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        return view('admin.products.create', compact('categories'));
+        $options = Option::with(['features' => fn ($query) => $query->orderBy('id')])
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.products.create', compact('categories', 'options'));
     }
 
     public function store(Request $request)
@@ -82,6 +90,8 @@ class ProductController extends Controller
             'created_by' => Auth::id(),
             'updated_by' => Auth::id(),
         ]);
+
+        $this->syncVariants($request, $product);
 
         $newImages = $this->handleGalleryUpload($request, $product, $slug);
         $this->finalizeProductImages($product, $request->input('primary_image'), $newImages);
@@ -157,9 +167,16 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        $product->load(['images' => fn ($query) => $query->orderBy('order')]);
+        $product->load([
+            'images' => fn ($query) => $query->orderBy('order'),
+            'variants' => fn ($query) => $query->orderBy('id')->with(['features.option']),
+        ]);
 
-        return view('admin.products.edit', compact('product', 'categories'));
+        $options = Option::with(['features' => fn ($query) => $query->orderBy('id')])
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.products.edit', compact('product', 'categories', 'options'));
     }
 
     public function update(Request $request, Product $product)
@@ -192,6 +209,8 @@ class ProductController extends Controller
             'status' => (bool) $validated['status'],
             'updated_by' => Auth::id(),
         ]);
+
+        $this->syncVariants($request, $product);
 
         $this->handleGalleryRemovals($request, $product);
         $newImages = $this->handleGalleryUpload($request, $product, $slug);
@@ -466,5 +485,107 @@ class ProductController extends Controller
         }
 
         return asset('storage/' . ltrim($normalized, '/'));
+    }
+
+    /**
+     * Sincroniza las variantes del formulario con la base de datos.
+     */
+    protected function syncVariants(Request $request, Product $product): void
+    {
+        $variantsInput = $request->input('variants', []);
+
+        if (!is_array($variantsInput)) {
+            return;
+        }
+
+        // Validación dinámica solo para filas con SKU informado
+        $rules = [];
+        foreach ($variantsInput as $key => $row) {
+            $sku = $row['sku'] ?? null;
+            if (!$sku) {
+                continue;
+            }
+
+            $variantId = $row['id'] ?? null;
+
+            $rules["variants.$key.sku"] = [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('variants', 'sku')->ignore($variantId),
+            ];
+            $rules["variants.$key.price"] = ['nullable', 'numeric', 'min:0'];
+            $rules["variants.$key.stock"] = ['nullable', 'integer', 'min:0'];
+            $rules["variants.$key.status"] = ['nullable', 'boolean'];
+            $rules["variants.$key.features"] = ['nullable', 'array'];
+            $rules["variants.$key.features.*"] = ['integer', Rule::exists('features', 'id')];
+        }
+
+        if (!empty($rules)) {
+            Validator::make($request->all(), $rules, [], [
+                'variants.*.sku' => 'SKU de variante',
+                'variants.*.price' => 'precio de variante',
+                'variants.*.stock' => 'stock de variante',
+                'variants.*.status' => 'estado de variante',
+                'variants.*.features' => 'valores de opción de la variante',
+                'variants.*.features.*' => 'valor de opción de la variante',
+            ])->validate();
+        }
+
+        $existing = $product->variants()->get()->keyBy('id');
+        $retainedIds = [];
+
+        foreach ($variantsInput as $row) {
+            $sku = $row['sku'] ?? null;
+            if (!$sku) {
+                continue;
+            }
+
+            $variantId = isset($row['id']) && $row['id'] !== '' ? (int) $row['id'] : null;
+
+            $payload = [
+                'sku' => $sku,
+                'price' => array_key_exists('price', $row) && $row['price'] !== null && $row['price'] !== ''
+                    ? (float) $row['price']
+                    : null,
+                'stock' => array_key_exists('stock', $row) && $row['stock'] !== null && $row['stock'] !== ''
+                    ? (int) $row['stock']
+                    : 0,
+                'status' => array_key_exists('status', $row)
+                    ? (bool) $row['status']
+                    : true,
+            ];
+
+            if ($variantId && $existing->has($variantId)) {
+                $variant = $existing->get($variantId);
+                $variant->fill($payload);
+                $variant->updated_by = Auth::id();
+                $variant->save();
+            } else {
+                $variant = new Variant($payload);
+                $variant->product_id = $product->id;
+                $variant->created_by = Auth::id();
+                $variant->updated_by = Auth::id();
+                $variant->save();
+            }
+
+            // Sincronizar features (valores de opciones) con la variante
+            $featureIds = collect($row['features'] ?? [])
+                ->filter(fn ($id) => $id !== null && $id !== '')
+                ->map(fn ($id) => (int) $id)
+                ->unique()
+                ->values()
+                ->all();
+
+            $variant->features()->sync($featureIds);
+            $retainedIds[] = $variant->id;
+        }
+
+        if ($existing->isNotEmpty()) {
+            $idsToDelete = $existing->keys()->diff($retainedIds);
+            if ($idsToDelete->isNotEmpty()) {
+                Variant::whereIn('id', $idsToDelete)->delete();
+            }
+        }
     }
 }

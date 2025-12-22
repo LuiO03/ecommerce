@@ -20,6 +20,7 @@ import { initFormValidator } from './utils/form-validator.js';
 import { initCompanySettingsTabs, initCompanySettingsEditors, initCompanySettingsColorInputs } from './modules/company-settings-tabs.js';
 import { initOptionFeatureForm } from './modules/options-feature-form.js';
 import { initOptionInlineManager } from './modules/options-inline-manager.js';
+import { initProductVariantsManager } from './modules/product-variants.js';
 import {
   initPostGalleryCreate,
   initPostGalleryEdit,
@@ -45,6 +46,7 @@ window.initProductGalleryCreate = initProductGalleryCreate;
 window.initProductGalleryEdit = initProductGalleryEdit;
 window.initGalleryCreateWithConfig = initGalleryCreateWithConfig;
 window.initGalleryEditWithConfig = initGalleryEditWithConfig;
+window.initProductVariantsManager = initProductVariantsManager;
 
 
 // Si tienes funciones o inicializaciones globales

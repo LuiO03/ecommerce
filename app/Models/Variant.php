@@ -9,7 +9,17 @@ class Variant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['sku', 'price', 'stock', 'status', 'image_path', 'product_id'];
+    protected $fillable = [
+        'sku',
+        'price',
+        'stock',
+        'status',
+        'image_path',
+        'product_id',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
 
     // 🔹 Relación inversa con producto
     public function product()

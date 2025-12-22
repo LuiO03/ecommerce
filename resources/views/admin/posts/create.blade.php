@@ -39,7 +39,7 @@
                     <i class="ri-multi-image-line"></i>
                     <p>Arrastra imágenes aquí o haz clic</p>
                     <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden
-                        data-validate="image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                        data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                 </div>
                 <div id="previewContainer" class="preview-container"></div>
                 <input type="hidden" name="primary_image" id="primaryImageInput" value="">

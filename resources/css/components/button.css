@@ -150,8 +150,8 @@
 
 .boton-action{
     background-color: var(--color-sidebar-bg);
-    padding: 5px 10px;
-    border-radius: var(--radius-element);
+    padding: 8px 10px;
+    border-radius: var(--radius-input);
     border-color: var(--color-border);
 }
 
