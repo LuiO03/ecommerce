@@ -210,6 +210,11 @@
             </div>
         </div>
 
+        @include('admin.products.partials.variants-manager', [
+            'product' => $product,
+            'options' => $options,
+        ])
+
         <div class="form-footer">
             <a href="{{ url()->previous() }}" class="boton-form boton-volver">
                 <span class="boton-form-icon">
@@ -269,6 +274,9 @@
                         emptyStateId: 'variantsEmpty',
                         addButtonId: 'addVariantBtn',
                         templateId: 'variantRowTemplate',
+                        optionsContainerId: 'productOptionsContainer',
+                        generateButtonId: 'generateVariantsBtn',
+                        baseSkuInputId: 'sku',
                     });
                 }
             });

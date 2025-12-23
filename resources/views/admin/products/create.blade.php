@@ -146,6 +146,11 @@
                 </div>
             </div>
         </div>
+
+        @include('admin.products.partials.variants-manager', [
+            'product' => null,
+            'options' => $options,
+        ])
     </form>
 
     @push('scripts')
@@ -190,6 +195,9 @@
                         emptyStateId: 'variantsEmpty',
                         addButtonId: 'addVariantBtn',
                         templateId: 'variantRowTemplate',
+                        optionsContainerId: 'productOptionsContainer',
+                        generateButtonId: 'generateVariantsBtn',
+                        baseSkuInputId: 'sku',
                     });
                 }
             });

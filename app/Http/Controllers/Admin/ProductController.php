@@ -587,5 +587,31 @@ class ProductController extends Controller
                 Variant::whereIn('id', $idsToDelete)->delete();
             }
         }
+
+        $this->syncProductOptionsFromVariants($product);
+    }
+
+    /**
+     * Sincroniza las opciones asociadas al producto a partir de las variantes y sus valores.
+     */
+    protected function syncProductOptionsFromVariants(Product $product): void
+    {
+        $variants = $product->variants()
+            ->with(['features:id,option_id'])
+            ->get();
+
+        $optionIds = $variants
+            ->flatMap(fn($variant) => $variant->features->pluck('option_id'))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $syncPayload = [];
+        foreach ($optionIds as $optionId) {
+            $syncPayload[$optionId] = ['value' => null];
+        }
+
+        $product->options()->sync($syncPayload);
     }
 }
