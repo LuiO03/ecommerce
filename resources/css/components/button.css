@@ -4,7 +4,7 @@
     margin: 0px 0px;
     border: none;
     white-space: nowrap;
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -75,7 +75,7 @@
     text-decoration: none;
     min-height: 35px;
     z-index: 1;
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     overflow: hidden;
     padding: 8px 15px;
     cursor: pointer;
@@ -120,6 +120,7 @@
 
 .boton-form:hover {
     color: var(--color-normal);
+    box-shadow: var(--shadow-material);
 }
 
 .boton-form:active {
@@ -235,7 +236,7 @@
     margin: 0px 0px;
     border: none;
     white-space: nowrap;
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     cursor: pointer;
     display: flex;
     align-items: center;

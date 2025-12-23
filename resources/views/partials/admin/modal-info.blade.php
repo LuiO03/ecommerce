@@ -21,7 +21,7 @@
                 </button>
             </div>
         </div>
-        
+
         <!-- ✅ Barra de progreso para auto-cierre -->
         <div class="progress-container" id="progressContainer">
             <div class="progress-bar" id="progressBar"></div>
@@ -66,28 +66,28 @@ window.showInfoModal = function (options) {
     // Asignar textos
     headerText.textContent = options.header || 'Información';
     title.innerHTML = options.title || 'Acción completada';
-    
+
     // Construir mensaje con lista si existe
     let messageContent = options.message || 'Tu operación se realizó correctamente.';
-    
+
     if (options.list && Array.isArray(options.list) && options.list.length > 0) {
         const listItems = options.list.map(item => `<li><strong>${item}</strong></li>`).join('');
         messageContent += `<ul class="modal-list">${listItems}</ul>`;
     }
-    
+
     message.innerHTML = messageContent;
 
     // Mover modal al final del body para garantizar z-index máximo
     if (modal.parentElement !== document.body) {
         document.body.appendChild(modal);
     }
-    
+
     // Reducir z-index del sidebar temporalmente
     const sidebar = document.getElementById('logo-sidebar');
     if (sidebar) {
         sidebar.style.zIndex = '1';
     }
-    
+
     // Mostrar modal
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -101,7 +101,7 @@ window.showInfoModal = function (options) {
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            
+
             // Restaurar z-index del sidebar
             const sidebar = document.getElementById('logo-sidebar');
             if (sidebar) {
@@ -118,7 +118,7 @@ window.showInfoModal = function (options) {
         modal.removeEventListener('click', handleOutsideClick);
         dialog.removeEventListener('mouseenter', pauseAutoClose);
         dialog.removeEventListener('mouseleave', resumeAutoClose);
-        
+
         // Limpiar timers de la barra de progreso
         clearTimeout(autoCloseTimer);
         cancelAnimationFrame(progressTimer);
@@ -151,15 +151,15 @@ window.showInfoModal = function (options) {
             const progress = Math.min((elapsed / timeout) * 100, 100);
             const remaining = Math.max(0, timeout - elapsed);
             const remainingSeconds = Math.ceil(remaining / 1000);
-            
+
             progressBar.style.width = progress + '%';
-            
+
             if (remainingSeconds > 0) {
                 progressText.textContent = `Se cerrará en ${remainingSeconds}s`;
             } else {
                 progressText.textContent = 'Cerrando...';
             }
-            
+
             if (progress < 100) {
                 progressTimer = requestAnimationFrame(updateProgressBar);
             }
@@ -171,13 +171,13 @@ window.showInfoModal = function (options) {
             startTime = Date.now();
             isPaused = false;
             progressContainer.style.display = 'block';
-            
+
             // Resetear barra de progreso
             progressBar.style.width = '0%';
-            
+
             // Iniciar timer de cierre
             autoCloseTimer = setTimeout(closeModal, timeout);
-            
+
             // Iniciar animación de progreso
             updateProgressBar();
         } else {
@@ -185,7 +185,7 @@ window.showInfoModal = function (options) {
             progressContainer.style.display = 'none';
         }
     }
-    
+
     function pauseAutoClose() {
         clearTimeout(autoCloseTimer);
         cancelAnimationFrame(progressTimer);
@@ -194,7 +194,7 @@ window.showInfoModal = function (options) {
         progressContainer.style.opacity = '0.5';
         progressText.textContent = 'Aleja el cursor para continuar';
     }
-    
+
     function resumeAutoClose() {
         if (timeout > 0 && isPaused) {
             const remainingTime = timeout - pausedTime;

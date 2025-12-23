@@ -56,12 +56,8 @@
 
             <div class="variants-toolbar">
                 <button type="button" class="boton boton-secondary" id="generateVariantsBtn">
-                    <span class="boton-icon"><i class="ri-shape-2-line"></i></span>
-                    <span class="boton-text">Generar variantes automáticamente</span>
-                </button>
-                <button type="button" class="boton boton-primary" id="addVariantBtn">
-                    <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-                    <span class="boton-text">Agregar variante manual</span>
+                    <span class="boton-icon"><i class="ri-magic-fill"></i></span>
+                    <span class="boton-text">Generar variantes</span>
                 </button>
             </div>
 
@@ -70,11 +66,18 @@
 </div>
 
 <div class="form-body">
-    <div class="card-header">
-        <span class="card-title">Variantes</span>
-        <p class="card-description">
-            Administra las variantes de este producto. Puedes editar el SKU, precio, stock y estado de cada variante.
-        </p>
+    <div class="card-header flex items-center justify-between gap-4">
+        <div>
+            <span class="card-title">Variantes</span>
+            <p class="card-description">
+                Administra las variantes de este producto. Puedes editar el SKU, precio, stock y estado de cada variante.
+            </p>
+        </div>
+
+        <button type="button" class="boton boton-primary" id="addVariantBtn">
+            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-text">Agregar variante</span>
+        </button>
     </div>
     <div class="form-row-fit">
         <div id="variantsContainer" class="variants-container" data-options='@json($optionsPayload)' data-initial-variants='@json($initialVariants)'>
@@ -93,8 +96,12 @@
                     <tbody data-role="variants-body">
                         <tr id="variantsEmpty" class="variants-empty-row">
                             <td colspan="6" class="text-muted-td text-center">
-                                <i class="ri-information-line"></i>
-                                No hay variantes configuradas. Usa "Generar variantes" o "Agregar variante manual".
+                                <div class="tabla-no-data">
+                                    <i class="ri-folder-warning-line"></i>
+                                    <span>
+                                        No hay variantes configuradas. Usa "Generar variantes" o agrega la variante manualmente.
+                                    </span>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -126,7 +133,7 @@
                 <div class="input-icon-container">
                     <i class="ri-currency-line input-icon"></i>
                     <input type="number" class="input-form" name="variants[__INDEX__][price]" min="0"
-                        step="0.01" value="__PRICE__" placeholder="Opcional" data-role="variant-price">
+                        step="0.01" value="__PRICE__" placeholder="Precio Opcional" data-role="variant-price">
                 </div>
             </div>
         </td>

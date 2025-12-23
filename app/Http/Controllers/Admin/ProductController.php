@@ -38,6 +38,7 @@ class ProductController extends Controller
         ])
             ->with(['category:id,name', 'creator:id,name,last_name'])
             ->withCount(['variants', 'images'])
+            ->withSum('variants as variants_stock_sum', 'stock')
             ->orderByDesc('id')
             ->get();
 

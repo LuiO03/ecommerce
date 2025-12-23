@@ -152,6 +152,7 @@
 						<th class="column-price-th">Precio</th>
 						<th class="column-discount-th">Desc.</th>
 						<th class="column-variants-th">Variantes</th>
+						<th class="column-stock-th">Stock</th>
 						<th class="column-images-th">Imágenes</th>
 						<th class="column-status-th">Estado</th>
 						<th class="column-date-th">Creado</th>
@@ -206,6 +207,16 @@
 								<span class="badge badge-secondary">
 									<i class="ri-shape-2-line"></i>
 									{{ $product->variants_count }}
+								</span>
+							</td>
+							<td class="column-stock-td">
+								@php
+									$stockTotal = (int) ($product->variants_stock_sum ?? 0);
+									$stockBadgeClass = $stockTotal < 10 ? 'badge-danger' : 'badge-secondary';
+								@endphp
+								<span class="badge {{ $stockBadgeClass }}">
+									<i class="ri-stack-line"></i>
+									{{ $stockTotal }}
 								</span>
 							</td>
 							<td class="column-images-td">

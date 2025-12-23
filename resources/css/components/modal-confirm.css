@@ -135,6 +135,7 @@
 .confirm-message{
     color: var(--color-text-soft);
     width: 100%;
+    font-family: var(--font-primary);
 }
 
 .confirm-icon {

@@ -142,7 +142,14 @@ function buildSkuSuggestion(baseSku, featuresMeta) {
     return basePart;
   }
 
-  const segments = featuresMeta.map((meta) => slugifySegment(meta.featureValue)).filter(Boolean);
+  // Usar la etiqueta visible (label) como base del segmento; si no,
+  // caer al valor bruto y finalmente a featureValue para compatibilidad.
+  const segments = featuresMeta
+    .map((meta) => {
+      const raw = meta && (meta.label || meta.rawValue || meta.featureValue || '');
+      return slugifySegment(raw);
+    })
+    .filter(Boolean);
   if (!segments.length) return basePart;
 
   return `${basePart}-${segments.join('-')}`;
@@ -208,7 +215,7 @@ function buildVariantRowDom({ index, variant }) {
       <div class="input-icon-container">
         <i class="ri-currency-line input-icon"></i>
         <input type="number" class="input-form" name="variants[${index}][price]" min="0" step="0.01"
-          value="${variant.price != null ? String(variant.price) : ''}" placeholder="Opcional" data-role="variant-price">
+          value="${variant.price != null ? String(variant.price) : ''}" placeholder="Precio Opcional" data-role="variant-price">
       </div>
     </div>`;
 
@@ -452,6 +459,40 @@ export function initProductVariantsManager({
 
       checkbox.addEventListener('change', () => {
         const checked = checkbox.checked;
+
+        // Bloqueo duro: no permitir desactivar una opción completa si
+        // alguno de sus valores sigue siendo usado por variantes existentes.
+        if (!checked) {
+          const body = container.querySelector('[data-role="variants-body"]') || container;
+          const isUsed = (opt.features || []).some((feat) =>
+            body.querySelector(`input[name$="[features][]"][value="${feat.id}"]`),
+          );
+
+          if (isUsed) {
+            checkbox.checked = true;
+            featuresWrapper.classList.remove('is-disabled');
+
+            if (typeof window.showInfoModal === 'function') {
+              window.showInfoModal({
+                type: 'warning',
+                header: 'Opción en uso',
+                title: 'No puedes desactivar esta opción todavía',
+                message:
+                  'Alguno de los valores de esta opción está siendo usado por variantes existentes. ' +
+                  'Elimina primero las variantes que usan esos valores y luego intenta desactivar la opción de nuevo.',
+              });
+            } else {
+              // Fallback mínimo
+              alert(
+                'Alguno de los valores de esta opción está siendo usado por variantes existentes. ' +
+                  'Elimina primero las variantes que usan esos valores y luego intenta desactivar la opción de nuevo.',
+              );
+            }
+
+            return;
+          }
+        }
+
         featuresWrapper.classList.toggle('is-disabled', !checked);
         const featureCbs = featuresWrapper.querySelectorAll('.feature-toggle');
         if (!checked) {
@@ -473,6 +514,43 @@ export function initProductVariantsManager({
         const target = event.target;
         if (!(target instanceof HTMLInputElement) || !target.classList.contains('feature-toggle')) return;
 
+        const featureId = Number(target.value);
+
+        // Bloqueo duro: si el valor está siendo usado por alguna variante,
+        // no permitir desactivarlo hasta que se elimine la(s) variante(s).
+        if (!target.checked) {
+          const body = container.querySelector('[data-role="variants-body"]') || container;
+          const usedSomewhere = body.querySelector(
+            `input[name$="[features][]"][value="${featureId}"]`,
+          );
+
+          if (usedSomewhere) {
+            target.checked = true;
+            const pillLocked = target.closest('.product-option-feature-pill');
+            if (pillLocked) {
+              pillLocked.classList.add('is-selected');
+            }
+
+            if (typeof window.showInfoModal === 'function') {
+              window.showInfoModal({
+                type: 'warning',
+                header: 'Valor en uso',
+                title: 'No puedes desactivar este valor todavía',
+                message:
+                  'Este valor de opción está siendo usado por al menos una variante. ' +
+                  'Elimina primero las variantes que lo usan y luego intenta desactivarlo de nuevo.',
+              });
+            } else {
+              alert(
+                'Este valor de opción está siendo usado por al menos una variante. ' +
+                  'Elimina primero las variantes que lo usan y luego intenta desactivarlo de nuevo.',
+              );
+            }
+
+            return;
+          }
+        }
+
         const pill = target.closest('.product-option-feature-pill');
         if (pill) {
           pill.classList.toggle('is-selected', target.checked);
@@ -484,7 +562,6 @@ export function initProductVariantsManager({
         }
         const set = selectedOptionFeatures.get(optionId);
 
-        const featureId = Number(target.value);
         if (target.checked) {
           set.add(featureId);
         } else {
@@ -597,21 +674,93 @@ export function initProductVariantsManager({
 
     const baseSku = baseSkuInput ? baseSkuInput.value : '';
 
-    const variant = {
-      id: null,
-      sku: buildSkuSuggestion(baseSku, []),
-      price: null,
-      stock: 0,
-      status: true,
-      featuresMeta: [],
+    // Intentar asignar automáticamente una combinación de opciones disponible
+    const sets = collectOptionFeatureSets();
+    const combos = buildCartesianProduct(sets, index);
+    let featuresMeta = [];
+
+    if (combos.length) {
+      const body = container.querySelector('[data-role="variants-body"]') || container;
+      const existingKeys = new Set();
+
+      const existingRows = body.querySelectorAll('.variant-row');
+      existingRows.forEach((row) => {
+        const featureInputs = row.querySelectorAll('input[name$="[features][]"]');
+        const ids = Array.from(featureInputs)
+          .map((inp) => Number(inp.value))
+          .filter((id) => Number.isFinite(id))
+          .sort((a, b) => a - b);
+        if (!ids.length) return;
+        const key = ids.join('-');
+        if (!key) return;
+        existingKeys.add(key);
+      });
+
+      let chosen = null;
+      combos.forEach((combo) => {
+        if (chosen) return;
+        const ids = combo.features
+          .map((meta) => Number(meta.featureId))
+          .filter((id) => Number.isFinite(id))
+          .sort((a, b) => a - b);
+        const key = ids.join('-');
+        if (!key || existingKeys.has(key)) return;
+        chosen = combo;
+      });
+
+      if (chosen) {
+        featuresMeta = chosen.features;
+      }
+    }
+    const createVariant = (meta) => {
+      const variant = {
+        id: null,
+        sku: buildSkuSuggestion(baseSku, meta),
+        price: null,
+        stock: 0,
+        status: true,
+        featuresMeta: meta,
+      };
+
+      buildVariantRowFromTemplate({
+        index: nextIndex,
+        variant,
+        container,
+        emptyState,
+      });
     };
 
-    buildVariantRowFromTemplate({
-      index: nextIndex,
-      variant,
-      container,
-      emptyState,
-    });
+    // Si hay opciones activas y ya se usaron todas las combinaciones posibles,
+    // dar al usuario la opción explícita de crear una variante especial sin opciones.
+    if (combos.length && !featuresMeta.length) {
+      if (typeof window.showConfirm === 'function') {
+        window.showConfirm({
+          type: 'info',
+          header: 'Crear variante especial',
+          title: 'Todas las combinaciones ya están usadas',
+          message:
+            'Ya has configurado todas las combinaciones posibles con las opciones seleccionadas. ' +
+            'Si continúas, se creará una variante especial sin valores de opción (no ligada a talla/color, etc.).',
+          confirmText: 'Sí, crear variante especial',
+          cancelText: 'No, cancelar',
+          onConfirm: () => {
+            createVariant([]);
+          },
+        });
+      } else if (
+        window.confirm(
+          'Ya has configurado todas las combinaciones posibles con las opciones seleccionadas. ' +
+            '¿Quieres crear una variante especial sin valores de opción?',
+        )
+      ) {
+        createVariant([]);
+      }
+
+      return;
+    }
+
+    // Caso normal: crear variante usando la combinación asignada (si la hay)
+    createVariant(featuresMeta);
   }
 
   function hydrateInitialVariants() {
@@ -654,9 +803,31 @@ export function initProductVariantsManager({
 
     const row = button.closest('.variant-row');
     if (!row) return;
+    const labelCell = row.querySelector('.column-variant-options');
+    const rawLabel = labelCell ? labelCell.textContent || '' : '';
+    const variantLabel = rawLabel.trim() || 'esta variante';
 
-    row.remove();
-    reindexVariantRows(container, emptyState);
+    const doRemove = () => {
+      row.remove();
+      reindexVariantRows(container, emptyState);
+    };
+
+    if (typeof window.showConfirm === 'function') {
+      window.showConfirm({
+        type: 'danger',
+        header: 'Eliminar variante',
+        title: '¿Deseas eliminar esta variante?',
+        message:
+          'Vas a eliminar la variante <strong>' +
+          variantLabel +
+          '</strong>. Esta acción no se puede deshacer y afectará el stock disponible para esta combinación.',
+        confirmText: 'Sí, eliminar variante',
+        cancelText: 'No, conservar',
+        onConfirm: doRemove,
+      });
+    } else if (window.confirm('¿Seguro que deseas eliminar ' + variantLabel + '?')) {
+      doRemove();
+    }
   }
 
   container.addEventListener('click', handleContainerClick);
@@ -671,7 +842,64 @@ export function initProductVariantsManager({
   if (generateButton) {
     generateButton.addEventListener('click', (event) => {
       event.preventDefault();
-      generateVariants();
+      // Antes de regenerar, comprobar si se eliminarán variantes automáticas
+      // y, de ser así, solicitar confirmación explícita.
+
+      const sets = collectOptionFeatureSets();
+      const combos = buildCartesianProduct(sets, index);
+      const body = container.querySelector('[data-role="variants-body"]') || container;
+
+      const existingByKey = new Map();
+      const autoRows = body.querySelectorAll('.variant-row[data-auto="1"]');
+      autoRows.forEach((row) => {
+        const featureInputs = row.querySelectorAll('input[name$="[features][]"]');
+        const ids = Array.from(featureInputs)
+          .map((inp) => Number(inp.value))
+          .filter((id) => Number.isFinite(id))
+          .sort((a, b) => a - b);
+        if (!ids.length) return;
+        const key = ids.join('-');
+        if (!key) return;
+        existingByKey.set(key, row);
+      });
+
+      let keysToRemove = [];
+      if (!combos.length) {
+        keysToRemove = Array.from(existingByKey.keys());
+      } else {
+        const mapCopy = new Map(existingByKey);
+        combos.forEach((combo) => {
+          const featureIds = combo.features
+            .map((meta) => Number(meta.featureId))
+            .filter((id) => Number.isFinite(id))
+            .sort((a, b) => a - b);
+          const key = featureIds.join('-');
+          if (key && mapCopy.has(key)) {
+            mapCopy.delete(key);
+          }
+        });
+        keysToRemove = Array.from(mapCopy.keys());
+      }
+
+      const willRemoveAutos = keysToRemove.length > 0;
+
+      if (willRemoveAutos && typeof window.showConfirm === 'function') {
+        window.showConfirm({
+          type: 'warning',
+          header: 'Actualizar variantes',
+          title: '¿Actualizar variantes según las opciones?',
+          message:
+            'Al actualizar variantes según las opciones actuales se eliminarán algunas combinaciones automáticas que ' +
+            'ya no serán válidas. Esta acción no afecta variantes manuales, pero no se puede deshacer.',
+          confirmText: 'Sí, actualizar variantes',
+          cancelText: 'No, mantener como está',
+          onConfirm: () => {
+            generateVariants();
+          },
+        });
+      } else {
+        generateVariants();
+      }
     });
   }
 
