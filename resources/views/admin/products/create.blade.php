@@ -151,6 +151,23 @@
             'product' => null,
             'options' => $options,
         ])
+
+        <div class="form-footer">
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
+                <span class="boton-form-text">Cancelar</span>
+            </a>
+            <button type="reset" class="boton-form boton-warning">
+                <span class="boton-form-icon"><i class="ri-paint-brush-fill"></i></span>
+                <span class="boton-form-text">Limpiar</span>
+            </button>
+            <button type="submit" class="boton-form boton-success" id="submitBtn">
+                <span class="boton-form-icon"><i class="ri-save-3-fill"></i></span>
+                <span class="boton-form-text">Crear Producto</span>
+            </button>
+        </div>
     </form>
 
     @push('scripts')

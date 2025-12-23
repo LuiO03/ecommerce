@@ -4,7 +4,6 @@
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 	gap: 1.1rem;
-	margin-top: 0.75rem;
 }
 
 .product-option-card {
@@ -12,20 +11,17 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.6rem;
-	border: 1px solid var(--color-border);
+	border: 2px solid var(--color-input-border);
 	border-radius: 1rem;
 	padding: 0.9rem 1rem;
-	background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.09), transparent 55%),
-		var(--color-card-bg);
-	box-shadow: var(--shadow-material-soft);
-	transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease,
-		background 0.18s ease;
+	background: var(--color-card-bg);
+	transition: transform 0.18s ease;
 }
 
 .product-option-card:hover {
 	transform: translateY(-2px);
 	box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
-	border-color: rgba(59, 130, 246, 0.7);
+	border-color: var(--color-accent);
 }
 
 .product-option-header {
@@ -54,6 +50,10 @@
 	gap: 0.5rem;
 }
 
+.product-option-features.is-collapsed .product-option-feature-pill.is-extra {
+	display: none;
+}
+
 .product-option-features.is-disabled {
 	opacity: 0.35;
 	filter: grayscale(0.4);
@@ -64,11 +64,11 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 0.35rem;
-	padding: 0.3rem 0.65rem;
-	border-radius: 999px;
+	padding: 5px 16px;
+	border-radius: var(--radius-card);
 	border: 1px solid rgba(148, 163, 184, 0.6);
 	background: rgba(148, 163, 184, 0.08);
-	font-size: 0.78rem;
+	font-size: var(--font-size-xs);
 	font-weight: 500;
 	color: var(--color-text);
 	cursor: pointer;
@@ -77,30 +77,45 @@
 }
 
 .product-option-feature-pill input[type="checkbox"] {
-	width: 16px;
-	height: 16px;
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+	width: 0;
+	height: 0;
+	margin: 0;
 }
 
-.product-option-feature-pill:hover {
-	background: rgba(59, 130, 246, 0.08);
-	border-color: rgba(59, 130, 246, 0.7);
-	box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
-	transform: translateY(-1px);
+.product-option-feature-pill.is-selected {
+	background: var(--color-accent);
+    color: white;
+	box-shadow: 0 8px 18px var(--shadow-accent);
+}
+
+.product-option-color-dot {
+	width: 14px;
+	height: 14px;
+	border-radius: var(--radius-element);
+	background: var(--variant-color, #64748b);
+    border: 1px solid var(--color-text);
+}
+
+.product-option-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 0.78rem;
+	color: var(--color-text-soft);
+}
+
+.product-option-summary {
+	font-style: italic;
 }
 
 .variants-toolbar {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5rem;
-	margin-top: 1rem;
-}
-
-.variants-empty {
-	padding: 1.1rem 1.25rem;
-	border-radius: 0.9rem;
-	border: 1px dashed var(--color-border);
-	background: linear-gradient(135deg, rgba(148, 163, 184, 0.08), rgba(148, 163, 184, 0.02));
-	font-size: 0.9rem;
+    justify-content: flex-end;
 }
 
 .variants-empty.is-hidden {
@@ -108,18 +123,23 @@
 }
 
 .variants-container {
-	display: table-row-group;
+	display: block;
 }
 
 .variant-row {
 	background: var(--color-card-bg);
 }
 
+/* Fila de estado vacío dentro de la tabla de variantes */
+
+#variantsEmpty.is-hidden {
+	display: none;
+}
+
 .variants-table-wrapper {
 	border-radius: 1rem;
 	overflow: hidden;
 	border: 1px solid var(--color-border);
-	box-shadow: var(--shadow-material-soft);
 }
 
 .tabla-variants {
@@ -128,21 +148,35 @@
 }
 
 .tabla-variants thead th {
-	background: rgba(15, 23, 42, 0.03);
-	font-size: 0.8rem;
-	text-transform: uppercase;
+	background: var(--color-hover);
+	font-size: var(--font-size-sm);
 	letter-spacing: 0.04em;
-	padding: 0.65rem 0.75rem;
+	padding: 10px 8px;
 	border-bottom: 1px solid var(--color-border);
 }
 
 .tabla-variants tbody td {
-	padding: 0.6rem 0.75rem;
+    font-size: var(--font-size-sm);
+	padding: 10px 8px;
 	border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+    vertical-align: middle;
+}
+
+.tabla-variants tbody tr{
+    background-color: var(--color-card-bg);
 }
 
 .tabla-variants tbody tr:last-child td {
 	border-bottom: none;
+}
+
+.column-variant-options{
+    font-weight: bold;
+}
+
+.column-variant-status, .column-variant-actions, .column-variant-options{
+    text-align: center;
+    min-width: 90px;
 }
 
 .variant-main {

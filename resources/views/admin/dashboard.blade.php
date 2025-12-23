@@ -44,7 +44,7 @@
     </div>
     <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 dashboard-cards">
         <!-- Tarjeta: Productos -->
-        <a href="{{ route('admin.products.index') }}" class="dashboard-card">
+        <a href="{{ route('admin.products.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-danger">
                 <i class="ri-box-3-line"></i>
             </div>
@@ -55,7 +55,7 @@
         </a>
 
         <!-- Tarjeta: Categorías -->
-        <a href="{{ route('admin.categories.index') }}" class="dashboard-card">
+        <a href="{{ route('admin.categories.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-info">
                 <i class="ri-price-tag-3-line"></i>
             </div>
@@ -66,7 +66,7 @@
         </a>
 
         <!-- Tarjeta: Familias -->
-        <a href="{{ route('admin.families.index') }}" class="dashboard-card">
+        <a href="{{ route('admin.families.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-success">
                 <i class="ri-apps-line"></i>
             </div>
@@ -77,7 +77,7 @@
         </a>
 
         <!-- Tarjeta: Marcas -->
-        <a href="" class="dashboard-card">
+        <a href="" class="dashboard-card ripple-card">
             <div class="card-icon card-warning">
                 <i class="ri-award-line"></i>
             </div>
@@ -88,7 +88,7 @@
         </a>
 
         <!-- Tarjeta: Roles -->
-        <a href="{{ route('admin.roles.index') }}" class="dashboard-card">
+        <a href="{{ route('admin.roles.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-primary">
                 <i class="ri-shield-user-line"></i>
             </div>
@@ -99,7 +99,7 @@
         </a>
 
         <!-- Tarjeta: Usuarios -->
-        <a href="{{ route('admin.users.index') }}" class="dashboard-card">
+        <a href="{{ route('admin.users.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-purple">
                 <i class="ri-admin-line"></i>
             </div>
@@ -110,7 +110,7 @@
         </a>
 
         <!-- Tarjeta: Posts -->
-        <a href="{{ route('admin.posts.index') }}" class="dashboard-card">
+        <a href="{{ route('admin.posts.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-orange">
                 <i class="ri-article-line"></i>
             </div>
@@ -121,7 +121,7 @@
         </a>
 
         <!-- Tarjeta: Opciones -->
-        <a href="{{ route('admin.options.index') }}" class="dashboard-card">
+        <a href="{{ route('admin.options.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-teal">
                 <i class="ri-settings-3-line"></i>
             </div>

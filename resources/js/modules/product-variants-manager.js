@@ -18,23 +18,56 @@ function slugifySegment(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+function normalizeHexColor(value) {
+  const raw = String(value || '').trim().replace(/^#/, '');
+  if (!raw) return null;
+
+  if (!/^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(raw)) {
+    return null;
+  }
+
+  const expanded = raw.length === 3
+    ? raw.split('').map((ch) => ch + ch).join('')
+    : raw;
+
+  return `#${expanded.toUpperCase()}`;
+}
+
 function buildOptionsIndex(options) {
   const byId = new Map();
   const featureToOption = new Map();
 
   options.forEach((opt) => {
+    const isColor = !!opt.is_color;
     const option = {
       id: opt.id,
       name: opt.name,
+      isColor,
       features: Array.isArray(opt.features) ? opt.features : [],
     };
     byId.set(option.id, option);
     option.features.forEach((feat) => {
+      const normalizedColor = isColor ? normalizeHexColor(feat.value) : null;
+      let label;
+      const rawValue = String(feat.value ?? '').trim();
+      const rawDescription = feat.description != null ? String(feat.description).trim() : '';
+
+      if (isColor) {
+        // Para colores, mostrar el nombre (description) y caer al HEX si no hay nombre.
+        label = rawDescription || rawValue;
+      } else {
+        // Para otras opciones, usar siempre el value (S, M, L, Masculino, etc.).
+        label = rawValue;
+      }
+
       featureToOption.set(feat.id, {
         optionId: option.id,
         optionName: option.name,
         featureId: feat.id,
-        featureValue: feat.value,
+        rawValue: feat.value,
+        label,
+        isColor,
+        color: normalizedColor,
       });
     });
   });
@@ -90,21 +123,15 @@ function buildCartesianProduct(optionFeatureSets, optionsIndex) {
 
 function buildVariantLabel(featuresMeta) {
   if (!featuresMeta || !featuresMeta.length) return 'Variante sin opciones';
-  const byOption = new Map();
 
-  featuresMeta.forEach((meta) => {
-    if (!byOption.has(meta.optionName)) {
-      byOption.set(meta.optionName, []);
-    }
-    byOption.get(meta.optionName).push(meta.featureValue);
-  });
+  // Mostrar solo los valores en orden, sin el nombre de la opción.
+  // Para color ya viene meta.label con la description (nombre),
+  // y para el resto meta.label es el value (S, M, L, etc.).
+  const parts = featuresMeta
+    .map((meta) => (meta.label || String(meta.rawValue ?? '').trim()))
+    .filter((text) => !!text);
 
-  const parts = [];
-  byOption.forEach((values, optionName) => {
-    parts.push(`${optionName}: ${values.join(', ')}`);
-  });
-
-  return parts.join(' / ');
+  return parts.length ? parts.join(' / ') : 'Variante sin opciones';
 }
 
 function buildSkuSuggestion(baseSku, featuresMeta) {
@@ -141,26 +168,104 @@ function reindexVariantRows(container, emptyState) {
   });
 }
 
+function buildVariantRowDom({ index, variant }) {
+  const tr = document.createElement('tr');
+  tr.className = 'variant-row';
+  tr.dataset.index = String(index);
+
+  const tdOptions = document.createElement('td');
+  tdOptions.className = 'column-variant-options';
+
+  const hiddenId = document.createElement('input');
+  hiddenId.type = 'hidden';
+  hiddenId.name = `variants[${index}][id]`;
+  hiddenId.value = String(variant.id || '');
+  tdOptions.appendChild(hiddenId);
+
+  const labelText = document.createTextNode(buildVariantLabel(variant.featuresMeta || []));
+  tdOptions.appendChild(labelText);
+
+  const featuresDiv = document.createElement('div');
+  featuresDiv.className = 'variant-hidden-features';
+  featuresDiv.dataset.role = 'features-container';
+  tdOptions.appendChild(featuresDiv);
+
+  const tdSku = document.createElement('td');
+  tdSku.className = 'column-variant-sku';
+  tdSku.innerHTML = `
+    <div class="input-group">
+      <div class="input-icon-container">
+        <i class="ri-hashtag input-icon"></i>
+        <input type="text" class="input-form" name="variants[${index}][sku]" value="${variant.sku || ''}"
+          placeholder="Ej. PROD-001-RED-M" data-role="variant-sku">
+      </div>
+    </div>`;
+
+  const tdPrice = document.createElement('td');
+  tdPrice.className = 'column-variant-price';
+  tdPrice.innerHTML = `
+    <div class="input-group">
+      <div class="input-icon-container">
+        <i class="ri-currency-line input-icon"></i>
+        <input type="number" class="input-form" name="variants[${index}][price]" min="0" step="0.01"
+          value="${variant.price != null ? String(variant.price) : ''}" placeholder="Opcional" data-role="variant-price">
+      </div>
+    </div>`;
+
+  const tdStock = document.createElement('td');
+  tdStock.className = 'column-variant-stock';
+  tdStock.innerHTML = `
+    <div class="input-group">
+      <div class="input-icon-container">
+        <i class="ri-stack-line input-icon"></i>
+        <input type="number" class="input-form" name="variants[${index}][stock]" min="0" step="1"
+          value="${variant.stock != null ? String(variant.stock) : '0'}" placeholder="0" data-role="variant-stock">
+      </div>
+    </div>`;
+
+  const tdStatus = document.createElement('td');
+  tdStatus.className = 'column-variant-status';
+  tdStatus.innerHTML = `
+    <div class="input-group">
+      <div class="switch-tabla-wrapper">
+        <input type="hidden" name="variants[${index}][status]" value="0">
+        <label class="switch-tabla" title="Activar o desactivar variante">
+          <input type="checkbox" name="variants[${index}][status]" value="1" ${variant.status ? 'checked' : ''}
+            data-role="variant-status">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>`;
+
+  const tdActions = document.createElement('td');
+  tdActions.className = 'column-variant-actions';
+  tdActions.innerHTML = `
+    <button type="button" class="boton boton-danger" data-action="remove-variant" title="Eliminar variante">
+        <span class="boton-text">Eliminar</span>
+        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+    </button>`;
+
+  tr.appendChild(tdOptions);
+  tr.appendChild(tdSku);
+  tr.appendChild(tdPrice);
+  tr.appendChild(tdStock);
+  tr.appendChild(tdStatus);
+  tr.appendChild(tdActions);
+
+  return tr;
+}
+
 function buildVariantRowFromTemplate({
-  templateHtml,
   index,
   variant,
   container,
   emptyState,
 }) {
-  let html = templateHtml
-    .replace(/__INDEX__/g, String(index))
-    .replace(/__ID__/g, String(variant.id || ''))
-    .replace(/__SKU__/g, String(variant.sku || ''))
-    .replace(/__PRICE__/g, variant.price != null ? String(variant.price) : '')
-    .replace(/__STOCK__/g, variant.stock != null ? String(variant.stock) : '')
-    .replace(/__STATUS_CHECKED__/g, variant.status ? 'checked' : '')
-    .replace(/__OPTIONS_LABEL__/g, buildVariantLabel(variant.featuresMeta || []));
+  const row = buildVariantRowDom({ index, variant });
 
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = html.trim();
-  const row = wrapper.firstElementChild;
-  if (!row) return null;
+  // Marcar si la variante está ligada a una combinación de opciones
+  const isAuto = Array.isArray(variant.featuresMeta) && variant.featuresMeta.length > 0;
+  row.dataset.auto = isAuto ? '1' : '0';
 
   const featuresContainer = row.querySelector('[data-role="features-container"]');
   if (featuresContainer) {
@@ -173,7 +278,8 @@ function buildVariantRowFromTemplate({
     });
   }
 
-  container.appendChild(row);
+  const body = container.querySelector('[data-role="variants-body"]') || container;
+  body.appendChild(row);
   reindexVariantRows(container, emptyState);
   return row;
 }
@@ -190,6 +296,12 @@ export function initProductVariantsManager({
   const container = document.getElementById(containerId);
   if (!container) return null;
 
+  // Evitar inicializar dos veces sobre el mismo contenedor
+  if (container.dataset.variantsManagerInitialized === '1') {
+    return null;
+  }
+  container.dataset.variantsManagerInitialized = '1';
+
   const emptyState = emptyStateId ? document.getElementById(emptyStateId) : null;
   const addButton = addButtonId ? document.getElementById(addButtonId) : null;
   const optionsContainer = optionsContainerId ? document.getElementById(optionsContainerId) : null;
@@ -197,10 +309,9 @@ export function initProductVariantsManager({
   const baseSkuInput = baseSkuInputId ? document.getElementById(baseSkuInputId) : null;
   const templateNode = templateId ? document.getElementById(templateId) : null;
 
-  const templateHtml = templateNode ? templateNode.textContent.trim() : '';
-  if (!templateHtml) {
-    console.warn('[product-variants-manager] Plantilla de variante no encontrada.');
-  }
+  // Mantener templateHtml definido para compatibilidad, aunque
+  // la construcción de filas se hace vía buildVariantRowDom.
+  const templateHtml = templateNode ? (templateNode.textContent || '').trim() : '';
 
   const optionsData = safeParseJson(container.dataset.options, []);
   const initialVariants = safeParseJson(container.dataset.initialVariants, []);
@@ -220,6 +331,8 @@ export function initProductVariantsManager({
       optionsContainer.appendChild(msg);
       return;
     }
+
+    const MANY_THRESHOLD = 10;
 
     optionsData.forEach((opt) => {
       const card = document.createElement('div');
@@ -253,9 +366,16 @@ export function initProductVariantsManager({
 
       const usedSet = selectedOptionFeatures.get(opt.id) || new Set();
 
-      opt.features.forEach((feat) => {
+      const totalFeatures = opt.features.length;
+      const showCompact = totalFeatures > MANY_THRESHOLD;
+
+      opt.features.forEach((feat, idx) => {
         const pill = document.createElement('label');
         pill.className = 'product-option-feature-pill';
+
+        if (showCompact && idx >= MANY_THRESHOLD) {
+          pill.classList.add('is-extra');
+        }
 
         const cb = document.createElement('input');
         cb.type = 'checkbox';
@@ -264,14 +384,62 @@ export function initProductVariantsManager({
         cb.checked = hasAnyFeature ? usedSet.has(feat.id) : false;
 
         const span = document.createElement('span');
-        span.textContent = feat.value;
+        const meta = index.featureToOption.get(feat.id);
+
+        if (meta && meta.isColor && meta.color) {
+          const dot = document.createElement('span');
+          dot.className = 'product-option-color-dot';
+          dot.style.setProperty('--variant-color', meta.color);
+          pill.appendChild(dot);
+        }
+
+        span.textContent = (meta && meta.label) ? meta.label : feat.value;
 
         pill.appendChild(cb);
         pill.appendChild(span);
+
+        if (cb.checked) {
+          pill.classList.add('is-selected');
+        }
         featuresWrapper.appendChild(pill);
       });
 
       card.appendChild(featuresWrapper);
+
+      if (showCompact) {
+        const footer = document.createElement('div');
+        footer.className = 'product-option-footer';
+
+        const summary = document.createElement('span');
+        summary.className = 'product-option-summary';
+        const updateSummary = () => {
+          const selectedCount = Array.from(featuresWrapper.querySelectorAll('.feature-toggle'))
+            .filter((n) => n.checked).length;
+          summary.textContent = `${selectedCount} seleccionados de ${totalFeatures}`;
+        };
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'boton-sm boton-link product-option-toggle';
+        toggleBtn.textContent = 'Ver todos';
+
+        toggleBtn.addEventListener('click', () => {
+          const collapsed = featuresWrapper.classList.toggle('is-collapsed');
+          toggleBtn.textContent = collapsed ? 'Ver todos' : 'Mostrar menos';
+        });
+
+        featuresWrapper.classList.add('is-collapsed');
+
+        footer.appendChild(summary);
+        footer.appendChild(toggleBtn);
+        card.appendChild(footer);
+
+        // inicializar resumen con el estado actual
+        setTimeout(updateSummary, 0);
+
+        featuresWrapper.addEventListener('change', updateSummary);
+      }
+
       optionsContainer.appendChild(card);
 
       const syncVisibility = () => {
@@ -290,12 +458,25 @@ export function initProductVariantsManager({
           featureCbs.forEach((n) => {
             n.checked = false;
           });
+
+          // Limpiar también el estado interno cuando se deshabilita la opción
+          const optionId = Number(opt.id);
+          selectedOptionFeatures.delete(optionId);
+
+          // Quitar estilos visuales de selección
+          const pills = featuresWrapper.querySelectorAll('.product-option-feature-pill');
+          pills.forEach((pill) => pill.classList.remove('is-selected'));
         }
       });
 
       featuresWrapper.addEventListener('change', (event) => {
         const target = event.target;
         if (!(target instanceof HTMLInputElement) || !target.classList.contains('feature-toggle')) return;
+
+        const pill = target.closest('.product-option-feature-pill');
+        if (pill) {
+          pill.classList.toggle('is-selected', target.checked);
+        }
 
         const optionId = Number(opt.id);
         if (!selectedOptionFeatures.has(optionId)) {
@@ -332,17 +513,38 @@ export function initProductVariantsManager({
   }
 
   function clearVariants() {
-    container.innerHTML = '';
+    const body = container.querySelector('[data-role="variants-body"]');
+    if (body) {
+      const rows = body.querySelectorAll('.variant-row');
+      rows.forEach((row) => row.remove());
+    }
     reindexVariantRows(container, emptyState);
   }
 
   function generateVariants() {
     const sets = collectOptionFeatureSets();
     const combos = buildCartesianProduct(sets, index);
+    const body = container.querySelector('[data-role="variants-body"]') || container;
 
-    clearVariants();
+    // Indexar variantes automáticas existentes por combinación de features
+    const existingByKey = new Map();
+    const autoRows = body.querySelectorAll('.variant-row[data-auto="1"]');
+    autoRows.forEach((row) => {
+      const featureInputs = row.querySelectorAll('input[name$="[features][]"]');
+      const ids = Array.from(featureInputs)
+        .map((inp) => Number(inp.value))
+        .filter((id) => Number.isFinite(id))
+        .sort((a, b) => a - b);
+      if (!ids.length) return;
+      const key = ids.join('-');
+      if (!key) return;
+      existingByKey.set(key, row);
+    });
 
     if (!combos.length) {
+      // Si ya no hay combinaciones, eliminar solo las variantes automáticas
+      existingByKey.forEach((row) => row.remove());
+      reindexVariantRows(container, emptyState);
       return;
     }
 
@@ -350,6 +552,20 @@ export function initProductVariantsManager({
 
     combos.forEach((combo, idx) => {
       const featuresMeta = combo.features;
+      const featureIds = featuresMeta
+        .map((meta) => Number(meta.featureId))
+        .filter((id) => Number.isFinite(id))
+        .sort((a, b) => a - b);
+      const key = featureIds.join('-');
+
+      let reusedRow = key ? existingByKey.get(key) : null;
+      if (reusedRow) {
+        // Reutilizar la fila existente para conservar SKU, precio, stock, estado
+        existingByKey.delete(key);
+        body.appendChild(reusedRow);
+        return;
+      }
+
       const suggestionSku = buildSkuSuggestion(baseSku, featuresMeta);
 
       const variant = {
@@ -362,13 +578,17 @@ export function initProductVariantsManager({
       };
 
       buildVariantRowFromTemplate({
-        templateHtml,
         index: idx,
         variant,
         container,
         emptyState,
       });
     });
+
+    // Eliminar variantes automáticas que ya no corresponden a ninguna combinación
+    existingByKey.forEach((row) => row.remove());
+
+    reindexVariantRows(container, emptyState);
   }
 
   function addManualVariant() {
@@ -387,7 +607,6 @@ export function initProductVariantsManager({
     };
 
     buildVariantRowFromTemplate({
-      templateHtml,
       index: nextIndex,
       variant,
       container,
@@ -396,7 +615,7 @@ export function initProductVariantsManager({
   }
 
   function hydrateInitialVariants() {
-    if (!initialVariants.length || !templateHtml) return;
+    if (!initialVariants.length) return;
 
     initialVariants.forEach((row, idx) => {
       const featuresMeta = (row.features || []).map((feat) => {
@@ -465,3 +684,24 @@ export function initProductVariantsManager({
     addVariant: addManualVariant,
   };
 }
+
+// Inicialización automática de respaldo por si no se llama
+// explícitamente a window.initProductVariantsManager desde Blade.
+document.addEventListener('DOMContentLoaded', () => {
+  const autoContainer = document.getElementById('variantsContainer');
+  if (!autoContainer) return;
+
+  if (autoContainer.dataset.variantsManagerInitialized === '1') {
+    return;
+  }
+
+  initProductVariantsManager({
+    containerId: 'variantsContainer',
+    emptyStateId: 'variantsEmpty',
+    addButtonId: 'addVariantBtn',
+    templateId: 'variantRowTemplate',
+    optionsContainerId: 'productOptionsContainer',
+    generateButtonId: 'generateVariantsBtn',
+    baseSkuInputId: 'sku',
+  });
+});
