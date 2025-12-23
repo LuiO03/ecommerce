@@ -523,6 +523,18 @@ class FormValidator {
                         ? previewContainer.querySelectorAll('.preview-item').length
                         : 0;
 
+                    // Si aún no hay previews en el DOM pero sí hay archivos
+                    // seleccionados (FileList con longitud > 0), asumimos que
+                    // la galería es válida. Esto evita falsos negativos justo
+                    // en el momento en que gallery-manager reconstruye la
+                    // FileList antes de que los <div.preview-item> se monten.
+                    if (totalItems === 0 && files && files.length > 0) {
+                        return { valid: true };
+                    }
+
+                    // Caso normal: en vistas de edición o cuando el DOM ya
+                    // fue actualizado, se valida contra el total de previews
+                    // (existentes + nuevas).
                     return {
                         valid: totalItems > 0,
                         message: 'Debe subir al menos una imagen'

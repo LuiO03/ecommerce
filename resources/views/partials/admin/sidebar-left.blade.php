@@ -172,7 +172,7 @@
                     </li>
                     <li>
                         <a href="{{ route('admin.products.index') }}"
-                            class="sidebar-sublink {{ request()->routeIs('admin.products.index') ? 'active' : '' }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
                             data-tooltip="Productos">
                             <i class="ri-box-3-line sidebar-icon"></i>
                             <span>Productos</span>
