@@ -96,8 +96,8 @@
                 <table class="modal-show-table">
                     <thead>
                         <tr>
-                            <th>SKU</th>
                             <th>Variante</th>
+                            <th>SKU</th>
                             <th>Precio</th>
                             <th>Stock</th>
                             <th>Estado</th>
@@ -433,7 +433,6 @@
                 return;
             }
             const rows = variants.map(variant => {
-                const sku = escapeHtml(variant.sku ?? '—');
                 // Mostrar las opciones/atributos de la variante
                 let optionsLabel = '';
                 if (Array.isArray(variant.features) && variant.features.length > 0) {
@@ -444,14 +443,15 @@
                 } else {
                     optionsLabel = '—';
                 }
+                const sku = escapeHtml(variant.sku ?? '—');
                 const price = Number(variant.price ?? 0).toFixed(2);
                 const stock = escapeHtml(String(variant.stock ?? 0));
                 const status = variant.status ?
-                    '<span class="badge badge-success">Activo</span>' :
-                    '<span class="badge badge-danger">Inactivo</span>';
+                    '<span class="badge boton-success"><i class="ri-checkbox-circle-fill"></i> Activo</span>' :
+                    '<span class="badge boton-danger"><i class="ri-close-circle-fill"></i> Inactivo</span>';
                 return `<tr>
-                    <td>${sku}</td>
                     <td>${optionsLabel}</td>
+                    <td>${sku}</td>
                     <td>S/. ${price}</td>
                     <td>${stock}</td>
                     <td>${status}</td>
@@ -489,14 +489,14 @@
             }
 
             $('#product-price').html(`
-				<span class="badge badge-success-light">
+				<span class="badge badge-success">
 					S/. ${Number(data.price ?? 0).toFixed(2)}
 				</span>
 			`);
 
             if (data.discount && Number(data.discount) > 0) {
                 $('#product-discount').html(`
-					<span class="badge badge-warning-light">
+					<span class="badge badge-warning">
 						<i class="ri-discount-percent-line"></i>
 						${Number(data.discount).toFixed(2)}
 					</span>
@@ -518,10 +518,10 @@
                     const variantStock = escapeHtml(String(variant.stock ?? 0));
                     return `
 						<li>
-							<span class="badge badge-secondary-light">
+							<span class="badge badge-secondary">
 								<i class="ri-hashtag"></i> ${variantSku}
 							</span>
-							<span class="badge badge-success-light">
+							<span class="badge badge-success">
 								<i class="ri-currency-line"></i> ${variantPrice}
 							</span>
 							<span class="badge badge-gray">

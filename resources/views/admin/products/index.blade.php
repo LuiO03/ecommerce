@@ -208,7 +208,7 @@
 								@php
 									$stockTotal = (int) ($product->variants_stock_sum ?? 0);
 									$minStock = method_exists($product, 'getMinStock') ? $product->getMinStock() : (property_exists($product, 'min_stock') ? ($product->min_stock ?? config('products.min_stock', 10)) : config('products.min_stock', 10));
-									$stockBadgeClass = $stockTotal < $minStock ? 'badge-danger' : 'badge-secondary';
+									$stockBadgeClass = $stockTotal < $minStock ? 'badge-danger' : 'badge-success';
 								@endphp
 								<span class="badge {{ $stockBadgeClass }}">
 									<i class="ri-stack-line"></i>
