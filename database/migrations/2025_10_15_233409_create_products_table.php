@@ -21,6 +21,9 @@ return new class extends Migration
             $table->decimal('price', 10, 2)->default(0);
             $table->decimal('discount', 10, 2)->nullable();
 
+            // Stock mínimo por producto (nullable, usa config si es null)
+            $table->unsignedInteger('min_stock')->nullable()->comment('Stock mínimo para alerta, si es null usa config');
+
             // Estado (activo/inactivo)
             $table->boolean('status')->default(true);
 

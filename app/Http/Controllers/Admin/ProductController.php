@@ -142,13 +142,24 @@ class ProductController extends Controller
             ] : null,
             'price' => $product->price,
             'discount' => $product->discount,
-            'variants' => $product->variants->map(fn ($variant) => [
-                'id' => $variant->id,
-                'sku' => $variant->sku,
-                'price' => $variant->price,
-                'stock' => $variant->stock,
-                'status' => $variant->status,
-            ]),
+            'variants' => $product->variants->map(function ($variant) {
+                // Cargar features y opción asociada
+                $features = $variant->features()->with('option')->get()->map(function ($feature) {
+                    return [
+                        'option_name' => $feature->option?->name ?? '',
+                        'description' => $feature->description,
+                        'value' => $feature->value,
+                    ];
+                })->values();
+                return [
+                    'id' => $variant->id,
+                    'sku' => $variant->sku,
+                    'price' => $variant->price,
+                    'stock' => $variant->stock,
+                    'status' => $variant->status,
+                    'features' => $features,
+                ];
+            }),
             'images' => $gallery,
             'created_by_name' => $product->creator
                 ? trim($product->creator->name . ' ' . ($product->creator->last_name ?? ''))

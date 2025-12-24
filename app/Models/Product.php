@@ -16,12 +16,20 @@ class Product extends Model
         'description',
         'price',
         'discount',
+        'min_stock',
         'status',
         'category_id',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
+    /**
+     * Devuelve el stock mínimo para alerta (campo o config)
+     */
+    public function getMinStock(): int
+    {
+        return $this->min_stock ?? config('products.min_stock', 10);
+    }
 
     // 🔹 Relación con categoría
     public function category()

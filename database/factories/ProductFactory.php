@@ -151,10 +151,14 @@ class ProductFactory extends Factory
 
         $segments = collect($features)
             ->map(function (Feature $feature) {
-                $raw = $feature->description ?: $feature->value;
+                $option = $feature->option;
+                if ($option && method_exists($option, 'isColor') && $option->isColor()) {
+                    $raw = $feature->description;
+                } else {
+                    $raw = $feature->value;
+                }
                 $slug = Str::slug($raw ?? '', '-');
                 $slug = strtoupper($slug);
-
                 return $slug !== '' ? $slug : null;
             })
             ->filter()

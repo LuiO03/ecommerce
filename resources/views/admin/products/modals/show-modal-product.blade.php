@@ -44,10 +44,6 @@
                         <td id="product-status">—</td>
                     </tr>
                     <tr>
-                        <th>Variantes</th>
-                        <td id="product-variants">—</td>
-                    </tr>
-                    <tr>
                         <th>Creado por</th>
                         <td id="product-created-by">—</td>
                     </tr>
@@ -96,7 +92,22 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-gallery" id="product-gallery"></div>
+            <div class="modal-variants-table" id="product-variants-table-container">
+                <table class="modal-show-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Variante</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-variants-table-body">
+                        <tr><td colspan="5" class="text-center text-muted">Cargando variantes...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="modal-show-footer">
@@ -413,39 +424,40 @@
             });
         }
 
-        function renderProductGallery(images) {
-            const $gallery = $('#product-gallery');
 
-            if (!images.length) {
-                $gallery.html(
-                    '<p class="label-hint"><i class="ri-information-line"></i> No se registraron imágenes para este producto.</p>'
-                    );
+        // Renderiza la tabla de variantes en el modal
+        function renderProductVariantsTable(variants) {
+            const $tbody = $('#product-variants-table-body');
+            if (!Array.isArray(variants) || variants.length === 0) {
+                $tbody.html('<tr><td colspan="5" class="text-center text-muted">Sin variantes</td></tr>');
                 return;
             }
-
-            const cards = images.map((image, index) => {
-                const orderLabel = typeof image.order === 'number' ? image.order : index + 1;
-                const altAttr = escapeHtml(image.alt ?? 'Imagen del producto');
-                const altLabel = image.alt ? `<p class="gallery-card-alt">${escapeHtml(image.alt)}</p>` : '';
-                const mainBadge = image.is_main ?
-                    '<span class="badge badge-warning-light"><i class="ri-star-smile-fill"></i> Principal</span>' :
-                    '';
-
-                return `
-					<article class="modal-gallery-card">
-						<div class="gallery-card-image">
-							<img src="${image.url}" alt="${altAttr}">
-						</div>
-						<div class="gallery-card-meta">
-							<span class="badge badge-secondary-light">#${orderLabel}</span>
-							${mainBadge}
-						</div>
-						${altLabel}
-					</article>
-				`;
+            const rows = variants.map(variant => {
+                const sku = escapeHtml(variant.sku ?? '—');
+                // Mostrar las opciones/atributos de la variante
+                let optionsLabel = '';
+                if (Array.isArray(variant.features) && variant.features.length > 0) {
+                    optionsLabel = variant.features.map(f => {
+                        // Mostrar solo el value
+                        return escapeHtml(f.value || '');
+                    }).join(' / ');
+                } else {
+                    optionsLabel = '—';
+                }
+                const price = Number(variant.price ?? 0).toFixed(2);
+                const stock = escapeHtml(String(variant.stock ?? 0));
+                const status = variant.status ?
+                    '<span class="badge badge-success">Activo</span>' :
+                    '<span class="badge badge-danger">Inactivo</span>';
+                return `<tr>
+                    <td>${sku}</td>
+                    <td>${optionsLabel}</td>
+                    <td>S/. ${price}</td>
+                    <td>${stock}</td>
+                    <td>${status}</td>
+                </tr>`;
             }).join('');
-
-            $gallery.html(`<div class="modal-gallery-grid">${cards}</div>`);
+            $tbody.html(rows);
         }
 
         function renderProductModal(data) {
@@ -541,42 +553,13 @@
 
             const rawImages = Array.isArray(data.images) ? data.images : [];
 
-            loadValidImages(rawImages)
-                .then((validImages) => {
-                    if (currentProductModalSlug !== (data.slug ?? null)) {
-                        return;
-                    }
+            // Inicializar el slider de imágenes si hay imágenes
+            loadValidImages(rawImages).then(images => {
+                initializeProductSlider(images, safeName);
+            });
 
-                    const sourceImages = validImages.length ?
-                        validImages :
-                        rawImages.filter((image) => image && image.url);
-
-                    const sortedImages = [...sourceImages].sort((a, b) => {
-                        if (a.is_main && !b.is_main) {
-                            return -1;
-                        }
-                        if (!a.is_main && b.is_main) {
-                            return 1;
-                        }
-                        const orderA = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER;
-                        const orderB = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER;
-                        return orderA - orderB;
-                    });
-
-                    initializeProductSlider(sortedImages, data.name);
-                    renderProductGallery(sortedImages);
-                })
-                .catch(() => {
-                    if (currentProductModalSlug !== (data.slug ?? null)) {
-                        return;
-                    }
-                    destroyProductSlider();
-                    $('#product-image-placeholder').removeClass('hidden').html(
-                        '<i class="ri-error-warning-line"></i> Error al cargar la galería');
-                    $('#product-gallery').html(
-                        '<p class="label-hint"><i class="ri-error-warning-line"></i> No se pudieron renderizar las imágenes.</p>'
-                        );
-                });
+            // Renderizar tabla de variantes en vez de galería
+            renderProductVariantsTable(Array.isArray(data.variants) ? data.variants : []);
 
             $('#modalProductEditBtn').attr('href', `/admin/products/${data.slug}/edit`);
             $('#modalDeleteForm').attr('action', `/admin/products/${data.slug}`);

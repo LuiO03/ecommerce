@@ -153,7 +153,6 @@
 						<th class="column-discount-th">Desc.</th>
 						<th class="column-variants-th">Variantes</th>
 						<th class="column-stock-th">Stock</th>
-						<th class="column-images-th">Imágenes</th>
 						<th class="column-status-th">Estado</th>
 						<th class="column-date-th">Creado</th>
 						<th class="column-actions-th column-not-order">Acciones</th>
@@ -175,13 +174,11 @@
 								</div>
 							</td>
 							<td class="column-sku-td">
-								<span class="badge badge-gray">{{ $product->sku }}</span>
+								<span>{{ $product->sku }}</span>
 							</td>
 							<td class="column-category-td" data-category-id="{{ $product->category_id ?? '' }}">
 								@if($product->category)
-									<span class="badge badge-info">
 										{{ $product->category->name }}
-									</span>
 								@else
 									<span class="badge badge-gray">
 										<i class="ri-folder-unknow-line"></i>
@@ -190,9 +187,7 @@
 								@endif
 							</td>
 							<td class="column-price-td">
-								<span class="badge">
-									{{ number_format($product->price, 2) }}
-								</span>
+								<span>{{ number_format($product->price, 2) }}</span>
 							</td>
 							<td class="column-discount-td">
 								@if(!is_null($product->discount) && (float) $product->discount > 0)
@@ -212,17 +207,12 @@
 							<td class="column-stock-td">
 								@php
 									$stockTotal = (int) ($product->variants_stock_sum ?? 0);
-									$stockBadgeClass = $stockTotal < 10 ? 'badge-danger' : 'badge-secondary';
+									$minStock = method_exists($product, 'getMinStock') ? $product->getMinStock() : (property_exists($product, 'min_stock') ? ($product->min_stock ?? config('products.min_stock', 10)) : config('products.min_stock', 10));
+									$stockBadgeClass = $stockTotal < $minStock ? 'badge-danger' : 'badge-secondary';
 								@endphp
 								<span class="badge {{ $stockBadgeClass }}">
 									<i class="ri-stack-line"></i>
 									{{ $stockTotal }}
-								</span>
-							</td>
-							<td class="column-images-td">
-								<span class="badge badge-secondary">
-									<i class="ri-image-line"></i>
-									{{ $product->images_count }}
 								</span>
 							</td>
 							<td class="column-status-td">

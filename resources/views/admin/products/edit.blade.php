@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-            <div class="form-row-fit">
+            <div class="form-row-fill">
                 <div class="input-group">
                     <label for="price" class="label-form">
                         Precio (S/)
@@ -135,6 +135,16 @@
                         <input type="number" name="discount" id="discount" class="input-form" min="0"
                             step="0.01" value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
                             data-validate="minValue:0">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="min_stock" class="label-form">
+                        Stock mínimo
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-stack-line input-icon"></i>
+                        <input type="number" name="min_stock" id="min_stock" class="input-form" min="0"
+                            step="1" value="{{ old('min_stock', $product->min_stock) }}" placeholder="Ej. 10" data-validate="minValue:0">
                     </div>
                 </div>
             </div>
