@@ -130,17 +130,22 @@ User:  user@ecommerce.com / password
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
+
+## 🏗️ Arquitectura y Relaciones del Catálogo
 
 ```
-┌─────────────┐
-│   Family    │  Nivel 1: Familias (ej: "Electrónica", "Ropa")
-       ▼
-       ▼
-┌─────────────┐
-│   Variant   │  Nivel 4: Variantes (con Features)
-└─────────────┘
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│   Family    │───▶ │ Category    │───▶ │ Product     │───▶ │ Variant     │
+└─────────────┘      └─────────────┘      └─────────────┘      └─────────────┘
+                            │                    │
+                            │                    │
+                            ▼                    ▼
+                        Option (↔ value)      Feature (↔ Option)
 ```
+
+- **Opciones**: Asociadas a productos, cada producto puede tener valores personalizados para cada opción.
+- **Variantes**: Cada variante puede tener múltiples características (`Feature`), y cada característica puede estar asociada a una opción (ej: color, talla).
+- **Auditoría**: Todos los modelos principales incluyen campos de auditoría y soft deletes.
 
 ### Estructura de Directorios
 
@@ -283,6 +288,7 @@ handleMultipleDelete({
 - **[Multiple Delete Global](docs/multiple-delete-global.md)** - Sistema de eliminación múltiple reutilizable
 - **[Quick Status Toggle](docs/quick-status-toggle.md)** - Toggle de estado instantáneo sin modales
 - **[Copilot Instructions](.github/copilot-instructions.md)** - Guía completa para agentes de IA
+- **Opciones y valores**: ver modelos [Option](app/Models/Option.php), [Feature](app/Models/Feature.php), [Variant](app/Models/Variant.php), migraciones y relaciones en productos y variantes.
 
 ---
 

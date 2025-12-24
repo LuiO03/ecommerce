@@ -174,6 +174,16 @@ class DataTableManager {
             });
         }
 
+        // --- Persistencia de página en localStorage ---
+        const storageKey = `datatable_page_${this.config.moduleName}`;
+        let initialPage = 0;
+        try {
+            const savedPage = localStorage.getItem(storageKey);
+            if (savedPage !== null && !isNaN(Number(savedPage))) {
+                initialPage = Number(savedPage);
+            }
+        } catch (e) {}
+
         this.table = new DataTable(this.tableSelector, {
             paging: true,
             info: true,
@@ -201,6 +211,7 @@ class DataTableManager {
             },
             scrollCollapse: false,
             scroller: false,
+            displayStart: initialPage * (this.config.pageLength || 10),
             initComplete: () => {
                 this.$table.addClass('ready');
                 this.updateOrderIcons();
@@ -213,6 +224,14 @@ class DataTableManager {
                     this.animateRows();
                 }, 50);
             }
+        });
+
+        // Guardar página en localStorage al cambiar
+        this.table.on('page', () => {
+            try {
+                const page = this.table.page();
+                localStorage.setItem(storageKey, page);
+            } catch (e) {}
         });
 
         // Eventos de redibujado

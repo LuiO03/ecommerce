@@ -83,6 +83,7 @@
 					</div>
 				</div>
 
+
 				<div class="tabla-select-wrapper">
 					<div class="selector">
 						<select id="categoryFilter">
@@ -93,6 +94,13 @@
 						</select>
 						<i class="ri-archive-stack-line selector-icon"></i>
 					</div>
+				</div>
+
+				<div class="tabla-select-wrapper" id="minStockFilterWrapper">
+					<button type="button" id="minStockFilterBtn" class="" title="Mostrar solo productos con stock bajo el mínimo">
+						<i class="ri-alert-line" style="font-size:18px;"></i>
+						<span>Stock bajo</span>
+					</button>
 				</div>
 
 				<button type="button" id="clearFiltersBtn" class="boton-clear-filters">
@@ -290,30 +298,62 @@
 
 				let currentCategoryFilter = '';
 
+
+				let minStockFilterActive = false;
+
 				$.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
 					if (settings.nTable.id !== 'tabla') return true;
 
-					if (!currentCategoryFilter) {
-						return true;
+					// Filtro por categoría
+					if (currentCategoryFilter) {
+						const row = tableManager.table.row(dataIndex).node();
+						const rowCategoryId = $(row).find('.column-category-td').attr('data-category-id') || '';
+						if (rowCategoryId !== currentCategoryFilter) {
+							return false;
+						}
 					}
 
-					const row = tableManager.table.row(dataIndex).node();
-					const rowCategoryId = $(row).find('.column-category-td').attr('data-category-id') || '';
+					// Filtro por stock bajo mínimo
+					if (minStockFilterActive) {
+						const row = tableManager.table.row(dataIndex).node();
+						const badge = $(row).find('.column-stock-td .badge');
+						// badge-danger indica stock bajo mínimo
+						if (!badge.hasClass('badge-danger')) {
+							return false;
+						}
+					}
 
-					return rowCategoryId === currentCategoryFilter;
+					return true;
 				});
 
 				$('#categoryFilter').on('change', function() {
 					currentCategoryFilter = this.value;
 					tableManager.table.draw();
 					tableManager.checkFiltersActive();
-
 					console.log(`🔍 Filtro categoría: ${currentCategoryFilter || 'Todas'}`);
+				});
+
+				// Botón visual para stock bajo mínimo
+				$('#minStockFilterBtn').on('click', function() {
+					minStockFilterActive = !minStockFilterActive;
+					$(this).toggleClass('boton-danger', minStockFilterActive);
+					$(this).toggleClass('boton-danger-light', !minStockFilterActive);
+					$('#minStockFilterWrapper').toggleClass('filter-active', minStockFilterActive);
+					tableManager.table.draw();
+					tableManager.checkFiltersActive();
+					if (minStockFilterActive) {
+						$(this).attr('title', 'Ver todos los productos');
+					} else {
+						$(this).attr('title', 'Mostrar solo productos con stock bajo el mínimo');
+					}
 				});
 
 				$('#clearFiltersBtn').on('click', function() {
 					currentCategoryFilter = '';
 					$('#categoryFilter').val('');
+					minStockFilterActive = false;
+					$('#minStockFilterBtn').removeClass('boton-danger').addClass('boton-danger-light').attr('title', 'Mostrar solo productos con stock bajo el mínimo');
+					$('#minStockFilterWrapper').removeClass('filter-active');
 					tableManager.table.draw();
 					tableManager.checkFiltersActive();
 				});

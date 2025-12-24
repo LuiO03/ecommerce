@@ -1,4 +1,53 @@
 /* =======================================================
+   🚨 BOTÓN FILTRO STOCK MÍNIMO (ESTILO OUTLINE PINK)
+======================================================= */
+#minStockFilterBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid #e64980;
+    border-radius: var(--radius-input);
+    color: #e64980;
+    font-size: 13px;
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    padding: 6px 16px;
+    box-shadow: none;
+}
+
+#minStockFilterBtn:hover, #minStockFilterBtn:focus {
+    background: #e64980;
+    color: #fff;
+    border-color: #e64980;
+    box-shadow: 0 0 10px #e6498033;
+}
+
+#minStockFilterBtn.boton-danger {
+    background: #e64980;
+    color: #fff;
+    border-color: #e64980;
+    box-shadow: 0 0 0 2px #e6498033;
+}
+
+#minStockFilterWrapper.filter-active #minStockFilterBtn {
+    background: #e64980;
+    color: #fff;
+    border-color: #e64980;
+    box-shadow: 0 0 0 2px #e6498033;
+}
+
+@media (max-width: 768px) {
+    #minStockFilterBtn {
+        font-size: 12px;
+        padding: 6px 8px;
+    }
+}
+/* =======================================================
    📦 CONTENEDOR PRINCIPAL
 ======================================================= */
 .actions-container {
@@ -710,6 +759,10 @@ input[type="checkbox"]:indeterminate {
 .tabla-general tbody tr.row-selected td {
     transition: border-color 0.3s ease;
     border-color: var(--color-inverse);
+}
+
+.tabla-general tbody tr.row-selected .badge{
+    color: var(--color-text);
 }
 
 /* Fila resaltada temporalmente */

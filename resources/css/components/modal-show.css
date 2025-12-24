@@ -310,7 +310,7 @@
     font-weight: bold;
     border: 5px dashed var(--color-border);
     gap: 5px;
-    padding: 0 16px;
+    padding: 0px;
 }
 
 .modal-img-placeholder i, .modal-foto-placeholder i {
