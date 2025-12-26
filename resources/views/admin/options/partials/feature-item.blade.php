@@ -24,24 +24,30 @@
 
     <div class="form-row-fit">
         <div class="option-feature-value-row">
-            <div class="input-group">
-                <label for="value" class="label-form">Nombre del Valor</label>
-                <div class="input-icon-container option-feature-value">
-                    <i class="ri-artboard-2-line input-icon"></i>
-                    <input type="text"
-                           class="input-form"
-                           name="features[{{ $index }}][value]"
-                           placeholder="Valor (obligatorio)"
-                           value="{{ $value }}"
-                           data-role="feature-value"
-                           required>
+            @if ($isColor)
+                <div class="input-group">
+                    <label class="label-form" for="features-{{ $index }}-value">Color</label>
+                    <div class="input-icon-container option-feature-value" data-role="color-wrapper">
+                        <input type="color" class="option-feature-color-picker" value="{{ $colorHex }}" data-role="color-input"
+                            aria-label="Seleccionar color" {{ $isColor ? '' : 'disabled' }}>
+                        <span class="option-feature-color-hex" data-role="color-hex">{{ $isColor ? $colorHex : '' }}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="option-feature-color{{ $isColor ? '' : ' is-hidden' }}" data-role="color-wrapper">
-                <input type="color" class="option-feature-color-picker" value="{{ $colorHex }}" data-role="color-input"
-                       aria-label="Seleccionar color" {{ $isColor ? '' : 'disabled' }}>
-                <span class="option-feature-color-hex" data-role="color-hex">{{ $isColor ? $colorHex : '' }}</span>
-            </div>
+            @else
+                <div class="input-group">
+                    <label for="value" class="label-form">Nombre del Valor</label>
+                    <div class="input-icon-container option-feature-value">
+                        <i class="ri-artboard-2-line input-icon"></i>
+                        <input type="text"
+                            class="input-form"
+                            name="features[{{ $index }}][value]"
+                            placeholder="Valor (obligatorio)"
+                            value="{{ $value }}"
+                            data-role="feature-value"
+                            required>
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="input-group">
             <label for="description" class="label-form label-textarea">Descripción</label>

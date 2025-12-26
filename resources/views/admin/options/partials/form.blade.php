@@ -108,32 +108,37 @@
     </div>
 </div>
 
-<section class="option-features-panel">
-    <header class="option-features-header">
-        <div>
-            <h3>Valores disponibles</h3>
-            <p>Define los valores que estarán disponibles al configurar productos.</p>
-        </div>
-        <button type="button" class="boton-form boton-primary" id="addFeatureBtn">
-            <span class="boton-form-icon"><i class="ri-add-circle-fill"></i></span>
-            <span class="boton-form-text">Añadir valor</span>
-        </button>
-    </header>
+<div class="form-body">
+    <div class="option-features-panel">
+        <header class="option-features-header">
+            <div class="card-header">
+                <span class="card-title">Valores disponibles</span>
+                <p class="card-description">
+                    Define los valores que estarán disponibles al configurar productos.
+                </p>
+            </div>
+            <button type="button" class="boton-form boton-primary" id="addFeatureBtn">
+                <span class="boton-form-icon"><i class="ri-add-circle-fill"></i></span>
+                <span class="boton-form-text">Añadir valor</span>
+            </button>
+        </header>
 
         <div class="option-features-list"
-            id="featureList"
-            data-is-color="{{ $isColorOption ? 'true' : 'false' }}"
-            data-color-slug="{{ Option::COLOR_SLUG }}"
-            data-color-locked="{{ ($optionInstance?->slug === Option::COLOR_SLUG) ? 'true' : 'false' }}">
-        @foreach ($featuresDataset as $index => $feature)
-            @include('admin.options.partials.feature-item', [
-                'index' => $index,
-                'feature' => $feature,
-                'isColorOption' => $isColorOption,
-            ])
-        @endforeach
+                id="featureList"
+                data-is-color="{{ $isColorOption ? 'true' : 'false' }}"
+                data-color-slug="{{ Option::COLOR_SLUG }}"
+                data-color-locked="{{ ($optionInstance?->slug === Option::COLOR_SLUG) ? 'true' : 'false' }}">
+            @foreach ($featuresDataset as $index => $feature)
+                @include('admin.options.partials.feature-item', [
+                    'index' => $index,
+                    'feature' => $feature,
+                    'isColorOption' => $isColorOption,
+                ])
+            @endforeach
+        </div>
     </div>
-</section>
+</div>
+
 
 <script type="text/template" id="featureRowTemplate">
     @include('admin.options.partials.feature-template', ['isColorTemplate' => $isColorOption])

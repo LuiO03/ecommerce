@@ -24,7 +24,7 @@
     padding: 1.4rem;
     border: 1px solid var(--color-border);
     border-radius: 1.1rem;
-    background: var(--color-card-bg);
+    background: var(--color-sidebar-bg);
     box-shadow: var(--shadow-material-soft);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -316,14 +316,13 @@
 .option-features-panel {
     display: flex;
     flex-direction: column;
-    gap: 1.1rem;
+    gap: 1rem;
 }
 
 .option-features-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 1rem;
 }
 
 .option-features-header h3 {
