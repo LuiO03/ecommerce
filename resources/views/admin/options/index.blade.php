@@ -102,10 +102,9 @@
                                             <label class="label-form"
                                                 for="feature-value-{{ $option->id }}">Color</label>
                                             <div class="feature-field feature-field-color">
-                                                <input type="color" id="feature-color-{{ $option->id }}"
-                                                    data-role="feature-color" name="feature_color" value="#000000">
-                                                <span class="feature-color-hex"
-                                                    data-role="feature-color-hex">#000000</span>
+                                                <input type="color" id="feature-color-{{ $option->id}}"
+                                                    data-role="feature-color" name="feature_color" placeholder="Seleccionar color">
+                                                <input type="text" placeholder="Ingrese un color">
                                             </div>
                                         </div>
                                     @else

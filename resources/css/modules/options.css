@@ -200,12 +200,11 @@
 }
 
 .feature-field-color {
-    display: none;
     align-items: center;
     gap: 0.4rem;
     padding: 8px 12px;
     border-radius: var(--radius-input);
-    border: 2px dashed var(--color-input-border);
+    border: 2px solid var(--color-input-border);
     background: var(--color-input-bg);
 }
 
@@ -216,10 +215,24 @@
 .feature-field-color input[type="color"] {
     border: none;
     width: 28px;
-    height: 30px;
+    height: 26px;
     padding: 0;
     background: transparent;
     cursor: pointer;
+}
+
+.input-group .feature-field-color input[type="text"] {
+    border: none;
+    padding: 8px 4px;
+    height: 20px !important;
+    font-size: var(--font-size-xs);
+    color: var(--color-text);
+}
+
+.input-group .feature-field-color input[type="text"]:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
 }
 
 .feature-color-hex {

@@ -27,10 +27,10 @@
             @if ($isColor)
                 <div class="input-group">
                     <label class="label-form" for="features-{{ $index }}-value">Color</label>
-                    <div class="input-icon-container option-feature-value" data-role="color-wrapper">
+                    <div class="feature-field feature-field-color">
                         <input type="color" class="option-feature-color-picker" value="{{ $colorHex }}" data-role="color-input"
                             aria-label="Seleccionar color" {{ $isColor ? '' : 'disabled' }}>
-                        <span class="option-feature-color-hex" data-role="color-hex">{{ $isColor ? $colorHex : '' }}</span>
+                        <span class="feature-color-hex" data-role="color-hex">{{ $isColor ? $colorHex : '' }}</span>
                     </div>
                 </div>
             @else
