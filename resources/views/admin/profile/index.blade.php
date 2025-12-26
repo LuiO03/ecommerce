@@ -25,8 +25,9 @@
                     </div>
                 @endif
                 <!-- Botón flotante para cambiar imagen -->
-                <button id="editAvatarBtn" type="button" class="boton-form boton-accent avatar-edit-btn">
+                <button id="editAvatarBtn" type="button" class="boton-form boton-accent avatar-edit-btn" title="Cambiar foto de perfil">
                     <i class="ri-image-edit-fill avatar-edit-icon"></i>
+                    <span class="boton-form-text">Cambiar foto</span>
                 </button>
             </div>
 

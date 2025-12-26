@@ -1,15 +1,15 @@
 /* =======================================================
    🚨 BOTÓN FILTRO STOCK MÍNIMO (ESTILO OUTLINE PINK)
 ======================================================= */
-#minStockFilterBtn {
+#minStockFilterWrapper #minStockFilterBtn {
     display: flex;
     align-items: center;
     gap: 6px;
     justify-content: center;
     background: transparent;
-    border: 2px solid #e64980;
+    border: 2px solid var(--color-danger);
     border-radius: var(--radius-input);
-    color: #e64980;
+    color: var(--color-danger);
     font-size: 13px;
     font-family: var(--font-secondary);
     font-weight: bold;
@@ -17,28 +17,24 @@
     transition: all 0.3s ease;
     white-space: nowrap;
     padding: 6px 16px;
+    width: 100%;
     box-shadow: none;
 }
 
-#minStockFilterBtn:hover, #minStockFilterBtn:focus {
-    background: #e64980;
-    color: #fff;
-    border-color: #e64980;
-    box-shadow: 0 0 10px #e6498033;
-}
-
-#minStockFilterBtn.boton-danger {
-    background: #e64980;
-    color: #fff;
-    border-color: #e64980;
-    box-shadow: 0 0 0 2px #e6498033;
+#minStockFilterWrapper #minStockFilterBtn:hover {
+    background: var(--color-danger);
+    color: white;
+    border-color: var(--color-danger);
 }
 
 #minStockFilterWrapper.filter-active #minStockFilterBtn {
-    background: #e64980;
-    color: #fff;
-    border-color: #e64980;
-    box-shadow: 0 0 0 2px #e6498033;
+    background: var(--color-danger);
+    color: white;
+    border-color: var(--color-danger);
+}
+
+#minStockFilterWrapper.filter-active #minStockFilterBtn i {
+    color: white;
 }
 
 @media (max-width: 768px) {
@@ -767,13 +763,18 @@ input[type="checkbox"]:indeterminate {
 
 /* Fila resaltada temporalmente */
 .tabla-general tbody tr.row-highlight {
-    background-color: var(--color-danger-pastel) !important;
-    color: var(--color-danger);
+    background-color: var(--color-success-pastel) !important;
+    color: var(--color-text);
+    border: 2px solid var(--color-success) !important;
     animation: highlightFade 3s ease-in-out forwards;
 }
 
 .tabla-general tbody tr.row-highlight td {
     background-color: transparent;
+}
+
+.tabla-general tbody tr.row-highlight .badge{
+    color: var(--color-text);
 }
 
 /* Estilo del borde activo */
@@ -813,7 +814,6 @@ input[type="checkbox"]:indeterminate {
     color: var(--color-muted);
     font-style: italic;
     width: fit-content;
-    font-size: 12px !important;
 }
 
 /* =======================================================
@@ -1168,6 +1168,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         background-color: var(--color-card-bg);
         gap: 5px;
         padding: 15px;
+        transition: border 0.3s ease;
     }
 
     .tabla-general tbody tr.row-selected,

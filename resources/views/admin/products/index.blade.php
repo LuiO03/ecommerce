@@ -336,8 +336,6 @@
 				// Botón visual para stock bajo mínimo
 				$('#minStockFilterBtn').on('click', function() {
 					minStockFilterActive = !minStockFilterActive;
-					$(this).toggleClass('boton-danger', minStockFilterActive);
-					$(this).toggleClass('boton-danger-light', !minStockFilterActive);
 					$('#minStockFilterWrapper').toggleClass('filter-active', minStockFilterActive);
 					tableManager.table.draw();
 					tableManager.checkFiltersActive();
@@ -346,16 +344,6 @@
 					} else {
 						$(this).attr('title', 'Mostrar solo productos con stock bajo el mínimo');
 					}
-				});
-
-				$('#clearFiltersBtn').on('click', function() {
-					currentCategoryFilter = '';
-					$('#categoryFilter').val('');
-					minStockFilterActive = false;
-					$('#minStockFilterBtn').removeClass('boton-danger').addClass('boton-danger-light').attr('title', 'Mostrar solo productos con stock bajo el mínimo');
-					$('#minStockFilterWrapper').removeClass('filter-active');
-					tableManager.table.draw();
-					tableManager.checkFiltersActive();
 				});
 
 				@if (Session::has('highlightRow'))

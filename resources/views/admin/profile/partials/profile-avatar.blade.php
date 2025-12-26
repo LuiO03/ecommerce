@@ -45,7 +45,7 @@
                     <span class="boton-form-text">Subir imagen</span>
                 </button>
                 <hr class="w-full my-0 border-default">
-                <button type="submit" class="boton-form boton-accent">
+                <button type="submit" class="boton-form boton-accent" id="submitAvatarBtn">
                     <span class="boton-form-icon"><i class="ri-save-3-fill"></i></span>
                     <span class="boton-form-text">Guardar foto</span>
                 </button>
@@ -72,6 +72,19 @@
     </div>
 </div>
 
+@push('scripts')
+    @vite('resources/js/utils/submit-button-loader.js')
+@endpush
+
+<script type="module">
+    import { initSubmitLoader } from '/resources/js/utils/submit-button-loader.js';
+    initSubmitLoader({
+        formId: 'profileImageFormModal',
+        buttonId: 'submitAvatarBtn',
+        loadingText: 'Guardando...',
+        loadingIcon: 'ri-loader-4-line'
+    });
+</script>
 <script>
     // Modal avatar con diseño modal-info
     const avatarModal = document.getElementById('avatarModal');
@@ -135,7 +148,10 @@
         imageInput.click();
     });
     // Botón quitar foto
-    document.getElementById('removeAvatarBtn').addEventListener('click', function() {
-        document.getElementById('removeAvatarForm').submit();
-    });
+    const removeBtn = document.getElementById('removeAvatarBtn');
+    if(removeBtn) {
+        removeBtn.addEventListener('click', function() {
+            document.getElementById('removeAvatarForm').submit();
+        });
+    }
 </script>
