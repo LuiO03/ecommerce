@@ -199,41 +199,17 @@
     align-items: center;
 }
 
-.feature-field-color {
-    align-items: center;
-    gap: 0.4rem;
-    padding: 8px 12px;
-    border-radius: var(--radius-input);
-    border: 2px solid var(--color-input-border);
-    background: var(--color-input-bg);
-}
-
-.option-feature-form.is-color .feature-field-color {
-    display: inline-flex;
-}
-
-.feature-field-color input[type="color"] {
+.input-group input[type="color"] {
     border: none;
     width: 28px;
-    height: 26px;
+    height: 30px;
     padding: 0;
     background: transparent;
     cursor: pointer;
+    position: absolute;
+    transform: translateX(8px) translateY(10px);
 }
 
-.input-group .feature-field-color input[type="text"] {
-    border: none;
-    padding: 8px 4px;
-    height: 20px !important;
-    font-size: var(--font-size-xs);
-    color: var(--color-text);
-}
-
-.input-group .feature-field-color input[type="text"]:focus {
-    outline: none;
-    border: none;
-    box-shadow: none;
-}
 
 .feature-color-hex {
     font-size: var(--font-size-xs);

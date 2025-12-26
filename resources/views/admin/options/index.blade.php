@@ -99,18 +99,23 @@
                                 <div class="option-feature-fields">
                                     @if ($isColorOption)
                                         <div class="input-group">
-                                            <label class="label-form"
-                                                for="feature-value-{{ $option->id }}">Color</label>
-                                            <div class="feature-field feature-field-color">
+                                            <div class="input-icon-container">
                                                 <input type="color" id="feature-color-{{ $option->id}}"
                                                     data-role="feature-color" name="feature_color" placeholder="Seleccionar color">
-                                                <input type="text" placeholder="Ingrese un color">
+                                                <input type="text" data-validate="required|max:7|min:7" placeholder="Ingrese un color">
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-icon-container">
+                                                <i class="ri-align-left input-icon"></i>
+                                                <input type="text" id="feature-description-{{ $option->id }}"
+                                                    data-role="feature-description" name="feature_description"
+                                                    placeholder="Nombre del color" maxlength="255"
+                                                    autocomplete="off" data-validate="required|max:50|min:3" required>
                                             </div>
                                         </div>
                                     @else
                                         <div class="input-group">
-                                            <label class="label-form"
-                                                for="feature-value-{{ $option->id }}">Valor</label>
                                             <div class="input-icon-container">
                                                 <i class="ri-price-tag-3-line input-icon"></i>
                                                 <input type="text" id="feature-value-{{ $option->id }}"
@@ -119,27 +124,23 @@
                                                     data-validate="required|max:120" required>
                                             </div>
                                         </div>
+                                        <div class="input-group">
+                                            <div class="input-icon-container">
+                                                <i class="ri-align-left input-icon"></i>
+                                                <input type="text" id="feature-description-{{ $option->id }}"
+                                                    data-role="feature-description" name="feature_description"
+                                                    placeholder="Descripción (opcional)" maxlength="255"
+                                                    autocomplete="off" data-validate="max:255">
+                                            </div>
+                                        </div>
                                     @endif
 
                                     <div class="input-group">
-                                        <label class="label-form"
-                                            for="feature-description-{{ $option->id }}">Descripción</label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-align-left input-icon"></i>
-                                            <input type="text" id="feature-description-{{ $option->id }}"
-                                                data-role="feature-description" name="feature_description"
-                                                placeholder="Descripción (opcional)" maxlength="255"
-                                                autocomplete="off" data-validate="max:255">
-                                        </div>
-                                    </div>
-                                    <div class="input-group">
-                                        <label class="label-form">Acción</label>
-
-                                    <button type="submit" id="featureSubmit-{{ $option->id }}"
-                                        class="boton boton-success" data-role="feature-submit" title="Agregar valor">
-                                        <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
-                                        <span class="boton-text">Agregar</span>
-                                    </button>
+                                        <button type="submit" id="featureSubmit-{{ $option->id }}"
+                                            class="boton boton-success" data-role="feature-submit" title="Agregar valor">
+                                            <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
+                                            <span class="boton-text">Agregar</span>
+                                        </button>
                                     </div>
                                 </div>
                                 <span class="input-error-message" data-role="feature-feedback" aria-live="polite"
