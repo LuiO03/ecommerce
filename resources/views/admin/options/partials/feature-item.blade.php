@@ -27,12 +27,36 @@
         <div class="input-group">
             <label for="value" class="label-form">Valor del color</label>
             <div class="input-icon-container">
-                <input type="color" id="features-{{ $index }}-value" data-role="feature-color"
-                    name="features[{{ $index }}][color]" placeholder="Seleccionar color" value="{{ $colorHex }}">
+                <i class="ri-palette-line input-icon"></i>
                 <input type="text" id="features-{{ $index }}-value" data-role="feature-value"
-                    name="features[{{ $index }}][value]" maxlength="7" minlength="7" placeholder="#RRGGBB" autocomplete="off"
-                    data-validate="required|max:7|min:7" value="{{ $colorHex }}">
+                    name="features[{{ $index }}][value]" maxlength="7" minlength="7" placeholder="#RRGGBB"
+                    autocomplete="off" data-validate="required|max:7|min:7" value="{{ $colorHex }}" data-coloris>
             </div>
+            <script>
+
+                Coloris({
+                    theme: 'pill',
+                    themeMode: 'auto',
+                    formatToggle: true,
+                    swatches: [
+                        'DarkSlateGray',
+                        '#2a9d8f',
+                        '#e9c46a',
+                        'coral',
+                        'rgb(231, 111, 81)',
+                        'Crimson',
+                        '#023e8a',
+                        '#0077b6',
+                        'hsl(194, 100%, 39%)',
+                        '#00b4d8',
+                        '#48cae4'
+                    ],
+                    onChange: (color, inputEl) => {
+                        console.log(`El color nuevo es ${color}`);
+                    }
+                });
+
+            </script>
         </div>
         <div class="input-group">
             <label for="description" class="label-form label-textarea">Nombre del color</label>
@@ -47,8 +71,9 @@
             <label for="value" class="label-form">Nombre del Valor</label>
             <div class="input-icon-container option-feature-value">
                 <i class="ri-artboard-2-line input-icon"></i>
-                <input type="text" class="input-form" name="features[{{ $index }}][value]" data-validate="required|max:25|min:3"
-                    placeholder="Valor (obligatorio)" value="{{ $value }}" data-role="feature-value" required>
+                <input type="text" class="input-form" name="features[{{ $index }}][value]"
+                    data-validate="required|max:25|min:3" placeholder="Valor (obligatorio)" value="{{ $value }}"
+                    data-role="feature-value" required>
             </div>
         </div>
         <div class="input-group">

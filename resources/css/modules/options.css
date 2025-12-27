@@ -178,7 +178,15 @@
 
 .option-card-footer i {
     margin-right: 0.35rem;
-    color: var(--color-muted-strong);
+    color: var(--color-muted);
+}
+
+.clr-field{
+    width: 100%;
+}
+
+.clr-open-label{
+    cursor: pointer !important;
 }
 
 .option-feature-form {
@@ -197,26 +205,6 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
     gap: 0.5rem;
     align-items: center;
-}
-
-.input-group input[type="color"] {
-    border: none;
-    width: 26px;
-    height: 30px;
-    padding: 0px;
-    background: transparent;
-    cursor: pointer;
-    position: absolute;
-    transform: translateX(10px) translateY(10px);
-}
-
-.input-group input[type="color"]:focus {
-    outline: none;
-    box-shadow:none;
-}
-
-.feature-color-hex {
-    font-size: var(--font-size-xs);
 }
 
 .options-empty {
