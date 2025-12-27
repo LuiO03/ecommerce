@@ -33,7 +33,6 @@
                     autocomplete="off" data-validate="required|max:7|min:7" value="{{ $colorHex }}" data-coloris>
             </div>
             <script>
-
                 Coloris({
                     theme: 'pill',
                     themeMode: 'auto',
@@ -61,9 +60,9 @@
         <div class="input-group">
             <label for="description" class="label-form label-textarea">Nombre del color</label>
             <div class="input-icon-container option-feature-description">
-                <textarea class="textarea-form" name="features[{{ $index }}][description]" rows="2"
-                    placeholder="Nombre del color" data-role="feature-description" data-validate="required|max:50|min:3">{{ $description }}</textarea>
                 <i class="ri-align-left input-icon"></i>
+                <input type="text" class="input-form" placeholder="Nombre del color" name="features[{{ $index }}][description]" data-role="feature-description"
+                    value="{{ $description }}" data-validate="required|max:50|min:3" value="{{ $description }}">
             </div>
         </div>
     @else
