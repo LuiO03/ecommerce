@@ -1,4 +1,4 @@
-import { normalizeColorValue } from './options-feature-form.js';
+import { normalizeColorValue } from './options-form-feature-manager.js';
 import FormValidator from '../utils/form-validator.js';
 import { SubmitButtonLoader } from '../utils/submit-button-loader.js';
 
@@ -22,46 +22,54 @@ function buildEmptyState() {
 }
 
 function buildFeaturePill(feature) {
-    const pill = document.createElement('div');
-    pill.className = 'option-feature-pill';
-    pill.dataset.featureId = feature.id;
-    pill.dataset.deleteUrl = feature.delete_url;
-
-    if (feature.is_color) {
-        pill.classList.add('is-color');
-    }
-
-    if (feature.is_color && feature.value) {
-        const colorPreview = document.createElement('span');
-        colorPreview.className = 'pill-color';
-        colorPreview.style.setProperty('--pill-color', feature.value);
-        pill.appendChild(colorPreview);
-    }
-
-    const valueNode = document.createElement('span');
-    valueNode.className = 'pill-value';
-    valueNode.textContent = feature.value;
-    pill.appendChild(valueNode);
-
-    if (feature.description) {
-        const description = document.createElement('span');
-        description.className = 'pill-description';
-        description.textContent = feature.description;
-        pill.appendChild(description);
-    }
-
-    const removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    removeBtn.className = 'pill-remove';
-    removeBtn.dataset.action = 'feature-remove';
-    removeBtn.setAttribute('aria-label', 'Eliminar valor');
-    removeBtn.innerHTML = '<i class="ri-close-line"></i>';
-    pill.appendChild(removeBtn);
-
-    pill.classList.add('is-new');
-    setTimeout(() => pill.classList.remove('is-new'), 800);
-
-    return pill;
+    // Genera el HTML igual que feature-item.blade.php pero solo para la "píldora" visual
+    const div = document.createElement('div');
+    div.className = 'option-feature-card';
+    div.dataset.featureIndex = '0';
+    div.innerHTML = `
+        <input type="hidden" name="features[0][id]" value="${feature.id}">
+        <div class="option-feature-card-header">
+            <span class="option-feature-chip">
+                <i class="ri-shape-2-line"></i>
+                Valor #<span data-role="feature-number">1</span>
+            </span>
+            <button type="button" class="boton-sm boton-danger option-feature-remove" data-action="remove-feature" title="Eliminar valor">
+                <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
+            </button>
+        </div>
+        ${feature.is_color ? `
+        <div class="input-group">
+            <label class="label-form">Valor del color</label>
+            <div class="input-icon-container">
+                <i class="ri-palette-line input-icon"></i>
+                <input type="text" data-role="feature-value" name="features[0][value]" placeholder="#RRGGBB" style="cursor: pointer" autocomplete="off" data-validate="required|colorCss" value="${feature.value}" data-coloris readonly>
+            </div>
+        </div>
+        <div class="input-group">
+            <label class="label-form label-textarea">Nombre del color</label>
+            <div class="input-icon-container option-feature-description">
+                <i class="ri-align-left input-icon"></i>
+                <input type="text" class="input-form" placeholder="Nombre del color" name="features[0][description]" data-role="feature-description" value="${feature.description || ''}" data-validate="required|max:50|min:3" readonly>
+            </div>
+        </div>
+        ` : `
+        <div class="input-group">
+            <label class="label-form">Nombre del Valor</label>
+            <div class="input-icon-container option-feature-value">
+                <i class="ri-artboard-2-line input-icon"></i>
+                <input type="text" class="input-form" name="features[0][value]" data-validate="required|max:25|min:3" placeholder="Valor (obligatorio)" value="${feature.value}" data-role="feature-value" required readonly>
+            </div>
+        </div>
+        <div class="input-group">
+            <label class="label-form label-textarea">Descripción</label>
+            <div class="input-icon-container option-feature-description">
+                <input type="text" class="input-form" placeholder="Descripción opcional" name="features[0][description]" data-role="feature-description" value="${feature.description || ''}" data-validate="max:50|min:3" readonly>
+                <i class="ri-align-left input-icon"></i>
+            </div>
+        </div>
+        `}
+    `;
+    return div;
 }
 
 function updateCountDisplay(node, count) {
@@ -348,9 +356,26 @@ export function initOptionInlineManager() {
                     emptyState.remove();
                 }
 
+
                 feature.is_color = Boolean(feature.is_color);
-                const pill = buildFeaturePill(feature);
-                featureList.appendChild(pill);
+                // Usar siempre el HTML renderizado por Blade
+                // Se requiere option_id en la respuesta del backend
+                const optionId = feature.option_id || card.dataset.optionId || card.dataset.optionSlug;
+                const renderUrl = `/admin/options/${optionId}/features/${feature.id}/render`;
+                const htmlResp = await fetch(renderUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                if (htmlResp.ok) {
+                    const htmlData = await htmlResp.json();
+                    const temp = document.createElement('div');
+                    temp.innerHTML = htmlData.html;
+                    const featureNode = temp.firstElementChild;
+                    if (featureNode) {
+                        featureList.appendChild(featureNode);
+                        // Inicializar Coloris para inputs nuevos y forzar previsualización
+                        if (window.Coloris) {
+                            window.Coloris({ el: '[data-coloris]' });
+                        }
+                    }
+                }
 
                 resetInputs();
 

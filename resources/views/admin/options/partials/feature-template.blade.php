@@ -6,34 +6,29 @@
             <i class="ri-shape-2-line"></i>
             Valor #<span data-role="feature-number">__NUMBER__</span>
         </span>
-        <button type="button" class="option-feature-remove" data-action="remove-feature" title="Eliminar valor">
-            <i class="ri-delete-bin-6-line"></i>
+        <button type="button" class="boton-sm boton-danger option-feature-remove" data-action="remove-feature" title="Eliminar valor">
+            <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
         </button>
     </div>
     <div class="option-feature-card-body">
-        <div class="option-feature-value-row">
-            <div class="input-icon-container option-feature-value">
-                <i class="ri-price-tag-3-line input-icon"></i>
-                <input type="text"
-                       class="input-form"
-                       name="features[__INDEX__][value]"
-                       placeholder="Valor (obligatorio)"
-                       value="__VALUE__"
-                       data-role="feature-value"
-                       required>
-            </div>
-            <div class="option-feature-color__COLOR_WRAPPER_CLASS__" data-role="color-wrapper">
-                <input type="color" class="option-feature-color-picker" value="__COLOR__" data-role="color-input" aria-label="Seleccionar color" __COLOR_DISABLED__>
-                <span class="option-feature-color-hex" data-role="color-hex">__COLOR_LABEL__</span>
+        <div class="input-group" style="margin-bottom:0;">
+            <label class="label-form">Valor del color</label>
+            <div class="input-icon-container">
+                <i class="ri-palette-line input-icon"></i>
+                <input type="text" id="features-__INDEX__-value" data-role="feature-value"
+                    name="features[__INDEX__][value]" placeholder="#RRGGBB"
+                    style="cursor: pointer"
+                    autocomplete="off" data-validate="required|colorCss" value="__VALUE__" data-coloris>
             </div>
         </div>
-        <div class="input-icon-container option-feature-description">
-            <textarea class="textarea-form"
-                      name="features[__INDEX__][description]"
-                      rows="2"
-                      placeholder="Descripción opcional"
-                      data-role="feature-description">__DESCRIPTION__</textarea>
-            <i class="ri-align-left input-icon"></i>
+        <div class="input-group">
+            <label class="label-form label-textarea">Nombre del color</label>
+            <div class="input-icon-container option-feature-description">
+                <i class="ri-align-left input-icon"></i>
+                <input type="text" class="input-form" placeholder="Nombre del color"
+                    name="features[__INDEX__][description]" data-role="feature-description"
+                    value="__DESCRIPTION__" data-validate="required|max:50|min:3">
+            </div>
         </div>
     </div>
 </div>

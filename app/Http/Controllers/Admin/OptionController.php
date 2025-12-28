@@ -172,6 +172,7 @@ class OptionController extends Controller
             'message' => 'Valor agregado correctamente.',
             'feature' => [
                 'id' => $feature->id,
+                'option_id' => $option->id,
                 'value' => $feature->value,
                 'description' => $feature->description,
                 'is_color' => $option->isColor(),

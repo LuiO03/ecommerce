@@ -32,7 +32,8 @@
                     @php
                         $isColorOption = $option->isColor();
                     @endphp
-                    <article class="option-card ripple-card" data-option-inline="true" data-option-slug="{{ $option->slug }}"
+                    <article class="option-card ripple-card" data-option-inline="true"
+                        data-option-slug="{{ $option->slug }}"
                         data-option-is-color="{{ $isColorOption ? 'true' : 'false' }}"
                         data-create-url="{{ route('admin.options.features.store', $option) }}">
                         <header class="option-card-header">
@@ -100,21 +101,42 @@
                                     @if ($isColorOption)
                                         <div class="input-group">
                                             <div class="input-icon-container">
-                                                <input type="color" id="feature-color-{{ $option->id}}"
-                                                    data-role="feature-color" name="feature_color" placeholder="Seleccionar color">
-                                                <input type="text" id="feature-value-{{ $option->id}}"
-                                                    data-role="feature-value" name="feature_value"
-                                                    maxlength="7" minlength="7" placeholder="#RRGGBB" autocomplete="off"
-                                                    data-validate="required|max:7|min:7">
+                                                <i class="ri-palette-line input-icon"></i>
+                                                <input type="text" id="feature-value-{{ $option->id }}"
+                                                    data-role="feature-value" name="feature_value" placeholder="#RRGGBB"
+                                                    style="cursor: pointer" autocomplete="off" data-role="feature-value"
+                                                    data-validate="required|colorCss" data-coloris>
                                             </div>
+                                            <script>
+                                                Coloris({
+                                                    theme: 'pill',
+                                                    themeMode: 'dark',
+                                                    swatches: [
+                                                        'DarkSlateGray',
+                                                        '#2a9d8f',
+                                                        '#e9c46a',
+                                                        'coral',
+                                                        'rgb(231, 111, 81)',
+                                                        'Crimson',
+                                                        '#023e8a',
+                                                        '#0077b6',
+                                                        'hsl(194, 100%, 39%)',
+                                                        '#00b4d8',
+                                                        '#48cae4'
+                                                    ],
+                                                    onChange: (color, inputEl) => {
+                                                        console.log(`The new color is ${color}`);
+                                                    }
+                                                });
+                                            </script>
                                         </div>
                                         <div class="input-group">
                                             <div class="input-icon-container">
                                                 <i class="ri-align-left input-icon"></i>
                                                 <input type="text" id="feature-description-{{ $option->id }}"
                                                     data-role="feature-description" name="feature_description"
-                                                    placeholder="Nombre del color" maxlength="255"
-                                                    autocomplete="off" data-validate="required|max:50|min:3" required>
+                                                    placeholder="Nombre del color" maxlength="255" autocomplete="off"
+                                                    data-validate="required|max:50|min:3" required>
                                             </div>
                                         </div>
                                     @else
@@ -140,7 +162,8 @@
 
                                     <div class="input-group">
                                         <button type="submit" id="featureSubmit-{{ $option->id }}"
-                                            class="boton boton-success" data-role="feature-submit" title="Agregar valor">
+                                            class="boton boton-success" data-role="feature-submit"
+                                            title="Agregar valor">
                                             <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
                                             <span class="boton-text">Agregar</span>
                                         </button>
@@ -182,32 +205,32 @@
     </form>
 
     @push('scripts')
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    @foreach ($options as $option)
-                        @if ($option->isColor())
-                            (function() {
-                                const colorInput = document.getElementById('feature-color-{{ $option->id}}');
-                                const valueInput = document.getElementById('feature-value-{{ $option->id}}');
-                                if(colorInput && valueInput) {
-                                    // Sincroniza color -> texto
-                                    colorInput.addEventListener('input', function() {
-                                        valueInput.value = colorInput.value.toUpperCase();
-                                    });
-                                    // Sincroniza texto -> color
-                                    valueInput.addEventListener('input', function() {
-                                        const val = valueInput.value.trim();
-                                        // Solo si es un hex válido tipo #RRGGBB
-                                        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-                                            colorInput.value = val;
-                                        }
-                                    });
-                                }
-                            })();
-                        @endif
-                    @endforeach
-                });
-                </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                @foreach ($options as $option)
+                    @if ($option->isColor())
+                        (function() {
+                            const colorInput = document.getElementById('feature-color-{{ $option->id }}');
+                            const valueInput = document.getElementById('feature-value-{{ $option->id }}');
+                            if (colorInput && valueInput) {
+                                // Sincroniza color -> texto
+                                colorInput.addEventListener('input', function() {
+                                    valueInput.value = colorInput.value.toUpperCase();
+                                });
+                                // Sincroniza texto -> color
+                                valueInput.addEventListener('input', function() {
+                                    const val = valueInput.value.trim();
+                                    // Solo si es un hex válido tipo #RRGGBB
+                                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                                        colorInput.value = val;
+                                    }
+                                });
+                            }
+                        })();
+                    @endif
+                @endforeach
+            });
+        </script>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const highlightSlug = @json(session('highlightOption'));

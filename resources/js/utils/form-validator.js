@@ -316,6 +316,43 @@ class FormValidator {
     // 📚 REGLAS DE VALIDACIÓN PREDEFINIDAS
     // ========================================
     validationRules = {
+                // === COLOR HEX ===
+                colorHex: (value) => {
+                    if (!value) return { valid: true };
+                    return {
+                        valid: /^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/.test(value),
+                        message: 'Debe ser un color HEX válido (#RRGGBB o #RGB)'
+                    };
+                },
+
+                // === COLOR RGB ===
+                colorRgb: (value) => {
+                    if (!value) return { valid: true };
+                    return {
+                        valid: /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.test(value),
+                        message: 'Debe ser un color RGB válido (rgb(255,255,255))'
+                    };
+                },
+
+                // === COLOR RGBA ===
+                colorRgba: (value) => {
+                    if (!value) return { valid: true };
+                    return {
+                        valid: /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0?\.\d+)\s*\)$/.test(value),
+                        message: 'Debe ser un color RGBA válido (rgba(255,255,255,1))'
+                    };
+                },
+
+                // === COLOR CSS (hex, rgb, rgba, hsl, hsla, palabras clave) ===
+                colorCss: (value) => {
+                    if (!value) return { valid: true };
+                    // Permite hex, rgb, rgba, hsl, hsla y palabras clave CSS
+                    const cssColorRegex = /^(#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})|rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)|rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0|1|0?\.\d+)\s*\)|hsl\(\s*\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%\s*\)|hsla\(\s*\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%\s*,\s*(0|1|0?\.\d+)\s*\)|[a-zA-Z]+)$/;
+                    return {
+                        valid: cssColorRegex.test(value),
+                        message: 'Debe ser un color CSS válido (hex, rgb, rgba, hsl, hsla o nombre)'
+                    };
+                },
         // === OBLIGATORIO ===
         required: (value) => ({
             valid: value.length > 0,

@@ -213,6 +213,10 @@ export function initOptionFeatureForm({
         container.appendChild(element);
         reindexFeatures();
         syncColorControls();
+        // Inicializar Coloris para inputs nuevos y forzar previsualización
+        if (window.Coloris) {
+            window.Coloris({ el: '[data-coloris]' });
+        }
         return element;
     }
 

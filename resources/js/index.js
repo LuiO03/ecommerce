@@ -18,8 +18,8 @@ import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
 import { initFormValidator } from './utils/form-validator.js';
 import { initCompanySettingsTabs, initCompanySettingsEditors, initCompanySettingsColorInputs } from './modules/company-settings-tabs.js';
-import { initOptionFeatureForm } from './modules/options-feature-form.js';
-import { initOptionInlineManager } from './modules/options-inline-manager.js';
+import { initOptionFeatureForm } from './modules/options-form-feature-manager.js';
+import { initOptionInlineManager } from './modules/options-index-inline-manager.js';
 import { initProductVariantsManager } from './modules/product-variants-manager.js';
 import {
   initPostGalleryCreate,

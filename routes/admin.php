@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
@@ -10,7 +11,31 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\OptionController;
+use App\Http\Controllers\Admin\OptionFeatureController;
 use Illuminate\Support\Facades\Route;
+
+// OPTIONS & FEATURES
+Route::prefix('options')
+    ->name('admin.options.')
+    ->scopeBindings()
+    ->group(function () {
+
+        Route::controller(OptionController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{option}/edit', 'edit')->name('edit');
+            Route::put('/{option}', 'update')->name('update');
+            Route::delete('/{option}', 'destroy')->name('destroy');
+            Route::post('/{option}/features', 'storeFeature')->name('features.store');
+            Route::delete('/{option}/features/{feature}', 'destroyFeature')->name('features.destroy');
+        });
+
+        Route::controller(OptionFeatureController::class)->group(function () {
+            Route::get('/{option}/features/{feature}/render', 'renderItem')
+                ->name('features.render');
+        });
+});
 
 // Dashboard
 Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
@@ -58,19 +83,7 @@ Route::controller(CompanySettingController::class)->group(function () {
     Route::put('/company-settings', 'update')->name('admin.company-settings.update');
 });
 
-// OPTIONS & FEATURES
-Route::controller(OptionController::class)
-    ->scopeBindings()
-    ->group(function () {
-    Route::get('/options', 'index')->name('admin.options.index');
-    Route::get('/options/create', 'create')->name('admin.options.create');
-    Route::post('/options', 'store')->name('admin.options.store');
-    Route::get('/options/{option}/edit', 'edit')->name('admin.options.edit');
-    Route::put('/options/{option}', 'update')->name('admin.options.update');
-    Route::delete('/options/{option}', 'destroy')->name('admin.options.destroy');
-    Route::post('/options/{option}/features', 'storeFeature')->name('admin.options.features.store');
-    Route::delete('/options/{option}/features/{feature}', 'destroyFeature')->name('admin.options.features.destroy');
-    });
+
 
 // FAMILIES
 Route::controller(FamilyController::class)->group(function () {
