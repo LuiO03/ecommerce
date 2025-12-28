@@ -369,6 +369,15 @@ export function initOptionInlineManager() {
                     temp.innerHTML = htmlData.html;
                     const featureNode = temp.firstElementChild;
                     if (featureNode) {
+                        // Asegura que los inputs de color tengan los data-validate correctos
+                        if (featureNode.querySelector('[data-coloris]')) {
+                            const colorInput = featureNode.querySelector('[data-coloris]');
+                            colorInput.setAttribute('data-validate', 'required|colorCss');
+                        }
+                        const descInput = featureNode.querySelector('[data-role="feature-description"]');
+                        if (descInput && featureNode.querySelector('[data-coloris]')) {
+                            descInput.setAttribute('data-validate', 'required|max:50|min:3');
+                        }
                         featureList.appendChild(featureNode);
                         // Inicializar Coloris para inputs nuevos y forzar previsualización
                         if (window.Coloris) {

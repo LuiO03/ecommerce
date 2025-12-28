@@ -217,6 +217,17 @@ export function initOptionFeatureForm({
         if (window.Coloris) {
             window.Coloris({ el: '[data-coloris]' });
         }
+        // Re-inicializar validación para nuevos campos
+        const form = container.closest('form');
+        if (form && typeof window.initFormValidator === 'function') {
+            // Elimina referencia previa para forzar nuevo escaneo
+            form.__validator = undefined;
+            window.initFormValidator('#' + form.id, {
+                validateOnBlur: true,
+                validateOnInput: false,
+                scrollToFirstError: true
+            });
+        }
         return element;
     }
 
