@@ -175,7 +175,7 @@
     cursor: pointer;
 
     /* 🔥 claves */
-    border: none;
+    border: 1px dashed var(--color-text-soft);
     outline: none;
     box-shadow: none;
     background: transparent;

@@ -118,11 +118,11 @@ function handleColorSync(form, isColor) {
     form.classList.add('is-color');
 
     if (colorHex && !colorHex.textContent) {
-        colorHex.textContent = '#000000';
+        colorHex.textContent = '';
     }
 
     const sync = (value) => {
-        const normalized = normalizeColorValue(value) || '#000000';
+        const normalized = normalizeColorValue(value) || '';
         if (valueInput) {
             valueInput.value = normalized;
         }
@@ -158,14 +158,14 @@ function handleColorSync(form, isColor) {
         });
     }
 
-    sync(valueInput?.value || '#000000');
+    sync(valueInput?.value || '');
 }
 
 function normaliseValue(value, isColor) {
     const raw = String(value || '').trim();
 
     if (isColor) {
-        return normalizeColorValue(raw) || '#000000';
+        return normalizeColorValue(raw) || '';
     }
 
     const lowered = raw.toLocaleLowerCase();
@@ -273,15 +273,14 @@ export function initOptionInlineManager() {
 
         const resetInputs = () => {
             if (isColorOption) {
-                const resetColor = '#000000';
                 if (valueInput) {
-                    valueInput.value = resetColor;
+                    valueInput.value = '';
                 }
                 if (colorInput) {
-                    colorInput.value = resetColor;
+                    colorInput.value = '';
                 }
                 if (colorHex) {
-                    colorHex.textContent = resetColor;
+                    colorHex.textContent = '';
                 }
             } else if (valueInput) {
                 valueInput.value = '';
