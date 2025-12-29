@@ -201,32 +201,6 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                @foreach ($options as $option)
-                    @if ($option->isColor())
-                        (function() {
-                            const colorInput = document.getElementById('feature-color-{{ $option->id }}');
-                            const valueInput = document.getElementById('feature-value-{{ $option->id }}');
-                            if (colorInput && valueInput) {
-                                // Sincroniza color -> texto
-                                colorInput.addEventListener('input', function() {
-                                    valueInput.value = colorInput.value.toUpperCase();
-                                });
-                                // Sincroniza texto -> color
-                                valueInput.addEventListener('input', function() {
-                                    const val = valueInput.value.trim();
-                                    // Solo si es un hex válido tipo #RRGGBB
-                                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-                                        colorInput.value = val;
-                                    }
-                                });
-                            }
-                        })();
-                    @endif
-                @endforeach
-            });
-        </script>
-        <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const highlightSlug = @json(session('highlightOption'));
                 if (highlightSlug) {

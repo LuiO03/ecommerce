@@ -172,7 +172,7 @@ class OptionController extends Controller
             'message' => 'Valor agregado correctamente.',
             'feature' => [
                 'id' => $feature->id,
-                'option_id' => $option->id,
+                'option_id' => $option->slug, // Usar slug para el route model binding
                 'value' => $feature->value,
                 'description' => $feature->description,
                 'is_color' => $option->isColor(),

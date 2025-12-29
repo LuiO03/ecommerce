@@ -12,8 +12,13 @@ class OptionFeatureController extends Controller
     public function renderItem(Option $option, Feature $feature)
     {
         $isColorOption = $option->isColor();
-        $index = 0; // El index no es relevante para el render inline, pero se puede ajustar si es necesario
-        $html = view('admin.options.partials.feature-item', compact('feature', 'index', 'isColorOption'))->render();
+        // Usar el partial visual del pill para index
+        $featureArr = $feature->toArray();
+        $featureArr['delete_url'] = route('admin.options.features.destroy', [$option, $feature]);
+        $html = view('admin.options.partials.feature-pill', [
+            'feature' => $featureArr,
+            'isColorOption' => $isColorOption
+        ])->render();
         return response()->json(['html' => $html]);
     }
 }

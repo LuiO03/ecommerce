@@ -446,8 +446,10 @@ export function initOptionInlineManager() {
                         }
                     }
 
-                    if (typeof window.showToast === 'function' && data.message) {
+                    // Solo mostrar el toast aquí, nunca desde showConfirm
+                    if (typeof window.showToast === 'function' && data.message && !proceed.toastShown) {
                         window.showToast({ type: 'info', title: 'Valor eliminado', message: data.message });
+                        proceed.toastShown = true;
                     }
                 } catch (error) {
                     console.error('[options-inline-manager] error al eliminar valor', error);
