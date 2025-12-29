@@ -400,7 +400,7 @@
 
 .tabla-select-wrapper.filter-active {
     transform: scale(1.02);
-    box-shadow: 0 0 0 3px var(--color-accent-pastel);
+    box-shadow: 0 0 0 2px var(--color-accent-pastel);
     border-radius: var(--radius-input);
 }
 

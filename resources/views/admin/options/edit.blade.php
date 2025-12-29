@@ -28,10 +28,6 @@
                 <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
                 <span class="boton-form-text">Cancelar</span>
             </a>
-            <button type="reset" class="boton-form boton-warning">
-                <span class="boton-form-icon"><i class="ri-eraser-fill"></i></span>
-                <span class="boton-form-text">Restablecer</span>
-            </button>
             <button type="submit" class="boton-form boton-success" id="submitBtn">
                 <span class="boton-form-icon"><i class="ri-save-3-fill"></i></span>
                 <span class="boton-form-text">Actualizar opción</span>

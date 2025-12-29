@@ -70,7 +70,7 @@
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
-                        <i class="ri-price-tag-3-line input-icon"></i>
+                        <i class="ri-price-tag-2-line input-icon"></i>
                         <input type="text" name="name" id="name" class="input-form" required
                             value="{{ old('name') }}" placeholder="Nombre del producto"
                             data-validate="required|min:3|max:255">
@@ -102,7 +102,7 @@
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
-                        <i class="ri-currency-line input-icon"></i>
+                        <i class="ri-price-tag-3-line input-icon"></i>
                         <input type="number" name="price" id="price" class="input-form" required min="0"
                             step="0.01" value="{{ old('price') }}" placeholder="0.00"
                             data-validate="required|minValue:0">

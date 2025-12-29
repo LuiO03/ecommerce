@@ -26,7 +26,7 @@
     <div class="option-feature-card-body">
         @if ($isColor)
             <div class="input-group">
-                <label for="value" class="label-form">Valor del color</label>
+                <label for="value" class="label-form">Valor del color <i class="ri-asterisk text-accent"></i></label>
                 <div class="input-icon-container">
                     <i class="ri-palette-line input-icon"></i>
                     <input type="text" id="features-{{ $index }}-value" data-role="feature-value"
@@ -35,7 +35,9 @@
                 </div>
             </div>
             <div class="input-group">
-                <label for="description" class="label-form label-textarea">Nombre del color</label>
+                <label for="description" class="label-form">
+                    Nombre del color <i class="ri-asterisk text-accent"></i>
+                </label>
                 <div class="input-icon-container option-feature-description">
                     <i class="ri-align-left input-icon"></i>
                     <input type="text" class="input-form" placeholder="Nombre del color"
@@ -45,7 +47,9 @@
             </div>
         @else
             <div class="input-group">
-                <label for="value" class="label-form">Nombre del Valor</label>
+                <label for="value" class="label-form">
+                    Nombre del Valor <i class="ri-asterisk text-accent"></i>
+                </label>
                 <div class="input-icon-container option-feature-value">
                     <i class="ri-artboard-2-line input-icon"></i>
                     <input type="text" class="input-form" name="features[{{ $index }}][value]"

@@ -39,14 +39,14 @@ function buildFeaturePill(feature) {
         </div>
         ${feature.is_color ? `
         <div class="input-group">
-            <label class="label-form">Valor del color</label>
+            <label class="label-form">Valor del color <i class="ri-asterisk text-accent"></i></label>
             <div class="input-icon-container">
                 <i class="ri-palette-line input-icon"></i>
                 <input type="text" data-role="feature-value" name="features[0][value]" placeholder="#RRGGBB" style="cursor: pointer" autocomplete="off" data-validate="required|colorCss" value="${feature.value}" data-coloris readonly>
             </div>
         </div>
         <div class="input-group">
-            <label class="label-form label-textarea">Nombre del color</label>
+            <label class="label-form label-textarea">Nombre del color <i class="ri-asterisk text-accent"></i></label>
             <div class="input-icon-container option-feature-description">
                 <i class="ri-align-left input-icon"></i>
                 <input type="text" class="input-form" placeholder="Nombre del color" name="features[0][description]" data-role="feature-description" value="${feature.description || ''}" data-validate="required|max:50|min:3" readonly>
@@ -54,7 +54,7 @@ function buildFeaturePill(feature) {
         </div>
         ` : `
         <div class="input-group">
-            <label class="label-form">Nombre del Valor</label>
+            <label class="label-form">Nombre del Valor <i class="ri-asterisk text-accent"></i></label>
             <div class="input-icon-container option-feature-value">
                 <i class="ri-artboard-2-line input-icon"></i>
                 <input type="text" class="input-form" name="features[0][value]" data-validate="required|max:25|min:3" placeholder="Valor (obligatorio)" value="${feature.value}" data-role="feature-value" required readonly>

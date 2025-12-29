@@ -112,7 +112,7 @@
                     </label>
 
                     <div class="input-icon-container">
-                        <i class="ri-price-tag-3-line input-icon"></i>
+                        <i class="ri-price-tag-2-line input-icon"></i>
 
                         <input type="text" name="name" id="name" class="input-form @error('name') input-error @enderror"
                             value="{{ old('name') }}" placeholder="Ingrese el nombre"

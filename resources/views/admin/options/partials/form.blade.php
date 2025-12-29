@@ -140,6 +140,9 @@
 </div>
 
 
-<script type="text/template" id="featureRowTemplate">
-    @include('admin.options.partials.feature-template', ['isColorTemplate' => $isColorOption])
+<script type="text/template" id="featureRowTemplateColor">
+    @include('admin.options.partials.feature-template-color')
+</script>
+<script type="text/template" id="featureRowTemplateNoColor">
+    @include('admin.options.partials.feature-template-nocolor')
 </script>

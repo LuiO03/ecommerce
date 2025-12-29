@@ -61,7 +61,7 @@
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
-                        <i class="ri-price-tag-3-line input-icon"></i>
+                        <i class="ri-price-tag-2-line input-icon"></i>
                         <input type="text" name="name" id="name" class="input-form"
                             placeholder="Ingrese el nombre" required value="{{ old('name', $family->name) }}"
                             data-validate="required|min:3|max:100|alphanumeric">

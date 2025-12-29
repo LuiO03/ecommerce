@@ -55,51 +55,31 @@ export function initOptionFeatureForm({
         return null;
     }
 
-    const templateNode = document.getElementById(templateId);
-    const templateContent = templateNode ? templateNode.textContent.trim() : '';
+    // Usar templates explícitos para color y no color
+    let templateContentColor = '';
+    let templateContentNoColor = '';
+    const templateNodeColor = document.getElementById('featureRowTemplateColor');
+    if (templateNodeColor) {
+        templateContentColor = templateNodeColor.textContent.trim();
+    }
+    const templateNodeNoColor = document.getElementById('featureRowTemplateNoColor');
+    if (templateNodeNoColor) {
+        templateContentNoColor = templateNodeNoColor.textContent.trim();
+    }
     const addButton = document.getElementById(addButtonId);
     const nameInput = nameInputId ? document.getElementById(nameInputId) : null;
 
     const state = {
-        template: templateContent,
         isColor: typeof isColor === 'boolean' ? isColor : container.dataset.isColor === 'true',
         colorSlug: container.dataset.colorSlug || 'color',
         colorLocked: container.dataset.colorLocked === 'true',
     };
 
-    if (!state.template) {
-        console.warn('[options-feature-form] Plantilla no encontrada.');
-    }
-
     function getFeatureCards() {
         return Array.from(container.querySelectorAll('.option-feature-card'));
     }
 
-    function renderTemplate(data, index) {
-        if (!state.template) {
-            return null;
-        }
 
-        const color = data.color || '#000000';
-        const wrapperClass = state.isColor ? '' : ' is-hidden';
-        const disabledAttr = state.isColor ? '' : ' disabled';
-        const colorLabel = state.isColor ? escapeHtml(color) : '';
-
-        let html = state.template
-            .replace(/__INDEX__/g, index)
-            .replace(/__ID__/g, escapeHtml(data.id ?? ''))
-            .replace(/__NUMBER__/g, index + 1)
-            .replace(/__VALUE__/g, escapeHtml(data.value ?? ''))
-            .replace(/__DESCRIPTION__/g, escapeHtml(data.description ?? ''))
-            .replace(/__COLOR__/g, escapeHtml(color))
-            .replace(/__COLOR_WRAPPER_CLASS__/g, wrapperClass)
-            .replace(/__COLOR_DISABLED__/g, disabledAttr)
-            .replace(/__COLOR_LABEL__/g, colorLabel);
-
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = html.trim();
-        return wrapper.firstElementChild;
-    }
 
     function reindexFeatures() {
         const cards = getFeatureCards();
@@ -205,8 +185,34 @@ export function initOptionFeatureForm({
             color: state.isColor ? (normalizedColor ?? '#000000') : '#000000',
         };
 
-        const element = renderTemplate(prepared, index);
+        // Selecciona plantilla según tipo
+        let element;
+        if (state.isColor && templateContentColor) {
+            const wrapper = document.createElement('div');
+            let html = templateContentColor
+                .replace(/__INDEX__/g, index)
+                .replace(/__ID__/g, escapeHtml(prepared.id ?? ''))
+                .replace(/__NUMBER__/g, index + 1)
+                .replace(/__VALUE__/g, escapeHtml(prepared.value ?? ''))
+                .replace(/__DESCRIPTION__/g, escapeHtml(prepared.description ?? ''));
+            wrapper.innerHTML = html.trim();
+            element = wrapper.firstElementChild;
+        } else if (!state.isColor && templateContentNoColor) {
+            const wrapper = document.createElement('div');
+            let html = templateContentNoColor
+                .replace(/__INDEX__/g, index)
+                .replace(/__ID__/g, escapeHtml(prepared.id ?? ''))
+                .replace(/__NUMBER__/g, index + 1)
+                .replace(/__VALUE__/g, escapeHtml(prepared.value ?? ''))
+                .replace(/__DESCRIPTION__/g, escapeHtml(prepared.description ?? ''));
+            wrapper.innerHTML = html.trim();
+            element = wrapper.firstElementChild;
+        } else {
+            element = null;
+        }
+
         if (!element) {
+            console.warn('[options-feature-form] No se encontró plantilla para el tipo actual.');
             return null;
         }
 

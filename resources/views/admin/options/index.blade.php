@@ -37,12 +37,11 @@
                         data-option-is-color="{{ $isColorOption ? 'true' : 'false' }}"
                         data-create-url="{{ route('admin.options.features.store', $option) }}">
                         <header class="option-card-header">
-                            <div>
-                                <h3>{{ $option->name }}</h3>
-                                <span class="option-type-badge">
-                                    <i class="{{ $isColorOption ? 'ri-palette-line' : 'ri-price-tag-3-line' }}"></i>
-                                    {{ $isColorOption ? 'Color' : 'Texto' }}
-                                </span>
+                            <div class="card-header">
+                                <span class="card-title">{{ $option->name }}</span>
+                                <p class="card-description">
+                                    {{ $option->description }}
+                                </p>
                             </div>
                             <div class="option-card-actions">
                                 <a href="{{ route('admin.options.edit', $option) }}" class="boton-sm boton-warning"
@@ -56,10 +55,6 @@
                                 </button>
                             </div>
                         </header>
-
-                        @if ($option->description)
-                            <p class="option-card-description">{{ $option->description }}</p>
-                        @endif
 
                         <div class="option-feature-pills" data-role="feature-list">
                             @forelse ($option->features as $feature)
@@ -90,8 +85,6 @@
                                 <p class="option-feature-empty" data-role="feature-empty">Sin valores registrados.</p>
                             @endforelse
                         </div>
-
-                        <hr class="w-full my-0 border-default">
 
                         <div class="option-feature-inline">
                             <form id="featureForm-{{ $option->id }}" class="option-feature-form"
@@ -162,10 +155,12 @@
 
                                     <div class="input-group">
                                         <button type="submit" id="featureSubmit-{{ $option->id }}"
-                                            class="boton boton-success" data-role="feature-submit"
+                                            class="boton-form boton-success" data-role="feature-submit"
                                             title="Agregar valor">
-                                            <span class="boton-icon"><i class="ri-add-circle-line"></i></span>
-                                            <span class="boton-text">Agregar</span>
+                                            <span class="boton-form-icon">
+                                                <i class="ri-add-circle-line"></i>
+                                            </span>
+                                            <span class="boton-form-text">Agregar</span>
                                         </button>
                                     </div>
                                 </div>

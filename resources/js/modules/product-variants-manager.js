@@ -213,7 +213,7 @@ function buildVariantRowDom({ index, variant }) {
   tdPrice.innerHTML = `
     <div class="input-group">
       <div class="input-icon-container">
-        <i class="ri-currency-line input-icon"></i>
+        <i class="ri-price-tag-3-line input-icon"></i>
         <input type="number" class="input-form" name="variants[${index}][price]" min="0" step="0.01"
           value="${variant.price != null ? String(variant.price) : ''}" placeholder="Precio Opcional" data-role="variant-price">
       </div>

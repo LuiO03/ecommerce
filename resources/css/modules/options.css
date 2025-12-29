@@ -1,7 +1,4 @@
-:root {
-    --option-pill-bg: rgba(99, 102, 241, 0.12);
-    --option-pill-border: rgba(99, 102, 241, 0.35);
-}
+
 
 .options-wrapper {
     display: flex;
@@ -78,13 +75,6 @@
     gap: 0.4rem;
 }
 
-.option-card-description {
-    margin: 0;
-    color: var(--color-text-soft);
-    line-height: 1.55;
-    font-size: 0.92rem;
-}
-
 .option-feature-pills {
     display: flex;
     flex-wrap: wrap;
@@ -95,19 +85,14 @@
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.45rem 0.75rem;
-    border-radius: 0.85rem;
-    background: var(--option-pill-bg);
+    padding: 8px 10px;
+    border-radius: var(--radius-input);
+    background: var(--color-info-pastel);
     border: 1px solid var(--option-pill-border);
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--color-text);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.option-feature-pill:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(99, 102, 241, 0.18);
 }
 
 .option-feature-pill.is-new {
@@ -128,10 +113,6 @@
     }
 }
 
-.option-feature-pill.is-color {
-    border-color: rgba(15, 118, 110, 0.35);
-    background: rgba(13, 148, 136, 0.1);
-}
 
 .option-feature-pill .pill-color {
     display: inline-flex;
@@ -192,7 +173,12 @@
     margin-right: calc(100% - 38px);
     border-radius: 8px;
     cursor: pointer;
-    overflow: hidden;
+
+    /* 🔥 claves */
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
 }
 
 .clr-field input {
