@@ -12,7 +12,18 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OptionFeatureController;
+use App\Http\Controllers\Admin\AccessLogController;
 use Illuminate\Support\Facades\Route;
+
+
+// ACCESS LOGS
+Route::controller(AccessLogController::class)->name('admin.access-logs.')->group(function () {
+    Route::get('/access-logs', 'index')->name('index');
+    Route::get('/access-logs/export/excel', 'exportExcel')->name('export.excel');
+    Route::get('/access-logs/export/pdf', 'exportPdf')->name('export.pdf');
+    Route::get('/access-logs/export/csv', 'exportCsv')->name('export.csv');
+});
+
 
 // OPTIONS & FEATURES
 Route::prefix('options')

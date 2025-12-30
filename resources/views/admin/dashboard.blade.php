@@ -130,5 +130,16 @@
                 <p class="card-label">Opciones</p>
             </div>
         </a>
+
+        <!-- Tarjeta: Accesos -->
+        <a href="{{ route('admin.access-logs.index') }}" class="dashboard-card ripple-card">
+            <div class="card-icon card-gray">
+                <i class="ri-shield-user-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalAccessLogs }}</h1>
+                <p class="card-label">Accesos</p>
+            </div>
+        </a>
     </div>
 </x-admin-layout>
