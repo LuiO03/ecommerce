@@ -133,8 +133,8 @@
 
         <!-- Tarjeta: Accesos -->
         <a href="{{ route('admin.access-logs.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-gray">
-                <i class="ri-shield-user-line"></i>
+            <div class="card-icon card-pink">
+                <i class="ri-login-circle-line"></i>
             </div>
             <div class="card-content">
                 <h1 class="card-count">{{ $totalAccessLogs }}</h1>

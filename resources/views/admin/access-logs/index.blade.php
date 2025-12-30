@@ -14,19 +14,18 @@
                 <span class="boton-form-text">Exportar</span>
                 <i class="ri-arrow-down-s-line"></i>
             </button>
-
             <div class="export-dropdown" id="exportDropdown">
                 <button type="button" class="export-option" id="exportAllExcel">
                     <i class="ri-file-excel-2-fill"></i>
-                    <span>Excel</span>
+                    <span>Exportar todo a Excel</span>
                 </button>
                 <button type="button" class="export-option" id="exportAllCsv">
                     <i class="ri-file-text-fill"></i>
-                    <span>CSV</span>
+                    <span>Exportar todo a CSV</span>
                 </button>
                 <button type="button" class="export-option" id="exportAllPdf">
                     <i class="ri-file-pdf-2-fill"></i>
-                    <span>PDF</span>
+                    <span>Exportar todo a PDF</span>
                 </button>
             </div>
         </div>
@@ -39,12 +38,8 @@
             <!-- Buscador -->
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
-                <input
-                    type="text"
-                    id="customSearch"
-                    placeholder="Buscar por usuario, email o IP"
-                    autocomplete="off"
-                />
+                <input type="text" id="customSearch" placeholder="Buscar por usuario, email o IP"
+                    autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear">
                     <i class="ri-close-circle-fill"></i>
                 </button>
@@ -97,12 +92,47 @@
             </div>
         </div>
 
+        <!-- Barra contextual -->
+        <div class="selection-bar" id="selectionBar">
+            <div class="selection-actions">
+
+                <button id="exportSelectedExcel" class="boton-selection boton-success">
+                    <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
+                    <span class="boton-selection-text">Excel</span>
+                    <span class="selection-badge" id="excelBadge">0</span>
+                </button>
+
+                <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                    <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
+                    <span class="boton-selection-text">CSV</span>
+                    <span class="selection-badge" id="csvBadge">0</span>
+                </button>
+
+                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                    <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
+                    <span class="boton-selection-text">PDF</span>
+                    <span class="selection-badge" id="pdfBadge">0</span>
+                </button>
+
+            </div>
+
+            <div class="selection-info">
+                <span id="selectionCount">0 seleccionados</span>
+                <button class="selection-close" id="clearSelection">
+                    <i class="ri-close-large-fill"></i>
+                </button>
+            </div>
+        </div>
+
         <!-- TABLA -->
         <div class="tabla-wrapper">
             <table id="tabla" class="tabla-general display">
                 <thead>
                     <tr>
                         <th class="control"></th>
+                        <th class="column-check-th column-not-order">
+                            <div><input type="checkbox" id="checkAll"></div>
+                        </th>
                         <th>ID</th>
                         <th>Usuario</th>
                         <th>Email</th>
@@ -110,7 +140,7 @@
                         <th>Estado</th>
                         <th>IP</th>
                         <th>Fecha</th>
-                        <th class="column-not-order">Acciones</th>
+                        <th>Agente</th>
                     </tr>
                 </thead>
 
@@ -118,11 +148,17 @@
                     @foreach ($logs as $log)
                         <tr data-id="{{ $log->id }}">
                             <td class="control"></td>
+                            <td class="column-check-td">
+                                <div>
+                                    <input type="checkbox" class="check-row"
+                                        value="{{ $log->id }}">
+                                </div>
+                            </td>
 
                             <td>{{ $log->id }}</td>
 
                             <td>
-                                @if($log->user)
+                                @if ($log->user)
                                     <span class="badge badge-info">
                                         <i class="ri-user-3-line"></i>
                                         {{ $log->user->name }}
@@ -138,13 +174,32 @@
                             <td>{{ $log->email ?? '—' }}</td>
 
                             <td data-action="{{ $log->action }}">
-                                <span class="badge badge-primary">
-                                    {{ $log->action_label }}
-                                </span>
+                                @if ($log->action === 'login')
+                                    <span class="badge badge-primary">
+                                        <i class="ri-login-box-line"></i>
+                                        {{ $log->action_label }}
+                                    </span>
+                                @elseif($log->action === 'logout')
+                                    <span class="badge badge-secondary">
+                                        <i class="ri-logout-box-line"></i>
+                                        {{ $log->action_label }}
+                                    </span>
+                                @elseif($log->action === 'failed')
+                                    <span class="badge badge-danger">
+                                        <i class="ri-error-warning-line"></i>
+                                        {{ $log->action_label }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-gray">
+                                        <i class="ri-question-line"></i>
+                                        {{ $log->action_label }}
+                                    </span>
+                                @endif
                             </td>
 
                             <td data-status="{{ $log->status }}">
-                                <span class="badge {{ $log->status === 'success' ? 'badge-success' : 'badge-danger' }}">
+                                <span
+                                    class="badge {{ $log->status === 'success' ? 'badge-success' : 'badge-danger' }}">
                                     {{ $log->status_label }}
                                 </span>
                             </td>
@@ -158,11 +213,21 @@
                             </td>
 
                             <td>
-                                <button
-                                    class="boton-sm boton-info btn-view-log"
-                                    data-id="{{ $log->id }}">
-                                    <i class="ri-eye-2-fill"></i>
-                                </button>
+                                @php($agent = $log->agent_info)
+
+                                <span class="agent-info" title="{{ $log->user_agent }}">
+                                    <span class="agent-browser">
+                                        <i class="{{ $agent['browser_icon'] }} "></i>
+                                        {{ $agent['browser'] }}
+                                    </span>
+
+                                    <span class="agent-dot">•</span>
+
+                                    <span class="agent-os">
+                                        <i class="{{ $agent['os_icon'] }}"></i>
+                                        {{ $agent['os'] }}
+                                    </span>
+                                </span>
                             </td>
                         </tr>
                     @endforeach
@@ -179,7 +244,7 @@
 
     @push('scripts')
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
 
                 const tableManager = new DataTableManager('#tabla', {
                     moduleName: 'access-logs',
@@ -205,7 +270,7 @@
                 let actionFilter = '';
                 let statusFilter = '';
 
-                $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                     if (settings.nTable.id !== 'tabla') return true;
 
                     const row = tableManager.table.row(dataIndex).node();
@@ -221,12 +286,12 @@
                     return true;
                 });
 
-                $('#actionFilter').on('change', function () {
+                $('#actionFilter').on('change', function() {
                     actionFilter = this.value;
                     tableManager.table.draw();
                 });
 
-                $('#statusFilter').on('change', function () {
+                $('#statusFilter').on('change', function() {
                     statusFilter = this.value;
                     tableManager.table.draw();
                 });

@@ -16,6 +16,7 @@
         'brands' => ['label' => 'Marcas', 'icon' => 'ri-store-2-fill'],
         'options' => ['label' => 'Opciones', 'icon' => 'ri-settings-3-fill'],
         'company-settings' => ['label' => 'Empresa', 'icon' => 'ri-building-4-fill'],
+        'access-logs' => ['label' => 'Accesos', 'icon' => 'ri-login-circle-fill'],
     ];
 
     // Traducciones de acciones

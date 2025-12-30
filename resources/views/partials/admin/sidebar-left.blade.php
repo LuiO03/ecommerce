@@ -146,6 +146,15 @@
                 </a>
             </li>
 
+            <li>
+                <a href="{{ route('admin.access-logs.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
+                    data-tooltip="Registros de acceso">
+                    <i class="ri-login-circle-line sidebar-icon"></i>
+                    <span>Accesos</span>
+                </a>
+            </li>
+
             <!-- Submenú Tienda -->
             <li class="submenu-container">
                 <button type="button" class="sidebar-link w-full submenu-btn flex items-center" data-tooltip="Tienda">

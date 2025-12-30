@@ -53,6 +53,55 @@ class AccessLog extends Model
         return Str::ucfirst($this->action);
     }
 
+    public function getAgentInfoAttribute(): array
+    {
+        $ua = $this->user_agent ?? '';
+
+        $browser = 'Desconocido';
+        $browserIcon = 'ri-global-line';
+
+        if (Str::contains($ua, 'Edg')) {
+            $browser = 'Edge';
+            $browserIcon = 'ri-edge-line';
+        } elseif (Str::contains($ua, 'Chrome')) {
+            $browser = 'Chrome';
+            $browserIcon = 'ri-chrome-line';
+        } elseif (Str::contains($ua, 'Firefox')) {
+            $browser = 'Firefox';
+            $browserIcon = 'ri-firefox-line';
+        } elseif (Str::contains($ua, 'Safari')) {
+            $browser = 'Safari';
+            $browserIcon = 'ri-safari-line';
+        }
+
+        $os = 'Desconocido';
+        $osIcon = 'ri-device-line';
+
+        if (Str::contains($ua, 'Windows')) {
+            $os = 'Windows';
+            $osIcon = 'ri-windows-line';
+        } elseif (Str::contains($ua, 'Macintosh')) {
+            $os = 'MacOS';
+            $osIcon = 'ri-apple-line';
+        } elseif (Str::contains($ua, 'Android')) {
+            $os = 'Android';
+            $osIcon = 'ri-android-line';
+        } elseif (Str::contains($ua, 'iPhone') || Str::contains($ua, 'iPad')) {
+            $os = 'iOS';
+            $osIcon = 'ri-apple-line';
+        } elseif (Str::contains($ua, 'Linux')) {
+            $os = 'Linux';
+            $osIcon = 'ri-ubuntu-line';
+        }
+
+        return [
+            'browser' => $browser,
+            'browser_icon' => $browserIcon,
+            'os' => $os,
+            'os_icon' => $osIcon,
+        ];
+    }
+
     /* =====================
      | Scopes
      ===================== */
