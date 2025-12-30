@@ -39,28 +39,6 @@ class AccessLogController extends Controller
     }
 
     /**
-     * Detalle de un acceso (para modal)
-     */
-    public function show(AccessLog $accessLog)
-    {
-        $accessLog->load('user:id,name,last_name,email');
-
-        return response()->json([
-            'id'        => '#' . $accessLog->id,
-            'user'      => $accessLog->user
-                ? trim($accessLog->user->name . ' ' . $accessLog->user->last_name)
-                : '—',
-            'email'     => $accessLog->email,
-            'action'    => ucfirst($accessLog->action),
-            'status'    => ucfirst($accessLog->status),
-            'ip'        => $accessLog->ip_address,
-            'agent'     => $accessLog->user_agent,
-            'created_at'=> $accessLog->created_at->format('d/m/Y H:i'),
-            'created_human' => $accessLog->created_at->diffForHumans(),
-        ]);
-    }
-
-    /**
      * Exportar Excel
      */
     public function exportExcel(Request $request)

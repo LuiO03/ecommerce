@@ -159,7 +159,7 @@
 
                             <td>
                                 @if ($log->user)
-                                    <span class="badge badge-info">
+                                    <span class="badge badge-primary">
                                         <i class="ri-user-3-line"></i>
                                         {{ $log->user->name }}
                                     </span>
@@ -175,12 +175,12 @@
 
                             <td data-action="{{ $log->action }}">
                                 @if ($log->action === 'login')
-                                    <span class="badge badge-primary">
+                                    <span class="badge badge-info">
                                         <i class="ri-login-box-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @elseif($log->action === 'logout')
-                                    <span class="badge badge-secondary">
+                                    <span class="badge badge-orange">
                                         <i class="ri-logout-box-line"></i>
                                         {{ $log->action_label }}
                                     </span>
@@ -198,10 +198,17 @@
                             </td>
 
                             <td data-status="{{ $log->status }}">
-                                <span
-                                    class="badge {{ $log->status === 'success' ? 'badge-success' : 'badge-danger' }}">
-                                    {{ $log->status_label }}
-                                </span>
+                                @if ($log->status === 'success')
+                                    <span class="badge badge-success">
+                                        <i class="ri-checkbox-circle-line"></i>
+                                        {{ $log->status_label }}
+                                    </span>
+                                @elseif($log->status === 'failed')
+                                    <span class="badge badge-danger">
+                                        <i class="ri-close-circle-line"></i>
+                                        {{ $log->status_label }}
+                                    </span>
+                                @endif
                             </td>
 
                             <td>
@@ -218,14 +225,14 @@
                                 <span class="agent-info" title="{{ $log->user_agent }}">
                                     <span class="agent-browser">
                                         <i class="{{ $agent['browser_icon'] }} "></i>
-                                        {{ $agent['browser'] }}
+                                        <span class="agent-text">{{ $agent['browser'] }}</span>
                                     </span>
 
                                     <span class="agent-dot">•</span>
 
                                     <span class="agent-os">
                                         <i class="{{ $agent['os_icon'] }}"></i>
-                                        {{ $agent['os'] }}
+                                        <span class="agent-text">{{ $agent['os'] }}</span>
                                     </span>
                                 </span>
                             </td>

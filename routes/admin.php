@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Route;
 // ACCESS LOGS
 Route::controller(AccessLogController::class)->name('admin.access-logs.')->group(function () {
     Route::get('/access-logs', 'index')->name('index');
-    Route::get('/access-logs/export/excel', 'exportExcel')->name('export.excel');
-    Route::get('/access-logs/export/pdf', 'exportPdf')->name('export.pdf');
-    Route::get('/access-logs/export/csv', 'exportCsv')->name('export.csv');
+    Route::post('/access-logs/export/excel', 'exportExcel')->name('export.excel');
+    Route::post('/access-logs/export/pdf', 'exportPdf')->name('export.pdf');
+    Route::post('/access-logs/export/csv', 'exportCsv')->name('export.csv');
 });
 
 

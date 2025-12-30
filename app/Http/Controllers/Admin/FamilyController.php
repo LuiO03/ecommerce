@@ -40,6 +40,12 @@ class FamilyController extends Controller
         } elseif ($request->has('export_all')) {
             $families = Family::all();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron familias para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron familias para exportar.');
         }
 
