@@ -1,5 +1,20 @@
-<section id="companySettingsSectionContact" class="settings-section" data-section="contact"
-    role="tabpanel" aria-labelledby="tab-contact">
+<form method="POST" action="{{ route('admin.company-settings.update-contact') }}" id="companySettingsContactForm">
+    @csrf
+    @if ($errors->hasBag('contact') && $errors->contact->any())
+        <div class="form-error-banner">
+            <i class="ri-error-warning-line form-error-icon"></i>
+            <div>
+                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                <ul>
+                    @foreach ($errors->contact->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+    <section id="companySettingsSectionContact" class="settings-section" data-section="contact"
+        role="tabpanel" aria-labelledby="tab-contact">
     <div class="form-body">
         <div class="card-header">
             <span class="card-title">Información de contacto</span>
@@ -80,23 +95,24 @@
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
             <span class="boton-form-text">Volver al inicio</span>
         </a>
-        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+        <button class="boton-form boton-accent" type="submit" id="contactSubmitBtn">
             <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
             <span class="boton-form-text">Guardar Información</span>
         </button>
     </div>
-</section>
+    </section>
+</form>
 
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             initSubmitLoader({
-                formId: 'companySettingsForm',
-                buttonId: 'submitBtn',
+                formId: 'companySettingsContactForm',
+                buttonId: 'contactSubmitBtn',
                 loadingText: 'Actualizando...'
             });
 
-            initFormValidator('#companySettingsForm', {
+            initFormValidator('#companySettingsContactForm', {
                 validateOnBlur: true,
                 validateOnInput: false,
                 scrollToFirstError: true

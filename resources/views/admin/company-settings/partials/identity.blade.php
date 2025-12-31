@@ -19,8 +19,23 @@
     $secondaryColor = $normalizeColor(old('secondary_color', $setting->secondary_color), '#0EA5E9');
 @endphp
 
-<section id="companySettingsSectionIdentity" class="settings-section" data-section="identity" role="tabpanel"
-    aria-labelledby="tab-identity">
+<form method="POST" action="{{ route('admin.company-settings.update-identity') }}" enctype="multipart/form-data" id="companySettingsIdentityForm">
+    @csrf
+    @if ($errors->hasBag('identity') && $errors->identity->any())
+        <div class="form-error-banner">
+            <i class="ri-error-warning-line form-error-icon"></i>
+            <div>
+                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                <ul>
+                    @foreach ($errors->identity->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+    <section id="companySettingsSectionIdentity" class="settings-section" data-section="identity" role="tabpanel"
+        aria-labelledby="tab-identity">
     <div class="form-body">
         <div class="card-header">
             <span class="card-title">Identidad visual</span>
@@ -132,22 +147,23 @@
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
             <span class="boton-form-text">Volver al inicio</span>
         </a>
-        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+        <button class="boton-form boton-accent" type="submit" id="identitySubmitBtn">
             <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
             <span class="boton-form-text">Guardar Información</span>
         </button>
     </div>
-</section>
+    </section>
+</form>
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 initSubmitLoader({
-                    formId: 'companySettingsForm',
-                    buttonId: 'submitBtn',
+                    formId: 'companySettingsIdentityForm',
+                    buttonId: 'identitySubmitBtn',
                     loadingText: 'Actualizando...'
                 });
 
-                initFormValidator('#companySettingsForm', {
+                initFormValidator('#companySettingsIdentityForm', {
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true

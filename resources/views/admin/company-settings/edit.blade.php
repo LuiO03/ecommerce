@@ -6,24 +6,7 @@
         Configuración de la empresa
     </x-slot>
 
-    <div action="{{ route('admin.company-settings.update') }}" method="POST" enctype="multipart/form-data"
-        class="form-container" autocomplete="off" id="companySettingsForm">
-        @csrf
-        @method('PUT')
-
-        @if ($errors->any())
-            <div class="form-error-banner">
-                <i class="ri-error-warning-line form-error-icon"></i>
-                <div>
-                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
+    <div class="form-container" autocomplete="off" id="companySettingsForm">
 
         <x-alert type="info" title="Consejo" :dismissible="true" :items="[
             'Actualiza los datos de tu empresa para mostrar información consistente en todo el sistema.',
@@ -77,6 +60,20 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const tabManager = initCompanySettingsTabs();
+                // Activar la pestaña según el hash de la URL tras redirect
+                const hash = window.location.hash;
+                if (hash && hash.startsWith('#companySettingsSection')) {
+                    const section = hash.replace('#companySettingsSection', '').toLowerCase();
+                    const tabBtn = document.querySelector('.settings-tab-button[data-target="' + section + '"]');
+                    if (tabBtn) {
+                        tabBtn.click();
+                        // Scroll al inicio de la sección
+                        const sectionEl = document.querySelector(hash);
+                        if (sectionEl) {
+                            sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                }
             });
         </script>
     @endpush

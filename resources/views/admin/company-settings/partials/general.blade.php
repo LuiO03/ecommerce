@@ -1,5 +1,21 @@
-<section id="companySettingsSectionGeneral" class="settings-section is-active" data-section="general" role="tabpanel"
-    aria-labelledby="tab-general">
+<form method="POST" action="{{ route('admin.company-settings.update-general') }}" id="companySettingsGeneralForm">
+    @csrf
+    @method('PUT')
+    @if ($errors->hasBag('general') && $errors->general->any())
+        <div class="form-error-banner">
+            <i class="ri-error-warning-line form-error-icon"></i>
+            <div>
+                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                <ul>
+                    @foreach ($errors->general->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+    <section id="companySettingsSectionGeneral" class="settings-section is-active" data-section="general" role="tabpanel"
+        aria-labelledby="tab-general">
 
     <div class="form-body">
         <div class="card-header">
@@ -74,22 +90,23 @@
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
             <span class="boton-form-text">Volver al inicio</span>
         </a>
-        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+        <button class="boton-form boton-accent" type="submit" id="generalSubmitBtn">
             <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
             <span class="boton-form-text">Guardar Información</span>
         </button>
     </div>
-</section>
+    </section>
+</form>
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             initSubmitLoader({
-                formId: 'companySettingsForm',
-                buttonId: 'submitBtn',
+                formId: 'companySettingsGeneralForm',
+                buttonId: 'generalSubmitBtn',
                 loadingText: 'Actualizando...'
             });
 
-            initFormValidator('#companySettingsForm', {
+            initFormValidator('#companySettingsGeneralForm', {
                 validateOnBlur: true,
                 validateOnInput: false,
                 scrollToFirstError: true

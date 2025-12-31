@@ -1,5 +1,21 @@
-<section id="companySettingsSectionLegal" class="settings-section" data-section="legal"
-    role="tabpanel" aria-labelledby="tab-legal">
+<form method="POST" action="{{ route('admin.company-settings.update-fiscal') }}" id="companySettingsLegalForm">
+    @csrf
+    @method('PUT')
+    @if ($errors->hasBag('fiscal') && $errors->fiscal->any())
+        <div class="form-error-banner">
+            <i class="ri-error-warning-line form-error-icon"></i>
+            <div>
+                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                <ul>
+                    @foreach ($errors->fiscal->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+    <section id="companySettingsSectionLegal" class="settings-section" data-section="legal"
+        role="tabpanel" aria-labelledby="tab-legal">
     <div class="form-body">
         <div class="card-header">
             <span class="card-title">Aspectos legales</span>
@@ -38,23 +54,24 @@
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
             <span class="boton-form-text">Volver al inicio</span>
         </a>
-        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+        <button class="boton-form boton-accent" type="submit" id="legalSubmitBtn">
             <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
             <span class="boton-form-text">Guardar Información</span>
         </button>
     </div>
-</section>
+    </section>
+</form>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 initSubmitLoader({
-                    formId: 'companySettingsForm',
-                    buttonId: 'submitBtn',
+                    formId: 'companySettingsLegalForm',
+                    buttonId: 'legalSubmitBtn',
                     loadingText: 'Actualizando...'
                 });
 
-                initFormValidator('#companySettingsForm', {
+                initFormValidator('#companySettingsLegalForm', {
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true
