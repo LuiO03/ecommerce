@@ -6,7 +6,7 @@
         Configuración de la empresa
     </x-slot>
 
-    <form action="{{ route('admin.company-settings.update') }}" method="POST" enctype="multipart/form-data"
+    <div action="{{ route('admin.company-settings.update') }}" method="POST" enctype="multipart/form-data"
         class="form-container" autocomplete="off" id="companySettingsForm">
         @csrf
         @method('PUT')
@@ -71,70 +71,12 @@
                 @include('admin.company-settings.partials.legal')
             </div>
         </div>
+    </div>
 
-        <div class="form-footer">
-            <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">
-                <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
-                <span class="boton-form-text">Volver al inicio</span>
-            </a>
-            <button class="boton-form boton-accent" type="submit" id="submitBtn">
-                <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
-                <span class="boton-form-text">Guardar cambios</span>
-            </button>
-        </div>
-    </form>
-
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                initSubmitLoader({
-                    formId: 'companySettingsForm',
-                    buttonId: 'submitBtn',
-                    loadingText: 'Actualizando...'
-                });
-
-                initFormValidator('#companySettingsForm', {
-                    validateOnBlur: true,
-                    validateOnInput: false,
-                    scrollToFirstError: true
-                });
-
                 const tabManager = initCompanySettingsTabs();
-
-                const editorManager = initCompanySettingsEditors({
-                    termsId: 'terms_conditions',
-                    privacyId: 'privacy_policy',
-                    claimsId: 'claims_book_information',
-                });
-
-                if (editorManager && editorManager.ready) {
-                    editorManager.ready.catch((error) => {
-                        console.error('No fue posible inicializar los editores de texto:', error);
-                    });
-                }
-
-                initCompanySettingsColorInputs();
-
-                const hasLogo = @json($hasLogo);
-                const existingLogoFilename = @json($logoFilename);
-
-                initImageUpload({
-                    inputId: 'companyLogo',
-                    previewZoneId: 'companyLogoPreviewZone',
-                    placeholderId: 'companyLogoPlaceholder',
-                    previewId: 'companyLogoPreview',
-                    previewNewId: 'companyLogoPreviewNew',
-                    overlayId: 'companyLogoOverlay',
-                    changeBtnId: 'companyChangeLogoBtn',
-                    removeBtnId: 'companyRemoveLogoBtn',
-                    filenameContainerId: 'companyLogoFilename',
-                    filenameTextId: 'companyLogoFilenameText',
-                    removeFlagId: 'removeLogoFlag',
-                    mode: 'edit',
-                    hasExistingImage: hasLogo,
-                    existingImageFilename: existingLogoFilename
-                });
             });
         </script>
     @endpush

@@ -5,7 +5,8 @@
         <div class="card-header">
             <span class="card-title">Información general</span>
             <p class="card-description">
-                Configura la información básica de tu empresa que se mostrará en el sitio web y en los documentos oficiales.
+                Configura la información básica de tu empresa que se mostrará en el sitio web y en los documentos
+                oficiales.
             </p>
         </div>
     </div>
@@ -68,4 +69,31 @@
             </div>
         </div>
     </div>
+    <div class="form-footer">
+        <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">
+            <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
+            <span class="boton-form-text">Volver al inicio</span>
+        </a>
+        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+            <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
+            <span class="boton-form-text">Guardar Información</span>
+        </button>
+    </div>
 </section>
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initSubmitLoader({
+                formId: 'companySettingsForm',
+                buttonId: 'submitBtn',
+                loadingText: 'Actualizando...'
+            });
+
+            initFormValidator('#companySettingsForm', {
+                validateOnBlur: true,
+                validateOnInput: false,
+                scrollToFirstError: true
+            });
+        });
+    </script>
+@endpush

@@ -89,9 +89,16 @@ Route::controller(ProfileController::class)->group(function () {
 });
 
 // COMPANY SETTINGS
+
 Route::controller(CompanySettingController::class)->group(function () {
     Route::get('/company-settings', 'edit')->name('admin.company-settings.edit');
     Route::put('/company-settings', 'update')->name('admin.company-settings.update');
+
+    // Updates independientes por partial
+    Route::post('/company-settings/identity', 'updateIdentity')->name('admin.company-settings.update-identity');
+    Route::post('/company-settings/contact', 'updateContact')->name('admin.company-settings.update-contact');
+    Route::post('/company-settings/social', 'updateSocial')->name('admin.company-settings.update-social');
+    Route::post('/company-settings/fiscal', 'updateFiscal')->name('admin.company-settings.update-fiscal');
 });
 
 

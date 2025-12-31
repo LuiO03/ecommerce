@@ -127,4 +127,53 @@
             </div>
         </div>
     </div>
+    <div class="form-footer">
+        <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">
+            <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
+            <span class="boton-form-text">Volver al inicio</span>
+        </a>
+        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+            <span class="boton-form-icon"><i class="ri-save-3-line"></i></span>
+            <span class="boton-form-text">Guardar Información</span>
+        </button>
+    </div>
 </section>
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                initSubmitLoader({
+                    formId: 'companySettingsForm',
+                    buttonId: 'submitBtn',
+                    loadingText: 'Actualizando...'
+                });
+
+                initFormValidator('#companySettingsForm', {
+                    validateOnBlur: true,
+                    validateOnInput: false,
+                    scrollToFirstError: true
+                });
+
+                initCompanySettingsColorInputs();
+
+                const hasLogo = @json($hasLogo);
+                const existingLogoFilename = @json($logoFilename);
+
+                initImageUpload({
+                    inputId: 'companyLogo',
+                    previewZoneId: 'companyLogoPreviewZone',
+                    placeholderId: 'companyLogoPlaceholder',
+                    previewId: 'companyLogoPreview',
+                    previewNewId: 'companyLogoPreviewNew',
+                    overlayId: 'companyLogoOverlay',
+                    changeBtnId: 'companyChangeLogoBtn',
+                    removeBtnId: 'companyRemoveLogoBtn',
+                    filenameContainerId: 'companyLogoFilename',
+                    filenameTextId: 'companyLogoFilenameText',
+                    removeFlagId: 'removeLogoFlag',
+                    mode: 'edit',
+                    hasExistingImage: hasLogo,
+                    existingImageFilename: existingLogoFilename
+                });
+            });
+        </script>
+    @endpush
