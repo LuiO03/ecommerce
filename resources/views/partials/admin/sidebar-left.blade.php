@@ -120,40 +120,6 @@
                 </a>
             </li>
 
-            <li>
-                <a href="{{ route('admin.users.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" data-tooltip="Users">
-                    <i class="ri-id-card-line sidebar-icon"></i>
-                    <span>Usuarios</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ route('admin.roles.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
-                    data-tooltip="Roles">
-                    <i class="ri-shield-user-line sidebar-icon"></i>
-                    <span>Roles</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ route('admin.options.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.options.*') ? 'active' : '' }}"
-                    data-tooltip="Opciones">
-                    <i class="ri-settings-3-line sidebar-icon"></i>
-                    <span>Opciones</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ route('admin.access-logs.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
-                    data-tooltip="Registros de acceso">
-                    <i class="ri-login-circle-line sidebar-icon"></i>
-                    <span>Accesos</span>
-                </a>
-            </li>
 
             <!-- Submenú Tienda -->
             <li class="submenu-container">
@@ -201,6 +167,15 @@
             </li>
 
             <li>
+                <a href="{{ route('admin.options.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.options.*') ? 'active' : '' }}"
+                    data-tooltip="Opciones">
+                    <i class="ri-settings-3-line sidebar-icon"></i>
+                    <span>Opciones</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ route('admin.company-settings.edit') }}"
                     class="sidebar-link {{ request()->routeIs('admin.company-settings.*') ? 'active' : '' }}"
                     data-tooltip="Configuración">
@@ -208,7 +183,43 @@
                     <span>Empresa</span>
                 </a>
             </li>
+            <!-- Submenú Gestion de Acceso -->
+            <li class="submenu-container">
+                <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
+                    data-tooltip="Gestión de Acceso">
+                    <i class="ri-shield-user-line sidebar-icon"></i>
+                    <span class="flex-1 text-left">Gestión de Acceso</span>
+                    <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
+                </button>
 
+                <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
+                    <li>
+                        <a href="{{ route('admin.access-logs.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
+                            data-tooltip="Registros de acceso">
+                            <i class="ri-login-circle-line sidebar-icon"></i>
+                            <span>Accesos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.users.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                            data-tooltip="Users">
+                            <i class="ri-id-card-line sidebar-icon"></i>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.roles.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
+                            data-tooltip="Roles y Permisos">
+                            <i class="ri-shield-user-line sidebar-icon"></i>
+                            <span>Roles y Permisos</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 

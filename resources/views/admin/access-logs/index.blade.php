@@ -76,7 +76,7 @@
                 <!-- Estado -->
                 <div class="tabla-select-wrapper">
                     <div class="selector">
-                        <select id="statusFilter">
+                        <select id="statusFilterAccess">
                             <option value="">Todos los estados</option>
                             <option value="success">Success</option>
                             <option value="failed">Failed</option>
@@ -133,13 +133,13 @@
                         <th class="column-check-th column-not-order">
                             <div><input type="checkbox" id="checkAll"></div>
                         </th>
-                        <th>ID</th>
-                        <th>Usuario</th>
-                        <th>Email</th>
+                        <th class="column-id-th">ID</th>
+                        <th class="column-name-th">Usuario</th>
+                        <th class="column-email-th">Email</th>
                         <th>Acción</th>
-                        <th>Estado</th>
+                        <th class="column-status-th">Estado</th>
                         <th>IP</th>
-                        <th>Fecha</th>
+                        <th class="column-date-th">Fecha</th>
                         <th>Agente</th>
                     </tr>
                 </thead>
@@ -155,9 +155,9 @@
                                 </div>
                             </td>
 
-                            <td>{{ $log->id }}</td>
+                            <td class="column-id-td">{{ $log->id }}</td>
 
-                            <td>
+                            <td class="column-name-td">
                                 @if ($log->user)
                                     <span class="badge badge-primary">
                                         <i class="ri-user-3-line"></i>
@@ -171,40 +171,40 @@
                                 @endif
                             </td>
 
-                            <td>{{ $log->email ?? '—' }}</td>
+                            <td class="column-email-td">{{ $log->email ?? '—' }}</td>
 
                             <td data-action="{{ $log->action }}">
                                 @if ($log->action === 'login')
-                                    <span class="badge badge-info">
+                                    <span class="badge boton-info">
                                         <i class="ri-login-box-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @elseif($log->action === 'logout')
-                                    <span class="badge badge-orange">
+                                    <span class="badge boton-warning">
                                         <i class="ri-logout-box-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @elseif($log->action === 'failed')
-                                    <span class="badge badge-danger">
+                                    <span class="badge boton-danger">
                                         <i class="ri-error-warning-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @else
-                                    <span class="badge badge-gray">
+                                    <span class="badge boton-gray">
                                         <i class="ri-question-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @endif
                             </td>
 
-                            <td data-status="{{ $log->status }}">
+                            <td class="column-status-td" data-status="{{ $log->status }}">
                                 @if ($log->status === 'success')
-                                    <span class="badge badge-success">
+                                    <span class="badge boton-success">
                                         <i class="ri-checkbox-circle-line"></i>
                                         {{ $log->status_label }}
                                     </span>
                                 @elseif($log->status === 'failed')
-                                    <span class="badge badge-danger">
+                                    <span class="badge boton-danger">
                                         <i class="ri-close-circle-line"></i>
                                         {{ $log->status_label }}
                                     </span>
@@ -215,7 +215,7 @@
                                 <code>{{ $log->ip_address ?? '—' }}</code>
                             </td>
 
-                            <td>
+                            <td class="column-date-td">
                                 {{ $log->created_at->format('d/m/Y H:i') }}
                             </td>
 
@@ -275,19 +275,25 @@
 
                 // Filtros personalizados
                 let actionFilter = '';
-                let statusFilter = '';
+                let statusFilterAccess = '';
 
                 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                     if (settings.nTable.id !== 'tabla') return true;
 
                     const row = tableManager.table.row(dataIndex).node();
 
-                    if (actionFilter && $(row).find('[data-action]').data('action') !== actionFilter) {
-                        return false;
+                    if (actionFilter) {
+                        const rowAction = ($(row).find('[data-action]').attr('data-action') || '').trim();
+                        if (rowAction !== actionFilter) {
+                            return false;
+                        }
                     }
 
-                    if (statusFilter && $(row).find('[data-status]').data('status') !== statusFilter) {
-                        return false;
+                    if (statusFilterAccess) {
+                        const rowStatus = ($(row).find('[data-status]').attr('data-status') || '').trim();
+                        if (rowStatus !== statusFilterAccess) {
+                            return false;
+                        }
                     }
 
                     return true;
@@ -298,8 +304,8 @@
                     tableManager.table.draw();
                 });
 
-                $('#statusFilter').on('change', function() {
-                    statusFilter = this.value;
+                $('#statusFilterAccess').on('change', function() {
+                    statusFilterAccess = this.value;
                     tableManager.table.draw();
                 });
 

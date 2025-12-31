@@ -284,6 +284,7 @@
                 // 📊 INICIALIZACIÓN CON DATATABLEMANAGER
                 // ========================================
                 const tableManager = new DataTableManager('#tabla', {
+
                     moduleName: 'categories',
                     entityNameSingular: 'categoría',
                     entityNamePlural: 'categorías',

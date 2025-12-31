@@ -517,6 +517,10 @@
     border-radius: var(--radius-card);
 }
 
+.page-icon i{
+    font-weight: lighter;
+}
+
 .slot-container{
     padding: 0px;
     max-width: var(--max-width);
