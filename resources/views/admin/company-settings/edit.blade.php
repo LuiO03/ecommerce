@@ -58,23 +58,7 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const tabManager = initCompanySettingsTabs();
-                // Activar la pestaña según el hash de la URL tras redirect
-                const hash = window.location.hash;
-                if (hash && hash.startsWith('#companySettingsSection')) {
-                    const section = hash.replace('#companySettingsSection', '').toLowerCase();
-                    const tabBtn = document.querySelector('.settings-tab-button[data-target="' + section + '"]');
-                    if (tabBtn) {
-                        tabBtn.click();
-                        // Scroll al inicio de la sección
-                        const sectionEl = document.querySelector(hash);
-                        if (sectionEl) {
-                            sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }
-                }
-            });
+
         </script>
     @endpush
 </x-admin-layout>

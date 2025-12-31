@@ -15,6 +15,17 @@ use App\Http\Controllers\Admin\OptionFeatureController;
 use App\Http\Controllers\Admin\AccessLogController;
 use Illuminate\Support\Facades\Route;
 
+// COMPANY SETTINGS
+Route::controller(CompanySettingController::class)->group(function () {
+    Route::get('/company-settings', 'edit')->name('admin.company-settings.edit');
+
+    // Updates independientes por partial
+    Route::post('/company-settings/general', 'updateGeneral')->name('admin.company-settings.update-general');
+    Route::post('/company-settings/identity', 'updateIdentity')->name('admin.company-settings.update-identity');
+    Route::post('/company-settings/contact', 'updateContact')->name('admin.company-settings.update-contact');
+    Route::post('/company-settings/social', 'updateSocial')->name('admin.company-settings.update-social');
+    Route::post('/company-settings/legal', 'updateLegal')->name('admin.company-settings.update-legal');
+});
 
 // ACCESS LOGS
 Route::controller(AccessLogController::class)->name('admin.access-logs.')->group(function () {
@@ -23,7 +34,6 @@ Route::controller(AccessLogController::class)->name('admin.access-logs.')->group
     Route::post('/access-logs/export/pdf', 'exportPdf')->name('export.pdf');
     Route::post('/access-logs/export/csv', 'exportCsv')->name('export.csv');
 });
-
 
 // OPTIONS & FEATURES
 Route::prefix('options')
@@ -72,6 +82,7 @@ Route::controller(PostController::class)->group(function () {
     Route::post('/posts/{post}/reject', 'reject')->name('admin.posts.reject');
 });
 
+// PROFILE
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile', 'index')->name('admin.profile.index');
     Route::put('/profile', 'update')->name('admin.profile.update');
@@ -87,21 +98,6 @@ Route::controller(ProfileController::class)->group(function () {
     // Cerrar sesión de otros dispositivos
     Route::post('/profile/logout-session', 'logoutSession')->name('admin.profile.logout-session');
 });
-
-// COMPANY SETTINGS
-
-Route::controller(CompanySettingController::class)->group(function () {
-    Route::get('/company-settings', 'edit')->name('admin.company-settings.edit');
-
-    // Updates independientes por partial
-    Route::post('/company-settings/general', 'updateGeneral')->name('admin.company-settings.update-general');
-    Route::post('/company-settings/identity', 'updateIdentity')->name('admin.company-settings.update-identity');
-    Route::post('/company-settings/contact', 'updateContact')->name('admin.company-settings.update-contact');
-    Route::post('/company-settings/social', 'updateSocial')->name('admin.company-settings.update-social');
-    Route::post('/company-settings/fiscal', 'updateFiscal')->name('admin.company-settings.update-fiscal');
-});
-
-
 
 // FAMILIES
 Route::controller(FamilyController::class)->group(function () {

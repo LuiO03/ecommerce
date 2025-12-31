@@ -1,6 +1,5 @@
 <form method="POST" action="{{ route('admin.company-settings.update-general') }}" id="companySettingsGeneralForm">
     @csrf
-    @method('PUT')
     @if ($errors->hasBag('general') && $errors->general->any())
         <div class="form-error-banner">
             <i class="ri-error-warning-line form-error-icon"></i>

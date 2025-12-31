@@ -68,15 +68,18 @@
 	padding: 0;
 }
 
+
 .settings-section {
 	display: none;
 	width: 100%;
 }
-
 .settings-section.is-active {
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
+}
+.settings-section.hidden {
+	display: none !important;
 }
 
 .settings-section .form-row {

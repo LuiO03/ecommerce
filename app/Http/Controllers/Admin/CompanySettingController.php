@@ -10,15 +10,19 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Admin\UpdateCompanyContactRequest;
+use App\Http\Requests\Admin\UpdateCompanyIdentityRequest;
+use App\Http\Requests\Admin\UpdateCompanylegalRequest;
+use App\Http\Requests\Admin\UpdateCompanyGeneralRequest;
+use App\Http\Requests\Admin\UpdateCompanySocialRequest;
 
 class CompanySettingController extends Controller
 {
     /**
      * Actualiza la información general de la empresa.
      */
-    public function updateGeneral(UpdateCompanySettingRequest $request)
+    public function updateGeneral(\App\Http\Requests\Admin\UpdateCompanyGeneralRequest $request)
     {
-        try {
             $setting = CompanySetting::first() ?? new CompanySetting;
             $data = collect($request->validated());
             $setting->name = $data->get('name');
@@ -28,24 +32,23 @@ class CompanySettingController extends Controller
             $setting->about = $data->get('about');
             $setting->save();
             Cache::forget('company_settings');
-            Session::flash('toast', [
-                'type' => 'success',
-                'title' => 'Información general actualizada',
-                'message' => 'La información general se guardó correctamente.',
-            ]);
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionGeneral";
-        } catch (ValidationException $e) {
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionGeneral"
-                ->withErrors($e->validator, 'general');
-        }
+
+            return redirect()
+                ->route('admin.company-settings.edit')
+                ->with('toast', [
+                    'type' => 'success',
+                    'title' => 'Información general actualizada',
+                    'message' => 'Los datos generales de la empresa se guardaron correctamente.',
+                ]);
+
     }
 
     /**
      * Actualiza la identidad visual (colores y logotipo).
      */
-    public function updateIdentity(UpdateCompanySettingRequest $request)
+    public function updateIdentity(UpdateCompanyIdentityRequest $request)
     {
-        try {
+
             $setting = CompanySetting::first() ?? new CompanySetting;
             $data = collect($request->validated());
             $removeLogo = $request->boolean('remove_logo');
@@ -69,101 +72,92 @@ class CompanySettingController extends Controller
             $setting->logo_path = $logoPath;
             $setting->save();
             Cache::forget('company_settings');
-            Session::flash('toast', [
-                'type' => 'success',
-                'title' => 'Identidad actualizada',
-                'message' => 'La identidad visual se guardó correctamente.',
-            ]);
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionIdentity";
-        } catch (ValidationException $e) {
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionIdentity"
-                ->withErrors($e->validator, 'identity');
-        }
+            return redirect()
+                ->route('admin.company-settings.edit')
+                ->with('toast', [
+                    'type' => 'success',
+                    'title' => 'Identidad visual actualizada',
+                    'message' => 'Los datos de identidad visual se guardaron correctamente.',
+                ]);
     }
 
     /**
      * Actualiza los datos de contacto.
      */
-    public function updateContact(UpdateCompanySettingRequest $request)
+    public function updateContact(UpdateCompanyContactRequest $request)
     {
-        try {
-            $setting = CompanySetting::first() ?? new CompanySetting;
-            $data = collect($request->validated());
-            $setting->contact_email = $data->get('contact_email');
-            $setting->contact_phone = $data->get('contact_phone');
-            $setting->contact_address = $data->get('contact_address');
-            $setting->save();
-            Cache::forget('company_settings');
-            Session::flash('toast', [
+        $setting = CompanySetting::first() ?? new CompanySetting;
+
+        $data = $request->validated();
+
+        $setting->email = $data['email'] ?? null;
+        $setting->support_email  = $data['support_email'] ?? null;
+        $setting->phone = $data['phone'] ?? null;
+        $setting->support_phone = $data['support_phone'] ?? null;
+        $setting->address = $data['address'] ?? null;
+        $setting->website = $data['website'] ?? null;
+
+        $setting->save();
+
+        Cache::forget('company_settings');
+
+        return redirect()
+            ->route('admin.company-settings.edit')
+            ->with('toast', [
                 'type' => 'success',
                 'title' => 'Contacto actualizado',
                 'message' => 'Los datos de contacto se guardaron correctamente.',
             ]);
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionContact";
-        } catch (ValidationException $e) {
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionContact"
-                ->withErrors($e->validator, 'contact');
-        }
     }
 
     /**
      * Actualiza los enlaces de redes sociales.
      */
-    public function updateSocial(UpdateCompanySettingRequest $request)
+    public function updateSocial(UpdateCompanySocialRequest $request)
     {
-        try {
-            $setting = CompanySetting::first() ?? new CompanySetting;
-            $data = collect($request->validated());
-            $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
-            $socialLinks = [];
-            foreach ($platforms as $platform) {
-                $socialLinks[$platform] = $data->get("{$platform}_url");
-            }
-            $setting->social_links = $socialLinks;
-            $setting->facebook_enabled = $request->boolean('facebook_enabled');
-            $setting->instagram_enabled = $request->boolean('instagram_enabled');
-            $setting->twitter_enabled = $request->boolean('twitter_enabled');
-            $setting->youtube_enabled = $request->boolean('youtube_enabled');
-            $setting->tiktok_enabled = $request->boolean('tiktok_enabled');
-            $setting->linkedin_enabled = $request->boolean('linkedin_enabled');
-            $setting->save();
-            Cache::forget('company_settings');
-            Session::flash('toast', [
+        $setting = CompanySetting::first() ?? new CompanySetting;
+        $data = collect($request->validated());
+        $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
+        $socialLinks = [];
+        foreach ($platforms as $platform) {
+            $socialLinks[$platform] = $data->get("{$platform}_url");
+        }
+        $setting->social_links = $socialLinks;
+        $setting->facebook_enabled = $request->boolean('facebook_enabled');
+        $setting->instagram_enabled = $request->boolean('instagram_enabled');
+        $setting->twitter_enabled = $request->boolean('twitter_enabled');
+        $setting->youtube_enabled = $request->boolean('youtube_enabled');
+        $setting->tiktok_enabled = $request->boolean('tiktok_enabled');
+        $setting->linkedin_enabled = $request->boolean('linkedin_enabled');
+        $setting->save();
+        Cache::forget('company_settings');
+
+        return redirect()->route('admin.company-settings.edit')
+            ->with('toast', [
                 'type' => 'success',
                 'title' => 'Redes sociales actualizadas',
                 'message' => 'Los enlaces de redes sociales se guardaron correctamente.',
             ]);
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionSocial";
-        } catch (ValidationException $e) {
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionSocial"
-                ->withErrors($e->validator, 'social');
-        }
     }
 
     /**
-     * Actualiza los datos fiscales.
+     * Actualiza los datos legales.
      */
-    public function updateFiscal(UpdateCompanySettingRequest $request)
+    public function updateLegal(UpdateCompanyLegalRequest $request)
     {
-        try {
-            $setting = CompanySetting::first() ?? new CompanySetting;
-            $data = collect($request->validated());
-            $setting->fiscal_name = $data->get('fiscal_name');
-            $setting->fiscal_rfc = $data->get('fiscal_rfc');
-            $setting->fiscal_address = $data->get('fiscal_address');
-            $setting->fiscal_regimen = $data->get('fiscal_regimen');
-            $setting->save();
-            Cache::forget('company_settings');
-            Session::flash('toast', [
+        $setting = CompanySetting::first() ?? new CompanySetting;
+        $data = $request->validated();
+        $setting->terms_conditions = $data['terms_conditions'] ?? null;
+        $setting->privacy_policy = $data['privacy_policy'] ?? null;
+        $setting->claims_book_information = $data['claims_book_information'] ?? null;
+        $setting->save();
+        Cache::forget('company_settings');
+        return redirect()->route('admin.company-settings.edit')
+            ->with('toast', [
                 'type' => 'success',
-                'title' => 'Datos fiscales actualizados',
-                'message' => 'Los datos fiscales se guardaron correctamente.',
+                'title' => 'Aspectos legales actualizados',
+                'message' => 'Los documentos legales se guardaron correctamente.',
             ]);
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionFiscal";
-        } catch (ValidationException $e) {
-            return redirect()->route('admin.company-settings.edit')."#companySettingsSectionFiscal"
-                ->withErrors($e->validator, 'fiscal');
-        }
     }
 
     /**
