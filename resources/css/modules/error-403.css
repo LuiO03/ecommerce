@@ -52,12 +52,13 @@
     color: #D11E4B;
     letter-spacing: -4px;
     text-shadow: 0 4px 24px #D11E4B55, 0 1px 0 #fff;
+    animation: error403-shake 1.2s cubic-bezier(.36,.07,.19,.97) both;
 }
 
 .error-403-icon {
     font-size: 4.5rem;
     color: #D11E4B;
-    animation: error403-shake 1.2s cubic-bezier(.36,.07,.19,.97) both;
+
 }
 
 @keyframes error403-shake {
