@@ -22,8 +22,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
-<script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
 
     <!-- CSS base del dashboard -->
     @vite(['resources/css/main.css'])
@@ -76,7 +76,13 @@
             </div>
         </div>
 
-        <div class="slot-container">{{ $slot }}</div>
+        <div class="slot-container">
+            @isset($slot)
+                {{ $slot }}
+            @else
+                @yield('content')
+            @endisset
+        </div>
     </main>
 
     @include('partials.admin.modal-info')
@@ -91,6 +97,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const info = @json(Session::get('info'));
+                console.log('Modal info debug:', info);
                 window.showInfoModal(info);
             });
         </script>
@@ -99,12 +106,13 @@
     @if (Session::has('toast'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-                    ? performance.getEntriesByType('navigation')
-                    : [];
-                const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-                    ? performance.navigation.type
-                    : null;
+                const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType ===
+                        'function') ?
+                    performance.getEntriesByType('navigation') :
+                    [];
+                const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                    performance.navigation.type :
+                    null;
                 const navType = navEntries.length ? navEntries[0].type : legacyNav;
                 const isBackNavigation = navType === 'back_forward' || navType === 2;
 

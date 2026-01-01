@@ -21,7 +21,17 @@ use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class ProductController extends Controller
+
 {
+    public function __construct()
+    {
+        $this->middleware('can:productos.index')->only(['index', 'show']);
+        $this->middleware('can:productos.create')->only(['create', 'store']);
+        $this->middleware('can:productos.edit')->only(['edit', 'update', 'updateStatus']);
+        $this->middleware('can:productos.delete')->only(['destroy', 'destroyMultiple']);
+        $this->middleware('can:productos.adjust-stock')->only(['adjustStock']);
+        $this->middleware('can:reportes.export')->only(['exportExcel', 'exportCsv', 'exportPdf']);
+    }
     public function index()
     {
         $products = Product::select([
