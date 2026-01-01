@@ -13,8 +13,8 @@
             </div>
         </div>
     @endif
-    <section id="companySettingsSectionLegal" class="settings-section" data-section="legal" role="tabpanel"
-        aria-labelledby="tab-legal">
+    <section id="companySettingsSectionLegal" data-section="legal" role="tabpanel"
+        aria-labelledby="tab-legal" class="container-section">
         <div class="form-body">
             <div class="card-header">
                 <span class="card-title">Aspectos legales</span>

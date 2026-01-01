@@ -13,8 +13,9 @@
             </div>
         </div>
     @endif
-    <section id="companySettingsSectionContact" class="settings-section" data-section="contact" role="tabpanel"
-        aria-labelledby="tab-contact">
+    <section id="companySettingsSectionContact" data-section="contact" role="tabpanel"
+        aria-labelledby="tab-contact" class="container-section">
+
         <div class="form-body">
             <div class="card-header">
                 <span class="card-title">Información de contacto</span>
@@ -52,7 +53,7 @@
                         <i class="ri-phone-line input-icon"></i>
                         <input type="text" name="phone" id="phone" class="input-form"
                             value="{{ old('phone', $setting->phone) }}" placeholder="+51 999 888 777"
-                            data-validate="max:25|phoneIntl">
+                            data-validate="max:25|phone|min:7">
                     </div>
                 </div>
             </div>
@@ -64,7 +65,7 @@
                         <i class="ri-headphone-line input-icon"></i>
                         <input type="text" name="support_phone" id="support_phone" class="input-form"
                             value="{{ old('support_phone', $setting->support_phone) }}" placeholder="+51 977 888 111"
-                            data-validate="max:25|phoneIntl">
+                            data-validate="max:25|phone|min:7">
                     </div>
                 </div>
 

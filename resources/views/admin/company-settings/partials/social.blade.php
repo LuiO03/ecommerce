@@ -13,8 +13,8 @@
             </div>
         </div>
     @endif
-    <section id="companySettingsSectionSocial" class="settings-section" data-section="social"
-        role="tabpanel" aria-labelledby="tab-social">
+    <section id="companySettingsSectionSocial" data-section="social"
+        role="tabpanel" aria-labelledby="tab-social" class="container-section">
 
     <div class="form-body">
         <div class="card-header">

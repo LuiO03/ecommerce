@@ -5,6 +5,18 @@
 	gap: 15px;
 }
 
+.container-section{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .container-section{
+        gap: 10px;
+    }
+}
+
 .settings-tabs-nav {
 	display: flex;
 	flex-direction: column;
@@ -34,6 +46,15 @@
 		box-shadow 0.25s ease;
 }
 
+.settings-tab-button.is-active, .settings-tab-button.is-active:hover {
+    background-color: var(--color-accent);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    font-family: var(--font-secondary);
+    box-shadow: 0 8px 18px var(--shadow-accent);
+}
+
 .settings-tab-button i {
 	font-size: 1.1rem;
 	color: var(--color-muted);
@@ -43,15 +64,6 @@
 .settings-tab-button:hover {
 	background-color: var(--color-hover);
 	border-color: var(--color-border);
-}
-
-.settings-tab-button.is-active {
-	background-color: var(--color-accent);
-	color: #ffffff;
-	border-color: transparent;
-	box-shadow: 0 8px 18px var(--shadow-accent);
-    font-family: var(--font-secondary);
-    font-weight: bold;
 }
 
 .settings-tab-button.is-active i {
@@ -66,47 +78,6 @@
 .settings-tabs-sections {
 	position: relative;
 	padding: 0;
-}
-
-
-.settings-section {
-	display: none;
-	width: 100%;
-}
-.settings-section.is-active {
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-}
-.settings-section.hidden {
-	display: none !important;
-}
-
-.settings-section .form-row {
-	margin-top: 1.5rem;
-	gap: 1.5rem;
-}
-
-.settings-section .form-row:first-of-type {
-	margin-top: 0;
-}
-
-.settings-section .social-toggle {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-	flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    border: 1px dashed var(--color-border);
-    border-radius: 0.75rem;
-    background-color: rgba(61, 49, 178, 0.04);
-}
-
-.settings-section .social-toggle-label {
-	font-size: 0.8rem;
-	font-weight: 600;
-	color: var(--color-muted);
 }
 
 .color-input-wrapper {
@@ -187,6 +158,16 @@
 	border-color: var(--color-success, #10b981);
 	color: var(--color-success, #10b981);
 	background-color: rgba(16, 185, 129, 0.12);
+}
+
+/* Animación de aparición para los tabs, igual que profile */
+.settings-tabs-sections > div {
+    transform: translateY(20px);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.settings-tabs-sections > div.fade-in {
+    transform: translateY(0);
+    z-index: 2;
 }
 
 @media (max-width: 1200px) {

@@ -215,6 +215,9 @@
     color: white;
     box-shadow: var(--shadow-material);
     border-color: transparent;
+    font-weight: bold;
+    font-family: var(--font-secondary);
+    box-shadow: 0 8px 18px var(--shadow-accent);
 }
 .profile-tab-content {
     display: block;

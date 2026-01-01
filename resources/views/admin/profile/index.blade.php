@@ -67,9 +67,9 @@
             <div id="tab-export" class="profile-tab-content hidden">
                 @include('admin.profile.partials.profile-export')
             </div>
-               <div id="tab-sessions" class="profile-tab-content hidden">
-                   @include('admin.profile.partials.profile-sessions')
-               </div>
+            <div id="tab-sessions" class="profile-tab-content hidden">
+                @include('admin.profile.partials.profile-sessions')
+            </div>
         </div>
     </div>
     <!-- Modal para cambiar imagen -->

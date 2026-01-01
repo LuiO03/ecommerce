@@ -43,22 +43,57 @@
             </div>
 
             <div class="settings-tabs-sections" id="companySettingsSections">
-                @include('admin.company-settings.partials.general')
 
-                @include('admin.company-settings.partials.contact')
-
-                @include('admin.company-settings.partials.social')
-
-                @include('admin.company-settings.partials.identity')
-
-                @include('admin.company-settings.partials.legal')
+                <div id="tab-general">
+                    @include('admin.company-settings.partials.general')
+                </div>
+                <div id="tab-contact">
+                    @include('admin.company-settings.partials.contact')
+                </div>
+                <div id="tab-social">
+                    @include('admin.company-settings.partials.social')
+                </div>
+                <div id="tab-identity">
+                    @include('admin.company-settings.partials.identity')
+                </div>
+                <div id="tab-legal">
+                    @include('admin.company-settings.partials.legal')
+                </div>
             </div>
         </div>
     </div>
 
-    @push('scripts')
-        <script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación y persistencia de tab activo igual que profile
+            function showTab(tabKey) {
+                document.querySelectorAll('.settings-tabs-sections > div').forEach(tab => {
+                    if(tab.id === 'tab-' + tabKey) {
+                        tab.classList.remove('hidden');
+                        setTimeout(() => tab.classList.add('fade-in'), 10);
+                    } else {
+                        if(!tab.classList.contains('hidden')) tab.classList.add('hidden');
+                        tab.classList.remove('fade-in');
+                    }
+                });
+                document.querySelectorAll('.settings-tab-button').forEach(b => b.classList.remove('is-active'));
+                const btn = document.querySelector('.settings-tab-button[data-target="' + tabKey + '"]');
+                if (btn) btn.classList.add('is-active');
+            }
 
-        </script>
-    @endpush
+            // Inicializar tab activo
+            let initialTab = localStorage.getItem('companySettingsActiveTab') || 'general';
+            if(window.location.hash === '#legal') initialTab = 'legal';
+            showTab(initialTab);
+
+            // Listener de tabs
+            document.querySelectorAll('.settings-tab-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.target;
+                    showTab(target);
+                    localStorage.setItem('companySettingsActiveTab', target);
+                });
+            });
+        });
+    </script>
 </x-admin-layout>
