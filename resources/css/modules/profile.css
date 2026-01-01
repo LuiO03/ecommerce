@@ -255,17 +255,24 @@
     gap: 1rem;
 }
 .gallery-option {
-    border: 2px solid var(--color-sidebar-bg);
+    border: 3px solid var(--color-sidebar-bg);
     background: none;
     padding: 0;
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     cursor: pointer;
     position: relative;
     padding: 5px;
 }
 
-.gallery-option.selected {
+.gallery-option:hover {
     border-color: var(--color-accent);
+    box-shadow: var(--shadow-material);
+    background-color: var(--color-hover);
+}
+
+.gallery-option.selected {
+    border-color: var(--color-success);
+    box-shadow: var(--shadow-material);
 }
 .gallery-preview {
     width: 100%;
@@ -284,7 +291,7 @@
     position: absolute;
     top: 2px;
     right: 2px;
-    color: var(--color-accent);
+    color: var(--color-success);
     font-size: 1.3rem;
     pointer-events: none;
     background-color: var(--color-sidebar-bg);

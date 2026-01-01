@@ -316,6 +316,22 @@ class FormValidator {
     // 📚 REGLAS DE VALIDACIÓN PREDEFINIDAS
     // ========================================
     validationRules = {
+                        // === SOLO IMAGEN ÚNICA ===
+                        imageSingle: (files, _param, field) => {
+                            if (!files || files.length === 0) return { valid: true };
+                            const file = files[0];
+                            const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                            const allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                            const mime = (file.type || '').toLowerCase();
+                            const ext = (file.name.split('.').pop() || '').toLowerCase();
+                            if (!(allowedMimes.includes(mime) || allowedExts.includes(ext))) {
+                                return {
+                                    valid: false,
+                                    message: 'Solo se permite una imagen JPG, PNG, GIF o WebP'
+                                };
+                            }
+                            return { valid: true };
+                        },
                 // === COLOR HEX ===
                 colorHex: (value) => {
                     if (!value) return { valid: true };
@@ -663,24 +679,21 @@ class FormValidator {
             };
         },
 
-        // === TAMAÑO MÁXIMO (en MB) - MÁS INTUITIVO ===
+        // === TAMAÑO MÁXIMO (GALERÍA, en MB) ===
         maxSizeMB: (files, param, field) => {
             if (!files || files.length === 0) return { valid: true };
             const maxSizeMB = parseFloat(param);
             const list = Array.from(files);
             const invalidFiles = list.filter(f => (f.size / (1024 * 1024)) > maxSizeMB);
-
             if (invalidFiles.length === 0) {
                 return { valid: true };
             }
-
             const indexes = invalidFiles
                 .map(f => {
                     const rawIndex = list.indexOf(f);
                     return getGalleryFileIndex(field, f, rawIndex);
                 })
                 .filter(i => i > 0);
-
             if (indexes.length > 0) {
                 const plural = indexes.length > 1;
                 const sujeto = plural ? 'Las imágenes' : 'La imagen';
@@ -692,13 +705,27 @@ class FormValidator {
                     invalidIndexes: indexes
                 };
             }
-
             const invalidFile = invalidFiles[0];
             const fileSizeMB = invalidFile.size / (1024 * 1024);
             return {
                 valid: false,
                 message: `El archivo "${invalidFile.name}" no debe exceder ${maxSizeMB}MB (actual: ${fileSizeMB.toFixed(2)}MB)`
             };
+        },
+
+        // === TAMAÑO MÁXIMO (IMAGEN ÚNICA, en MB) ===
+        maxSizeSingleMB: (files, param, field) => {
+            if (!files || files.length === 0) return { valid: true };
+            const maxSizeMB = parseFloat(param);
+            const file = files[0];
+            if ((file.size / (1024 * 1024)) > maxSizeMB) {
+                const fileSizeMB = file.size / (1024 * 1024);
+                return {
+                    valid: false,
+                    message: `La imagen no debe exceder ${maxSizeMB}MB (actual: ${fileSizeMB.toFixed(2)}MB)`
+                };
+            }
+            return { valid: true };
         },
 
         // === TIPOS DE ARCHIVO PERMITIDOS ===

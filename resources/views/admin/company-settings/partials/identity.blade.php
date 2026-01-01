@@ -97,7 +97,7 @@
                 <div class="image-upload-section">
                     <label class="label-form">Logotipo</label>
                     <input type="file" name="logo" id="companyLogo" class="file-input" accept="image/png"
-                        data-validate="image|maxSize:2048|fileTypes:png">
+                        data-validate="imageSingle|maxSizeSingleKB:2048|fileTypes:png">
                     <input type="hidden" name="remove_logo" id="removeLogoFlag" value="0">
 
                     <div class="image-preview-zone {{ $hasLogo ? 'has-image' : '' }}" id="companyLogoPreviewZone">

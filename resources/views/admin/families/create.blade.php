@@ -79,7 +79,7 @@
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la familia</label>
                     <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                        data-validate="image|maxSizeMB:3">
+                        data-validate="imageSingle|maxSizeSingleMB:3">
 
                     <!-- Zona de vista previa -->
                     <div class="image-preview-zone" id="imagePreviewZone">
