@@ -11,6 +11,24 @@
     gap: 16px;
 }
 
+.social-toggle{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+    background-color: var(--color-card-bg);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    padding: 5px 16px;
+}
+
+.social-toggle span{
+    font-size: var(--font-size-sm);
+    color: var(--color-accent);
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
 @media (max-width: 768px) {
     .container-section{
         gap: 10px;

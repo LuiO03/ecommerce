@@ -53,7 +53,7 @@
                         <i class="ri-phone-line input-icon"></i>
                         <input type="text" name="phone" id="phone" class="input-form"
                             value="{{ old('phone', $setting->phone) }}" placeholder="+51 999 888 777"
-                            data-validate="max:25|phone|min:7">
+                            data-validate="max:25|phone|min:9">
                     </div>
                 </div>
             </div>

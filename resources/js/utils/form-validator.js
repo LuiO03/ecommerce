@@ -460,12 +460,49 @@ class FormValidator {
             };
         },
 
-        // === TELÉFONO PERUANO (9 dígitos, empieza con 9) ===
+        // === TELÉFONO PERUANO (9 dígitos, empieza con 9, solo números, sin espacios ni símbolos) ===
         phone: (value) => {
             if (!value) return { valid: true };
+            // Quitar espacios y caracteres no numéricos
+            const cleanValue = value.replace(/\D/g, '');
+            if (value.match(/[^\d]/)) {
+                return {
+                    valid: false,
+                    message: 'El número solo debe contener dígitos, sin espacios ni símbolos'
+                };
+            }
+            if (cleanValue.length !== 9) {
+                return {
+                    valid: false,
+                    message: 'El número debe tener exactamente 9 dígitos'
+                };
+            }
+            if (!cleanValue.startsWith('9')) {
+                return {
+                    valid: false,
+                    message: 'El número debe iniciar con 9'
+                };
+            }
+            // No permitir todos los dígitos iguales (ej: 999999999)
+            if (/^(\d)\1{8}$/.test(cleanValue)) {
+                return {
+                    valid: false,
+                    message: 'El número no puede tener todos los dígitos iguales'
+                };
+            }
+            // No permitir secuencias ascendentes o descendentes simples (ej: 912345678, 987654321)
+            const secuenciasInvalidas = [
+                '912345678', '987654321', '900000000', '911111111', '922222222', '933333333', '944444444', '955555555', '966666666', '977777777', '988888888', '999999999'
+            ];
+            if (secuenciasInvalidas.includes(cleanValue)) {
+                return {
+                    valid: false,
+                    message: 'El número ingresado no es válido o es un patrón no permitido'
+                };
+            }
             return {
-                valid: /^9\d{8}$/.test(value),
-                message: 'Ingrese un número de teléfono válido (9 dígitos, inicia con 9)'
+                valid: true,
+                message: ''
             };
         },
 
