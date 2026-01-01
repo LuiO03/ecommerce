@@ -15,7 +15,7 @@
 
         <div id="companySettingsTabs" class="settings-tabs-layout">
             <div class="settings-tabs-nav" role="tablist" aria-label="Secciones de configuración">
-                <button type="button" class="settings-tab-button is-active" data-target="general" id="tab-general"
+                <button type="button" class="settings-tab-button" data-target="general" id="tab-general"
                     role="tab" aria-controls="companySettingsSectionGeneral">
                     <i class="ri-information-fill"></i>
                     <span>Información general</span>
@@ -84,6 +84,9 @@
             // Inicializar tab activo
             let initialTab = localStorage.getItem('companySettingsActiveTab') || 'general';
             if(window.location.hash === '#legal') initialTab = 'legal';
+            // Si el tab guardado no existe, fallback a general
+            const validTabs = Array.from(document.querySelectorAll('.settings-tab-button')).map(b => b.dataset.target);
+            if (!validTabs.includes(initialTab)) initialTab = 'general';
             showTab(initialTab);
 
             // Listener de tabs

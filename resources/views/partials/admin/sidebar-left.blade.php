@@ -103,7 +103,7 @@
         <ul class="space-y-1">
             @foreach ($links as $link)
             @endforeach
-            <li>
+            <li class="ripple-btn">
                 <a href="{{ route('admin.dashboard') }}"
                     class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                     data-tooltip="Dashboard">
@@ -111,7 +111,7 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-            <li>
+            <li class="ripple-btn">
                 <a href="{{ route('admin.families.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.families.*') ? 'active' : '' }}"
                     data-tooltip="Familias">
@@ -157,7 +157,7 @@
             </li>
 
             <!-- Posts -->
-            <li>
+            <li class="ripple-btn">
                 <a href="{{ route('admin.posts.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
                     data-tooltip="Posts">
@@ -166,16 +166,16 @@
                 </a>
             </li>
 
-            <li>
+            <li class="ripple-btn">
                 <a href="{{ route('admin.options.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.options.*') ? 'active' : '' }}"
-                    data-tooltip="Opciones">
+                    data-tooltip="Opciones y Valores">
                     <i class="ri-settings-3-line sidebar-icon"></i>
-                    <span>Opciones</span>
+                    <span>Opciones y Valores</span>
                 </a>
             </li>
 
-            <li>
+            <li class="ripple-btn">
                 <a href="{{ route('admin.company-settings.edit') }}"
                     class="sidebar-link {{ request()->routeIs('admin.company-settings.*') ? 'active' : '' }}"
                     data-tooltip="Configuración">
@@ -193,7 +193,7 @@
                 </button>
 
                 <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
-                    <li>
+                    <li class="ripple-btn">
                         <a href="{{ route('admin.access-logs.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
                             data-tooltip="Registros de acceso">
@@ -201,7 +201,7 @@
                             <span>Accesos</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="ripple-btn">
                         <a href="{{ route('admin.users.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                             data-tooltip="Users">
@@ -210,7 +210,7 @@
                         </a>
                     </li>
 
-                    <li>
+                    <li class="ripple-btn">
                         <a href="{{ route('admin.roles.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
                             data-tooltip="Roles y Permisos">

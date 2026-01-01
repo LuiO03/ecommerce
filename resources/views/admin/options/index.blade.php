@@ -6,7 +6,7 @@
 <x-admin-layout :showMobileFab="true" :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-info"><i class="ri-settings-3-line"></i></div>
-        Opciones y valores
+        Opciones y Valores
     </x-slot>
     <x-slot name="action">
         <a href="{{ route('admin.options.create') }}" class="boton boton-primary">
