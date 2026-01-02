@@ -5,18 +5,25 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border: 8px dotted var(--color-accent);
     background: linear-gradient(135deg, #f8ffae 0%, #43cea2 100%);
     border-radius: 1.5rem;
     padding: 3rem 2rem;
     width: 100%;
-    height: 100%;
-    animation: error403-pop 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+    min-height: calc(100vh - 180px);
+    animation: error403-pop 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     box-shadow: 0 8px 32px 0 rgba(60, 60, 60, 0.18);
 }
 
 @keyframes error403-pop {
-    0% { transform: scale(0.85) translateY(40px); opacity: 0; }
-    100% { transform: scale(1) translateY(0); opacity: 1; }
+    0% {
+        transform: scale(0.85) translateY(40px);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
 }
 
 .error-403-flex {
@@ -32,15 +39,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-width: 180px;
+    justify-content: start;
     padding: 1.5rem 1rem;
     line-height: 0;
     gap: 70px;
+    height: 100%;
 }
 
-.error-text-code{
-    font-size: 1.7rem;
+.error-text-code {
+    font-size: var(--font-size-h1);
     color: #555;
     font-family: var(--font-secondary);
     font-weight: bold;
@@ -49,32 +56,39 @@
 .error-403-code {
     font-size: 10rem;
     font-weight: 900;
-    color: #D11E4B;
+    color: #d11e4b;
     letter-spacing: -4px;
-    text-shadow: 0 4px 24px #D11E4B55, 0 1px 0 #fff;
-    animation: error403-shake 1.2s cubic-bezier(.36,.07,.19,.97) both;
-}
-
-.error-403-icon {
-    font-size: 4.5rem;
-    color: #D11E4B;
-
+    text-shadow: 0 4px 24px #d11e4b55, 0 1px 0 #fff;
+    animation: error403-shake 1.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 @keyframes error403-shake {
-    10%, 90% { transform: translateX(-2px); }
-    20%, 80% { transform: translateX(4px); }
-    30%, 50%, 70% { transform: translateX(-8px); }
-    40%, 60% { transform: translateX(8px); }
+    10%,
+    90% {
+        transform: translateX(-2px);
+    }
+    20%,
+    80% {
+        transform: translateX(4px);
+    }
+    30%,
+    50%,
+    70% {
+        transform: translateX(-8px);
+    }
+    40%,
+    60% {
+        transform: translateX(8px);
+    }
 }
 
 .error-403-right {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     min-width: 220px;
     max-width: 400px;
+    text-align: start;
 }
 
 .error-403-title {
@@ -94,12 +108,17 @@
 @media (max-width: 700px) {
     .error-403-flex {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 3.5rem;
     }
-    .error-403-left, .error-403-right {
+    .error-403-left,
+    .error-403-right {
         min-width: 0;
         max-width: 100%;
         align-items: center;
+        text-align: center;
+    }
+
+    .error-403-message {
         text-align: center;
     }
     .error-403-right {

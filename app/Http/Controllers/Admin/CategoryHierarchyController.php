@@ -184,8 +184,8 @@ class CategoryHierarchyController extends Controller
                 $slugsToChange[] = $category->slug;
             }
 
-            $targetName = $targetType === 'family' 
-                ? Family::find($targetId)->name 
+            $targetName = $targetType === 'family'
+                ? Family::find($targetId)->name
                 : Category::find($targetId)->name;
 
             return response()->json([
@@ -254,15 +254,15 @@ class CategoryHierarchyController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => count($categoryIds) === 1 
-                    ? 'Categoría movida correctamente' 
+                'message' => count($categoryIds) === 1
+                    ? 'Categoría movida correctamente'
                     : count($categoryIds) . ' categorías movidas correctamente'
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error en bulkMove: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al mover categorías: ' . $e->getMessage()
@@ -284,7 +284,7 @@ class CategoryHierarchyController extends Controller
 
         try {
             $categoryIds = $request->category_ids;
-            
+
             // Verificar si tienen productos
             $categoriesWithProducts = Category::whereIn('id', $categoryIds)
                 ->has('products')
@@ -309,15 +309,15 @@ class CategoryHierarchyController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => count($categoryIds) === 1 
-                    ? 'Categoría eliminada correctamente' 
+                'message' => count($categoryIds) === 1
+                    ? 'Categoría eliminada correctamente'
                     : count($categoryIds) . ' categorías eliminadas correctamente'
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error en bulkDelete: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al eliminar categorías: ' . $e->getMessage()
@@ -353,15 +353,15 @@ class CategoryHierarchyController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => $duplicatedCount === 1 
-                    ? 'Categoría duplicada correctamente' 
+                'message' => $duplicatedCount === 1
+                    ? 'Categoría duplicada correctamente'
                     : $duplicatedCount . ' categorías duplicadas correctamente'
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error en bulkDuplicate: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al duplicar categorías: ' . $e->getMessage()
@@ -463,8 +463,8 @@ class CategoryHierarchyController extends Controller
 
             // Obtener nombres para el mensaje
             $family = Family::find($request->family_id);
-            $parentName = $request->parent_id 
-                ? Category::find($request->parent_id)->name 
+            $parentName = $request->parent_id
+                ? Category::find($request->parent_id)->name
                 : 'raíz';
 
             return response()->json([
@@ -481,7 +481,7 @@ class CategoryHierarchyController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error en dragMove: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al mover la categoría: ' . $e->getMessage()

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 // COMPANY SETTINGS
 Route::controller(CompanySettingController::class)->group(function () {
-    Route::get('/company-settings', 'edit')->name('admin.company-settings.edit');
+    Route::get('/company-settings', 'index')->name('admin.company-settings.index');
 
     // Updates independientes por partial
     Route::post('/company-settings/general', 'updateGeneral')->name('admin.company-settings.update-general');

@@ -20,6 +20,18 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'productos.edit', 'description' => 'Puede editar productos existentes'],
                 ['name' => 'productos.delete', 'description' => 'Puede eliminar productos del sistema'],
                 ['name' => 'productos.adjust-stock', 'description' => 'Puede modificar existencias en inventario'],
+                ['name' => 'productos.export', 'description' => 'Puede exportar productos en varios formatos'],
+                ['name' => 'productos.update-status', 'description' => 'Puede activar o desactivar productos'],
+            ],
+
+            // --- Familias ---
+            'familias' => [
+                ['name' => 'familias.index', 'description' => 'Puede ver la lista de familias'],
+                ['name' => 'familias.create', 'description' => 'Puede crear nuevas familias'],
+                ['name' => 'familias.edit', 'description' => 'Puede editar familias existentes'],
+                ['name' => 'familias.delete', 'description' => 'Puede eliminar familias del sistema'],
+                ['name' => 'familias.export', 'description' => 'Puede exportar familias en varios formatos'],
+                ['name' => 'familias.update-status', 'description' => 'Puede activar o desactivar familias'],
             ],
 
             // --- Categorías ---
@@ -30,6 +42,8 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'categorias.delete', 'description' => 'Puede eliminar categorías del sistema'],
                 ['name' => 'categorias.manage-tree', 'description' => 'Puede modificar la jerarquía de categorías'],
                 ['name' => 'categorias.view-tree', 'description' => 'Puede ver la jerarquía visual de categorías'],
+                ['name' => 'categorias.export', 'description' => 'Puede exportar categorías en varios formatos'],
+                ['name' => 'categorias.update-status', 'description' => 'Puede activar o desactivar categorías'],
             ],
 
             // --- Roles ---
@@ -39,14 +53,7 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'roles.edit', 'description' => 'Puede editar roles existentes'],
                 ['name' => 'roles.delete', 'description' => 'Puede eliminar roles del sistema'],
                 ['name' => 'roles.assign-permissions', 'description' => 'Puede asignar permisos a los roles'],
-            ],
-
-            // --- Permisos ---
-            'permisos' => [
-                ['name' => 'permisos.index', 'description' => 'Puede ver la lista de permisos'],
-                ['name' => 'permisos.create', 'description' => 'Puede crear nuevos permisos'],
-                ['name' => 'permisos.edit', 'description' => 'Puede editar permisos existentes'],
-                ['name' => 'permisos.delete', 'description' => 'Puede eliminar permisos del sistema'],
+                ['name' => 'roles.export', 'description' => 'Puede exportar roles en varios formatos'],
             ],
 
             // --- Usuarios ---
@@ -57,11 +64,13 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'usuarios.delete', 'description' => 'Puede eliminar usuarios'],
                 ['name' => 'usuarios.reset-password', 'description' => 'Puede resetear contraseñas de usuarios'],
                 ['name' => 'usuarios.assign-roles', 'description' => 'Puede asignar roles a los usuarios'],
+                ['name' => 'usuarios.export', 'description' => 'Puede exportar usuarios en varios formatos'],
+                ['name' => 'usuarios.update-status', 'description' => 'Puede activar o desactivar usuarios'],
             ],
 
             // --- Configuración ---
             'configuracion' => [
-                ['name' => 'configuracion.view', 'description' => 'Puede acceder a la configuración del sistema'],
+                ['name' => 'configuracion.index', 'description' => 'Puede acceder a la configuración del sistema'],
                 ['name' => 'configuracion.edit', 'description' => 'Puede modificar parámetros avanzados del sistema'],
             ],
 
@@ -78,6 +87,7 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'posts.edit', 'description' => 'Puede editar posts existentes'],
                 ['name' => 'posts.delete', 'description' => 'Puede eliminar posts del sistema'],
                 ['name' => 'posts.review', 'description' => 'Puede revisar posts pendientes'],
+                ['name' => 'posts.export', 'description' => 'Puede exportar posts en varios formatos'],
             ],
 
             // --- Opciones ---
@@ -86,6 +96,13 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'opciones.create', 'description' => 'Puede crear nuevas opciones'],
                 ['name' => 'opciones.edit', 'description' => 'Puede editar opciones existentes'],
                 ['name' => 'opciones.delete', 'description' => 'Puede eliminar opciones del sistema'],
+                ['name' => 'opciones.manage-features', 'description' => 'Puede gestionar las características de las opciones'],
+            ],
+
+            // --- Accesos ---
+            'accesos' => [
+                ['name' => 'accesos.index', 'description' => 'Puede ver el registro de accesos'],
+                ['name' => 'accesos.export', 'description' => 'Puede exportar el registro de accesos'],
             ],
         ];
 

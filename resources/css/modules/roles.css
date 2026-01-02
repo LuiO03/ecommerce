@@ -60,6 +60,18 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+.permissions-card .card-body ul{
+    display: grid;
+}
+
+@media (max-width: 768px) {
+    .permissions-card .card-body ul{
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        row-gap: 10px;     /* vertical */
+        column-gap: 20px; /* horizontal */
+    }
+}
+
 .actions-bar {
     display: flex;
     flex-wrap: wrap;
@@ -91,9 +103,9 @@
 
 .actions-bar .module-search input {
     width: 100%;
-    padding: 6px 40px 6px 40px;
+    padding: 8px 40px 8px 40px;
     border: 2px solid var(--color-input-border);
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     background-color: var(--color-input-bg);
     font-size: var(--font-size-xs);
     transition: border-color 0.2s ease;

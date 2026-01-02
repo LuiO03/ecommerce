@@ -22,11 +22,12 @@ class CategoryController extends Controller
     {
         $this->middleware('can:categorias.index')->only(['index', 'show']);
         $this->middleware('can:categorias.create')->only(['create', 'store']);
-        $this->middleware('can:categorias.edit')->only(['edit', 'update']);
+        $this->middleware('can:categorias.edit')->only(['edit', 'update', 'updateStatus']);
         $this->middleware('can:categorias.delete')->only(['destroy', 'destroyMultiple']);
         $this->middleware('can:categorias.manage-tree')->only(['manageTree', 'updateTree']);
         $this->middleware('can:categorias.view-tree')->only(['viewTree']);
         $this->middleware('can:reportes.export')->only(['exportExcel', 'exportCsv', 'exportPdf']);
+        $this->middleware('can:categorias.update-status')->only(['updateStatus']);
     }
     /* ======================================================
      |  SHOW

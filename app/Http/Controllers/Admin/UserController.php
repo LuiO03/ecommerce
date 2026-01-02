@@ -15,6 +15,17 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:usuarios.index')->only(['index']);
+        $this->middleware('can:usuarios.create')->only(['create', 'store']);
+        $this->middleware('can:usuarios.edit')->only(['edit', 'update', 'updateStatus']);
+        $this->middleware('can:usuarios.delete')->only(['destroy', 'destroyMultiple']);
+        $this->middleware('can:usuarios.export')->only(['exportExcel', 'exportPdf', 'exportCsv']);
+        $this->middleware('can:usuarios.update-status')->only(['updateStatus']);
+    }
+
     public function index()
     {
         $users = User::with('roles')

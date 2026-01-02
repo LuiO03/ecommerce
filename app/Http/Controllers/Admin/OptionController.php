@@ -16,6 +16,15 @@ use InvalidArgumentException;
 
 class OptionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:opciones.index')->only(['index']);
+        $this->middleware('can:opciones.create')->only(['create', 'store']);
+        $this->middleware('can:opciones.edit')->only(['edit', 'update']);
+        $this->middleware('can:opciones.delete')->only(['destroy']);
+        $this->middleware('can:opciones.manage-features')->only(['storeFeature', 'destroyFeature']);
+    }
+
     public function index()
     {
         $options = Option::with(['features' => fn ($query) => $query->orderBy('id')])

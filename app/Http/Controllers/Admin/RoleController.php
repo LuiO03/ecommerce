@@ -17,6 +17,16 @@ use App\Models\Role;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:roles.index')->only(['index']);
+        $this->middleware('can:roles.create')->only(['create', 'store']);
+        $this->middleware('can:roles.edit')->only(['edit', 'update']);
+        $this->middleware('can:roles.delete')->only(['destroy']);
+        $this->middleware('can:roles.export')->only(['exportExcel', 'exportPdf', 'exportCsv']);
+        $this->middleware('can:roles.assign-permissions')->only(['permissions', 'updatePermissions']);
+    }
+
     public function index()
     {
         $roles = Role::withCount('users')

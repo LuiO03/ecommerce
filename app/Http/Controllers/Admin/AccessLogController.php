@@ -13,6 +13,12 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class AccessLogController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:accesos.index')->only(['index']);
+        $this->middleware('can:accesos.export')->only(['exportExcel', 'exportPdf', 'exportCsv']);
+    }
     /**
      * Listado de accesos con filtros
      */

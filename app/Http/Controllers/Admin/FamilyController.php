@@ -15,6 +15,17 @@ use Illuminate\Support\Facades\Storage;
 
 class FamilyController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:familias.index')->only(['index']);
+        $this->middleware('can:familias.create')->only(['create', 'store']);
+        $this->middleware('can:familias.edit')->only(['edit', 'update', 'updateStatus']);
+        $this->middleware('can:familias.delete')->only(['destroy', 'destroyMultiple']);
+        $this->middleware('can:familias.export')->only(['exportExcel', 'exportPdf', 'exportCsv']);
+        $this->middleware('can:familias.update-status')->only(['updateStatus']);
+    }
+
     public function index()
     {
         $families = Family::select(['id', 'name', 'slug', 'description', 'status', 'created_at'])

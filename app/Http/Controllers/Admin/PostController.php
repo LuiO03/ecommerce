@@ -17,6 +17,16 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:posts.index')->only(['index']);
+        $this->middleware('can:posts.create')->only(['create', 'store']);
+        $this->middleware('can:posts.edit')->only(['edit', 'update']);
+        $this->middleware('can:posts.delete')->only(['destroy', 'destroyMultiple']);
+        $this->middleware('can:posts.export')->only(['exportExcel', 'exportPdf', 'exportCsv']);
+        $this->middleware('can:posts.review')->only(['approve', 'reject']);
+    }
+
     public function create()
     {
         $tags = Tag::orderBy('name')->get();

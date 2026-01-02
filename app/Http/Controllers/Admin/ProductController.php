@@ -31,6 +31,7 @@ class ProductController extends Controller
         $this->middleware('can:productos.delete')->only(['destroy', 'destroyMultiple']);
         $this->middleware('can:productos.adjust-stock')->only(['adjustStock']);
         $this->middleware('can:reportes.export')->only(['exportExcel', 'exportCsv', 'exportPdf']);
+        $this->middleware('can:productos.update-status')->only(['updateStatus']);
     }
     public function index()
     {

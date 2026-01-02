@@ -18,10 +18,15 @@ use App\Http\Requests\Admin\UpdateCompanySocialRequest;
 
 class CompanySettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:configuracion.edit')->only(['updateGeneral', 'updateIdentity', 'updateContact', 'updateSocial', 'updateLegal']);
+        $this->middleware('can:configuracion.index')->only(['index']);
+    }
     /**
      * Actualiza la información general de la empresa.
      */
-    public function updateGeneral(\App\Http\Requests\Admin\UpdateCompanyGeneralRequest $request)
+    public function updateGeneral(UpdateCompanyGeneralRequest $request)
     {
             $setting = CompanySetting::first() ?? new CompanySetting;
             $data = collect($request->validated());
@@ -34,7 +39,7 @@ class CompanySettingController extends Controller
             Cache::forget('company_settings');
 
             return redirect()
-                ->route('admin.company-settings.edit')
+                ->route('admin.company-settings.index')
                 ->with('toast', [
                     'type' => 'success',
                     'title' => 'Información general actualizada',
@@ -73,7 +78,7 @@ class CompanySettingController extends Controller
             $setting->save();
             Cache::forget('company_settings');
             return redirect()
-                ->route('admin.company-settings.edit')
+                ->route('admin.company-settings.index')
                 ->with('toast', [
                     'type' => 'success',
                     'title' => 'Identidad visual actualizada',
@@ -102,7 +107,7 @@ class CompanySettingController extends Controller
         Cache::forget('company_settings');
 
         return redirect()
-            ->route('admin.company-settings.edit')
+            ->route('admin.company-settings.index')
             ->with('toast', [
                 'type' => 'success',
                 'title' => 'Contacto actualizado',
@@ -132,7 +137,7 @@ class CompanySettingController extends Controller
         $setting->save();
         Cache::forget('company_settings');
 
-        return redirect()->route('admin.company-settings.edit')
+        return redirect()->route('admin.company-settings.index')
             ->with('toast', [
                 'type' => 'success',
                 'title' => 'Redes sociales actualizadas',
@@ -152,7 +157,7 @@ class CompanySettingController extends Controller
         $setting->claims_book_information = $data['claims_book_information'] ?? null;
         $setting->save();
         Cache::forget('company_settings');
-        return redirect()->route('admin.company-settings.edit')
+        return redirect()->route('admin.company-settings.index')
             ->with('toast', [
                 'type' => 'success',
                 'title' => 'Aspectos legales actualizados',
@@ -163,7 +168,7 @@ class CompanySettingController extends Controller
     /**
      * Show the company settings form.
      */
-    public function edit()
+    public function index()
     {
         $setting = CompanySetting::query()->first();
 
@@ -174,7 +179,7 @@ class CompanySettingController extends Controller
                 || Storage::disk('public')->exists($setting->logo_path);
         }
 
-        return view('admin.company-settings.edit', [
+        return view('admin.company-settings.index', [
             'setting' => $setting ?? new CompanySetting,
             'hasLogo' => $hasLogo,
         ]);
