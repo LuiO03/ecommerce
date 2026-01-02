@@ -15,6 +15,7 @@
 
 @import "./components/breadcrumb.css";
 @import "./components/table.css";
+@import "./components/datatable-highlight.css";
 @import "./components/form.css";
 @import "./components/image-media.css";
 @import "./components/validation.css";

@@ -1,0 +1,6 @@
+.datatable-highlight {
+    background: var(--color-warning) !important;
+    color: black !important;
+    border-radius: var(--radius-element);
+    padding-inline: 2px;
+}

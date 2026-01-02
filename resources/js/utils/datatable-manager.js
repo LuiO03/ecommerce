@@ -20,6 +20,57 @@
  * });
  */
 class DataTableManager {
+        // Resalta coincidencias en celdas de texto sin perder HTML original
+        highlightMatches(search) {
+            if (!search || search.length < 2) {
+                // Limpiar resaltado
+                this.$table.find('tbody tr').each((i, tr) => {
+                    $(tr).find('td').each((j, td) => {
+                        this.restoreOriginalCell(td);
+                    });
+                });
+                return;
+            }
+            const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
+            this.$table.find('tbody tr:visible').each((i, tr) => {
+                $(tr).find('td').each((j, td) => {
+                    this.restoreOriginalCell(td);
+                    this.highlightTextNodes(td, regex);
+                });
+            });
+        }
+
+        // Guarda el HTML original de la celda si no está guardado
+        storeOriginalCell(td) {
+            if (!td.hasAttribute('data-original-html')) {
+                td.setAttribute('data-original-html', td.innerHTML);
+            }
+        }
+
+        // Restaura el HTML original de la celda
+        restoreOriginalCell(td) {
+            if (td.hasAttribute('data-original-html')) {
+                td.innerHTML = td.getAttribute('data-original-html');
+            }
+        }
+
+        // Resalta solo los nodos de texto dentro de la celda
+        highlightTextNodes(td, regex) {
+            this.storeOriginalCell(td);
+            const walk = (node) => {
+                if (node.nodeType === 3) { // Text node
+                    const val = node.nodeValue;
+                    if (val && regex.test(val)) {
+                        const span = document.createElement('span');
+                        span.innerHTML = val.replace(regex, '<span class="datatable-highlight">$1</span>');
+                        node.replaceWith(...span.childNodes);
+                    }
+                } else if (node.nodeType === 1 && node.childNodes && node.childNodes.length) {
+                    Array.from(node.childNodes).forEach(walk);
+                }
+            };
+            walk(td);
+        }
     constructor(tableSelector, options = {}) {
         this.tableSelector = tableSelector;
         this.$table = $(tableSelector);
@@ -237,6 +288,9 @@ class DataTableManager {
         // Eventos de redibujado
         this.table.on('draw', () => {
             this.onTableDraw();
+            const searchInput = $('#customSearch');
+            const value = searchInput.length ? searchInput.val() : '';
+            this.highlightMatches(value);
         });
     }
 
@@ -252,6 +306,7 @@ class DataTableManager {
             searchInput.on('keyup', (e) => {
                 this.table.search(e.target.value).draw();
                 this.toggleClearButton(searchInput, searchContainer);
+                setTimeout(() => this.highlightMatches(e.target.value), 20);
             });
 
             clearButton.on('click', () => {
@@ -259,6 +314,7 @@ class DataTableManager {
                 this.table.search('').draw();
                 this.toggleClearButton(searchInput, searchContainer);
                 searchInput.focus();
+                setTimeout(() => this.highlightMatches(''), 20);
             });
 
             this.toggleClearButton(searchInput, searchContainer);
