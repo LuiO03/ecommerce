@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\PostsCsvExport;
 use App\Exports\PostsExcelExport;
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\Tag;
@@ -369,13 +370,28 @@ class PostController extends Controller
 
             // Registrar quién eliminó
             $post->deleted_by = Auth::id();
-            $post->save();
+            $post->saveQuietly();;
 
             // Eliminar registro (soft delete)
             $post->delete();
         }
 
         $count = count($titles);
+
+        // Auditoría de eliminación múltiple
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'bulk_deleted',
+            'auditable_type' => Post::class,
+            'auditable_id'   => null,
+            'old_values'     => [
+                'ids'    => $postIds,
+                'titles' => $titles,
+            ],
+            'new_values'     => null,
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         Session::flash('info', [
             'type' => 'danger',
@@ -399,7 +415,7 @@ class PostController extends Controller
 
         $name = $post->title;
         $post->deleted_by = Auth::id();
-        $post->save();
+        $post->saveQuietly();;
         $post->delete();
 
         Session::flash('info', [
@@ -452,6 +468,22 @@ class PostController extends Controller
         $ids = $request->input('ids');
         $filename = 'posts_'.now()->format('Y-m-d_H-i-s').'.xlsx';
 
+        // Auditoría de exportación Excel
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'excel_exported',
+            'auditable_type' => Post::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Excel::download(new PostsExcelExport($ids), $filename);
     }
 
@@ -459,6 +491,22 @@ class PostController extends Controller
     {
         $ids = $request->has('export_all') ? null : $request->input('ids');
         $filename = 'posts_'.now()->format('Y-m-d_H-i-s').'.csv';
+
+        // Auditoría de exportación CSV
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'csv_exported',
+            'auditable_type' => Post::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Excel::download(new PostsCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
@@ -478,6 +526,22 @@ class PostController extends Controller
         }
 
         $filename = 'posts_'.now()->format('Y-m-d_H-i-s').'.pdf';
+
+        // Auditoría de exportación PDF
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => Post::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Pdf::view('admin.export.posts-pdf', compact('posts'))
             ->format('a4')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\CategoriesCsvExport;
 use App\Exports\CategoriesExcelExport;
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use App\Models\Category;
 use App\Models\Family;
 use App\Models\User;
@@ -122,6 +123,22 @@ class CategoryController extends Controller
         $ids = $request->input('ids');
         $filename = 'categorias_'.now()->format('Y-m-d_H-i-s').'.xlsx';
 
+        // Auditoría de exportación Excel
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'excel_exported',
+            'auditable_type' => Category::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Excel::download(new CategoriesExcelExport($ids), $filename);
     }
 
@@ -130,6 +147,22 @@ class CategoryController extends Controller
         $ids = $request->has('export_all') ? null : $request->input('ids');
 
         $filename = 'categorias_'.now()->format('Y-m-d_H-i-s').'.csv';
+
+        // Auditoría de exportación CSV
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'csv_exported',
+            'auditable_type' => Category::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Excel::download(
             new CategoriesCsvExport($ids),
@@ -155,6 +188,22 @@ class CategoryController extends Controller
         }
 
         $filename = 'categorias_'.now()->format('Y-m-d_H-i-s').'.pdf';
+
+        // Auditoría de exportación PDF
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => Category::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Pdf::view('admin.export.categories-pdf', compact('categories'))
             ->format('a4')
@@ -399,8 +448,9 @@ class CategoryController extends Controller
 
         $name = $category->name;
 
+        // Registrar quién eliminó sin disparar eventos updated (evita doble auditoría)
         $category->deleted_by = Auth::id();
-        $category->save();
+        $category->saveQuietly();
 
         $category->delete();
 
@@ -463,11 +513,27 @@ class CategoryController extends Controller
                 Storage::disk('public')->delete($category->image);
             }
 
+            // Registrar quién eliminó sin disparar eventos updated (evita doble auditoría)
             $category->deleted_by = Auth::id();
-            $category->save();
+            $category->saveQuietly();
 
             $category->delete();
         }
+
+        // Auditoría de eliminación múltiple
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'bulk_deleted',
+            'auditable_type' => Category::class,
+            'auditable_id'   => null,
+            'old_values'     => [
+                'ids'   => $request->ids,
+                'names' => $names,
+            ],
+            'new_values'     => null,
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         $count = count($names);
 
@@ -493,9 +559,23 @@ class CategoryController extends Controller
             'status' => 'required|boolean',
         ]);
 
+        $oldStatus = (bool) $category->status;
+
         $category->update([
             'status' => $request->status,
             'updated_by' => Auth::id(),
+        ]);
+
+        // Auditoría de cambio de estado
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'status_updated',
+            'auditable_type' => Category::class,
+            'auditable_id'   => $category->id,
+            'old_values'     => ['status' => $oldStatus],
+            'new_values'     => ['status' => (bool) $category->status],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
         return response()->json([

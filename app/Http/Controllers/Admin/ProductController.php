@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\ProductsCsvExport;
 use App\Exports\ProductsExcelExport;
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use App\Models\Category;
 use App\Models\Option;
 use App\Models\Product;
@@ -262,7 +263,7 @@ class ProductController extends Controller
         $name = $product->name;
 
         $product->deleted_by = Auth::id();
-        $product->save();
+        $product->saveQuietly();;
         $product->delete();
 
         Session::flash('info', [
@@ -302,9 +303,24 @@ class ProductController extends Controller
             $this->removeAllImages($product);
 
             $product->deleted_by = Auth::id();
-            $product->save();
+            $product->saveQuietly();;
             $product->delete();
         }
+
+        // Auditoría de eliminación múltiple
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'bulk_deleted',
+            'auditable_type' => Product::class,
+            'auditable_id'   => null,
+            'old_values'     => [
+                'ids'   => $request->ids,
+                'names' => $names,
+            ],
+            'new_values'     => null,
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         $count = count($names);
 
@@ -324,6 +340,22 @@ class ProductController extends Controller
         $ids = $request->input('ids');
         $filename = 'productos_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
+        // Auditoría de exportación Excel
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'excel_exported',
+            'auditable_type' => Product::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Excel::download(new ProductsExcelExport($ids), $filename);
     }
 
@@ -331,6 +363,22 @@ class ProductController extends Controller
     {
         $ids = $request->has('export_all') ? null : $request->input('ids');
         $filename = 'productos_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        // Auditoría de exportación CSV
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'csv_exported',
+            'auditable_type' => Product::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Excel::download(new ProductsCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
@@ -353,6 +401,22 @@ class ProductController extends Controller
 
         $filename = 'productos_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
+        // Auditoría de exportación PDF
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => Product::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Pdf::view('admin.export.products-pdf', compact('products'))
             ->format('a4')
             ->name($filename)
@@ -365,9 +429,23 @@ class ProductController extends Controller
             'status' => 'required|boolean',
         ]);
 
+        $oldStatus = (bool) $product->status;
+
         $product->update([
             'status' => $request->status,
             'updated_by' => Auth::id(),
+        ]);
+
+        // Auditoría de cambio de estado
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'status_updated',
+            'auditable_type' => Product::class,
+            'auditable_id'   => $product->id,
+            'old_values'     => ['status' => $oldStatus],
+            'new_values'     => ['status' => (bool) $product->status],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
         return response()->json([

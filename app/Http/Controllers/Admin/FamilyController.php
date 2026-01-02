@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use App\Models\Family;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,21 @@ class FamilyController extends Controller
         $ids = $request->input('ids');
         $filename = 'familias_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
+        // Auditoría de exportación Excel
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'excel_exported',
+            'auditable_type' => Family::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Excel::download(new FamiliesExcelExport($ids), $filename);
     }
@@ -67,6 +83,22 @@ class FamilyController extends Controller
         // 📄 Nombre del archivo dinámico con fecha y hora
         $filename = 'familias_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
+        // Auditoría de exportación PDF
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => Family::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         // Generar y descargar PDF
         return Pdf::view('admin.export.families-pdf', compact('families'))
             ->format('a4')
@@ -81,6 +113,22 @@ class FamilyController extends Controller
             : $request->input('ids');
 
         $filename = 'familias_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        // Auditoría de exportación CSV
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'csv_exported',
+            'auditable_type' => Family::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Excel::download(
             new FamiliesCsvExport($ids),
@@ -296,11 +344,26 @@ class FamilyController extends Controller
 
             // Registrar quién eliminó
             $family->deleted_by = Auth::id();
-            $family->save();
+            $family->saveQuietly();;
 
             // Eliminar registro definitivo
             $family->delete();
         }
+
+        // Auditoría de eliminación múltiple
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'bulk_deleted',
+            'auditable_type' => Family::class,
+            'auditable_id'   => null,
+            'old_values'     => [
+                'ids'   => $familyIds,
+                'names' => $names,
+            ],
+            'new_values'     => null,
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         $count = count($names);
 
@@ -323,9 +386,23 @@ class FamilyController extends Controller
             'status' => 'required|boolean',
         ]);
 
+        $oldStatus = (bool) $family->status;
+
         $family->update([
             'status' => $request->status,
             'updated_by' => Auth::id(), // 🔹 también se registra quién cambió el estado
+        ]);
+
+        // Auditoría de cambio de estado
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'status_updated',
+            'auditable_type' => Family::class,
+            'auditable_id'   => $family->id,
+            'old_values'     => ['status' => $oldStatus],
+            'new_values'     => ['status' => (bool) $family->status],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
         return response()->json([
@@ -358,7 +435,7 @@ class FamilyController extends Controller
 
         // Registrar quién eliminó
         $family->deleted_by = Auth::id();
-        $family->save();
+        $family->saveQuietly();;
 
         // Eliminar registro definitivo
         $family->delete(); // o forceDelete()

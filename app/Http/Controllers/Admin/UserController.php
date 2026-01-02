@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\UsersCsvExport;
 use App\Exports\UsersExcelExport;
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,22 @@ class UserController extends Controller
         $ids = $request->input('ids');
         $filename = 'usuarios_'.now()->format('Y-m-d_H-i-s').'.xlsx';
 
+        // Auditoría de exportación Excel
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'excel_exported',
+            'auditable_type' => User::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Excel::download(new UsersExcelExport($ids), $filename);
     }
 
@@ -68,6 +85,22 @@ class UserController extends Controller
 
         $filename = 'usuarios_'.now()->format('Y-m-d_H-i-s').'.pdf';
 
+        // Auditoría de exportación PDF
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => User::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Pdf::view('admin.export.users-pdf', compact('users'))
             ->format('a4')
             ->name($filename)
@@ -81,6 +114,22 @@ class UserController extends Controller
     {
         $ids = $request->has('export_all') ? null : $request->input('ids');
         $filename = 'usuarios_'.now()->format('Y-m-d_H-i-s').'.csv';
+
+        // Auditoría de exportación CSV
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'csv_exported',
+            'auditable_type' => User::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Excel::download(new UsersCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
@@ -267,7 +316,7 @@ class UserController extends Controller
         }
 
         $user->deleted_by = Auth::id();
-        $user->save();
+        $user->saveQuietly();;
 
         $user->delete();
 
@@ -332,7 +381,7 @@ class UserController extends Controller
             }
 
             $user->deleted_by = $authId;
-            $user->save();
+            $user->saveQuietly();;
 
             $user->delete();
         }
@@ -350,6 +399,21 @@ class UserController extends Controller
             'list' => $names,
         ]);
 
+        // Auditoría de eliminación múltiple
+        Audit::create([
+            'user_id'        => $authId,
+            'event'          => 'bulk_deleted',
+            'auditable_type' => User::class,
+            'auditable_id'   => null,
+            'old_values'     => [
+                'ids'   => $userIds,
+                'names' => $names,
+            ],
+            'new_values'     => null,
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return redirect()->route('admin.users.index');
     }
 
@@ -364,9 +428,23 @@ class UserController extends Controller
             'status' => 'required|boolean',
         ]);
 
+        $oldStatus = (bool) $user->status;
+
         $user->update([
             'status' => $request->status,
             'updated_by' => Auth::id(),
+        ]);
+
+        // Auditoría de cambio de estado
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'status_updated',
+            'auditable_type' => User::class,
+            'auditable_id'   => $user->id,
+            'old_values'     => ['status' => $oldStatus],
+            'new_values'     => ['status' => (bool) $user->status],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
         return response()->json([

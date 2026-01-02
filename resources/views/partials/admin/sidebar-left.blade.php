@@ -193,14 +193,7 @@
                 </button>
 
                 <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
-                    <li class="ripple-btn">
-                        <a href="{{ route('admin.access-logs.index') }}"
-                            class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
-                            data-tooltip="Registros de acceso">
-                            <i class="ri-login-circle-line sidebar-icon"></i>
-                            <span>Accesos</span>
-                        </a>
-                    </li>
+
                     <li class="ripple-btn">
                         <a href="{{ route('admin.users.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
@@ -216,6 +209,22 @@
                             data-tooltip="Roles y Permisos">
                             <i class="ri-shield-user-line sidebar-icon"></i>
                             <span>Roles y Permisos</span>
+                        </a>
+                    </li>
+                    <li class="ripple-btn">
+                        <a href="{{ route('admin.access-logs.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
+                            data-tooltip="Registros de acceso">
+                            <i class="ri-login-circle-line sidebar-icon"></i>
+                            <span>Accesos</span>
+                        </a>
+                    </li>
+                    <li class="ripple-btn">
+                        <a href="{{ route('admin.audits.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
+                            data-tooltip="Auditoría">
+                            <i class="ri-file-search-line sidebar-icon"></i>
+                            <span>Auditoría</span>
                         </a>
                     </li>
                 </ul>

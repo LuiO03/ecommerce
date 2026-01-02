@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class Family extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
     public $timestamps = true;
     // asignacion masiva, $fillable define los campos que se pueden asignar masivamente
     protected $fillable = [

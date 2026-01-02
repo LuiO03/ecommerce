@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
     protected $fillable = [
         'name', 'slug', 'description', 'image', 'status',
         'family_id', 'parent_id', 'created_by', 'updated_by',

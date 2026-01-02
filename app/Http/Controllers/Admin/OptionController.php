@@ -153,7 +153,7 @@ class OptionController extends Controller
 
         DB::transaction(function () use ($option) {
             $option->deleted_by = Auth::id();
-            $option->save();
+            $option->saveQuietly();;
             $option->features()->delete();
             $option->delete();
         });
@@ -210,7 +210,7 @@ class OptionController extends Controller
 
         $feature->delete();
 
-        $option->forceFill(['updated_by' => Auth::id()])->save();
+        $option->forceFill(['updated_by' => Auth::id()])->saveQuietly();;
         $option->refresh();
 
         return response()->json([

@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RolesExcelExport;
 use App\Exports\RolesCsvExport;
 use Spatie\LaravelPdf\Facades\Pdf;
+use App\Models\Audit;
 use App\Models\Role;
 
 
@@ -45,6 +46,22 @@ class RoleController extends Controller
         $ids = $request->input('ids');
         $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
+        // Auditoría de exportación Excel
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'excel_exported',
+            'auditable_type' => Role::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Excel::download(new RolesExcelExport($ids), $filename);
     }
 
@@ -64,6 +81,22 @@ class RoleController extends Controller
 
         $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
+        // Auditoría de exportación PDF
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => Role::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
         return Pdf::view('admin.export.roles-pdf', compact('roles'))
             ->format('a4')
             ->name($filename)
@@ -75,6 +108,22 @@ class RoleController extends Controller
         $ids = $request->has('export_all') ? null : $request->input('ids');
 
         $filename = 'roles_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        // Auditoría de exportación CSV
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'csv_exported',
+            'auditable_type' => Role::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return Excel::download(new RolesCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
@@ -270,6 +319,8 @@ class RoleController extends Controller
             'title' => 'Permisos actualizados',
             'message' => "Los permisos del rol <strong>{$role->name}</strong> se han actualizado correctamente.",
         ]);
+
+        Session::flash('highlightRow', $role->id);
 
         return redirect()->route('admin.roles.index');
     }

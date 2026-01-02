@@ -4,6 +4,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategoryHierarchyController;
+use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
@@ -33,6 +34,12 @@ Route::controller(AccessLogController::class)->name('admin.access-logs.')->group
     Route::post('/access-logs/export/excel', 'exportExcel')->name('export.excel');
     Route::post('/access-logs/export/pdf', 'exportPdf')->name('export.pdf');
     Route::post('/access-logs/export/csv', 'exportCsv')->name('export.csv');
+});
+
+// AUDITS
+Route::controller(AuditController::class)->name('admin.audits.')->group(function () {
+    Route::get('/audits', 'index')->name('index');
+    Route::get('/audits/{audit}/show', 'show')->name('show');
 });
 
 // OPTIONS & FEATURES

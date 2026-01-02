@@ -104,6 +104,10 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'accesos.index', 'description' => 'Puede ver el registro de accesos'],
                 ['name' => 'accesos.export', 'description' => 'Puede exportar el registro de accesos'],
             ],
+            // --- Auditorías ---
+            'auditorias' => [
+                ['name' => 'auditorias.index', 'description' => 'Puede ver las auditorías del sistema'],
+            ],
         ];
 
         // === CREAR PERMISOS ===
