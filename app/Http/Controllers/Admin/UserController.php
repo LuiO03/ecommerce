@@ -381,9 +381,8 @@ class UserController extends Controller
             }
 
             $user->deleted_by = $authId;
-            $user->saveQuietly();;
-
-            $user->delete();
+            $user->saveQuietly();
+            $user->deleteQuietly();
         }
 
         $message = 'Se eliminaron los siguientes usuarios:';
@@ -430,10 +429,10 @@ class UserController extends Controller
 
         $oldStatus = (bool) $user->status;
 
-        $user->update([
-            'status' => $request->status,
-            'updated_by' => Auth::id(),
-        ]);
+        // Actualizar solo estado sin disparar eventos updated (evita doble auditoría)
+        $user->status = (bool) $request->status;
+        $user->updated_by = Auth::id();
+        $user->saveQuietly();
 
         // Auditoría de cambio de estado
         Audit::create([

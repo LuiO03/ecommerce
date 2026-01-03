@@ -223,7 +223,7 @@
                         <a href="{{ route('admin.audits.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
                             data-tooltip="Auditoría">
-                            <i class="ri-file-search-line sidebar-icon"></i>
+                            <i class="ri-file-list-3-line sidebar-icon"></i>
                             <span>Auditoría</span>
                         </a>
                     </li>

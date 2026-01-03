@@ -13,20 +13,18 @@
             </div>
         </div>
     @endif
-    <section id="companySettingsSectionLegal" data-section="legal" role="tabpanel"
-        aria-labelledby="tab-legal" class="container-section">
-        <div class="form-body">
-            <div class="card-header">
-                <span class="card-title">Aspectos legales</span>
-                <p class="card-description">
-                    Configura los documentos legales de tu empresa que se mostrarán en el sitio web y estarán
-                    disponibles para los usuarios.
-                </p>
-            </div>
-        </div>
+    <section id="companySettingsSectionLegal" data-section="legal" role="tabpanel" aria-labelledby="tab-legal"
+        class="container-section">
 
         <div class="form-columns-row">
             <div class="form-column">
+                <div class="card-header">
+                    <span class="card-title">Aspectos legales</span>
+                    <p class="card-description">
+                        Configura los documentos legales de tu empresa que se mostrarán en el sitio web y estarán
+                        disponibles para los usuarios.
+                    </p>
+                </div>
                 <div class="input-group">
                     <label for="terms_conditions" class="label-form">Términos y condiciones</label>
                     <textarea name="terms_conditions" id="terms_conditions" class="textarea-form" rows="6"
@@ -62,36 +60,36 @@
                     const ta = document.getElementById(id);
                     if (ta) {
                         ClassicEditor.create(ta, {
-                            toolbar: [
-                                'undo', 'redo',
-                                'heading',
-                                'bold', 'italic', 'underline', 'strikethrough',
-                                'blockQuote',
-                                'bulletedList', 'numberedList',
-                                'link',
-                                'insertTable',
-                            ],
-                            table: {
-                                contentToolbar: [
-                                    'tableColumn', 'tableRow', 'mergeTableCells'
-                                ]
-                            }
-                        })
-                        .then(editor => {
-                            window._ckEditors[id] = editor;
-                            // Sincronizar textarea en cada cambio
-                            editor.model.document.on('change:data', () => {
-                                ta.value = editor.getData();
-                            });
-                            // Validar al perder foco
-                            editor.editing.view.document.on('blur', () => {
-                                ta.value = editor.getData();
-                                if (window.formValidator) {
-                                    window.formValidator.validateField(ta);
+                                toolbar: [
+                                    'undo', 'redo',
+                                    'heading',
+                                    'bold', 'italic', 'underline', 'strikethrough',
+                                    'blockQuote',
+                                    'bulletedList', 'numberedList',
+                                    'link',
+                                    'insertTable',
+                                ],
+                                table: {
+                                    contentToolbar: [
+                                        'tableColumn', 'tableRow', 'mergeTableCells'
+                                    ]
                                 }
-                            });
-                        })
-                        .catch(error => console.error(error));
+                            })
+                            .then(editor => {
+                                window._ckEditors[id] = editor;
+                                // Sincronizar textarea en cada cambio
+                                editor.model.document.on('change:data', () => {
+                                    ta.value = editor.getData();
+                                });
+                                // Validar al perder foco
+                                editor.editing.view.document.on('blur', () => {
+                                    ta.value = editor.getData();
+                                    if (window.formValidator) {
+                                        window.formValidator.validateField(ta);
+                                    }
+                                });
+                            })
+                            .catch(error => console.error(error));
                     }
                 });
             });

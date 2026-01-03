@@ -73,6 +73,7 @@
                         <th class="column-name-th">Usuario</th>
                         <th>Evento</th>
                         <th>Descripción</th>
+                        <th>Id del Registro</th>
                         <th>Modelo</th>
                         <th>IP</th>
                         <th class="column-date-th">Fecha</th>
@@ -139,21 +140,21 @@
                                     @break
 
                                     @case('pdf_exported')
-                                        <span class="badge badge-secondary">
+                                        <span class="badge badge-pink">
                                             <i class="ri-file-download-fill"></i>
                                             PDF Exportado
                                         </span>
                                     @break
 
                                     @case('excel_exported')
-                                        <span class="badge badge-secondary">
+                                        <span class="badge badge-success">
                                             <i class="ri-file-download-fill"></i>
                                             Excel Exportado
                                         </span>
                                     @break
 
                                     @case('csv_exported')
-                                        <span class="badge badge-secondary">
+                                        <span class="badge badge-orange">
                                             <i class="ri-file-download-fill"></i>
                                             CSV Exportado
                                         </span>
@@ -169,6 +170,10 @@
 
                             <td>
                                 {{ $audit->description }}
+                            </td>
+
+                            <td>
+                                <code>#{{ $audit->auditable_id ?? '—' }}</code>
                             </td>
 
                             <td>

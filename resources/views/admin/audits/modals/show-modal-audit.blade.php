@@ -223,7 +223,7 @@
                     $('#audit-changes-title').text(titleText);
 
                     // Encabezados por tipo de evento
-                    if (eventType === 'updated') {
+                    if (eventType === 'updated' || eventType === 'status_updated') {
                         $('#audit-col-field').text('Campo');
                         $('#audit-col-prev').text('Valor anterior');
                         $('#audit-col-new').text('Valor nuevo');
@@ -301,8 +301,8 @@
                         return String(val);
                     };
 
-                    // Eventos de actualización: mostrar comparación old/new
-                    if (eventType === 'updated') {
+                    // Eventos de actualización (incluye cambio de estado): mostrar comparación old/new
+                    if (eventType === 'updated' || eventType === 'status_updated') {
                         const keys = Array.from(new Set([
                             ...Object.keys(oldValues),
                             ...Object.keys(newValues)
@@ -356,7 +356,32 @@
                         return;
                     }
 
-                    // Otros eventos sin cambios de campos
+                    // Eventos personalizados con datos (bulk_deleted, exportaciones, etc.)
+                    if (eventType === 'bulk_deleted' || eventType === 'pdf_exported' || eventType === 'excel_exported' || eventType === 'csv_exported') {
+                        const source = Object.keys(newValues).length ? newValues : oldValues;
+                        const keys = Object.keys(source).sort();
+
+                        if (!keys.length) {
+                            $('#audit-changes-body').html('<tr><td colspan="3" class="text-muted-null">Sin datos para este evento</td></tr>');
+                            return;
+                        }
+
+                        let rowsHtml = '';
+                        keys.forEach(function(key) {
+                            const val = source[key];
+                            rowsHtml += `
+                                <tr>
+                                    <td><code>${key}</code></td>
+                                    <td colspan="2">${formatVal(key, val)}</td>
+                                </tr>
+                            `;
+                        });
+
+                        $('#audit-changes-body').html(rowsHtml);
+                        return;
+                    }
+
+                    // Otros eventos sin cambios de campos ni datos relevantes
                     $('#audit-changes-body').html('<tr><td colspan="3" class="text-muted-null">Sin datos de cambios para este evento</td></tr>');
                 },
                 error: function() {

@@ -82,15 +82,15 @@ class Audit extends Model
         }
 
         if ($event === 'pdf_exported') {
-            return "Exportación de {$modelName}{$labelPart} a PDF";
+            return $this->buildExportDescription($modelName, 'PDF');
         }
 
         if ($event === 'excel_exported') {
-            return "Exportación de {$modelName}{$labelPart} a Excel";
+            return $this->buildExportDescription($modelName, 'Excel');
         }
 
         if ($event === 'csv_exported') {
-            return "Exportación de {$modelName}{$labelPart} a CSV";
+            return $this->buildExportDescription($modelName, 'CSV');
         }
 
 
@@ -114,6 +114,75 @@ class Audit extends Model
             }
         }
 
+        // Si no se encuentra en old/new, intentar obtenerlo desde el modelo auditable
+        $model = null;
+
+        if ($this->relationLoaded('auditable') && $this->auditable) {
+            $model = $this->auditable;
+        } elseif ($this->auditable_type && $this->auditable_id) {
+            $class = $this->auditable_type;
+            if (class_exists($class)) {
+                $model = $class::find($this->auditable_id);
+            }
+        }
+
+        if ($model) {
+            foreach ($candidates as $key) {
+                if (isset($model->{$key}) && $model->{$key} !== null) {
+                    return (string) $model->{$key};
+                }
+            }
+        }
+
         return null;
+    }
+
+    /**
+     * Construye una descripción más rica para eventos de exportación
+     * (un solo registro, varios seleccionados o todos).
+     */
+    protected function buildExportDescription(string $modelName, string $format): string
+    {
+        $values = (array) ($this->new_values ?: $this->old_values ?: []);
+
+        $ids = $values['ids'] ?? null;
+        $exportAll = (bool) ($values['export_all'] ?? false);
+
+        // Exportación de todos los registros del módulo
+        if ($exportAll) {
+            return "Exportación de todos los registros de {$modelName} a {$format}";
+        }
+
+        // Exportación de un único registro por id
+        if (is_array($ids) && count($ids) === 1 && $this->auditable_type) {
+            $label = null;
+            $class = $this->auditable_type;
+
+            if (class_exists($class)) {
+                $record = $class::find($ids[0]);
+                if ($record) {
+                    $candidates = ['name', 'nombre', 'title', 'titulo', 'slug'];
+                    foreach ($candidates as $key) {
+                        if (isset($record->{$key}) && $record->{$key} !== null) {
+                            $label = (string) $record->{$key};
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $labelPart = $label ? " «{$label}»" : '';
+
+            return "Exportación de {$modelName}{$labelPart} a {$format}";
+        }
+
+        // Exportación de registros seleccionados (dos o más)
+        if (is_array($ids) && count($ids) >= 2) {
+            $count = count($ids);
+            return "Exportación de {$count} registros seleccionados de {$modelName} a {$format}";
+        }
+
+        // Caso genérico (por ejemplo, ids null pero sin export_all marcado)
+        return "Exportación de registros de {$modelName} a {$format}";
     }
 }

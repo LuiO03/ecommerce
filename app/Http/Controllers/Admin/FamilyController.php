@@ -388,10 +388,10 @@ class FamilyController extends Controller
 
         $oldStatus = (bool) $family->status;
 
-        $family->update([
-            'status' => $request->status,
-            'updated_by' => Auth::id(), // 🔹 también se registra quién cambió el estado
-        ]);
+        // Actualizar solo estado sin disparar eventos updated (evita doble auditoría)
+        $family->status = (bool) $request->status;
+        $family->updated_by = Auth::id();
+        $family->saveQuietly();
 
         // Auditoría de cambio de estado
         Audit::create([

@@ -303,8 +303,8 @@ class ProductController extends Controller
             $this->removeAllImages($product);
 
             $product->deleted_by = Auth::id();
-            $product->saveQuietly();;
-            $product->delete();
+            $product->saveQuietly();
+            $product->deleteQuietly();
         }
 
         // Auditoría de eliminación múltiple
@@ -431,10 +431,10 @@ class ProductController extends Controller
 
         $oldStatus = (bool) $product->status;
 
-        $product->update([
-            'status' => $request->status,
-            'updated_by' => Auth::id(),
-        ]);
+        // Actualizar solo estado sin disparar eventos updated (evita doble auditoría)
+        $product->status = (bool) $request->status;
+        $product->updated_by = Auth::id();
+        $product->saveQuietly();
 
         // Auditoría de cambio de estado
         Audit::create([

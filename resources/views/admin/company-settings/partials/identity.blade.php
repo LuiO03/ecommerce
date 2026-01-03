@@ -36,6 +36,7 @@
         </div>
     @endif
     <section id="companySettingsSectionIdentity" data-section="identity" role="tabpanel" aria-labelledby="tab-identity" class="container-section">
+
         <div class="form-body">
             <div class="card-header">
                 <span class="card-title">Identidad visual</span>
@@ -44,8 +45,6 @@
                     los documentos oficiales.
                 </p>
             </div>
-        </div>
-        <div class="form-body">
             <div class="form-row-fit">
                 <div class="input-group">
                     <label for="primary_color" class="label-form">Color primario</label>
@@ -92,7 +91,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="form-row-fit">
                 <div class="image-upload-section">
                     <label class="label-form">Logotipo</label>

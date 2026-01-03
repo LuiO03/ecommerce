@@ -513,11 +513,10 @@ class CategoryController extends Controller
                 Storage::disk('public')->delete($category->image);
             }
 
-            // Registrar quién eliminó sin disparar eventos updated (evita doble auditoría)
+            // Registrar quién eliminó sin disparar eventos updated/deleted (evita doble auditoría)
             $category->deleted_by = Auth::id();
             $category->saveQuietly();
-
-            $category->delete();
+            $category->deleteQuietly();
         }
 
         // Auditoría de eliminación múltiple
@@ -561,10 +560,10 @@ class CategoryController extends Controller
 
         $oldStatus = (bool) $category->status;
 
-        $category->update([
-            'status' => $request->status,
-            'updated_by' => Auth::id(),
-        ]);
+        // Actualizar solo estado sin disparar eventos updated (evita doble auditoría)
+        $category->status = (bool) $request->status;
+        $category->updated_by = Auth::id();
+        $category->saveQuietly();
 
         // Auditoría de cambio de estado
         Audit::create([

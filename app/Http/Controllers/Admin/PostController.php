@@ -365,15 +365,15 @@ class PostController extends Controller
                 if (Storage::disk('public')->exists($img->path)) {
                     Storage::disk('public')->delete($img->path);
                 }
-                $img->delete();
+                $img->deleteQuietly();
             }
 
-            // Registrar quién eliminó
+            // Registrar quién eliminó sin disparar eventos deleted (evita doble auditoría)
             $post->deleted_by = Auth::id();
-            $post->saveQuietly();;
+            $post->saveQuietly();
 
-            // Eliminar registro (soft delete)
-            $post->delete();
+            // Eliminar registro (soft delete) sin eventos
+            $post->deleteQuietly();
         }
 
         $count = count($titles);

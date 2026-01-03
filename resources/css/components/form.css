@@ -88,6 +88,7 @@
     .form-body{
         padding: 0px;
         border: none;
+        gap: 10px;
         background-color: transparent;
     }
 }
@@ -105,8 +106,17 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
+.form-row-fit .inputs-column{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 @media (max-width: 768px) {
     .form-row-fit, .form-row-fill {
+        gap: 10px;
+    }
+    .form-row-fit .inputs-column{
         gap: 10px;
     }
 }
