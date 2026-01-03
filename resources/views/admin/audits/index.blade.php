@@ -160,9 +160,28 @@
                                         </span>
                                     @break
 
+                                    @case('post_approved')
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                            Post Aprobado
+                                        </span>
+                                    @break
+                                    @case('post_rejected')
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-fill"></i>
+                                            Post Rechazado
+                                        </span>
+                                    @break
+                                    @case('permissions_updated')
+                                        <span class="badge badge-purple">
+                                            <i class="ri-shield-check-fill"></i>
+                                            Permisos Actualizados
+                                        </span>
+                                    @break
+
                                     @default
                                         <span class="badge badge-secondary">
-                                            <i class="ri-question-line"></i>
+                                            <i class="ri-question-fill"></i>
                                             {{ $eventLabel }}
                                         </span>
                                 @endswitch

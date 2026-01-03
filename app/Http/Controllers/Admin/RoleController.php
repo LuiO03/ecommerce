@@ -15,7 +15,6 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use App\Models\Audit;
 use App\Models\Role;
 
-
 class RoleController extends Controller
 {
     public function __construct()
@@ -128,10 +127,6 @@ class RoleController extends Controller
         return Excel::download(new RolesCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
 
-    // ============================
-    //   CREAR
-    // ============================
-
     public function create()
     {
         $permissions = Permission::orderBy('module')->get()->groupBy('module');
@@ -172,10 +167,6 @@ class RoleController extends Controller
         return redirect()->route('admin.roles.index');
     }
 
-    // ============================
-    //   EDITAR
-    // ============================
-
     public function edit(Role $role)
     {
         if (in_array($role->name, ['Administrador', 'Superadministrador'])) {
@@ -193,7 +184,6 @@ class RoleController extends Controller
 
         return view('admin.roles.edit', compact('role', 'permissions', 'assigned'));
     }
-
 
     public function update(Request $request, Role $role)
     {
@@ -224,10 +214,6 @@ class RoleController extends Controller
 
         return redirect()->route('admin.roles.index');
     }
-
-    // ============================
-    //   ELIMINAR 1 SOLO
-    // ============================
 
     public function destroy(Role $role)
     {
@@ -263,9 +249,6 @@ class RoleController extends Controller
         return redirect()->route('admin.roles.index');
     }
 
-        /**
-     * Mostrar detalle de permisos por rol.
-     */
     public function permissions(Role $role)
     {
         $role->load('permissions');
@@ -295,9 +278,7 @@ class RoleController extends Controller
         return view('admin.roles.permissions', compact('role', 'modules'));
     }
 
-    /**
-     * Actualizar los permisos asignados a un rol.
-     */
+    // Actualizar los permisos asignados a un rol.
     public function updatePermissions(Request $request, Role $role)
     {
         $validated = $request->validate([
@@ -305,19 +286,48 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
+        // Permisos actuales antes del cambio (para auditoría)
+        $oldPermissions = $role->permissions()->pluck('name')->toArray();
+        sort($oldPermissions);
+
         // Filtrar solo permisos válidos para el guard 'web'
         $permissionIds = $validated['permissions'] ?? [];
-        $validPermissions = \Spatie\Permission\Models\Permission::whereIn('id', $permissionIds)
+        $validPermissions = Permission::whereIn('id', $permissionIds)
             ->where('guard_name', 'web')
             ->pluck('id')
             ->toArray();
 
         $role->syncPermissions($validPermissions);
 
+        // Permisos resultantes después del cambio (para auditoría)
+        $role->load('permissions');
+        $newPermissions = $role->permissions->pluck('name')->toArray();
+        sort($newPermissions);
+
+        // Calcular únicamente los permisos modificados
+        $removedPermissions = array_values(array_diff($oldPermissions, $newPermissions));
+        $addedPermissions   = array_values(array_diff($newPermissions, $oldPermissions));
+
         Session::flash('toast', [
             'type' => 'success',
             'title' => 'Permisos actualizados',
             'message' => "Los permisos del rol <strong>{$role->name}</strong> se han actualizado correctamente.",
+        ]);
+
+        // Auditoría de cambio de permisos (solo los modificados)
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'permissions_updated',
+            'auditable_type' => Role::class,
+            'auditable_id'   => $role->id,
+            'old_values'     => [
+                'removed_permissions' => $removedPermissions,
+            ],
+            'new_values'     => [
+                'added_permissions' => $addedPermissions,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
         Session::flash('highlightRow', $role->id);

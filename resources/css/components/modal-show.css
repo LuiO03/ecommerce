@@ -663,3 +663,11 @@
 .next-btn {
     right: 12px;
 }
+
+/* === TABLA DE AUDITORIA === */
+
+.permissions-badge-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}

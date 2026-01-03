@@ -771,6 +771,14 @@
     --badge-pink-hover-bg: #c2185b;
     --badge-pink-hover-text: #ffffff;
     --badge-pink-hover-border: #ad1457;
+
+    /* Badge Purple - Morado */
+    --badge-purple-bg: #f3e5f5;
+    --badge-purple-text: #6a1b9a;
+    --badge-purple-border: #ce93d8;
+    --badge-purple-hover-bg: #4a148c;
+    --badge-purple-hover-text: #ffffff;
+    --badge-purple-hover-border: #6a1b9a;
 }
 
 .dark {
@@ -853,6 +861,14 @@
     --badge-pink-hover-bg: #ad1457;
     --badge-pink-hover-text: #ffffff;
     --badge-pink-hover-border: #880e4f;
+
+    /* Badge Purple - Modo Oscuro */
+    --badge-purple-bg: #6a1b9a;
+    --badge-purple-text: #ce93d8;
+    --badge-purple-border: #4a148c;
+    --badge-purple-hover-bg: #4a148c;
+    --badge-purple-hover-text: #ffffff;
+    --badge-purple-hover-border: #6a1b9a;
 }
 .badge {
     display: inline-flex;
@@ -1003,4 +1019,17 @@
     border-color: var(--badge-pink-hover-border);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(194, 24, 91, 0.3);
+}
+
+/* Badge Purple - Morado Profesional */
+.badge-purple {
+    background-color: var(--badge-purple-bg);
+}
+
+.badge-purple:hover {
+    background-color: var(--badge-purple-hover-bg);
+    color: var(--badge-purple-hover-text);
+    border-color: var(--badge-purple-hover-border);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 20, 140, 0.3);
 }

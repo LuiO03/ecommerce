@@ -7,7 +7,7 @@
                 <i class="ri-close-line"></i>
             </button>
         </div>
-        <h3 class="modal-title-body" id="audit-description">Sin descripción</h3>
+        <h2 class="modal-title-body" id="audit-description">Sin descripción</h2>
         <div class="modal-show-body">
             <div class="modal-show-row">
                 <table class="modal-show-table">
@@ -214,16 +214,25 @@
 
                     const eventType = data.event || '';
 
+                    const hasOldValues = Object.keys(oldValues).length > 0;
+                    const hasNewValues = Object.keys(newValues).length > 0;
+
                     let titleText = 'Cambios del registro';
                     if (eventType === 'created') {
                         titleText = 'Datos del registro creado';
                     } else if (eventType === 'deleted') {
                         titleText = 'Datos del registro eliminado';
+                    } else if (eventType === 'permissions_updated') {
+                        titleText = 'Permisos del rol (antes y después)';
                     }
                     $('#audit-changes-title').text(titleText);
 
                     // Encabezados por tipo de evento
-                    if (eventType === 'updated' || eventType === 'status_updated') {
+                    if (eventType === 'permissions_updated') {
+                        $('#audit-col-field').text('Tipo');
+                        $('#audit-col-prev').text('Permisos quitados');
+                        $('#audit-col-new').text('Permisos agregados');
+                    } else if (hasOldValues && hasNewValues) {
                         $('#audit-col-field').text('Campo');
                         $('#audit-col-prev').text('Valor anterior');
                         $('#audit-col-new').text('Valor nuevo');
@@ -283,13 +292,67 @@
 
                         const lowerKey = (key || '').toString().toLowerCase();
 
-                        // Campo de estado
+                        // Campo de estado (booleanos y estados múltiples como posts)
                         if (lowerKey === 'status' || lowerKey === 'estado' || lowerKey.endsWith('_status')) {
+                            // Estados textuales (posts: draft, pending, published, rejected)
+                            if (typeof val === 'string') {
+                                const statusStr = val.toString().toLowerCase();
+
+                                if (statusStr === 'draft' || statusStr === 'borrador') {
+                                    return '<span class="badge badge-gray"><i class="ri-file-list-2-line"></i> Borrador</span>';
+                                }
+
+                                if (statusStr === 'pending' || statusStr === 'pendiente') {
+                                    return '<span class="badge badge-warning"><i class="ri-time-line"></i> Pendiente</span>';
+                                }
+
+                                if (statusStr === 'published' || statusStr === 'publicado' || statusStr === 'publicada') {
+                                    return '<span class="badge boton-success"><i class="ri-check-line"></i> Publicado</span>';
+                                }
+
+                                if (statusStr === 'rejected' || statusStr === 'rechazado' || statusStr === 'rechazada') {
+                                    return '<span class="badge boton-danger"><i class="ri-close-line"></i> Rechazado</span>';
+                                }
+                            }
+
+                            // Estados booleanos (módulos con activo/inactivo)
                             const active = val === true || val === 1 || val === '1' || val === 'true' || val === 'activo' || val === 'active';
                             if (active) {
                                 return '<span class="badge boton-success"><i class="ri-check-line"></i> Activo</span>';
                             }
                             return '<span class="badge boton-danger"><i class="ri-close-line"></i> Inactivo</span>';
+                        }
+
+                        // Listado de permisos (evento permissions_updated)
+                        if (lowerKey === 'permissions' || lowerKey === 'permisos' || lowerKey.includes('permission')) {
+                            const escapeHtmlSimple = function(str) {
+                                return String(str)
+                                    .replace(/&/g, '&amp;')
+                                    .replace(/</g, '&lt;')
+                                    .replace(/>/g, '&gt;')
+                                    .replace(/"/g, '&quot;')
+                                    .replace(/'/g, '&#039;');
+                            };
+
+                            let items = [];
+                            if (Array.isArray(val)) {
+                                items = val;
+                            } else {
+                                items = String(val)
+                                    .split(',')
+                                    .map(v => v.trim())
+                                    .filter(v => v.length > 0);
+                            }
+
+                            if (!items.length) {
+                                return '—';
+                            }
+
+                            const badges = items.map(function(item) {
+                                return '<span class="badge badge-purple"><i class="ri-shield-check-fill"></i> ' + escapeHtmlSimple(item) + '</span>';
+                            }).join(' ');
+
+                            return '<div class="permissions-badge-list">' + badges + '</div>';
                         }
 
                         // Campos de fecha (terminan en _at, _on, date, fecha)
@@ -301,8 +364,28 @@
                         return String(val);
                     };
 
-                    // Eventos de actualización (incluye cambio de estado): mostrar comparación old/new
-                    if (eventType === 'updated' || eventType === 'status_updated') {
+                    // Evento especial: cambio de permisos de rol
+                    if (eventType === 'permissions_updated') {
+                        const removed = oldValues['removed_permissions'] || [];
+                        const added = newValues['added_permissions'] || [];
+
+                        const removedHtml = removed.length ? formatVal('permissions', removed) : '—';
+                        const addedHtml = added.length ? formatVal('permissions', added) : '—';
+
+                        const rowHtml = `
+                            <tr>
+                                <td><code>permissions</code></td>
+                                <td>${removedHtml}</td>
+                                <td>${addedHtml}</td>
+                            </tr>
+                        `;
+
+                        $('#audit-changes-body').html(rowHtml);
+                        return;
+                    }
+
+                    // Eventos con old_values y new_values: mostrar comparación old/new
+                    if (hasOldValues && hasNewValues) {
                         const keys = Array.from(new Set([
                             ...Object.keys(oldValues),
                             ...Object.keys(newValues)

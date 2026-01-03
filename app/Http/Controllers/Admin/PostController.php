@@ -549,7 +549,7 @@ class PostController extends Controller
             ->download();
     }
 
-    public function approve(Post $post)
+    public function approve(Request $request, Post $post)
     {
         if ($post->status !== 'pending') {
             return back()->with('toast', [
@@ -559,10 +559,34 @@ class PostController extends Controller
             ]);
         }
 
-        $post->update([
-            'status' => 'published',
-            'reviewed_by' => Auth::id(),
-            'reviewed_at' => now(),
+        $oldValues = [
+            'status' => $post->status,
+            'reviewed_by' => $post->reviewed_by,
+            'reviewed_at' => $post->reviewed_at,
+        ];
+
+        // Actualizar estado y datos de revisión sin disparar eventos updated (evita doble auditoría)
+        $post->status = 'published';
+        $post->reviewed_by = Auth::id();
+        $post->reviewed_at = now();
+        $post->saveQuietly();
+
+        $newValues = [
+            'status' => $post->status,
+            'reviewed_by' => $post->reviewed_by,
+            'reviewed_at' => $post->reviewed_at,
+        ];
+
+        // Auditoría de la aprobación del post
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'post_approved',
+            'auditable_type' => Post::class,
+            'auditable_id'   => $post->id,
+            'old_values'     => $oldValues,
+            'new_values'     => $newValues,
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
         Session::flash('toast', [
@@ -575,7 +599,7 @@ class PostController extends Controller
         return back();
     }
 
-    public function reject(Post $post)
+    public function reject(Request $request, Post $post)
     {
         if ($post->status !== 'pending') {
             return back()->with('toast', [
@@ -585,14 +609,38 @@ class PostController extends Controller
             ]);
         }
 
-        $post->update([
-            'status' => 'rejected',
-            'reviewed_by' => Auth::id(),
-            'reviewed_at' => now(),
+        $oldValues = [
+            'status' => $post->status,
+            'reviewed_by' => $post->reviewed_by,
+            'reviewed_at' => $post->reviewed_at,
+        ];
+
+        // Actualizar estado y datos de revisión sin disparar eventos updated (evita doble auditoría)
+        $post->status = 'rejected';
+        $post->reviewed_by = Auth::id();
+        $post->reviewed_at = now();
+        $post->saveQuietly();
+
+        $newValues = [
+            'status' => $post->status,
+            'reviewed_by' => $post->reviewed_by,
+            'reviewed_at' => $post->reviewed_at,
+        ];
+
+        // Auditoría del rechazo del post
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'post_rejected',
+            'auditable_type' => Post::class,
+            'auditable_id'   => $post->id,
+            'old_values'     => $oldValues,
+            'new_values'     => $newValues,
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
         Session::flash('toast', [
-            'type' => 'danger',
+            'type' => 'success',
             'title' => 'Post rechazado',
             'message' => "El post <strong>{$post->title}</strong> ha sido rechazado.",
         ]);

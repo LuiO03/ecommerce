@@ -59,26 +59,26 @@ class Audit extends Model
         $labelPart = $label ? " «{$label}»" : '';
 
         if ($event === 'created') {
-            return "Creación de {$modelName}{$labelPart}";
+            return "Se creó {$modelName}{$labelPart}";
         }
 
         if ($event === 'deleted') {
-            return "Eliminación de {$modelName}{$labelPart}";
+            return "Se eliminó {$modelName}{$labelPart}";
         }
 
         if ($event === 'updated') {
             $changed = array_keys((array) $this->new_values);
             $changedStr = $changed ? implode(', ', $changed) : 'campos';
 
-            return "Actualización de {$modelName}{$labelPart} (cambios: {$changedStr})";
+            return "Se actualizó {$modelName}{$labelPart} (cambios: {$changedStr})";
         }
 
         if ($event === 'status_updated') {
-            return "Cambio de estado de {$modelName}{$labelPart}";
+            return "Se cambió estado de {$modelName}{$labelPart}";
         }
 
         if ($event === 'bulk_deleted') {
-            return "Eliminación múltiple de {$modelName}{$labelPart}";
+            return "Se eliminaron múltiples {$modelName}{$labelPart}";
         }
 
         if ($event === 'pdf_exported') {
@@ -93,7 +93,17 @@ class Audit extends Model
             return $this->buildExportDescription($modelName, 'CSV');
         }
 
+        if ($event === 'post_approved'){
+            return "Se aprobó {$modelName}{$labelPart}";
+        }
 
+        if ($event === 'post_rejected'){
+            return "Se rechazó {$modelName}{$labelPart}";
+        }
+
+        if ($event === 'permissions_updated'){
+            return "Se actualizaron permisos del {$modelName}{$labelPart}";
+        }
         return ucfirst($event) . " de {$modelName}{$labelPart}";
     }
 
@@ -150,7 +160,7 @@ class Audit extends Model
 
         // Exportación de todos los registros del módulo
         if ($exportAll) {
-            return "Exportación de todos los registros de {$modelName} a {$format}";
+            return "Se exportaron todos los registros de {$modelName} a {$format}";
         }
 
         // Exportación de un único registro por id
@@ -173,16 +183,16 @@ class Audit extends Model
 
             $labelPart = $label ? " «{$label}»" : '';
 
-            return "Exportación de {$modelName}{$labelPart} a {$format}";
+            return "Se exportó {$modelName}{$labelPart} a {$format}";
         }
 
         // Exportación de registros seleccionados (dos o más)
         if (is_array($ids) && count($ids) >= 2) {
             $count = count($ids);
-            return "Exportación de {$count} registros seleccionados de {$modelName} a {$format}";
+            return "Se exportaron {$count} registros seleccionados de {$modelName} a {$format}";
         }
 
         // Caso genérico (por ejemplo, ids null pero sin export_all marcado)
-        return "Exportación de registros de {$modelName} a {$format}";
+        return "Se exportaron registros de {$modelName} a {$format}";
     }
 }
