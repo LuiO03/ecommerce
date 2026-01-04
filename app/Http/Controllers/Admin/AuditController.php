@@ -4,14 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
+use App\Models\User;
+use App\Exports\AuditsExcelExport;
+use App\Exports\AuditsCsvExport;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Http\Request;
 
 class AuditController extends Controller
 {
     public function __construct()
     {
-        // Permiso genérico para ver auditorías (ajustar al nombre real del permiso si es distinto)
+        // Permisos para ver y exportar auditorías
         $this->middleware('can:auditorias.index')->only(['index', 'show']);
+        $this->middleware('can:auditorias.export')->only(['exportExcel', 'exportPdf', 'exportCsv']);
     }
 
     /**
@@ -52,5 +59,89 @@ class AuditController extends Controller
             'user_name'           => optional($audit->user)->name,
             'user_email'          => optional($audit->user)->email,
         ]);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $ids = $request->input('ids');
+        $filename = 'auditorias_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'excel_exported',
+            'auditable_type' => Audit::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
+        return Excel::download(new AuditsExcelExport($ids), $filename);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        if ($request->has('ids')) {
+            $audits = Audit::with('user')->whereIn('id', $request->ids)->get();
+        } elseif ($request->has('export_all')) {
+            $audits = Audit::with('user')->get();
+        } else {
+            return back()->with('error', 'No se seleccionaron auditorías para exportar.');
+        }
+
+        if ($audits->isEmpty()) {
+            return back()->with('error', 'No hay auditorías disponibles para exportar.');
+        }
+
+        $filename = 'auditorias_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => Audit::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
+        return Pdf::view('admin.export.audits-pdf', compact('audits'))
+            ->format('a4')
+            ->name($filename)
+            ->download();
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $ids = $request->has('export_all') ? null : $request->input('ids');
+
+        $filename = 'auditorias_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'csv_exported',
+            'auditable_type' => Audit::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'ids'        => $ids,
+                'export_all' => $request->boolean('export_all', false),
+                'filename'   => $filename,
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
+        return Excel::download(new AuditsCsvExport($ids), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
 }

@@ -107,6 +107,7 @@ class RolePermissionSeeder extends Seeder
             // --- Auditorías ---
             'auditorias' => [
                 ['name' => 'auditorias.index', 'description' => 'Puede ver las auditorías del sistema'],
+                ['name' => 'auditorias.export', 'description' => 'Puede exportar auditorías en varios formatos'],
             ],
         ];
 

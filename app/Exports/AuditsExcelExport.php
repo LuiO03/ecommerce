@@ -1,0 +1,165 @@
+<?php
+
+namespace App\Exports;
+
+use App\Models\Audit;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+
+class AuditsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithEvents
+{
+    protected $ids;
+    protected $dataCount;
+
+    public function __construct($ids = null)
+    {
+        $this->ids = $ids;
+    }
+
+    public function array(): array
+    {
+        $query = Audit::with('user')
+            ->select('id', 'user_id', 'event', 'description', 'auditable_type', 'auditable_id', 'ip_address', 'created_at')
+            ->orderBy('id');
+
+        if (!empty($this->ids)) {
+            $query->whereIn('id', $this->ids);
+        }
+
+        $rows = $query->get()->map(function ($audit) {
+            return [
+                $audit->id,
+                optional($audit->user)->name ?? 'Sistema / Invitado',
+                $audit->event,
+                $audit->description,
+                $audit->auditable_type ? class_basename($audit->auditable_type) : '—',
+                $audit->auditable_id ?? '—',
+                $audit->ip_address ?? '—',
+                optional($audit->created_at)?->format('d/m/Y H:i') ?? '—',
+            ];
+        })->toArray();
+
+        $this->dataCount = count($rows);
+
+        $title = empty($this->ids)
+            ? 'LISTA COMPLETA DE AUDITORÍAS'
+            : 'AUDITORÍAS SELECCIONADAS';
+
+        $result = [
+            [$title, '', '', '', '', '', '', ''],
+            ['ID', 'Usuario', 'Evento', 'Descripción', 'Modelo', 'ID Registro', 'IP', 'Fecha'],
+        ];
+
+        foreach ($rows as $row) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $sheet->mergeCells('A1:H1');
+        $sheet->getStyle('A1')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 16, 'color' => ['argb' => 'FF2563EB']],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
+
+        $sheet->getStyle('A2:H2')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 12],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFE5E7EB'],
+            ],
+        ]);
+        $sheet->getRowDimension(2)->setRowHeight(25);
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 8,
+            'B' => 25,
+            'C' => 18,
+            'D' => 60,
+            'E' => 18,
+            'F' => 12,
+            'G' => 18,
+            'H' => 20,
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+
+                $dataStartRow = 3;
+                $dataEndRow = $sheet->getHighestRow();
+                $summaryRow = $dataEndRow + 1;
+
+                $sheet->setCellValue("A{$summaryRow}", "Total de registros: {$this->dataCount}");
+                $sheet->mergeCells("A{$summaryRow}:H{$summaryRow}");
+                $sheet->getStyle("A{$summaryRow}")->applyFromArray([
+                    'font' => ['italic' => true, 'bold' => true, 'color' => ['argb' => 'FF374151']],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_RIGHT],
+                ]);
+
+                if ($dataEndRow >= $dataStartRow) {
+                    $sheet->getStyle("A2:H{$dataEndRow}")
+                        ->getBorders()
+                        ->getAllBorders()
+                        ->setBorderStyle(Border::BORDER_THIN)
+                        ->setColor(new Color('FFCBD5E1'));
+                }
+
+                foreach (['A', 'B', 'C', 'E', 'F', 'G', 'H'] as $col) {
+                    $sheet->getColumnDimension($col)->setAutoSize(true);
+                    $width = $sheet->getColumnDimension($col)->getWidth();
+                    if ($width > 50) {
+                        $sheet->getColumnDimension($col)->setWidth(50);
+                    }
+                }
+
+                $sheet->getColumnDimension('D')->setWidth(60);
+                if ($dataEndRow >= $dataStartRow) {
+                    $sheet->getStyle("D{$dataStartRow}:D{$dataEndRow}")
+                        ->getAlignment()
+                        ->setWrapText(true)
+                        ->setVertical(Alignment::VERTICAL_TOP);
+                }
+
+                for ($row = $dataStartRow; $row <= $dataEndRow; $row++) {
+                    if (($row - $dataStartRow) % 2 == 1) {
+                        $sheet->getStyle("A{$row}:H{$row}")->applyFromArray([
+                            'fill' => [
+                                'fillType' => Fill::FILL_SOLID,
+                                'startColor' => ['argb' => 'FFF9FAFB'],
+                            ],
+                        ]);
+                    }
+                }
+
+                $sheet->getParent()->setActiveSheetIndex(0);
+                $sheet->setSelectedCell('A3');
+            },
+        ];
+    }
+}

@@ -40,6 +40,9 @@ Route::controller(AccessLogController::class)->name('admin.access-logs.')->group
 Route::controller(AuditController::class)->name('admin.audits.')->group(function () {
     Route::get('/audits', 'index')->name('index');
     Route::get('/audits/{audit}/show', 'show')->name('show');
+    Route::post('/audits/export/excel', 'exportExcel')->name('export.excel');
+    Route::post('/audits/export/pdf', 'exportPdf')->name('export.pdf');
+    Route::post('/audits/export/csv', 'exportCsv')->name('export.csv');
 });
 
 // OPTIONS & FEATURES
