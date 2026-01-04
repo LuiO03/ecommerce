@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\DB;
@@ -128,6 +130,9 @@ class ProfileController extends Controller
         $slug = User::generateUniqueSlug($name, $user->id);
         $imagePath = $user->image;
 
+        // Guardar valores originales antes de actualizar para la auditoría manual
+        $original = $user->getOriginal();
+
         // Eliminar imagen
         if ($request->input('remove_image') == '1') {
             if ($user->image && Storage::disk('public')->exists($user->image)) {
@@ -146,17 +151,58 @@ class ProfileController extends Controller
             $request->file('image')->storeAs('users', $filename, 'public');
         }
 
-        $user->update([
-            'name'        => $name,
-            'last_name'   => $request->last_name,
-            'email'       => $request->email,
-            'address'     => $address,
-            'dni'         => $request->dni,
-            'phone'       => $request->phone,
-            'image'       => $imagePath,
-            'background_style' => $request->background_style,
-            'updated_by'  => Auth::id(),
-        ]);
+        // Evitar que el trait Auditable registre un "updated" extra aquí
+        Model::withoutEvents(function () use ($user, $name, $request, $address, $imagePath) {
+            $user->update([
+                'name'        => $name,
+                'last_name'   => $request->last_name,
+                'email'       => $request->email,
+                'address'     => $address,
+                'dni'         => $request->dni,
+                'phone'       => $request->phone,
+                'image'       => $imagePath,
+                'background_style' => $request->background_style,
+                'updated_by'  => Auth::id(),
+            ]);
+        });
+
+        // Auditoría específica para "Mi perfil"
+        try {
+            $oldValues = [
+                'name'       => $original['name'] ?? null,
+                'last_name'  => $original['last_name'] ?? null,
+                'email'      => $original['email'] ?? null,
+                'address'    => $original['address'] ?? null,
+                'dni'        => $original['dni'] ?? null,
+                'phone'      => $original['phone'] ?? null,
+                'image'      => $original['image'] ?? null,
+                'background_style' => $original['background_style'] ?? null,
+            ];
+
+            $newValues = [
+                'name'       => $user->name,
+                'last_name'  => $user->last_name,
+                'email'      => $user->email,
+                'address'    => $user->address,
+                'dni'        => $user->dni,
+                'phone'      => $user->phone,
+                'image'      => $user->image,
+                'background_style' => $user->background_style,
+            ];
+
+            Audit::create([
+                'user_id'        => Auth::id(),
+                'event'          => 'profile_updated',
+                'auditable_type' => User::class,
+                'auditable_id'   => $user->id,
+                'old_values'     => $oldValues,
+                'new_values'     => $newValues,
+                'ip_address'     => $request->ip(),
+                'user_agent'     => $request->userAgent(),
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         Session::flash('toast', [
             'type' => 'success',

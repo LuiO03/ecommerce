@@ -157,7 +157,7 @@
     border-radius: var(--radius-card);
     background-color: var(--color-sidebar-bg);
     width: 90%;
-    max-width: 490px;
+    max-width: 590px;
     text-align: center;
     transform-origin: center;
     opacity: 0;
@@ -193,11 +193,13 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
     overflow-y: auto;
 }
 
 .modal-show-body::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
     background-color: var(--scrollbar-track);
 }
 .modal-show-body::-webkit-scrollbar-thumb {
@@ -670,4 +672,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+}
+
+.modal-section-title {
+    font-family: var(--font-secondary);
+    font-weight: bolder;
 }

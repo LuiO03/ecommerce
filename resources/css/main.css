@@ -25,6 +25,7 @@
 @import "./components/modal-info.css";
 @import "./components/modal-toast.css";
 @import "./components/modal-show.css";
+@import "./components/connection-status.css";
 
 @import "./components/mobile-dropdown.css";
 

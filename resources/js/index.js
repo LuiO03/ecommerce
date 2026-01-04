@@ -17,6 +17,8 @@ import { initImageUpload } from './utils/image-upload-handler.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
 import { initFormValidator } from './utils/form-validator.js';
+import { initTextareaAutosize } from './utils/textarea-autosize.js';
+import { initConnectionStatusBar } from './utils/connection-status.js';
 import { initOptionFeatureForm } from './modules/options-form-feature-manager.js';
 import { initOptionInlineManager } from './modules/options-index-inline-manager.js';
 import { initProductVariantsManager } from './modules/product-variants-manager.js';
@@ -48,4 +50,6 @@ window.initProductVariantsManager = initProductVariantsManager;
 // Si tienes funciones o inicializaciones globales
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Dashboard JS inicializado ✅');
+  initTextareaAutosize();
+  initConnectionStatusBar();
 });

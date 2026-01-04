@@ -7,46 +7,48 @@
                 <i class="ri-close-line"></i>
             </button>
         </div>
-        <h2 class="modal-title-body" id="audit-description">Sin descripción</h2>
         <div class="modal-show-body">
             <div class="modal-show-row">
-                <table class="modal-show-table">
-                    <tr>
-                        <th>ID</th>
-                        <td id="audit-id">-</td>
-                    </tr>
-                    <tr>
-                        <th>Usuario</th>
-                        <td id="audit-user">-</td>
-                    </tr>
-                    <tr>
-                        <th>Evento</th>
-                        <td id="audit-event">-</td>
-                    </tr>
-                    <tr>
-                        <th>Modelo</th>
-                        <td id="audit-model">-</td>
-                    </tr>
-                    <tr>
-                        <th>ID Modelo</th>
-                        <td id="audit-model-id">-</td>
-                    </tr>
-                    <tr>
-                        <th>IP</th>
-                        <td id="audit-ip">-</td>
-                    </tr>
-                    <tr>
-                        <th>User Agent</th>
-                        <td id="audit-user-agent">-</td>
-                    </tr>
-                    <tr>
-                        <th>Fecha</th>
-                        <td id="audit-created-at">-</td>
-                    </tr>
-                </table>
+                <div class="modal-json-container">
+                    <h4 class="mb-2 modal-section-title" id="audit-main-title">Detalle del evento</h4>
+                    <table class="modal-show-table">
+                        <tr>
+                            <th>ID</th>
+                            <td id="audit-id">-</td>
+                        </tr>
+                        <tr>
+                            <th>Usuario</th>
+                            <td id="audit-user">-</td>
+                        </tr>
+                        <tr>
+                            <th>Evento</th>
+                            <td id="audit-event">-</td>
+                        </tr>
+                        <tr>
+                            <th>Modelo</th>
+                            <td id="audit-model">-</td>
+                        </tr>
+                        <tr>
+                            <th>ID Modelo</th>
+                            <td id="audit-model-id">-</td>
+                        </tr>
+                        <tr>
+                            <th>IP</th>
+                            <td id="audit-ip">-</td>
+                        </tr>
+                        <tr>
+                            <th>User Agent</th>
+                            <td id="audit-user-agent">-</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha</th>
+                            <td id="audit-created-at">-</td>
+                        </tr>
+                    </table>
+                </div>
 
                 <div class="modal-json-container">
-                    <h4 class="font-semibold mb-2" id="audit-changes-title">Cambios del registro</h4>
+                    <h4 class="mb-2 modal-section-title" id="audit-changes-title">Cambios del registro</h4>
                     <table class="modal-show-table modal-changes-table">
                         <thead>
                             <tr>
@@ -95,20 +97,34 @@
 
         function setLoadingAuditModalFields() {
             const shimmer = '<div class="shimmer shimmer-cell"></div>';
+
+            // Shimmer por celda en la tabla de detalle
             $('#audit-id').html(shimmer);
             $('#audit-user').html(shimmer);
-            $('#audit-event').html(shimmer);
+            $('#audit-event').html('<div class="shimmer shimmer-cell shimmer-title" style="width:140px;"></div>');
             $('#audit-model').html(shimmer);
             $('#audit-model-id').html(shimmer);
             $('#audit-ip').html(shimmer);
-            $('#audit-user-agent').html(shimmer);
-            $('#audit-created-at').html(shimmer);
-            $('#audit-description').html('<div class="shimmer shimmer-cell shimmer-title" style="width:200px;"></div>');
+            $('#audit-user-agent').html('<div class="shimmer shimmer-cell" style="width:180px;"></div>');
+            $('#audit-created-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#audit-main-title').text('Detalle del evento');
             $('#audit-changes-title').text('Cambios del registro');
             $('#audit-col-field').text('Campo');
             $('#audit-col-prev').text('Valor anterior');
             $('#audit-col-new').text('Valor nuevo');
-            $('#audit-changes-body').html('<tr><td colspan="3"><div class="shimmer shimmer-cell"></div></td></tr>');
+
+            // Shimmer por celda en la tabla de cambios (3 filas de ejemplo)
+            let placeholderRows = '';
+            for (let i = 0; i < 3; i++) {
+                placeholderRows += `
+                    <tr>
+                        <td><div class="shimmer shimmer-cell" style="width:110px;"></div></td>
+                        <td><div class="shimmer shimmer-cell" style="width:160px;"></div></td>
+                        <td><div class="shimmer shimmer-cell" style="width:160px;"></div></td>
+                    </tr>
+                `;
+            }
+            $('#audit-changes-body').html(placeholderRows);
         }
 
         $(document).on('click', '.btn-ver-audit', function() {
@@ -122,7 +138,6 @@
                 method: 'GET',
                 success: function(data) {
                     $('#audit-id').text(data.id ?? '-');
-                    $('#audit-description').text(data.description ?? '-');
 
                     if (data.user_name) {
                         $('#audit-user').html(`<span class="badge badge-primary"><i class="ri-user-3-line"></i> ${data.user_name}</span>`);
@@ -130,7 +145,9 @@
                         $('#audit-user').html('<span class="badge badge-gray"><i class="ri-user-unfollow-line"></i> Sistema / Invitado</span>');
                     }
 
-                    $('#audit-event').text(data.event_label ?? data.event ?? '-');
+                    const eventLabel = data.event_label ?? data.event ?? '-';
+                    $('#audit-event').text(eventLabel);
+                    $('#audit-main-title').text(eventLabel);
                     $('#audit-model').text(data.auditable_type_name ?? '-');
                     $('#audit-model-id').text(data.auditable_id ?? '—');
                     $('#audit-ip').text(data.ip_address ?? '—');
@@ -476,7 +493,6 @@
                     $('#audit-ip').text('Error');
                     $('#audit-user-agent').text('Error');
                     $('#audit-created-at').text('Error');
-                    $('#audit-description').text('Error al cargar la auditoría');
                     $('#audit-changes-body').html('<tr><td colspan="3" class="text-red-500">Error al cargar los cambios</td></tr>');
                 }
             });

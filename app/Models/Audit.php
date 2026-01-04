@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Audit extends Model
 {
@@ -67,13 +68,77 @@ class Audit extends Model
         }
 
         if ($event === 'updated') {
-            $changed = array_keys((array) $this->new_values);
+            $allChanged = array_keys((array) $this->new_values);
+            $ignoredForDescription = [
+                'created_at',
+                'updated_at',
+                'deleted_at',
+                'email_verified_at',
+                'last_login',
+                'last_login_at',
+                'last_password_update',
+                'failed_attempts',
+                'blocked_until',
+                'remember_token',
+            ];
+
+            $changed = array_values(array_diff($allChanged, $ignoredForDescription));
+            if (empty($changed)) {
+                $changed = $allChanged;
+            }
+
             $changedStr = $changed ? implode(', ', $changed) : 'campos';
+
+            if ($this->auditable_type === User::class) {
+                $isSelfUpdate = $this->user_id && $this->auditable_id && (int) $this->user_id === (int) $this->auditable_id;
+
+                if ($isSelfUpdate) {
+                    return "El usuario actualizó su propio perfil{$labelPart} (cambios: {$changedStr})";
+                }
+
+                $actorName = $this->user ? $this->user->name : null;
+
+                if ($actorName) {
+                    return "El usuario «{$actorName}» actualizó el perfil de usuario{$labelPart} (cambios: {$changedStr})";
+                }
+
+                return "Se actualizó el perfil de usuario{$labelPart} (cambios: {$changedStr})";
+            }
 
             return "Se actualizó {$modelName}{$labelPart} (cambios: {$changedStr})";
         }
 
         if ($event === 'status_updated') {
+            $old = (array) $this->old_values;
+            $new = (array) $this->new_values;
+
+            if (array_key_exists('status', $old) && array_key_exists('status', $new)) {
+                $normalize = function ($value): bool {
+                    if (is_bool($value)) {
+                        return $value;
+                    }
+
+                    if (is_numeric($value)) {
+                        return (bool) $value;
+                    }
+
+                    $value = mb_strtolower((string) $value);
+
+                    return in_array($value, ['1', 'true', 'activo', 'active'], true);
+                };
+
+                $labelStatus = function (bool $value): string {
+                    return $value ? 'Activo' : 'Inactivo';
+                };
+
+                $from = $labelStatus($normalize($old['status']));
+                $to = $labelStatus($normalize($new['status']));
+
+                if ($from !== $to) {
+                    return "Se cambió estado de {$modelName}{$labelPart} de {$from} a {$to}";
+                }
+            }
+
             return "Se cambió estado de {$modelName}{$labelPart}";
         }
 
@@ -104,6 +169,32 @@ class Audit extends Model
         if ($event === 'permissions_updated'){
             return "Se actualizaron permisos del {$modelName}{$labelPart}";
         }
+
+        if ($event === 'profile_updated') {
+            $allChanged = array_keys((array) $this->new_values);
+            $ignoredForDescription = [
+                'created_at',
+                'updated_at',
+                'deleted_at',
+                'email_verified_at',
+                'last_login',
+                'last_login_at',
+                'last_password_update',
+                'failed_attempts',
+                'blocked_until',
+                'remember_token',
+            ];
+
+            $changed = array_values(array_diff($allChanged, $ignoredForDescription));
+            if (empty($changed)) {
+                $changed = $allChanged;
+            }
+
+            $changedStr = $changed ? implode(', ', $changed) : 'campos';
+
+            return "El usuario actualizó su perfil{$labelPart} (cambios: {$changedStr})";
+        }
+
         return ucfirst($event) . " de {$modelName}{$labelPart}";
     }
 

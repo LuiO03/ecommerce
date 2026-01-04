@@ -701,20 +701,20 @@
     --badge-accent-hover-border: #5e35b1;
 
     /* Badge Primary - Azul tradicional (más oscuro/saturado) */
-    --badge-primary-bg: #e3f2fd;
-    --badge-primary-text: #0d47a1;
-    --badge-primary-border: #1976d2;
+    --badge-primary-bg: #e3f2fd; /* Azul muy claro */
+    --badge-primary-text: #0d47a1; /* Azul profundo */
+    --badge-primary-border: #1976d2; /* Azul medio */
     --badge-primary-hover-bg: #1565c0;
     --badge-primary-hover-text: #ffffff;
     --badge-primary-hover-border: #0d47a1;
 
     /* Badge Info - Cian claro (más claro/vibrante) */
-    --badge-info-bg: #e0f7fa;
-    --badge-info-text: #00838f;
-    --badge-info-border: #26c6da;
+    --badge-info-bg: #e0f7fa; /* Cian claro */
+    --badge-info-text: #006064; /* Cian oscuro */
+    --badge-info-border: #26c6da; /* Turquesa */
     --badge-info-hover-bg: #00acc1;
     --badge-info-hover-text: #ffffff;
-    --badge-info-hover-border: #00838f;
+    --badge-info-hover-border: #006064;
 
     /* Badge Secondary - Púrpura */
     --badge-secondary-bg: #f3e5f5;
@@ -791,20 +791,20 @@
     --badge-accent-hover-border: #ff547d;
 
     /* Badge Primary - Modo Oscuro (Azul tradicional oscuro) */
-    --badge-primary-bg: #0d47a1;
-    --badge-primary-text: #64b5f6;
+    --badge-primary-bg: #0d47a1; /* Azul profundo */
+    --badge-primary-text: #bbdefb; /* Azul claro */
     --badge-primary-border: #1976d2;
     --badge-primary-hover-bg: #1565c0;
     --badge-primary-hover-text: #ffffff;
     --badge-primary-hover-border: #1e88e5;
 
     /* Badge Info - Modo Oscuro (Cian/Turquesa vibrante) */
-    --badge-info-bg: #0d47a1;
-    --badge-info-text: #4dd0e1;
-    --badge-info-border: #1d71d2;
-    --badge-info-hover-bg: #1565c0;
+    --badge-info-bg: #004d40; /* Verde azulado */
+    --badge-info-text: #80deea; /* Cian claro */
+    --badge-info-border: #00acc1;
+    --badge-info-hover-bg: #00695c;
     --badge-info-hover-text: #ffffff;
-    --badge-info-hover-border: #00e1ff;
+    --badge-info-hover-border: #00e5ff;
 
     /* Badge Secondary - Modo Oscuro */
     --badge-secondary-bg: #4a148c;

@@ -88,6 +88,7 @@
     @include('partials.admin.modal-info')
     @include('partials.admin.modal-confirm')
     @include('partials.admin.modal-toast')
+    @include('partials.admin.connection-status')
     <!-- DataTables v2.3.4 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js" defer></script>

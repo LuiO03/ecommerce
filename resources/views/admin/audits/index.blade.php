@@ -114,7 +114,7 @@
                                     @case('updated')
                                         <span class="badge badge-warning">
                                             <i class="ri-pencil-fill"></i>
-                                            Editado
+                                            Actualizado
                                         </span>
                                     @break
 
@@ -126,16 +126,16 @@
                                     @break
 
                                     @case('status_updated')
-                                        <span class="badge badge-info">
+                                        <span class="badge badge-primary">
                                             <i class="ri-refresh-fill"></i>
-                                            Estado Editado
+                                            Estado Actualizado
                                         </span>
                                     @break
 
                                     @case('bulk_deleted')
                                         <span class="badge badge-danger">
                                             <i class="ri-delete-bin-2-fill"></i>
-                                            Eliminación Masiva
+                                            Eliminación Múltiple
                                         </span>
                                     @break
 
@@ -173,9 +173,16 @@
                                         </span>
                                     @break
                                     @case('permissions_updated')
-                                        <span class="badge badge-purple">
+                                        <span class="badge badge-primary">
                                             <i class="ri-shield-check-fill"></i>
                                             Permisos Actualizados
+                                        </span>
+                                    @break
+
+                                    @case('profile_updated')
+                                        <span class="badge badge-gray">
+                                            <i class="ri-user-settings-fill"></i>
+                                            Perfil Actualizado
                                         </span>
                                     @break
 
