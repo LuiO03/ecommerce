@@ -1,0 +1,368 @@
+/* ============================================================
+   🔹 LAYOUT SHELL — NAVBAR Y SIDEBAR IZQUIERDO
+   ============================================================ */
+
+/* ============================================================
+   🔹 NAVBAR (Topbar principal)
+   ============================================================ */
+.navbar {
+    position: relative;
+    background-color: var(--color-sidebar-bg);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    top: 0;
+    left: var(--sidebar-expanded-width);
+    height: var(--navbar-height);
+    width: 100%;
+    transition: left var(--transition-sidebar-base), width var(--transition-sidebar-base);
+    z-index: 20px;
+}
+
+@media (min-width: 640px) {
+    .navbar {
+        left: 16rem;
+        width: calc(100% - 16rem);
+    }
+}
+
+.topbar-center .current-date{
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font-secondary);
+}
+
+.topbar-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.topbar-icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-element);
+    font-size: 20px;
+    color: var(--color-text);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.topbar-icon-btn:hover {
+    background-color: var(--color-hover);
+    color: var(--color-accent);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background-color: var(--color-danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==============================================
+   🎨 Avatar de usuario (imagen o iniciales)
+   ============================================== */
+.topbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-weight: bolder;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    object-fit: cover;
+    border-radius: 50%;
+    box-sizing: content-box;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border 0.3s ease;
+}
+
+.topbar-avatar:hover{
+    border-color: var(--color-accent);
+}
+
+.navbar-boton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    width: 50px;
+    border-radius: var(--radius-element);
+    font-size: 25px;
+    transition: background-color 0.3s ease;
+}
+
+/*
+.navbar-boton:hover {
+    background-color: var(--color-hover);
+}
+*/
+/* === Logo en el navbar (modo móvil/tablet) === */
+.navbar-logo {
+    text-decoration: none;
+}
+
+.navbar-logo-texto {
+    font-size: 22px;
+    text-transform: uppercase;
+}
+
+.navbar-logo .navbar-logo-texto span {
+    font-weight: 100;
+}
+
+
+@media (min-width: 640px) {
+    .navbar-logo {
+        display: none !important;
+    }
+}
+
+
+/* ============================================================
+   🔹 SIDEBAR IZQUIERDO PRINCIPAL
+   ============================================================ */
+.sidebar-principal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    width: var(--sidebar-expanded-width);
+    background-color: var(--color-sidebar-bg);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-p);
+    transition: width var(--transition-sidebar-base), transform var(--transition-sidebar-base);
+}
+
+/* === Header === */
+.sidebar-header {
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--color-border);
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding-inline: 15px;
+}
+
+.sidebar-header .sidebar-logo-texto {
+    font-size: 22px;
+    text-transform: uppercase;
+}
+
+.sidebar-header .sidebar-logo-texto span {
+    font-weight: 300;
+}
+
+#sidebar.close .sidebar-logo-texto {
+    opacity: 0;
+}
+
+/* === Contenido === */
+.sidebar-contenido {
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px 5px 10px 10px;
+}
+
+/* === Enlaces del sidebar === */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px;
+    position: relative;
+    border-left: 4px solid transparent;
+    border-right: 1px solid transparent;
+    border-bottom:  1px solid transparent;
+    border-top:  1px solid transparent;
+    transition: padding 0.3s ease, border-radius 0.1s ease, font-weight 0.2s ease, font-family 0.2s ease;
+}
+
+.sidebar-link:hover {
+    padding: 8px 8px 8px 18px;
+    background-color: var(--color-hover);
+    color: var(--color-accent);
+    font-weight: bold;
+    border-radius: 0 0.5rem 0.5rem 0 !important;
+    border-left: 4px solid var(--color-accent);
+    border-top:  1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    border-bottom:  1px solid var(--color-border);
+}
+
+.sidebar-link.active {
+    background-color: var(--color-accent);
+    font-weight: bold;
+    color: white;
+    border-radius: 0.5rem;
+    font-family: var(--font-secondary);
+    box-shadow: 0 8px 18px var(--shadow-accent);
+}
+
+.sidebar-link.active:hover{
+    border-color: transparent;
+    border-radius: 0.5rem !important;
+}
+
+.sidebar-link.active .sidebar-icon {
+    color: white !important;
+}
+
+.sidebar-link span{
+    white-space: nowrap;
+}
+
+.sidebar-sublink.active, .sidebar-sublink.active:hover {
+    background-color: var(--color-accent);
+    font-weight: bold;
+    color: white;
+    border-radius: 0.5rem;
+    font-family: var(--font-secondary);
+    box-shadow: 0 8px 18px var(--shadow-accent);
+}
+
+.sidebar-sublink.active .sidebar-icon {
+    color: white !important;
+}
+
+/* === Subenlaces === */
+.sidebar-sublink {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px;
+    border-radius: 0.5rem;
+}
+
+.sidebar-sublink:hover {
+    background-color: var(--color-sidebar-bg);
+    color: var(--color-accent);
+    font-weight: bold;
+}
+
+/* === Íconos y badges === */
+.sidebar-icon {
+    font-size: 20px;
+}
+
+.sidebar-link:hover .sidebar-icon,
+.sidebar-sublink:hover .sidebar-icon {
+    color: var(--color-accent);
+}
+
+.sidebar-badge {
+    margin-left: auto;
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-element);
+    background-color: var(--color-accent);
+    color: white;
+}
+
+/* === Botones con submenú === */
+.submenu-container{
+    border-radius: 0.5rem;
+    background-color: var(--color-sub-menu-bg);
+}
+.submenu-btn {
+    background-color: var(--color-sub-menu-button-bg);
+    border-color: var(--color-border);
+    border-left: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding-left: 12px;
+}
+
+.submenu-btn:hover{
+    border-left: 1px solid var(--color-border);
+    border-radius: 0.5rem !important;
+}
+
+.submenu-btn.rounded-top {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.submenu-arrow {
+    font-size: 20px;
+}
+
+/* === Submenú animado === */
+.sidebar-submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 5px;
+
+}
+
+.sidebar-submenu.open {
+    max-height: 500px;
+    padding: 5px;
+}
+
+/* ============================================================
+   🔹 FOOTER / SWITCH DE TEMA
+   ============================================================ */
+.sidebar-footer {
+    flex-shrink: 0;
+    width: 100%;
+    padding: 5px;
+    border-top: 1px solid var(--color-border);
+}
+
+.sidebar-theme-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.sidebar-theme-toggle:hover {
+    background-color: var(--color-hover);
+}
+
+.sidebar-switch {
+    position: relative;
+    width: 2.5rem;
+    height: 1.25rem;
+    background-color: var(--color-accent);
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-switch-handle {
+    position: absolute;
+    top: 0.15rem;
+    left: 0.15rem;
+    width: 0.95rem;
+    height: 0.95rem;
+    background-color: var(--color-bg);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}

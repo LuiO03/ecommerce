@@ -34,8 +34,9 @@
                         @endif
                     </div>
                     <div class="info-usuario">
-                        <span class="avatar-nombre">{{ auth()->user()->name }}</span>
-                        <p class="avatar-rol">{{ auth()->user()->role_list ?? 'Sin rol' }}</p>
+                        <!-- nombre y apellido -->
+                        <span class="avatar-nombre">{{ auth()->user()->name }} {{ auth()->user()->last_name }}</span>
+                        <p class="avatar-rol">{{ auth()->user()->role_list ?? 'Sin rol' }}(a)</p>
                     </div>
                 </div>
 
