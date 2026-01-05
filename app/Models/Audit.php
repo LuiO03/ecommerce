@@ -441,15 +441,15 @@ class Audit extends Model
         $shortName = class_basename($auditableType);
 
         $map = [
-            'User'            => 'Usuarios',
-            'Role'            => 'Roles',
-            'Family'          => 'Familias',
-            'Category'        => 'Categorías',
-            'Product'         => 'Productos',
-            'Post'            => 'Publicaciones',
+            'User'            => 'Usuario',
+            'Role'            => 'Rol',
+            'Family'          => 'Familia',
+            'Category'        => 'Categoría',
+            'Product'         => 'Producto',
+            'Post'            => 'Publicación',
             'CompanySetting'  => 'Configuración de la empresa',
-            'Audit'           => 'Auditorías',
-            'Option'          => 'Opciones',
+            'Audit'           => 'Auditoría',
+            'Option'          => 'Opción',
         ];
 
         return $map[$shortName] ?? $shortName;
