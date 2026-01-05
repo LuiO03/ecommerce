@@ -1,3 +1,5 @@
+@section('title', 'Auditoría del sistema')
+
 <x-admin-layout :showMobileFab="false">
     <x-slot name="title">
         <div class="page-icon card-warning">

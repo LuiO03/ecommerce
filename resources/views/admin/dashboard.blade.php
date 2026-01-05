@@ -1,3 +1,5 @@
+@section('title', 'Dashboard')
+
 @push('styles')
     @vite('resources/css/modules/dashboard.css')
 @endpush

@@ -1,3 +1,5 @@
+@section('title', 'Permisos del rol: ' . $role->name)
+
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-warning"><i class="ri-key-2-fill"></i></div>

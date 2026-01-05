@@ -1,9 +1,11 @@
+@section('title', 'Opciones y valores')
+
 @php
     use App\Models\Option;
     use Illuminate\Support\Str;
 @endphp
 
-<x-admin-layout :showMobileFab="true" :useSlotContainer="false">
+<x-admin-layout :showMobileFab="true">
     <x-slot name="title">
         <div class="page-icon card-info"><i class="ri-settings-3-line"></i></div>
         Opciones y Valores

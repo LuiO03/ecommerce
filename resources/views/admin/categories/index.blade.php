@@ -1,3 +1,5 @@
+@section('title', 'Categorías')
+
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
         <div class="page-icon card-success">

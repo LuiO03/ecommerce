@@ -1,3 +1,5 @@
+@section('title', 'Configuración de la empresa')
+
 @php($logoFilename = $hasLogo ? basename($setting->logo_path) : '')
 
 <x-admin-layout :useSlotContainer="false">

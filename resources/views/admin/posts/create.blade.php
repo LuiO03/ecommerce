@@ -1,3 +1,5 @@
+@section('title', 'Crear post')
+
 <x-admin-layout>
     <x-slot name="title">
         <div class="page-icon card-success"><i class="ri-add-large-line"></i></div>

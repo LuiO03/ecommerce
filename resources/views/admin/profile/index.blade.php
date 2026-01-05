@@ -1,3 +1,5 @@
+@section('title', 'Perfil de usuario')
+
 @push('styles')
     @vite('resources/css/modules/profile.css')
 @endpush

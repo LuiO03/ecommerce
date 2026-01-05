@@ -1,3 +1,5 @@
+@section('title', 'Roles')
+
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
         <div class="page-icon card-primary"><i class="ri-shield-user-line"></i></div>

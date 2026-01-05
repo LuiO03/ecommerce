@@ -1,3 +1,5 @@
+@section('title', 'Registros de acceso')
+
 <x-admin-layout :showMobileFab="false">
     <x-slot name="title">
         <div class="page-icon card-info">

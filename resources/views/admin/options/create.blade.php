@@ -1,3 +1,5 @@
+@section('title', 'Nueva opción')
+
 @php
     use App\Models\Option;
 @endphp

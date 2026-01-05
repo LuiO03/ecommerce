@@ -1,3 +1,5 @@
+@section('title', 'Jerarquía de categorías')
+
 <x-admin-layout :showMobileFab="true" :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-purple">

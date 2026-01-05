@@ -1,3 +1,5 @@
+@section('title', 'Editar post')
+
 <x-admin-layout>
     <x-slot name="title">
         <div class="page-icon card-warning"><i class="ri-edit-circle-line"></i></div>

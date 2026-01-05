@@ -1,4 +1,6 @@
-<x-admin-layout :showMobileFab="true">
+	@section('title', 'Productos')
+
+	<x-admin-layout :showMobileFab="true">
 	<x-slot name="title">
 		<div class="page-icon card-danger">
 			<i class="ri-box-3-line"></i>

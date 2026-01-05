@@ -1,3 +1,5 @@
+@section('title', 'Editar opción: ' . $option->name)
+
 @php
     use App\Models\Option;
 @endphp

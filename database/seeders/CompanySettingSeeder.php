@@ -52,7 +52,7 @@ class CompanySettingSeeder extends Seeder
             'linkedin_enabled' => true,
             'primary_color' => '#D11E4B',
             'secondary_color' => '#3D31B2',
-            'logo_path' => 'geckomercce.png',
+            'logo_path' => 'company/geckomercce.png',
             'about' => 'Somos una tienda en línea enfocada en brindar la mejor experiencia de compra.',
             'terms_conditions' => '<h3>Términos y Condiciones</h3><p>Al utilizar nuestra plataforma, aceptas las políticas de uso y las condiciones comerciales descritas en este documento. Te recomendamos revisarlo periódicamente.</p>',
             'privacy_policy' => '<h3>Política de Privacidad</h3><p>Protegemos tu información personal cumpliendo con la normativa vigente. Consulta nuestra política para conocer cómo recopilamos, usamos y protegemos tus datos.</p>',
