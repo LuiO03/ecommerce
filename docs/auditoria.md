@@ -19,9 +19,14 @@ Archivos principales:
 - Modelo: `app/Models/Audit.php`
 - Trait reusable: `app/Traits/Auditable.php`
 - Registro de eventos de autenticación (para logs de acceso, no auditoría de datos): `app/Providers/EventServiceProvider.php`
-- Modelos que usan el trait:
+- Modelos que usan actualmente el trait `Auditable`:
   - `app/Models/Category.php`
   - `app/Models/Product.php`
+  - `app/Models/Family.php`
+  - `app/Models/User.php`
+  - `app/Models/Post.php`
+  - `app/Models/Option.php`
+  - `app/Models/Role.php`
 
 ## 3. Tabla `audits`
 
