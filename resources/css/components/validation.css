@@ -142,7 +142,7 @@ select.input-success:focus {
 .validation-check-icon {
     position: absolute;
     right: -10px;
-    top: 10%;
+    top: 0px;
     transform: translateY(-50%);
     font-size: 1.2rem;
     background-color: var(--color-sidebar-bg);

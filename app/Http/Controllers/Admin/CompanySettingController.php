@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateCompanySettingRequest;
+use App\Models\Audit;
 use App\Models\CompanySetting;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -23,12 +25,36 @@ class CompanySettingController extends Controller
         $this->middleware('can:configuracion.edit')->only(['updateGeneral', 'updateIdentity', 'updateContact', 'updateSocial', 'updateLegal']);
         $this->middleware('can:configuracion.index')->only(['index']);
     }
+
+    protected function recordCompanyAudit($request, CompanySetting $setting, string $event, ?array $oldValues, ?array $newValues): void
+    {
+        if ($oldValues !== null && $newValues !== null && $oldValues == $newValues) {
+            return;
+        }
+
+        try {
+            Audit::create([
+                'user_id'        => Auth::id(),
+                'event'          => $event,
+                'auditable_type' => CompanySetting::class,
+                'auditable_id'   => $setting->id,
+                'old_values'     => $oldValues,
+                'new_values'     => $newValues,
+                'ip_address'     => $request->ip(),
+                'user_agent'     => $request->userAgent(),
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+    }
     /**
      * Actualiza la información general de la empresa.
      */
     public function updateGeneral(UpdateCompanyGeneralRequest $request)
     {
             $setting = CompanySetting::first() ?? new CompanySetting;
+            $original = $setting->exists ? $setting->only(['name', 'legal_name', 'ruc', 'slogan', 'about']) : null;
+
             $data = collect($request->validated());
             $setting->name = $data->get('name');
             $setting->legal_name = $data->get('legal_name');
@@ -37,6 +63,14 @@ class CompanySettingController extends Controller
             $setting->about = $data->get('about');
             $setting->save();
             Cache::forget('company_settings');
+
+            $this->recordCompanyAudit($request, $setting, 'company_general_updated', $original, [
+                'name'       => $setting->name,
+                'legal_name' => $setting->legal_name,
+                'ruc'        => $setting->ruc,
+                'slogan'     => $setting->slogan,
+                'about'      => $setting->about,
+            ]);
 
             return redirect()
                 ->route('admin.company-settings.index')
@@ -53,8 +87,9 @@ class CompanySettingController extends Controller
      */
     public function updateIdentity(UpdateCompanyIdentityRequest $request)
     {
-
             $setting = CompanySetting::first() ?? new CompanySetting;
+            $original = $setting->exists ? $setting->only(['primary_color', 'secondary_color', 'logo_path']) : null;
+
             $data = collect($request->validated());
             $removeLogo = $request->boolean('remove_logo');
             $logoPath = $setting->logo_path;
@@ -77,6 +112,13 @@ class CompanySettingController extends Controller
             $setting->logo_path = $logoPath;
             $setting->save();
             Cache::forget('company_settings');
+
+            $this->recordCompanyAudit($request, $setting, 'company_identity_updated', $original, [
+                'primary_color'   => $setting->primary_color,
+                'secondary_color' => $setting->secondary_color,
+                'logo_path'       => $setting->logo_path,
+            ]);
+
             return redirect()
                 ->route('admin.company-settings.index')
                 ->with('toast', [
@@ -93,6 +135,15 @@ class CompanySettingController extends Controller
     {
         $setting = CompanySetting::first() ?? new CompanySetting;
 
+        $original = $setting->exists ? [
+            'email'         => $setting->email,
+            'support_email' => $setting->support_email,
+            'phone'         => $setting->phone,
+            'support_phone' => $setting->support_phone,
+            'address'       => $setting->address,
+            'website'       => $setting->website,
+        ] : null;
+
         $data = $request->validated();
 
         $setting->email = $data['email'] ?? null;
@@ -105,6 +156,15 @@ class CompanySettingController extends Controller
         $setting->save();
 
         Cache::forget('company_settings');
+
+        $this->recordCompanyAudit($request, $setting, 'company_contact_updated', $original, [
+            'email'         => $setting->email,
+            'support_email' => $setting->support_email,
+            'phone'         => $setting->phone,
+            'support_phone' => $setting->support_phone,
+            'address'       => $setting->address,
+            'website'       => $setting->website,
+        ]);
 
         return redirect()
             ->route('admin.company-settings.index')
@@ -121,6 +181,15 @@ class CompanySettingController extends Controller
     public function updateSocial(UpdateCompanySocialRequest $request)
     {
         $setting = CompanySetting::first() ?? new CompanySetting;
+        $original = $setting->exists ? [
+            'social_links'      => $setting->social_links,
+            'facebook_enabled'  => $setting->facebook_enabled,
+            'instagram_enabled' => $setting->instagram_enabled,
+            'twitter_enabled'   => $setting->twitter_enabled,
+            'youtube_enabled'   => $setting->youtube_enabled,
+            'tiktok_enabled'    => $setting->tiktok_enabled,
+            'linkedin_enabled'  => $setting->linkedin_enabled,
+        ] : null;
         $data = collect($request->validated());
         $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
         $socialLinks = [];
@@ -137,6 +206,16 @@ class CompanySettingController extends Controller
         $setting->save();
         Cache::forget('company_settings');
 
+        $this->recordCompanyAudit($request, $setting, 'company_social_updated', $original, [
+            'social_links'      => $setting->social_links,
+            'facebook_enabled'  => $setting->facebook_enabled,
+            'instagram_enabled' => $setting->instagram_enabled,
+            'twitter_enabled'   => $setting->twitter_enabled,
+            'youtube_enabled'   => $setting->youtube_enabled,
+            'tiktok_enabled'    => $setting->tiktok_enabled,
+            'linkedin_enabled'  => $setting->linkedin_enabled,
+        ]);
+
         return redirect()->route('admin.company-settings.index')
             ->with('toast', [
                 'type' => 'success',
@@ -151,12 +230,23 @@ class CompanySettingController extends Controller
     public function updateLegal(UpdateCompanyLegalRequest $request)
     {
         $setting = CompanySetting::first() ?? new CompanySetting;
+        $original = $setting->exists ? [
+            'terms_conditions'       => $setting->terms_conditions,
+            'privacy_policy'         => $setting->privacy_policy,
+            'claims_book_information'=> $setting->claims_book_information,
+        ] : null;
         $data = $request->validated();
         $setting->terms_conditions = $data['terms_conditions'] ?? null;
         $setting->privacy_policy = $data['privacy_policy'] ?? null;
         $setting->claims_book_information = $data['claims_book_information'] ?? null;
         $setting->save();
         Cache::forget('company_settings');
+
+        $this->recordCompanyAudit($request, $setting, 'company_legal_updated', $original, [
+            'terms_conditions'        => $setting->terms_conditions,
+            'privacy_policy'          => $setting->privacy_policy,
+            'claims_book_information' => $setting->claims_book_information,
+        ]);
         return redirect()->route('admin.company-settings.index')
             ->with('toast', [
                 'type' => 'success',

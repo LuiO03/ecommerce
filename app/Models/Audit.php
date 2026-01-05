@@ -48,7 +48,11 @@ class Audit extends Model
 
     public function getModelNameAttribute(): string
     {
-        return $this->auditable_type ? class_basename($this->auditable_type) : 'Sistema';
+        if (!$this->auditable_type) {
+            return 'Sistema';
+        }
+
+        return $this->mapAuditableTypeToModuleName($this->auditable_type);
     }
 
     public function generateDescription(): string
@@ -80,6 +84,7 @@ class Audit extends Model
                 'failed_attempts',
                 'blocked_until',
                 'remember_token',
+                'slug',
             ];
 
             $changed = array_values(array_diff($allChanged, $ignoredForDescription));
@@ -87,7 +92,8 @@ class Audit extends Model
                 $changed = $allChanged;
             }
 
-            $changedStr = $changed ? implode(', ', $changed) : 'campos';
+            $changedLabels = $this->mapFieldLabels($changed);
+            $changedStr = $changedLabels ? implode(', ', $changedLabels) : 'detalles';
 
             if ($this->auditable_type === User::class) {
                 $isSelfUpdate = $this->user_id && $this->auditable_id && (int) $this->user_id === (int) $this->auditable_id;
@@ -170,6 +176,26 @@ class Audit extends Model
             return "Se actualizaron permisos del {$modelName}{$labelPart}";
         }
 
+        if (in_array($event, [
+            'company_general_updated',
+            'company_identity_updated',
+            'company_contact_updated',
+            'company_social_updated',
+            'company_legal_updated',
+        ], true)) {
+            $sections = [
+                'company_general_updated'  => 'la información general',
+                'company_identity_updated' => 'la identidad visual',
+                'company_contact_updated'  => 'los datos de contacto',
+                'company_social_updated'   => 'las redes sociales',
+                'company_legal_updated'    => 'los aspectos legales',
+            ];
+
+            $section = $sections[$event] ?? 'la configuración';
+
+            return $this->buildCompanySettingsDescription($section);
+        }
+
         if ($event === 'profile_updated') {
             $allChanged = array_keys((array) $this->new_values);
             $ignoredForDescription = [
@@ -183,6 +209,7 @@ class Audit extends Model
                 'failed_attempts',
                 'blocked_until',
                 'remember_token',
+                'slug',
             ];
 
             $changed = array_values(array_diff($allChanged, $ignoredForDescription));
@@ -190,12 +217,242 @@ class Audit extends Model
                 $changed = $allChanged;
             }
 
-            $changedStr = $changed ? implode(', ', $changed) : 'campos';
+            $changedLabels = $this->mapFieldLabels($changed);
+            $changedStr = $changedLabels ? implode(', ', $changedLabels) : 'detalles';
 
             return "El usuario actualizó su perfil{$labelPart} (cambios: {$changedStr})";
         }
 
         return ucfirst($event) . " de {$modelName}{$labelPart}";
+    }
+
+    protected function buildCompanySettingsDescription(string $section): string
+    {
+        $old = (array) $this->old_values;
+        $new = (array) $this->new_values;
+
+        $ignoredForDescription = [
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'email_verified_at',
+            'last_login',
+            'last_login_at',
+            'last_password_update',
+            'failed_attempts',
+            'blocked_until',
+            'remember_token',
+            'slug',
+        ];
+
+        $keys = array_unique(array_merge(array_keys($old), array_keys($new)));
+
+        $changedFields = [];
+
+        foreach ($keys as $field) {
+            if (in_array($field, $ignoredForDescription, true)) {
+                continue;
+            }
+
+            $oldVal = $old[$field] ?? null;
+            $newVal = $new[$field] ?? null;
+
+            // Comparar valores; para arrays/objetos usamos JSON para detectar cambios profundos
+            if (is_array($oldVal) || is_array($newVal) || is_object($oldVal) || is_object($newVal)) {
+                if (json_encode($oldVal) === json_encode($newVal)) {
+                    continue;
+                }
+            } else {
+                if ($oldVal === $newVal) {
+                    continue;
+                }
+            }
+
+            $label = $this->mapFieldLabel($field);
+
+            if ($label !== null) {
+                $changedFields[] = $label;
+            }
+        }
+
+        $changedFields = array_values(array_unique($changedFields));
+        $changedStr = $changedFields ? implode(', ', $changedFields) : 'detalles';
+
+        return "Se actualizó {$section} de la configuración de la empresa (cambios: {$changedStr})";
+    }
+
+    protected function mapFieldLabels(array $fields): array
+    {
+        $labels = [];
+
+        foreach ($fields as $field) {
+            $label = $this->mapFieldLabel($field);
+
+            if ($label !== null) {
+                $labels[] = $label;
+            }
+        }
+
+        return $labels;
+    }
+
+    protected function mapFieldLabel(string $field): ?string
+    {
+        $hidden = [
+            'id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'email_verified_at',
+            'last_login',
+            'last_login_at',
+            'last_password_update',
+            'failed_attempts',
+            'blocked_until',
+            'remember_token',
+            'password',
+            'created_by',
+            'updated_by',
+            'deleted_by',
+        ];
+
+        if (in_array($field, $hidden, true)) {
+            return null;
+        }
+
+        $map = [
+            // Generales comunes
+            'name'              => 'Nombre',
+            'nombre'            => 'Nombre',
+            'title'             => 'Título',
+            'titulo'            => 'Título',
+            'slug'              => 'Slug',
+            'description'       => 'Descripción',
+            'status'            => 'Estado',
+            'image'             => 'Imagen',
+
+            // Usuario
+            'last_name'         => 'Apellidos',
+            'address'           => 'Dirección',
+            'dni'               => 'DNI',
+            'phone'             => 'Teléfono',
+            'image'             => 'Foto de perfil',
+            'background_style'  => 'Fondo de perfil',
+
+            // Producto
+            'sku'               => 'SKU',
+            'price'             => 'Precio',
+            'discount'          => 'Descuento',
+            'min_stock'         => 'Stock mínimo',
+            'category_id'       => 'Categoría',
+
+            // Familia / Categoría
+            'family_id'         => 'Familia',
+            'parent_id'         => 'Categoría padre',
+
+            // Opciones / Características / Variantes
+            'option_id'         => 'Opción',
+            'variant_id'        => 'Variante',
+            'product_id'        => 'Producto',
+            'stock'             => 'Stock',
+            'image_path'        => 'Imagen de variante',
+            'value'             => 'Valor',
+
+            // Posts / Blog
+            'content'           => 'Contenido',
+            'views'             => 'Vistas',
+            'published_at'      => 'Fecha de publicación',
+            'visibility'        => 'Visibilidad',
+            'allow_comments'    => 'Permitir comentarios',
+            'reviewed_by'       => 'Revisado por',
+            'reviewed_at'       => 'Fecha de revisión',
+
+            // Permisos / Seguridad
+            'modulo'            => 'Módulo',
+            'guard_name'        => 'Guard',
+
+            // Access logs
+            'user_id'           => 'Usuario',
+            'email'             => 'Correo electrónico',
+            'action'            => 'Acción',
+            'ip_address'        => 'IP',
+            'user_agent'        => 'Agente de usuario',
+
+            // CompanySetting
+            'legal_name'        => 'Razón social',
+            'ruc'               => 'RUC',
+            'slogan'            => 'Eslogan',
+            'about'             => 'Acerca de la empresa',
+            'primary_color'     => 'Color primario',
+            'secondary_color'   => 'Color secundario',
+            'logo_path'         => 'Logotipo',
+            'support_email'     => 'Correo de soporte',
+            'support_phone'     => 'Teléfono de soporte',
+            'website'           => 'Sitio web',
+            'social_links'      => 'Redes sociales',
+            'facebook_enabled'  => 'Facebook habilitado',
+            'instagram_enabled' => 'Instagram habilitado',
+            'twitter_enabled'   => 'Twitter habilitado',
+            'youtube_enabled'   => 'YouTube habilitado',
+            'tiktok_enabled'    => 'TikTok habilitado',
+            'linkedin_enabled'  => 'LinkedIn habilitado',
+            'terms_conditions'  => 'Términos y condiciones',
+            'privacy_policy'    => 'Política de privacidad',
+            'claims_book_information' => 'Información del libro de reclamaciones',
+        ];
+
+        if (isset($map[$field])) {
+            return $map[$field];
+        }
+
+        // Para otros campos, devolver el nombre tal cual, pero más legible
+        return str_replace('_', ' ', $field);
+    }
+
+    public function getEventLabelAttribute(): string
+    {
+        $event = (string) $this->event;
+
+        $map = [
+            'created'               => 'Creado',
+            'updated'               => 'Actualizado',
+            'deleted'               => 'Eliminado',
+            'status_updated'        => 'Estado actualizado',
+            'bulk_deleted'          => 'Eliminación múltiple',
+            'pdf_exported'          => 'PDF exportado',
+            'excel_exported'        => 'Excel exportado',
+            'csv_exported'          => 'CSV exportado',
+            'post_approved'         => 'Publicación aprobada',
+            'post_rejected'         => 'Publicación rechazada',
+            'permissions_updated'   => 'Permisos actualizados',
+            'profile_updated'       => 'Perfil actualizado',
+            'company_general_updated'  => 'Empresa · Información general',
+            'company_identity_updated' => 'Empresa · Identidad visual',
+            'company_contact_updated'  => 'Empresa · Datos de contacto',
+            'company_social_updated'   => 'Empresa · Redes sociales',
+            'company_legal_updated'    => 'Empresa · Aspectos legales',
+        ];
+
+        return $map[$event] ?? ucfirst($event);
+    }
+
+    protected function mapAuditableTypeToModuleName(string $auditableType): string
+    {
+        $shortName = class_basename($auditableType);
+
+        $map = [
+            'User'            => 'Usuarios',
+            'Role'            => 'Roles',
+            'Family'          => 'Familias',
+            'Category'        => 'Categorías',
+            'Product'         => 'Productos',
+            'Post'            => 'Publicaciones',
+            'CompanySetting'  => 'Configuración de la empresa',
+            'Audit'           => 'Auditorías',
+            'Option'          => 'Opciones',
+        ];
+
+        return $map[$shortName] ?? $shortName;
     }
 
     protected function guessMainLabel(): ?string

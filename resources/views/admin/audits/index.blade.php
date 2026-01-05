@@ -127,9 +127,9 @@
                         </th>
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Usuario</th>
+                        <th>Modelo · ID</th>
                         <th>Evento</th>
                         <th>Descripción</th>
-                        <th>Modelo · ID</th>
                         <th>IP</th>
                         <th class="column-date-th">Fecha</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
@@ -138,7 +138,7 @@
                 <tbody>
                     @foreach ($audits as $audit)
                         @php
-                            $modelName = $audit->auditable_type ? class_basename($audit->auditable_type) : '—';
+                            $modelName = $audit->model_name ?? ($audit->auditable_type ? class_basename($audit->auditable_type) : '—');
                             $modelId = $audit->auditable_id ?? '—';
                         @endphp
                         <tr data-id="{{ $audit->id }}">
@@ -162,6 +162,9 @@
                                         Sistema / Invitado
                                     </span>
                                 @endif
+                            </td>
+                            <td>
+                                {{ $modelName }} &middot; #{{ $modelId }}
                             </td>
                             <td data-event="{{ $audit->event }}">
                                 @php($eventLabel = ucfirst($audit->event))
@@ -251,6 +254,41 @@
                                         </span>
                                     @break
 
+                                    @case('company_general_updated')
+                                        <span class="badge badge-gray">
+                                            <i class="ri-building-4-fill"></i>
+                                            Empresa Actualizada
+                                        </span>
+                                    @break
+
+                                    @case('company_identity_updated')
+                                        <span class="badge badge-gray">
+                                            <i class="ri-shield-fill"></i>
+                                            Identidad de Emp.
+                                        </span>
+                                    @break
+
+                                    @case('company_contact_updated')
+                                        <span class="badge badge-gray">
+                                            <i class="ri-contacts-fill"></i>
+                                            Contacto de Emp.
+                                        </span>
+                                    @break
+
+                                    @case('company_social_updated')
+                                        <span class="badge badge-gray">
+                                            <i class="ri-share-fill"></i>
+                                            Redes Sociales de Emp.
+                                        </span>
+                                    @break
+
+                                    @case('company_legal_updated')
+                                        <span class="badge badge-gray">
+                                            <i class="ri-file-law-fill"></i>
+                                            Legal de Emp. Actualizado
+                                        </span>
+                                    @break
+
                                     @default
                                         <span class="badge badge-secondary">
                                             <i class="ri-question-fill"></i>
@@ -261,9 +299,7 @@
                             <td>
                                 {{ $audit->description }}
                             </td>
-                            <td>
-                                <code>{{ $modelName }} &middot; #{{ $modelId }}</code>
-                            </td>
+
                             <td>
                                 <code>{{ $audit->ip_address ?? '—' }}</code>
                             </td>

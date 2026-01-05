@@ -127,6 +127,105 @@
             $('#audit-changes-body').html(placeholderRows);
         }
 
+        function mapAuditFieldLabel(key) {
+            if (!key) {
+                return '';
+            }
+
+            const raw = key.toString();
+
+            const labels = {
+                // Generales comunes
+                name: 'Nombre',
+                nombre: 'Nombre',
+                title: 'Título',
+                titulo: 'Título',
+                slug: 'Slug',
+                description: 'Descripción',
+                status: 'Estado',
+                image: 'Imagen',
+
+                // Metadatos de auditoría
+                created_at: 'Creado el',
+                updated_at: 'Actualizado el',
+                deleted_at: 'Eliminado el',
+                created_by: 'Creado por',
+                updated_by: 'Actualizado por',
+                deleted_by: 'Eliminado por',
+
+                // Usuario
+                last_name: 'Apellidos',
+                address: 'Dirección',
+                dni: 'DNI',
+                phone: 'Teléfono',
+                background_style: 'Fondo de perfil',
+
+                // Producto / catálogo
+                sku: 'SKU',
+                price: 'Precio',
+                discount: 'Descuento',
+                min_stock: 'Stock mínimo',
+                category_id: 'Categoría',
+                family_id: 'Familia',
+                parent_id: 'Categoría padre',
+                option_id: 'Opción',
+                variant_id: 'Variante',
+                product_id: 'Producto',
+                stock: 'Stock',
+                image_path: 'Imagen de variante',
+                value: 'Valor',
+
+                // Posts / Blog
+                content: 'Contenido',
+                views: 'Vistas',
+                published_at: 'Fecha de publicación',
+                visibility: 'Visibilidad',
+                allow_comments: 'Permitir comentarios',
+                reviewed_by: 'Revisado por',
+                reviewed_at: 'Fecha de revisión',
+
+                // Permisos / Seguridad
+                modulo: 'Módulo',
+                guard_name: 'Guard',
+                permissions: 'Permisos',
+
+                // Access logs / auditoría
+                user_id: 'Usuario',
+                email: 'Correo electrónico',
+                action: 'Acción',
+                ip_address: 'IP',
+                user_agent: 'Agente de usuario',
+
+                // CompanySetting
+                legal_name: 'Razón social',
+                ruc: 'RUC',
+                slogan: 'Eslogan',
+                about: 'Acerca de la empresa',
+                primary_color: 'Color primario',
+                secondary_color: 'Color secundario',
+                logo_path: 'Logotipo',
+                support_email: 'Correo de soporte',
+                support_phone: 'Teléfono de soporte',
+                website: 'Sitio web',
+                social_links: 'Redes sociales',
+                facebook_enabled: 'Facebook habilitado',
+                instagram_enabled: 'Instagram habilitado',
+                twitter_enabled: 'Twitter habilitado',
+                youtube_enabled: 'YouTube habilitado',
+                tiktok_enabled: 'TikTok habilitado',
+                linkedin_enabled: 'LinkedIn habilitado',
+                terms_conditions: 'Términos y condiciones',
+                privacy_policy: 'Política de privacidad',
+                claims_book_information: 'Información del libro de reclamaciones',
+            };
+
+            if (Object.prototype.hasOwnProperty.call(labels, raw)) {
+                return labels[raw];
+            }
+
+            return raw.replace(/_/g, ' ');
+        }
+
         $(document).on('click', '.btn-ver-audit', function() {
             setLoadingAuditModalFields();
             openModalAudit();
@@ -241,6 +340,8 @@
                         titleText = 'Datos del registro eliminado';
                     } else if (eventType === 'permissions_updated') {
                         titleText = 'Permisos del rol (antes y después)';
+                    } else if (eventType === 'company_social_updated') {
+                        titleText = 'Redes sociales de la empresa (antes y después)';
                     }
                     $('#audit-changes-title').text(titleText);
 
@@ -372,6 +473,32 @@
                             return '<div class="permissions-badge-list">' + badges + '</div>';
                         }
 
+                        // Booleans tipo *_enabled, allow_comments, toggles varios
+                        if (lowerKey.endsWith('_enabled') || lowerKey === 'allow_comments') {
+                            const truthy = val === true || val === 1 || val === '1' || val === 'true';
+
+                            // Para flags *_enabled (ej. Facebook habilitado): Activo / Inactivo
+                            if (lowerKey.endsWith('_enabled')) {
+                                if (truthy) {
+                                    return '<span class="badge boton-success"><i class="ri-check-line"></i> Activo</span>';
+                                }
+                                return '<span class="badge boton-danger"><i class="ri-close-line"></i> Inactivo</span>';
+                            }
+
+                            // Para allow_comments: Permitidos / No permitidos
+                            if (lowerKey === 'allow_comments') {
+                                if (truthy) {
+                                    return '<span class="badge boton-success"><i class="ri-check-line"></i> Permitidos</span>';
+                                }
+                                return '<span class="badge boton-danger"><i class="ri-close-line"></i> No permitidos</span>';
+                            }
+                        }
+
+                        // IDs de relación (mostrar con #id)
+                        if (lowerKey === 'id' || lowerKey.endsWith('_id')) {
+                            return '#' + String(val);
+                        }
+
                         // Campos de fecha (terminan en _at, _on, date, fecha)
                         if (/(?:_at|_on|date|fecha)$/.test(lowerKey)) {
                             return formatDate(val);
@@ -391,7 +518,7 @@
 
                         const rowHtml = `
                             <tr>
-                                <td><code>permissions</code></td>
+                                <td><code>${mapAuditFieldLabel('permissions')}</code></td>
                                 <td>${removedHtml}</td>
                                 <td>${addedHtml}</td>
                             </tr>
@@ -418,16 +545,66 @@
                             const oldVal = oldValues[key];
                             const newVal = newValues[key];
 
+                            // Caso especial: redes sociales de la empresa
+                            if (eventType === 'company_social_updated' && key === 'social_links') {
+                                const oldLinks = oldVal || {};
+                                const newLinks = newVal || {};
+                                const platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
+
+                                const formatLink = function(url) {
+                                    if (!url) return '—';
+                                    const safe = String(url).replace(/"/g, '&quot;');
+                                    return `<a href="${safe}" target="_blank" rel="noopener noreferrer">${safe}</a>`;
+                                };
+
+                                platforms.forEach(function(platform) {
+                                    const prevUrl = oldLinks[platform] || '';
+                                    const nextUrl = newLinks[platform] || '';
+
+                                    if (prevUrl === nextUrl) {
+                                        return;
+                                    }
+
+                                    const label = 'Red social: ' + platform.charAt(0).toUpperCase() + platform.slice(1);
+
+                                    rowsHtml += `
+                                        <tr>
+                                            <td><code>${label}</code></td>
+                                            <td>${formatLink(prevUrl)}</td>
+                                            <td>${formatLink(nextUrl)}</td>
+                                        </tr>
+                                    `;
+                                });
+
+                                return;
+                            }
+
+                            // Saltar campos cuyo valor no cambió
+                            try {
+                                const same = JSON.stringify(oldVal) === JSON.stringify(newVal);
+                                if (same) {
+                                    return;
+                                }
+                            } catch (e) {
+                                if (oldVal === newVal) {
+                                    return;
+                                }
+                            }
+
                             rowsHtml += `
                                 <tr>
-                                    <td><code>${key}</code></td>
+                                    <td><code>${mapAuditFieldLabel(key)}</code></td>
                                     <td>${formatVal(key, oldVal)}</td>
                                     <td>${formatVal(key, newVal)}</td>
                                 </tr>
                             `;
                         });
 
-                        $('#audit-changes-body').html(rowsHtml);
+                        if (!rowsHtml) {
+                            $('#audit-changes-body').html('<tr><td colspan="3" class="text-muted-null">Sin datos de cambios para este evento</td></tr>');
+                        } else {
+                            $('#audit-changes-body').html(rowsHtml);
+                        }
                         return;
                     }
 
@@ -446,7 +623,7 @@
                             const val = source[key];
                             rowsHtml += `
                                 <tr>
-                                    <td><code>${key}</code></td>
+                                    <td><code>${mapAuditFieldLabel(key)}</code></td>
                                     <td colspan="2">${formatVal(key, val)}</td>
                                 </tr>
                             `;
@@ -471,7 +648,7 @@
                             const val = source[key];
                             rowsHtml += `
                                 <tr>
-                                    <td><code>${key}</code></td>
+                                    <td><code>${mapAuditFieldLabel(key)}</code></td>
                                     <td colspan="2">${formatVal(key, val)}</td>
                                 </tr>
                             `;

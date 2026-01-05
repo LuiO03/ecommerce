@@ -46,7 +46,7 @@ class AuditController extends Controller
         return response()->json([
             'id'                  => $audit->id,
             'event'               => $audit->event,
-            'event_label'         => ucfirst($audit->event),
+            'event_label'         => $audit->event_label,
             'description'         => $audit->description,
             'auditable_type'      => $audit->auditable_type,
             'auditable_type_name' => $audit->model_name,

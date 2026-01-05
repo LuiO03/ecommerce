@@ -875,7 +875,7 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: fit-content;
+    width: min-content;
     padding: 4px 14px;
     border-radius: 50px;
     font-size: 11.5px !important;

@@ -536,8 +536,43 @@ class FormValidator {
         // === URL ===
         url: (value) => {
             if (!value) return { valid: true };
+
+            const raw = String(value).trim();
+            if (!raw) return { valid: true };
+
+            // Permitir que el usuario omita el protocolo (ej: "empresa.com")
+            const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(raw);
+            const candidate = hasScheme ? raw : `https://${raw}`;
+
             try {
-                new URL(value);
+                const parsed = new URL(candidate);
+                const hostname = parsed.hostname || '';
+
+                // Permitir localhost e IPs para entornos de desarrollo
+                const isLocalhost = hostname === 'localhost';
+                const isIPv4 = /^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname);
+
+                if (!isLocalhost && !isIPv4) {
+                    // Dominio con al menos un punto y TLD alfabético (2+ letras)
+                    const hostnameRegex = /^(?!-)(?:[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}$/;
+                    if (!hostnameRegex.test(hostname)) {
+                        return {
+                            valid: false,
+                            message: 'Ingrese una URL válida (incluya un dominio y extensión correctos)'
+                        };
+                    }
+
+                    // Lista corta de TLD claramente inválidos por error de tipeo
+                    const tld = hostname.split('.').pop().toLowerCase();
+                    const invalidTlds = ['comm'];
+                    if (invalidTlds.includes(tld)) {
+                        return {
+                            valid: false,
+                            message: 'La extensión del dominio parece incorrecta. Ejemplo válido: .com, .net, .org'
+                        };
+                    }
+                }
+
                 return { valid: true };
             } catch {
                 return {
