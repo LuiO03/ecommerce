@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const leftSidebar = document.getElementById("logo-sidebar");
     const userSidebar = document.getElementById("userSidebar");
     const hamburgerBtn = document.getElementById("userSidebarToggle");
+    const notificationBtn = document.getElementById("notificationSidebarToggle");
     const openLeftSidebarBtn = document.getElementById("openLeftSidebarBtn");
 
     // Funciones overlay y scroll
@@ -43,6 +44,26 @@ document.addEventListener("DOMContentLoaded", () => {
         hideOverlay();
     }
 
+    // Tabs del sidebar derecho
+    const sidebarTabs = userSidebar?.querySelectorAll("[data-sidebar-tab]");
+    const sidebarSections = userSidebar?.querySelectorAll("[data-sidebar-section]");
+
+    function activateSidebarTab(target = "profile") {
+        if (!sidebarTabs || !sidebarSections) return;
+
+        sidebarTabs.forEach((tab) => {
+            const tabTarget = tab.getAttribute("data-sidebar-tab");
+            tab.classList.toggle("active", tabTarget === target);
+        });
+
+        sidebarSections.forEach((section) => {
+            const sectionTarget = section.getAttribute("data-sidebar-section");
+            section.classList.toggle("active", sectionTarget === target);
+        });
+    }
+
+    activateSidebarTab("profile");
+
     // Abrir/Cerrar User Sidebar (right)
     function openUserSidebar() {
         userSidebar.classList.remove("translate-x-full");
@@ -63,7 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
     hamburgerBtn?.addEventListener("click", () => {
         const isOpen = !userSidebar.classList.contains("translate-x-full");
         if (isOpen) closeUserSidebar();
-        else openUserSidebar();
+        else {
+            activateSidebarTab("profile");
+            openUserSidebar();
+        }
+    });
+
+    notificationBtn?.addEventListener("click", () => {
+        const isOpen = !userSidebar.classList.contains("translate-x-full");
+        activateSidebarTab("notifications");
+        if (!isOpen) openUserSidebar();
     });
 
     openLeftSidebarBtn?.addEventListener("click", () => {

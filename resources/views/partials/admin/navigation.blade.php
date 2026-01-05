@@ -41,6 +41,11 @@
             </a>
         </div>
 
+        <button id="notificationSidebarToggle" class="topbar-icon-btn" aria-label="Ver notificaciones">
+            <i class="ri-notification-3-line"></i>
+            <span class="notification-badge">3</span>
+        </button>
+
         <div class="topbar-user-menu">
             <button id="userSidebarToggle" class="hamburger-btn z-[70]" aria-label="Abrir menú de usuario">
                 <span class="hamburger-line"></span>

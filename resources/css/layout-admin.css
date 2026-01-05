@@ -40,6 +40,44 @@
     align-items: center;
 }
 
+.topbar-icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-element);
+    font-size: 20px;
+    color: var(--color-text);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.topbar-icon-btn:hover {
+    background-color: var(--color-hover);
+    color: var(--color-accent);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background-color: var(--color-danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* ==============================================
    🎨 Avatar de usuario (imagen o iniciales)
    ============================================== */
@@ -352,6 +390,54 @@
     gap: 10px;
 }
 
+.sidebar-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 0 8px;
+    margin-bottom: 4px;
+}
+
+.sidebar-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    font-family: var(--font-secondary);
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+}
+
+.sidebar-tab:hover {
+    background-color: var(--color-hover);
+}
+
+.sidebar-tab.active {
+    background-color: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+.sidebar-tab i {
+    font-size: 18px;
+}
+
+.sidebar-tab-pill {
+    background-color: var(--color-danger);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
 .sidebar-encabezado,
 .sidebar-cuerpo {
     padding-inline: 8px;
@@ -445,6 +531,20 @@
 
 .avatar-rol{
     text-transform: capitalize;
+}
+
+.sidebar-section {
+    padding: 8px 0;
+    opacity: 0;
+    transform: translateX(8px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.sidebar-section.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
 }
 
 /* ============================================================
