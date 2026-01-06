@@ -1,5 +1,0 @@
-[build]
-builder = "railpack"
-
-[php]
-extensions = ["bcmath", "gd"]
