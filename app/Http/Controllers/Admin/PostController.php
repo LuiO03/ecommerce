@@ -9,6 +9,8 @@ use App\Models\Audit;
 use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\Tag;
+use App\Models\User;
+use App\Notifications\AdminDatabaseNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -37,10 +39,18 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        $isReviewer = $user->can('posts.review');
+
+        $statusRule = $isReviewer
+            ? 'in:draft,pending,published,rejected'
+            : 'in:draft,pending';
+
         $request->validate([
             'title' => 'required|string|max:255|unique:posts,title',
             'content' => 'required|string|min:10',
-            'status' => 'required|string|in:draft,pending,published,rejected',
+            'status' => 'required|string|'.$statusRule,
             'visibility' => 'required|string|in:public,private,registered',
             'allow_comments' => 'sometimes|boolean',
             'published_at' => 'nullable|date',
@@ -54,11 +64,17 @@ class PostController extends Controller
         $title = ucfirst(mb_strtolower($request->title));
         $slug = Post::generateUniqueSlug($title);
 
+        // Proteger el estado según permisos, por si alguien intenta forzarlo
+        $status = $request->input('status');
+        if (! $isReviewer) {
+            $status = $status === 'draft' ? 'draft' : 'pending';
+        }
+
         $post = Post::create([
             'title' => $title,
             'slug' => $slug,
             'content' => $request->content,
-            'status' => $request->status,
+            'status' => $status,
             'visibility' => $request->visibility,
             'allow_comments' => $request->boolean('allow_comments'),
             'published_at' => null,
@@ -89,6 +105,21 @@ class PostController extends Controller
         $newImages = $this->handleAdditionalImagesUpload($request, $post, $slug);
         $this->finalizePostImages($post, $request->input('primary_image'), $newImages);
 
+        // Notificar a administradores solo cuando el post queda pendiente de revisión
+        if ($post->status === 'pending') {
+            $admins = User::role(['Administrador', 'Superadministrador'])->get();
+
+            foreach ($admins as $admin) {
+                $admin->notify(new AdminDatabaseNotification(
+                    title: 'Nuevo post pendiente de revisión',
+                    body: "El post \"{$post->title}\" está pendiente de revisión.",
+                    url: route('admin.posts.edit', $post),
+                    icon: 'ri-article-line',
+                    level: 'info',
+                ));
+            }
+        }
+
         Session::flash('toast', [
             'type' => 'success',
             'title' => 'Post creado',
@@ -102,19 +133,43 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::select([
+        $user = Auth::user();
+
+        $isGlobalPostsManager = $user->hasAnyRole(['Administrador', 'Superadministrador'])
+            || $user->can('posts.review');
+
+        $query = Post::select([
             'id', 'title', 'slug', 'status', 'visibility', 'views', 'allow_comments', 'created_by', 'created_at',
         ])
             ->withCount('images')
-            ->with(['mainImage:id,post_id,path'])
-            ->orderBy('id', 'desc')
-            ->get();
+            ->with([
+                'mainImage:id,post_id,path',
+                'creator:id,name,last_name',
+            ])
+            ->orderBy('id', 'desc');
+
+        if (! $isGlobalPostsManager) {
+            $query->where('created_by', $user->id);
+        }
+
+        $posts = $query->get();
 
         return view('admin.posts.index', compact('posts'));
     }
 
     public function edit(Post $post)
     {
+        $user = Auth::user();
+
+        $isGlobalPostsManager = $user->hasAnyRole(['Administrador', 'Superadministrador'])
+            || $user->can('posts.review');
+
+        if (! $isGlobalPostsManager) {
+            if ($post->created_by !== $user->id || ! in_array($post->status, ['draft', 'rejected'])) {
+                abort(403);
+            }
+        }
+
         $tags = Tag::orderBy('name')->get();
         $post->load(['images' => fn ($query) => $query->orderByDesc('is_main')->orderBy('order')]);
 
@@ -123,10 +178,25 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
     {
+        $user = Auth::user();
+
+        $isGlobalPostsManager = $user->hasAnyRole(['Administrador', 'Superadministrador'])
+            || $user->can('posts.review');
+
+        if (! $isGlobalPostsManager) {
+            if ($post->created_by !== $user->id || ! in_array($post->status, ['draft', 'rejected'])) {
+                abort(403);
+            }
+        }
+
+        $statusRule = $isGlobalPostsManager
+            ? 'in:draft,pending,published,rejected'
+            : 'in:draft,pending';
+
         $request->validate([
             'title' => 'required|string|max:255|unique:posts,title,'.$post->id,
             'content' => 'required|string|min:10',
-            'status' => 'required|string|in:draft,pending,published,rejected',
+            'status' => 'required|string|'.$statusRule,
             'visibility' => 'required|string|in:public,private,registered',
             'allow_comments' => 'sometimes|boolean',
             'published_at' => 'nullable|date',
@@ -141,11 +211,16 @@ class PostController extends Controller
         $title = ucfirst(mb_strtolower($request->title));
         $slug = Post::generateUniqueSlug($title, $post->id);
 
+        $status = $request->input('status');
+        if (! $isGlobalPostsManager) {
+            $status = $status === 'draft' ? 'draft' : 'pending';
+        }
+
         $post->update([
             'title' => $title,
             'slug' => $slug,
             'content' => $request->content,
-            'status' => $request->status,
+            'status' => $status,
             'visibility' => $request->visibility,
             'allow_comments' => $request->boolean('allow_comments'),
             'published_at' => $request->published_at ?? $post->published_at,
@@ -589,6 +664,17 @@ class PostController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
+        // Notificar al autor que su post fue aprobado
+        if ($post->creator) {
+            $post->creator->notify(new AdminDatabaseNotification(
+                title: 'Tu post ha sido aprobado',
+                body: "El post \"{$post->title}\" ha sido aprobado y publicado.",
+                url: route('admin.posts.edit', $post),
+                icon: 'ri-check-line',
+                level: 'success',
+            ));
+        }
+
         Session::flash('toast', [
             'type' => 'success',
             'title' => 'Post aprobado',
@@ -638,6 +724,17 @@ class PostController extends Controller
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
+
+        // Notificar al autor que su post fue rechazado
+        if ($post->creator) {
+            $post->creator->notify(new AdminDatabaseNotification(
+                title: 'Tu post ha sido rechazado',
+                body: "El post \"{$post->title}\" ha sido rechazado.",
+                url: route('admin.posts.edit', $post),
+                icon: 'ri-close-line',
+                level: 'warning',
+            ));
+        }
 
         Session::flash('toast', [
             'type' => 'success',

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Notifications\AdminDatabaseNotification;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
@@ -329,6 +331,29 @@ class RoleController extends Controller
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
+
+        // Notificar a superadministradores si se modifican permisos de roles críticos
+        if (in_array($role->name, ['Administrador', 'Superadministrador']) && (! empty($addedPermissions) || ! empty($removedPermissions))) {
+            $superAdmins = User::role('Superadministrador')->get();
+
+            foreach ($superAdmins as $user) {
+                $bodyParts = [];
+                if (! empty($addedPermissions)) {
+                    $bodyParts[] = 'Añadidos: ' . implode(', ', $addedPermissions);
+                }
+                if (! empty($removedPermissions)) {
+                    $bodyParts[] = 'Removidos: ' . implode(', ', $removedPermissions);
+                }
+
+                $user->notify(new AdminDatabaseNotification(
+                    title: "Permisos actualizados para el rol {$role->name}",
+                    body: implode(' | ', $bodyParts),
+                    url: route('admin.audits.index'),
+                    icon: 'ri-shield-keyhole-line',
+                    level: 'warning',
+                ));
+            }
+        }
 
         Session::flash('highlightRow', $role->id);
 

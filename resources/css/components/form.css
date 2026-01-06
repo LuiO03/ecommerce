@@ -279,7 +279,7 @@
 .binary-switch {
     position: relative;
     display: flex;
-    width: 180px;
+    width: min-content;
     height: 40px;
     background-color: var(--color-input-bg);
     border: 2px solid var(--color-input-border);
@@ -310,6 +310,7 @@
     font-size: var(--font-size-xs);
     transition: color 0.3s ease;
     cursor: pointer;
+    padding-inline: 15px;
 }
 
 .binary-switch .switch-slider {
@@ -336,11 +337,11 @@
 }
 
 .binary-switch .switch-input-on:checked ~ .switch-label-on {
-    color: var(--color-success-pastel);
+    color: white;
 }
 
 .binary-switch .switch-input-off:checked ~ .switch-label-off {
-    color: var(--color-danger-pastel);
+    color: white;
 }
 
 /* === Grupo archivo === */

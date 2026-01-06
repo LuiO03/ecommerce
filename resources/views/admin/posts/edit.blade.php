@@ -145,18 +145,38 @@
                 <!-- Estado -->
                 <div class="input-group">
                     <label class="label-form">Estado <i class="ri-asterisk text-accent"></i></label>
-                    <div class="input-icon-container">
-                        <i class="ri-focus-2-line input-icon"></i>
-                        <select name="status" class="select-form" data-validate="required|selected">
-                            <option value="" disabled>Seleccione un estado</option>
-                            <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>Borrador</option>
-                            <option value="pending" {{ $post->status == 'pending' ? 'selected' : '' }}>Pendiente</option>
-                            <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>Publicado
-                            </option>
-                            <option value="rejected" {{ $post->status == 'rejected' ? 'selected' : '' }}>Rechazado</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
+
+                    @can('posts.review')
+                        <div class="input-icon-container">
+                            <i class="ri-focus-2-line input-icon"></i>
+                            <select name="status" class="select-form" data-validate="required|selected">
+                                <option value="" disabled>Seleccione un estado</option>
+                                <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>Borrador</option>
+                                <option value="pending" {{ $post->status == 'pending' ? 'selected' : '' }}>Pendiente</option>
+                                <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>Publicado
+                                </option>
+                                <option value="rejected" {{ $post->status == 'rejected' ? 'selected' : '' }}>Rechazado</option>
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
+                    @else
+                        <div class="binary-switch">
+                            <input type="radio" name="status" id="statusPending" value="pending"
+                                class="switch-input switch-input-on" {{ $post->status === 'pending' ? 'checked' : '' }}>
+                            <input type="radio" name="status" id="statusDraft" value="draft"
+                                class="switch-input switch-input-off" {{ $post->status === 'draft' ? 'checked' : '' }}>
+
+                            <div class="switch-slider"></div>
+
+                            <label for="statusPending" class="switch-label switch-label-on"><i
+                                    class="ri-checkbox-circle-line"></i>
+                                Pendiente
+                            </label>
+                            <label for="statusDraft" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
+                                Borrador
+                            </label>
+                        </div>
+                    @endcan
                 </div>
 
                 <!-- Visibilidad -->

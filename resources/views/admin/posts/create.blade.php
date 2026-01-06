@@ -93,21 +93,42 @@
                         Estado
                         <i class="ri-asterisk text-accent"></i>
                     </label>
-                    <div class="input-icon-container">
-                        <i class="ri-focus-2-line input-icon"></i>
-                        <select name="status" id="status" class="select-form" required
-                            data-validate="required|selected">
-                            <option value="" disabled selected>Seleccione un estado</option>
-                            <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Borrador</option>
-                            <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pendiente
-                            </option>
-                            <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Publicado
-                            </option>
-                            <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rechazado
-                            </option>
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
+                    @can('posts.review')
+                        <div class="input-icon-container">
+                            <i class="ri-focus-2-line input-icon"></i>
+                            <select name="status" id="status" class="select-form" required
+                                data-validate="required|selected">
+                                <option value="" disabled selected>Seleccione un estado</option>
+                                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Borrador</option>
+                                <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pendiente
+                                </option>
+                                <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Publicado
+                                </option>
+                                <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rechazado
+                                </option>
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
+                    @else
+                        <div class="binary-switch">
+                            <input type="radio" name="status" id="statusPending" value="pending"
+                                class="switch-input switch-input-on" {{ old('status', 'pending') === 'pending' ? 'checked' : '' }}>
+                            <input type="radio" name="status" id="statusDraft" value="draft"
+                                class="switch-input switch-input-off" {{ old('status') === 'draft' ? 'checked' : '' }}>
+
+                            <div class="switch-slider"></div>
+
+                            <label for="statusPending" class="switch-label switch-label-on">
+                                <i class="ri-checkbox-circle-line"></i>
+                                Pendiente
+                            </label>
+                            <label for="statusDraft" class="switch-label switch-label-off">
+                                <i class="ri-close-circle-line"></i>
+                                Borrador
+                            </label>
+                        </div>
+                    @endcan
+
                 </div>
 
                 <!-- === Visibilidad === -->
@@ -138,13 +159,16 @@
                         <input type="radio" name="allow_comments" id="allowYes" value="1"
                             class="switch-input switch-input-on" {{ old('allow_comments', 1) == 1 ? 'checked' : '' }}>
                         <input type="radio" name="allow_comments" id="allowNo" value="0"
-                            class="switch-input switch-input-off" {{ old('allow_comments', 1) == 0 ? 'checked' : '' }}>
+                            class="switch-input switch-input-off"
+                            {{ old('allow_comments', 1) == 0 ? 'checked' : '' }}>
 
                         <div class="switch-slider"></div>
 
-                        <label for="allowYes" class="switch-label switch-label-on"><i class="ri-checkbox-circle-line"></i>
+                        <label for="allowYes" class="switch-label switch-label-on"><i
+                                class="ri-checkbox-circle-line"></i>
                             Sí</label>
-                        <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
+                        <label for="allowNo" class="switch-label switch-label-off"><i
+                                class="ri-close-circle-line"></i>
                             No</label>
                     </div>
                 </div>

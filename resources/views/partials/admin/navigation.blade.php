@@ -41,9 +41,15 @@
             </a>
         </div>
 
+        @php
+            $unreadCount = auth()->user()->unreadNotifications()->count();
+        @endphp
+
         <button id="notificationSidebarToggle" class="topbar-icon-btn" aria-label="Ver notificaciones">
             <i class="ri-notification-3-line"></i>
-            <span class="notification-badge">3</span>
+            @if ($unreadCount > 0)
+                <span class="notification-badge">{{ $unreadCount }}</span>
+            @endif
         </button>
 
         <div class="topbar-user-menu">

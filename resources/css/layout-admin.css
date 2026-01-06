@@ -191,6 +191,45 @@
     pointer-events: auto;
 }
 
+/* === Notificaciones en sidebar derecho === */
+.sidebar-notification-item.is-unread {
+    background: linear-gradient(to right, var(--color-hover), var(--color-hover-degraded));
+    font-weight: bold;
+}
+
+.sidebar-notifications .sidebar-notification-item{
+    display: flex;
+    align-items: start;
+    background-color: var(--color-card-bg);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+}
+
+.sidebar-notification-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar-notification-title {
+    font-size: 0.9rem;
+}
+
+.sidebar-notification-body {
+    font-size: 0.8rem;
+    color: var(--color-text-muted, #6b7280);
+}
+
+.sidebar-notification-meta {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #6b7280);
+    text-align: end;
+}
+
+.sidebar-notifications-empty {
+    padding-inline: 8px;
+}
+
 /* ============================================================
    🔹 CONTENIDO PRINCIPAL (Main content)
    ============================================================ */
@@ -312,154 +351,6 @@
     background-color: var(--scrollbar-hover);
 }
 
-
-/* ============================================================
-   ✨ ANIMACIÓN DE VISIBILIDAD DE ELEMENTOS DEL SIDEBAR
-   ============================================================ */
-
-/* Aplica a textos, nombres de secciones, flechas, etc. */
-.sidebar-principal .sidebar-logo-texto,
-.sidebar-principal .sidebar-link span,
-.sidebar-principal .sidebar-sublink span,
-.sidebar-principal .submenu-arrow,
-.sidebar-principal .theme-text {
-    opacity: 1;
-    transform: translateX(0);
-    transition: opacity var(--transition-sidebar-base), transform var(--transition-sidebar-base);
-    position: relative;
-}
-
-/* ============================================================
-   🔹 SIDEBAR COLAPSADO (Desktop)
-   ============================================================ */
-@media (min-width: 640px) {
-    .sidebar-principal.collapsed {
-        width: var(--sidebar-collapsed-width);
-    }
-
-    .sidebar-principal.collapsed ~ .main-container {
-        left: var(--sidebar-collapsed-width);
-    }
-
-    body.sidebar-collapsed .navbar {
-        left: var(--sidebar-collapsed-width);
-        width: calc(100% - var(--sidebar-collapsed-width));
-    }
-
-
-    /* Cuando el sidebar está colapsado */
-    .sidebar-principal.collapsed .sidebar-logo-texto,
-    .sidebar-principal.collapsed .sidebar-link span,
-    .sidebar-principal.collapsed .sidebar-sublink span,
-    .sidebar-principal.collapsed .submenu-arrow,
-    .sidebar-principal.collapsed .theme-text {
-        opacity: 0;
-        transition: opacity var(--transition-sidebar-base), transform var(--transition-sidebar-base);
-        pointer-events: none;
-    }
-
-    .sidebar-principal.collapsed .sidebar-contenido {
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        padding: 8px 4px 8px 8px;
-    }
-
-    .sidebar-principal.collapsed .sidebar-contenido ul {
-        width: 100%;
-    }
-
-    .sidebar-principal.collapsed .sidebar-link,
-    .sidebar-principal.collapsed .sidebar-sublink
-    {
-        justify-content: start;
-        padding-left: 16px;
-        width: 100%;
-        transition: padding 0.3s ease;
-    }
-
-    .sidebar-principal.collapsed .submenu-btn{
-        padding-left: 20px;
-    }
-
-    .sidebar-principal.collapsed .sidebar-link.active:hover{
-
-    }
-
-    .sidebar-principal.collapsed .sidebar-header {
-        justify-content: start;
-        pointer-events: none;
-        padding-left: 25px;
-    }
-
-    .sidebar-principal.collapsed .sidebar-header img {
-        height: 32px;
-        width: 32px;
-    }
-
-    .sidebar-principal.collapsed .sidebar-theme-toggle {
-        justify-content: start;
-        width: auto;
-        justify-content: center;
-        padding: 10;
-    }
-
-    .sidebar-principal.collapsed .sidebar-footer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0.75rem 0;
-    }
-
-    .sidebar-principal.collapsed .theme-text {
-        display: none;
-    }
-
-    .sidebar-principal.collapsed .sidebar-switch {
-        margin: 0 auto;
-    }
-
-    /* === TOOLTIP SIDEBAR === */
-    .sidebar-tooltip {
-        position: absolute;
-        background-color: var(--color-sidebar-bg);
-        padding: 6px 10px;
-        border-radius: 0.5rem;
-        font-size: var(--font-size-xs);
-        white-space: nowrap;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-        z-index: 70;
-        opacity: 0;
-        font-family: var(--font-secondary);
-        font-weight: bold;
-        pointer-events: none;
-        transform: none;
-        transition: opacity 0.2s ease, transform 0.2s ease;
-        border: 2px solid var(--color-accent);
-    }
-
-    .sidebar-tooltip.show {
-        opacity: 1;
-    }
-
-    .fade-in {
-        animation: tooltipIn 0.18s ease forwards;
-    }
-
-    .fade-out {
-        animation: tooltipOut 0.18s ease forwards;
-    }
-
-    @keyframes tooltipIn {
-        0% { opacity: 0; transform: scale(0.9); }
-        100% { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes tooltipOut {
-        0% { opacity: 1; transform: scale(1); }
-        100% { opacity: 0; transform: scale(0.9); }
-    }
-}
 
 /* ============================================================
    🔹 BOTÓN HAMBURGUESA ANIMADO

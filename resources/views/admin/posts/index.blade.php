@@ -2,40 +2,51 @@
 
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
-        <div class="page-icon card-orange">
-            <i class="ri-file-text-line"></i>
-        </div>
-        Lista de Posts
+        @can('posts.review')
+            <div class="page-icon card-orange">
+                <i class="ri-file-text-line"></i>
+            </div>
+            Lista de Posts
+        @else
+            <div class="page-icon card-danger">
+                <i class="ri-file-text-line"></i>
+            </div>
+            Mis Posts
+        @endcan
     </x-slot>
 
     <x-slot name="action">
-        <!-- Menú de exportación -->
-        <div class="export-menu-container">
-            <button type="button" class="boton-form boton-action" id="exportMenuBtn">
-                <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
-                <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line"></i>
-            </button>
-            <div class="export-dropdown" id="exportDropdown">
-                <button type="button" class="export-option" id="exportAllExcel">
-                    <i class="ri-file-excel-2-fill"></i>
-                    <span>Exportar todo a Excel</span>
+        @can('posts.export')
+            <!-- Menú de exportación -->
+            <div class="export-menu-container">
+                <button type="button" class="boton-form boton-action" id="exportMenuBtn">
+                    <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
+                    <span class="boton-form-text">Exportar</span>
+                    <i class="ri-arrow-down-s-line"></i>
                 </button>
-                <button type="button" class="export-option" id="exportAllCsv">
-                    <i class="ri-file-text-fill"></i>
-                    <span>Exportar todo a CSV</span>
-                </button>
-                <button type="button" class="export-option" id="exportAllPdf">
-                    <i class="ri-file-pdf-2-fill"></i>
-                    <span>Exportar todo a PDF</span>
-                </button>
+                <div class="export-dropdown" id="exportDropdown">
+                    <button type="button" class="export-option" id="exportAllExcel">
+                        <i class="ri-file-excel-2-fill"></i>
+                        <span>Exportar todo a Excel</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllCsv">
+                        <i class="ri-file-text-fill"></i>
+                        <span>Exportar todo a CSV</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllPdf">
+                        <i class="ri-file-pdf-2-fill"></i>
+                        <span>Exportar todo a PDF</span>
+                    </button>
+                </div>
             </div>
-        </div>
+        @endcan
 
-        <a href="{{ route('admin.posts.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Post</span>
-        </a>
+        @can('posts.create')
+            <a href="{{ route('admin.posts.create') }}" class="boton boton-primary">
+                <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
+                <span class="boton-text">Crear Post</span>
+            </a>
+        @endcan
     </x-slot>
 
     <div class="actions-container">
@@ -109,39 +120,43 @@
         <!-- Barra contextual de selección (oculta por defecto) -->
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
-                <button id="exportSelectedExcel" class="boton-selection boton-success">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-excel-2-line"></i>
-                    </span>
-                    <span class="boton-selection-text">Excel</span>
-                    l
-                    <span class="selection-badge" id="excelBadge">0</span>
-                </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-text-line"></i>
-                    </span>
-                    <span class="boton-selection-text">CSV</span>
-                    l
-                    <span class="selection-badge" id="csvBadge">0</span>
-                </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-pdf-2-line"></i>
-                    </span>
-                    <span class="boton-selection-text">PDF</span>
-                    l
-                    <span class="selection-badge" id="pdfBadge">0</span>
-                </button>
+                @can('posts.export')
+                    <button id="exportSelectedExcel" class="boton-selection boton-success">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-excel-2-line"></i>
+                        </span>
+                        <span class="boton-selection-text">Excel</span>
+                        l
+                        <span class="selection-badge" id="excelBadge">0</span>
+                    </button>
+                    <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-text-line"></i>
+                        </span>
+                        <span class="boton-selection-text">CSV</span>
+                        l
+                        <span class="selection-badge" id="csvBadge">0</span>
+                    </button>
+                    <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-pdf-2-line"></i>
+                        </span>
+                        <span class="boton-selection-text">PDF</span>
+                        l
+                        <span class="selection-badge" id="pdfBadge">0</span>
+                    </button>
+                @endcan
             </div>
-            <button id="deleteSelected" class="boton-selection boton-danger">
-                <span class="boton-selection-icon">
-                    <i class="ri-delete-bin-line"></i>
-                </span>
-                <span class="boton-selection-text">Eliminar</span>
-                l
-                <span class="selection-badge" id="deleteBadge">0</span>
-            </button>
+            @can('posts.delete')
+                <button id="deleteSelected" class="boton-selection boton-danger">
+                    <span class="boton-selection-icon">
+                        <i class="ri-delete-bin-line"></i>
+                    </span>
+                    <span class="boton-selection-text">Eliminar</span>
+                    l
+                    <span class="selection-badge" id="deleteBadge">0</span>
+                </button>
+            @endcan
             <div class="selection-info">
                 <span id="selectionCount">0 seleccionados</span>
                 <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
@@ -161,8 +176,11 @@
                         <th class="column-id-th">ID</th>
                         <th class="column-images-th">Imagen</th>
                         <th class="column-name-th">Título</th>
+                        @can('posts.review')
+                            <th class="column-author-th">Autor</th>
+                        @endcan
                         <th class="column-views-th">Vistas</th>
-                        <th class="column-allow-comments-th">Comentarios</th>
+                        <th class="column-allow-comments-th">Coment.</th>
                         <th class="column-status-post-th">Estado</th>
                         <th class="column-visibility-th">Visibilidad</th>
                         <th class="column-created-th">Creado</th>
@@ -193,6 +211,15 @@
                                 </div>
                             </td>
                             <td class="column-name-td">{{ $post->title }}</td>
+                            @can('posts.review')
+                            <td class="column-author-td">
+                                @if ($post->creator)
+                                    {{ $post->creator->name }} {{ $post->creator->last_name }}
+                                @else
+                                    <span class="text-muted">Sistema</span>
+                                @endif
+                            </td>
+                            @endcan
                             <td class="column-views-td">{{ $post->views }}</td>
                             <td class="column-allow-comments-td">
                                 @if ($post->allow_comments)
@@ -245,35 +272,42 @@
                                     <button class="boton-sm boton-info btn-ver-post" data-slug="{{ $post->slug }}" title="Ver Post">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
-                                    <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning" title="Editar Post">
-                                        <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
-                                    </a>
-                                    <form action="{{ route('admin.posts.destroy', $post) }}" method="POST"
-                                        class="delete-form" data-entity="post">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="boton-sm boton-danger" title="Eliminar Post">
-                                            <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
-                                        </button>
-                                    </form>
+                                    @can('posts.edit')
+                                        <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning" title="Editar Post">
+                                            <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
+                                        </a>
+                                    @endcan
 
-                                    @if ($post->status === 'pending')
-                                        <form action="{{ route('admin.posts.approve', $post) }}" method="POST"
-                                            class="form-approve d-inline">
+                                    @can('posts.delete')
+                                        <form action="{{ route('admin.posts.destroy', $post) }}" method="POST"
+                                            class="delete-form" data-entity="post">
                                             @csrf
-                                            <button type="button" class="boton-sm boton-success btn-approve" title="Aprobar Post">
-                                                <i class="ri-send-plane-fill"></i>
+                                            @method('DELETE')
+                                            <button type="submit" class="boton-sm boton-danger" title="Eliminar Post">
+                                                <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                             </button>
                                         </form>
+                                    @endcan
 
-                                        <form action="{{ route('admin.posts.reject', $post) }}" method="POST"
-                                            class="form-reject d-inline">
-                                            @csrf
-                                            <button type="button" class="boton-sm boton-danger btn-reject" title="Rechazar Post">
-                                                <i class="ri-close-circle-fill"></i>
-                                            </button>
-                                        </form>
-                                    @endif
+                                    @can('posts.review')
+                                        @if ($post->status === 'pending')
+                                            <form action="{{ route('admin.posts.approve', $post) }}" method="POST"
+                                                class="form-approve d-inline">
+                                                @csrf
+                                                <button type="button" class="boton-sm boton-success btn-approve" title="Aprobar Post">
+                                                    <i class="ri-send-plane-fill"></i>
+                                                </button>
+                                            </form>
+
+                                            <form action="{{ route('admin.posts.reject', $post) }}" method="POST"
+                                                class="form-reject d-inline">
+                                                @csrf
+                                                <button type="button" class="boton-sm boton-danger btn-reject" title="Rechazar Post">
+                                                    <i class="ri-close-circle-fill"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -358,19 +392,19 @@
 
                     switch (val) {
                         case 'title-asc':
-                            tableManager.table.order([3, 'asc']).draw();
+                            tableManager.table.order([4, 'asc']).draw();
                             break;
                         case 'title-desc':
-                            tableManager.table.order([3, 'desc']).draw();
+                            tableManager.table.order([4, 'desc']).draw();
                             break;
                         case 'date-asc':
-                            tableManager.table.order([9, 'asc']).draw();
+                            tableManager.table.order([10, 'asc']).draw();
                             break;
                         case 'date-desc':
-                            tableManager.table.order([9, 'desc']).draw();
+                            tableManager.table.order([10, 'desc']).draw();
                             break;
                         case 'views-desc':
-                            tableManager.table.order([5, 'desc']).draw();
+                            tableManager.table.order([6, 'desc']).draw();
                             break;
                         default:
                             tableManager.table.order([]).draw();

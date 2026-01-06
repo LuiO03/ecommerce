@@ -1,6 +1,13 @@
 <!-- SIDEBAR DERECHO (Perfil de usuario) -->
 <aside id="userSidebar" class="sidebar-usuario z-[60] translate-x-full">
 
+    @php
+        $user = auth()->user();
+        $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
+        $unreadCount = $user->unreadNotifications()->count();
+        $notifications = $user->notifications()->latest()->limit(15)->get();
+    @endphp
+
     <div class="sidebar-user-contenido">
         <div class="sidebar-tabs">
             <button type="button" class="sidebar-tab active" data-sidebar-tab="profile">
@@ -10,17 +17,15 @@
             <button type="button" class="sidebar-tab" data-sidebar-tab="notifications">
                 <i class="ri-notification-3-line"></i>
                 <span>Notificaciones</span>
-                <span class="sidebar-tab-pill" id="sidebarNotificationCount">3</span>
+                @if ($unreadCount > 0)
+                    <span class="sidebar-tab-pill" id="sidebarNotificationCount">{{ $unreadCount }}</span>
+                @endif
             </button>
         </div>
 
         <div class="sidebar-sections-wrapper">
             <div class="sidebar-section active" data-sidebar-section="profile">
                 <div class="sidebar-cuerpo">
-                    @php
-                        $user = auth()->user();
-                        $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
-                    @endphp
                     <div class="fondo-usuario w-full {{ $user->background_style && $user->background_style !== '' ? $user->background_style : 'fondo-estilo-2' }}">
                         @if ($hasAvatarImage)
                             <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}"
@@ -71,23 +76,44 @@
 
             <div class="sidebar-section" data-sidebar-section="notifications">
                 <span class="sidebar-user-titulo">Notificaciones</span>
-                <ul class="sidebar-notifications space-y-1 mt-1">
-                    <li>
-                        <a href="#" class="menu-item">
-                            <i class="ri-notification-3-line sidebar-icon"></i> Tienes 3 tareas pendientes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="menu-item">
-                            <i class="ri-mail-line sidebar-icon"></i> Nuevo mensaje de soporte
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="menu-item">
-                            <i class="ri-calendar-event-line sidebar-icon"></i> Reunión hoy a las 3 PM
-                        </a>
-                    </li>
-                </ul>
+
+                @if ($notifications->isEmpty())
+                    <p class="sidebar-notifications-empty mt-2 text-sm text-muted">No tienes notificaciones por ahora.</p>
+                @else
+                    <ul class="sidebar-notifications space-y-1 mt-1">
+                        @foreach ($notifications as $notification)
+                            @php
+                                $data = $notification->data ?? [];
+                            @endphp
+                            <li>
+                                <a href="{{ route('admin.notifications.redirect', $notification) }}"
+                                   class="menu-item sidebar-notification-item {{ is_null($notification->read_at) ? 'is-unread' : '' }}">
+                                    <i class="{{ $data['icon'] ?? 'ri-notification-3-line' }} sidebar-icon"></i>
+                                    <div class="sidebar-notification-text">
+                                        <span class="sidebar-notification-title">{{ $data['title'] ?? 'Notificación' }}</span>
+
+                                        @if (!empty($data['body'] ?? null))
+                                            <span class="sidebar-notification-body">{{ $data['body'] }}</span>
+                                        @endif
+
+                                        <span class="sidebar-notification-meta">
+                                            {{ $notification->created_at?->diffForHumans() }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    @if ($unreadCount > 0)
+                        <form method="POST" action="{{ route('admin.notifications.mark-all-as-read') }}" class="mt-2 text-right">
+                            @csrf
+                            <button type="submit" class="sidebar-mark-all-btn text-xs font-medium text-accent hover:underline">
+                                Marcar todas como leídas
+                            </button>
+                        </form>
+                    @endif
+                @endif
             </div>
         </div>
     </div>

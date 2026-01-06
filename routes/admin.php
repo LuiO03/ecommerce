@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OptionFeatureController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\AccessLogController;
 use Illuminate\Support\Facades\Route;
 
@@ -218,4 +219,10 @@ Route::controller(App\Http\Controllers\Admin\PermissionController::class)->group
     Route::get('/permissions/{permission}/edit', 'edit')->name('admin.permissions.edit');
     Route::patch('/permissions/{permission}', 'update')->name('admin.permissions.update');
     Route::delete('/permissions/{permission}', 'destroy')->name('admin.permissions.destroy');
+});
+
+// NOTIFICATIONS
+Route::controller(NotificationController::class)->group(function () {
+    Route::get('/notifications/{notification}/redirect', 'redirect')->name('admin.notifications.redirect');
+    Route::post('/notifications/mark-all-as-read', 'markAllAsRead')->name('admin.notifications.mark-all-as-read');
 });
