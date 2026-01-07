@@ -247,7 +247,6 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
 .boton-sm .boton-sm-icon i {
     font-size: 16px;
     transition: transform 0.2s ease;
@@ -257,7 +256,6 @@
 .boton-sm:hover {
     box-shadow: var(--shadow-material);
 }
-
 
 .boton-sm:hover .boton-sm-icon i {
     transform: scale(1.1);
@@ -273,20 +271,21 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    width: 40px;
     min-height: 35px;
     z-index: 1;
     overflow: hidden;
-    padding: 8px;
     cursor: pointer;
     position: relative;
     transition: transform 0.3s ease, font-weight 0.3s ease;
     font-size: var(--font-size-h4);
+    border-radius: var(--radius-input);
 }
 
 .boton-single:active {
     transform: scale(0.95);
 }
 .boton-single:hover {
-    font-weight: bold;
-    color: var(--color-accent);
+    background-color: var(--color-hover);
+    border: 1px solid var(--color-border);
 }

@@ -111,6 +111,7 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+            @can('familias.index')
             <li class="ripple-btn">
                 <a href="{{ route('admin.families.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.families.*') ? 'active' : '' }}"
@@ -119,6 +120,7 @@
                     <span>Familias</span>
                 </a>
             </li>
+            @endcan
 
 
             <!-- Submenú Tienda -->
@@ -131,6 +133,7 @@
 
                 <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
 
+                    @can('categorias.index')
                     <li>
                         <a href="{{ route('admin.categories.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
@@ -139,12 +142,14 @@
                             <span>Categorías</span>
                         </a>
                     </li>
+                    @endcan
                     <li>
                         <a href="#" class="sidebar-sublink" data-tooltip="Marcas">
                             <i class="ri-award-line sidebar-icon"></i>
                             <span>Marcas</span>
                         </a>
                     </li>
+                    @can('productos.index')
                     <li>
                         <a href="{{ route('admin.products.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
@@ -153,10 +158,12 @@
                             <span>Productos</span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </li>
 
             <!-- Posts -->
+            @can('posts.index')
             <li class="ripple-btn">
                 <a href="{{ route('admin.posts.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
@@ -165,7 +172,9 @@
                     <span>Posts</span>
                 </a>
             </li>
+            @endcan
 
+            @can('opciones.index')
             <li class="ripple-btn">
                 <a href="{{ route('admin.options.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.options.*') ? 'active' : '' }}"
@@ -174,15 +183,17 @@
                     <span>Opciones y Valores</span>
                 </a>
             </li>
-
-            <li class="ripple-btn">
-                <a href="{{ route('admin.company-settings.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.company-settings.*') ? 'active' : '' }}"
-                    data-tooltip="Configuración">
-                    <i class="ri-building-4-line sidebar-icon"></i>
-                    <span>Empresa</span>
-                </a>
-            </li>
+            @endcan
+            @can('configuracion.index')
+                <li class="ripple-btn">
+                    <a href="{{ route('admin.company-settings.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.company-settings.*') ? 'active' : '' }}"
+                        data-tooltip="Configuración">
+                        <i class="ri-building-4-line sidebar-icon"></i>
+                        <span>Empresa</span>
+                    </a>
+                </li>
+            @endcan
             <!-- Submenú Gestion de Acceso -->
             <li class="submenu-container">
                 <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
@@ -194,6 +205,7 @@
 
                 <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
 
+                    @can('usuarios.index')
                     <li class="ripple-btn">
                         <a href="{{ route('admin.users.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
@@ -202,7 +214,9 @@
                             <span>Usuarios</span>
                         </a>
                     </li>
+                    @endcan
 
+                    @can('roles.index')
                     <li class="ripple-btn">
                         <a href="{{ route('admin.roles.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
@@ -211,6 +225,8 @@
                             <span>Roles y Permisos</span>
                         </a>
                     </li>
+                    @endcan
+                    @can('accesos.index')
                     <li class="ripple-btn">
                         <a href="{{ route('admin.access-logs.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
@@ -219,6 +235,8 @@
                             <span>Accesos</span>
                         </a>
                     </li>
+                    @endcan
+                    @can('auditorias.index')
                     <li class="ripple-btn">
                         <a href="{{ route('admin.audits.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
@@ -227,6 +245,7 @@
                             <span>Auditoría</span>
                         </a>
                     </li>
+                    @endcan
                 </ul>
             </li>
         </ul>

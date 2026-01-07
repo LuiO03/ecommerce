@@ -1,11 +1,11 @@
 // Importa todos los módulos del dashboard
-import './dashboard/icon-hover-fill.js';
-import './dashboard/sidebar-submenus.js';
-import './dashboard/sidebar-toggle.js';
-import './dashboard/sidebar-tooltips.js';
-import './dashboard/sidebar-touch-gestures.js';
-import './dashboard/sidebars-control.js';
-import './dashboard/theme-toggle.js';
+import './sidebar-left/icon-hover-fill.js';
+import './sidebar-left/sidebar-submenus.js';
+import './sidebar-left/sidebar-toggle.js';
+import './sidebar-left/sidebar-tooltips.js';
+import './sidebar-left/sidebar-touch-gestures.js';
+import './sidebar-left/sidebars-control.js';
+import './sidebar-left/theme-toggle.js';
 
 import './utils/material-design.js';
 

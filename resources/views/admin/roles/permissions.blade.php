@@ -52,14 +52,21 @@
             <div class="permissions-container">
                 @forelse($modules as $module => $perms)
                     <div class="permissions-card ripple-card" data-module-name="{{ $module }}">
-                        <div class="card-header flex items-center justify-between mb-2">
+                        <div class="permissions-card-header">
                             <span class="card-title">{{ ucfirst($module) }}</span>
 
-                            <button type="button" class="boton boton-danger select-all-btn"
-                                data-module="{{ $module }}">
-                                <span class="boton-icon"><i class="ri-checkbox-multiple-fill"></i></span>
-                                <span class="boton-text select-all-text">Selecc. todo</span>
-                            </button>
+                            <div class="flex gap-1">
+                                <button type="button" class="boton-single reset-module-btn is-hidden"
+                                    data-module="{{ $module }}" title="Restablecer permisos del módulo">
+                                    <i class="ri-reset-left-line"></i>
+                                </button>
+
+                                <button type="button" class="boton boton-danger select-all-btn"
+                                    data-module="{{ $module }}">
+                                    <span class="boton-icon"><i class="ri-checkbox-multiple-fill"></i></span>
+                                    <span class="boton-text select-all-text">Selecc. todo</span>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="card-body">
@@ -270,6 +277,11 @@
                     });
                 }
 
+                // Guardar estado original de cada permiso
+                document.querySelectorAll('.perm-checkbox').forEach(cb => {
+                    cb.dataset.originalChecked = cb.checked ? '1' : '0';
+                });
+
                 // --- Global toggle ---
                 const toggleAllBtn = document.getElementById('toggleAllBtn');
                 const toggleAllText = document.getElementById('toggleAllText');
@@ -280,9 +292,13 @@
 
                     boxes.forEach(cb => cb.checked = !allChecked);
 
-                    document.querySelectorAll('.permissions-card').forEach(card =>
-                        card.classList.add('card-modified')
-                    );
+                    document.querySelectorAll('.permissions-card').forEach(card => {
+                        card.classList.add('card-modified');
+                        const resetBtn = card.querySelector('.reset-module-btn');
+                        if (resetBtn) {
+                            resetBtn.classList.remove('is-hidden');
+                        }
+                    });
 
                     updateAllBtnText();
                     updateModuleBtnText();
@@ -304,8 +320,36 @@
                         boxes.forEach(cb => cb.checked = !allChecked);
 
                         const card = btn.closest('.permissions-card');
-                        if (card) card.classList.add('card-modified');
+                        if (card) {
+                            card.classList.add('card-modified');
+                            const resetBtn = card.querySelector('.reset-module-btn');
+                            if (resetBtn) {
+                                resetBtn.classList.remove('is-hidden');
+                            }
+                        }
 
+                        updateAllBtnText();
+                        updateModuleBtnText();
+                    });
+                });
+
+                // --- Restablecer por módulo ---
+                document.querySelectorAll('.reset-module-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const module = btn.dataset.module;
+                        const card = btn.closest('.permissions-card');
+                        const boxes = card.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
+
+                        boxes.forEach(cb => {
+                            const original = cb.dataset.originalChecked === '1';
+                            cb.checked = original;
+                        });
+
+                        card.classList.remove('card-modified');
+                        const resetBtn = card.querySelector('.reset-module-btn');
+                        if (resetBtn) {
+                            resetBtn.classList.add('is-hidden');
+                        }
                         updateAllBtnText();
                         updateModuleBtnText();
                     });
@@ -327,6 +371,10 @@
                     cb.addEventListener('change', function() {
                         const card = cb.closest('.permissions-card');
                         card.classList.add('card-modified');
+                        const resetBtn = card.querySelector('.reset-module-btn');
+                        if (resetBtn) {
+                            resetBtn.classList.remove('is-hidden');
+                        }
                         updateAllBtnText();
                         updateModuleBtnText();
                     });

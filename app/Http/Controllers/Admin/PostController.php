@@ -669,7 +669,7 @@ class PostController extends Controller
             $post->creator->notify(new AdminDatabaseNotification(
                 title: 'Tu post ha sido aprobado',
                 body: "El post \"{$post->title}\" ha sido aprobado y publicado.",
-                url: route('admin.posts.edit', $post),
+                url: route('admin.posts.index', $post),
                 icon: 'ri-check-line',
                 level: 'success',
             ));
@@ -730,7 +730,7 @@ class PostController extends Controller
             $post->creator->notify(new AdminDatabaseNotification(
                 title: 'Tu post ha sido rechazado',
                 body: "El post \"{$post->title}\" ha sido rechazado.",
-                url: route('admin.posts.edit', $post),
+                url: route('admin.posts.index', $post),
                 icon: 'ri-close-line',
                 level: 'warning',
             ));

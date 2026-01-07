@@ -461,6 +461,10 @@
     background-color: var(--color-danger);
 }
 
+.bg-danger-light{
+    background-color: var(--color-danger-pastel);
+}
+
 .boton-primary,
 .bg-primary {
     background-color: var(--color-primary);

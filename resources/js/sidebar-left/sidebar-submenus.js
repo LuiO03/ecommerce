@@ -74,6 +74,12 @@ submenuButtons.forEach((btn) => {
 
 // Restaurar submenú abierto y desplazar hacia el elemento activo al cargar
 document.addEventListener('DOMContentLoaded', () => {
+    let isCollapsed = false;
+    try {
+        isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    } catch (error) {
+        isCollapsed = document.body.classList.contains('sidebar-collapsed');
+    }
     let targetToFocus = null;
 
     try {
@@ -106,7 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (targetToFocus) {
         setTimeout(() => {
-            targetToFocus.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            const options = { block: 'center', inline: 'nearest' };
+            if (isCollapsed) {
+                targetToFocus.scrollIntoView(options);
+            } else {
+                targetToFocus.scrollIntoView({ behavior: 'smooth', ...options });
+            }
         }, 150);
     }
 });

@@ -34,14 +34,26 @@
 
 </head>
 <script>
-    // Evitar flash blanco: aplicar tema antes del renderizado
+    // Evitar flash blanco: aplicar tema y estado del sidebar antes del renderizado
     (function() {
-        const theme = localStorage.getItem("color-theme");
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (theme === "dark" || (!theme && prefersDark)) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
+        try {
+            const theme = localStorage.getItem("color-theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (theme === "dark" || (!theme && prefersDark)) {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+
+            // Aplicar estado colapsado del sidebar antes del primer paint
+            const sidebarCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+            if (sidebarCollapsed) {
+                document.documentElement.classList.add("sidebar-start-collapsed");
+            } else {
+                document.documentElement.classList.remove("sidebar-start-collapsed");
+            }
+        } catch (e) {
+            // Ignorar errores de acceso a localStorage
         }
     })();
 </script>

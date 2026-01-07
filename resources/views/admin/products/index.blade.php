@@ -170,6 +170,7 @@
 				</thead>
 				<tbody>
 					@foreach ($products as $product)
+
 						<tr data-id="{{ $product->id }}" data-name="{{ $product->name }}">
 							<td class="control"></td>
 							<td class="column-check-td">

@@ -60,6 +60,14 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+.permissions-card-header{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+}
+
 .permissions-card .card-body ul{
     display: grid;
 }
@@ -147,4 +155,8 @@
 .card-modified {
     border: 2px solid var(--color-orange);
     background-color: var(--color-danger-pastel);
+}
+
+.reset-module-btn.is-hidden {
+    display: none;
 }

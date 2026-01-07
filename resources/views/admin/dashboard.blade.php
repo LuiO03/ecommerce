@@ -24,7 +24,7 @@
                 <div class="dashboard-user-info">
                     <h2 class="dashboard-name">Buen día, {{ $dashboardUser->name }}</h2>
                     <p>
-                        Eres <strong>{{ $dashboardUser->roles->pluck('name')->join(', ') }}.</strong> <br>
+                        Eres <strong>{{ $dashboardUser->roles->pluck('name')->join(', ') }}(a).</strong> <br>
                         Puedes gestionar el sitio desde este panel de administración.
                     </p>
                 </div>
@@ -46,6 +46,7 @@
     </div>
     <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 dashboard-cards">
         <!-- Tarjeta: Productos -->
+        @can('productos.index')
         <a href="{{ route('admin.products.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-danger">
                 <i class="ri-box-3-line"></i>
@@ -55,8 +56,9 @@
                 <p class="card-label">Productos</p>
             </div>
         </a>
-
+        @endcan
         <!-- Tarjeta: Categorías -->
+        @can('categorias.index')
         <a href="{{ route('admin.categories.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-info">
                 <i class="ri-price-tag-3-line"></i>
@@ -66,8 +68,10 @@
                 <p class="card-label">Categorías</p>
             </div>
         </a>
+        @endcan
 
         <!-- Tarjeta: Familias -->
+        @can('familias.index')
         <a href="{{ route('admin.families.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-success">
                 <i class="ri-apps-line"></i>
@@ -77,6 +81,7 @@
                 <p class="card-label">Familias</p>
             </div>
         </a>
+        @endcan
 
         <!-- Tarjeta: Marcas -->
         <a href="" class="dashboard-card ripple-card">
@@ -90,6 +95,7 @@
         </a>
 
         <!-- Tarjeta: Roles -->
+        @can('roles.index')
         <a href="{{ route('admin.roles.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-primary">
                 <i class="ri-shield-user-line"></i>
@@ -99,8 +105,10 @@
                 <p class="card-label">Roles</p>
             </div>
         </a>
+        @endcan
 
         <!-- Tarjeta: Usuarios -->
+        @can('usuarios.index')
         <a href="{{ route('admin.users.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-purple">
                 <i class="ri-admin-line"></i>
@@ -110,8 +118,10 @@
                 <p class="card-label">Usuarios</p>
             </div>
         </a>
+        @endcan
 
         <!-- Tarjeta: Posts -->
+        @can('posts.index')
         <a href="{{ route('admin.posts.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-orange">
                 <i class="ri-article-line"></i>
@@ -121,8 +131,10 @@
                 <p class="card-label">Posts</p>
             </div>
         </a>
+        @endcan
 
         <!-- Tarjeta: Opciones -->
+        @can('opciones.index')
         <a href="{{ route('admin.options.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-teal">
                 <i class="ri-settings-3-line"></i>
@@ -132,8 +144,10 @@
                 <p class="card-label">Opciones</p>
             </div>
         </a>
+        @endcan
 
         <!-- Tarjeta: Accesos -->
+        @can('accesos.index')
         <a href="{{ route('admin.access-logs.index') }}" class="dashboard-card ripple-card">
             <div class="card-icon card-pink">
                 <i class="ri-login-circle-line"></i>
@@ -143,5 +157,6 @@
                 <p class="card-label">Accesos</p>
             </div>
         </a>
+        @endcan
     </div>
 </x-admin-layout>

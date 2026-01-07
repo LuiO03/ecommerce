@@ -13,20 +13,24 @@ use Spatie\Permission\Models\Role;
 use App\Models\CompanySetting;
 use App\Models\Option;
 use App\Models\AccessLog;
+use App\Models\Audit;
+
 
 class AdminController extends Controller
 {
+
     public function index()
     {
+        $user = auth()->user();
         return view('admin.dashboard', [
-            'totalCategories' => Category::count(),
-            'totalFamilies'   => Family::count(),
-            'totalProducts'   => Product::count(),
-            'totalUsers'      => User::count(),
-            'totalRoles'      => Role::count(),
-            'totalPosts'      => Post::count(),
-            'totalOptions'    => Option::count(),
-            'totalAccessLogs' => AccessLog::count(),
+            'totalCategories' => $user->can('categorias.index') ? Category::count() : null,
+            'totalFamilies'   => $user->can('familias.index')   ? Family::count()   : null,
+            'totalProducts'   => $user->can('productos.index')   ? Product::count()  : null,
+            'totalUsers'      => $user->can('usuarios.index')      ? User::count()     : null,
+            'totalRoles'      => $user->can('roles.index')      ? Role::count()     : null,
+            'totalPosts'      => $user->can('posts.index')      ? Post::count()     : null,
+            'totalOptions'    => $user->can('opciones.index')    ? Option::count()   : null,
+            'totalAccessLogs' => $user->can('accesos.index')? AccessLog::count(): null,
             // enviar el nombre de la empresa a la vista
             'companyName' => optional(CompanySetting::first())->name ?? 'Mi Empresa',
         ]);

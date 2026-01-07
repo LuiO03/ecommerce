@@ -158,6 +158,21 @@
         transform var(--transition-sidebar-base);
 }
 
+/* Evitar animaciones en la sincronización inicial del estado colapsado */
+.sidebar-principal.no-transition {
+    transition: none !important;
+}
+
+.sidebar-principal.no-transition *,
+.sidebar-principal.no-transition .sidebar-contenido,
+.sidebar-principal.no-transition .sidebar-link,
+.sidebar-principal.no-transition .sidebar-sublink,
+.sidebar-principal.no-transition .sidebar-logo-texto,
+.sidebar-principal.no-transition .submenu-arrow,
+.sidebar-principal.no-transition .theme-text {
+    transition: none !important;
+}
+
 /* === Header === */
 .sidebar-header {
     flex-shrink: 0;
@@ -234,7 +249,7 @@
     color: white !important;
 }
 
-.sidebar-link span {
+.sidebar-link span, .sidebar-sublink span {
     white-space: nowrap;
 }
 
@@ -389,15 +404,19 @@
    🔹 SIDEBAR COLAPSADO (Desktop)
    ============================================================ */
 @media (min-width: 640px) {
-    .sidebar-principal.collapsed {
+    /* Estado colapsado: aplicado por JS (.collapsed) o de forma temprana (.sidebar-start-collapsed en <html>) */
+    .sidebar-principal.collapsed,
+    .sidebar-start-collapsed .sidebar-principal {
         width: var(--sidebar-collapsed-width);
     }
 
-    .sidebar-principal.collapsed ~ .main-container {
+    .sidebar-principal.collapsed ~ .main-container,
+    .sidebar-start-collapsed .main-container {
         left: var(--sidebar-collapsed-width);
     }
 
-    body.sidebar-collapsed .navbar {
+    body.sidebar-collapsed .navbar,
+    .sidebar-start-collapsed .navbar {
         left: var(--sidebar-collapsed-width);
         width: calc(100% - var(--sidebar-collapsed-width));
     }
@@ -407,33 +426,43 @@
     .sidebar-principal.collapsed .sidebar-link span,
     .sidebar-principal.collapsed .sidebar-sublink span,
     .sidebar-principal.collapsed .submenu-arrow,
-    .sidebar-principal.collapsed .theme-text {
+    .sidebar-principal.collapsed .theme-text,
+    .sidebar-start-collapsed .sidebar-logo-texto,
+    .sidebar-start-collapsed .sidebar-link span,
+    .sidebar-start-collapsed .sidebar-sublink span,
+    .sidebar-start-collapsed .submenu-arrow,
+    .sidebar-start-collapsed .theme-text {
         opacity: 0;
         transition: opacity var(--transition-sidebar-base),
             transform var(--transition-sidebar-base);
         pointer-events: none;
     }
 
-    .sidebar-principal.collapsed .sidebar-contenido {
+    .sidebar-principal.collapsed .sidebar-contenido,
+    .sidebar-start-collapsed .sidebar-contenido {
         align-items: center;
         display: flex;
         flex-direction: column;
         padding: 8px 4px 8px 8px;
     }
 
-    .sidebar-principal.collapsed .sidebar-contenido ul {
+    .sidebar-principal.collapsed .sidebar-contenido ul,
+    .sidebar-start-collapsed .sidebar-contenido ul {
         width: 100%;
     }
 
     .sidebar-principal.collapsed .sidebar-link,
-    .sidebar-principal.collapsed .sidebar-sublink {
+    .sidebar-principal.collapsed .sidebar-sublink,
+    .sidebar-start-collapsed .sidebar-link,
+    .sidebar-start-collapsed .sidebar-sublink {
         justify-content: start;
         padding-left: 16px;
         width: 100%;
         transition: padding 0.3s ease;
     }
 
-    .sidebar-principal.collapsed .submenu-btn {
+    .sidebar-principal.collapsed .submenu-btn,
+    .sidebar-start-collapsed .submenu-btn {
         padding-left: 20px;
     }
 

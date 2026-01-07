@@ -220,7 +220,16 @@ class Audit extends Model
             $changedLabels = $this->mapFieldLabels($changed);
             $changedStr = $changedLabels ? implode(', ', $changedLabels) : 'detalles';
 
-            return "El usuario actualizó su perfil{$labelPart} (cambios: {$changedStr})";
+            $isSelfUpdate = $this->auditable_type === User::class
+                && $this->user_id
+                && $this->auditable_id
+                && (int) $this->user_id === (int) $this->auditable_id;
+
+            if ($isSelfUpdate) {
+                return "Perfil actualizado (cambios: {$changedStr})";
+            }
+
+            return "Se actualizó el perfil de usuario{$labelPart} (cambios: {$changedStr})";
         }
 
         return ucfirst($event) . " de {$modelName}{$labelPart}";
