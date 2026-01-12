@@ -15,15 +15,37 @@ function closeSubmenu(container) {
     }
 }
 
-function openSubmenu(container) {
+function openSubmenu(container, animate = true) {
     if (!container) {
         return;
     }
-    container.classList.add('open');
+
     const trigger = container.previousElementSibling;
+    const arrow = trigger && trigger.classList.contains('submenu-btn')
+        ? trigger.querySelector('.submenu-arrow')
+        : null;
+
+    if (!animate) {
+        const prevTransition = container.style.transition;
+        container.style.transition = 'none';
+
+        container.classList.add('open');
+        if (trigger && trigger.classList.contains('submenu-btn')) {
+            trigger.classList.add('rounded-top');
+            if (arrow) {
+                arrow.classList.add('rotate-180');
+            }
+        }
+
+        // Forzar reflow y restaurar transición
+        void container.offsetHeight;
+        container.style.transition = prevTransition;
+        return;
+    }
+
+    container.classList.add('open');
     if (trigger && trigger.classList.contains('submenu-btn')) {
         trigger.classList.add('rounded-top');
-        const arrow = trigger.querySelector('.submenu-arrow');
         if (arrow) {
             arrow.classList.add('rotate-180');
         }
@@ -89,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (savedSubmenu) {
                 // Cierra para evitar animaciones conflictivas
                 document.querySelectorAll('.sidebar-submenu.open').forEach(closeSubmenu);
-                openSubmenu(savedSubmenu);
+                // Abrir sin animación al restaurar desde localStorage
+                openSubmenu(savedSubmenu, false);
             }
         }
     } catch (error) {
@@ -104,7 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetToFocus = activeSubLink;
         const parentSubmenu = activeSubLink.closest('.sidebar-submenu');
         if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
-            openSubmenu(parentSubmenu);
+            // Abrir sin animación cuando se basa en el enlace activo al navegar
+            openSubmenu(parentSubmenu, false);
         }
     } else if (activeLink) {
         targetToFocus = activeLink;

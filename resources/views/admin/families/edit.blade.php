@@ -125,6 +125,7 @@
                                 <i class="ri-image-add-line"></i>
                                 <p>Arrastra una imagen aquí</p>
                                 <span>o haz clic para seleccionar</span>
+                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
                             </div>
                         @elseif($family->image)
                             <!-- Imagen no encontrada -->
@@ -132,6 +133,7 @@
                                 <i class="ri-folder-close-line"></i>
                                 <p>Imagen no encontrada</p>
                                 <span>Haz clic para subir una nueva</span>
+                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
                             </div>
                         @else
                             <!-- Sin imagen -->
@@ -139,6 +141,7 @@
                                 <i class="ri-image-add-line"></i>
                                 <p>Arrastra una imagen aquí</p>
                                 <span>o haz clic para seleccionar</span>
+                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
                             </div>
                         @endif
 

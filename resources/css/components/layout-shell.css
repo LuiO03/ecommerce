@@ -238,6 +238,7 @@
     border-radius: 0.5rem;
     font-family: var(--font-secondary);
     box-shadow: 0 8px 18px var(--shadow-accent);
+    animation: sidebar-active-enter 0.28s ease-out both;
 }
 
 .sidebar-link.active:hover {
@@ -261,10 +262,22 @@
     border-radius: 0.5rem;
     font-family: var(--font-secondary);
     box-shadow: 0 8px 18px var(--shadow-accent);
+    animation: sidebar-active-enter 0.28s ease-out both;
 }
 
 .sidebar-sublink.active .sidebar-icon {
     color: white !important;
+}
+
+@keyframes sidebar-active-enter {
+    from {
+        opacity: 0;
+        transform: translateX(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* === Subenlaces === */

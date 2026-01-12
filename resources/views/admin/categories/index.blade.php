@@ -182,7 +182,9 @@
                         <th class="column-description-th">Descripción</th>
                         <th class="column-family-th">Familia</th>
                         <th class="column-father-th">Padre</th>
-                        <th class="column-status-th">Estado</th>
+                        @can('categorias.update-status')
+                            <th class="column-status-th">Estado</th>
+                        @endcan
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -231,15 +233,16 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="column-status-td">
-                                <label class="switch-tabla">
-                                    <input type="checkbox" class="switch-status"
-                                        data-id="{{ $cat->id }}"
-                                        {{ $cat->status ? 'checked' : '' }}>
-                                    <span class="slider"></span>
-                                </label>
-                            </td>
-
+                            @can('categorias.update-status')
+                                <td class="column-status-td">
+                                    <label class="switch-tabla">
+                                        <input type="checkbox" class="switch-status"
+                                            data-id="{{ $cat->id }}"
+                                            {{ $cat->status ? 'checked' : '' }}>
+                                        <span class="slider"></span>
+                                    </label>
+                                </td>
+                            @endcan
                             <td class="column-date-td">
                                 <span class="{{ $cat->created_at ? '' : 'text-muted-td' }}">
                                     {{ $cat->created_at ? $cat->created_at->format('d/m/Y H:i') : 'Sin fecha' }}

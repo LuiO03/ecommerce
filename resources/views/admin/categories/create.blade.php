@@ -32,16 +32,11 @@
             </div>
         @endif
 
-        <x-alert
-            type="info"
-            title="Guía rápida:"
-            :dismissible="true"
-            :items="[
-                'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
-                'Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría',
-                'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)'
-            ]"
-        />
+        <x-alert type="info" title="Guía rápida:" :dismissible="true" :items="[
+            'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
+            'Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría',
+            'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)',
+        ]" />
 
         <div class="form-columns-row">
 
@@ -57,12 +52,14 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-stack-line input-icon"></i>
-                        <select name="family_id" id="family_select" class="select-form @error('family_id') input-error @enderror"
+                        <select name="family_id" id="family_select"
+                            class="select-form @error('family_id') input-error @enderror"
                             data-validate="required|selected"
                             data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
                             <option value="" disabled selected>Seleccione una familia</option>
                             @foreach ($families as $family)
-                                <option value="{{ $family->id }}" {{ old('family_id') == $family->id ? 'selected' : '' }}>
+                                <option value="{{ $family->id }}"
+                                    {{ old('family_id') == $family->id ? 'selected' : '' }}>
                                     {{ $family->name }}
                                 </option>
                             @endforeach
@@ -116,9 +113,9 @@
                     <div class="input-icon-container">
                         <i class="ri-price-tag-2-line input-icon"></i>
 
-                        <input type="text" name="name" id="name" class="input-form @error('name') input-error @enderror"
-                            value="{{ old('name') }}" placeholder="Ingrese el nombre"
-                            data-validate="required|alphanumeric|min:3|max:100"
+                        <input type="text" name="name" id="name"
+                            class="input-form @error('name') input-error @enderror" value="{{ old('name') }}"
+                            placeholder="Ingrese el nombre" data-validate="required|alphanumeric|min:3|max:100"
                             data-validate-messages='{"required":"El nombre es obligatorio","alphanumeric":"El nombre debe contener al menos una letra","min":"El nombre debe tener al menos 3 caracteres","max":"El nombre no puede exceder 100 caracteres"}'>
                     </div>
                     @error('name')
@@ -170,7 +167,8 @@
                     </label>
 
                     <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4" data-validate="min:10|max:250">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                            data-validate="min:10|max:250">{{ old('description') }}</textarea>
 
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
@@ -195,6 +193,7 @@
                             <i class="ri-image-add-line"></i>
                             <p>Arrastra una imagen aquí</p>
                             <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
                         </div>
 
                         <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
@@ -242,8 +241,8 @@
                 // 3. Inicializar jerarquía de categorías
                 const hierarchyManager = initCategoryHierarchy({
                     categoriesData: {!! json_encode($allCategories) !!},
-                    initialFamilyId: '{{ old("family_id") }}' ? parseInt('{{ old("family_id") }}') : null,
-                    initialParentId: '{{ old("parent_id") }}' ? parseInt('{{ old("parent_id") }}') : null
+                    initialFamilyId: '{{ old('family_id') }}' ? parseInt('{{ old('family_id') }}') : null,
+                    initialParentId: '{{ old('parent_id') }}' ? parseInt('{{ old('parent_id') }}') : null
                 });
 
                 // 4. Inicializar manejador de imágenes

@@ -142,6 +142,7 @@
                             <i class="ri-image-add-line"></i>
                             <p>Arrastra una imagen aquí</p>
                             <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
                         </div>
                         <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
                             alt="Vista previa">
