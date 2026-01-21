@@ -39,6 +39,7 @@
             'options' => ['label' => 'Opciones', 'icon' => 'ri-settings-3-fill'],
             'company-settings' => ['label' => 'Empresa', 'icon' => 'ri-building-4-fill'],
             'access-logs' => ['label' => 'Accesos', 'icon' => 'ri-login-circle-fill'],
+            'audits' => ['label' => 'Auditoría', 'icon' => 'ri-file-list-3-fill'],
         ];
         $actions = [
             'create' => ['label' => 'Crear', 'icon' => 'ri-add-box-fill'],

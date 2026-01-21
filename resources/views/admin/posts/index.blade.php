@@ -22,7 +22,7 @@
                 <button type="button" class="boton-form boton-action" id="exportMenuBtn">
                     <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
                     <span class="boton-form-text">Exportar</span>
-                    <i class="ri-arrow-down-s-line"></i>
+                    <i class="ri-arrow-down-s-line boton-form-icon"></i>
                 </button>
                 <div class="export-dropdown" id="exportDropdown">
                     <button type="button" class="export-option" id="exportAllExcel">
@@ -126,7 +126,7 @@
                             <i class="ri-file-excel-2-line"></i>
                         </span>
                         <span class="boton-selection-text">Excel</span>
-                        l
+                        <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="excelBadge">0</span>
                     </button>
                     <button id="exportSelectedCsv" class="boton-selection boton-orange">
@@ -134,7 +134,7 @@
                             <i class="ri-file-text-line"></i>
                         </span>
                         <span class="boton-selection-text">CSV</span>
-                        l
+                        <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="csvBadge">0</span>
                     </button>
                     <button id="exportSelectedPdf" class="boton-selection boton-secondary">
@@ -142,7 +142,7 @@
                             <i class="ri-file-pdf-2-line"></i>
                         </span>
                         <span class="boton-selection-text">PDF</span>
-                        l
+                        <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="pdfBadge">0</span>
                     </button>
                 @endcan
@@ -153,7 +153,7 @@
                         <i class="ri-delete-bin-line"></i>
                     </span>
                     <span class="boton-selection-text">Eliminar</span>
-                    l
+                    <span class="boton-selection-dot">•</span>
                     <span class="selection-badge" id="deleteBadge">0</span>
                 </button>
             @endcan

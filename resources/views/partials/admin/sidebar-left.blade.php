@@ -195,61 +195,59 @@
                 </li>
             @endcan
             <!-- Submenú Gestion de Acceso -->
-            @can('usuarios.index' || 'roles.index' || 'accesos.index' || 'auditorias.index')
-                <li class="submenu-container">
-                    <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
-                        data-tooltip="Gestión de Acceso">
-                        <i class="ri-shield-user-line sidebar-icon"></i>
-                        <span class="flex-1 text-left">Gestión de Acceso</span>
-                        <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
-                    </button>
+            <li class="submenu-container">
+                <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
+                    data-tooltip="Gestión de Acceso">
+                    <i class="ri-shield-user-line sidebar-icon"></i>
+                    <span class="flex-1 text-left">Gestión de Acceso</span>
+                    <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
+                </button>
 
-                    <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
+                <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
 
-                        @can('usuarios.index')
-                            <li class="ripple-btn">
-                                <a href="{{ route('admin.users.index') }}"
-                                    class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                                    data-tooltip="Users">
-                                    <i class="ri-id-card-line sidebar-icon"></i>
-                                    <span>Usuarios</span>
-                                </a>
-                            </li>
-                        @endcan
+                    @can('usuarios.index')
+                        <li class="ripple-btn">
+                            <a href="{{ route('admin.users.index') }}"
+                                class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                                data-tooltip="Users">
+                                <i class="ri-id-card-line sidebar-icon"></i>
+                                <span>Usuarios</span>
+                            </a>
+                        </li>
+                    @endcan
 
-                        @can('roles.index')
-                            <li class="ripple-btn">
-                                <a href="{{ route('admin.roles.index') }}"
-                                    class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
-                                    data-tooltip="Roles y Permisos">
-                                    <i class="ri-shield-user-line sidebar-icon"></i>
-                                    <span>Roles y Permisos</span>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('accesos.index')
-                            <li class="ripple-btn">
-                                <a href="{{ route('admin.access-logs.index') }}"
-                                    class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
-                                    data-tooltip="Registros de acceso">
-                                    <i class="ri-login-circle-line sidebar-icon"></i>
-                                    <span>Accesos</span>
-                                </a>
-                            </li>
-                        @endcan
-                        @can('auditorias.index')
-                            <li class="ripple-btn">
-                                <a href="{{ route('admin.audits.index') }}"
-                                    class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
-                                    data-tooltip="Auditoría">
-                                    <i class="ri-file-list-3-line sidebar-icon"></i>
-                                    <span>Auditoría</span>
-                                </a>
-                            </li>
-                        @endcan
-                    </ul>
-                </li>
-            @endcan
+                    @can('roles.index')
+                        <li class="ripple-btn">
+                            <a href="{{ route('admin.roles.index') }}"
+                                class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
+                                data-tooltip="Roles y Permisos">
+                                <i class="ri-shield-user-line sidebar-icon"></i>
+                                <span>Roles y Permisos</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('accesos.index')
+                        <li class="ripple-btn">
+                            <a href="{{ route('admin.access-logs.index') }}"
+                                class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
+                                data-tooltip="Registros de acceso">
+                                <i class="ri-login-circle-line sidebar-icon"></i>
+                                <span>Accesos</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('auditorias.index')
+                        <li class="ripple-btn">
+                            <a href="{{ route('admin.audits.index') }}"
+                                class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
+                                data-tooltip="Auditoría">
+                                <i class="ri-file-list-3-line sidebar-icon"></i>
+                                <span>Auditoría</span>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
         </ul>
     </div>
 

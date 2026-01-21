@@ -7,14 +7,14 @@
         </div>
         Auditoría del Sistema
     </x-slot>
-
+    @can('auditorias.export')
     <x-slot name="action">
         <!-- Menú desplegable de exportación -->
         <div class="export-menu-container">
             <button type="button" class="boton-form boton-action" id="exportMenuBtn">
                 <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
                 <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line"></i>
+                <i class="ri-arrow-down-s-line boton-form-icon"></i>
             </button>
             <div class="export-dropdown" id="exportDropdown">
                 <button type="button" class="export-option" id="exportAllExcel">
@@ -32,6 +32,7 @@
             </div>
         </div>
     </x-slot>
+    @endcan
 
     <div class="actions-container">
         <!-- CONTROLES -->
@@ -81,6 +82,7 @@
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->
+        @can('auditorias.export')
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
                 <button id="exportSelectedExcel" class="boton-selection boton-success">
@@ -115,6 +117,7 @@
                 </button>
             </div>
         </div>
+        @endcan
 
         <!-- TABLA -->
         <div class="tabla-wrapper">

@@ -8,13 +8,15 @@
         Lista de Categorías
     </x-slot>
 
+
     <x-slot name="action">
         <!-- Menú de exportación -->
+        @can('categorias.export')
         <div class="export-menu-container">
             <button type="button" class="boton-form boton-action" id="exportMenuBtn">
                 <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
                 <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line"></i>
+                <i class="ri-arrow-down-s-line boton-form-icon"></i>
             </button>
             <div class="export-dropdown" id="exportDropdown">
                 <button type="button" class="export-option" id="exportAllExcel">
@@ -31,16 +33,19 @@
                 </button>
             </div>
         </div>
-
+        @endcan
+        @can('categorias.manage-tree')
         <a href="{{ route('admin.categories.hierarchy') }}" class="boton boton-purple">
             <span class="boton-icon"><i class="ri-node-tree"></i></span>
             <span class="boton-text">Gestor Jerárquico</span>
         </a>
-
+        @endcan
+        @can('categorias.create')
         <a href="{{ route('admin.categories.create') }}" class="boton boton-primary">
             <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
             <span class="boton-text">Crear Categoría</span>
         </a>
+        @endcan
     </x-slot>
 
     <div class="actions-container">
@@ -126,40 +131,39 @@
 
         </div>
 
+        @canany(['categorias.export', 'categorias.delete'])
         <!-- Barra contextual -->
         <div class="selection-bar" id="selectionBar">
+            @can('categorias.export')
             <div class="selection-actions">
-
                 <button id="exportSelectedExcel" class="boton-selection boton-success">
                     <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
                     <span class="boton-selection-text">Excel</span>
-                    l
+                    <span class="boton-selection-dot">•</span>
                     <span class="selection-badge" id="excelBadge">0</span>
                 </button>
-
                 <button id="exportSelectedCsv" class="boton-selection boton-orange">
                     <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
                     <span class="boton-selection-text">CSV</span>
-                    l
+                    <span class="boton-selection-dot">•</span>
                     <span class="selection-badge" id="csvBadge">0</span>
                 </button>
-
                 <button id="exportSelectedPdf" class="boton-selection boton-secondary">
                     <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
                     <span class="boton-selection-text">PDF</span>
-                    l
+                    <span class="boton-selection-dot">•</span>
                     <span class="selection-badge" id="pdfBadge">0</span>
                 </button>
-
             </div>
-
+            @endcan
+            @can('categorias.delete')
             <button id="deleteSelected" class="boton-selection boton-danger">
                 <span class="boton-selection-icon"><i class="ri-delete-bin-line"></i></span>
                 <span class="boton-selection-text">Eliminar</span>
-                l
+                <span class="boton-selection-dot">•</span>
                 <span class="selection-badge" id="deleteBadge">0</span>
             </button>
-
+            @endcan
             <div class="selection-info">
                 <span id="selectionCount">0 seleccionados</span>
                 <button class="selection-close" id="clearSelection">
@@ -167,6 +171,7 @@
                 </button>
             </div>
         </div>
+        @endcanany
 
         <!-- Tabla -->
         <div class="tabla-wrapper">
@@ -174,9 +179,11 @@
                 <thead>
                     <tr>
                         <th class="control"></th>
+                        @canany(['categorias.export', 'categorias.delete'])
                         <th class="column-check-th column-not-order">
                             <div><input type="checkbox" id="checkAll"></div>
                         </th>
+                        @endcanany
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
                         <th class="column-description-th">Descripción</th>
@@ -253,10 +260,13 @@
                                     <button class="boton-sm boton-info btn-ver-categoria" data-slug="{{ $cat->slug }}">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
-                                    <a href="{{ route('admin.categories.edit', $cat) }}"
-                                        class="boton-sm boton-warning">
-                                        <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
-                                    </a>
+                                    @can('categorias.edit')
+                                        <a href="{{ route('admin.categories.edit', $cat) }}"
+                                            class="boton-sm boton-warning">
+                                            <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
+                                        </a>
+                                    @endcan
+                                    @can('categorias.delete')
                                     <form action="{{ route('admin.categories.destroy', $cat) }}"
                                         method="POST" class="delete-form"
                                         data-entity="categoría">
@@ -266,10 +276,9 @@
                                             <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                         </button>
                                     </form>
-
+                                    @endcan
                                 </div>
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>

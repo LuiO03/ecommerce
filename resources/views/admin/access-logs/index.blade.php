@@ -8,13 +8,14 @@
         Registros de Acceso
     </x-slot>
 
+    @can('accesos.export')
     <x-slot name="action">
         <!-- Menú de exportación -->
         <div class="export-menu-container">
             <button type="button" class="boton-form boton-action" id="exportMenuBtn">
                 <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
                 <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line"></i>
+                <i class="ri-arrow-down-s-line boton-form-icon"></i>
             </button>
             <div class="export-dropdown" id="exportDropdown">
                 <button type="button" class="export-option" id="exportAllExcel">
@@ -32,6 +33,7 @@
             </div>
         </div>
     </x-slot>
+    @endcan
 
     <div class="actions-container">
 
@@ -95,6 +97,7 @@
         </div>
 
         <!-- Barra contextual -->
+        @can('accesos.export')
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
 
@@ -125,6 +128,7 @@
                 </button>
             </div>
         </div>
+        @endcan
 
         <!-- TABLA -->
         <div class="tabla-wrapper">
@@ -177,22 +181,22 @@
 
                             <td data-action="{{ $log->action }}">
                                 @if ($log->action === 'login')
-                                    <span class="badge boton-info">
+                                    <span class="badge badge-info">
                                         <i class="ri-login-box-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @elseif($log->action === 'logout')
-                                    <span class="badge boton-warning">
+                                    <span class="badge badge-warning">
                                         <i class="ri-logout-box-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @elseif($log->action === 'failed')
-                                    <span class="badge boton-danger">
+                                    <span class="badge badge-danger">
                                         <i class="ri-error-warning-line"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @else
-                                    <span class="badge boton-gray">
+                                    <span class="badge badge-gray">
                                         <i class="ri-question-line"></i>
                                         {{ $log->action_label }}
                                     </span>

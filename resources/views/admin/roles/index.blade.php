@@ -6,11 +6,12 @@
         Lista de Roles
     </x-slot>
     <x-slot name="action">
+        @can('roles.export')
         <div class="export-menu-container">
             <button type="button" class="boton-form boton-action" id="exportMenuBtn">
                 <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
                 <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line"></i>
+                <i class="ri-arrow-down-s-line boton-form-icon"></i>
             </button>
             <div class="export-dropdown" id="exportDropdown">
                 <button type="button" class="export-option" id="exportAllExcel">
@@ -27,10 +28,13 @@
                 </button>
             </div>
         </div>
+        @endcan
+        @can('roles.create')
         <a href="{{ route('admin.roles.create') }}" class="boton boton-primary">
             <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
             <span class="boton-text">Crear Rol</span>
         </a>
+        @endcan
     </x-slot>
     <div class="actions-container">
         <!-- === Controles personalizados === -->
@@ -116,11 +120,18 @@
                                 <div class="tabla-botones">
                                     {{-- === BOTÓN EDITAR === --}}
                                     @if (!in_array($role->name, ['Administrador', 'Superadministrador']))
+                                        @can('roles.edit')
                                         <a href="{{ route('admin.roles.edit', $role) }}" class="boton boton-warning"
                                             title="Editar rol">
                                             <span class="boton-icon"><i class="ri-edit-2-fill"></i></span>
                                             <span class="boton-text">Editar</span>
                                         </a>
+                                        @else
+                                        <button class="boton boton-warning disabled" title="No editable" disabled>
+                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                            <span class="boton-text">Editar</span>
+                                        </button>
+                                        @endcan
                                     @else
                                         <button class="boton boton-warning disabled" title="No editable" disabled>
                                             <span class="boton-icon"><i class="ri-lock-fill"></i></span>
@@ -130,6 +141,7 @@
 
                                     {{-- === BOTÓN ELIMINAR === --}}
                                     @if (!in_array($role->name, ['Administrador', 'Superadministrador']) && $role->users_count == 0)
+                                        @can('roles.delete')
                                         <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
                                         class="delete-form" data-entity="rol">
                                             @csrf
@@ -139,6 +151,13 @@
                                                 <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                             </button>
                                         </form>
+                                        @else
+                                        <button class="boton boton-danger disabled" title="No se puede eliminar"
+                                            disabled>
+                                            <span class="boton-text">Borrar</span>
+                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                        </button>
+                                        @endcan
                                     @else
                                         <button class="boton boton-danger disabled" title="No se puede eliminar"
                                             disabled>
@@ -146,11 +165,13 @@
                                             <span class="boton-icon"><i class="ri-lock-fill"></i></span>
                                         </button>
                                     @endif
+                                    @can('roles.assign-permissions')
                                     <a href="{{ route('admin.roles.permissions', $role) }}"
                                         class="boton boton-primary" title="Ver y gestionar permisos">
                                         <span class="boton-icon"><i class="ri-key-2-fill"></i></span>
                                         <span class="boton-text">Permisos</span>
                                     </a>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

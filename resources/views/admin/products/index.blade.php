@@ -9,11 +9,12 @@
 	</x-slot>
 
 	<x-slot name="action">
+		@can('productos.export')
 		<div class="export-menu-container">
 			<button type="button" class="boton-form boton-action" id="exportMenuBtn">
 				<span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
 				<span class="boton-form-text">Exportar</span>
-				<i class="ri-arrow-down-s-line"></i>
+				<i class="ri-arrow-down-s-line boton-form-icon"></i>
 			</button>
 
 			<div class="export-dropdown" id="exportDropdown">
@@ -31,11 +32,14 @@
 				</button>
 			</div>
 		</div>
+		@endcan
 
+		@can('productos.create')
 		<a href="{{ route('admin.products.create') }}" class="boton boton-primary">
 			<span class="boton-icon"><i class="ri-add-box-fill"></i></span>
 			<span class="boton-text">Crear Producto</span>
 		</a>
+		@endcan
 	</x-slot>
 
 	<div class="actions-container">
@@ -112,32 +116,41 @@
 			</div>
 		</div>
 
+		@canany(['productos.export', 'productos.delete'])
 		<div class="selection-bar" id="selectionBar">
+			@can('productos.export')
 			<div class="selection-actions">
 				<button id="exportSelectedExcel" class="boton-selection boton-success">
 					<span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
 					<span class="boton-selection-text">Excel</span>
+                    <span class="boton-selection-dot">•</span>
 					<span class="selection-badge" id="excelBadge">0</span>
 				</button>
 
 				<button id="exportSelectedCsv" class="boton-selection boton-orange">
 					<span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
 					<span class="boton-selection-text">CSV</span>
+                    <span class="boton-selection-dot">•</span>
 					<span class="selection-badge" id="csvBadge">0</span>
 				</button>
 
 				<button id="exportSelectedPdf" class="boton-selection boton-secondary">
 					<span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
 					<span class="boton-selection-text">PDF</span>
+                    <span class="boton-selection-dot">•</span>
 					<span class="selection-badge" id="pdfBadge">0</span>
 				</button>
 			</div>
+			@endcan
 
+			@can('productos.delete')
 			<button id="deleteSelected" class="boton-selection boton-danger">
 				<span class="boton-selection-icon"><i class="ri-delete-bin-line"></i></span>
 				<span class="boton-selection-text">Eliminar</span>
+                <span class="boton-selection-dot">•</span>
 				<span class="selection-badge" id="deleteBadge">0</span>
 			</button>
+			@endcan
 
 			<div class="selection-info">
 				<span id="selectionCount">0 seleccionados</span>
@@ -146,15 +159,18 @@
 				</button>
 			</div>
 		</div>
+		@endcanany
 
 		<div class="tabla-wrapper">
 			<table id="tabla" class="tabla-general display">
 				<thead>
 					<tr>
 						<th class="control"></th>
+						@canany(['productos.export', 'productos.delete'])
 						<th class="column-check-th column-not-order">
 							<div><input type="checkbox" id="checkAll"></div>
 						</th>
+						@endcanany
 						<th class="column-id-th">ID</th>
 						<th class="column-name-th">Nombre</th>
 						<th class="column-sku-th">SKU</th>
@@ -173,11 +189,13 @@
 
 						<tr data-id="{{ $product->id }}" data-name="{{ $product->name }}">
 							<td class="control"></td>
+							@canany(['productos.export', 'productos.delete'])
 							<td class="column-check-td">
 								<div>
 									<input type="checkbox" class="check-row" value="{{ $product->id }}">
 								</div>
 							</td>
+							@endcanany
 							<td class="column-id-td">{{ $product->id }}</td>
 							<td class="column-name-td">
 								<div class="tabla-name-wrapper">
@@ -226,12 +244,14 @@
 									{{ $stockTotal }}
 								</span>
 							</td>
+							@can('productos.update-status')
 							<td class="column-status-td">
 								<label class="switch-tabla">
 									<input type="checkbox" class="switch-status" data-id="{{ $product->id }}" data-key="{{ $product->slug }}" {{ $product->status ? 'checked' : '' }}>
 									<span class="slider"></span>
 								</label>
 							</td>
+							@endcan
 							<td class="column-date-td">
 								<span class="{{ $product->created_at ? '' : 'text-muted-td' }}">
 									{{ $product->created_at ? $product->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
@@ -242,9 +262,12 @@
 									<button class="boton-sm boton-info btn-ver-producto" data-slug="{{ $product->slug }}">
 										<span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
 									</button>
+									@can('productos.edit')
 									<a href="{{ route('admin.products.edit', $product) }}" class="boton-sm boton-warning">
 										<span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
 									</a>
+									@endcan
+									@can('productos.delete')
 									<form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="delete-form" data-entity="producto">
 										@csrf
 										@method('DELETE')
@@ -252,6 +275,7 @@
 											<span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
 										</button>
 									</form>
+									@endcan
 								</div>
 							</td>
 						</tr>

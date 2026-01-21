@@ -21,6 +21,15 @@
     </div>
 
     <div class="topbar-right">
+        @php
+            $unreadCount = auth()->user()->unreadNotifications()->count();
+        @endphp
+        <button id="notificationSidebarToggle" class="topbar-icon-btn" aria-label="Ver notificaciones">
+            <i class="ri-notification-3-line"></i>
+            @if ($unreadCount > 0)
+                <span class="notification-badge">{{ $unreadCount }}</span>
+            @endif
+        </button>
         <div class="flex items-center ms-3">
             <a href="{{ route('admin.profile.index') }}" title="Perfil de usuario">
                 @php
@@ -40,17 +49,6 @@
                 @endif
             </a>
         </div>
-
-        @php
-            $unreadCount = auth()->user()->unreadNotifications()->count();
-        @endphp
-
-        <button id="notificationSidebarToggle" class="topbar-icon-btn" aria-label="Ver notificaciones">
-            <i class="ri-notification-3-line"></i>
-            @if ($unreadCount > 0)
-                <span class="notification-badge">{{ $unreadCount }}</span>
-            @endif
-        </button>
 
         <div class="topbar-user-menu">
             <button id="userSidebarToggle" class="hamburger-btn z-[70]" aria-label="Abrir menú de usuario">
