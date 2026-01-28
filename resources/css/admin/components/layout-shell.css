@@ -46,10 +46,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
     border-radius: var(--radius-element);
-    font-size: 20px;
+    font-size: 28px;
     color: var(--color-text);
     background: none;
     border: none;
@@ -64,12 +62,12 @@
 
 .notification-badge {
     position: absolute;
-    top: -2px;
-    right: -2px;
+    top: 3px;
+    right: -3px;
     min-width: 16px;
     height: 16px;
     padding: 0 4px;
-    border-radius: 999px;
+    border-radius: 5px;
     background-color: var(--color-danger);
     color: #fff;
     font-size: 10px;
@@ -337,6 +335,12 @@
 
 .submenu-arrow {
     font-size: 20px;
+    transition: transform 0.3s ease;
+    transform: rotate(0deg);
+}
+
+.submenu-arrow.rotate-180 {
+    transform: rotate(180deg) !important;
 }
 
 /* === Submenú animado === */
@@ -404,12 +408,17 @@
 .sidebar-principal .sidebar-logo-texto,
 .sidebar-principal .sidebar-link span,
 .sidebar-principal .sidebar-sublink span,
-.sidebar-principal .submenu-arrow,
 .sidebar-principal .theme-text {
     opacity: 1;
     transform: translateX(0);
     transition: opacity var(--transition-sidebar-base),
         transform var(--transition-sidebar-base);
+    position: relative;
+}
+
+/* La flecha del submenú no necesita translateX */
+.sidebar-principal .submenu-arrow {
+    opacity: 1;
     position: relative;
 }
 

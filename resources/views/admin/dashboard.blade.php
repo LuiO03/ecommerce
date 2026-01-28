@@ -1,7 +1,7 @@
 @section('title', 'Dashboard')
 
 @push('styles')
-    @vite('resources/css/modules/dashboard.css')
+    @vite('resources/css/admin/modules/dashboard.css')
 @endpush
 <x-admin-layout :useSlotContainer="false">
     <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">

@@ -135,7 +135,7 @@
                     <label for="description" class="label-form">Descripción</label>
                     <div class="input-icon-container">
                         <textarea name="description" id="description" class="textarea-form" rows="4"
-                            placeholder="Describe el producto" data-validate="max:5000">{{ old('description') }}</textarea>
+                            placeholder="Describe el producto" data-validate="max:500|min:3">{{ old('description') }}</textarea>
                         <i class="ri-file-text-line input-icon textarea-icon"></i>
                     </div>
                 </div>

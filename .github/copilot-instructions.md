@@ -1,67 +1,352 @@
 
-﻿# Guía para Agentes IA en GECKОМERCE
+# Guía para Agentes IA en GECKОМERCE
 
-Esta guía resume los patrones reales del proyecto para que un agente IA pueda tocar código productivamente sin romper convenciones.
+Esta guía documenta los patrones reales del proyecto para que un agente IA pueda tocar código productivamente sin romper convenciones.
 
-## Arquitectura y Dominios
+## 🎯 Stack Tecnológico
 
-- **Stack:** Laravel 12, PHP 8.2, Livewire 3, Jetstream, TailwindCSS 3, Flowbite, DataTables, Spatie Permission, Maatwebsite Excel, Spatie Laravel PDF.
-- **Catálogo:** Familias → Categorías (anidables) → Productos → Variantes, con opciones y características (Options/Features). Ver modelos en `app/Models` y docs en `docs/category-*` y `docs/product-variants-manager.md`.
-- **Auditoría:** Modelos principales usan `App\Traits\Auditable` con campos `created_by`, `updated_by`, `deleted_by` y soft deletes; no reimplementar a mano (tomar como referencia [app/Models/Family.php](../../app/Models/Family.php)).
-- **Panel Admin:** Controladores en [app/Http/Controllers/Admin](../../app/Http/Controllers/Admin), vistas en [resources/views/admin](../../resources/views/admin), JS modular en `resources/js` (subcarpetas `dashboard`, `modals`, `utils`).
+**Backend:** Laravel 12, PHP 8.2, MySQL  
+**Frontend:** Blade + Livewire 3 + TailwindCSS 3 + Flowbite  
+**Auth:** Laravel Jetstream (perfiles + 2FA)  
+**Tablas:** DataTables con filtros personalizados y responsive  
+**Export:** Maatwebsite Excel + Spatie Laravel PDF  
+**Permisos:** Spatie Laravel Permission  
+**Iconos:** Solo Remix Icon (`ri-*`)  
+**Build:** Vite 7  
+**Dependencias JS:** Sortable.js (drag & drop), Puppeteer, Axios, Flowbite  
+**Color Picker:** Coloris (CDN)
 
-## Rutas y Backend
+## 🏗️ Arquitectura General
 
-- **Rutas Admin:** Definidas en [routes/admin.php](../../routes/admin.php), montadas bajo `/admin` con middlewares `web`, `auth`, `verified`. No añadir nuevos prefijos globales `->name('admin.')` fuera de este archivo.
-- **Nombres de rutas:** Se sigue el esquema `admin.entity.action`, p.ej. `admin.families.index`, `admin.products.export.excel`, `admin.profile.update`.
-- **Slugs y Route Model Binding:** Modelos como `Family` usan `generateUniqueSlug()` y `getRouteKeyName()` para trabajar con `slug` en URLs. Reutilizar este patrón al crear nuevos modelos con slugs.
-- **Scopes para tablas:** Usar scopes como `scopeForTable()` / `scopeForSelect()` para DataTables o selects reutilizables (ver [app/Models/Family.php](../../app/Models/Family.php)).
-- **Permisos:** Controladores Admin aplican middleware `can:*` en el constructor (ver [app/Http/Controllers/Admin/FamilyController.php](../../app/Http/Controllers/Admin/FamilyController.php)); al crear nuevos CRUD, seguir esta estructura.
+### Sistema de Catálogo Jerárquico
+```
+Familias → Categorías (anidables) → Productos → Variantes
+                                         ↓
+                               Options + Features
+```
 
-## Patrones de CRUD Admin
+**Familias** son los contenedores principales (ej: "Ropa", "Electrónica").  
+**Categorías** soportan anidación ilimitada con drag-&-drop para reordenar (ver `docs/category-hierarchy-manager.md`).  
+**Productos** tienen opciones configurables (talla, color) y características descriptivas.  
+**Variantes** son combinaciones de opciones con SKU, precio y stock independientes (ver `docs/product-variants-manager.md`).
 
-- **CRUD de referencia:** `FamilyController` es el patrón recomendado para listados, formulario create/edit, exportaciones y eliminación (incluida eliminación múltiple con validaciones de relaciones y auditoría).
-- **Exportaciones:** Métodos `exportExcel`, `exportPdf`, `exportCsv` usan `Maatwebsite\Excel` y `Spatie\LaravelPdf` más registros en `Audit`. Replicar este flujo en nuevos módulos.
-- **Toggle de estado rápido:** Endpoints tipo `updateStatus` devuelven JSON y usan `saveQuietly()` para evitar doble auditoría; ver `updateStatus` en `FamilyController` y docs en [docs/quick-status-toggle.md](../../docs/quick-status-toggle.md).
-- **Eliminación múltiple:** Usar `destroyMultiple` con validaciones, mensajes tipo `Session::flash('info', [...])` y auditoría; patrón documentado en [docs/multiple-delete-global.md](../../docs/multiple-delete-global.md).
-- **Respuestas JSON de detalle:** Métodos `show($slug)` en controladores como `FamilyController` devuelven JSON formateado para modales de detalle; seguir el mismo formato de campos y fechas.
+### Auditoría Automática
+Todos los modelos principales usan `App\Traits\Auditable` que registra:
+- `created_by`, `updated_by`, `deleted_by` (user_id)
+- Snapshots de valores antiguos/nuevos en tabla `audits`
+- IP y User-Agent del request
 
-## Frontend, Layouts y JS
+**No reimplementar auditoría manualmente.** Usar el trait. Ver patrón en `app/Models/Family.php` y docs en `docs/auditoria.md`.
 
-- **Layout Admin:** Usar el componente Blade `<x-admin-layout>` definido en [resources/views/layouts/admin.blade.php](../../resources/views/layouts/admin.blade.php) como base de nuevas pantallas admin.
-- **Alertas y toasts:** Preferir el componente `<x-alert>` (ver [docs/alert-component.md](../../docs/alert-component.md)) y los flashes tipo `Session::flash('toast', [...])` / `Session::flash('info', [...])` como en `FamilyController`.
-- **Iconos:** Solo Remix Icon (`ri-*`) en vistas Blade y JS.
-- **DataTables:** La configuración base (columnas, export, responsive, filtros) está en [resources/views/admin/families/index.blade.php](../../resources/views/admin/families/index.blade.php) y docs `docs/datatable-manager-usage.md`; reutilizar ese patrón al crear nuevas tablas.
-- **JS modular:** El punto de entrada es `resources/js/index.js`, que importa módulos de `dashboard`, `modals`, `utils`, etc. Cualquier nueva funcionalidad JS debe registrarse ahí.
+**Nota:** No todos los modelos usan Soft Deletes. Solo `Post` y `CompanySetting` implementan `SoftDeletes` actualmente. Verificar antes de asumir su presencia en nuevos modelos.
 
-## Exportación de Datos
+### Slugs y Route Model Binding
+Modelos con URLs amigables implementan:
+```php
+public function getRouteKeyName() { return 'slug'; }
 
-- **Excel/CSV:** Usar `maatwebsite/excel` con clases en [app/Exports](../../app/Exports) (`*ExcelExport`, `*CsvExport`).
-- **PDF:** Usar `spatie/laravel-pdf` con vistas en [resources/views/admin/export](../../resources/views/admin/export) para mantener un estilo consistente de reportes.
+public static function generateUniqueSlug($name, $id = null) {
+    // Auto-incremental: "nombre", "nombre-2", "nombre-3"...
+}
+```
+Reutilizar este patrón en nuevos modelos. Ver `Family::generateUniqueSlug()`.
 
-## Flujos de Desarrollo
+## 📁 Estructura de Directorios
 
-- **Setup rápido:** `composer setup` según [README.md](../../README.md) para instalación completa.
-- **Setup manual:** `composer install`, `npm install`, copiar `.env`, `php artisan key:generate`, `php artisan migrate --seed`, luego `npm run build`.
-- **Desarrollo local:** `composer dev` arranca servidor PHP, Vite, queue listener y logs (`pail`) en paralelo.
-- **Testing:** `composer test` o `php artisan test` para el suite de PHPUnit.
-- **Calidad:** `./vendor/bin/pint` para formateo y `php artisan pail` para logs en tiempo real.
+```
+app/
+  ├─ Http/Controllers/Admin/  # CRUD controllers para panel admin
+  │   ├─ FamilyController      # Patrón de referencia para nuevos CRUD
+  │   ├─ CategoryController    # Gestión de categorías jerárquicas
+  │   ├─ ProductController     # Gestión de productos con variantes
+  │   ├─ OptionController      # Options y Features de productos
+  │   ├─ UserController        # Gestión de usuarios
+  │   ├─ RoleController        # Roles y permisos
+  │   ├─ AuditController       # Historial de auditoría
+  │   └─ AccessLogController   # Logs de acceso
+  ├─ Models/                   # Eloquent models con traits y scopes
+  ├─ Exports/                  # Clases para Excel/CSV export
+  ├─ Traits/                   # Auditable, otros traits reutilizables
+  ├─ View/Components/          # Componentes Blade (Alert, etc.)
+  └─ Helpers/helpers.php       # Funciones globales (fecha_hoy, etc.)
+resources/
+  ├─ views/
+  │   ├─ admin/                # Vistas del panel de administración
+  │   ├─ layouts/              # admin.blade.php, app.blade.php, guest.blade.php
+  │   ├─ partials/
+  │   │   ├─ admin/            # navigation, sidebar-left, sidebar-right, etc.
+  │   │   └─ components/       # alert.blade.php
+  │   └─ components/           # Componentes Jetstream estándar
+  ├─ js/
+  │   ├─ index.js              # Entry point, importa todos los módulos
+  │   ├─ modules/              # Lógica de negocio (categorías, variantes)
+  │   ├─ utils/                # Utilidades reutilizables (DataTableManager)
+  │   └─ components/           # Alert, modal-confirm, etc.
+  └─ css/
+      ├─ app.css               # Tailwind base (legacy)
+      ├─ base.css              # Variables globales compartidas
+      ├─ admin.css             # Entry point panel admin
+      ├─ site.css              # Entry point sitio público
+      ├─ admin/                # CSS exclusivo del panel admin
+      │   ├─ layout.css
+      │   ├─ modules/          # dashboard, categories, roles, etc.
+      │   └─ components/       # table, form, validation, etc.
+      ├─ site/                 # CSS exclusivo del sitio público
+      │   ├─ layout.css
+      │   ├─ modules/          # home, products, cart, checkout
+      │   └─ components/       # navigation, product-card, filters
+      └─ shared/               # Componentes compartidos (alert, button)
+routes/
+  ├─ admin.php                 # Todas las rutas del panel admin (middlewares auth+verified)
+  ├─ web.php                   # Rutas públicas
+  └─ api.php
+docs/                          # Documentación técnica de módulos JS y patrones
+```
 
-## Helpers, Localización y Estilo
+## 🚀 Workflows de Desarrollo
 
-- **Helpers globales:** Ver [app/Helpers/helpers.php](../../app/Helpers/helpers.php); preferir helpers existentes (por ejemplo `fecha_hoy()`) antes de duplicar lógica.
-- **Idiomas:** Texto de interfaz en español usando [lang/es.json](../../lang/es.json) y `laravel-lang/common`; mantener consistencia en mensajes, títulos y validaciones.
+### Setup Inicial
+```bash
+composer setup    # Instala deps, genera .env, key, migra DB, build assets
+```
+Equivalente a: `composer install` + `npm install` + `cp .env.example .env` + `php artisan key:generate` + `php artisan migrate` + `npm run build`.
 
-## Anti-Patrones y Cambios Sensibles
+### Desarrollo Local
+```bash
+composer dev      # Corre en paralelo: server, queue, logs (pail), vite
+```
+Usa `concurrently` para ejecutar simultáneamente:
+- `php artisan serve` (puerto 8000)
+- `php artisan queue:listen` (jobs en background)
+- `php artisan pail` (logs en tiempo real)
+- `npm run dev` (Vite hot reload)
 
-- No introducir nuevas dependencias de Livewire, Vue, React ni Bootstrap; el front actual se basa en Blade + Tailwind + JS modular.
-- No usar iconos distintos a Remix Icon.
-- No modificar el sistema de autenticación ni `vite.config.js` sin ajustar en paralelo las importaciones en `resources/js/index.js` y revisar el flujo de build descrito en [README.md](../../README.md).
+### Testing y Calidad
+```bash
+composer test           # PHPUnit
+./vendor/bin/pint       # Laravel Pint para formateo PSR-12
+php artisan pail        # Logs en tiempo real con colores
+```
 
-## Referencias Rápidas
+## 🧩 Patrones de CRUD Admin
 
-- Modelo base y auditoría: [app/Models/Family.php](../../app/Models/Family.php)
-- CRUD de referencia: [app/Http/Controllers/Admin/FamilyController.php](../../app/Http/Controllers/Admin/FamilyController.php)
-- Vista index + DataTable: [resources/views/admin/families/index.blade.php](../../resources/views/admin/families/index.blade.php)
-- Rutas admin completas: [routes/admin.php](../../routes/admin.php)
-- Docs clave: [docs/multiple-delete-global.md](../../docs/multiple-delete-global.md), [docs/quick-status-toggle.md](../../docs/quick-status-toggle.md), [docs/datatable-manager-usage.md](../../docs/datatable-manager-usage.md), [docs/notifications-module.md](../../docs/notifications-module.md)
+### Controlador de Referencia
+**`FamilyController`** es el patrón canónico para nuevos CRUD. Incluye:
+
+1. **Permisos en constructor:**
+   ```php
+   $this->middleware('can:familias.index')->only(['index']);
+   $this->middleware('can:familias.create')->only(['create', 'store']);
+   $this->middleware('can:familias.edit')->only(['edit', 'update', 'updateStatus']);
+   $this->middleware('can:familias.delete')->only(['destroy', 'destroyMultiple']);
+   ```
+   **Convención de permisos:** `{entidad_plural}.{acción}` (ej: `familias.index`, `categorias.create`, `productos.edit`). Usar nombres en español para consistencia con el resto del proyecto.
+
+2. **Scopes para optimizar queries:**
+   ```php
+   Family::forTable()->get(); // Solo columnas necesarias para tabla
+   Family::forSelect()->get(); // Solo id + name para dropdowns
+   ```
+
+3. **Exportación con auditoría:**
+   Métodos `exportExcel`, `exportPdf`, `exportCsv` registran el evento de exportación en `audits` con IDs exportados, filename e IP.
+
+4. **Toggle de estado instantáneo:**
+   ```php
+   public function updateStatus(Request $request, Family $family) {
+       $family->status = $request->status;
+       $family->saveQuietly(); // Sin emitir evento de auditoría (ya se hizo)
+       return response()->json(['success' => true, 'status' => $family->status]);
+   }
+   ```
+   Ver docs en `docs/quick-status-toggle.md` para integración frontend.
+
+5. **Eliminación múltiple:**
+   ```php
+   public function destroyMultiple(Request $request) {
+       // Validar IDs, verificar relaciones, crear audit, eliminar
+       Session::flash('info', [
+           'type' => 'danger',
+           'header' => 'Eliminación completada',
+           'message' => "Se eliminaron $deletedCount registros.",
+           'items' => ['Item 1', 'Item 2'] // Opcional
+       ]);
+   }
+   ```
+   Ver patrón completo en `docs/multiple-delete-global.md`.
+
+### Rutas Admin
+Definidas en `routes/admin.php` con esquema `admin.entity.action`:
+```php
+Route::get('/families', [FamilyController::class, 'index'])->name('admin.families.index');
+Route::post('/families/export/excel', [FamilyController::class, 'exportExcel'])->name('admin.families.export.excel');
+```
+**No añadir prefijos `->name('admin.')` fuera de este archivo.**
+
+**Middlewares:** Todas las rutas admin están protegidas automáticamente por `['web', 'auth:sanctum', config('jetstream.auth_session'), 'verified']` y tienen prefijo `/admin` (configurado en `bootstrap/app.php`). Los permisos granulares se controlan en cada controlador con:
+```php
+$this->middleware('can:familias.index')->only(['index']);
+$this->middleware('can:familias.create')->only(['create', 'store']);
+```
+
+### Modelos con Auditoría
+```php
+use App\Traits\Auditable;
+
+class Family extends Model {
+    use HasFactory, Auditable;
+    
+    protected $fillable = ['name', 'slug', 'description', 'status', 'created_by', 'updated_by', 'deleted_by'];
+    
+    public function scopeForTable($query) { /* optimizar columnas */ }
+    public function scopeForSelect($query) { /* solo id + name */ }
+    public function creator() { return $this->belongsTo(User::class, 'created_by'); }
+}
+```
+
+**Nota:** Solo agregar `SoftDeletes` si el modelo lo requiere explícitamente (como `Post` o `CompanySetting`). No todos los modelos lo necesitan.
+
+## 🎨 Frontend y Componentes
+
+### Layout Base
+Usar `<x-admin-layout>` como base (definido en `resources/views/layouts/admin.blade.php`):
+```blade
+<x-admin-layout :showMobileFab="true">
+    <x-slot name="title">
+        <div class="page-icon card-success"><i class="ri-apps-line"></i></div>
+        Título de la Página
+    </x-slot>
+    <x-slot name="action">
+        <a href="..." class="boton boton-primary">
+            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-text">Crear</span>
+        </a>
+    </x-slot>
+    <!-- Contenido -->
+</x-admin-layout>
+```
+
+**Carga de Assets:** El layout admin usa directivas `@vite` para cargar:
+```blade
+@vite(['resources/css/base.css', 'resources/css/admin.css', 'resources/js/app.js'])
+```
+
+El sitio público usa su propio entry point:
+```blade
+@vite(['resources/css/base.css', 'resources/css/site.css', 'resources/js/app.js'])
+```
+
+**Estructura CSS:** Separación completa entre admin y sitio público (ver `docs/css-structure.md`):
+- `admin.css` → Panel de administración (importa `/admin/modules/` y `/admin/components/`)
+- `site.css` → Sitio público (importa `/site/modules/` y `/site/components/`)
+- `shared/` → Componentes compartidos (alert, button)
+
+**No modificar esta estructura sin validar todos los layouts.**
+
+### Alertas Contextuales
+Usar `<x-alert>` para banners informativos (ver `docs/alert-component.md`):
+```blade
+<x-alert type="info" title="Instrucciones:" :items="[
+    'Los campos con asterisco son obligatorios',
+    'Guarda antes de continuar'
+]" />
+
+<x-alert type="warning" title="Advertencia">
+    Esta acción <strong>no se puede deshacer</strong>.
+</x-alert>
+```
+
+Componente definido en `app/View/Components/Alert.php` con vista en `resources/views/partials/components/alert.blade.php`.
+
+### DataTables
+Seguir estructura en `resources/views/admin/families/index.blade.php`:
+- Clases CSS: `tabla-general display`
+- Columnas con clases: `column-id-th`, `column-name-th`, `column-status-th`, `column-actions-th`
+- Filas con `data-id` y `data-name` para JS
+- Usar `DataTableManager` (ver `docs/datatable-manager-usage.md`) para lógica reutilizable
+
+### JavaScript Modular
+**Entry point:** `resources/js/index.js`
+
+Exportar módulos a `window` para uso global:
+```js
+import { initImageUpload } from './utils/image-upload-handler.js';
+window.initImageUpload = initImageUpload;
+```
+**Nota CSS:** `app.css` importa automáticamente `main.css` mediante `@import "./main.css";`, que a su vez importa todos los módulos CSS del dashboard. No es necesario importar `main.css` manualmente en otros archivos CSS.
+**Módulos clave:**
+- `utils/datatable-manager.js` - Configuración unificada de DataTables con filtros, export, selección múltiple
+- `modals/modal-confirm.js` - Confirmaciones de eliminación (individual y múltiple)
+- `utils/gallery-manager.js` - Drag-&-drop de imágenes con preview
+- `modules/product-variants-manager.js` - Generador de variantes de productos
+- `utils/form-validator.js` - Validación en tiempo real con indicadores visuales
+- `utils/connection-status.js` - Barra de estado de conexión
+- `utils/submit-button-loader.js` - Loaders en botones de envío
+
+Al añadir nueva funcionalidad, crear el módulo en `resources/js/modules/` o `resources/js/utils/` e importarlo en `index.js`.
+
+## 📊 Exportación de Datos
+
+### Excel/CSV
+Usar `Maatwebsite\Excel`:
+```php
+// app/Exports/FamiliesExcelExport.php
+class FamiliesExcelExport implements FromCollection, WithHeadings, WithStyles {
+    public function collection() { /* datos */ }
+    public function headings(): array { /* encabezados */ }
+    public function styles(Worksheet $sheet) { /* estilos */ }
+}
+```
+Descargar: `Excel::download(new FamiliesExcelExport($ids), 'filename.xlsx')`.
+
+### PDF
+Usar `Spatie\LaravelPdf`:
+```php
+$pdf = Pdf::view('admin.export.families-pdf', ['families' => $families])
+    ->format('a4')
+    ->name('familias.pdf');
+return $pdf->download();
+```
+Vistas en `resources/views/admin/export/` con estilos consistentes.
+
+## 🌍 Localización y Helpers
+
+**Idioma:** Todo el texto UI en español (`lang/es.json` + `laravel-lang/common`).
+
+**Helpers globales** en `app/Helpers/helpers.php` (autoloaded en `composer.json`):
+- `fecha_hoy()` - Fecha actual formateada en español (ej: "Martes, 28 de enero de 2026")
+- `company_setting($key, $default)` - Obtiene configuración de la empresa desde caché (30 min)
+
+Verificar archivo antes de duplicar lógica existente.
+
+## ⚠️ Anti-Patrones
+
+**No hacer:**
+- ❌ Añadir dependencias de Vue, React, Bootstrap (proyecto usa Blade + Tailwind + JS vanilla)
+- ❌ Usar iconos que no sean Remix Icon
+- ❌ Reimplementar auditoría manualmente (usar `Auditable` trait)
+- ❌ Modificar `vite.config.js` sin revisar impacto en build (actualmente incluye `admin.css` y `site.css` como entry points separados)
+- ❌ Mezclar CSS del admin con el sitio público (usar estructura `/admin/` y `/site/` respectivamente)
+- ❌ Crear rutas admin fuera de `routes/admin.php`
+- ❌ Usar `saveQuietly()` sin auditoría previa (solo para updates rápidos como status toggle)
+- ❌ Asumir que todos los modelos tienen Soft Deletes (solo `Post` y `CompanySetting` lo implementan actualmente)
+
+## 📚 Documentación Clave
+
+**Modelos y Backend:**
+- `app/Models/Family.php` - Modelo de referencia con auditoría, slugs y scopes
+- `app/Http/Controllers/Admin/FamilyController.php` - Controlador CRUD completo
+- `app/Traits/Auditable.php` - Trait de auditoría automática
+
+**Frontend:**
+- `resources/views/admin/families/index.blade.php` - Vista index con DataTable completo
+- `resources/js/index.js` - Entry point JS
+
+**Documentos técnicos:**
+- `docs/css-structure.md` - Estructura CSS completa (admin vs sitio público)
+- `docs/multiple-delete-global.md` - Eliminación múltiple con validaciones
+- `docs/quick-status-toggle.md` - Toggle de estado sin modales
+- `docs/datatable-manager-usage.md` - Configuración de DataTables
+- `docs/product-variants-manager.md` - Generador de variantes
+- `docs/alert-component.md` - Componente de alertas contextuales
+- `docs/auditoria.md` - Sistema de auditoría completo

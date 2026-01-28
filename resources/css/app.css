@@ -3,6 +3,7 @@
 
 /* === Librerías y componentes personalizados === */
 @import "./main.css";
+@import "./admin/layout.css";
 
 /* === Tailwind === */
 @tailwind base;

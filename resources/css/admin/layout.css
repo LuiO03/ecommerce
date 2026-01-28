@@ -1,0 +1,26 @@
+/* ============================================
+   LAYOUT DEL PANEL ADMIN
+   Importa layout-shell y layout-admin originales
+   ============================================ */
+
+@import "./components/layout-shell.css";
+@import "./components/layout-admin.css";
+
+@import "./modules/dashboard.css";
+@import "./modules/categories.css";
+@import "./modules/category-hierarchy.css";
+@import "./modules/roles.css";
+@import "./modules/profile.css";
+@import "./modules/company-settings.css";
+@import "./modules/options.css";
+@import "./modules/ckeditor.css";
+@import "./modules/products-variants.css";
+@import "./modules/error-403.css";
+
+@import "./components/breadcrumb.css";
+@import "./components/table.css";
+@import "./components/datatable-highlight.css";
+@import "./components/form.css";
+@import "./components/image-media.css";
+@import "./components/connection-status.css";
+@import "./components/mobile-dropdown.css";

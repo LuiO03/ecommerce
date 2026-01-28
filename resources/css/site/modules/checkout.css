@@ -1,0 +1,63 @@
+/* ============================================
+   CHECKOUT - Proceso de compra
+   ============================================ */
+
+.checkout-container {
+    @apply max-w-6xl mx-auto;
+}
+
+/* Steps indicator */
+.checkout-steps {
+    @apply flex justify-between mb-8;
+}
+
+.checkout-step {
+    @apply flex-1 text-center relative;
+}
+
+.checkout-step-number {
+    @apply w-10 h-10 mx-auto rounded-full border-2 flex items-center justify-center;
+    @apply bg-white border-gray-300 text-gray-500;
+}
+
+.checkout-step.active .checkout-step-number {
+    @apply border-purple-600 bg-purple-600 text-white;
+}
+
+.checkout-step.completed .checkout-step-number {
+    @apply border-green-500 bg-green-500 text-white;
+}
+
+.checkout-step-label {
+    @apply text-sm mt-2 text-gray-600;
+}
+
+/* Formulario de checkout */
+.checkout-form {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
+}
+
+.checkout-main {
+    @apply lg:col-span-2 space-y-6;
+}
+
+.checkout-section {
+    @apply bg-white rounded-lg shadow-md p-6;
+}
+
+.checkout-section-title {
+    @apply text-xl font-bold text-gray-800 mb-4;
+}
+
+/* Métodos de pago */
+.payment-method {
+    @apply border-2 rounded-lg p-4 cursor-pointer transition-colors;
+}
+
+.payment-method:hover {
+    @apply border-purple-600;
+}
+
+.payment-method.selected {
+    @apply border-purple-600 bg-purple-50;
+}

@@ -25,12 +25,12 @@
             $unreadCount = auth()->user()->unreadNotifications()->count();
         @endphp
         <button id="notificationSidebarToggle" class="topbar-icon-btn" aria-label="Ver notificaciones">
-            <i class="ri-notification-3-line"></i>
+            <i class="ri-notification-2-line"></i>
             @if ($unreadCount > 0)
                 <span class="notification-badge">{{ $unreadCount }}</span>
             @endif
         </button>
-        <div class="flex items-center ms-3">
+        <div class="flex items-center ms-2">
             <a href="{{ route('admin.profile.index') }}" title="Perfil de usuario">
                 @php
                     $user = auth()->user();

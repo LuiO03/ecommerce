@@ -26,7 +26,7 @@
     <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
 
     <!-- CSS base del dashboard -->
-    @vite(['resources/css/main.css'])
+    @vite(['resources/css/admin/layout.css'])
     <!-- CSS de Tailwind y JS global -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
     @stack('styles')

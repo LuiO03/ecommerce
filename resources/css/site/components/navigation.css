@@ -1,0 +1,62 @@
+/* ============================================
+   NAVIGATION - Navbar del sitio público
+   ============================================ */
+
+/* Header principal */
+.site-header {
+    @apply bg-purple-600 w-full shadow-md;
+}
+
+/* Logo del sitio */
+.site-logo {
+    @apply flex flex-col text-white text-right;
+}
+
+.site-logo-title {
+    @apply font-semibold text-xl md:text-2xl leading-4 md:leading-6;
+}
+
+.site-logo-subtitle {
+    @apply text-sm;
+}
+
+/* Iconos del navbar */
+.nav-icon {
+    @apply text-white text-xl md:text-2xl transition-colors hover:text-purple-200;
+}
+
+/* Menú lateral (sidebar) */
+.nav-sidebar {
+    @apply fixed top-0 left-0 z-20 w-80 h-screen bg-white shadow-xl;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.nav-sidebar.active {
+    transform: translateX(0);
+}
+
+.nav-sidebar-header {
+    @apply px-4 py-3 bg-purple-700 text-white font-semibold;
+}
+
+/* Overlay del menú */
+.nav-overlay {
+    @apply fixed inset-0 z-10 bg-black transition-opacity;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nav-overlay.active {
+    opacity: 0.5;
+    pointer-events: auto;
+}
+
+/* Botón menú hamburguesa */
+.menu-toggle {
+    @apply text-white text-xl md:text-2xl cursor-pointer transition-transform;
+}
+
+.menu-toggle:hover {
+    transform: scale(1.1);
+}

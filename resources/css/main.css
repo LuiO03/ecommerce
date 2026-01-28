@@ -1,34 +1,16 @@
-@import "./components/layout-shell.css";
-@import "./layout-admin.css";
 
 
-@import "./modules/dashboard.css";
-@import "./modules/categories.css";
-@import "./modules/category-hierarchy.css";
-@import "./modules/roles.css";
-@import "./modules/profile.css";
-@import "./modules/company-settings.css";
-@import "./modules/options.css";
-@import "./modules/ckeditor.css";
-@import "./modules/products-variants.css";
-@import "./modules/error-403.css";
 
 
-@import "./components/breadcrumb.css";
-@import "./components/table.css";
-@import "./components/datatable-highlight.css";
-@import "./components/form.css";
-@import "./components/image-media.css";
+
 @import "./components/validation.css";
-@import "./components/alert.css";
-@import "./components/button.css";
 @import "./components/modal-confirm.css";
 @import "./components/modal-info.css";
 @import "./components/modal-toast.css";
 @import "./components/modal-show.css";
-@import "./components/connection-status.css";
 
-@import "./components/mobile-dropdown.css";
+@import "./shared/alert.css";
+@import "./shared/button.css";
 
 @import "./visuals/material-design.css";
 @import "./visuals/background-design.css";
