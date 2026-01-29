@@ -18,8 +18,12 @@
     <!-- Remix Icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
 
-    <!-- CSS -->
-    @vite(['resources/css/app.css', 'resources/css/admin/components/form.css', 'resources/css/admin/components/auth.css', 'resources/css/components/validation.css'])
+    <!-- CSS base del dashboard -->
+    @vite(['resources/css/admin/layout.css'])
+    <!-- CSS de Tailwind y JS global -->
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
+    @stack('styles')
+    @livewireStyles
 
 </head>
 
@@ -117,9 +121,6 @@
             </div>
         </div>
     </div>
-
-    <!-- JavaScript al final para asegurar que todo se cargue primero -->
-    @vite(['resources/js/app.js'])
 
     <script>
         console.log('=== SCRIPT INLINE EJECUTÁNDOSE ===');
