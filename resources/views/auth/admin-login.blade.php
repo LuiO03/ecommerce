@@ -39,12 +39,16 @@
             <div class="auth-body">
                 <!-- Errores de validación -->
                 @if ($errors->any())
-                    <div class="auth-errors">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                    <div class="form-error-banner">
+                        <i class="ri-error-warning-line form-error-icon"></i>
+                        <div>
+                            <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 @endif
                 <!-- Mensaje de estado -->
@@ -54,7 +58,7 @@
                     </div>
                 @endsession
 
-                <form method="POST" action="{{ route('login') }}" id="loginForm" class="form-column mt-2">
+                <form method="POST" action="{{ route('login') }}" id="loginForm">
                     @csrf
 
                     <div class="input-group">
@@ -63,10 +67,9 @@
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-mail-line input-icon"></i>
-                            <input type="email" id="email" name="email" value="70098517@institutocajas.info" class="auth-input input-form"
-                                placeholder="Ingresa tu correo electrónico" value="" required autofocus
-                                autocomplete="off" data-validate="required|email">
-                            <i class="ri-check-line validation-check-icon"></i>
+                            <input type="email" id="email" name="email" class="input-form"
+                                placeholder="Ingresa tu correo electrónico" value="70098517@institutocajas.info"
+                                required autofocus autocomplete="off" data-validate="required|email">
                         </div>
                     </div>
                     <div class="input-group">
@@ -75,10 +78,9 @@
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-lock-password-line input-icon"></i>
-                            <input type="password" id="password" name="password" class="auth-input input-form"
-                                placeholder="Ingresa tu contraseña" value="luis988434679kira" required autocomplete="off"
-                                data-validate="required|min:6" >
-                            <i class="ri-check-line validation-check-icon"></i>
+                            <input type="password" id="password" name="password" class="input-form"
+                                placeholder="Ingresa tu contraseña" value="luis988434679kira" required
+                                autocomplete="off" data-validate="required|min:6">
                         </div>
                     </div>
 
@@ -98,7 +100,7 @@
                         @endif
                     </div>
 
-                    <div class="form-footer">
+                    <div class="form-footer mt-4">
                         <a href="{{ url()->previous() }}" class="boton-form boton-volver">
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
@@ -117,28 +119,62 @@
     </div>
 
     <!-- JavaScript al final para asegurar que todo se cargue primero -->
-    @vite(['resources/js/app.js', 'resources/js/index.js'])
+    @vite(['resources/js/app.js'])
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded');
-            console.log('initFormValidator available?', typeof initFormValidator);
-            console.log('initSubmitLoader available?', typeof initSubmitLoader);
+        console.log('=== SCRIPT INLINE EJECUTÁNDOSE ===');
 
-            // Inicializar validación de formulario
-            const submitLoader = initSubmitLoader({
-                formId: 'loginForm',
-                buttonId: 'loginBtn',
-                loadingText: 'Iniciando sesión...'
-            });
+        // Esperar a que el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeLogin);
+        } else {
+            initializeLogin();
+        }
 
-            // Inicializar submit loader
-            const submitLoader = initSubmitLoader({
-                formId: 'loginForm',
-                buttonId: 'loginBtn',
-                loadingText: 'Iniciando sesión...'
-            });
-        });
+        function initializeLogin() {
+            console.log('=== INICIALIZANDO LOGIN ===');
+            console.log('window object:', window);
+            console.log('initFormValidator:', window.initFormValidator);
+            console.log('initSubmitLoader:', window.initSubmitLoader);
+            console.log('typeof initFormValidator:', typeof window.initFormValidator);
+            console.log('typeof initSubmitLoader:', typeof window.initSubmitLoader);
+
+            // Verificar si las funciones existen
+            if (typeof window.initFormValidator !== 'function') {
+                console.error('❌ initFormValidator NO está disponible');
+                return;
+            }
+
+            if (typeof window.initSubmitLoader !== 'function') {
+                console.error('❌ initSubmitLoader NO está disponible');
+                return;
+            }
+
+            console.log('✅ Ambas funciones disponibles, inicializando...');
+
+            try {
+                // 1. Inicializar validación de formulario
+                const formValidator = window.initFormValidator('#loginForm', {
+                    validateOnBlur: true,
+                    validateOnInput: false,
+                    scrollToFirstError: true,
+                    showSuccessIndicators: true
+                });
+                console.log('✅ FormValidator inicializado:', formValidator);
+
+                // 2. Inicializar submit loader
+                const submitLoader = window.initSubmitLoader({
+                    formId: 'loginForm',
+                    buttonId: 'loginBtn',
+                    loadingText: 'Iniciando sesión...'
+                });
+                console.log('✅ SubmitLoader inicializado:', submitLoader);
+
+                console.log('=== INICIALIZACIÓN COMPLETA ===');
+            } catch (error) {
+                console.error('❌ Error durante inicialización:', error);
+            }
+        }
     </script>
 </body>
 
