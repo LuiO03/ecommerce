@@ -13,15 +13,15 @@
         <!-- Remix Icon -->
         <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
         <!-- Scripts -->
+        @vite(['resources/css/site/components/layout-site.css'])
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @vite(['resources/css/main.css'])
         <!-- Styles -->
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen bg-gray-800">
+        <div class="min-h-screen">
             {{-- @livewire('navigation-menu') --}}
             @livewire('navigation')
             <!-- Page Heading -->

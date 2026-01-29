@@ -119,14 +119,23 @@ Usa `concurrently` para ejecutar simultáneamente:
 - `php artisan serve` (puerto 8000)
 - `php artisan queue:listen` (jobs en background)
 - `php artisan pail` (logs en tiempo real)
-- `npm run dev` (Vite hot reload)
+- `npm run dev` (Vite hot reload con recarga automática)
 
 ### Testing y Calidad
 ```bash
 composer test           # PHPUnit
 ./vendor/bin/pint       # Laravel Pint para formateo PSR-12
 php artisan pail        # Logs en tiempo real con colores
+npm run build           # Compilación para producción
 ```
+
+### Configuración Vite
+**Entry point actual:** `resources/css/app.css` + `resources/js/app.js`
+- `app.css` importa `base.css` → `main.css` → estilos Tailwind
+- Archivos específicos (`admin/layout.css`, `site.css`) se cargan mediante `@vite()` en las respectivas vistas
+- **No agregar nuevos entry points sin revisar impacto en vistas y builds**
+
+**Limitación conocida:** Si modificas `vite.config.js` para añadir entry points separados (`admin.css`, `site.css`), también debes actualizar los `@vite()` en todas las vistas correspondientes.
 
 ## 🧩 Patrones de CRUD Admin
 
@@ -226,22 +235,20 @@ Usar `<x-admin-layout>` como base (definido en `resources/views/layouts/admin.bl
 </x-admin-layout>
 ```
 
-**Carga de Assets:** El layout admin usa directivas `@vite` para cargar:
-```blade
-@vite(['resources/css/base.css', 'resources/css/admin.css', 'resources/js/app.js'])
-```
+**Carga de Assets:**
+- Layout principal (`app.blade.php`): `@vite(['resources/css/app.css', 'resources/js/app.js'])` + `@vite(['resources/css/site/layout-site.css'])`
+- Admin: `@vite(['resources/css/admin/layout.css'])` (cuando sea necesario separar)
+- Login Admin: `@vite(['resources/css/admin/components/auth.css'])` - CSS puro sin Tailwind
 
-El sitio público usa su propio entry point:
-```blade
-@vite(['resources/css/base.css', 'resources/css/site.css', 'resources/js/app.js'])
-```
+**Estructura CSS:** Separación completa entre admin y sitio público:
+- `admin/layout.css` → Panel de administración (importa recursivamente `/admin/modules/`, `/admin/components/`)
+- `admin/components/auth.css` → Estilos del login administrativo (CSS puro, sin Tailwind)
+- `site/layout-site.css` → Estilos del sitio sin Tailwind, CSS puro
+- `site/layout.css` + `site/modules/` + `site/components/` → Componentes adicionales del sitio
+- `app.css` → Entry point que importa `base.css` + `main.css` + estilos Tailwind
+- `shared/` → Componentes compartidos
 
-**Estructura CSS:** Separación completa entre admin y sitio público (ver `docs/css-structure.md`):
-- `admin.css` → Panel de administración (importa `/admin/modules/` y `/admin/components/`)
-- `site.css` → Sitio público (importa `/site/modules/` y `/site/components/`)
-- `shared/` → Componentes compartidos (alert, button)
-
-**No modificar esta estructura sin validar todos los layouts.**
+**Nota:** El `vite.config.js` actual usa un único entry point (`app.css` + `app.js`). Los CSS específicos (`admin/layout.css`, `site/layout-site.css`, `admin/components/auth.css`) se cargan mediante `@vite()` directamente en el layout.
 
 ### Alertas Contextuales
 Usar `<x-alert>` para banners informativos (ver `docs/alert-component.md`):
@@ -266,14 +273,14 @@ Seguir estructura en `resources/views/admin/families/index.blade.php`:
 - Usar `DataTableManager` (ver `docs/datatable-manager-usage.md`) para lógica reutilizable
 
 ### JavaScript Modular
-**Entry point:** `resources/js/index.js`
+**Entry point:** `resources/js/app.js` importa `./bootstrap` (Axios, CSRF) + Flowbite
 
-Exportar módulos a `window` para uso global:
+**Módulos adicionales:** Exportar a `window` para uso global en vistas:
 ```js
 import { initImageUpload } from './utils/image-upload-handler.js';
 window.initImageUpload = initImageUpload;
 ```
-**Nota CSS:** `app.css` importa automáticamente `main.css` mediante `@import "./main.css";`, que a su vez importa todos los módulos CSS del dashboard. No es necesario importar `main.css` manualmente en otros archivos CSS.
+
 **Módulos clave:**
 - `utils/datatable-manager.js` - Configuración unificada de DataTables con filtros, export, selección múltiple
 - `modals/modal-confirm.js` - Confirmaciones de eliminación (individual y múltiple)
@@ -283,7 +290,9 @@ window.initImageUpload = initImageUpload;
 - `utils/connection-status.js` - Barra de estado de conexión
 - `utils/submit-button-loader.js` - Loaders en botones de envío
 
-Al añadir nueva funcionalidad, crear el módulo en `resources/js/modules/` o `resources/js/utils/` e importarlo en `index.js`.
+Al añadir nueva funcionalidad, crear el módulo en `resources/js/modules/` o `resources/js/utils/` e **importarlo en `app.js` (no en `index.js`)** para que esté disponible globalmente.
+
+**Nota CSS:** `app.css` importa automáticamente `main.css` mediante `@import "./main.css";`, que a su vez importa todos los módulos CSS del dashboard. No es necesario importar `main.css` manualmente en otros archivos CSS.
 
 ## 📊 Exportación de Datos
 
@@ -325,11 +334,12 @@ Verificar archivo antes de duplicar lógica existente.
 - ❌ Añadir dependencias de Vue, React, Bootstrap (proyecto usa Blade + Tailwind + JS vanilla)
 - ❌ Usar iconos que no sean Remix Icon
 - ❌ Reimplementar auditoría manualmente (usar `Auditable` trait)
-- ❌ Modificar `vite.config.js` sin revisar impacto en build (actualmente incluye `admin.css` y `site.css` como entry points separados)
-- ❌ Mezclar CSS del admin con el sitio público (usar estructura `/admin/` y `/site/` respectivamente)
+- ❌ Modificar `vite.config.js` sin revisar impacto en build (actualmente usa entry point único: `app.css` + `app.js`)
+- ❌ Mezclar CSS del admin con el sitio público (usar estructura `/admin/` y `/site/` respectivamente, cargar via `@vite()` en vistas)
 - ❌ Crear rutas admin fuera de `routes/admin.php`
 - ❌ Usar `saveQuietly()` sin auditoría previa (solo para updates rápidos como status toggle)
 - ❌ Asumir que todos los modelos tienen Soft Deletes (solo `Post` y `CompanySetting` lo implementan actualmente)
+- ❌ Importar módulos JS nuevos solo en `index.js` sin usarlos en `app.js` (hacer ambos para disponibilidad global)
 
 ## 📚 Documentación Clave
 
@@ -340,7 +350,7 @@ Verificar archivo antes de duplicar lógica existente.
 
 **Frontend:**
 - `resources/views/admin/families/index.blade.php` - Vista index con DataTable completo
-- `resources/js/index.js` - Entry point JS
+- `resources/js/app.js` - Entry point JS (importa bootstrap + Flowbite)
 
 **Documentos técnicos:**
 - `docs/css-structure.md` - Estructura CSS completa (admin vs sitio público)

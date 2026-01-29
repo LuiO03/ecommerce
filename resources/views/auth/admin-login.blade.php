@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>Login - Panel Administrativo | {{ config('app.name') }}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Remix Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
+
+    <!-- CSS -->
+    @vite(['resources/css/app.css', 'resources/css/admin/components/form.css', 'resources/css/admin/components/auth.css', 'resources/css/components/validation.css'])
+
+</head>
+
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <!-- Header con logo -->
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="ri-shield-user-line"></i>
+                </div>
+                <h1 class="auth-title">Panel Administrativo</h1>
+                <p class="auth-subtitle">Ingresa tus credenciales para acceder</p>
+            </div>
+
+            <!-- Body del formulario -->
+            <div class="auth-body">
+                <!-- Errores de validación -->
+                @if ($errors->any())
+                    <div class="auth-errors">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <!-- Mensaje de estado -->
+                @session('status')
+                    <div class="auth-status">
+                        {{ $value }}
+                    </div>
+                @endsession
+
+                <form method="POST" action="{{ route('login') }}" id="loginForm" class="form-column mt-2">
+                    @csrf
+
+                    <div class="input-group">
+                        <label for="email" class="label-form">
+                            Correo electrónico
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-mail-line input-icon"></i>
+                            <input type="email" id="email" name="email" value="70098517@institutocajas.info" class="auth-input input-form"
+                                placeholder="Ingresa tu correo electrónico" value="" required autofocus
+                                autocomplete="off" data-validate="required|email">
+                            <i class="ri-check-line validation-check-icon"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="password" class="label-form">
+                            Contraseña
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-lock-password-line input-icon"></i>
+                            <input type="password" id="password" name="password" class="auth-input input-form"
+                                placeholder="Ingresa tu contraseña" value="luis988434679kira" required autocomplete="off"
+                                data-validate="required|min:6" >
+                            <i class="ri-check-line validation-check-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Remember me -->
+                    <div class="auth-options">
+                        <div class="auth-remember">
+                            <input type="checkbox" id="remember_me" name="remember" class="auth-checkbox">
+                            <label for="remember_me" class="auth-checkbox-label">Recordarme</label>
+                        </div>
+                        <!-- Footer con link de recuperación -->
+                        @if (Route::has('password.request'))
+                            <div class="auth-recovery">
+                                <a href="{{ route('password.request') }}" class="auth-link">
+                                    ¿Olvidaste tu contraseña?
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="form-footer">
+                        <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                            <span class="boton-form-icon">
+                                <i class="ri-arrow-left-circle-fill"></i>
+                            </span>
+                            <span class="boton-form-text">Atras</span>
+                        </a>
+                        <!-- Botón de login -->
+                        <button class="boton-form boton-success" type="submit" id="loginBtn">
+                            <span class="boton-form-icon"> <i class="ri-login-box-line"></i> </span>
+                            <span class="boton-form-text">Iniciar Sesión</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript al final para asegurar que todo se cargue primero -->
+    @vite(['resources/js/app.js', 'resources/js/index.js'])
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            console.log('initFormValidator available?', typeof initFormValidator);
+            console.log('initSubmitLoader available?', typeof initSubmitLoader);
+
+            // Inicializar validación de formulario
+            const submitLoader = initSubmitLoader({
+                formId: 'loginForm',
+                buttonId: 'loginBtn',
+                loadingText: 'Iniciando sesión...'
+            });
+
+            // Inicializar submit loader
+            const submitLoader = initSubmitLoader({
+                formId: 'loginForm',
+                buttonId: 'loginBtn',
+                loadingText: 'Iniciando sesión...'
+            });
+        });
+    </script>
+</body>
+
+</html>

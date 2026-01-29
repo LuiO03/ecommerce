@@ -35,6 +35,16 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
+        // Usar admin-login como la única vista de login
+        Fortify::loginView(function () {
+            return view('auth.admin-login');
+        });
+
+        // Redirigir a /admin después del login
+        Fortify::redirects('login', function ($request) {
+            return '/admin';
+        });
+
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
