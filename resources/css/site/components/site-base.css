@@ -9,6 +9,13 @@
     --site-max-width: 1280px;
     --site-spacing: 1rem;
     --color-site-nav: #51009D;
+    --site-sidebar-width: 300px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --site-sidebar-width: 240px;
+    }
 }
 
 /* Contenedor principal */

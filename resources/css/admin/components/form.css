@@ -93,13 +93,14 @@
     }
 }
 
-
+/* === Form Rows con llenado automático === */
 .form-row-fill {
     gap: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
+/* === Form Rows con ajuste automático === */
 .form-row-fit{
     gap: 20px;
     display: grid;

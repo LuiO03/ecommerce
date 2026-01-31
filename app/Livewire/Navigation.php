@@ -23,6 +23,12 @@ class Navigation extends Component
             },
             'categories.children' => function ($query) {
                 $query->orderBy('name');
+            },
+            'categories.children.children' => function ($query) {
+                $query->orderBy('name');
+            },
+            'categories.children.children.children' => function ($query) {
+                $query->orderBy('name');
             }
         ])
         ->orderBy('name')

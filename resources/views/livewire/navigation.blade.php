@@ -3,7 +3,7 @@
         <div class="site-header-container">
             <div class="site-header-top">
                 <!-- Menú hamburguesa -->
-                <button id="siteMenuToggle" @click="$dispatch('toggle-sidebar')" class="menu-toggle nav-icon" aria-label="Abrir menú">
+                <button id="siteMenuToggle" class="menu-toggle nav-icon" aria-label="Abrir menú">
                     <i class="ri-menu-fill"></i>
                 </button>
 
@@ -16,13 +16,8 @@
                 <!-- Buscador desktop -->
                 <div class="search-desktop">
                     <form class="site-search" role="search" aria-label="Buscar productos">
-                        <input
-                            type="search"
-                            name="q"
-                            class="site-search-input"
-                            placeholder="Buscar productos, marcas o categorías..."
-                            autocomplete="off"
-                        />
+                        <input type="search" name="q" class="site-search-input"
+                            placeholder="Buscar productos, marcas o categorías..." autocomplete="off" />
                         <button type="submit" class="site-search-btn" aria-label="Buscar">
                             <i class="ri-search-2-line"></i>
                             <span>Buscar</span>
@@ -49,13 +44,8 @@
             <!-- Buscador mobile -->
             <div class="search-mobile">
                 <form class="site-search site-search-mobile" role="search" aria-label="Buscar productos">
-                    <input
-                        type="search"
-                        name="q"
-                        class="site-search-input"
-                        placeholder="Buscar en la tienda..."
-                        autocomplete="off"
-                    />
+                    <input type="search" name="q" class="site-search-input" placeholder="Buscar en la tienda..."
+                        autocomplete="off" />
                     <button type="submit" class="site-search-btn" aria-label="Buscar">
                         <i class="ri-search-2-line"></i>
                         <span>Buscar</span>
@@ -73,7 +63,7 @@
         <!-- Header del sidebar -->
         <div class="site-sidebar-header">
             <span>Menú</span>
-            <button id="siteMenuClose" @click="$dispatch('toggle-sidebar')" aria-label="Cerrar menú">
+            <button id="siteMenuClose" aria-label="Cerrar menú">
                 <i class="ri-close-line"></i>
             </button>
         </div>
@@ -113,31 +103,43 @@
                 <hr class="site-nav-divider">
             </nav>
 
-            <!-- Familias/Categorías -->
+            <!-- Familias (sin subniveles en el panel izquierdo) -->
             <nav class="site-nav-menu">
                 <div class="site-nav-section-title">Categorías</div>
-                @foreach($families as $family)
-                    <div class="site-nav-family">
-                        <a href="" class="site-nav-family-link">
-                            <div class="site-nav-family-content">
-                                <i class="ri-shopping-basket-2-line"></i>
-                                <span>{{ $family->name }}</span>
-                            </div>
-                            @if($family->categories->count() > 0)
-                                <i class="ri-arrow-down-s-line family-arrow"></i>
-                            @endif
-                        </a>
-
-                        @if($family->categories->count() > 0)
-                            <div class="site-nav-categories">
-                                @foreach($family->categories as $category)
-                                    @include('livewire.category-tree', ['category' => $category])
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
+                @foreach ($families as $family)
+                    <button type="button" class="site-nav-family-link" data-family-id="{{ $family->id }}">
+                        <div class="site-nav-family-content">
+                            <i class="ri-shopping-basket-2-line"></i>
+                            <span>{{ $family->name }}</span>
+                        </div>
+                        <i class="ri-arrow-right-s-line family-arrow"></i>
+                    </button>
                 @endforeach
             </nav>
+        </div>
+
+        <!-- Panel derecho de categorías por familia (aparece al hover) -->
+        <div class="site-sidebar-flyout">
+            @foreach ($families as $family)
+                <div class="site-flyout-panel" data-family-panel="{{ $family->id }}">
+                    <div class="site-flyout-header">
+                        <span class="site-flyout-header-title">{{ $family->name }}</span>
+                        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+                            <span class="boton-form-icon">
+                                <i class="ri-eye-line"></i>
+                            </span>
+                            <span class="boton-form-text">Ver Todo</span>
+                        </button>
+                    </div>
+                    <div class="site-flyout-content">
+                        @forelse($family->categories as $category)
+                            @include('livewire.category-flyout', ['category' => $category, 'level' => 0])
+                        @empty
+                            <div class="site-flyout-empty">Sin categorías disponibles</div>
+                        @endforelse
+                    </div>
+                </div>
+            @endforeach
         </div>
     </aside>
 </div>
