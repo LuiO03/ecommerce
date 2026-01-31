@@ -1,32 +1,12 @@
-/* ============================================
-   LAYOUT DEL SITIO PÚBLICO
-   Header, Footer, Grid principal
-   ============================================ */
+@import "./components/site-base.css";
+@import "./components/filters.css";
+@import "./components/layout-site.css";
+@import "./components/navigation.css";
+@import "./components/product-card.css";
+@import "./components/footer.css";
 
-/* Variables del sitio */
-:root {
-    --site-header-height: 4rem;
-    --site-max-width: 1280px;
-    --site-spacing: 1rem;
-}
-
-/* Contenedor principal */
-.site-container {
-    max-width: var(--site-max-width);
-    margin: 0 auto;
-    padding: 0 var(--site-spacing);
-}
-
-/* Grid de productos */
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
-
-/* Sticky header */
-.site-header-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
+@import "./modules/cart.css";
+@import "./modules/checkout.css";
+@import "./modules/wishlist.css";
+@import "./modules/home.css";
+@import "./modules/product-details.css";

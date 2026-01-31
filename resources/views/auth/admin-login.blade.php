@@ -26,7 +26,30 @@
     @livewireStyles
 
 </head>
+<script>
+    // Evitar flash blanco: aplicar tema y estado del sidebar antes del renderizado
+    (function() {
+        try {
+            const theme = localStorage.getItem("color-theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (theme === "dark" || (!theme && prefersDark)) {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
 
+            // Aplicar estado colapsado del sidebar antes del primer paint
+            const sidebarCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+            if (sidebarCollapsed) {
+                document.documentElement.classList.add("sidebar-start-collapsed");
+            } else {
+                document.documentElement.classList.remove("sidebar-start-collapsed");
+            }
+        } catch (e) {
+            // Ignorar errores de acceso a localStorage
+        }
+    })();
+</script>
 <body>
     <div class="auth-wrapper">
         <div class="auth-card">
@@ -46,12 +69,7 @@
                     <div class="form-error-banner">
                         <i class="ri-error-warning-line form-error-icon"></i>
                         <div>
-                            <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                            <p>{{ $errors->first() }}</p>
                         </div>
                     </div>
                 @endif
@@ -82,9 +100,12 @@
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-lock-password-line input-icon"></i>
-                            <input type="password" id="password" name="password" class="input-form"
+                            <input type="password" id="password" name="password" class="input-form password-input"
                                 placeholder="Ingresa tu contraseña" value="luis988434679kira" required
                                 autocomplete="off" data-validate="required|min:6">
+                            <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                                <i class="ri-eye-line"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -170,6 +191,27 @@
                     loadingText: 'Iniciando sesión...'
                 });
                 console.log('✅ SubmitLoader inicializado:', submitLoader);
+
+                // 3. Toggle password visibility
+                document.querySelectorAll('.toggle-password').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const input = this.parentElement.querySelector('.password-input');
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            this.querySelector('i').classList.remove('ri-eye-line');
+                            this.querySelector('i').classList.add('ri-eye-off-line');
+                            this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                        } else {
+                            input.type = 'password';
+                            this.querySelector('i').classList.remove('ri-eye-off-line');
+                            this.querySelector('i').classList.add('ri-eye-line');
+                            this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                        }
+                        setTimeout(() => {
+                            this.querySelector('i').style.animation = '';
+                        }, 300);
+                    });
+                });
 
                 console.log('=== INICIALIZACIÓN COMPLETA ===');
             } catch (error) {

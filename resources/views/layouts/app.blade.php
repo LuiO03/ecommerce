@@ -13,7 +13,7 @@
         <!-- Remix Icon -->
         <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
         <!-- Scripts -->
-        @vite(['resources/css/site/components/layout-site.css'])
+        @vite(['resources/css/site/layout.css'])
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <!-- Styles -->
         @livewireStyles

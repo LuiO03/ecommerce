@@ -8,7 +8,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-sidebar-bg);
+    /* color de fondo degradado */
+    background: linear-gradient(135deg, var(--color-main-bg) 0%, var(--color-accent) 100%);
     padding: 1rem;
 }
 
@@ -22,6 +23,7 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    padding: 10px;
 }
 
 .auth-header {
