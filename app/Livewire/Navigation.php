@@ -13,7 +13,19 @@ class Navigation extends Component
     }
 
     public $families;
-    public function mount(){
-        $this->families = Family::orderBy('name')->get();
+
+    public function mount()
+    {
+        // Cargar familias con sus categorías anidadas recursivamente
+        $this->families = Family::with([
+            'categories' => function ($query) {
+                $query->whereNull('parent_id')->orderBy('name');
+            },
+            'categories.children' => function ($query) {
+                $query->orderBy('name');
+            }
+        ])
+        ->orderBy('name')
+        ->get();
     }
 }

@@ -1,4 +1,2 @@
+// app.js - Bootstrap compartido para toda la aplicación
 import './bootstrap';
-import 'flowbite';
-import './index';  // Importar todos los módulos exportados globalmente
-

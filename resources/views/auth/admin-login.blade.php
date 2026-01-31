@@ -20,8 +20,8 @@
 
     <!-- CSS base del dashboard -->
     @vite(['resources/css/admin/layout.css'])
-    <!-- CSS de Tailwind y JS global -->
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/index.js'])
+    <!-- CSS de Tailwind y JS del admin -->
+    @vite(['resources/css/app.css', 'resources/js/admin.js'])
     @stack('styles')
     @livewireStyles
 
