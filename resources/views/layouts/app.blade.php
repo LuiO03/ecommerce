@@ -22,7 +22,7 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen">
+        <div class="min-h-screen bg-black">
             {{-- @livewire('navigation-menu') --}}
             @livewire('navigation')
             <!-- Page Heading -->

@@ -27,17 +27,62 @@
 
                 <!-- Acciones del header -->
                 <div class="header-actions">
-                    <a href="" class="nav-icon" aria-label="Carrito de compras">
+                    <!-- Icono carrito de compras -->
+                    <a href="" class="nav-icon" aria-label="Carrito de compras" title="Ver carrito de compras">
                         <i class="ri-shopping-cart-2-line"></i>
                         <span class="nav-icon-badge">3</span>
                     </a>
-                    <a href="" class="nav-icon" aria-label="Notificaciones">
-                        <i class="ri-notification-3-line"></i>
+                    <!-- Icono whishlist -->
+                    <a href="" class="nav-icon" aria-label="Lista de deseos" title="Ver lista de deseos">
+                        <i class="ri-heart-line"></i>
                         <span class="nav-icon-badge">5</span>
                     </a>
-                    <a href="{{ route('login') }}" class="nav-icon" aria-label="Mi cuenta">
-                        <i class="ri-user-line"></i>
-                    </a>
+                    <!-- Botón de inicio de sesión / usuario -->
+                    @guest
+                        <a href="{{ route('login') }}" class="nav-login-button" title="Iniciar sesión">
+                            <span class="boton-icon">
+                                <i class="ri-user-line"></i>
+                            </span>
+                            <span class="boton-text">Iniciar Sesión</span>
+                        </a>
+                    @else
+                        <div class="nav-user-dropdown">
+                            <button class="nav-user-button" id="userMenuBtn" aria-label="Mi cuenta" aria-haspopup="true">
+                                <span class="boton-icon">
+                                    <i class="ri-user-line"></i>
+                                </span>
+                                <span class="boton-text">{{ Auth::user()->name }}</span>
+                                <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                            </button>
+                            <div class="nav-user-menu" id="userMenu">
+                                <a href="{{ route('profile.show') }}" class="nav-user-menu-item">
+                                    <i class="ri-user-line"></i>
+                                    <span>Mi Perfil</span>
+                                </a>
+                                <a href="" class="nav-user-menu-item">
+                                    <i class="ri-shopping-bag-line"></i>
+                                    <span>Mis Pedidos</span>
+                                </a>
+                                <a href="" class="nav-user-menu-item">
+                                    <i class="ri-map-pin-line"></i>
+                                    <span>Mis Direcciones</span>
+                                </a>
+                                <a href="" class="nav-user-menu-item">
+                                    <i class="ri-settings-3-line"></i>
+                                    <span>Configuración</span>
+                                </a>
+                                <hr class="nav-user-divider">
+                                <form method="POST" action="{{ route('logout') }}" style="display: none;" id="logoutForm">
+                                    @csrf
+                                </form>
+                                <a href="{{ route('logout') }}" class="nav-user-menu-item logout"
+                                    onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                    <i class="ri-logout-box-line"></i>
+                                    <span>Cerrar Sesión</span>
+                                </a>
+                            </div>
+                        </div>
+                    @endguest
                 </div>
             </div>
 
@@ -114,17 +159,31 @@
                         </div>
                         <i class="ri-arrow-right-s-line family-arrow"></i>
                     </button>
+
+                    <!-- Panel de categorías (acordeón solo en móvil) -->
+                    <div class="site-flyout-panel-mobile" data-family-panel-mobile="{{ $family->id }}">
+                        <div class="site-flyout-content">
+                            @forelse($family->categories as $category)
+                                @include('livewire.category-flyout', [
+                                    'category' => $category,
+                                    'level' => 0,
+                                ])
+                            @empty
+                                <div class="site-flyout-empty">Sin categorías disponibles</div>
+                            @endforelse
+                        </div>
+                    </div>
                 @endforeach
             </nav>
         </div>
 
-        <!-- Panel derecho de categorías por familia (aparece al hover) -->
+        <!-- Panel derecho de categorías por familia (solo desktop/tablet) -->
         <div class="site-sidebar-flyout">
             @foreach ($families as $family)
                 <div class="site-flyout-panel" data-family-panel="{{ $family->id }}">
                     <div class="site-flyout-header">
                         <span class="site-flyout-header-title">{{ $family->name }}</span>
-                        <button class="boton-form boton-accent" type="submit" id="submitBtn">
+                        <button class="boton-form boton-accent" type="submit">
                             <span class="boton-form-icon">
                                 <i class="ri-eye-line"></i>
                             </span>

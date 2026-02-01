@@ -157,7 +157,8 @@
 /* ===== Acciones Header ===== */
 .header-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 8px;
+    align-items: center;
 }
 
 .nav-icon {
@@ -176,6 +177,29 @@
     color: var(--color-primary-pastel);
 }
 
+.nav-login-button{
+    display: flex;
+    gap: 5px;
+    color: white;
+    height: min-content;
+    font-size: 1rem;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: var(--radius-input);
+}
+
+.nav-login-button .boton-text{
+    font-weight: 500;
+}
+
+.nav-login-button:hover{
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.nav-login-button i, .nav-user-button i{
+    font-size: 1.5rem;
+}
+
 .nav-icon-badge {
     position: absolute;
     top: 5px;
@@ -190,6 +214,110 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
+}
+
+/* ===== Login / User Dropdown ===== */
+.nav-login-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--color-accent);
+    color: var(--color-normal);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-login-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-user-dropdown {
+    position: relative;
+}
+
+.nav-user-button {
+    display: flex;
+    gap: 5px;
+    color: white;
+    height: min-content;
+    font-size: 1rem;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: var(--radius-input);
+}
+
+.nav-user-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-arrow {
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.nav-user-button[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.nav-user-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    min-width: 220px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.nav-user-menu.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.nav-user-menu-item:hover {
+    background: var(--color-hover);
+    color: var(--color-accent);
+}
+
+.nav-user-menu-item i {
+    font-size: 1.1rem;
+}
+
+.nav-user-menu-item.logout {
+    color: var(--color-danger);
+}
+
+.nav-user-menu-item.logout:hover {
+    background: var(--color-danger);
+    color: white;
+}
+
+.nav-user-divider {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 0.5rem 0;
 }
 
 /* ===== Buscador Mobile ===== */
@@ -440,19 +568,10 @@
     z-index: 55;
 }
 
+/* Ocultar flyout en móvil */
 @media (max-width: 768px) {
     .site-sidebar-flyout {
-        position: fixed;
-        left: var(--site-sidebar-width);
-        top: 0;
-        width: 100%;
-        height: 100vh;
-        transform: translateX(100%);
-        border-left: none;
-    }
-
-    .site-sidebar-flyout.active {
-        transform: translateX(0);
+        display: none;
     }
 }
 
@@ -468,17 +587,33 @@
     width: 700px;
     max-width: 90vw;
     flex-direction: column;
-    flex-wrap: wrap;
 }
 
 .site-flyout-panel.active {
     display: flex;
 }
 
-@media (max-width: 768px) {
-    .site-flyout-panel {
-        width: 100%;
-        max-width: 100%;
+/* Acordeón móvil - paneles inline después de familias */
+.site-flyout-panel-mobile {
+    display: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    background: var(--color-hover);
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+}
+
+.site-flyout-panel-mobile.active {
+    display: block;
+}
+
+/* Mostrar acordeón solo en móvil, ocultar en desktop */
+@media (min-width: 769px) {
+    .site-flyout-panel-mobile {
+        display: none !important;
     }
 }
 
@@ -510,15 +645,14 @@
     align-content: start;
 }
 
+/* En móvil, el contenido se muestra como lista vertical simple */
 @media (max-width: 768px) {
-    .site-flyout-content {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 640px) {
-    .site-flyout-content {
+    .site-flyout-panel-mobile .site-flyout-content {
         grid-template-columns: 1fr;
+        padding: 0.5rem;
+        gap: 0;
+        overflow: visible;
+        background-color: transparent;
     }
 }
 
@@ -556,6 +690,15 @@
     font-size: 0.92rem;
 }
 
+/* En móvil, ajustar padding y tamaño para mejor touch */
+@media (max-width: 768px) {
+    .site-flyout-panel-mobile .site-flyout-link {
+        padding: 0.65rem 0.5rem;
+        font-size: 0.9rem;
+        border-radius: 0.25rem;
+    }
+}
+
 .site-flyout-link:hover {
     background: var(--color-hover);
     color: var(--color-accent);
@@ -587,5 +730,13 @@
 
     .site-header-container {
         padding: 0.5rem 1.25rem;
+    }
+
+    .nav-login-button{
+        padding: 0px;
+    }
+
+    .nav-login-button .boton-text{
+        display: none;
     }
 }

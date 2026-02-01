@@ -37,21 +37,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const familyLinks = sidebar.querySelectorAll('.site-nav-family-link');
     const flyoutContainer = sidebar.querySelector('.site-sidebar-flyout');
     const flyoutPanels = sidebar.querySelectorAll('.site-flyout-panel');
+    const flyoutMobilePanels = sidebar.querySelectorAll('.site-flyout-panel-mobile');
     let closeTimer = null;
 
     const clearActiveFamily = () => {
         familyLinks.forEach(link => link.classList.remove('active'));
         flyoutPanels.forEach(panel => panel.classList.remove('active'));
+        flyoutMobilePanels.forEach(panel => panel.classList.remove('active'));
         flyoutContainer?.classList.remove('active');
     };
 
     const activateFamily = (familyId) => {
         if (!familyId) return;
         clearActiveFamily();
+
         const activeLink = sidebar.querySelector(`.site-nav-family-link[data-family-id="${familyId}"]`);
+
+        // Desktop: flyout panel a la derecha
         const activePanel = sidebar.querySelector(`.site-flyout-panel[data-family-panel="${familyId}"]`);
+
+        // Móvil: acordeón inline
+        const activeMobilePanel = sidebar.querySelector(`.site-flyout-panel-mobile[data-family-panel-mobile="${familyId}"]`);
+
         activeLink?.classList.add('active');
         activePanel?.classList.add('active');
+        activeMobilePanel?.classList.add('active');
         flyoutContainer?.classList.add('active');
     };
 
