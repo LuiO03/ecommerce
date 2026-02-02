@@ -104,19 +104,19 @@
 .cover-card {
     display: flex;
     flex-direction: column;
-    background: var(--bg-secondary);
+    background: var(--color-card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
     cursor: pointer;
     position: relative;
+    border: 1px solid var(--color-border);
 }
 
 .cover-card:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
-    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    transform: translateY(-2px);
 }
 
 .cover-card.selected {
@@ -147,23 +147,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    transition: all 0.2s ease;
 }
 
-.cover-card.selected .card-checkbox {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
+.card-checkbox div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .card-checkbox input[type="checkbox"] {
     cursor: pointer;
-    width: 100%;
-    height: 100%;
     accent-color: var(--color-primary);
 }
 
@@ -267,7 +260,7 @@
 /* === Meta información === */
 .card-meta {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     gap: 4px;
     font-size: 12px;
     color: var(--text-muted);
@@ -295,48 +288,6 @@
     margin-top: auto;
     padding-top: 0.75rem;
     border-top: 1px solid var(--border-color);
-}
-
-/* === Toggle de estado === */
-.toggle-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.toggle-status input[type="checkbox"] {
-    appearance: none;
-    width: 36px;
-    height: 20px;
-    background: #ccc;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    position: relative;
-}
-
-.toggle-status input[type="checkbox"]:checked {
-    background: var(--color-success);
-}
-
-.toggle-status input[type="checkbox"]:before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: white;
-    top: 2px;
-    left: 2px;
-    transition: left 0.3s ease;
-}
-
-.toggle-status input[type="checkbox"]:checked:before {
-    left: 18px;
 }
 
 /* === Badge de estado === */

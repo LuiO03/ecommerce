@@ -45,8 +45,59 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-columns-row">
-            <div class="form-column">
+        <div class="form-body">
+            <div class="image-upload-section">
+                <label class="label-form">Imagen de la portada</label>
+                <input type="file" name="image" id="image" class="file-input" accept="image/*"
+                    data-validate="imageSingle|maxSizeSingleMB:3">
+                <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
+
+                <div class="image-preview-zone {{ $cover->image_path && file_exists(public_path('storage/' . $cover->image_path)) ? 'has-image' : '' }}"
+                    id="imagePreviewZone">
+                    @if ($cover->image_path && file_exists(public_path('storage/' . $cover->image_path)))
+                        <img id="imagePreview" class="image-preview" src="{{ asset('storage/' . $cover->image_path) }}"
+                            alt="Imagen actual">
+                        <div class="image-overlay" id="imageOverlay">
+                            <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
+                                <i class="ri-upload-2-line"></i>
+                                <span>Cambiar</span>
+                            </button>
+                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                                title="Eliminar imagen">
+                                <i class="ri-delete-bin-line"></i>
+                                <span>Eliminar</span>
+                            </button>
+                        </div>
+                    @else
+                        <div class="image-placeholder" id="imagePlaceholder">
+                            <i class="ri-image-add-line"></i>
+                            <p>Arrastra una imagen aquí</p>
+                            <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
+                        </div>
+                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
+                            alt="Vista previa">
+                        <div class="image-overlay" id="imageOverlay" style="display: none;">
+                            <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
+                                <i class="ri-upload-2-line"></i>
+                                <span>Cambiar</span>
+                            </button>
+                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                                title="Eliminar imagen">
+                                <i class="ri-delete-bin-line"></i>
+                                <span>Eliminar</span>
+                            </button>
+                        </div>
+                    @endif
+                </div>
+                <div class="image-filename" id="imageFilename" style="display: none;">
+                    <i class="ri-file-image-line"></i>
+                    <span id="filenameText"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-body">
+            <div class="form-row-fit">
                 <div class="input-group">
                     <label for="title" class="label-form">
                         Título de la portada
@@ -68,8 +119,8 @@
                     <div class="input-icon-container">
                         <i class="ri-sort-number-asc input-icon"></i>
                         <input type="number" name="position" id="position" class="input-form" required
-                            value="{{ old('position', $cover->position) }}" min="0" placeholder="Orden de aparición"
-                            data-validate="required|numeric|min:0">
+                            value="{{ old('position', $cover->position) }}" min="0"
+                            placeholder="Orden de aparición" data-validate="required|numeric|min:0">
                     </div>
                 </div>
 
@@ -93,81 +144,26 @@
                 <div class="input-group">
                     <label for="description" class="label-form label-textarea">Descripción</label>
                     <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Descripción opcional" rows="4"
-                            data-validate="max:500">{{ old('description', $cover->description) }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Descripción opcional"
+                            rows="4" data-validate="max:500">{{ old('description', $cover->description) }}</textarea>
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
                 </div>
 
-                <div class="form-row-dates">
-                    <div class="input-group">
-                        <label for="start_at" class="label-form">Fecha de inicio</label>
-                        <div class="input-icon-container">
-                            <i class="ri-calendar-line input-icon"></i>
-                            <input type="datetime-local" name="start_at" id="start_at" class="input-form"
-                                value="{{ old('start_at', $cover->start_at ? $cover->start_at->format('Y-m-d\TH:i') : '') }}">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="end_at" class="label-form">Fecha de fin</label>
-                        <div class="input-icon-container">
-                            <i class="ri-calendar-check-line input-icon"></i>
-                            <input type="datetime-local" name="end_at" id="end_at" class="input-form"
-                                value="{{ old('end_at', $cover->end_at ? $cover->end_at->format('Y-m-d\TH:i') : '') }}">
-                        </div>
+                <div class="input-group">
+                    <label for="start_at" class="label-form">Fecha de inicio</label>
+                    <div class="input-icon-container">
+                        <input type="datetime-local" name="start_at" id="start_at" class="input-form"
+                            value="{{ old('start_at', $cover->start_at ? $cover->start_at->format('Y-m-d\TH:i') : '') }}">
                     </div>
                 </div>
-            </div>
 
-            <div class="form-column">
-                <div class="image-upload-section">
-                    <label class="label-form">Imagen de la portada</label>
-                    <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                        data-validate="imageSingle|maxSizeSingleMB:3">
-                    <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
-
-                    <div class="image-preview-zone {{ $cover->image_path && file_exists(public_path('storage/' . $cover->image_path)) ? 'has-image' : '' }}"
-                        id="imagePreviewZone">
-                        @if ($cover->image_path && file_exists(public_path('storage/' . $cover->image_path)))
-                            <img id="imagePreview" class="image-preview"
-                                src="{{ asset('storage/' . $cover->image_path) }}" alt="Imagen actual">
-                            <div class="image-overlay" id="imageOverlay">
-                                <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
-                                    <i class="ri-upload-2-line"></i>
-                                    <span>Cambiar</span>
-                                </button>
-                                <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
-                                    title="Eliminar imagen">
-                                    <i class="ri-delete-bin-line"></i>
-                                    <span>Eliminar</span>
-                                </button>
-                            </div>
-                        @else
-                            <div class="image-placeholder" id="imagePlaceholder">
-                                <i class="ri-image-add-line"></i>
-                                <p>Arrastra una imagen aquí</p>
-                                <span>o haz clic para seleccionar</span>
-                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                            </div>
-                            <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
-                                alt="Vista previa">
-                            <div class="image-overlay" id="imageOverlay" style="display: none;">
-                                <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
-                                    <i class="ri-upload-2-line"></i>
-                                    <span>Cambiar</span>
-                                </button>
-                                <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
-                                    title="Eliminar imagen">
-                                    <i class="ri-delete-bin-line"></i>
-                                    <span>Eliminar</span>
-                                </button>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="image-filename" id="imageFilename" style="display: none;">
-                        <i class="ri-file-image-line"></i>
-                        <span id="filenameText"></span>
+                <div class="input-group">
+                    <label for="end_at" class="label-form">Fecha de fin</label>
+                    <div class="input-icon-container">
+                        <i class="ri-calendar-check-line input-icon"></i>
+                        <input type="datetime-local" name="end_at" id="end_at" class="input-form"
+                            value="{{ old('end_at', $cover->end_at ? $cover->end_at->format('Y-m-d\TH:i') : '') }}">
                     </div>
                 </div>
             </div>
@@ -189,50 +185,27 @@
         </div>
     </form>
 
-    @push('styles')
-        @vite(['resources/css/admin/modules/covers.css'])
-    @endpush
-
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function() {// Inicializar manejador de imágenes
                 const imageHandler = initImageUpload({
                     mode: 'edit',
-                    currentImage: @json($cover->image_path ?? null)
+                    hasExistingImage: {{ $cover->image_path && file_exists(public_path('storage/' . $cover->image_path)) ? 'true' : 'false' }},
+                    existingImageFilename: '{{ $cover->image_path ? basename($cover->image_path) : '' }}'
                 });
+
+                // 1. Inicializar submit loader PRIMERO
                 const submitLoader = initSubmitLoader({
                     formId: 'coverForm',
                     buttonId: 'submitBtn',
-                    loadingText: 'Guardando cambios...'
+                    loadingText: 'Actualizando...'
                 });
-                const validator = initFormValidator('coverForm', submitLoader);
 
-                const deleteForms = document.querySelectorAll('.delete-form');
-                deleteForms.forEach(form => {
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        const entityName = this.dataset.entity || 'registro';
-                        showConfirmModal({
-                            title: `¿Eliminar ${entityName}?`,
-                            message: 'Esta acción no se puede deshacer.',
-                            confirmText: 'Sí, eliminar',
-                            cancelText: 'Cancelar',
-                            type: 'danger',
-                            onConfirm: () => {
-                                const formData = new FormData(this);
-                                fetch(this.action, {
-                                    method: 'POST',
-                                    body: formData,
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                        'X-CSRF-TOKEN': formData.get('_token')
-                                    }
-                                })
-                                .then(() => window.location.href = '{{ route("admin.covers.index") }}')
-                                .catch(err => console.error('Error:', err));
-                            }
-                        });
-                    });
+                // 2. Inicializar validación de formulario DESPUÉS
+                const formValidator = initFormValidator('#coverForm', {
+                    validateOnBlur: true,
+                    validateOnInput: false,
+                    scrollToFirstError: true
                 });
             });
         </script>

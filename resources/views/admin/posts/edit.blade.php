@@ -136,7 +136,7 @@
                         Título <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
-                        <i class="ri-file-text-line input-icon"></i>
+                        <i class="ri-text input-icon"></i>
                         <input type="text" name="title" id="title" class="input-form" placeholder="Ingrese el título del post"
                             value="{{ old('title', $post->title) }}" data-validate="required|min:3|max:255">
                     </div>

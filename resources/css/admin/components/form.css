@@ -154,6 +154,7 @@
 .input-group input[type="number"],
 .input-group input[type="url"],
 .input-group input[type="email"],
+.input-group input[type="datetime-local"],
 .input-group textarea,
 .select-form {
     width: 100%;
