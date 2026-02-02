@@ -16,43 +16,48 @@
         @endcan
     </x-slot>
 
-    <div class="covers-container">
+    <div class="actions-container">
         <!-- Controles superiores -->
-        <div class="covers-controls">
-            <div class="covers-search">
-                <i class="ri-search-eye-line search-icon"></i>
-                <input type="text" id="customSearch" placeholder="Buscar por título..." autocomplete="off" />
-                <button type="button" id="clearSearch" class="clear-btn" title="Limpiar búsqueda">
+        <div class="tabla-controles">
+            <div class="tabla-buscador">
+                <i class="ri-search-eye-line buscador-icon"></i>
+                <input type="text" id="customSearch" placeholder="Buscar usuarios por nombre o email"
+                    autocomplete="off" />
+                <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
 
-            <div class="covers-filters">
-                <div class="filter-group">
-                    <select id="statusFilter" class="filter-select">
-                        <option value="">Todos los estados</option>
-                        <option value="1">Activos</option>
-                        <option value="0">Inactivos</option>
-                    </select>
-                    <i class="ri-filter-3-line filter-icon"></i>
+            <div class="tabla-filtros">
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="statusFilter">
+                            <option value="">Todos los estados</option>
+                            <option value="1">Activos</option>
+                            <option value="0">Inactivos</option>
+                        </select>
+                        <i class="ri-filter-3-line selector-icon"></i>
+                    </div>
                 </div>
 
-                <div class="filter-group">
-                    <select id="sortFilter" class="filter-select">
-                        <option value="">Ordenar por</option>
-                        <option value="position-asc">Posición ↑</option>
+                <div class="tabla-select-wrapper">
+                    <div class="selector">
+                        <select id="sortFilter">
+                            <option value="">Ordenar por</option>
+                            <option value="position-asc">Posición ↑</option>
                         <option value="position-desc">Posición ↓</option>
                         <option value="title-asc">Título (A-Z)</option>
                         <option value="title-desc">Título (Z-A)</option>
                         <option value="date-desc">Más recientes</option>
                         <option value="date-asc">Más antiguos</option>
                     </select>
-                    <i class="ri-sort-asc filter-icon"></i>
+                    <i class="ri-sort-asc selector-icon"></i>
                 </div>
 
-                <button type="button" id="clearFiltersBtn" class="btn-clear-filters" title="Limpiar filtros">
-                    <i class="ri-filter-off-line"></i>
-                    <span>Limpiar</span>
+                <!-- Botón para limpiar filtros -->
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
                 </button>
             </div>
         </div>

@@ -15,6 +15,7 @@
 @import "./modules/options.css";
 @import "./modules/ckeditor.css";
 @import "./modules/products-variants.css";
+@import "./modules/covers.css";
 @import "./modules/error-403.css";
 
 @import "./components/breadcrumb.css";
