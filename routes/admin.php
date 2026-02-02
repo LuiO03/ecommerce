@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\AuditController;
+use App\Http\Controllers\Admin\CoverController;
 use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
@@ -127,6 +128,18 @@ Route::controller(FamilyController::class)->group(function () {
     Route::post('/families/export/excel', 'exportExcel')->name('admin.families.export.excel');
     Route::post('/families/export/pdf', 'exportPdf')->name('admin.families.export.pdf');
     Route::post('/families/export/csv', 'exportCsv')->name('admin.families.export.csv');
+
+// COVERS
+Route::controller(CoverController::class)->group(function () {
+    Route::get('/covers', 'index')->name('admin.covers.index');
+    Route::get('/covers/create', 'create')->name('admin.covers.create');
+    Route::post('/covers', 'store')->name('admin.covers.store');
+    Route::get('/covers/{cover}/edit', 'edit')->name('admin.covers.edit');
+    Route::put('/covers/{cover}', 'update')->name('admin.covers.update');
+    Route::delete('/covers/{cover}', 'destroy')->name('admin.covers.destroy');
+    Route::delete('/covers', 'destroyMultiple')->name('admin.covers.destroyMultiple');
+    Route::patch('/covers/{cover}/status', 'updateStatus')->name('admin.covers.updateStatus');
+});
 });
 
 // CATEGORIES

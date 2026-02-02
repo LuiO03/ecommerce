@@ -111,6 +111,16 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+            @can('portadas.index')
+                <li class="ripple-btn">
+                    <a href="{{ route('admin.covers.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.covers.*') ? 'active' : '' }}"
+                        data-tooltip="Portadas">
+                        <i class="ri-image-2-line sidebar-icon"></i>
+                        <span>Portadas</span>
+                    </a>
+                </li>
+            @endcan
 
             <!-- Submenú Tienda -->
             <li class="submenu-container">

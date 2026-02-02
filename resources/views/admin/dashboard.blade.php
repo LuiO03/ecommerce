@@ -83,6 +83,19 @@
         </a>
         @endcan
 
+        <!-- Tarjeta: Portadas -->
+        @can('portadas.index')
+        <a href="{{ route('admin.covers.index') }}" class="dashboard-card ripple-card">
+            <div class="card-icon card-info">
+                <i class="ri-image-2-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalCovers }}</h1>
+                <p class="card-label">Portadas</p>
+            </div>
+        </a>
+        @endcan
+
         <!-- Tarjeta: Marcas -->
         <a href="" class="dashboard-card ripple-card">
             <div class="card-icon card-warning">

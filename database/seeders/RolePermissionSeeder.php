@@ -109,6 +109,15 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'auditorias.index', 'description' => 'Puede ver las auditorías del sistema'],
                 ['name' => 'auditorias.export', 'description' => 'Puede exportar auditorías en varios formatos'],
             ],
+
+            // --- Portadas ---
+            'portadas' => [
+                ['name' => 'portadas.index', 'description' => 'Puede ver la lista de portadas'],
+                ['name' => 'portadas.create', 'description' => 'Puede crear nuevas portadas'],
+                ['name' => 'portadas.edit', 'description' => 'Puede editar portadas existentes'],
+                ['name' => 'portadas.delete', 'description' => 'Puede eliminar portadas del sistema'],
+                ['name' => 'portadas.update-status', 'description' => 'Puede activar o desactivar portadas'],
+            ],
         ];
 
         // === CREAR PERMISOS ===

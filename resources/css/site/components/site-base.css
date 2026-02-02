@@ -10,6 +10,7 @@
     --site-spacing: 1rem;
     --color-site-nav: #51009D;
     --site-sidebar-width: 300px;
+    --site-color-hover: rgba(81, 0, 157, 0.1);
 }
 
 @media (max-width: 768px) {

@@ -14,6 +14,7 @@ use App\Models\CompanySetting;
 use App\Models\Option;
 use App\Models\AccessLog;
 use App\Models\Audit;
+use App\Models\Cover;
 
 
 class AdminController extends Controller
@@ -25,6 +26,7 @@ class AdminController extends Controller
         return view('admin.dashboard', [
             'totalCategories' => $user->can('categorias.index') ? Category::count() : null,
             'totalFamilies'   => $user->can('familias.index')   ? Family::count()   : null,
+            'totalCovers'     => $user->can('portadas.index')   ? Cover::count()    : null,
             'totalProducts'   => $user->can('productos.index')   ? Product::count()  : null,
             'totalUsers'      => $user->can('usuarios.index')      ? User::count()     : null,
             'totalRoles'      => $user->can('roles.index')      ? Role::count()     : null,
