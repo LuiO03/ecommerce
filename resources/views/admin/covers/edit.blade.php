@@ -134,19 +134,50 @@
                             </div>
                         </div>
                         <div class="input-group">
+                            <label class="label-form">Fondo oscuro del texto</label>
+                            <div class="binary-switch">
+                                <input type="radio" name="overlay_bg_enabled" id="overlayBgOn" value="1"
+                                    class="switch-input switch-input-on"
+                                    {{ old('overlay_bg_enabled', $cover->overlay_bg_enabled ? 1 : 0) == 1 ? 'checked' : '' }}>
+                                <input type="radio" name="overlay_bg_enabled" id="overlayBgOff" value="0"
+                                    class="switch-input switch-input-off"
+                                    {{ old('overlay_bg_enabled', $cover->overlay_bg_enabled ? 1 : 0) == 0 ? 'checked' : '' }}>
+
+                                <div class="switch-slider"></div>
+
+                                <label for="overlayBgOn" class="switch-label switch-label-on">
+                                    <i class="ri-checkbox-circle-line"></i> Sí
+                                </label>
+                                <label for="overlayBgOff" class="switch-label switch-label-off">
+                                    <i class="ri-close-circle-line"></i> No
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="overlay_bg_opacity" class="label-form">
+                                Opacidad del fondo
+                                <span id="overlayBgOpacityValue">{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}</span>
+                            </label>
+                            <input type="range" name="overlay_bg_opacity" id="overlay_bg_opacity"
+                                class="range-form" min="0" max="1" step="0.05"
+                                value="{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}"
+                                data-validate="minValue:0|maxValue:1">
+                        </div>
+                        <div class="input-group">
                             <label for="button_text" class="label-form">Texto del botón</label>
                             <div class="input-icon-container">
                                 <i class="ri-radio-button-line input-icon"></i>
                                 <input type="text" name="button_text" id="button_text" class="input-form"
                                     value="{{ old('button_text', $cover->button_text) }}"
-                                    placeholder="Ej: Comprar ahora" data-validate="max:100">
+                                    placeholder="Ej: Comprar ahora" data-validate="max:100|requiredWith:button_link,button_style">
                             </div>
                         </div>
                         <div class="input-group">
                             <label for="button_style" class="label-form">Estilo del botón</label>
                             <div class="input-icon-container">
                                 <i class="ri-palette-line input-icon"></i>
-                                <select name="button_style" id="button_style" class="select-form">
+                                <select name="button_style" id="button_style" class="select-form"
+                                    data-validate="requiredWith:button_text,button_link">
                                     <option value="primary"
                                         {{ old('button_style', $cover->button_style) == 'primary' ? 'selected' : '' }}>
                                         Principal</option>
@@ -171,7 +202,7 @@
                                 <i class="ri-links-line input-icon"></i>
                                 <input type="url" name="button_link" id="button_link" class="input-form"
                                     value="{{ old('button_link', $cover->button_link) }}"
-                                    placeholder="https://example.com" data-validate="url">
+                                    placeholder="https://example.com" data-validate="url|requiredWith:button_text,button_style">
                             </div>
                         </div>
                     </div>
@@ -215,12 +246,12 @@
                             <img id="imagePreview" class="image-preview"
                                 src="{{ asset('storage/' . $cover->image_path) }}" alt="Imagen actual">
                             <div class="image-overlay" id="imageOverlay">
-                                <button type="button" class="overlay-btn" id="changeImageBtn"
+                                <button type="button" class="boton-form boton-primary" id="changeImageBtn"
                                     title="Cambiar imagen">
                                     <i class="ri-upload-2-line"></i>
                                     <span>Cambiar</span>
                                 </button>
-                                <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                                <button type="button" class="boton-form boton-danger" id="removeImageBtn"
                                     title="Eliminar imagen">
                                     <i class="ri-delete-bin-line"></i>
                                     <span>Eliminar</span>
@@ -236,15 +267,19 @@
                             <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
                                 alt="Vista previa">
                             <div class="image-overlay" id="imageOverlay" style="display: none;">
-                                <button type="button" class="overlay-btn" id="changeImageBtn"
+                                <button type="button" class="boton-form boton-info" id="changeImageBtn"
                                     title="Cambiar imagen">
-                                    <i class="ri-upload-2-line"></i>
-                                    <span>Cambiar</span>
+                                    <span class="boton-form-icon">
+                                        <i class="ri-upload-2-line"></i>
+                                    </span>
+                                    <span class="boton-form-text">Cambiar</span>
                                 </button>
-                                <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                                <button type="button" class="boton-form boton-danger" id="removeImageBtn"
                                     title="Eliminar imagen">
-                                    <i class="ri-delete-bin-line"></i>
-                                    <span>Eliminar</span>
+                                    <span class="boton-form-icon">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </span>
+                                    <span class="boton-form-text">Eliminar</span>
                                 </button>
                             </div>
                         @endif
@@ -312,6 +347,9 @@
                     const subtextInput = document.getElementById('overlay_subtext');
                     const positionInput = document.getElementById('text_position');
                     const colorInput = document.getElementById('text_color');
+                    const bgEnabledInputs = document.querySelectorAll('input[name="overlay_bg_enabled"]');
+                    const bgOpacityInput = document.getElementById('overlay_bg_opacity');
+                    const bgOpacityValue = document.getElementById('overlayBgOpacityValue');
                     const buttonTextInput = document.getElementById('button_text');
                     const buttonStyleInput = document.getElementById('button_style');
 
@@ -367,6 +405,11 @@
                         const buttonText = buttonTextInput?.value?.trim() || '';
                         const position = positionInput?.value || 'center-center';
                         const color = colorInput?.value || '#FFFFFF';
+                        const bgEnabled = document.querySelector('input[name="overlay_bg_enabled"]:checked')?.value === '1';
+                        const bgOpacityRaw = parseFloat(bgOpacityInput?.value);
+                        const bgOpacity = Number.isFinite(bgOpacityRaw)
+                            ? Math.min(1, Math.max(0, bgOpacityRaw))
+                            : 0.35;
 
                         titleEl.textContent = title;
                         subtextEl.textContent = subtext;
@@ -379,6 +422,16 @@
                         applyPosition(position);
                         applyButtonStyle(buttonStyleInput?.value);
                         preview.style.setProperty('--overlay-text-color', color);
+                        preview.style.setProperty('--overlay-bg-opacity', bgOpacity);
+                        preview.classList.toggle('has-overlay-bg', bgEnabled);
+
+                        if (bgOpacityValue) {
+                            bgOpacityValue.textContent = bgOpacity.toFixed(2);
+                        }
+
+                        if (bgOpacityInput) {
+                            bgOpacityInput.disabled = !bgEnabled;
+                        }
 
                         const previewZone = document.getElementById('imagePreviewZone');
                         const imageEl = document.getElementById('imagePreview');
@@ -401,11 +454,16 @@
                         subtextInput,
                         positionInput,
                         colorInput,
+                        bgOpacityInput,
                         buttonTextInput,
                         buttonStyleInput
                     ].forEach((el) => {
                         if (!el) return;
                         el.addEventListener('input', updatePreview);
+                        el.addEventListener('change', updatePreview);
+                    });
+
+                    bgEnabledInputs.forEach((el) => {
                         el.addEventListener('change', updatePreview);
                     });
 

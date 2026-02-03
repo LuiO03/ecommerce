@@ -316,7 +316,46 @@ class FormValidator {
     // 📚 REGLAS DE VALIDACIÓN PREDEFINIDAS
     // ========================================
     validationRules = {
-                        // === SOLO IMAGEN ÚNICA ===
+                        // === CAMPOS DEPENDIENTES ===
+        // Si alguno de los campos relacionados tiene valor, todos deben tener valor
+        // Parámetro: lista de IDs de campos separados por coma (ej: "button_text,button_link,button_style")
+        requiredWith: (value, param, field) => {
+            if (!param) return { valid: true };
+
+            const relatedFieldIds = param.split(',').map(id => id.trim());
+            const form = field.closest('form');
+            if (!form) return { valid: true };
+
+            // Obtener valores de todos los campos relacionados incluyendo el actual
+            const allFields = relatedFieldIds.map(id => {
+                const f = form.querySelector(`#${id}, [name="${id}"]`);
+                return f ? { id, value: f.value.trim(), field: f } : null;
+            }).filter(Boolean);
+
+            // Verificar si alguno tiene valor
+            const anyHasValue = allFields.some(f => f.value !== '');
+
+            // Si alguno tiene valor, todos deben tener valor
+            if (anyHasValue) {
+                const allHaveValue = allFields.every(f => f.value !== '');
+                if (!allHaveValue) {
+                    const emptyFields = allFields
+                        .filter(f => f.value === '')
+                        .map(f => {
+                            const label = form.querySelector(`label[for="${f.id}"]`);
+                            return label ? label.textContent.trim().replace(/\*/g, '') : f.id;
+                        });
+                    return {
+                        valid: false,
+                        message: `Este campo es requerido cuando se completa: ${emptyFields.join(', ')}`
+                    };
+                }
+            }
+
+            return { valid: true };
+        },
+
+        // === SOLO IMAGEN ÚNICA ===
                         imageSingle: (files, _param, field) => {
                             if (!files || files.length === 0) return { valid: true };
                             const file = files[0];

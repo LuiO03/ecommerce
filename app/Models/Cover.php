@@ -22,6 +22,8 @@ class Cover extends Model
         'overlay_subtext',
         'text_position',
         'text_color',
+        'overlay_bg_enabled',
+        'overlay_bg_opacity',
         'button_text',
         'button_link',
         'button_style',
@@ -40,6 +42,8 @@ class Cover extends Model
         'status' => 'boolean',
         'button_style' => 'string',
         'text_position' => 'string',
+        'overlay_bg_enabled' => 'boolean',
+        'overlay_bg_opacity' => 'float',
     ];
 
     public function scopeForSelect($query)

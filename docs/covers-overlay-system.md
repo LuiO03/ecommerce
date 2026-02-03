@@ -5,8 +5,10 @@
 Las portadas (covers) ahora soportan texto dinámico superpuesto sobre las imágenes sin necesidad de editar los archivos gráficos. Esto permite:
 
 - ✅ Cambiar mensajes sin re-subir imágenes
-- ✅ Personalizar posiciones de texto
+- ✅ Personalizar posiciones de texto (9 posiciones con selector visual)
 - ✅ Agregar botones CTA (Call-To-Action) con enlaces
+- ✅ Preview en tiempo real mientras editas
+- ✅ Alineación automática según posición
 - ✅ Mejor SEO (texto indexable)
 - ✅ Multiidioma más sencillo
 
@@ -25,9 +27,28 @@ Las portadas (covers) ahora soportan texto dinámico superpuesto sobre las imág
 
 | Campo | Tipo | Requerido | Descripción |
 |-------|------|-----------|-------------|
-| `button_text` | `string` | No | Texto del botón (máx. 100 caracteres). Ej: "Comprar ahora", "Ver más" |
-| `button_link` | `string` | No | URL destino del botón. Debe ser una URL válida |
-| `button_style` | `enum` | No | Estilo visual del botón. Opciones: `primary` (defecto), `secondary`, `outline`, `white` |
+| `button_text` | `string` | Condicional* | Texto del botón (máx. 100 caracteres). Ej: "Comprar ahora", "Ver más" |
+| `button_link` | `string` | Condicional* | URL destino del botón. Debe ser una URL válida |
+| `button_style` | `enum` | Condicional* | Estilo visual del botón. Opciones: `primary` (defecto), `secondary`, `outline`, `white` |
+
+**Nota:** Los tres campos del botón son interdependientes. Si se llena uno, todos deben ser completados (validación `requiredWith`).
+
+## Características UX
+
+### Preview en Tiempo Real
+- Al escribir texto, cambiar color o posición, se actualiza instantáneamente sobre la imagen
+- Preview visible tanto en creación como edición
+- Sincronización automática con todos los campos del overlay
+
+### Selector Visual de Posición
+- Grid 3x3 interactivo para seleccionar posición del texto
+- Feedback visual con estado activo
+- Reemplaza el dropdown tradicional para mejor UX
+
+### Alineación Automática
+- **Posiciones centro** (top-center, center-center, bottom-center): elementos centrados horizontalmente
+- **Posiciones derecha** (top-right, center-right, bottom-right): elementos alineados a la derecha
+- **Posiciones izquierda** (top-left, center-left, bottom-left): elementos alineados a la izquierda
 
 ## Modelos de Datos
 
@@ -62,7 +83,9 @@ protected $fillable = [
 ];
 ```
 
-## Validaciones en Controlador
+## Validaciones
+
+### Validación Backend (Controlador)
 
 ```php
 $request->validate([
@@ -75,6 +98,29 @@ $request->validate([
     'button_style' => 'nullable|in:primary,secondary,outline,white',
 ]);
 ```
+
+### Validación Frontend (FormValidator)
+
+Los campos del botón usan la regla `requiredWith` para validar que si uno se completa, todos deben completarse:
+
+```blade
+<!-- Texto del botón -->
+<input type="text" name="button_text" id="button_text"
+    data-validate="max:100|requiredWith:button_link,button_style">
+
+<!-- URL del botón -->
+<input type="url" name="button_link" id="button_link"
+    data-validate="url|requiredWith:button_text,button_style">
+
+<!-- Estilo del botón -->
+<select name="button_style" id="button_style"
+    data-validate="requiredWith:button_text,button_link">
+```
+
+**Regla `requiredWith` en form-validator.js:**
+- Si alguno de los campos relacionados tiene valor, todos deben tener valor
+- Mensaje de error muestra los campos faltantes
+- Evita CTAs incompletos (botón sin link, link sin texto, etc.)
 
 ## Ejemplos de Uso en Frontend
 
@@ -100,29 +146,33 @@ $request->validate([
 ### CSS para Posiciones
 
 ```css
-.cover-overlay {
+.cover-overlay-preview {
     position: absolute;
     inset: 0;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
-    text-align: center;
+    padding: 1.5rem;
+    color: var(--overlay-text-color, #ffffff);
 }
 
-/* Posiciones específicas */
-.cover-overlay.top-left { justify-content: flex-start; align-items: flex-start; text-align: left; }
-.cover-overlay.top-center { justify-content: flex-start; align-items: center; }
-.cover-overlay.top-right { justify-content: flex-start; align-items: flex-end; text-align: right; }
+.cover-overlay-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start; /* Default izquierda */
+}
 
-.cover-overlay.center-left { justify-content: center; align-items: flex-start; text-align: left; }
-.cover-overlay.center-center { justify-content: center; align-items: center; text-align: center; }
-.cover-overlay.center-right { justify-content: center; align-items: flex-end; text-align: right; }
+/* Alineación automática por posición */
+.cover-overlay-preview.pos-top-center .cover-overlay-content,
+.cover-overlay-preview.pos-center-center .cover-overlay-content,
+.cover-overlay-preview.pos-bottom-center .cover-overlay-content {
+    align-items: center; /* Centrado horizontal */
+}
 
-.cover-overlay.bottom-left { justify-content: flex-end; align-items: flex-start; text-align: left; }
-.cover-overlay.bottom-center { justify-content: flex-end; align-items: center; }
-.cover-overlay.bottom-right { justify-content: flex-end; align-items: flex-end; text-align: right; }
+.cover-overlay-preview.pos-top-right .cover-overlay-content,
+.cover-overlay-preview.pos-center-right .cover-overlay-content,
+.cover-overlay-preview.pos-bottom-right .cover-overlay-content {
+    align-items: flex-end; /* Alineación derecha */
+}
 ```
 
 ## Vistas Actualizadas

@@ -169,11 +169,45 @@
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
+.cover-overlay-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cover-overlay-preview.has-overlay-bg::before {
+    opacity: 1;
+    background: rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35));
+}
+
+.cover-overlay-preview.has-overlay-bg.pos-top-left::before,
+.cover-overlay-preview.has-overlay-bg.pos-center-left::before,
+.cover-overlay-preview.has-overlay-bg.pos-bottom-left::before {
+    background: linear-gradient(90deg,
+        rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35)) 0%,
+        rgba(0, 0, 0, 0) 80%);
+}
+
+.cover-overlay-preview.has-overlay-bg.pos-top-right::before,
+.cover-overlay-preview.has-overlay-bg.pos-center-right::before,
+.cover-overlay-preview.has-overlay-bg.pos-bottom-right::before {
+    background: linear-gradient(270deg,
+        rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35)) 0%,
+        rgba(0, 0, 0, 0) 80%);
+}
+
 .cover-overlay-content {
     max-width: 70%;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
 }
 
 .cover-overlay-title {
@@ -236,10 +270,18 @@
     text-align: center;
 }
 
+.cover-overlay-preview.pos-top-center .cover-overlay-content {
+    align-items: center;
+}
+
 .cover-overlay-preview.pos-top-right {
     align-items: flex-start;
     justify-content: flex-end;
     text-align: right;
+}
+
+.cover-overlay-preview.pos-top-right .cover-overlay-content {
+    align-items: flex-end;
 }
 
 .cover-overlay-preview.pos-center-left {
@@ -254,10 +296,18 @@
     text-align: center;
 }
 
+.cover-overlay-preview.pos-center-center .cover-overlay-content {
+    align-items: center;
+}
+
 .cover-overlay-preview.pos-center-right {
     align-items: center;
     justify-content: flex-end;
     text-align: right;
+}
+
+.cover-overlay-preview.pos-center-right .cover-overlay-content {
+    align-items: flex-end;
 }
 
 .cover-overlay-preview.pos-bottom-left {
@@ -272,10 +322,18 @@
     text-align: center;
 }
 
+.cover-overlay-preview.pos-bottom-center .cover-overlay-content {
+    align-items: center;
+}
+
 .cover-overlay-preview.pos-bottom-right {
     align-items: flex-end;
     justify-content: flex-end;
     text-align: right;
+}
+
+.cover-overlay-preview.pos-bottom-right .cover-overlay-content {
+    align-items: flex-end;
 }
 
 @media (max-width: 768px) {

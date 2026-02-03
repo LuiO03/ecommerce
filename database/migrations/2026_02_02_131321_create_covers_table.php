@@ -25,6 +25,8 @@ return new class extends Migration
                 'bottom-left', 'bottom-center', 'bottom-right'
             ])->default('center-center');
             $table->string('text_color')->default('#FFFFFF');
+            $table->boolean('overlay_bg_enabled')->default(false);
+            $table->decimal('overlay_bg_opacity', 3, 2)->default(0.35);
             // Campos de botón CTA
             $table->string('button_text')->nullable();
             $table->string('button_link')->nullable();

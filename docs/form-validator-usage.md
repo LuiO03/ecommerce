@@ -130,6 +130,35 @@ data-validate="url"
 >
 ```
 
+#### 🔗 **Campos Dependientes (requiredWith)**
+
+Valida que si uno de los campos relacionados tiene valor, todos deben tener valor. Útil para grupos de campos que dependen entre sí.
+
+```html
+<!-- Campos del botón CTA: si se llena uno, todos son requeridos -->
+<input type="text" name="button_text" id="button_text"
+    data-validate="max:100|requiredWith:button_link,button_style">
+
+<input type="url" name="button_link" id="button_link"
+    data-validate="url|requiredWith:button_text,button_style">
+
+<select name="button_style" id="button_style"
+    data-validate="requiredWith:button_text,button_link">
+    <option value="primary">Principal</option>
+    <option value="secondary">Secundario</option>
+</select>
+```
+
+**Parámetro:** Lista de IDs de campos separados por coma.
+
+**Comportamiento:**
+- Si `button_text` tiene valor → `button_link` y `button_style` son obligatorios
+- Si `button_link` tiene valor → `button_text` y `button_style` son obligatorios
+- Si todos están vacíos → validación pasa (ninguno es obligatorio)
+- Si alguno tiene valor y otros están vacíos → muestra error indicando campos faltantes
+
+**Mensaje de error:** `Este campo es requerido cuando se completa: [nombres de campos faltantes]`
+
 #### 🎨 **Patrón Regex Personalizado**
 ```html
 <!-- Solo letras mayúsculas -->
