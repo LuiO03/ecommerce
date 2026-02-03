@@ -80,8 +80,7 @@
                         <div class="card-meta">
                             <div class="meta-info">
                                 <span class="meta-item">
-                                    <i class="ri-sort-number-asc"></i>
-                                    Pos: {{ $cover->position }}
+                                    <i class="ri-hashtag"></i>{{ $cover->position }}
                                 </span>
                                 <span class="meta-item meta-date">
                                     <i class="ri-calendar-fill"></i>

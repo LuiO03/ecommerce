@@ -44,7 +44,65 @@
         @endif
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+        <div class="form-body">
+            <div class="form-row-fit">
+                <div class="input-group">
+                    <label for="title" class="label-form">
+                        Título de la portada
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-text input-icon"></i>
+                        <input type="text" name="title" id="title" class="input-form" required
+                            value="{{ old('title', $cover->title) }}" placeholder="Ingrese el título"
+                            data-validate="required|min:3|max:255">
+                    </div>
+                </div>
 
+                <div class="input-group">
+                    <label for="status" class="label-form">
+                        Estado
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-toggle-line input-icon"></i>
+                        <select name="status" id="status" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled>Seleccione un estado</option>
+                            <option value="1" @selected(old('status', $cover->status) == 1)>Activo</option>
+                            <option value="0" @selected(old('status', $cover->status) == 0)>Inactivo</option>
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="description" class="label-form label-textarea">Descripción</label>
+                    <div class="input-icon-container">
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Descripción opcional"
+                            rows="4" data-validate="max:500">{{ old('description', $cover->description) }}</textarea>
+                        <i class="ri-file-text-line input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="start_at" class="label-form">Fecha de inicio</label>
+                    <div class="input-icon-container">
+                        <input type="datetime-local" name="start_at" id="start_at" class="input-form"
+                            value="{{ old('start_at', $cover->start_at ? $cover->start_at->format('Y-m-d\TH:i') : '') }}">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="end_at" class="label-form">Fecha de fin</label>
+                    <div class="input-icon-container">
+                        <i class="ri-calendar-check-line input-icon"></i>
+                        <input type="datetime-local" name="end_at" id="end_at" class="input-form"
+                            value="{{ old('end_at', $cover->end_at ? $cover->end_at->format('Y-m-d\TH:i') : '') }}">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="form-body">
             <div class="image-upload-section">
                 <label class="label-form">Imagen de la portada</label>
@@ -93,78 +151,6 @@
                 <div class="image-filename" id="imageFilename" style="display: none;">
                     <i class="ri-file-image-line"></i>
                     <span id="filenameText"></span>
-                </div>
-            </div>
-        </div>
-        <div class="form-body">
-            <div class="form-row-fit">
-                <div class="input-group">
-                    <label for="title" class="label-form">
-                        Título de la portada
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-text input-icon"></i>
-                        <input type="text" name="title" id="title" class="input-form" required
-                            value="{{ old('title', $cover->title) }}" placeholder="Ingrese el título"
-                            data-validate="required|min:3|max:255">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="position" class="label-form">
-                        Posición
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-sort-number-asc input-icon"></i>
-                        <input type="number" name="position" id="position" class="input-form" required
-                            value="{{ old('position', $cover->position) }}" min="0"
-                            placeholder="Orden de aparición" data-validate="required|numeric|min:0">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="status" class="label-form">
-                        Estado
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-toggle-line input-icon"></i>
-                        <select name="status" id="status" class="select-form" required
-                            data-validate="required|selected">
-                            <option value="" disabled>Seleccione un estado</option>
-                            <option value="1" @selected(old('status', $cover->status) == 1)>Activo</option>
-                            <option value="0" @selected(old('status', $cover->status) == 0)>Inactivo</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="description" class="label-form label-textarea">Descripción</label>
-                    <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Descripción opcional"
-                            rows="4" data-validate="max:500">{{ old('description', $cover->description) }}</textarea>
-                        <i class="ri-file-text-line input-icon"></i>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="start_at" class="label-form">Fecha de inicio</label>
-                    <div class="input-icon-container">
-                        <input type="datetime-local" name="start_at" id="start_at" class="input-form"
-                            value="{{ old('start_at', $cover->start_at ? $cover->start_at->format('Y-m-d\TH:i') : '') }}">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="end_at" class="label-form">Fecha de fin</label>
-                    <div class="input-icon-container">
-                        <i class="ri-calendar-check-line input-icon"></i>
-                        <input type="datetime-local" name="end_at" id="end_at" class="input-form"
-                            value="{{ old('end_at', $cover->end_at ? $cover->end_at->format('Y-m-d\TH:i') : '') }}">
-                    </div>
                 </div>
             </div>
         </div>

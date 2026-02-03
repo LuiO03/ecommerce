@@ -95,7 +95,6 @@
     justify-content: center;
     height: max-content;
     flex-direction: column;
-    gap: 0px;
     line-height: 1;
     gap: 5px;
 }

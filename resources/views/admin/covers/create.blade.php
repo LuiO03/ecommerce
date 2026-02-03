@@ -32,41 +32,7 @@
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
-        <div class="form-body">
-            <div class="image-upload-section">
-                <label class="label-form">
-                    Imagen de la portada
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <input type="file" name="image" id="image" class="file-input" accept="image/*" required
-                    data-validate="imageSingle|maxSizeSingleMB:3">
 
-                <div class="image-preview-zone" id="imagePreviewZone">
-                    <div class="image-placeholder" id="imagePlaceholder">
-                        <i class="ri-image-add-line"></i>
-                        <p>Arrastra una imagen aquí</p>
-                        <span>o haz clic para seleccionar</span>
-                        <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                    </div>
-                    <img id="imagePreview" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
-                    <div class="image-overlay" id="imageOverlay" style="display: none;">
-                        <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
-                            <i class="ri-upload-2-line"></i>
-                            <span>Cambiar</span>
-                        </button>
-                        <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
-                            title="Eliminar imagen">
-                            <i class="ri-delete-bin-line"></i>
-                            <span>Eliminar</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="image-filename" id="imageFilename" style="display: none;">
-                    <i class="ri-file-image-line"></i>
-                    <span id="filenameText"></span>
-                </div>
-            </div>
-        </div>
         <div class="form-body">
             <div class="form-row-fit">
                 <div class="input-group">
@@ -124,6 +90,41 @@
                         <input type="datetime-local" name="end_at" id="end_at" class="input-form"
                             value="{{ old('end_at') }}">
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-body">
+            <div class="image-upload-section">
+                <label class="label-form">
+                    Imagen de la portada
+                    <i class="ri-asterisk text-accent"></i>
+                </label>
+                <input type="file" name="image" id="image" class="file-input" accept="image/*" required
+                    data-validate="imageSingle|maxSizeSingleMB:3">
+
+                <div class="image-preview-zone" id="imagePreviewZone">
+                    <div class="image-placeholder" id="imagePlaceholder">
+                        <i class="ri-image-add-line"></i>
+                        <p>Arrastra una imagen aquí</p>
+                        <span>o haz clic para seleccionar</span>
+                        <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
+                    </div>
+                    <img id="imagePreview" class="image-preview image-pulse" style="display: none;" alt="Vista previa">
+                    <div class="image-overlay" id="imageOverlay" style="display: none;">
+                        <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
+                            <i class="ri-upload-2-line"></i>
+                            <span>Cambiar</span>
+                        </button>
+                        <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                            title="Eliminar imagen">
+                            <i class="ri-delete-bin-line"></i>
+                            <span>Eliminar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="image-filename" id="imageFilename" style="display: none;">
+                    <i class="ri-file-image-line"></i>
+                    <span id="filenameText"></span>
                 </div>
             </div>
         </div>
