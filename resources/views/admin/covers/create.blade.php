@@ -112,92 +112,83 @@
                     </div>
                 </div>
                 <div class="form-row-fit">
+                    <div class="form-column-fit">
+                        <div class="input-group">
+                            <label for="text_color" class="label-form">Color del texto</label>
+                            <div class="input-icon-container">
+                                <i class="ri-palette-line input-icon"></i>
+                                <input type="text" id="text_color" data-role="text-color" placeholder="#RRGGBB"
+                                    style="cursor: pointer" autocomplete="off" data-validate="required|colorCss"
+                                    value="{{ old('text_color', '#FFFFFF') }}" data-coloris>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="button_text" class="label-form">Texto del botón</label>
+                            <div class="input-icon-container">
+                                <i class="ri-radio-button-line input-icon"></i>
+                                <input type="text" name="button_text" id="button_text" class="input-form"
+                                    value="{{ old('button_text') }}" placeholder="Ej: Comprar ahora"
+                                    data-validate="max:100">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="button_style" class="label-form">Estilo del botón</label>
+                            <div class="input-icon-container">
+                                <i class="ri-palette-line input-icon"></i>
+                                <select name="button_style" id="button_style" class="select-form">
+                                    <option value="primary" {{ old('button_style') == 'primary' ? 'selected' : '' }}
+                                        selected>
+                                        Principal</option>
+                                    <option value="secondary"
+                                        {{ old('button_style') == 'secondary' ? 'selected' : '' }}>
+                                        Secundario</option>
+                                    <option value="outline" {{ old('button_style') == 'outline' ? 'selected' : '' }}>
+                                        Contorno
+                                    </option>
+                                    <option value="white" {{ old('button_style') == 'white' ? 'selected' : '' }}>
+                                        Blanco
+                                    </option>
+                                </select>
+                                <i class="ri-arrow-down-s-line select-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="button_link" class="label-form">URL del botón</label>
+                            <div class="input-icon-container">
+                                <i class="ri-links-line input-icon"></i>
+                                <input type="url" name="button_link" id="button_link" class="input-form"
+                                    value="{{ old('button_link') }}" placeholder="https://example.com"
+                                    data-validate="url">
+                            </div>
+                        </div>
+                    </div>
                     <div class="input-group">
                         <label for="text_position" class="label-form">Posición del texto</label>
-                        <div class="input-icon-container">
-                            <i class="ri-layout-grid-fill input-icon"></i>
-                            <select name="text_position" id="text_position" class="select-form">
-                                <option value="top-left" {{ old('text_position') == 'top-left' ? 'selected' : '' }}>
-                                    Superior
-                                    Izquierda</option>
-                                <option value="top-center"
-                                    {{ old('text_position') == 'top-center' ? 'selected' : '' }}>
-                                    Superior Centro</option>
-                                <option value="top-right" {{ old('text_position') == 'top-right' ? 'selected' : '' }}>
-                                    Superior Derecha</option>
-                                <option value="center-left"
-                                    {{ old('text_position') == 'center-left' ? 'selected' : '' }}>
-                                    Centro Izquierda</option>
-                                <option value="center-center"
-                                    {{ old('text_position') == 'center-center' ? 'selected' : '' }} selected>Centro
-                                    Centro
-                                </option>
-                                <option value="center-right"
-                                    {{ old('text_position') == 'center-right' ? 'selected' : '' }}>Centro Derecha
-                                </option>
-                                <option value="bottom-left"
-                                    {{ old('text_position') == 'bottom-left' ? 'selected' : '' }}>
-                                    Inferior Izquierda</option>
-                                <option value="bottom-center"
-                                    {{ old('text_position') == 'bottom-center' ? 'selected' : '' }}>Inferior Centro
-                                </option>
-                                <option value="bottom-right"
-                                    {{ old('text_position') == 'bottom-right' ? 'selected' : '' }}>Inferior Derecha
-                                </option>
-                            </select>
-                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        <input type="hidden" name="text_position" id="text_position"
+                            value="{{ old('text_position', 'center-center') }}">
+                        <div class="position-picker" data-target="text_position">
+                            <button type="button" class="position-cell" data-position="top-left"
+                                aria-label="Superior izquierda"></button>
+                            <button type="button" class="position-cell" data-position="top-center"
+                                aria-label="Superior centro"></button>
+                            <button type="button" class="position-cell" data-position="top-right"
+                                aria-label="Superior derecha"></button>
+                            <button type="button" class="position-cell" data-position="center-left"
+                                aria-label="Centro izquierda"></button>
+                            <button type="button" class="position-cell" data-position="center-center"
+                                aria-label="Centro"></button>
+                            <button type="button" class="position-cell" data-position="center-right"
+                                aria-label="Centro derecha"></button>
+                            <button type="button" class="position-cell" data-position="bottom-left"
+                                aria-label="Inferior izquierda"></button>
+                            <button type="button" class="position-cell" data-position="bottom-center"
+                                aria-label="Inferior centro"></button>
+                            <button type="button" class="position-cell" data-position="bottom-right"
+                                aria-label="Inferior derecha"></button>
                         </div>
                     </div>
 
-                    <div class="input-group">
-                        <label for="text_color" class="label-form">Color del texto</label>
-                        <div class="input-icon-container">
-                            <i class="ri-palette-line input-icon"></i>
-                            <input type="text" id="text_color" data-role="text-color" placeholder="#RRGGBB"
-                                style="cursor: pointer" autocomplete="off" data-validate="required|colorCss"
-                                value="{{ old('text_color', '#FFFFFF') }}" data-coloris>
-                        </div>
-                    </div>
                 </div>
-                <div class="form-row-fit">
-                    <div class="input-group">
-                        <label for="button_text" class="label-form">Texto del botón</label>
-                        <div class="input-icon-container">
-                            <i class="ri-radio-button-line input-icon"></i>
-                            <input type="text" name="button_text" id="button_text" class="input-form"
-                                value="{{ old('button_text') }}" placeholder="Ej: Comprar ahora"
-                                data-validate="max:100">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="button_style" class="label-form">Estilo del botón</label>
-                        <div class="input-icon-container">
-                            <i class="ri-palette-line input-icon"></i>
-                            <select name="button_style" id="button_style" class="select-form">
-                                <option value="primary" {{ old('button_style') == 'primary' ? 'selected' : '' }}
-                                    selected>
-                                    Principal</option>
-                                <option value="secondary" {{ old('button_style') == 'secondary' ? 'selected' : '' }}>
-                                    Secundario</option>
-                                <option value="outline" {{ old('button_style') == 'outline' ? 'selected' : '' }}>
-                                    Contorno
-                                </option>
-                                <option value="white" {{ old('button_style') == 'white' ? 'selected' : '' }}>Blanco
-                                </option>
-                            </select>
-                            <i class="ri-arrow-down-s-line select-arrow"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="button_link" class="label-form">URL del botón</label>
-                    <div class="input-icon-container">
-                        <i class="ri-links-line input-icon"></i>
-                        <input type="url" name="button_link" id="button_link" class="input-form"
-                            value="{{ old('button_link') }}" placeholder="https://example.com" data-validate="url">
-                    </div>
-                </div>
-
 
             </div>
             <div class="form-column">
@@ -218,6 +209,14 @@
                         </div>
                         <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
                             alt="Vista previa">
+                        <div class="cover-overlay-preview pos-center-center" id="coverOverlayPreview"
+                            style="display: none;">
+                            <div class="cover-overlay-content">
+                                <span class="cover-overlay-title" id="coverOverlayTitle"></span>
+                                <span class="cover-overlay-subtext" id="coverOverlaySubtext"></span>
+                                <span class="cover-overlay-button is-primary" id="coverOverlayButton"></span>
+                            </div>
+                        </div>
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
                             <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
                                 <i class="ri-upload-2-line"></i>
@@ -271,6 +270,117 @@
                     validateOnInput: false,
                     scrollToFirstError: true
                 });
+
+                const initCoverOverlayPreview = () => {
+                    const preview = document.getElementById('coverOverlayPreview');
+                    if (!preview) return;
+
+                    const titleInput = document.getElementById('overlay_text');
+                    const subtextInput = document.getElementById('overlay_subtext');
+                    const positionInput = document.getElementById('text_position');
+                    const colorInput = document.getElementById('text_color');
+                    const buttonTextInput = document.getElementById('button_text');
+                    const buttonStyleInput = document.getElementById('button_style');
+
+                    const titleEl = document.getElementById('coverOverlayTitle');
+                    const subtextEl = document.getElementById('coverOverlaySubtext');
+                    const buttonEl = document.getElementById('coverOverlayButton');
+
+                    const positionClasses = [
+                        'pos-top-left', 'pos-top-center', 'pos-top-right',
+                        'pos-center-left', 'pos-center-center', 'pos-center-right',
+                        'pos-bottom-left', 'pos-bottom-center', 'pos-bottom-right'
+                    ];
+
+                    const applyPosition = (value) => {
+                        preview.classList.remove(...positionClasses);
+                        const normalized = value ? `pos-${value}` : 'pos-center-center';
+                        preview.classList.add(normalized);
+                    };
+
+                    const applyButtonStyle = (value) => {
+                        buttonEl.classList.remove('is-primary', 'is-secondary', 'is-outline', 'is-white');
+                        const normalized = value || 'primary';
+                        buttonEl.classList.add(`is-${normalized}`);
+                    };
+
+                    const initPositionPicker = () => {
+                        const picker = document.querySelector('.position-picker');
+                        if (!picker || !positionInput) return;
+                        const cells = picker.querySelectorAll('.position-cell');
+
+                        const setActive = (value) => {
+                            cells.forEach((cell) => {
+                                cell.classList.toggle('is-active', cell.dataset.position === value);
+                            });
+                        };
+
+                        const current = positionInput.value || 'center-center';
+                        setActive(current);
+
+                        cells.forEach((cell) => {
+                            cell.addEventListener('click', () => {
+                                const value = cell.dataset.position || 'center-center';
+                                positionInput.value = value;
+                                setActive(value);
+                                updatePreview();
+                            });
+                        });
+                    };
+
+                    const updatePreview = () => {
+                        const title = titleInput?.value?.trim() || '';
+                        const subtext = subtextInput?.value?.trim() || '';
+                        const buttonText = buttonTextInput?.value?.trim() || '';
+                        const position = positionInput?.value || 'center-center';
+                        const color = colorInput?.value || '#FFFFFF';
+
+                        titleEl.textContent = title;
+                        subtextEl.textContent = subtext;
+                        buttonEl.textContent = buttonText;
+
+                        titleEl.style.display = title ? 'block' : 'none';
+                        subtextEl.style.display = subtext ? 'block' : 'none';
+                        buttonEl.style.display = buttonText ? 'inline-flex' : 'none';
+
+                        applyPosition(position);
+                        applyButtonStyle(buttonStyleInput?.value);
+                        preview.style.setProperty('--overlay-text-color', color);
+
+                        const previewZone = document.getElementById('imagePreviewZone');
+                        const imageEl = document.getElementById('imagePreview');
+                        const hasImage = previewZone?.classList.contains('has-image') || imageEl?.style
+                            .display === 'block';
+                        const hasContent = Boolean(title || subtext || buttonText);
+                        preview.style.display = hasContent && hasImage ? 'flex' : 'none';
+                    };
+
+                    const imageInput = document.getElementById('image');
+                    const removeBtn = document.getElementById('removeImageBtn');
+                    const changeBtn = document.getElementById('changeImageBtn');
+
+                    imageInput?.addEventListener('change', () => setTimeout(updatePreview, 80));
+                    removeBtn?.addEventListener('click', () => setTimeout(updatePreview, 80));
+                    changeBtn?.addEventListener('click', () => setTimeout(updatePreview, 80));
+
+                    [
+                        titleInput,
+                        subtextInput,
+                        positionInput,
+                        colorInput,
+                        buttonTextInput,
+                        buttonStyleInput
+                    ].forEach((el) => {
+                        if (!el) return;
+                        el.addEventListener('input', updatePreview);
+                        el.addEventListener('change', updatePreview);
+                    });
+
+                    initPositionPicker();
+                    updatePreview();
+                };
+
+                initCoverOverlayPreview();
             });
         </script>
     @endpush

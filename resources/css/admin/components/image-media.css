@@ -157,6 +157,141 @@
     opacity: 1;
 }
 
+/* === OVERLAY PREVIEW (texto/CTA) === */
+.cover-overlay-preview {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: flex;
+    padding: 1.5rem;
+    pointer-events: none;
+    color: var(--overlay-text-color, #ffffff);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+.cover-overlay-content {
+    max-width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cover-overlay-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.cover-overlay-subtext {
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0.95;
+}
+
+.cover-overlay-button {
+    margin-top: 0.35rem;
+    width: fit-content;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid transparent;
+    backdrop-filter: blur(2px);
+}
+
+.cover-overlay-button.is-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.cover-overlay-button.is-secondary {
+    background: var(--color-info);
+    color: #fff;
+}
+
+.cover-overlay-button.is-outline {
+    background: transparent;
+    color: var(--overlay-text-color, #ffffff);
+    border-color: currentColor;
+}
+
+.cover-overlay-button.is-white {
+    background: #ffffff;
+    color: #111827;
+}
+
+/* Posiciones del overlay */
+.cover-overlay-preview.pos-top-left {
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.cover-overlay-preview.pos-top-center {
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+}
+
+.cover-overlay-preview.pos-top-right {
+    align-items: flex-start;
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.cover-overlay-preview.pos-center-left {
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.cover-overlay-preview.pos-center-center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cover-overlay-preview.pos-center-right {
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.cover-overlay-preview.pos-bottom-left {
+    align-items: flex-end;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.cover-overlay-preview.pos-bottom-center {
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+}
+
+.cover-overlay-preview.pos-bottom-right {
+    align-items: flex-end;
+    justify-content: flex-end;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .cover-overlay-content {
+        max-width: 100%;
+    }
+
+    .cover-overlay-title {
+        font-size: 1.05rem;
+    }
+
+    .cover-overlay-subtext {
+        font-size: 0.85rem;
+    }
+}
+
 .overlay-btn {
     display: flex;
     align-items: center;
@@ -217,6 +352,55 @@
 
 .image-filename i {
     font-size: 1.2rem;
+}
+
+/* === SELECTOR VISUAL DE POSICIÓN === */
+.position-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px;
+    border-radius: var(--radius-card);
+    border: 2px solid var(--color-input-border);
+    background: var(--color-input-bg);
+}
+
+.position-cell {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    border: 1px dashed var(--color-input-border);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.position-cell:hover {
+    border-color: var(--color-accent);
+    background: var(--color-info-pastel);
+}
+
+.position-cell.is-active {
+    border-color: var(--color-accent);
+    background: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+}
+
+.position-cell.is-active::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 6px;
+    background: var(--color-accent);
+    opacity: 0.25;
+}
+
+@media (max-width: 768px) {
+    .position-picker {
+        gap: 6px;
+        padding: 8px;
+    }
 }
 
 .image-filename span {

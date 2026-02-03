@@ -107,6 +107,12 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
+.form-column-fit{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .form-row-fit .inputs-column{
     display: flex;
     flex-direction: column;
