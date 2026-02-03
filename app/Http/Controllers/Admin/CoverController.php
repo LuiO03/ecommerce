@@ -148,16 +148,32 @@ class CoverController extends Controller
     public function updateStatus(Request $request, Cover $cover)
     {
         $request->validate([
-            'status' => 'required|boolean'
+            'status' => 'required|boolean',
         ]);
 
-        $cover->status = $request->status;
+        $oldStatus = (bool) $cover->status;
+
+        // Actualizar solo estado sin disparar eventos updated (evita doble auditoría)
+        $cover->status = (bool) $request->status;
+        $cover->updated_by = Auth::id();
         $cover->saveQuietly();
+
+        // Auditoría de cambio de estado
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'status_updated',
+            'auditable_type' => Cover::class,
+            'auditable_id'   => $cover->id,
+            'old_values'     => ['status' => $oldStatus],
+            'new_values'     => ['status' => (bool) $cover->status],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
 
         return response()->json([
             'success' => true,
+            'message' => 'Estado actualizado correctamente',
             'status' => $cover->status,
-            'message' => 'Estado actualizado correctamente'
         ]);
     }
 

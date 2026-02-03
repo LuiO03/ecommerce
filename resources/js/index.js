@@ -32,6 +32,7 @@ import {
 } from './utils/gallery-manager.js';
 
 // Exportar para uso global
+window.StatusToggleHandler = StatusToggleHandler;
 window.initImageUpload = initImageUpload;
 window.initSubmitLoader = initSubmitLoader;
 window.initCategoryHierarchy = initCategoryHierarchy;
