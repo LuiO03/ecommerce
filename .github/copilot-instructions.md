@@ -1,57 +1,74 @@
+# Instrucciones para Agentes IA - GECKOMERCE
 
-# Guía para Agentes IA en GECKОМERCE
+Ecommerce profesional en Laravel 12. Guía práctica para productividad inmediata.
 
-Esta guía documenta los patrones reales del proyecto para que un agente IA pueda tocar código productivamente sin romper convenciones.
+## Stack & Arquitectura
 
-## 🎯 Stack Tecnológico
-
-**Backend:** Laravel 12, PHP 8.2, MySQL  
+**Backend:** Laravel 12 + PHP 8.2 + MySQL  
 **Frontend:** Blade + Livewire 3 + TailwindCSS 3 + Flowbite  
-**Auth:** Laravel Jetstream (perfiles + 2FA)  
-**Tablas:** DataTables con filtros personalizados y responsive  
-**Export:** Maatwebsite Excel + Spatie Laravel PDF  
-**Permisos:** Spatie Laravel Permission  
-**Iconos:** Solo Remix Icon (`ri-*`)  
-**Build:** Vite 7  
-**Dependencias JS:** Sortable.js (drag & drop), Puppeteer, Axios, Flowbite  
-**Color Picker:** Coloris (CDN)
+**Auth:** Jetstream (2FA) | **Permisos:** Spatie Permission | **Exports:** Maatwebsite Excel + Spatie PDF  
+**UI:** Remix Icon, DataTables 2.3.4, Flowbite | **Build:** Vite 7 | **JS:** Sortable.js, Axios  
 
-## 🏗️ Arquitectura General
+**Catálogo jerárquico:** Familias → Categorías (anidables) → Productos → Variantes con Options/Features.  
+**Auditoría:** Trait `Auditable` (created_by, updated_by, deleted_by + tabla audits). Automática en created/updated/deleted.
 
-### Sistema de Catálogo Jerárquico
-# Instrucciones para agentes IA (GECKOMERCE)
+## Flujos de Desarrollo
 
-## Panorama y arquitectura
-- Stack: Laravel 12 + PHP 8.2 + MySQL; Blade + Livewire 3 + TailwindCSS 3 + Flowbite; Spatie Permission; Maatwebsite Excel + Spatie Laravel PDF.
-- Catálogo jerárquico: Familias → Categorías (anidables) → Productos → Variantes, con Options/Features. Ver docs/category-hierarchy-manager.md y docs/product-variants-manager.md.
-- Auditoría automática: usar App\Traits\Auditable (created_by/updated_by/deleted_by + audits). Patrón en app/Models/Family.php y docs/auditoria.md.
+- **Setup:** `composer setup` (configura .env, migraciones, npm, build)
+- **Dev local:** `composer dev` (serve + queue + pail + vite, con concurrently)
+- **Tests:** `composer test` (artisan test)
+- **Format:** `./vendor/bin/pint` (Laravel Pint)
 
-## Flujos de desarrollo
-- Setup completo: composer setup.
-- Dev local: composer dev (serve + queue:listen + pail + vite).
-- Tests/formato: composer test y ./vendor/bin/pint.
+## Convenciones Backend
 
-## Convenciones clave
-- Rutas admin solo en routes/admin.php con nombre admin.entidad.accion y prefijo /admin (bootstrap/app.php).
-- Permisos en controladores admin: {entidad_plural}.{accion} (ej: familias.index). Ver app/Http/Controllers/Admin/FamilyController.php.
-- Slugs y route model binding: getRouteKeyName() => 'slug' y generateUniqueSlug() como en app/Models/Family.php.
-- SoftDeletes no es global: solo Post y CompanySetting actualmente.
+**Rutas admin:** Solo en `routes/admin.php`. Prefijo `/admin`, nombre `admin.entidad.accion`. Protegidas en bootstrap/app.php con `web,auth:sanctum,jetstream.auth_session,verified`.
 
-## Frontend (Blade/JS/CSS)
-- Layout base: resources/views/layouts/admin.blade.php con <x-admin-layout>.
-- Assets: entry point único resources/js/app.js + resources/css/app.css; CSS específico admin/site se carga con @vite() en layouts. No agregar nuevos entry points sin revisar vistas.
-- JS modular: módulos en resources/js/modules o resources/js/utils e importados en app.js (no solo en index.js). Exportar a window si se usan desde Blade.
-- DataTables: estructura en resources/views/admin/families/index.blade.php; lógica en resources/js/utils/datatable-manager.js y docs/datatable-manager-usage.md.
-- Alertas: <x-alert> (app/View/Components/Alert.php y resources/views/partials/components/alert.blade.php).
-- Iconos: solo Remix Icon (ri-*).
+**Permisos:** Middleware en __construct del controlador: `can:{entidad_plural}.{accion}` (ej: `familias.index`, `productos.edit`). Ver `FamilyController.php` línea 15-20.
 
-## Integraciones y patterns
-- Export Excel/PDF: app/Exports/* + vistas en resources/views/admin/export/.
-- Toggle de estado: En **tablas DataTable** se usa resources/js/utils/datatable-manager.js (config.statusRoute). En **galerías/tarjetas** se usa script inline en la vista (evita problemas de timing). Ver ejemplo en resources/views/admin/covers/index.blade.php.
-- Eliminación múltiple: docs/multiple-delete-global.md.
+**Slugs:** getRouteKeyName() => 'slug'. Static method `generateUniqueSlug($name, $id)` maneja duplicados. Route binding automático por slug.
 
-## Referencias rápidas
-- Controlador CRUD canónico: app/Http/Controllers/Admin/FamilyController.php.
-- Modelo de referencia: app/Models/Family.php.
-- Documentación técnica: carpeta docs/.
-```
+**Auditoría:** `use Auditable` trait en modelo. Registra event (created/updated/deleted), valores antiguos/nuevos, IP, user_agent. No requiere código adicional en controlador.
+
+**SoftDeletes:** Solo en Post y CompanySetting (NO aplicar globalmente).
+
+**Exportación:** Controlador usa `Excel::store(new FamiliesExcelExport, ...)`. Clases export en `app/Exports/*`. Vistas en `resources/views/admin/export/`.
+
+## Convenciones Frontend
+
+**Entry points:** `resources/js/admin.js` (admin), `site.js` (público), `app.js` (bootstrap compartido). Layout admin carga @vite(['css/app.css', 'js/admin.js']). Actualizar vite.config.js si se agregan entry points.
+
+**JS módulos:** En `resources/js/modules/*` o `utils/*`. Importar en `index.js` o `admin.js`. Exportar a `window` si se usan desde Blade (ej: `window.DataTableManager = DataTableManager`).
+
+**DataTables:** Config en data-* de tabla HTML. Maneja selección múltiple, filtros, status toggle, paginación. Lógica en `DataTableManager` class. Ver `datatable-manager-usage.md`.
+
+**Status toggle:** En tablas → `DataTableManager` (property `statusRoute`). En galerías/tarjetas → script inline en vista (evita timing issues). Ejemplo: `covers/index.blade.php`.
+
+**Alertas:** Component `<x-alert type="success|danger|warning">`. Archivo: `resources/views/partials/components/alert.blade.php`.
+
+**Validación:** Client (FormValidator module) + Server (Request class validation).
+
+**Iconos:** Solo Remix Icon (clases `ri-*`).
+
+## Patrones Específicos
+
+**CategoryHierarchyManager:** Selección jerárquica en cascada. Datos jerárquicos (create) o planos (edit). Auto-reconstruye ruta en edición. Módulo: `resources/js/modules/category-hierarchy-manager.js`.
+
+**GalleryManager:** Upload múltiple, reorder (Sortable.js), crop canvas. Almacena en storage, retorna JSON a controlador. Módulo: `resources/js/modules/gallery-manager.js`.
+
+**Eliminación múltiple:** DataTableManager recoge IDs checkeados, POST a ruta `destroy-multiple`. Ver `docs/multiple-delete-global.md`.
+
+**Session flash:** Session::flash('info'/'toast'). Blade incluye partials que leen y muestran. Resaltar fila: Session::flash('highlightRow', $id).
+
+## Referencias Rápidas
+
+- **Controlador CRUD:** `app/Http/Controllers/Admin/FamilyController.php` (permisos, exports, status toggle)
+- **Modelo:** `app/Models/Family.php` (Auditable, slug, getRouteKeyName)
+- **Admin layout:** `resources/views/layouts/admin.blade.php` (sidebar, modals, breadcrumb)
+- **Docs:** Carpeta `docs/` (~30 archivos técnicos por módulo)
+
+## ⚠️ No Hacer
+
+- No crear permisos en middleware de ruta; usar __construct del controlador
+- No agregar JS directo en Blade si puede ser módulo
+- No usar SoftDeletes en nuevos modelos sin validar
+- No modificar vite.config.js sin actualizar @vite en layouts

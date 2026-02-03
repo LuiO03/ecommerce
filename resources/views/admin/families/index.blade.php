@@ -10,33 +10,33 @@
     <x-slot name="action">
         <!-- Menú desplegable de exportación -->
         @can('familias.export')
-        <div class="export-menu-container">
-            <button type="button" class="boton-form boton-action" id="exportMenuBtn">
-                <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
-                <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line boton-form-icon"></i>
-            </button>
-            <div class="export-dropdown" id="exportDropdown">
-                <button type="button" class="export-option" id="exportAllExcel">
-                    <i class="ri-file-excel-2-fill"></i>
-                    <span>Exportar todo a Excel</span>
+            <div class="export-menu-container">
+                <button type="button" class="boton-form boton-action" id="exportMenuBtn">
+                    <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
+                    <span class="boton-form-text">Exportar</span>
+                    <i class="ri-arrow-down-s-line boton-form-icon"></i>
                 </button>
-                <button type="button" class="export-option" id="exportAllCsv">
-                    <i class="ri-file-text-fill"></i>
-                    <span>Exportar todo a CSV</span>
-                </button>
-                <button type="button" class="export-option" id="exportAllPdf">
-                    <i class="ri-file-pdf-2-fill"></i>
-                    <span>Exportar todo a PDF</span>
-                </button>
+                <div class="export-dropdown" id="exportDropdown">
+                    <button type="button" class="export-option" id="exportAllExcel">
+                        <i class="ri-file-excel-2-fill"></i>
+                        <span>Exportar todo a Excel</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllCsv">
+                        <i class="ri-file-text-fill"></i>
+                        <span>Exportar todo a CSV</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllPdf">
+                        <i class="ri-file-pdf-2-fill"></i>
+                        <span>Exportar todo a PDF</span>
+                    </button>
+                </div>
             </div>
-        </div>
         @endcan
         @can('familias.create')
-        <a href="{{ route('admin.families.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Familia</span>
-        </a>
+            <a href="{{ route('admin.families.create') }}" class="boton boton-primary">
+                <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
+                <span class="boton-text">Crear Familia</span>
+            </a>
         @endcan
     </x-slot>
 
@@ -88,7 +88,8 @@
                     </div>
                 </div>
                 <!-- Botón para limpiar filtros -->
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
+                    title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                     <span class="boton-text">Limpiar filtros</span>
                 </button>
@@ -98,52 +99,52 @@
 
         <!-- Barra contextual de selección (oculta por defecto) -->
         @canany(['familias.export', 'familias.delete'])
-        <div class="selection-bar" id="selectionBar">
-            @can('familias.export')
-            <div class="selection-actions">
-                <button id="exportSelectedExcel" class="boton-selection boton-success">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-excel-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">Excel</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="excelBadge">0</span>
-                </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-text-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">CSV</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="csvBadge">0</span>
-                </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-pdf-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">PDF</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="pdfBadge">0</span>
-                </button>
+            <div class="selection-bar" id="selectionBar">
+                @can('familias.export')
+                    <div class="selection-actions">
+                        <button id="exportSelectedExcel" class="boton-selection boton-success">
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-excel-2-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">Excel</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="excelBadge">0</span>
+                        </button>
+                        <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-text-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">CSV</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="csvBadge">0</span>
+                        </button>
+                        <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-pdf-2-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">PDF</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="pdfBadge">0</span>
+                        </button>
+                    </div>
+                @endcan
+                @can('familias.delete')
+                    <button id="deleteSelected" class="boton-selection boton-danger">
+                        <span class="boton-selection-icon">
+                            <i class="ri-delete-bin-line"></i>
+                        </span>
+                        <span class="boton-selection-text">Eliminar</span>
+                        <span class="boton-selection-dot">•</span>
+                        <span class="selection-badge" id="deleteBadge">0</span>
+                    </button>
+                @endcan
+                <div class="selection-info">
+                    <span id="selectionCount">0 seleccionados</span>
+                    <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
+                        <i class="ri-close-large-fill"></i>
+                    </button>
+                </div>
             </div>
-            @endcan
-            @can('familias.delete')
-            <button id="deleteSelected" class="boton-selection boton-danger">
-                <span class="boton-selection-icon">
-                    <i class="ri-delete-bin-line"></i>
-                </span>
-                <span class="boton-selection-text">Eliminar</span>
-                <span class="boton-selection-dot">•</span>
-                <span class="selection-badge" id="deleteBadge">0</span>
-            </button>
-            @endcan
-            <div class="selection-info">
-                <span id="selectionCount">0 seleccionados</span>
-                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
-                    <i class="ri-close-large-fill"></i>
-                </button>
-            </div>
-        </div>
         @endcanany
         <!-- === Tabla === -->
         <div class="tabla-wrapper">
@@ -152,11 +153,11 @@
                     <tr>
                         <th class="control"></th>
                         @canany(['familias.export', 'familias.delete'])
-                        <th class="column-check-th column-not-order">
-                            <div>
-                                <input type="checkbox" id="checkAll" name="checkAll">
-                            </div>
-                        </th>
+                            <th class="column-check-th column-not-order">
+                                <div>
+                                    <input type="checkbox" id="checkAll" name="checkAll">
+                                </div>
+                            </th>
                         @endcanany
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
@@ -173,12 +174,12 @@
                         <tr data-id="{{ $family->id }}" data-name="{{ $family->name }}">
                             <td class="control" title="Expandir detalles"></td>
                             @canany(['familias.export', 'familias.delete'])
-                            <td class="column-check-td">
-                                <div>
-                                    <input type="checkbox" class="check-row" id="check-row-{{ $family->id }}"
-                                        name="families[]" value="{{ $family->id }}">
-                                </div>
-                            </td>
+                                <td class="column-check-td">
+                                    <div>
+                                        <input type="checkbox" class="check-row" id="check-row-{{ $family->id }}"
+                                            name="families[]" value="{{ $family->id }}">
+                                    </div>
+                                </td>
                             @endcanany
                             <td class="column-id-td">
                                 <span class="id-text">{{ $family->id }}</span>
@@ -207,22 +208,22 @@
                                         <span class="boton-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
                                     @can('familias.edit')
-                                    <a href="{{ route('admin.families.edit', $family) }}" title="Editar Familia"
-                                        class="boton boton-warning">
-                                        <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                                        <span class="boton-text">Editar</span>
-                                    </a>
+                                        <a href="{{ route('admin.families.edit', $family) }}" title="Editar Familia"
+                                            class="boton boton-warning">
+                                            <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
+                                            <span class="boton-text">Editar</span>
+                                        </a>
                                     @endcan
                                     @can('familias.delete')
-                                    <form action="{{ route('admin.families.destroy', $family) }}" method="POST"
-                                        class="delete-form" data-entity="familia">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" title="Eliminar Familia" class="boton boton-danger">
-                                            <span class="boton-text">Borrar</span>
-                                            <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
-                                        </button>
-                                    </form>
+                                        <form action="{{ route('admin.families.destroy', $family) }}" method="POST"
+                                            class="delete-form" data-entity="familia">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" title="Eliminar Familia" class="boton boton-danger">
+                                                <span class="boton-text">Borrar</span>
+                                                <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                            </button>
+                                        </form>
                                     @endcan
                                 </div>
                             </td>
@@ -295,12 +296,13 @@
                 // ========================================
                 @if (Session::has('highlightRow'))
                     (function() {
-                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-                            ? performance.getEntriesByType('navigation')
-                            : [];
-                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-                            ? performance.navigation.type
-                            : null;
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') :
+                            [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
                         const navType = navEntries.length ? navEntries[0].type : legacyNav;
                         const isBackNavigation = navType === 'back_forward' || navType === 2;
 

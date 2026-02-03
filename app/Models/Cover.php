@@ -53,7 +53,12 @@ class Cover extends Model
 
     public function scopeForTable($query)
     {
-        return $query->select('id', 'slug', 'image_path', 'title', 'start_at', 'end_at', 'position', 'status', 'created_at')
+        return $query->select(
+            'id', 'slug', 'image_path', 'title', 'start_at', 'end_at', 'position', 'status', 'created_at',
+            'overlay_text', 'overlay_subtext', 'text_position', 'text_color',
+            'overlay_bg_enabled', 'overlay_bg_opacity',
+            'button_text', 'button_link', 'button_style'
+        )
             ->orderBy('position')
             ->orderByDesc('id');
     }

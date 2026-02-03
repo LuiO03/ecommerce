@@ -2,90 +2,6 @@
    MÓDULO COVERS - GALERÍA VISUAL
    ======================================== */
 
-/* === Barra de selección múltiple === */
-.covers-selection-bar {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    background: linear-gradient(
-        135deg,
-        var(--color-info) 0%,
-        var(--color-primary) 100%
-    );
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.selection-info {
-    flex: 1;
-    color: white;
-    font-weight: 600;
-}
-
-.selection-actions {
-    display: flex;
-    gap: 0.8rem;
-    flex-wrap: wrap;
-}
-
-.btn-selection {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.btn-selection:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-}
-
-.btn-selection.btn-delete:hover {
-    background: rgba(220, 38, 38, 0.8);
-}
-
-.btn-close-selection {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    font-size: 20px;
-    transition: all 0.2s ease;
-}
-
-.btn-close-selection:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
-}
 
 /* === Galería de tarjetas === */
 .covers-gallery {
@@ -124,14 +40,9 @@
     transform: translateY(-2px);
 }
 
-.cover-card.selected {
-    border-color: var(--color-primary);
-    background: var(--bg-primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
 .cover-card.card-highlight {
     background-color: var(--color-success-pastel);
+    color: var(--color-success);
     animation: highlightPulse 1s ease;
 }
 
@@ -145,27 +56,6 @@
     }
 }
 
-/* === Checkbox en tarjeta === */
-.card-checkbox {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card-checkbox div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card-checkbox input[type="checkbox"] {
-    cursor: pointer;
-    accent-color: var(--color-primary);
-}
 
 /* === Imagen de tarjeta === */
 .card-image-wrapper {
@@ -205,6 +95,7 @@
     justify-content: center;
     opacity: 0;
     transition: opacity 0.3s ease;
+    z-index: 9;
 }
 
 .cover-card:hover .card-overlay {
@@ -214,34 +105,6 @@
 .overlay-actions {
     display: flex;
     gap: 12px;
-}
-
-.overlay-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: white;
-    border: none;
-    border-radius: 50%;
-    color: var(--text-primary);
-    cursor: pointer;
-    font-size: 18px;
-    transition: all 0.2s ease;
-    text-decoration: none;
-}
-
-.overlay-btn.edit-btn:hover {
-    background: var(--color-info);
-    color: white;
-    transform: scale(1.1);
-}
-
-.overlay-btn.delete-btn:hover {
-    background: var(--color-danger);
-    color: white;
-    transform: scale(1.1);
 }
 
 /* === Contenido de tarjeta === */
@@ -339,7 +202,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
     padding: 4rem 2rem;
     text-align: center;
     background: var(--bg-secondary);
@@ -457,21 +319,6 @@
     .covers-gallery {
         grid-template-columns: 1fr;
         gap: 1rem;
-    }
-
-    .covers-selection-bar {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-
-    .selection-actions {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .btn-selection span {
-        display: none;
     }
 
     .covers-controls {

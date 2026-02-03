@@ -109,7 +109,7 @@
                         <i class="ri-landscape-line input-icon"></i>
                         <input type="text" name="overlay_text" id="overlay_text" class="input-form"
                             placeholder="Texto principal a mostrar sobre la imagen"
-                            value="{{ old('overlay_text', $cover->overlay_text) }}" data-validate="max:100">
+                            value="{{ old('overlay_text', $cover->overlay_text) }}" data-validate="max:150">
                     </div>
                 </div>
 
@@ -119,7 +119,7 @@
                         <i class="ri-landscape-line input-icon"></i>
                         <input type="text" name="overlay_subtext" id="overlay_subtext" class="input-form"
                             placeholder="Texto secundario opcional"
-                            value="{{ old('overlay_subtext', $cover->overlay_subtext) }}" data-validate="max:150">
+                            value="{{ old('overlay_subtext', $cover->overlay_subtext) }}" data-validate="max:250">
                     </div>
                 </div>
                 <div class="form-row-fit">

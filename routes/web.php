@@ -1,10 +1,9 @@
 <?php
 
     use Illuminate\Support\Facades\Route;
+    use App\Http\Controllers\Site\WellcomeController;
 
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
 
     // Login administrativo (único login del sistema)
     Route::get('/login', function () {
