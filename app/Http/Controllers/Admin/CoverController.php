@@ -40,7 +40,6 @@ class CoverController extends Controller
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after_or_equal:start_at',
-            'position' => 'required|integer|min:0',
             'status' => 'required|boolean',
         ]);
 
@@ -64,7 +63,6 @@ class CoverController extends Controller
             'image_path'  => $imagePath,
             'start_at'    => $request->start_at,
             'end_at'      => $request->end_at,
-            'position'    => $request->position,
             'status'      => (bool) $request->status,
             'created_by'  => Auth::id(),
             'updated_by'  => Auth::id(),

@@ -46,14 +46,14 @@
                                 </p>
                             </div>
                             <div class="option-card-actions">
-                                <a href="{{ route('admin.options.edit', $option) }}" class="boton-sm boton-warning"
+                                <a href="{{ route('admin.options.edit', $option) }}" class="boton-form boton-warning"
                                     title="Editar">
-                                    <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
+                                    <i class="ri-edit-circle-fill"></i>
                                 </a>
-                                <button type="button" class="boton-sm boton-danger" data-action="delete-option"
+                                <button type="button" class="boton-form boton-danger" data-action="delete-option"
                                     data-action-url="{{ route('admin.options.destroy', $option) }}"
                                     data-name="{{ $option->name }}" title="Eliminar">
-                                    <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                    <i class="ri-delete-bin-2-fill"></i>
                                 </button>
                             </div>
                         </header>
@@ -159,10 +159,7 @@
                                         <button type="submit" id="featureSubmit-{{ $option->id }}"
                                             class="boton-form boton-success" data-role="feature-submit"
                                             title="Agregar valor">
-                                            <span class="boton-form-icon">
-                                                <i class="ri-add-circle-line"></i>
-                                            </span>
-                                            <span class="boton-form-text">Agregar</span>
+                                            <i class="ri-add-large-line"></i>
                                         </button>
                                     </div>
                                 </div>

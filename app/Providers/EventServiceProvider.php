@@ -6,6 +6,7 @@ use App\Listeners\LogFailedLogin;
 use App\Listeners\LogLastLoginListener;
 use App\Listeners\LogLogout;
 use App\Listeners\LogSuccessfulLogin;
+use App\Models\CoverObserver;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -27,4 +28,9 @@ class EventServiceProvider extends ServiceProvider
             LogLogout::class,
         ],
     ];
+
+    public function boot(): void
+    {
+        Cover::observe(CoverObserver::class);
+    }
 }

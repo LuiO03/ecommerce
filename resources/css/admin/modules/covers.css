@@ -126,6 +126,7 @@
 }
 
 .cover-card.card-highlight {
+    background-color: var(--color-success-pastel);
     animation: highlightPulse 1s ease;
 }
 
@@ -266,10 +267,16 @@
     color: var(--text-muted);
 }
 
+.meta-info{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .meta-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 
 .meta-item i {

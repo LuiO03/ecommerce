@@ -83,19 +83,6 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="position" class="label-form">
-                        Posición
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-sort-number-asc input-icon"></i>
-                        <input type="number" name="position" id="position" class="input-form" required
-                            value="{{ old('position', 0) }}" min="0" placeholder="Orden de aparición"
-                            data-validate="required|numeric|min:0">
-                    </div>
-                </div>
-
-                <div class="input-group">
                     <label for="status" class="label-form">
                         Estado
                         <i class="ri-asterisk text-accent"></i>
@@ -126,12 +113,12 @@
                     <div class="input-icon-container">
                         <i class="ri-calendar-line input-icon"></i>
                         <input type="datetime-local" name="start_at" id="start_at" class="input-form"
-                            value="{{ old('start_at') }}">
+                            value="{{ old('start_at', now()->format('Y-m-d\TH:i')) }}">
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="end_at" class="label-form">Fecha de fin</label>
+                    <label for="end_at" class="label-form">Fecha de fin (Opcional)</label>
                     <div class="input-icon-container">
                         <i class="ri-calendar-check-line input-icon"></i>
                         <input type="datetime-local" name="end_at" id="end_at" class="input-form"
