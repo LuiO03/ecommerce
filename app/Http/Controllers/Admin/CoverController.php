@@ -36,7 +36,13 @@ class CoverController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255|min:3',
-            'description' => 'nullable|string',
+            'overlay_text' => 'nullable|string|max:500',
+            'overlay_subtext' => 'nullable|string|max:500',
+            'text_position' => 'nullable|in:top-left,top-center,top-right,center-left,center-center,center-right,bottom-left,bottom-center,bottom-right',
+            'text_color' => 'nullable|string|size:7|starts_with:#',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|url',
+            'button_style' => 'nullable|in:primary,secondary,outline,white',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after_or_equal:start_at',
@@ -44,7 +50,6 @@ class CoverController extends Controller
         ]);
 
         $title = ucwords(mb_strtolower($request->title));
-        $description = $request->description ? ucfirst(mb_strtolower($request->description)) : null;
         $slug = Cover::generateUniqueSlug($title);
 
         // Subida de imagen
@@ -57,15 +62,21 @@ class CoverController extends Controller
         }
 
         $cover = Cover::create([
-            'slug'        => $slug,
-            'title'       => $title,
-            'description' => $description,
-            'image_path'  => $imagePath,
-            'start_at'    => $request->start_at,
-            'end_at'      => $request->end_at,
-            'status'      => (bool) $request->status,
-            'created_by'  => Auth::id(),
-            'updated_by'  => Auth::id(),
+            'slug'            => $slug,
+            'title'           => $title,
+            'overlay_text'    => $request->overlay_text,
+            'overlay_subtext' => $request->overlay_subtext,
+            'text_position'   => $request->text_position ?? 'center-center',
+            'text_color'      => $request->text_color ?? '#FFFFFF',
+            'button_text'     => $request->button_text,
+            'button_link'     => $request->button_link,
+            'button_style'    => $request->button_style ?? 'primary',
+            'image_path'      => $imagePath,
+            'start_at'        => $request->start_at,
+            'end_at'          => $request->end_at,
+            'status'          => (bool) $request->status,
+            'created_by'      => Auth::id(),
+            'updated_by'      => Auth::id(),
         ]);
 
         Session::flash('toast', [
@@ -88,7 +99,13 @@ class CoverController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255|min:3',
-            'description' => 'nullable|string',
+            'overlay_text' => 'nullable|string|max:500',
+            'overlay_subtext' => 'nullable|string|max:500',
+            'text_position' => 'nullable|in:top-left,top-center,top-right,center-left,center-center,center-right,bottom-left,bottom-center,bottom-right',
+            'text_color' => 'nullable|string|size:7|starts_with:#',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|url',
+            'button_style' => 'nullable|in:primary,secondary,outline,white',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after_or_equal:start_at',
@@ -97,7 +114,6 @@ class CoverController extends Controller
         ]);
 
         $title = ucwords(mb_strtolower($request->title));
-        $description = $request->description ? ucfirst(mb_strtolower($request->description)) : null;
         $slug = Cover::generateUniqueSlug($title, $cover->id);
 
         $imagePath = $cover->image_path;
@@ -122,15 +138,21 @@ class CoverController extends Controller
         }
 
         $cover->update([
-            'slug'        => $slug,
-            'title'       => $title,
-            'description' => $description,
-            'image_path'  => $imagePath,
-            'start_at'    => $request->start_at,
-            'end_at'      => $request->end_at,
-            'position'    => $request->position,
-            'status'      => (bool) $request->status,
-            'updated_by'  => Auth::id(),
+            'slug'            => $slug,
+            'title'           => $title,
+            'overlay_text'    => $request->overlay_text,
+            'overlay_subtext' => $request->overlay_subtext,
+            'text_position'   => $request->text_position ?? 'center-center',
+            'text_color'      => $request->text_color ?? '#FFFFFF',
+            'button_text'     => $request->button_text,
+            'button_link'     => $request->button_link,
+            'button_style'    => $request->button_style ?? 'primary',
+            'image_path'      => $imagePath,
+            'start_at'        => $request->start_at,
+            'end_at'          => $request->end_at,
+            'position'        => $request->position,
+            'status'          => (bool) $request->status,
+            'updated_by'      => Auth::id(),
         ]);
 
         Session::flash('toast', [

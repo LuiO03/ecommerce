@@ -18,7 +18,13 @@ class Cover extends Model
         'slug',
         'image_path',
         'title',
-        'description',
+        'overlay_text',
+        'overlay_subtext',
+        'text_position',
+        'text_color',
+        'button_text',
+        'button_link',
+        'button_style',
         'start_at',
         'end_at',
         'position',
@@ -32,6 +38,8 @@ class Cover extends Model
         'start_at' => 'datetime',
         'end_at' => 'datetime',
         'status' => 'boolean',
+        'button_style' => 'string',
+        'text_position' => 'string',
     ];
 
     public function scopeForSelect($query)

@@ -16,7 +16,20 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('image_path');
             $table->string('title')->nullable();
-            $table->text('description')->nullable();
+            // Campos de overlay de texto
+            $table->text('overlay_text')->nullable();
+            $table->text('overlay_subtext')->nullable();
+            $table->enum('text_position', [
+                'top-left', 'top-center', 'top-right',
+                'center-left', 'center-center', 'center-right',
+                'bottom-left', 'bottom-center', 'bottom-right'
+            ])->default('center-center');
+            $table->string('text_color')->default('#FFFFFF');
+            // Campos de botón CTA
+            $table->string('button_text')->nullable();
+            $table->string('button_link')->nullable();
+            $table->enum('button_style', ['primary', 'secondary', 'outline', 'white'])->default('primary');
+            // Fechas de vigencia
             $table->datetime('start_at')->nullable();
             $table->datetime('end_at')->nullable();
             $table->integer('position')->default(0)->index();
