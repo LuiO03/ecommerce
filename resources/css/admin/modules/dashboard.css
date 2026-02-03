@@ -108,16 +108,7 @@
     font-size: var(--font-size-p);
 }
 
-.card-title{
-    font-weight: bolder;
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-h4);
-}
 
-.card-description{
-    color: var(--color-text-soft);
-    font-size: var(--font-size-xs)
-}
 
 /* === Responsivo === */
 @media (max-width: 640px) {

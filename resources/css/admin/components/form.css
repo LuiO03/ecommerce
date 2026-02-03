@@ -122,6 +122,21 @@
     }
 }
 
+.card-header{
+
+}
+
+.card-title{
+    font-weight: bolder;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-h5);
+}
+
+.card-description{
+    color: var(--color-text-soft);
+    font-size: var(--font-size-xs)
+}
+
 .input-group {
     display: flex;
     flex-direction: column;

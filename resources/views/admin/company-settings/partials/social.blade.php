@@ -22,6 +22,7 @@
                     Configura los enlaces a las redes sociales de tu empresa y controla su visibilidad en el sitio web.
                 </p>
             </div>
+            <hr class="w-full my-0 border-default">
             <div class="form-row-fit">
                 <div class="inputs-column">
                     <div class="input-group">

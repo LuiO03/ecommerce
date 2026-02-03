@@ -24,6 +24,7 @@
                     oficiales.
                 </p>
             </div>
+            <hr class="w-full my-0 border-default">
             <div class="form-row-fit">
                 <div class="inputs-column">
                     <div class="input-group">

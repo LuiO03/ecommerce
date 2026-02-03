@@ -85,6 +85,13 @@
         </div>
         <div class="form-columns-row">
             <div class="form-column">
+                <div class="card-header">
+                    <span class="card-title">Configuración opcional de la portada</span>
+                    <p class="card-description">
+                        Define los detalles y la apariencia de la portada que se mostrará en el sitio web.
+                    </p>
+                </div>
+                <hr class="w-full my-0 border-default">
                 <div class="input-group">
                     <label for="overlay_text" class="label-form">Texto en la imagen</label>
                     <div class="input-icon-container">

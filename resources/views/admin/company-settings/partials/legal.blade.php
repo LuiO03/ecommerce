@@ -25,6 +25,7 @@
                         disponibles para los usuarios.
                     </p>
                 </div>
+                <hr class="w-full my-0 border-default">
                 <div class="input-group">
                     <label for="terms_conditions" class="label-form">Términos y condiciones</label>
                     <textarea name="terms_conditions" id="terms_conditions" class="textarea-form" rows="6"
