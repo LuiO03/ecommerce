@@ -1,5 +1,5 @@
 <div>
-    <header class="site-header site-header-sticky" id="siteHeader">
+    <header class="site-header" id="siteHeader">
         <div class="site-header-container">
             <div class="site-header-top">
                 <!-- Menú hamburguesa -->
@@ -32,7 +32,7 @@
                         <i class="ri-shopping-cart-2-line"></i>
                         <span class="nav-icon-badge">3</span>
                     </a>
-                    <!-- Icono whishlist -->
+                    <!-- Icono whishlist (solo desktop) -->
                     <a href="" class="nav-icon" aria-label="Lista de deseos" title="Ver lista de deseos">
                         <i class="ri-heart-line"></i>
                         <span class="nav-icon-badge">5</span>
@@ -86,17 +86,7 @@
                 </div>
             </div>
 
-            <!-- Buscador mobile -->
-            <div class="search-mobile">
-                <form class="site-search site-search-mobile" role="search" aria-label="Buscar productos">
-                    <input type="search" name="q" class="site-search-input" placeholder="Buscar en la tienda..."
-                        autocomplete="off" />
-                    <button type="submit" class="site-search-btn" aria-label="Buscar">
-                        <i class="ri-search-2-line"></i>
-                        <span>Buscar</span>
-                    </button>
-                </form>
-            </div>
+
         </div>
     </header>
 
@@ -113,6 +103,17 @@
             </button>
         </div>
 
+        <!-- Buscador mobile -->
+        <div class="search-mobile">
+            <form class="site-search site-search-mobile" role="search" aria-label="Buscar productos">
+                <input type="search" name="q" class="site-search-input" placeholder="Buscar en la tienda..."
+                    autocomplete="off" />
+                <button type="submit" class="site-search-btn" aria-label="Buscar">
+                    <i class="ri-search-2-line"></i>
+                    <span>Buscar</span>
+                </button>
+            </form>
+        </div>
         <!-- Contenido del sidebar -->
         <div class="site-sidebar-content">
             <!-- Navegación principal -->

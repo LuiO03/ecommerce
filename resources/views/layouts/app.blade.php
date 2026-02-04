@@ -19,10 +19,9 @@
         <!-- Styles -->
         @livewireStyles
     </head>
-    <body class="font-sans antialiased">
+    <body class="antialiased site-body">
         <x-banner />
 
-        <div class="min-h-screen">
             {{-- @livewire('navigation-menu') --}}
             @livewire('navigation')
             <!-- Page Heading -->
@@ -38,7 +37,6 @@
             <main>
                 {{ $slot }}
             </main>
-        </div>
 
         @stack('modals')
 

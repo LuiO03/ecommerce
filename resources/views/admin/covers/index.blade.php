@@ -76,14 +76,14 @@
                                 style="--overlay-text-color: {{ $cover->text_color ?? '#FFFFFF' }}; --overlay-bg-opacity: {{ $cover->overlay_bg_opacity ?? 0.35 }};">
                                 <div class="cover-overlay-content">
                                     @if ($cover->overlay_text)
-                                        <span class="cover-overlay-title">{{ $cover->overlay_text }}</span>
+                                        <span class="cover-index-overlay-title">{{ $cover->overlay_text }}</span>
                                     @endif
                                     @if ($cover->overlay_subtext)
-                                        <span class="cover-overlay-subtext">{{ $cover->overlay_subtext }}</span>
+                                        <span class="cover-index-overlay-subtext">{{ $cover->overlay_subtext }}</span>
                                     @endif
                                     @if ($cover->button_text)
                                         <span
-                                            class="cover-overlay-button is-{{ $cover->button_style ?? 'primary' }}">{{ $cover->button_text }}</span>
+                                            class="cover-index-overlay-button is-{{ $cover->button_style ?? 'primary' }}">{{ $cover->button_text }}</span>
                                     @endif
                                 </div>
                             </div>

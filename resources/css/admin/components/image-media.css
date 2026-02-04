@@ -201,7 +201,7 @@
 }
 
 .cover-overlay-content {
-    max-width: 70%;
+    max-width: 50%;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -219,9 +219,24 @@
 
 .cover-overlay-subtext {
     font-size: var(--font-size-xs);
-    line-height: 1;
     opacity: 0.95;
     text-overflow: ellipsis;
+    line-height: 1;
+}
+
+.cover-index-overlay-title{
+    font-size: var(--font-size-h6);
+    font-weight: 800;
+    line-height: 1.2;
+    font-family: var(--font-secondary);
+}
+
+.cover-index-overlay-subtext{
+    font-size: 0.5rem;
+    opacity: 0.95;
+    text-overflow: ellipsis;
+    line-height: 1;
+    line-clamp: 2;
 }
 
 .cover-overlay-button {
@@ -234,28 +249,41 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid transparent;
     -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
 }
 
-.cover-overlay-button.is-primary {
+.cover-index-overlay-button{
+    margin-top: 0.25rem;
+    width: fit-content;
+    padding: 4px 8px;
+    font-size: 0.4rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+.cover-overlay-button.is-primary, .cover-index-overlay-button.is-primary {
     background: var(--color-primary);
     color: #fff;
 }
 
-.cover-overlay-button.is-secondary {
+.cover-overlay-button.is-secondary, .cover-index-overlay-button.is-secondary {
     background: var(--color-info);
     color: #fff;
 }
 
-.cover-overlay-button.is-outline {
+.cover-overlay-button.is-outline, .cover-index-overlay-button.is-outline {
     background: transparent;
     color: var(--overlay-text-color, #ffffff);
     border-color: currentColor;
 }
 
-.cover-overlay-button.is-white {
+.cover-overlay-button.is-white, .cover-index-overlay-button.is-white {
     background: #ffffff;
     color: #111827;
 }
@@ -341,7 +369,7 @@
 
 @media (max-width: 768px) {
     .cover-overlay-content {
-        max-width: 100%;
+        max-width: 60%;
     }
 
     .cover-overlay-title {

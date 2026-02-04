@@ -26,7 +26,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Alias personalizado para guest que redirija a /
+        $middleware->alias([
+            'auth.guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

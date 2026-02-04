@@ -855,7 +855,6 @@ input[type="checkbox"]:indeterminate {
 
 .text-muted-td {
     color: var(--color-muted);
-    font-style: italic;
     width: fit-content;
 }
 

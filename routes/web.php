@@ -8,7 +8,7 @@
     // Login administrativo (único login del sistema)
     Route::get('/login', function () {
         return view('auth.admin-login');
-    })->name('login')->middleware('guest');
+    })->name('login')->middleware('auth.guest');
 
     Route::middleware([
         'auth:sanctum',

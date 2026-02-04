@@ -40,9 +40,9 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.admin-login');
         });
 
-        // Redirigir a /admin después del login
+        // Redirigir a welcome después del login (usuario puede navegar al admin manualmente)
         Fortify::redirects('login', function ($request) {
-            return '/admin';
+            return '/';
         });
 
         RateLimiter::for('login', function (Request $request) {

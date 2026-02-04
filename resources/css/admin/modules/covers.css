@@ -119,16 +119,8 @@
 }
 
 .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-weight: bolder;
     margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-height: 1.4;
 }
 
 /* === Meta información === */
@@ -308,10 +300,7 @@
 }
 
 @media (max-width: 768px) {
-    .card-image-wrapper {
-        width: 50%;
-        aspect-ratio: 16/9;
-    }
+
 
     .card-meta{
         flex-direction: row;
