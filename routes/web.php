@@ -2,8 +2,11 @@
 
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\Site\WellcomeController;
+    use App\Http\Controllers\Site\FamilyController;
 
     Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
+
+    Route::get('/families/{family}', [FamilyController::class, 'show'])->name('families.show');
 
     // Login administrativo (único login del sistema)
     Route::get('/login', function () {

@@ -40,36 +40,19 @@ class OptionSeeder extends Seeder
                 'features' => [
                     [
                         'value' => '#FF0000',
-                        'description' => 'Black'
+                        'description' => 'Rojo'
                     ],
                     [
                         'value' => '#00FF00',
-                        'description' => 'Green'
+                        'description' => 'Verde'
                     ],
                     [
                         'value' => '#0000FF',
-                        'description' => 'Blue'
+                        'description' => 'Azul'
                     ],
                     [
                         'value' => '#FFFF00',
-                        'description' => 'Yellow'
-                    ],
-                ]
-            ],
-            [
-                'name' => 'Sexo',
-                'features' => [
-                    [
-                        'value' => 'Masculino',
-                        'description' => 'Ropa para hombres'
-                    ],
-                    [
-                        'value' => 'Femenino',
-                        'description' => 'Ropa para mujeres'
-                    ],
-                    [
-                        'value' => 'Unisex',
-                        'description' => 'Ropa para todos'
+                        'description' => 'Amarillo'
                     ],
                 ]
             ],

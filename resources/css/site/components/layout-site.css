@@ -156,7 +156,7 @@
 /* ===== Acciones Header ===== */
 .header-actions {
     display: flex;
-    gap: 8px;
+    gap: 5px;
     align-items: center;
 }
 
@@ -708,8 +708,8 @@
         gap: 1rem;
     }
 
-    .site-header-container {
-        padding: 0.5rem 1.25rem;
+    .site-header-container{
+        padding: 0.5rem 0.4rem;
     }
 
     .nav-login-button{

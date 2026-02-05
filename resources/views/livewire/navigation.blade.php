@@ -8,7 +8,7 @@
                 </button>
 
                 <!-- Logo -->
-                <a href="" class="site-logo">
+                <a href="{{ route('welcome.index') }}" class="site-logo">
                     <span class="site-logo-title">Geckommerce</span>
                     <span class="site-logo-subtitle">Tienda Virtual</span>
                 </a>
@@ -85,8 +85,6 @@
                     @endguest
                 </div>
             </div>
-
-
         </div>
     </header>
 
@@ -184,12 +182,12 @@
                 <div class="site-flyout-panel" data-family-panel="{{ $family->id }}">
                     <div class="site-flyout-header">
                         <span class="site-flyout-header-title">{{ $family->name }}</span>
-                        <button class="boton-form boton-accent" type="submit">
+                        <a href="{{ route('families.show', $family) }}" class="boton-form boton-accent">
                             <span class="boton-form-icon">
                                 <i class="ri-eye-line"></i>
                             </span>
                             <span class="boton-form-text">Ver Todo</span>
-                        </button>
+                        </a>
                     </div>
                     <div class="site-flyout-content">
                         @forelse($family->categories as $category)

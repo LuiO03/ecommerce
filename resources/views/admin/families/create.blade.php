@@ -94,14 +94,14 @@
                         <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
                             alt="Vista previa">
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="overlay-btn" id="changeImageBtn" title="Cambiar imagen">
+                            <button type="button" class="boton-form boton-info" id="changeImageBtn" title="Cambiar imagen">
                                 <i class="ri-upload-2-line"></i>
-                                <span>Cambiar</span>
+                                <span class="boton-form-text">Cambiar</span>
                             </button>
-                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn"
+                            <button type="button" class="boton-form boton-danger" id="removeImageBtn"
                                 title="Eliminar imagen">
                                 <i class="ri-delete-bin-line"></i>
-                                <span>Eliminar</span>
+                                <span class="boton-form-text">Eliminar</span>
                             </button>
                         </div>
                     </div>

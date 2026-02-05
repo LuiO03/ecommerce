@@ -4,10 +4,6 @@
 /* === Librerías y componentes personalizados === */
 @import "./main.css";
 
-/* === Site Styles === */
-@import "./site/covers-slider.css";
-@import "./site/latest-products.css";
-
 /* === Tailwind === */
 @tailwind base;
 @tailwind components;

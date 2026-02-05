@@ -63,7 +63,7 @@
         <div class="covers-gallery" id="coversGallery">
             @forelse ($covers as $cover)
                 <div class="cover-card" data-id="{{ $cover->id }}" data-title="{{ $cover->title }}"
-                    data-position="{{ $cover->position }}" data-status="{{ $cover->status }}"
+                    data-order="{{ $cover->order }}" data-status="{{ $cover->status }}"
                     data-created="{{ $cover->created_at ? $cover->created_at->timestamp : 0 }}">
                     <!-- Imagen principal -->
                     <div class="card-image-wrapper">
@@ -115,7 +115,7 @@
                         <div class="card-meta">
                             <div class="meta-info">
                                 <span class="meta-item">
-                                    <i class="ri-hashtag"></i>{{ $cover->position }}
+                                    <i class="ri-hashtag"></i>{{ $cover->order }}
                                 </span>
                                 <span class="meta-item meta-date">
                                     <i class="ri-calendar-fill"></i>

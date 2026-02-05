@@ -126,7 +126,7 @@
 
     --color-secondary: #342e37;
     --color-secondary-hover: #2b242e;
-    --color-secondary-pastel: #f0eefc;
+    --color-secondary-pastel: #DFDBE5;
 
     --color-success: #009900;
     --color-success-light: #4ad5b8;
@@ -162,6 +162,7 @@
 
     --color-dark: #212529;
     --color-dark-hover: #0d0f12;
+    --color-dark-pastel: #2a2d30;
 }
 
 /* ==== Colores Estados - Modo Oscuro ==== */

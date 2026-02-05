@@ -2,6 +2,7 @@
 import './bootstrap';
 import './site-modules/sidebar-manager';
 import './site-modules/user-dropdown';
+import './modules/custom-select';
 
 // Swiper Slider
 import Swiper from 'swiper';

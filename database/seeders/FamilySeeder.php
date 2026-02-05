@@ -17,24 +17,24 @@ class FamilySeeder extends Seeder
         DB::table('families')->delete();
         $families = [
             [
-                'name' => 'Ropa Hombre',
-                'slug' => Str::slug('Ropa Hombre'),
+                'name' => 'Ropa para Hombre',
+                'slug' => Str::slug('Ropa para Hombre'),
                 'description' => 'Prendas y accesorios para caballeros.',
                 'image' => 'families/ropa-hombre.jpg',
                 'status' => true,
             ],
             [
-                'name' => 'Ropa Mujer',
-                'slug' => Str::slug('Ropa Mujer'),
+                'name' => 'Ropa para Mujer',
+                'slug' => Str::slug('Ropa para Mujer'),
                 'description' => 'Colección de moda femenina.',
                 'image' => 'families/ropa-mujer.jpg',
                 'status' => true,
             ],
             [
-                'name' => 'Niños',
-                'slug' => Str::slug('Niños'),
+                'name' => 'Ropa para Niños',
+                'slug' => Str::slug('Ropa para Niños'),
                 'description' => 'Ropa y accesorios para niños.',
-                'image' => 'families/ninos.jpg',
+                'image' => 'families/ropa-ninos.jpg',
                 'status' => true,
             ],
             [

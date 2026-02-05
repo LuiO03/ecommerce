@@ -25,7 +25,7 @@
     </x-slot>
 
     <form action="{{ route('admin.covers.update', $cover->slug) }}" method="POST" enctype="multipart/form-data"
-        class="form-container" autocomplete="off" id="coverForm">
+        class="form-container" autocomplete="off" id="coverForm" novalidate>
         @csrf
         @method('PUT')
 
@@ -196,6 +196,34 @@
                                 <i class="ri-arrow-down-s-line select-arrow"></i>
                             </div>
                         </div>
+
+                    </div>
+                    <div class="form-column-fit">
+                        <div class="input-group">
+                            <label for="text_position" class="label-form">Posición del texto</label>
+                            <input type="hidden" name="text_position" id="text_position"
+                                value="{{ old('text_position', $cover->text_position ?? 'center-center') }}">
+                            <div class="position-picker" data-target="text_position">
+                                <button type="button" class="position-cell" data-position="top-left"
+                                    aria-label="Superior izquierda"></button>
+                                <button type="button" class="position-cell" data-position="top-center"
+                                    aria-label="Superior centro"></button>
+                                <button type="button" class="position-cell" data-position="top-right"
+                                    aria-label="Superior derecha"></button>
+                                <button type="button" class="position-cell" data-position="center-left"
+                                    aria-label="Centro izquierda"></button>
+                                <button type="button" class="position-cell" data-position="center-center"
+                                    aria-label="Centro"></button>
+                                <button type="button" class="position-cell" data-position="center-right"
+                                    aria-label="Centro derecha"></button>
+                                <button type="button" class="position-cell" data-position="bottom-left"
+                                    aria-label="Inferior izquierda"></button>
+                                <button type="button" class="position-cell" data-position="bottom-center"
+                                    aria-label="Inferior centro"></button>
+                                <button type="button" class="position-cell" data-position="bottom-right"
+                                    aria-label="Inferior derecha"></button>
+                            </div>
+                        </div>
                         <div class="input-group">
                             <label for="button_link" class="label-form">URL del botón</label>
                             <div class="input-icon-container">
@@ -204,31 +232,6 @@
                                     value="{{ old('button_link', $cover->button_link) }}"
                                     placeholder="https://example.com" data-validate="url|requiredWith:button_text,button_style">
                             </div>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="text_position" class="label-form">Posición del texto</label>
-                        <input type="hidden" name="text_position" id="text_position"
-                            value="{{ old('text_position', $cover->text_position ?? 'center-center') }}">
-                        <div class="position-picker" data-target="text_position">
-                            <button type="button" class="position-cell" data-position="top-left"
-                                aria-label="Superior izquierda"></button>
-                            <button type="button" class="position-cell" data-position="top-center"
-                                aria-label="Superior centro"></button>
-                            <button type="button" class="position-cell" data-position="top-right"
-                                aria-label="Superior derecha"></button>
-                            <button type="button" class="position-cell" data-position="center-left"
-                                aria-label="Centro izquierda"></button>
-                            <button type="button" class="position-cell" data-position="center-center"
-                                aria-label="Centro"></button>
-                            <button type="button" class="position-cell" data-position="center-right"
-                                aria-label="Centro derecha"></button>
-                            <button type="button" class="position-cell" data-position="bottom-left"
-                                aria-label="Inferior izquierda"></button>
-                            <button type="button" class="position-cell" data-position="bottom-center"
-                                aria-label="Inferior centro"></button>
-                            <button type="button" class="position-cell" data-position="bottom-right"
-                                aria-label="Inferior derecha"></button>
                         </div>
                     </div>
                 </div>
@@ -246,15 +249,15 @@
                             <img id="imagePreview" class="image-preview"
                                 src="{{ asset('storage/' . $cover->image_path) }}" alt="Imagen actual">
                             <div class="image-overlay" id="imageOverlay">
-                                <button type="button" class="boton-form boton-primary" id="changeImageBtn"
+                                <button type="button" class="boton-form boton-info" id="changeImageBtn"
                                     title="Cambiar imagen">
                                     <i class="ri-upload-2-line"></i>
-                                    <span>Cambiar</span>
+                                    <span class="boton-form-text">Cambiar</span>
                                 </button>
                                 <button type="button" class="boton-form boton-danger" id="removeImageBtn"
                                     title="Eliminar imagen">
                                     <i class="ri-delete-bin-line"></i>
-                                    <span>Eliminar</span>
+                                    <span class="boton-form-text">Eliminar</span>
                                 </button>
                             </div>
                         @else

@@ -13,7 +13,7 @@
     </x-slot>
 
     <form action="{{ route('admin.covers.store') }}" method="POST" enctype="multipart/form-data" class="form-container"
-        autocomplete="off" id="coverForm">
+        autocomplete="off" id="coverForm" novalidate>
         @csrf
 
         @if ($errors->any())
@@ -183,6 +183,33 @@
                                 <i class="ri-arrow-down-s-line select-arrow"></i>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-column-fit">
+                        <div class="input-group">
+                            <label for="text_position" class="label-form">Posición del texto</label>
+                            <input type="hidden" name="text_position" id="text_position"
+                                value="{{ old('text_position', 'center-center') }}">
+                            <div class="position-picker" data-target="text_position">
+                                <button type="button" class="position-cell" data-position="top-left"
+                                    aria-label="Superior izquierda"></button>
+                                <button type="button" class="position-cell" data-position="top-center"
+                                    aria-label="Superior centro"></button>
+                                <button type="button" class="position-cell" data-position="top-right"
+                                    aria-label="Superior derecha"></button>
+                                <button type="button" class="position-cell" data-position="center-left"
+                                    aria-label="Centro izquierda"></button>
+                                <button type="button" class="position-cell" data-position="center-center"
+                                    aria-label="Centro"></button>
+                                <button type="button" class="position-cell" data-position="center-right"
+                                    aria-label="Centro derecha"></button>
+                                <button type="button" class="position-cell" data-position="bottom-left"
+                                    aria-label="Inferior izquierda"></button>
+                                <button type="button" class="position-cell" data-position="bottom-center"
+                                    aria-label="Inferior centro"></button>
+                                <button type="button" class="position-cell" data-position="bottom-right"
+                                    aria-label="Inferior derecha"></button>
+                            </div>
+                        </div>
                         <div class="input-group">
                             <label for="button_link" class="label-form">URL del botón</label>
                             <div class="input-icon-container">
@@ -193,32 +220,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="input-group">
-                        <label for="text_position" class="label-form">Posición del texto</label>
-                        <input type="hidden" name="text_position" id="text_position"
-                            value="{{ old('text_position', 'center-center') }}">
-                        <div class="position-picker" data-target="text_position">
-                            <button type="button" class="position-cell" data-position="top-left"
-                                aria-label="Superior izquierda"></button>
-                            <button type="button" class="position-cell" data-position="top-center"
-                                aria-label="Superior centro"></button>
-                            <button type="button" class="position-cell" data-position="top-right"
-                                aria-label="Superior derecha"></button>
-                            <button type="button" class="position-cell" data-position="center-left"
-                                aria-label="Centro izquierda"></button>
-                            <button type="button" class="position-cell" data-position="center-center"
-                                aria-label="Centro"></button>
-                            <button type="button" class="position-cell" data-position="center-right"
-                                aria-label="Centro derecha"></button>
-                            <button type="button" class="position-cell" data-position="bottom-left"
-                                aria-label="Inferior izquierda"></button>
-                            <button type="button" class="position-cell" data-position="bottom-center"
-                                aria-label="Inferior centro"></button>
-                            <button type="button" class="position-cell" data-position="bottom-right"
-                                aria-label="Inferior derecha"></button>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
@@ -229,7 +230,7 @@
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                        required data-validate="imageSingle|maxSizeSingleMB:3">
+                        required data-validate="required|imageSingle|maxSizeSingleMB:3">
 
                     <div class="image-preview-zone" id="imagePreviewZone">
                         <div class="image-placeholder" id="imagePlaceholder">
@@ -249,7 +250,8 @@
                             </div>
                         </div>
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="boton-form boton-info" id="changeImageBtn" title="Cambiar imagen">
+                            <button type="button" class="boton-form boton-info" id="changeImageBtn"
+                                title="Cambiar imagen">
                                 <span class="boton-form-icon">
                                     <i class="ri-upload-2-line"></i>
                                 </span>
@@ -374,11 +376,12 @@
                         const buttonText = buttonTextInput?.value?.trim() || '';
                         const position = positionInput?.value || 'center-center';
                         const color = colorInput?.value || '#FFFFFF';
-                        const bgEnabled = document.querySelector('input[name="overlay_bg_enabled"]:checked')?.value === '1';
+                        const bgEnabled = document.querySelector('input[name="overlay_bg_enabled"]:checked')
+                            ?.value === '1';
                         const bgOpacityRaw = parseFloat(bgOpacityInput?.value);
-                        const bgOpacity = Number.isFinite(bgOpacityRaw)
-                            ? Math.min(1, Math.max(0, bgOpacityRaw))
-                            : 0.35;
+                        const bgOpacity = Number.isFinite(bgOpacityRaw) ?
+                            Math.min(1, Math.max(0, bgOpacityRaw)) :
+                            0.35;
 
                         titleEl.textContent = title;
                         subtextEl.textContent = subtext;

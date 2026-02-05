@@ -21,6 +21,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .cover-overlay {
@@ -48,6 +49,45 @@
     flex-direction: column;
     gap: 1.5rem;
     max-width: 600px;
+}
+
+/* Overlay transparente de fondo (nuevo sistema) */
+.cover-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    height: 100%;
+}
+
+/* Posiciones centrales: fondo sólido en toda la portada */
+.cover-bg-overlay.position-top-center,
+.cover-bg-overlay.position-center-center,
+.cover-bg-overlay.position-bottom-center {
+    background: rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35));
+    opacity: 1;
+}
+
+/* Posiciones izquierdas: degradado desde izquierda al centro (50% del ancho) */
+.cover-bg-overlay.position-top-left,
+.cover-bg-overlay.position-center-left,
+.cover-bg-overlay.position-bottom-left {
+    background: linear-gradient(90deg,
+        rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35)) 0%,
+        rgba(0, 0, 0, 0) 50%);
+    opacity: 1;
+}
+
+/* Posiciones derechas: degradado desde derecha al centro (50% del ancho) */
+.cover-bg-overlay.position-top-right,
+.cover-bg-overlay.position-center-right,
+.cover-bg-overlay.position-bottom-right {
+    background: linear-gradient(270deg,
+        rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35)) 0%,
+        rgba(0, 0, 0, 0) 50%);
+    opacity: 1;
 }
 
 /* Posiciones del texto (9 variantes) */

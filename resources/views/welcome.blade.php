@@ -6,18 +6,18 @@
                     @foreach ($covers as $cover)
                         <div class="swiper-slide">
                             <div class="cover-item"
-                                style="background-image: url('{{ asset('storage/' . $cover->image_path) }}'); background-attachment: fixed;">
-                                <!-- Overlay oscuro si está habilitado -->
+                                style="background-image: url('{{ asset('storage/' . $cover->image_path) }}');">
+                                <!-- Overlay transparente degradado según posición -->
                                 @if ($cover->overlay_bg_enabled)
-                                    <div class="cover-overlay"
-                                        style="background: rgba(0, 0, 0, {{ $cover->overlay_bg_opacity }})"></div>
+                                    <div class="cover-bg-overlay position-{{ $cover->text_position }}"
+                                        style="--overlay-bg-opacity: {{ $cover->overlay_bg_opacity ?? 0.35 }};"></div>
                                 @endif
 
                                 <!-- Container con límite de ancho -->
                                 <div class="cover-container">
                                     <!-- Contenido de texto -->
                                     <div class="cover-content position-{{ $cover->text_position }}"
-                                        style="color: {{ $cover->text_color }}">
+                                        style="color: {{ $cover->text_color }};">
                                         @if ($cover->overlay_text)
                                             <h1 class="cover-title">{{ $cover->overlay_text }}</h1>
                                         @endif
@@ -108,7 +108,7 @@
                                         <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
                                         <h3 class="product-name">{{ $product->name }}</h3>
 
-                                        <div class="flex w-full justify-between">
+                                        <div class="flex w-full justify-between flex-wrap">
                                             <!-- Precio -->
                                             <div>
                                                 <span
@@ -151,7 +151,6 @@
                     <!-- Navegación -->
                     <div class="swiper-button-prev"></div>
                     <div class="swiper-button-next"></div>
-
                     <!-- Paginación -->
                     <div class="swiper-pagination"></div>
                 </div>
@@ -232,7 +231,7 @@
                         },
                         breakpoints: {
                             320: {
-                                slidesPerView: 1,
+                                slidesPerView: 2,
                                 spaceBetween: 15,
                             },
                             640: {
@@ -244,7 +243,7 @@
                                 spaceBetween: 20,
                             },
                             1280: {
-                                slidesPerView: 4,
+                                slidesPerView: 5,
                                 spaceBetween: 20,
                             },
                         },

@@ -1,11 +1,16 @@
-@import "./components/site-base.css";
+@import "./components/app-base.css";
+@import "./components/breadcrumb.css";
+@import "./components/buttons-selects.css";
+@import "./components/covers-slider.css";
 @import "./components/filters.css";
+@import "./components/filter-facets.css";
+@import "./components/footer.css";
+@import "./components/latest-products.css";
 @import "./components/layout-site.css";
 @import "./components/product-card.css";
-@import "./components/footer.css";
 
 @import "./modules/cart.css";
 @import "./modules/checkout.css";
-@import "./modules/wishlist.css";
 @import "./modules/home.css";
 @import "./modules/product-details.css";
+@import "./modules/wishlist.css";

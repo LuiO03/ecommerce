@@ -1,0 +1,58 @@
+/* ============================================
+   SITE BREADCRUMB
+   ============================================ */
+
+.site-breadcrumb {
+    margin: 1rem 0 1.5rem;
+}
+
+.site-breadcrumb-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--breadcrumb-bg);
+    border: 1px solid var(--breadcrumb-border);
+    border-radius: 999px;
+}
+
+.site-breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--breadcrumb-link);
+}
+
+.site-breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.site-breadcrumb-link:hover {
+    color: var(--color-site-accent);
+    transform: translateY(-1px);
+}
+
+.site-breadcrumb-current {
+    color: var(--breadcrumb-current);
+    font-weight: 600;
+}
+
+.site-breadcrumb-separator {
+    color: var(--breadcrumb-muted);
+    display: inline-flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .site-breadcrumb-list {
+        border-radius: 16px;
+    }
+}

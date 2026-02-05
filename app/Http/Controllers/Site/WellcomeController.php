@@ -12,7 +12,7 @@ class WellcomeController extends Controller
     public function index()
     {
         $covers = Cover::where('status', true)
-            ->orderBy('position', 'asc')
+            ->orderBy('order', 'asc')
             ->whereDate('start_at', '<=', now())
             ->where(function ($query) {
                 $query->whereNull('end_at')

@@ -6,17 +6,14 @@ use App\Models\Cover;
 class CoverObserver
 {
     /**
-     * Ejecutar cuando se crea un nuevo Cover (DESPUÉS de insertarlo en BD).
-     * Usamos 'created' en lugar de 'creating' porque Create() en Eloquent
-     * dispara los hooks después de la inserción.
+     * Ejecutar cuando se va a crear un nuevo Cover (ANTES de insertarlo en BD).
+     * Usamos 'creating' para asignar la posición antes de la inserción.
      */
-    public function created(Cover $cover)
+    public function creating(Cover $cover)
     {
-        // Auto-asignar posición al crear si no la tiene
-        if (!$cover->position || $cover->position === 0) {
-            $cover->update([
-                'position' => (Cover::max('position') ?? 0) + 1
-            ]);
+        // Auto-asignar orden al crear si no la tiene
+        if (!$cover->order || $cover->order === 0) {
+            $cover->order = (Cover::max('order') ?? 0) + 1;
         }
     }
 

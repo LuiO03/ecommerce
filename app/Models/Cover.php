@@ -29,7 +29,7 @@ class Cover extends Model
         'button_style',
         'start_at',
         'end_at',
-        'position',
+        'order',
         'status',
         'created_by',
         'updated_by',
@@ -48,18 +48,18 @@ class Cover extends Model
 
     public function scopeForSelect($query)
     {
-        return $query->select('id', 'title', 'slug')->orderBy('position');
+        return $query->select('id', 'title', 'slug')->orderBy('order');
     }
 
     public function scopeForTable($query)
     {
         return $query->select(
-            'id', 'slug', 'image_path', 'title', 'start_at', 'end_at', 'position', 'status', 'created_at',
+            'id', 'slug', 'image_path', 'title', 'start_at', 'end_at', 'order', 'status', 'created_at',
             'overlay_text', 'overlay_subtext', 'text_position', 'text_color',
             'overlay_bg_enabled', 'overlay_bg_opacity',
             'button_text', 'button_link', 'button_style'
         )
-            ->orderBy('position')
+            ->orderBy('order')
             ->orderByDesc('id');
     }
 

@@ -200,14 +200,14 @@
                             alt="Vista previa">
 
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="overlay-btn" id="changeImageBtn">
+                            <button type="button" class="boton-form boton-info" id="changeImageBtn">
                                 <i class="ri-upload-2-line"></i>
-                                <span>Cambiar</span>
+                                <span class="boton-form-text">Cambiar</span>
                             </button>
 
-                            <button type="button" class="overlay-btn overlay-btn-danger" id="removeImageBtn">
+                            <button type="button" class="boton-form boton-danger" id="removeImageBtn">
                                 <i class="ri-delete-bin-line"></i>
-                                <span>Eliminar</span>
+                                <span class="boton-form-text">Eliminar</span>
                             </button>
                         </div>
                     </div>

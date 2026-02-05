@@ -34,7 +34,7 @@ return new class extends Migration
             // Fechas de vigencia
             $table->datetime('start_at')->nullable();
             $table->datetime('end_at')->nullable();
-            $table->integer('position')->default(0)->index();
+            $table->integer('order')->default(0);
             // Estado (activo/inactivo)
             $table->boolean('status')->default(false)->index();
             // Auditoría

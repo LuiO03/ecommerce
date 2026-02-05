@@ -1,0 +1,162 @@
+/* ============================================
+   BUTTONS & SELECTS - Componentes globales
+   ============================================ */
+
+/* === BOTONES === */
+.site-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+}
+
+.site-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.site-btn-primary {
+    background: var(--btn-primary);
+    color: #fff;
+}
+
+.site-btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(81, 0, 157, 0.2);
+}
+
+.site-btn-accent {
+    background: var(--btn-accent);
+    color: #fff;
+}
+
+.site-btn-accent:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(209, 30, 75, 0.2);
+}
+
+.site-btn-outline {
+    background: transparent;
+    border: 1px solid var(--select-border);
+    color: var(--btn-primary);
+}
+
+.site-btn-outline:hover:not(:disabled) {
+    background: var(--btn-hover);
+    border-color: var(--btn-primary);
+}
+
+/* === SELECT PERSONALIZADO === */
+.site-select {
+    position: relative;
+    display: inline-block;
+}
+
+.site-select-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--select-bg);
+    border: 1px solid var(--select-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    min-width: 180px;
+    justify-content: space-between;
+}
+
+.site-select-trigger:hover {
+    border-color: var(--btn-primary);
+}
+
+.site-select-trigger i {
+    transition: transform 0.2s ease;
+}
+
+.site-select.active .site-select-trigger i {
+    transform: rotate(180deg);
+}
+
+.site-select-icon {
+    color: var(--btn-primary);
+}
+
+.site-select-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--select-bg);
+    border: 1px solid var(--select-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.site-select.active .site-select-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.site-select-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.site-select-option:first-child {
+    border-radius: 12px 12px 0 0;
+}
+
+.site-select-option:last-child {
+    border-radius: 0 0 12px 12px;
+}
+
+.site-select-option:hover {
+    background: var(--btn-hover);
+}
+
+.site-select-option.active {
+    background: var(--btn-hover);
+    color: var(--btn-primary);
+    font-weight: 600;
+}
+
+.site-select-option i {
+    color: var(--btn-primary);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .site-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .site-select-trigger {
+        min-width: 150px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+}

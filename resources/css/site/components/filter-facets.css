@@ -1,0 +1,89 @@
+/* ============================================
+   FILTER FACETS - Size and Color selectors
+   ============================================ */
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.filter-facet-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+/* =======================================================
+   ✅ CHECKBOXES
+======================================================= */
+.filter-facet-left input[type="checkbox"] {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 2px solid var(--color-border-secondary);
+    border-radius: var(--radius-element);
+    background-color: var(--color-input-bg);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-h3);
+    box-shadow: none;
+}
+
+.filter-facet-left input[type="checkbox"]:hover {
+    border-color: var(--color-accent);
+}
+
+.filter-facet-left input[type="checkbox"]:checked {
+    color: var(--color-site-accent);
+    border-color: var(--color-site-accent);
+
+}
+
+.filter-facet-left input[type="checkbox"]:checked {
+    color: var(--color-site-accent);
+    border-color: var(--color-site-accent);
+}
+
+.filter-facet-left input[type="checkbox"]:indeterminate {
+    color: var(--color-site-accent);
+}
+
+.filter-facet-size {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid var(--filter-border);
+    background: var(--color-site-hover);
+    color: var(--color-text);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.filter-facet-swatch {
+    width: 26px;
+    height: 26px;
+    border-radius: 10px;
+    background: var(--facet-color);
+    border: 1px solid rgba(15, 23, 42, 0.15);
+}
+
+.filter-facet-name {
+    color: var(--color-text);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filter-facet-count {
+    color: var(--filter-muted);
+    font-size: 0.85rem;
+}

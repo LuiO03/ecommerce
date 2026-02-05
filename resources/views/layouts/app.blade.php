@@ -38,6 +38,8 @@
                 {{ $slot }}
             </main>
 
+        @livewire('footer')
+
         @stack('modals')
 
         @livewireScripts

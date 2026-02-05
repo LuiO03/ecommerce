@@ -212,7 +212,7 @@
 }
 
 .input-group input[type="range"].range-form {
-    height: 6px;
+    height: 40px;
     padding: 0;
     border: none;
     box-shadow: none;

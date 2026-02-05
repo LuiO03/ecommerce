@@ -24,7 +24,11 @@
         @php
             $unreadCount = auth()->user()->unreadNotifications()->count();
         @endphp
-        <button id="notificationSidebarToggle" class="topbar-icon-btn" aria-label="Ver notificaciones">
+        <!-- boton para ir al sitio web -->
+        <a class="topbar-icon-btn" href="{{ route('welcome.index') }}" target="_blank" title="Ir al sitio web">
+            <i class="ri-global-line"></i>
+        </a>
+        <button id="notificationSidebarToggle" class="topbar-icon-btn" title="Ver notificaciones">
             <i class="ri-notification-2-line"></i>
             @if ($unreadCount > 0)
                 <span class="notification-badge">{{ $unreadCount }}</span>
