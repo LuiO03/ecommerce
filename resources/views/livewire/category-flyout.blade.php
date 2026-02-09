@@ -1,5 +1,5 @@
 <div class="site-flyout-item" data-level="{{ $level }}">
-    <a href="" class="site-flyout-link @if($level === 0)site-flyout-link-primary @endif">
+    <a href="{{ route('categories.show', $category)  }}" class="site-flyout-link @if($level === 0)site-flyout-link-primary @endif">
         <span>{{ $category->name }}</span>
     </a>
 

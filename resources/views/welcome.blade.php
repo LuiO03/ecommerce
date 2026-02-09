@@ -99,49 +99,55 @@
                                         @endif
 
                                         @if ($product->discount)
-                                            <span class="product-badge">-{{ $product->discount }}%</span>
+                                            <span class="product-badge">-{{ number_format($product->discount, 0) }}% OFF</span>
                                         @endif
                                     </div>
 
-                                    <!-- Contenido -->
-                                    <div class="product-content">
-                                        <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
-                                        <h3 class="product-name">{{ $product->name }}</h3>
+                                    <div class="product-details">
+                                        <!-- Contenido -->
+                                        <div class="product-content">
+                                            <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
+                                            <h3 class="product-name">{{ $product->name }}</h3>
 
-                                        <div class="flex w-full justify-between flex-wrap">
-                                            <!-- Precio -->
-                                            <div>
-                                                <span
-                                                    class="product-price">S/.{{ number_format($product->price, 2) }}</span>
-                                                @if ($product->original_price)
-                                                    <span
-                                                        class="product-price-original">S/.{{ number_format($product->original_price, 2) }}</span>
-                                                @endif
+                                            <div class="flex w-full flex-col">
+                                                <!-- Precio -->
+                                                <div class="product-pricing">
+                                                    @if (!is_null($product->discount) && (float) $product->discount > 0)
+                                                        @php
+                                                            $discountPercent = min(max((float) $product->discount, 0), 100);
+                                                            $discounted = max((float) $product->price * (1 - ($discountPercent / 100)), 0);
+                                                        @endphp
+                                                        <span class="product-price">S/.{{ number_format($discounted, 2) }}</span>
+                                                        <span class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
+                                                    @else
+                                                        <span class="product-price">S/.{{ number_format($product->price, 2) }}</span>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Rating -->
+                                                <p class="product-rating">
+                                                    <i class="ri-star-fill"></i>
+                                                    <span>4.5 (128 reseñas)</span>
+                                                </p>
                                             </div>
-
-                                            <!-- Rating -->
-                                            <p class="product-rating">
-                                                <i class="ri-star-fill"></i>
-                                                <span>4.5 (128 reseñas)</span>
-                                            </p>
                                         </div>
-                                    </div>
 
-                                    <!-- Botones -->
-                                    <div class="product-footer">
-                                        <button class="product-btn" aria-label="Agregar a favoritos"
-                                            title="Agregar a favoritos">
-                                            <i class="ri-heart-line"></i>
-                                        </button>
-                                        <a href="#" class="product-btn product-btn-primary"
-                                            aria-label="Ver detalles del producto">
-                                            <i class="ri-eye-line"></i>
-                                            <span>Ver</span>
-                                        </a>
-                                        <button class="product-btn" aria-label="Agregar al carrito"
-                                            title="Agregar al carrito">
-                                            <i class="ri-shopping-cart-2-line"></i>
-                                        </button>
+                                        <!-- Botones -->
+                                        <div class="product-footer">
+                                            <button class="product-btn" aria-label="Agregar a favoritos"
+                                                title="Agregar a favoritos">
+                                                <i class="ri-heart-line"></i>
+                                            </button>
+                                            <a href="{{ route('products.show', $product) }}" class="product-btn product-btn-primary"
+                                                aria-label="Ver detalles del producto">
+                                                <i class="ri-eye-line"></i>
+                                                <span>Ver</span>
+                                            </a>
+                                            <button class="product-btn" aria-label="Agregar al carrito"
+                                                title="Agregar al carrito">
+                                                <i class="ri-shopping-cart-2-line"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +225,7 @@
                             disableOnInteraction: true,
                             pauseOnMouseEnter: true,
                         },
-                        speed: 600,
+                        speed: 100,
                         navigation: {
                             nextEl: '.products-slider .swiper-button-next',
                             prevEl: '.products-slider .swiper-button-prev',

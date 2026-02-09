@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Option;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Family;
 use App\Models\Feature;
 use Illuminate\Support\Facades\DB;
@@ -12,56 +13,83 @@ use Illuminate\Support\Facades\DB;
 class Filter extends Component
 {
     public $family_id;
+    public $category_id;
     public $family;
+    public $category;
+    public $subcategories = [];
     public $options = [];
     public $selectedFeatures = [];
-    public $search = '';
     public $products = [];
     public $perPage = 12;
+    public $perPageStep = 12;
     public $hasMore = false;
     public $sortBy = 'recent';
     public $featureCounts = [];
+    public $totalProducts = 0;
+    public $currentPage = 1;
+    public $totalPages = 1;
 
     public function mount()
     {
-        $this->family = Family::find($this->family_id);
-        $this->options = Option::whereHas('products.category', function ($query) {
-            $query->where('family_id', $this->family_id);
-        })->with([
-            'features' => function ($query) {
-                $query->whereHas('variants.product.category', function ($query) {
-                    $query->where('family_id', $this->family_id);
-                });
+        if ($this->category_id) {
+            $category = Category::with('family')->find($this->category_id);
+            if ($category) {
+                $this->family_id = $this->family_id ?: $category->family_id;
+                $this->family = $category->family;
+                $this->category = $category;
             }
-        ])->get();
+        }
+
+        if (!$this->family && $this->family_id) {
+            $this->family = Family::find($this->family_id);
+        }
+
+        $this->loadSubcategories();
 
         $this->loadProducts();
     }
 
     public function applyFilters()
     {
-        $this->perPage = 12;
+        $this->perPage = $this->perPageStep;
         $this->loadProducts();
     }
 
     public function clearFilters()
     {
-        $this->reset(['selectedFeatures', 'search']);
-        $this->perPage = 12;
+        $this->reset(['selectedFeatures']);
+        $this->perPage = $this->perPageStep;
         $this->loadProducts();
     }
 
     public function loadMore()
     {
-        $this->perPage += 12;
+        $this->perPage += $this->perPageStep;
         $this->loadProducts();
     }
 
     public function updateSort($value)
     {
         $this->sortBy = $value;
-        $this->perPage = 12;
+        $this->perPage = $this->perPageStep;
         $this->loadProducts();
+    }
+
+    public function goToPage(int $page): void
+    {
+        $page = max(1, min($page, $this->totalPages));
+        $this->perPage = $page * $this->perPageStep;
+        $this->loadProducts();
+    }
+
+    public function nextPage(): void
+    {
+        $this->goToPage($this->currentPage + 1);
+    }
+
+    public function previousPage(): void
+    {
+        $this->goToPage($this->currentPage - 1);
     }
 
     protected function loadProducts(): void
@@ -76,14 +104,24 @@ class Filter extends Component
                 ->all();
         }
 
+        $categoryIds = $this->resolveCategoryIds();
+        $this->loadOptions($categoryIds);
+
         $baseProductQuery = DB::table('products')
             ->join('categories', 'categories.id', '=', 'products.category_id')
             ->join('variants', 'variants.product_id', '=', 'products.id')
-            ->where('categories.family_id', $this->family_id)
             ->where('products.status', true)
             ->where('variants.status', true)
             ->select('products.id')
             ->distinct();
+
+        if (empty($categoryIds) && $this->family_id) {
+            $baseProductQuery->where('categories.family_id', $this->family_id);
+        }
+
+        if (!empty($categoryIds)) {
+            $baseProductQuery->whereIn('products.category_id', $categoryIds);
+        }
 
         if (!empty($featuresByOption)) {
             $matchingVariantProductIds = $this->buildVariantMatchSubquery($featuresByOption)
@@ -93,6 +131,9 @@ class Filter extends Component
         }
 
         $total = (clone $baseProductQuery)->distinct()->count('products.id');
+        $this->totalProducts = $total;
+        $this->totalPages = max(1, (int) ceil($total / $this->perPageStep));
+        $this->currentPage = min($this->totalPages, (int) ceil($this->perPage / $this->perPageStep));
 
         $query = Product::with(['category', 'images'])
             ->whereIn('products.id', $baseProductQuery);
@@ -130,7 +171,44 @@ class Filter extends Component
             });
 
         $this->hasMore = $this->products->count() < $total;
-        $this->loadFacetCounts($featuresByOption);
+        $this->loadFacetCounts($featuresByOption, $categoryIds);
+        $this->filterOptionsByCounts();
+    }
+
+    protected function loadOptions(array $categoryIds): void
+    {
+        $this->options = Option::query()
+            ->whereHas('features.variants', function ($query) use ($categoryIds) {
+                $query->where('variants.status', true)
+                    ->whereHas('product', function ($query) use ($categoryIds) {
+                        $query->where('products.status', true)
+                            ->whereHas('category', function ($query) use ($categoryIds) {
+                                if (!empty($categoryIds)) {
+                                    $query->whereIn('categories.id', $categoryIds);
+                                } elseif ($this->family_id) {
+                                    $query->where('family_id', $this->family_id);
+                                }
+                            });
+                    });
+            })
+            ->with([
+                'features' => function ($query) use ($categoryIds) {
+                    $query->whereHas('variants', function ($query) use ($categoryIds) {
+                        $query->where('variants.status', true)
+                            ->whereHas('product', function ($query) use ($categoryIds) {
+                                $query->where('products.status', true)
+                                    ->whereHas('category', function ($query) use ($categoryIds) {
+                                        if (!empty($categoryIds)) {
+                                            $query->whereIn('categories.id', $categoryIds);
+                                        } elseif ($this->family_id) {
+                                            $query->where('family_id', $this->family_id);
+                                        }
+                                    });
+                            });
+                    });
+                }
+            ])
+            ->get();
     }
 
     protected function buildVariantMatchSubquery(array $featuresByOption)
@@ -153,7 +231,7 @@ class Filter extends Component
             ->havingRaw('COUNT(DISTINCT features.option_id) = ?', [$optionCount]);
     }
 
-    protected function loadFacetCounts(array $featuresByOption): void
+    protected function loadFacetCounts(array $featuresByOption, array $categoryIds): void
     {
         $optionIds = collect($this->options)->pluck('id')->all();
         $counts = [];
@@ -167,10 +245,17 @@ class Filter extends Component
                 ->join('variants', 'variants.id', '=', 'feature_variant.variant_id')
                 ->join('products', 'products.id', '=', 'variants.product_id')
                 ->join('categories', 'categories.id', '=', 'products.category_id')
-                ->where('categories.family_id', $this->family_id)
                 ->where('products.status', true)
                 ->where('variants.status', true)
                 ->where('features.option_id', $optionId);
+
+            if (empty($categoryIds) && $this->family_id) {
+                $query->where('categories.family_id', $this->family_id);
+            }
+
+            if (!empty($categoryIds)) {
+                $query->whereIn('products.category_id', $categoryIds);
+            }
 
             if (!empty($otherFilters)) {
                 $matchingVariantIds = $this->buildVariantMatchSubquery($otherFilters)
@@ -189,6 +274,70 @@ class Filter extends Component
         }
 
         $this->featureCounts = $counts;
+    }
+
+    protected function filterOptionsByCounts(): void
+    {
+        $counts = $this->featureCounts;
+
+        $this->options = collect($this->options)
+            ->map(function ($option) use ($counts) {
+                $option->features = $option->features
+                    ->filter(fn ($feature) => ($counts[$feature->id] ?? 0) > 0)
+                    ->values();
+
+                return $option;
+            })
+            ->filter(fn ($option) => $option->features->isNotEmpty())
+            ->values();
+    }
+
+    protected function resolveCategoryIds(): array
+    {
+        if (!$this->category_id) {
+            return [];
+        }
+
+        $rootId = Category::whereKey($this->category_id)->value('id');
+        if (!$rootId) {
+            return [];
+        }
+
+        $ids = [$rootId];
+        $pending = [$rootId];
+
+        while (!empty($pending)) {
+            $children = Category::whereIn('parent_id', $pending)->pluck('id')->all();
+            $children = array_values(array_diff($children, $ids));
+            if (empty($children)) {
+                break;
+            }
+            $ids = array_merge($ids, $children);
+            $pending = $children;
+        }
+
+        return $ids;
+    }
+
+    protected function loadSubcategories(): void
+    {
+        $query = null;
+
+        if ($this->category) {
+            $query = Category::where('parent_id', $this->category->id);
+        } elseif ($this->family_id) {
+            $query = Category::where('family_id', $this->family_id)->whereNull('parent_id');
+        }
+
+        if (!$query) {
+            $this->subcategories = [];
+            return;
+        }
+
+        $this->subcategories = $query
+            ->where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
     }
 
     public function render()

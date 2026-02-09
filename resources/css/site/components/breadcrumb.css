@@ -14,16 +14,14 @@
     gap: 0.35rem;
     padding: 0.5rem 0.9rem;
     background: var(--breadcrumb-bg);
-    border: 1px solid var(--breadcrumb-border);
-    border-radius: 999px;
 }
 
 .site-breadcrumb-item {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.9rem;
-    color: var(--breadcrumb-link);
+    font-size: var(--font-size-xs);
+    color: black;
 }
 
 .site-breadcrumb-link {
@@ -41,7 +39,7 @@
 }
 
 .site-breadcrumb-current {
-    color: var(--breadcrumb-current);
+    color: var(--color-site-accent);
     font-weight: 600;
 }
 

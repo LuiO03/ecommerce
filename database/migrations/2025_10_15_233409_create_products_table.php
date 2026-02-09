@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique()->index(); // URL amigable
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->default(0);
-            $table->decimal('discount', 10, 2)->nullable();
+            $table->integer('discount')->nullable();
 
             // Stock mínimo por producto (nullable, usa config si es null)
             $table->unsignedInteger('min_stock')->nullable()->comment('Stock mínimo para alerta, si es null usa config');

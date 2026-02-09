@@ -131,11 +131,11 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="discount" class="label-form">Descuento (S/)</label>
+                    <label for="discount" class="label-form">Descuento (%)</label>
                     <div class="input-icon-container">
                         <i class="ri-discount-percent-line input-icon"></i>
                         <input type="number" name="discount" id="discount" class="input-form" min="0"
-                            step="0.01" value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
+                            step="1" value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
                             data-validate="minValue:0">
                     </div>
                 </div>

@@ -495,10 +495,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 1rem;
     color: var(--color-text);
     background: transparent;
+    overflow: hidden;
+    margin-bottom: 5px;
     border: none;
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -516,10 +518,20 @@
     align-items: center;
     gap: 0.75rem;
     flex: 1;
+    padding: 0.75rem 1rem;
 }
 
 .site-nav-family-content i {
     font-size: 1.25rem;
+}
+
+.site-arrow-family-content{
+    background-color: var(--color-site-hover);
+    height: 100%;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .family-arrow {

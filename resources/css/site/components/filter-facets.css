@@ -19,38 +19,40 @@
 /* =======================================================
    ✅ CHECKBOXES
 ======================================================= */
-.filter-facet-left input[type="checkbox"] {
-    appearance: none;
-    width: 25px;
-    height: 25px;
+.filter-facet-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.filter-facet-box {
+    width: 24px;
+    height: 24px;
     border: 2px solid var(--color-border-secondary);
-    border-radius: var(--radius-element);
+    border-radius: 5px;
     background-color: var(--color-input-bg);
-    cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-h3);
-    box-shadow: none;
-}
-
-.filter-facet-left input[type="checkbox"]:hover {
-    border-color: var(--color-accent);
-}
-
-.filter-facet-left input[type="checkbox"]:checked {
+    cursor: pointer;
     color: var(--color-site-accent);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.filter-facet-box i {
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: white;
+}
+
+.filter-facet-input:checked + .filter-facet-box {
     border-color: var(--color-site-accent);
-
+    background-color: var(--color-site-accent);
 }
 
-.filter-facet-left input[type="checkbox"]:checked {
-    color: var(--color-site-accent);
-    border-color: var(--color-site-accent);
-}
-
-.filter-facet-left input[type="checkbox"]:indeterminate {
-    color: var(--color-site-accent);
+.filter-facet-input:checked + .filter-facet-box i {
+    opacity: 1;
 }
 
 .filter-facet-size {
@@ -59,18 +61,17 @@
     justify-content: center;
     width: 34px;
     height: 34px;
-    border-radius: 10px;
+    border-radius: var(--radius-element);
     border: 1px solid var(--filter-border);
-    background: var(--color-site-hover);
     color: var(--color-text);
     font-weight: 600;
     font-size: 0.85rem;
 }
 
 .filter-facet-swatch {
-    width: 26px;
-    height: 26px;
-    border-radius: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50px;
     background: var(--facet-color);
     border: 1px solid rgba(15, 23, 42, 0.15);
 }

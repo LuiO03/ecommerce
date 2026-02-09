@@ -29,7 +29,7 @@ class ProductFactory extends Factory
             'slug' => Str::slug(Str::limit($this->faker->words(3, true), 50, '')),
             'description' => $this->faker->text(),
             'price' => $this->faker->randomFloat(2, 5, 500),
-            'discount' => $this->faker->optional()->randomFloat(2, 1, 100),
+            'discount' => $this->faker->optional()->numberBetween(1, 100),
             'status' => $this->faker->boolean(80), // 80% de probabilidad de ser true
             'category_id' => $this->faker->numberBetween(1, 10), // Asumiendo que hay al menos 10 categorías
         ];

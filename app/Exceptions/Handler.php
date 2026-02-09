@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Session\TokenMismatchException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -25,6 +26,16 @@ class Handler extends ExceptionHandler
                 'title' => 'Permiso insuficiente',
                 'message' => 'No tienes permisos para realizar esta acción.'
             ]);
+        }
+
+        if ($exception instanceof TokenMismatchException) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Tu sesión expiró. Actualiza la página e inténtalo de nuevo.'
+                ], 419);
+            }
+
+            return redirect()->route('welcome.index');
         }
         return parent::render($request, $exception);
     }

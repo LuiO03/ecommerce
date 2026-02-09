@@ -4,7 +4,7 @@
  * ============================================================================
  * Sistema de selección jerárquica progresiva (cascading selects) para categorías
  * Permite seleccionar la ubicación de una categoría en la jerarquía de forma visual
- * 
+ *
  * @author GECKОМERCE
  * @version 1.0.0
  */
@@ -35,6 +35,7 @@ export class CategoryHierarchyManager {
             currentCategoryId: null, // Para modo edit
             initialFamilyId: null,
             initialParentId: null,
+            maxDepth: 1,
             debug: false, // Activar logs de debug
             ...config
         };
@@ -100,7 +101,7 @@ export class CategoryHierarchyManager {
         if (this.config.initialFamilyId) {
             setTimeout(() => {
                 this.loadCategoriesForFamily(this.config.initialFamilyId);
-                
+
                 // Si hay parent_id en modo edit, reconstruir jerarquía
                 if (this.config.initialParentId) {
                     setTimeout(() => {
@@ -116,7 +117,7 @@ export class CategoryHierarchyManager {
      */
     loadCategoriesForFamily(familyId) {
         this.currentFamilyId = familyId;
-        
+
         // Función auxiliar para filtrar recursivamente en datos jerárquicos
         const filterCategories = (categories) => {
             return categories.filter(cat => {
@@ -125,10 +126,10 @@ export class CategoryHierarchyManager {
                 return belongsToFamily && isNotCurrent;
             });
         };
-        
+
         // Determinar si los datos son jerárquicos o planos
         const hasChildrenProperty = this.categoriesData.some(cat => cat.children !== undefined);
-        
+
         let rootCategories;
         if (hasChildrenProperty) {
             // Datos jerárquicos: filtrar categorías de primer nivel
@@ -139,7 +140,7 @@ export class CategoryHierarchyManager {
                 const belongsToFamily = cat.family_id === familyId;
                 const isRoot = cat.parent_id === null;
                 const isNotCurrent = this.config.currentCategoryId ? cat.id !== this.config.currentCategoryId : true;
-                
+
                 return belongsToFamily && isRoot && isNotCurrent;
             });
         }
@@ -192,14 +193,14 @@ export class CategoryHierarchyManager {
         // Container del select
         const selectContainer = document.createElement('div');
         selectContainer.className = 'input-icon-container';
-        
+
         // Generar opciones
-        const optionsHtml = categories.map(cat => 
+        const optionsHtml = categories.map(cat =>
             `<option value="${cat.id}" data-has-children="${this.hasChildren(cat.id)}">${cat.name}</option>`
         ).join('');
 
-        const defaultOption = level === 0 
-            ? 'Nueva categoría raíz (sin padre)' 
+        const defaultOption = level === 0
+            ? 'Nueva categoría raíz (sin padre)'
             : `Crear aquí (como hijo de "${parentName}")`;
 
         selectContainer.innerHTML = `
@@ -236,8 +237,8 @@ export class CategoryHierarchyManager {
         if (!selectedId) {
             // Opción vacía seleccionada
             this.selectedPath = this.selectedPath.slice(0, level);
-            this.elements.parentInput.value = this.selectedPath.length > 0 
-                ? this.selectedPath[this.selectedPath.length - 1].id 
+            this.elements.parentInput.value = this.selectedPath.length > 0
+                ? this.selectedPath[this.selectedPath.length - 1].id
                 : '';
             this.updateBreadcrumb(this.selectedPath);
             return;
@@ -258,7 +259,7 @@ export class CategoryHierarchyManager {
 
         // Si tiene hijos, crear siguiente nivel
         const children = this.getChildren(category.id);
-        if (children.length > 0) {
+        if (children.length > 0 && level + 1 < this.config.maxDepth) {
             this.createLevelSelect(level + 1, children, category.name);
         }
     }
@@ -298,7 +299,7 @@ export class CategoryHierarchyManager {
     updateBreadcrumb(path) {
         if (!this.elements.breadcrumb || !this.elements.breadcrumbPath) return;
 
-        if (path.length === 0) {
+        if (path.length <= 1) {
             this.elements.breadcrumb.style.display = 'none';
             return;
         }
@@ -321,7 +322,7 @@ export class CategoryHierarchyManager {
         // Primero intentar búsqueda plana
         const flatResult = this.categoriesData.find(cat => cat.id === id);
         if (flatResult) return flatResult;
-        
+
         // Si no se encuentra, intentar búsqueda recursiva (datos jerárquicos)
         return this.findCategoryByIdRecursive(id);
     }
@@ -346,12 +347,12 @@ export class CategoryHierarchyManager {
     hasChildren(parentId) {
         // Primero intentar encontrar la categoría
         const category = this.findCategoryById(parentId);
-        
+
         // Si tiene propiedad children (datos jerárquicos)
         if (category && category.children !== undefined) {
             return category.children && category.children.length > 0;
         }
-        
+
         // Si no, buscar por parent_id (datos planos)
         return this.categoriesData.some(cat => cat.parent_id === parentId);
     }
@@ -362,7 +363,7 @@ export class CategoryHierarchyManager {
     getChildren(parentId) {
         // Primero intentar encontrar la categoría
         const category = this.findCategoryById(parentId);
-        
+
         if (this.config.debug) {
             console.log('[CategoryHierarchy] getChildren:', {
                 parentId,
@@ -370,7 +371,7 @@ export class CategoryHierarchyManager {
                 hasChildrenProperty: category && category.children !== undefined
             });
         }
-        
+
         // Si tiene propiedad children (datos jerárquicos)
         if (category && category.children !== undefined) {
             const children = category.children || [];
@@ -387,18 +388,18 @@ export class CategoryHierarchyManager {
             }
             return children;
         }
-        
+
         // Si no, buscar por parent_id (datos planos)
         const flatChildren = this.categoriesData.filter(cat => {
             const isChild = cat.parent_id === parentId;
             const isNotCurrent = this.config.currentCategoryId ? cat.id !== this.config.currentCategoryId : true;
             return isChild && isNotCurrent;
         });
-        
+
         if (this.config.debug) {
             console.log('[CategoryHierarchy] Children planos:', flatChildren);
         }
-        
+
         return flatChildren;
     }
 
@@ -409,7 +410,7 @@ export class CategoryHierarchyManager {
         // Construir path desde raíz hasta targetParentId
         const path = [];
         let currentId = targetParentId;
-        
+
         while (currentId) {
             const cat = this.findCategoryById(currentId);
             if (!cat) break;

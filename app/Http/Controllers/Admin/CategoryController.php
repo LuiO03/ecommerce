@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 
@@ -222,7 +223,7 @@ class CategoryController extends Controller
             ->get(['id', 'name']);
 
         // Estructura jerárquica completa de categorías
-        $allCategories = $this->buildHierarchicalCategories();
+        $allCategories = $this->buildHierarchicalCategories(null, 0, 1);
 
         return view('admin.categories.create', compact('families', 'allCategories'));
     }
@@ -230,21 +231,24 @@ class CategoryController extends Controller
     /**
      * Construye estructura jerárquica completa de categorías
      */
-    private function buildHierarchicalCategories($parentId = null)
+    private function buildHierarchicalCategories($parentId = null, int $depth = 0, int $maxDepth = 1)
     {
         $categories = Category::where('parent_id', $parentId)
             ->with('family:id,name')
             ->orderBy('name')
             ->get(['id', 'name', 'family_id', 'parent_id']);
 
-        return $categories->map(function ($category) {
+        return $categories->map(function ($category) use ($depth, $maxDepth) {
+            $nextDepth = $depth + 1;
             return [
                 'id' => $category->id,
                 'name' => $category->name,
                 'family_id' => $category->family_id,
                 'family_name' => $category->family->name ?? 'Sin familia',
                 'parent_id' => $category->parent_id,
-                'children' => $this->buildHierarchicalCategories($category->id),
+                'children' => $nextDepth >= $maxDepth
+                    ? []
+                    : $this->buildHierarchicalCategories($category->id, $nextDepth, $maxDepth),
             ];
         });
     }
@@ -256,7 +260,10 @@ class CategoryController extends Controller
     {
         $request->validate([
             'family_id' => 'required|exists:families,id',
-            'parent_id' => 'nullable|exists:categories,id',
+            'parent_id' => [
+                'nullable',
+                Rule::exists('categories', 'id')->whereNull('parent_id'),
+            ],
             'name' => 'required|string|max:255|min:3|unique:categories,name|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
@@ -312,6 +319,7 @@ class CategoryController extends Controller
         // Todas las categorías excepto la actual (para evitar bucles)
         // Necesitamos family_id y parent_id para reconstruir la jerarquía
         $parents = Category::where('id', '!=', $category->id)
+            ->whereNull('parent_id')
             ->select('id', 'name', 'family_id', 'parent_id')
             ->orderBy('name')
             ->get();
@@ -328,6 +336,10 @@ class CategoryController extends Controller
     private function getSubcategoriesFlat($categoryId, $level = 0)
     {
         $subcategories = [];
+
+        if ($level >= 1) {
+            return $subcategories;
+        }
 
         $children = Category::where('parent_id', $categoryId)
             ->with('products')
@@ -360,7 +372,11 @@ class CategoryController extends Controller
     {
         $request->validate([
             'family_id' => 'required|exists:families,id',
-            'parent_id' => 'nullable|exists:categories,id|not_in:'.$category->id,
+            'parent_id' => [
+                'nullable',
+                Rule::exists('categories', 'id')->whereNull('parent_id'),
+                Rule::notIn([$category->id]),
+            ],
             'name' => 'required|string|max:255|min:3|unique:categories,name,'.$category->id.'|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status' => 'required|boolean',

@@ -2,6 +2,9 @@
 import './bootstrap';
 import './site-modules/sidebar-manager';
 import './site-modules/user-dropdown';
+import './site-modules/infinite-products';
+import './site-modules/search-autocomplete';
+import './site-modules/product-detail';
 import './modules/custom-select';
 
 // Swiper Slider

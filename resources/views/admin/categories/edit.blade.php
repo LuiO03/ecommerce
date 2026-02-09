@@ -92,6 +92,11 @@
                         <span class="label-italic">(opcional)</span>
                     </label>
 
+                    <div class="label-hint">
+                        <i class="ri-information-line"></i>
+                        <span>Solo se permite 1 nivel de subcategoría.</span>
+                    </div>
+
                     {{-- Hidden input solo para parent_id --}}
                     <input type="hidden" name="parent_id" id="parent_id"
                         value="{{ old('parent_id', $category->parent_id) }}">
@@ -284,6 +289,7 @@
                             ];
                         }),
                     ) !!},
+                    maxDepth: 1,
                     currentCategoryId: {{ $category->id }},
                     initialFamilyId: parseInt('{{ old('family_id', $category->family_id) }}'),
                     initialParentId: parseInt('{{ old('parent_id', $category->parent_id ?? 0) }}') || null

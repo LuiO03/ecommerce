@@ -15,13 +15,18 @@
 
                 <!-- Buscador desktop -->
                 <div class="search-desktop">
-                    <form class="site-search" role="search" aria-label="Buscar productos">
-                        <input type="search" name="q" class="site-search-input"
+                    <form class="site-search" role="search" aria-label="Buscar productos"
+                        action="{{ route('search.index') }}" method="GET"
+                        data-search-form data-search-suggestions="{{ route('search.suggestions') }}">
+                        <input type="search" name="q" class="site-search-input" data-search-input
                             placeholder="Buscar productos, marcas o categorías..." autocomplete="off" />
                         <button type="submit" class="site-search-btn" aria-label="Buscar">
                             <i class="ri-search-2-line"></i>
                             <span>Buscar</span>
                         </button>
+                        <div class="search-suggestions" data-search-dropdown>
+                            <div class="search-suggestions-results" data-search-results></div>
+                        </div>
                     </form>
                 </div>
 
@@ -103,13 +108,18 @@
 
         <!-- Buscador mobile -->
         <div class="search-mobile">
-            <form class="site-search site-search-mobile" role="search" aria-label="Buscar productos">
-                <input type="search" name="q" class="site-search-input" placeholder="Buscar en la tienda..."
-                    autocomplete="off" />
+            <form class="site-search site-search-mobile" role="search" aria-label="Buscar productos"
+                action="{{ route('search.index') }}" method="GET"
+                data-search-form data-search-suggestions="{{ route('search.suggestions') }}">
+                <input type="search" name="q" class="site-search-input" data-search-input
+                    placeholder="Buscar en la tienda..." autocomplete="off" />
                 <button type="submit" class="site-search-btn" aria-label="Buscar">
                     <i class="ri-search-2-line"></i>
                     <span>Buscar</span>
                 </button>
+                <div class="search-suggestions" data-search-dropdown>
+                    <div class="search-suggestions-results" data-search-results></div>
+                </div>
             </form>
         </div>
         <!-- Contenido del sidebar -->
@@ -156,7 +166,9 @@
                             <i class="ri-shopping-basket-2-line"></i>
                             <span>{{ $family->name }}</span>
                         </div>
-                        <i class="ri-arrow-right-s-line family-arrow"></i>
+                        <div class="site-arrow-family-content">
+                            <i class="ri-arrow-right-s-line family-arrow"></i>
+                        </div>
                     </button>
 
                     <!-- Panel de categorías (acordeón solo en móvil) -->

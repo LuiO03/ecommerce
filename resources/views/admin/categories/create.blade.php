@@ -80,6 +80,11 @@
                         Ubicación en la jerarquía <span class="label-italic">(opcional)</span>
                     </label>
 
+                    <div class="label-hint">
+                        <i class="ri-information-line"></i>
+                        <span>Solo se permite 1 nivel de subcategoría.</span>
+                    </div>
+
                     {{-- Hidden input solo para parent_id --}}
                     <input type="hidden" name="parent_id" id="parent_id" value="{{ old('parent_id') }}">
 
@@ -241,6 +246,7 @@
                 // 3. Inicializar jerarquía de categorías
                 const hierarchyManager = initCategoryHierarchy({
                     categoriesData: {!! json_encode($allCategories) !!},
+                    maxDepth: 1,
                     initialFamilyId: '{{ old('family_id') }}' ? parseInt('{{ old('family_id') }}') : null,
                     initialParentId: '{{ old('parent_id') }}' ? parseInt('{{ old('parent_id') }}') : null
                 });

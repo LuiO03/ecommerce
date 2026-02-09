@@ -24,6 +24,7 @@
 
             {{-- @livewire('navigation-menu') --}}
             @livewire('navigation')
+
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white shadow">

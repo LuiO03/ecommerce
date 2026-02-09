@@ -8,7 +8,7 @@
     <ol class="site-breadcrumb-list">
         <li class="site-breadcrumb-item">
             <a class="site-breadcrumb-link" href="{{ $homeUrl }}">
-                <i class="ri-home-4-line"></i>
+                <i class="ri-home-4-fill"></i>
                 <span>{{ $homeLabel }}</span>
             </a>
         </li>

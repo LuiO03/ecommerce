@@ -116,6 +116,11 @@
     margin-bottom: 1rem;
 }
 
+.products-count{
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
 /* Grid de productos */
 .products-grid {
     display: grid;

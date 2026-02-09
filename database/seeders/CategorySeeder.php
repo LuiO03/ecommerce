@@ -62,7 +62,7 @@ class CategorySeeder extends Seeder
                 'name' => 'Ropa Infantil',
                 'slug' => Str::slug('Ropa Infantil'),
                 'description' => 'Prendas cómodas para niños y niñas.',
-                'family_id' => $families['ninos'] ?? 3,
+                'family_id' => $families['ropa-ninos'] ?? 3,
                 'image' => 'categories/ropa-infantil.jpg',
                 'status' => true,
                 'parent_id' => null,
@@ -94,7 +94,9 @@ class CategorySeeder extends Seeder
         /* =======================================================
          * Obtener IDs de las categorías principales recién creadas
          * ======================================================= */
-        $parents = DB::table('categories')->pluck('id', 'slug');
+        $parents = DB::table('categories')
+            ->get(['id', 'slug', 'family_id'])
+            ->keyBy('slug');
 
         /* ============================================
          * 2. Insertar subcategorías (categorías hijas)
@@ -105,18 +107,18 @@ class CategorySeeder extends Seeder
                 'name' => 'Camisas Manga Larga',
                 'slug' => Str::slug('Camisas Manga Larga'),
                 'description' => 'Camisas formales y casuales de manga larga.',
-                'family_id' => null,
+                'family_id' => $parents['camisas']->family_id ?? null,
                 'image' => 'categories/camisas-manga-larga.jpg',
-                'parent_id' => $parents['camisas'] ?? null,
+                'parent_id' => $parents['camisas']->id ?? null,
                 'status' => true,
             ],
             [
                 'name' => 'Camisas Manga Corta',
                 'slug' => Str::slug('Camisas Manga Corta'),
                 'description' => 'Camisas frescas y ligeras.',
-                'family_id' => null,
+                'family_id' => $parents['camisas']->family_id ?? null,
                 'image' => 'categories/camisas-manga-corta.jpg',
-                'parent_id' => $parents['camisas'] ?? null,
+                'parent_id' => $parents['camisas']->id ?? null,
                 'status' => true,
             ],
 
@@ -125,18 +127,18 @@ class CategorySeeder extends Seeder
                 'name' => 'Jeans',
                 'slug' => Str::slug('Jeans Hombre'),
                 'description' => 'Jeans clásicos y modernos.',
-                'family_id' => null,
+                'family_id' => $parents['pantalones-hombre']->family_id ?? null,
                 'image' => 'categories/jeans-hombre.jpg',
-                'parent_id' => $parents['pantalones-hombre'] ?? null,
+                'parent_id' => $parents['pantalones-hombre']->id ?? null,
                 'status' => true,
             ],
             [
                 'name' => 'Joggers',
                 'slug' => Str::slug('Joggers Hombre'),
                 'description' => 'Joggers deportivos y urbanos.',
-                'family_id' => null,
+                'family_id' => $parents['pantalones-hombre']->family_id ?? null,
                 'image' => 'categories/joggers-hombre.jpg',
-                'parent_id' => $parents['pantalones-hombre'] ?? null,
+                'parent_id' => $parents['pantalones-hombre']->id ?? null,
                 'status' => true,
             ],
 
@@ -145,18 +147,18 @@ class CategorySeeder extends Seeder
                 'name' => 'Vestidos Elegantes',
                 'slug' => Str::slug('Vestidos Elegantes'),
                 'description' => 'Vestidos para ocasiones especiales.',
-                'family_id' => null,
+                'family_id' => $parents['vestidos']->family_id ?? null,
                 'image' => 'categories/vestidos-elegantes.jpg',
-                'parent_id' => $parents['vestidos'] ?? null,
+                'parent_id' => $parents['vestidos']->id ?? null,
                 'status' => true,
             ],
             [
                 'name' => 'Vestidos Casuales',
                 'slug' => Str::slug('Vestidos Casuales'),
                 'description' => 'Vestidos cómodos y casuales.',
-                'family_id' => null,
+                'family_id' => $parents['vestidos']->family_id ?? null,
                 'image' => 'categories/vestidos-casuales.jpg',
-                'parent_id' => $parents['vestidos'] ?? null,
+                'parent_id' => $parents['vestidos']->id ?? null,
                 'status' => true,
             ],
 
@@ -165,18 +167,18 @@ class CategorySeeder extends Seeder
                 'name' => 'Blusas Elegantes',
                 'slug' => Str::slug('Blusas Elegantes'),
                 'description' => 'Blusas formales modernas.',
-                'family_id' => null,
+                'family_id' => $parents['blusas']->family_id ?? null,
                 'image' => 'categories/blusas-elegantes.jpg',
-                'parent_id' => $parents['blusas'] ?? null,
+                'parent_id' => $parents['blusas']->id ?? null,
                 'status' => true,
             ],
             [
                 'name' => 'Blusas Casual',
                 'slug' => Str::slug('Blusas Casual'),
                 'description' => 'Blusas para uso diario.',
-                'family_id' => null,
+                'family_id' => $parents['blusas']->family_id ?? null,
                 'image' => 'categories/blusas-casual.jpg',
-                'parent_id' => $parents['blusas'] ?? null,
+                'parent_id' => $parents['blusas']->id ?? null,
                 'status' => true,
             ],
         ];
