@@ -34,10 +34,10 @@
                         </div>
                     @endif
 
-                    <div class="product-gallery-main swiper">
-                        <div class="swiper-wrapper">
+                    <div class="product-gallery-main">
+                        <div class="product-gallery-track">
                             @forelse ($images as $image)
-                                <div class="swiper-slide product-gallery-slide">
+                                <div class="product-gallery-slide">
                                     <img src="{{ asset('storage/' . $image->path) }}"
                                         alt="{{ $image->alt ?? $product->name }}"
                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

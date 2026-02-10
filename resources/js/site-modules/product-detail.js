@@ -1,6 +1,3 @@
-import Swiper from 'swiper';
-import { Navigation } from 'swiper/modules';
-
 document.addEventListener('DOMContentLoaded', () => {
     const galleryRoot = document.querySelector('[data-product-gallery]');
 
@@ -10,35 +7,182 @@ document.addEventListener('DOMContentLoaded', () => {
         const prevEl = galleryRoot.querySelector('.gallery-prev');
 
         if (mainEl) {
-            const gallerySwiper = new Swiper(mainEl, {
-                modules: [Navigation],
-                slidesPerView: 1,
-                spaceBetween: 12,
-                navigation: {
-                    nextEl,
-                    prevEl,
-                },
-            });
-
+            const slides = Array.from(mainEl.querySelectorAll('.product-gallery-slide'));
             const thumbs = Array.from(galleryRoot.querySelectorAll('.product-thumb'));
+            let activeIndex = 0;
+            let autoplayTimer = null;
+            const loopEnabled = true;
+            const autoplayEnabled = true;
+            const autoplayDelay = 4500;
+            const swipeThreshold = 40;
+            let startX = 0;
+            let deltaX = 0;
+            let isDragging = false;
+
             const setActiveThumb = (index) => {
                 thumbs.forEach((thumb, i) => {
-                    thumb.classList.toggle('is-active', i === index);
+                    const isActive = i === index;
+                    thumb.classList.toggle('is-active', isActive);
+                    thumb.setAttribute('aria-pressed', isActive ? 'true' : 'false');
                 });
             };
 
-            setActiveThumb(0);
+            const clampIndex = (index) => {
+                if (!slides.length) {
+                    return 0;
+                }
+                if (loopEnabled) {
+                    return (index + slides.length) % slides.length;
+                }
+                return Math.max(0, Math.min(index, slides.length - 1));
+            };
+
+            const setActiveSlide = (index) => {
+                if (!slides.length) {
+                    return;
+                }
+
+                activeIndex = clampIndex(index);
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('is-active', i === activeIndex);
+                });
+
+                if (!loopEnabled) {
+                    if (prevEl) {
+                        prevEl.disabled = activeIndex === 0;
+                    }
+                    if (nextEl) {
+                        nextEl.disabled = activeIndex === slides.length - 1;
+                    }
+                } else {
+                    if (prevEl) {
+                        prevEl.disabled = false;
+                    }
+                    if (nextEl) {
+                        nextEl.disabled = false;
+                    }
+                }
+
+                setActiveThumb(activeIndex);
+            };
+
+            const stopAutoplay = () => {
+                if (autoplayTimer) {
+                    window.clearInterval(autoplayTimer);
+                    autoplayTimer = null;
+                }
+            };
+
+            const startAutoplay = () => {
+                if (!autoplayEnabled || slides.length <= 1) {
+                    return;
+                }
+                stopAutoplay();
+                autoplayTimer = window.setInterval(() => {
+                    setActiveSlide(activeIndex + 1);
+                }, autoplayDelay);
+            };
+
+            const restartAutoplay = () => {
+                stopAutoplay();
+                startAutoplay();
+            };
 
             thumbs.forEach((thumb, index) => {
+                thumb.setAttribute('aria-pressed', 'false');
                 thumb.addEventListener('click', () => {
-                    gallerySwiper.slideTo(index);
-                    setActiveThumb(index);
+                    setActiveSlide(index);
+                    restartAutoplay();
                 });
             });
 
-            gallerySwiper.on('slideChange', () => {
-                setActiveThumb(gallerySwiper.activeIndex);
+            if (prevEl) {
+                prevEl.addEventListener('click', () => {
+                    setActiveSlide(activeIndex - 1);
+                    restartAutoplay();
+                });
+            }
+
+            if (nextEl) {
+                nextEl.addEventListener('click', () => {
+                    setActiveSlide(activeIndex + 1);
+                    restartAutoplay();
+                });
+            }
+
+            mainEl.addEventListener('pointerdown', (event) => {
+                if (event.pointerType === 'mouse' && event.button !== 0) {
+                    return;
+                }
+                const isInteractive = event.target instanceof HTMLElement
+                    && event.target.closest('.gallery-nav, .product-thumb, button, a, input, textarea');
+                if (isInteractive) {
+                    return;
+                }
+                isDragging = true;
+                startX = event.clientX;
+                deltaX = 0;
+                mainEl.classList.add('is-dragging');
+                mainEl.setPointerCapture(event.pointerId);
+                stopAutoplay();
             });
+
+            mainEl.addEventListener('pointermove', (event) => {
+                if (!isDragging) {
+                    return;
+                }
+                deltaX = event.clientX - startX;
+            });
+
+            const endSwipe = (event) => {
+                if (!isDragging) {
+                    return;
+                }
+                mainEl.classList.remove('is-dragging');
+                if (event?.pointerId !== undefined && mainEl.hasPointerCapture(event.pointerId)) {
+                    mainEl.releasePointerCapture(event.pointerId);
+                }
+                if (Math.abs(deltaX) > swipeThreshold) {
+                    setActiveSlide(activeIndex + (deltaX < 0 ? 1 : -1));
+                }
+                isDragging = false;
+                deltaX = 0;
+                restartAutoplay();
+            };
+
+            mainEl.addEventListener('pointerup', endSwipe);
+            mainEl.addEventListener('pointercancel', endSwipe);
+            mainEl.addEventListener('pointerleave', endSwipe);
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+                    return;
+                }
+                const target = event.target;
+                const isFormField = target instanceof HTMLElement
+                    && (target.tagName === 'INPUT'
+                        || target.tagName === 'TEXTAREA'
+                        || target.isContentEditable);
+
+                if (isFormField) {
+                    return;
+                }
+
+                if (event.key === 'ArrowLeft') {
+                    setActiveSlide(activeIndex - 1);
+                } else {
+                    setActiveSlide(activeIndex + 1);
+                }
+                restartAutoplay();
+            });
+
+            mainEl.addEventListener('mouseenter', stopAutoplay);
+            mainEl.addEventListener('mouseleave', startAutoplay);
+            mainEl.addEventListener('focusin', stopAutoplay);
+            mainEl.addEventListener('focusout', startAutoplay);
+
+            setActiveSlide(0);
+            startAutoplay();
         }
     }
 
@@ -58,6 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const optionCount = optionGroups.length;
         const selection = new Map();
 
+        const hasFeature = (variant, featureId) => {
+            return variant.features.some((feature) => String(feature.id) === String(featureId));
+        };
+
         const formatPrice = (value) => `S/.${Number(value).toFixed(2)}`;
 
         const updatePrice = (priceBase) => {
@@ -70,6 +218,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        const isFeatureAvailable = (optionId, featureId) => {
+            return variants.some((variant) => {
+                if (!hasFeature(variant, featureId)) {
+                    return false;
+                }
+
+                return Array.from(selection.entries()).every(([selectedOptionId, selectedFeatureId]) => {
+                    if (String(selectedOptionId) === String(optionId)) {
+                        return true;
+                    }
+                    return hasFeature(variant, selectedFeatureId);
+                });
+            });
+        };
+
+        const updateAvailability = () => {
+            optionGroups.forEach((group) => {
+                const optionId = group.dataset.optionId;
+                const buttons = Array.from(group.querySelectorAll('[data-feature-id]'));
+
+                buttons.forEach((button) => {
+                    const featureId = button.dataset.featureId;
+                    const available = isFeatureAvailable(optionId, featureId);
+
+                    button.classList.toggle('is-disabled', !available);
+                    button.disabled = !available;
+                });
+            });
+        };
+
         const updateVariant = () => {
             if (selection.size < optionCount) {
                 updatePrice(basePrice);
@@ -79,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (stockEl) {
                     stockEl.textContent = 'Stock disponible';
                 }
+                updateAvailability();
                 return;
             }
 
@@ -94,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (helperEl) {
                     helperEl.textContent = 'La combinacion seleccionada no esta disponible.';
                 }
+                updateAvailability();
                 return;
             }
 
@@ -108,6 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (helperEl) {
                 helperEl.textContent = 'Variacion seleccionada.';
             }
+
+            updateAvailability();
         };
 
         optionGroups.forEach((group) => {
