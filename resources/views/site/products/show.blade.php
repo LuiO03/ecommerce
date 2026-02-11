@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('css')
-        @vite(['resources/css/site/modules/product-details.css'])
+        @vite(['resources/css/site/modules/product-details.css', 'resources/css/site/components/quantity-counter.css'])
     @endpush
 
     @include('partials.site.breadcrumb', [
@@ -13,7 +13,7 @@
         $discountPercent = !is_null($product->discount) ? min(max((float) $product->discount, 0), 100) : 0;
         $hasDiscount = $discountPercent > 0;
         $discounted = $hasDiscount
-            ? max((float) $product->price * (1 - ($discountPercent / 100)), 0)
+            ? max((float) $product->price * (1 - $discountPercent / 100), 0)
             : (float) $product->price;
     @endphp
 
@@ -27,8 +27,7 @@
                                 <button class="product-thumb" type="button" aria-label="Ver imagen"
                                     data-index="{{ $index }}">
                                     <img src="{{ asset('storage/' . $image->path) }}"
-                                        alt="{{ $image->alt ?? $product->name }}"
-                                        loading="lazy">
+                                        alt="{{ $image->alt ?? $product->name }}" loading="lazy">
                                 </button>
                             @endforeach
                         </div>
@@ -60,10 +59,6 @@
                         <button class="gallery-nav gallery-next" type="button" aria-label="Siguiente">
                             <i class="ri-arrow-right-s-line"></i>
                         </button>
-
-                        @if ($hasDiscount)
-                            <span class="product-discount-badge">-{{ number_format($discountPercent, 0) }}%</span>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -71,65 +66,68 @@
             <div class="product-summary" data-variant-root data-base-price="{{ $product->price }}"
                 data-discount="{{ $discountPercent }}">
                 <div class="product-summary-header">
-                    <span class="product-category">
-                        <i class="ri-price-tag-3-line"></i>
+                    <a href="{{ route('categories.show', $product->category) }}" class="product-category">
                         {{ $product->category?->name ?? 'Sin categoria' }}
-                    </span>
+                    </a>
                     <h1>{{ $product->name }}</h1>
                     <p class="product-sku">SKU: {{ $product->sku }}</p>
                 </div>
-
                 <div class="product-price">
-                    <span class="product-price-current" data-price-current>
-                        S/.{{ number_format($discounted, 2) }}
-                    </span>
+                    <div class="flex w-full gap-2 items-center">
+                        <span class="product-price-current" data-price-current>
+                            S/.{{ number_format($discounted, 2) }}
+                        </span>
+                        @if ($hasDiscount)
+                            <span class="product-discount-badge">-{{ number_format($discountPercent, 0) }}% OFF</span>
+                        @endif
+                    </div>
                     @if ($hasDiscount)
                         <span class="product-price-original" data-price-original>
                             S/.{{ number_format($product->price, 2) }}
                         </span>
                     @endif
                 </div>
-
-                <div class="product-meta">
-                    <span class="product-status {{ $product->status ? 'is-active' : 'is-inactive' }}">
-                        <i class="ri-circle-fill"></i>
-                        {{ $product->status ? 'Disponible' : 'No disponible' }}
-                    </span>
-                    <span class="product-family">
-                        <i class="ri-folder-3-line"></i>
-                        {{ $product->category?->family?->name ?? 'Sin familia' }}
-                    </span>
+                <div class="product-status-stock">
+                    <div class="product-meta">
+                        <span class="product-status {{ $product->status ? 'is-active' : 'is-inactive' }}">
+                            <i class="ri-circle-fill"></i>
+                            {{ $product->status ? 'Disponible' : 'No disponible' }}
+                        </span>
+                    </div>
                     <span class="product-stock" data-stock>
                         <i class="ri-stack-line"></i>
                         Stock disponible
                     </span>
                 </div>
-
+                <hr class="w-full my-0 border-default">
                 @if ($variantOptions->isNotEmpty())
                     <div class="product-variants">
-                        <h2>Variantes disponibles</h2>
-                        <p class="variant-helper" data-variant-helper>
-                            Selecciona una opcion para ver disponibilidad y precio.
-                        </p>
                         @foreach ($variantOptions as $option)
                             <div class="variant-group" data-option-id="{{ $option['option_id'] }}"
                                 data-option-slug="{{ $option['slug'] }}">
-                                <span class="variant-label">{{ $option['name'] }}</span>
+                                <h4 class="Subtitle-product">
+                                    {{ $option['name'] }}
+                                </h4>
                                 <div class="variant-values">
                                     @foreach ($option['features'] as $feature)
-                                        <button type="button"
-                                            class="variant-value {{ $option['is_color'] ? 'is-color' : 'is-size' }}"
-                                            data-feature-id="{{ $feature['id'] }}" aria-pressed="false">
-                                            @if ($option['is_color'])
+                                        @if ($option['is_color'])
+                                            <button type="button"
+                                                class="variant-value {{ $option['is_color'] ? 'is-color' : 'is-size' }}"
+                                                data-feature-id="{{ $feature['id'] }}" aria-pressed="false"
+                                                title="{{ $feature['description'] ?? $feature['value'] }}"
+                                                aria-label="{{ $feature['description'] ?? $feature['value'] }}">
                                                 <span class="variant-swatch"
-                                                    style="--swatch-color: {{ $feature['value'] }}"></span>
-                                                <span class="variant-name">
-                                                    {{ $feature['description'] ?? $feature['value'] }}
-                                                </span>
-                                            @else
+                                                    style="background-color: {{ $feature['value'] }}"></span>
+                                            </button>
+                                        @else
+                                            <button type="button"
+                                                class="variant-value {{ $option['is_color'] ? 'is-color' : 'is-size' }}"
+                                                data-feature-id="{{ $feature['id'] }}" aria-pressed="false"
+                                                title="{{ $feature['description'] ?? $feature['value'] }}"
+                                                aria-label="{{ $feature['description'] ?? $feature['value'] }}">
                                                 <span class="variant-size">{{ $feature['value'] }}</span>
-                                            @endif
-                                        </button>
+                                            </button>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -137,19 +135,37 @@
                     </div>
                 @endif
 
+                <hr class="w-full my-0 border-default">
+
                 <div class="product-actions">
-                    <button class="product-action-btn product-action-primary" type="button">
-                        <i class="ri-shopping-cart-2-line"></i>
-                        <span>Agregar al carrito</span>
-                    </button>
-                    <button class="product-action-btn" type="button" aria-label="Agregar a favoritos">
-                        <i class="ri-heart-line"></i>
-                        <span>Favoritos</span>
-                    </button>
+                    <div class="quantity-counter" data-quantity-root>
+                        <button class="quantity-btn quantity-btn--minus" type="button" data-quantity-decrement
+                            aria-label="Disminuir cantidad">
+                            <i class="ri-subtract-line"></i>
+                        </button>
+                        <div class="quantity-value" data-quantity-value>1</div>
+                        <button class="quantity-btn quantity-btn--plus" type="button" data-quantity-increment
+                            aria-label="Aumentar cantidad">
+                            <i class="ri-add-line"></i>
+                        </button>
+                    </div>
+                    <div class="product-action-buttons">
+                        <button class="product-action-btn product-action-primary" type="button" data-add-to-cart
+                            data-default-text="Agregar al carrito" data-prompt-text="Selecciona tus opciones"
+                            data-out-of-stock-text="Sin stock">
+                            <i class="ri-shopping-cart-line"></i>
+                            <span data-add-to-cart-label>Agregar al carrito</span>
+                        </button>
+                        <button class="product-action-btn" type="button" aria-label="Agregar a favoritos" title="Agregar a favoritos">
+                            <i class="ri-heart-line"></i>
+                        </button>
+                    </div>
                 </div>
 
+                <hr class="w-full my-0 border-default">
+
                 <div class="product-description">
-                    <h2>Descripcion</h2>
+                    <h3 class="Subtitle-product">Descripcion</h3>
                     <p>{{ $product->description ?? 'Este producto no tiene descripcion adicional.' }}</p>
                 </div>
             </div>

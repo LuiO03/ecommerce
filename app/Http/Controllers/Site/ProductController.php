@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function show($slug)
     {
-        $product = Product::where('slug', $slug)->with(['category.family', 'images'])->firstOrFail();
+        $product = Product::where('slug', $slug)->with(['category', 'images'])->firstOrFail();
         $variants = $product->variants()
             ->where('status', true)
             ->where('stock', '>', 0)
@@ -59,14 +59,6 @@ class ProductController extends Controller
         $breadcrumbItems = [];
 
         if ($product->category) {
-            $family = $product->category->family;
-            if ($family) {
-                $breadcrumbItems[] = [
-                    'label' => $family->name,
-                    'url' => route('families.show', $family),
-                ];
-            }
-
             // Agregar categorías padres
             $parents = [];
             $current = $product->category;

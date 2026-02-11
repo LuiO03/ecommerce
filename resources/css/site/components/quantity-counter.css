@@ -1,0 +1,86 @@
+/* ============================================
+   COMPONENTE: Quantity Counter (contador de cantidad)
+   Reutilizable en vistas del sitio
+   ============================================ */
+
+.quantity-counter {
+    display: flex;
+    border-radius: var(--radius-input);
+    border: 1px solid var(--color-border);
+    background-color: white;
+    overflow: hidden;
+    width: min-content;
+}
+
+.quantity-btn {
+    width: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.12s ease;
+}
+
+.quantity-btn i {
+    font-size: 1.25rem;
+}
+
+.quantity-btn:hover {
+    background-color: rgba(148, 163, 184, 0.12);
+}
+
+.quantity-btn:active {
+    transform: scale(0.96);
+}
+
+.quantity-btn.is-disabled,
+.quantity-btn:disabled {
+    opacity: 0.4;
+    transform: none;
+}
+
+.quantity-value {
+    min-width: 56px;
+    padding: 0 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #0f172a;
+    border-left: 1px solid rgba(148, 163, 184, 0.35);
+    border-right: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.quantity-value.is-changing {
+    animation: quantity-bump 0.18s ease;
+}
+
+@keyframes quantity-bump {
+    0% {
+        transform: translateY(2px);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateY(-2px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .quantity-value {
+        flex: 1;
+    }
+}

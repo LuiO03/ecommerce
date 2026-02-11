@@ -197,6 +197,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const priceOriginal = variantRoot.querySelector('[data-price-original]');
         const stockEl = variantRoot.querySelector('[data-stock]');
         const helperEl = variantRoot.querySelector('[data-variant-helper]');
+        const addToCartBtn = variantRoot.querySelector('[data-add-to-cart]');
+        const addToCartLabel = addToCartBtn?.querySelector('[data-add-to-cart-label]');
+        const defaultAddToCartText = addToCartBtn?.dataset.defaultText || 'Agregar al carrito';
+        const promptAddToCartText = addToCartBtn?.dataset.promptText || 'Seleccione tus opciones';
+        const outOfStockText = addToCartBtn?.dataset.outOfStockText || 'Sin stock';
+
+        const quantityRoot = variantRoot.querySelector('[data-quantity-root]');
+        const quantityValueEl = quantityRoot?.querySelector('[data-quantity-value]');
+        const quantityDecrementBtn = quantityRoot?.querySelector('[data-quantity-decrement]');
+        const quantityIncrementBtn = quantityRoot?.querySelector('[data-quantity-increment]');
+
+        let currentStock = null;
+        let currentQuantity = 1;
 
         const optionGroups = Array.from(variantRoot.querySelectorAll('[data-option-id]'));
         const optionCount = optionGroups.length;
@@ -248,6 +261,51 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
+        const updateAddToCart = (enabled, label) => {
+            if (!addToCartBtn || !addToCartLabel) {
+                return;
+            }
+            addToCartBtn.disabled = !enabled;
+            addToCartBtn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            addToCartLabel.textContent = label;
+        };
+
+        const updateQuantityUI = () => {
+            if (!quantityRoot || !quantityValueEl || !quantityDecrementBtn || !quantityIncrementBtn) {
+                return;
+            }
+
+            const maxQty = typeof currentStock === 'number' && currentStock > 0 ? currentStock : 1;
+
+            if (currentQuantity < 1) {
+                currentQuantity = 1;
+            }
+            if (currentQuantity > maxQty) {
+                currentQuantity = maxQty;
+            }
+
+            quantityValueEl.textContent = String(currentQuantity);
+
+            const canDecrement = currentQuantity > 1;
+            const canIncrement = currentQuantity < maxQty;
+
+            quantityDecrementBtn.disabled = !canDecrement;
+            quantityDecrementBtn.classList.toggle('is-disabled', !canDecrement);
+
+            quantityIncrementBtn.disabled = !canIncrement;
+            quantityIncrementBtn.classList.toggle('is-disabled', !canIncrement);
+
+            quantityValueEl.classList.remove('is-changing');
+            // Fuerza reflow para reiniciar la animación
+            // eslint-disable-next-line no-unused-expressions
+            quantityValueEl.offsetWidth;
+            quantityValueEl.classList.add('is-changing');
+
+            window.setTimeout(() => {
+                quantityValueEl.classList.remove('is-changing');
+            }, 200);
+        };
+
         const updateVariant = () => {
             if (selection.size < optionCount) {
                 updatePrice(basePrice);
@@ -257,7 +315,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (stockEl) {
                     stockEl.textContent = 'Stock disponible';
                 }
+                updateAddToCart(false, promptAddToCartText);
                 updateAvailability();
+                currentStock = null;
+                updateQuantityUI();
                 return;
             }
 
@@ -273,7 +334,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (helperEl) {
                     helperEl.textContent = 'La combinacion seleccionada no esta disponible.';
                 }
+                updateAddToCart(false, promptAddToCartText);
                 updateAvailability();
+                currentStock = null;
+                updateQuantityUI();
                 return;
             }
 
@@ -281,16 +345,45 @@ document.addEventListener('DOMContentLoaded', () => {
             updatePrice(priceBase);
 
             if (stockEl) {
-                stockEl.textContent = match.stock > 0
-                    ? `Stock: ${match.stock}`
-                    : 'Sin stock';
+                if (match.stock <= 0) {
+                    stockEl.textContent = 'Sin stock';
+                } else if (match.stock < 10) {
+                    stockEl.innerHTML = `¡Solo quedan <span class="product-stock-highlight">${match.stock} unidades</span> disponibles!`;
+                } else {
+                    stockEl.innerHTML = 'Unidades disponibles: <span class="product-stock-highlight">10+</span>';
+                }
             }
+            updateAddToCart(match.stock > 0, match.stock > 0 ? defaultAddToCartText : outOfStockText);
             if (helperEl) {
                 helperEl.textContent = 'Variacion seleccionada.';
             }
 
+            currentStock = typeof match.stock === 'number' ? match.stock : null;
+            updateQuantityUI();
+
             updateAvailability();
         };
+
+        if (quantityRoot && quantityValueEl && quantityDecrementBtn && quantityIncrementBtn) {
+            quantityDecrementBtn.addEventListener('click', () => {
+                if (currentQuantity <= 1) {
+                    return;
+                }
+                currentQuantity -= 1;
+                updateQuantityUI();
+            });
+
+            quantityIncrementBtn.addEventListener('click', () => {
+                const maxQty = typeof currentStock === 'number' && currentStock > 0 ? currentStock : 1;
+                if (currentQuantity >= maxQty) {
+                    return;
+                }
+                currentQuantity += 1;
+                updateQuantityUI();
+            });
+
+            updateQuantityUI();
+        }
 
         optionGroups.forEach((group) => {
             const optionId = group.dataset.optionId;
