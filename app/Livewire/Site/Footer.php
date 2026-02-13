@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Site;
 
 use Livewire\Component;
 
@@ -15,6 +15,6 @@ class Footer extends Component
 
     public function render()
     {
-        return view('livewire.footer');
+        return view('livewire.site.footer');
     }
 }

@@ -10,6 +10,8 @@
 @import "./components/latest-products.css";
 @import "./components/layout-site.css";
 @import "./components/product-card.css";
+@import "./components/quantity-counter.css";
+
 
 @import "./modules/cart.css";
 @import "./modules/checkout.css";

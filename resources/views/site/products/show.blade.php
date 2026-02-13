@@ -1,7 +1,4 @@
 <x-app-layout>
-    @push('css')
-        @vite(['resources/css/site/modules/product-details.css', 'resources/css/site/components/quantity-counter.css'])
-    @endpush
 
     @include('partials.site.breadcrumb', [
         'items' => $breadcrumbItems,
@@ -150,15 +147,14 @@
                         </button>
                     </div>
                     <div class="product-action-buttons">
-                        <button class="product-action-btn product-action-primary" type="button" data-add-to-cart
+                        <button class="product-action-cart" type="button" data-add-to-cart
                             data-default-text="Agregar al carrito" data-prompt-text="Selecciona tus opciones"
                             data-out-of-stock-text="Sin stock">
                             <i class="ri-shopping-cart-line"></i>
                             <span data-add-to-cart-label>Agregar al carrito</span>
                         </button>
-                        <button class="product-action-btn" type="button" aria-label="Agregar a favoritos" title="Agregar a favoritos">
-                            <i class="ri-heart-line"></i>
-                        </button>
+
+                        @livewire('site.add-to-wishlist', ['product' => $product])
                     </div>
                 </div>
 

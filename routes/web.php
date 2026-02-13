@@ -6,6 +6,7 @@
     use App\Http\Controllers\Site\SearchController;
     use App\Http\Controllers\Site\CategoryController;
     use App\Http\Controllers\Site\ProductController;
+    use App\Http\Controllers\Site\WishlistController;
 
     Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
 
@@ -15,6 +16,11 @@
 
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
     Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('search.suggestions');
+
+    // Rutas para la lista de deseos (wishlist)
+    Route::get('/wishlists', [WishlistController::class, 'show'])->name('wishlists.show');
+    Route::post('/wishlists', [WishlistController::class, 'store'])->name('wishlists.store');
+    Route::delete('/wishlists/{wishlistItem}', [WishlistController::class, 'destroy'])->name('wishlists.destroy');
 
     // Login administrativo (único login del sistema)
     Route::get('/login', function () {

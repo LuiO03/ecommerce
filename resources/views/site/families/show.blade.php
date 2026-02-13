@@ -5,7 +5,7 @@
             ['label' => $family->name, 'icon' => 'ri-price-tag-3-fill'],
         ],
     ])
-    @livewire('filter', [
+    @livewire('site.filter', [
         'family_id' => $family->id,
     ])
 

@@ -5,6 +5,7 @@ import './site-modules/user-dropdown';
 import './site-modules/infinite-products';
 import './site-modules/search-autocomplete';
 import './site-modules/product-detail';
+import './site-modules/quantity-counter';
 import './modules/custom-select';
 
 // Swiper Slider
@@ -20,4 +21,12 @@ window.SwiperModules = {
 	Pagination,
 	Autoplay,
 };
+
+// Listener global para toasts disparados desde Livewire (browser events)
+window.addEventListener('toast', (event) => {
+	const detail = event?.detail;
+	if (typeof window.showToast === 'function' && detail) {
+		window.showToast(detail);
+	}
+});
 

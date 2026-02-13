@@ -4,7 +4,7 @@
         'items' => $breadcrumbItems,
     ])
 
-    @livewire('filter', [
+    @livewire('site.filter', [
         'category_id' => $category->id,
     ])
 

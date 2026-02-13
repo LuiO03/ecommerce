@@ -6,7 +6,7 @@
     @if($category->children->count() > 0)
         <div class="site-flyout-children">
             @foreach($category->children as $child)
-                @include('livewire.category-flyout', ['category' => $child, 'level' => $level + 1])
+                @include('livewire.site.category-flyout', ['category' => $child, 'level' => $level + 1])
             @endforeach
         </div>
     @endif

@@ -38,9 +38,9 @@
                         <span class="nav-icon-badge">3</span>
                     </a>
                     <!-- Icono whishlist (solo desktop) -->
-                    <a href="" class="nav-icon" aria-label="Lista de deseos" title="Ver lista de deseos">
+                    <a href="{{ route('wishlists.show') }}" class="nav-icon" aria-label="Lista de deseos" title="Ver lista de deseos">
                         <i class="ri-heart-line"></i>
-                        <span class="nav-icon-badge">5</span>
+                        <span class="nav-icon-badge">{{ $wishlistCount }}</span>
                     </a>
                     <!-- Botón de inicio de sesión / usuario -->
                     @guest
@@ -175,7 +175,7 @@
                     <div class="site-flyout-panel-mobile" data-family-panel-mobile="{{ $family->id }}">
                         <div class="site-flyout-content">
                             @forelse($family->categories as $category)
-                                @include('livewire.category-flyout', [
+                                @include('livewire.site.category-flyout', [
                                     'category' => $category,
                                     'level' => 0,
                                 ])
@@ -203,7 +203,7 @@
                     </div>
                     <div class="site-flyout-content">
                         @forelse($family->categories as $category)
-                            @include('livewire.category-flyout', ['category' => $category, 'level' => 0])
+                            @include('livewire.site.category-flyout', ['category' => $category, 'level' => 0])
                         @empty
                             <div class="site-flyout-empty">Sin categorías disponibles</div>
                         @endforelse

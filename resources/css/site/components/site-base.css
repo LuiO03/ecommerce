@@ -141,7 +141,7 @@
 
 @media (max-width: 768px) {
     .site-container {
-        padding: 0 1rem;
+        padding: 0px;
         margin: 16px auto;
     }
 }

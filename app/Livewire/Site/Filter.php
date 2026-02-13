@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Site;
 
 use Livewire\Component;
 use App\Models\Option;
@@ -342,7 +342,7 @@ class Filter extends Component
 
     public function render()
     {
-        return view('livewire.filter');
+        return view('livewire.site.filter');
     }
 
 

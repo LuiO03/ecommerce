@@ -212,10 +212,7 @@
                                 </div>
 
                                 <div class="product-footer">
-                                    <button class="product-btn" aria-label="Agregar a favoritos"
-                                        title="Agregar a favoritos">
-                                        <i class="ri-heart-line"></i>
-                                    </button>
+                                    @livewire('site.add-to-wishlist', ['product' => $product, 'variant' => 'card'])
 									<a href="{{ route('products.show', $product) }}" class="product-btn product-btn-primary"
                                         aria-label="Ver detalles del producto">
                                         <i class="ri-eye-line"></i>
