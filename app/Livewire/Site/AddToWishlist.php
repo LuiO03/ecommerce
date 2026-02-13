@@ -2,22 +2,21 @@
 
 namespace App\Livewire\Site;
 
-use Livewire\Component;
 use App\Models\Wishlist;
 use App\Models\WishlistItem;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Livewire\Component;
 
 class AddToWishlist extends Component
 {
     public $product;
-    public string $variant = 'detail';
+
     public $isInWishlist = false;
 
-    public function mount($product, string $variant = 'detail')
+    public function mount($product)
     {
         $this->product = $product;
-        $this->variant = $variant;
 
         if (Auth::check()) {
             $wishlist = Wishlist::where('user_id', Auth::id())->first();
@@ -37,7 +36,7 @@ class AddToWishlist extends Component
 
     public function addToWishlist()
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
@@ -45,7 +44,7 @@ class AddToWishlist extends Component
         $wishlist = Wishlist::firstOrCreate(
             [
                 'user_id' => $userId,
-                'slug' => 'default-' . $userId,
+                'slug' => 'default-'.$userId,
             ],
             [
                 'name' => 'Mis favoritos',
@@ -62,7 +61,7 @@ class AddToWishlist extends Component
 
         $removed = false;
 
-        if ($wishlistItem && !$wishlistItem->trashed()) {
+        if ($wishlistItem && ! $wishlistItem->trashed()) {
             $wishlistItem->delete();
             $wishlist->decrement('items_count');
             $this->isInWishlist = false;
@@ -90,11 +89,8 @@ class AddToWishlist extends Component
         ];
 
         Session::flash('toast', $toastPayload);
-        $this->dispatch('toast',
-            type: $toastPayload['type'],
-            title: $toastPayload['title'],
-            message: $toastPayload['message'],
-        );
+
+        $this->dispatch('toast', $toastPayload);
         $this->dispatch('wishlistUpdated', id: $wishlistItem->id);
     }
 }

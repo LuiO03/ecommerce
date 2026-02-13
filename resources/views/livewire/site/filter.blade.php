@@ -101,13 +101,6 @@
 			</div>
 
             <div class="products-header">
-                <p class="products-count">
-                    @if (count($products) === 1)
-                        {{ count($products) }} producto encontrado
-                    @elseif(count($products) > 1)
-                        {{ count($products) }} productos encontrados
-                    @endif
-                </p>
 
                 <div class="site-select">
                     <div class="site-select-trigger">
@@ -212,7 +205,8 @@
                                 </div>
 
                                 <div class="product-footer">
-                                    @livewire('site.add-to-wishlist', ['product' => $product, 'variant' => 'card'])
+                                    @livewire('site.add-to-wishlist', ['product' => $product])
+
 									<a href="{{ route('products.show', $product) }}" class="product-btn product-btn-primary"
                                         aria-label="Ver detalles del producto">
                                         <i class="ri-eye-line"></i>
