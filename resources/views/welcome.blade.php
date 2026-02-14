@@ -74,7 +74,7 @@
                             <div class="swiper-slide products-slide">
                                 <div class="product-card">
                                     <!-- Imagen Principal -->
-                                    <div class="product-image">
+                                    <a  href="{{ route('products.show', $product) }}" class="product-image">
                                         @if ($product->mainImage)
                                             <img src="{{ asset('storage/' . $product->mainImage->path) }}"
                                                 alt="{{ $product->mainImage->alt ?? $product->name }}"
@@ -101,12 +101,19 @@
                                         @if ($product->discount)
                                             <span class="product-badge">-{{ number_format($product->discount, 0) }}% OFF</span>
                                         @endif
-                                    </div>
+                                    </a>
 
                                     <div class="product-details">
                                         <!-- Contenido -->
                                         <div class="product-content">
-                                            <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
+                                            <div class="flex justify-between">
+                                                <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
+                                                <!-- Rating -->
+                                                <p class="product-rating">
+                                                    <i class="ri-star-fill"></i>
+                                                    <span>4.5 (128)</span>
+                                                </p>
+                                            </div>
                                             <h3 class="product-name">{{ $product->name }}</h3>
 
                                             <div class="flex w-full flex-col">
@@ -124,28 +131,17 @@
                                                     @endif
                                                 </div>
 
-                                                <!-- Rating -->
-                                                <p class="product-rating">
-                                                    <i class="ri-star-fill"></i>
-                                                    <span>4.5 (128 reseñas)</span>
-                                                </p>
                                             </div>
                                         </div>
-
                                         <!-- Botones -->
                                         <div class="product-footer">
-                                            <button class="product-btn" aria-label="Agregar a favoritos"
-                                                title="Agregar a favoritos">
-                                                <i class="ri-heart-line"></i>
-                                            </button>
-                                            <a href="{{ route('products.show', $product) }}" class="product-btn product-btn-primary"
-                                                aria-label="Ver detalles del producto">
-                                                <i class="ri-eye-line"></i>
-                                                <span>Ver</span>
-                                            </a>
-                                            <button class="product-btn" aria-label="Agregar al carrito"
-                                                title="Agregar al carrito">
-                                                <i class="ri-shopping-cart-2-line"></i>
+                                            <livewire:site.add-to-wishlist-card
+											:product-id="$product->id"
+											:key="'wishlist-card-' . $product->id" />
+
+                                            <button class="product-btn" aria-label="Agregar al carrito"title="Agregar al carrito">
+                                                <i class="ri-shopping-bag-line"></i>
+                                                Agregar
                                             </button>
                                         </div>
                                     </div>
@@ -188,13 +184,13 @@
                             disableOnInteraction: false,
                             pauseOnMouseEnter: true,
                         },
-                        speed: 800,
+                        speed: 400,
                         navigation: {
-                            nextEl: '.swiper-button-next',
-                            prevEl: '.swiper-button-prev',
+                            nextEl: '.covers-slider .swiper-button-next',
+                            prevEl: '.covers-slider .swiper-button-prev',
                         },
                         pagination: {
-                            el: '.swiper-pagination',
+                            el: '.covers-slider .swiper-pagination',
                             clickable: true,
                             dynamicBullets: true,
                         },
@@ -225,7 +221,7 @@
                             disableOnInteraction: true,
                             pauseOnMouseEnter: true,
                         },
-                        speed: 100,
+                        speed: 200,
                         navigation: {
                             nextEl: '.products-slider .swiper-button-next',
                             prevEl: '.products-slider .swiper-button-prev',
@@ -233,7 +229,8 @@
                         pagination: {
                             el: '.products-slider .swiper-pagination',
                             clickable: true,
-                            dynamicBullets: true,
+                            dynamicBullets: false,
+                            dynamicMainBullets: 3,
                         },
                         breakpoints: {
                             320: {

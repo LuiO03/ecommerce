@@ -7,7 +7,7 @@ use App\Models\WishlistItem;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
-class AddToWishlist extends Component
+class AddToWishlistCard extends Component
 {
     public int $productId;
 
@@ -16,6 +16,7 @@ class AddToWishlist extends Component
     public function mount(int $productId)
     {
         $this->productId = $productId;
+
         if (Auth::check()) {
             $wishlist = Wishlist::where('user_id', Auth::id())->first();
 
@@ -29,7 +30,7 @@ class AddToWishlist extends Component
 
     public function render()
     {
-        return view('livewire.site.add-to-wishlist');
+        return view('livewire.site.add-to-wishlist-card');
     }
 
     public function addToWishlist()

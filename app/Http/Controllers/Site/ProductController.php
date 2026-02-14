@@ -75,8 +75,7 @@ class ProductController extends Controller
         }
 
         $breadcrumbItems[] = [
-            'label' => $product->name,
-            'icon' => 'ri-product-hunt-line',
+            'label' => $product->name
         ];
 
         return view('site.products.show', compact(

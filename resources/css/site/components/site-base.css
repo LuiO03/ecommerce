@@ -4,16 +4,16 @@
    ============================================ */
 
 @font-face {
-    font-family: 'Gelion';
-    src: url('/fonts/gelion/Gelion-Regular.woff2') format('woff2');
+    font-family: "Gelion";
+    src: url("/fonts/gelion/Gelion-Regular.woff2") format("woff2");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'Gelion';
-    src: url('/fonts/gelion/Gelion-Bold.woff2') format('woff2');
+    font-family: "Gelion";
+    src: url("/fonts/gelion/Gelion-Bold.woff2") format("woff2");
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -27,12 +27,13 @@
     --site-sidebar-width: 300px;
     --site-color-hover: rgba(81, 0, 157, 0.1);
 
-    --font-primary: 'Gelion', 'Lato', sans-serif;
-    --font-secondary: 'Poppins', 'Lato', sans-serif;
+    --font-primary: "Gelion", "Lato", sans-serif;
+    --font-secondary: "Poppins", "Lato", sans-serif;
 
-    --color-site-nav: #51009D;
-    --color-site-accent: #D11E4B;
-    --color-site-hover: #EDE5F5;
+    --color-site-nav: #51009d;
+    --color-site-accent: #d11e4b;
+    --color-site-hover: #ede5f5;
+    --color-site-text: #343434;
 
     --btn-primary: var(--color-site-nav);
     --btn-accent: var(--color-site-accent);
@@ -61,10 +62,10 @@
     }
 }
 
-.site-body{
+.site-body {
     background-color: white;
     position: relative;
-    color: var(--color-text);
+    color: var(--color-site-text);
     padding-top: var(--site-nav-height);
     font-family: var(--font-primary);
 }
@@ -117,7 +118,7 @@
     margin-bottom: 1rem;
 }
 
-.products-count{
+.products-count {
     font-family: var(--font-secondary);
     font-weight: bold;
 }
@@ -126,7 +127,7 @@
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 @media (max-width: 1024px) {
@@ -141,8 +142,12 @@
 
 @media (max-width: 768px) {
     .site-container {
-        padding: 0px;
+        padding: 1rem;
         margin: 16px auto;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
 

@@ -154,7 +154,9 @@
                             <span data-add-to-cart-label>Agregar al carrito</span>
                         </button>
 
-                        @livewire('site.add-to-wishlist', ['product' => $product])
+                            @livewire('site.add-to-wishlist', [
+                                'productId' => $product->id,
+                            ])
                     </div>
                 </div>
 

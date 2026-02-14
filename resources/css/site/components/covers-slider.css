@@ -233,26 +233,30 @@
 }
 
 /* Controles de navegación */
-.swiper-button-prev,
-.swiper-button-next {
+.covers-slider .swiper-button-prev,
+.covers-slider .swiper-button-next {
     transition: transform 0.3s ease;
     color: white !important;
-    width: 140px;
-    height: 140px;
+    width: 3.5rem;
+    height: 3.5rem;
 }
 
-.swiper-button-prev:after,
-.swiper-button-next:after {
+.covers-slider .swiper-button-prev:after,
+.covers-slider .swiper-button-next:after {
     content: none;
 }
 
-.swiper-button-prev:hover,
-.swiper-button-next:hover {
+.covers-slider .swiper-button-prev:hover,
+.covers-slider .swiper-button-next:hover {
     transform: scale(1.1);
 }
 
 /* Paginación */
-.swiper-pagination-bullet {
+.covers-slider .swiper-pagination {
+    overflow: visible;
+}
+
+.covers-slider .swiper-pagination-bullet {
     width: 12px !important;
     height: 12px !important;
     background: white !important;
@@ -260,11 +264,13 @@
     transition: all 0.3s ease !important;
 }
 
-.swiper-pagination-bullet-active {
+.covers-slider .swiper-pagination-bullet-active {
     opacity: 1 !important;
     width: 30px !important;
     border-radius: 6px !important;
     background: white !important;
+    border-radius: 6px !important;
+    width: 70px !important;
 }
 
 /* Estado sin portadas */

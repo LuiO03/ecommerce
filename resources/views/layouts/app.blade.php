@@ -41,6 +41,10 @@
         {{ $slot }}
     </main>
 
+    <div class="site-footer-go-top">
+        <i class="ri-arrow-up-s-line"></i>
+        Volver arriba
+    </div>
     @livewire('site.footer')
 
     @include('partials.admin.modal-info')
