@@ -28,6 +28,8 @@
                                 </button>
                             @endforeach
                         </div>
+                    @else
+                        <div></div>
                     @endif
 
                     <div class="product-gallery-main">
@@ -50,12 +52,14 @@
                             @endforelse
                         </div>
 
-                        <button class="gallery-nav gallery-prev" type="button" aria-label="Anterior">
-                            <i class="ri-arrow-left-s-line"></i>
-                        </button>
-                        <button class="gallery-nav gallery-next" type="button" aria-label="Siguiente">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </button>
+                        @if ($images->count() > 1)
+                            <button class="gallery-nav gallery-prev" type="button" aria-label="Anterior">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </button>
+                            <button class="gallery-nav gallery-next" type="button" aria-label="Siguiente">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -154,9 +158,9 @@
                             <span data-add-to-cart-label>Agregar al carrito</span>
                         </button>
 
-                            @livewire('site.add-to-wishlist', [
-                                'productId' => $product->id,
-                            ])
+                        @livewire('site.add-to-wishlist', [
+                            'productId' => $product->id,
+                        ])
                     </div>
                 </div>
 
