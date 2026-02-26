@@ -37,19 +37,34 @@
     @endif
 
     <!-- Page Content -->
-    <main>
+    <main class="site-main">
         {{ $slot }}
+
+        <div class="site-button-go-top" data-go-top>
+            <i class="ri-arrow-up-s-line"></i>
+            Volver arriba
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const btn = document.querySelector('[data-go-top]');
+
+                btn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        </script>
     </main>
 
-    <div class="site-footer-go-top">
-        <i class="ri-arrow-up-s-line"></i>
-        Volver arriba
-    </div>
+
     @livewire('site.footer')
 
     @include('partials.admin.modal-info')
     @include('partials.admin.modal-confirm')
     @include('partials.admin.modal-toast')
+    @include('partials.site.auth-wishlist-modal')
 
     @if (Session::has('info'))
         <script>

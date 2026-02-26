@@ -66,7 +66,7 @@
                     <a href="{{ route('categories.show', $product->category) }}" class="product-category">
                         {{ $product->category?->name ?? 'Sin categoria' }}
                     </a>
-                    <h1>{{ $product->name }}</h1>
+                    <h1 style="line-height: 1;">{{ $product->name }}</h1>
                     <p class="product-sku">SKU: {{ $product->sku }}</p>
                 </div>
                 <div class="product-price">
@@ -163,7 +163,7 @@
                 <hr class="w-full my-0 border-default">
 
                 <div class="product-description">
-                    <h3 class="Subtitle-product">Descripcion</h3>
+                    <h3 class="Subtitle-product">Descripción</h3>
                     <p>{{ $product->description ?? 'Este producto no tiene descripcion adicional.' }}</p>
                 </div>
             </div>

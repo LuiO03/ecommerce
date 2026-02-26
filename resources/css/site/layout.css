@@ -11,6 +11,7 @@
 @import "./components/layout-site.css";
 @import "./components/product-card.css";
 @import "./components/quantity-counter.css";
+@import "./components/auth-wishlist-modal.css";
 
 
 @import "./modules/cart.css";

@@ -198,7 +198,7 @@
                                 <div class="product-details">
 
                                     <div class="product-content">
-                                        <div class="flex justify-between">
+                                        <div class="flex justify-between flex-wrap">
                                             <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}
                                             </p>
                                             <p class="product-rating">
@@ -217,13 +217,19 @@
                                                             0,
                                                         );
                                                     @endphp
-                                                    <span
-                                                        class="product-price">S/.{{ number_format($discounted, 2) }}</span>
-                                                    <span
-                                                        class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
+                                                    <span class="product-price">
+                                                        S/.{{ number_format($discounted, 2) }}
+                                                    </span>
+                                                    <div class="product-price-info">
+                                                        <span>Antes</span>
+                                                        <span class="product-price-original">
+                                                             S/.{{ number_format($product->price, 2) }}
+                                                        </span>
+                                                    </div>
                                                 @else
-                                                    <span
-                                                        class="product-price">S/.{{ number_format($product->price, 2) }}</span>
+                                                    <span class="product-price">
+                                                        S/.{{ number_format($product->price, 2) }}
+                                                    </span>
                                                 @endif
                                             </div>
 

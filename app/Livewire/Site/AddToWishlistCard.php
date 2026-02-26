@@ -36,7 +36,9 @@ class AddToWishlistCard extends Component
     public function addToWishlist()
     {
         if (! Auth::check()) {
-            return redirect()->route('login');
+            $this->dispatch('show-auth-wishlist-modal');
+
+            return;
         }
 
         $userId = Auth::id();

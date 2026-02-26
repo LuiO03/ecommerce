@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['wishlist_id', 'product_id'], 'wishlist_product_unique');
+            $table->unique(['wishlist_id', 'product_id', 'deleted_at'], 'wishlist_product_unique');
         });
     }
 

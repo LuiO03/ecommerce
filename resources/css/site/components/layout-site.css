@@ -336,7 +336,7 @@
     background: var(--color-dark);
     opacity: 0;
     visibility: hidden;
-    z-index: 45;
+    z-index: 50;
     transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
@@ -370,11 +370,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background: var(--color-site-nav);
+    padding: 14px 1rem;
+    background: var(--color-dark);
     color: var(--color-normal);
     font-weight: 600;
-    font-size: 1.125rem;
+    font-size: var(--font-size-h4);
     font-family: var(--font-secondary);
     flex-shrink: 0;
 }

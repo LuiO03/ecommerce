@@ -203,21 +203,8 @@
 }
 
 .empty-icon {
-    font-size: 48px;
-    opacity: 0.5;
-}
-
-.covers-empty h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
-}
-
-.covers-empty p {
-    font-size: 14px;
-    margin: 0;
-    color: var(--text-muted);
+    font-size: 58px;
+    color: var(--color-text-soft);
 }
 
 .btn-create-first {

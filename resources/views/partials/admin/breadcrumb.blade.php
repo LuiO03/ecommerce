@@ -28,7 +28,7 @@
     @php
         $segments = explode('.', $routeName);
         $modules = [
-            'families' => ['label' => 'Familias', 'icon' => 'ri-team-fill'],
+            'families' => ['label' => 'Familias', 'icon' => 'ri-apps-fill'],
             'covers' => ['label' => 'Portadas', 'icon' => 'ri-image-2-fill'],
             'users' => ['label' => 'Usuarios', 'icon' => 'ri-user-3-fill'],
             'profile' => ['label' => 'Perfil', 'icon' => 'ri-user-3-fill'],

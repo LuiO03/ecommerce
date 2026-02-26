@@ -62,7 +62,7 @@
                             <div class="nav-user-menu" id="userMenu">
                                 <a href="{{ route('profile.show') }}" class="nav-user-menu-item">
                                     <i class="ri-user-line"></i>
-                                    <span>Mi Perfil</span>
+                                    <span>Mi Cuenta</span>
                                 </a>
                                 <a href="" class="nav-user-menu-item">
                                     <i class="ri-shopping-bag-line"></i>
@@ -134,28 +134,8 @@
                     <i class="ri-shopping-bag-line"></i>
                     <span>Productos</span>
                 </a>
-                <a href="" class="site-nav-menu-item">
-                    <i class="ri-list-check"></i>
-                    <span>Categorías</span>
-                </a>
-
-                <hr class="site-nav-divider">
-
-                <a href="" class="site-nav-menu-item">
-                    <i class="ri-truck-line"></i>
-                    <span>Mis Pedidos</span>
-                </a>
-                <a href="" class="site-nav-menu-item">
-                    <i class="ri-user-settings-line"></i>
-                    <span>Mi Cuenta</span>
-                </a>
-                <a href="" class="site-nav-menu-item">
-                    <i class="ri-logout-box-line"></i>
-                    <span>Cerrar Sesión</span>
-                </a>
-
-                <hr class="site-nav-divider">
             </nav>
+            <hr class="site-nav-divider">
 
             <!-- Familias (sin subniveles en el panel izquierdo) -->
             <nav class="site-nav-menu">

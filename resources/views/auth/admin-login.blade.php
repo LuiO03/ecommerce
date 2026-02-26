@@ -126,7 +126,7 @@
                     </div>
 
                     <div class="form-footer mt-4">
-                        <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                        <a href="{{ route('welcome.index') }}" class="boton-form boton-volver">
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>

@@ -139,7 +139,7 @@
             @empty
                 <div class="covers-empty">
                     <i class="ri-image-add-line empty-icon"></i>
-                    <h3>No hay portadas</h3>
+                    <h2 class="card-title">No hay portadas</h2>
                     <p>Crea tu primera portada para comenzar</p>
                 </div>
             @endforelse

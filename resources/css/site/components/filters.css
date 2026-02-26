@@ -3,10 +3,7 @@
    ============================================ */
 
 .filters {
-   background: var(--filter-bg);
    border: 1px solid var(--filter-border);
-   border-radius: 16px;
-   box-shadow: var(--filter-shadow);
    padding: 1.25rem;
    display: flex;
    flex-direction: column;
@@ -46,28 +43,6 @@
 .filters-clear:hover {
    border-color: var(--filter-border);
    transform: translateY(-1px);
-}
-
-.filters-search {
-   display: flex;
-   align-items: center;
-   gap: 0.5rem;
-   border: 1px solid var(--filter-border);
-   border-radius: 12px;
-   padding: 0.5rem 0.75rem;
-   background: #fff;
-}
-
-.filters-search i {
-   color: var(--filter-muted);
-}
-
-.filters-search input {
-   border: none;
-   outline: none;
-   width: 100%;
-   font-size: 0.9rem;
-   color: #111827;
 }
 
 .filters-body {
