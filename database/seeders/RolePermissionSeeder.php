@@ -133,7 +133,7 @@ class RolePermissionSeeder extends Seeder
             }
         }
 
-        // === CREAR ROLES ===
+        // === CREAR ROLES PRINCIPALES DEL SISTEMA ===
         $superadmin = Role::firstOrCreate(
             ['name' => 'Superadministrador'],
             [
@@ -150,6 +150,15 @@ class RolePermissionSeeder extends Seeder
             ]
         );
 
+        $cliente = Role::firstOrCreate(
+            ['name' => 'Cliente'],
+            [
+                'guard_name' => 'web',
+                'description' => 'Usuario que puede comprar productos en la tienda.',
+            ]
+        );
+
+        // === CREAR ROLES DE PRUEBA ===
         $vendedor = Role::firstOrCreate(
             ['name' => 'Vendedor'],
             [

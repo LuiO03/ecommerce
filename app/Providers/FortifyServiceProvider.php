@@ -40,9 +40,21 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.admin-login');
         });
 
-        // Redirigir a welcome después del login (usuario puede navegar al admin manualmente)
+        // Redirección después de login según rol
         Fortify::redirects('login', function ($request) {
-            return '/';
+            $user = $request->user();
+
+            if (! $user) {
+                return route('welcome.index');
+            }
+
+            // Solo el rol "Cliente" se queda en la parte pública
+            if ($user->hasRole('Cliente')) {
+                return route('welcome.index');
+            }
+
+            // Cualquier otro rol (actual o futuro) va al panel admin
+            return '/admin';
         });
 
         RateLimiter::for('login', function (Request $request) {

@@ -19,8 +19,15 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Redirigir a / en lugar de 'home'
-                return redirect('/');
+                $user = Auth::guard($guard)->user();
+
+                if ($user && $user->hasRole('Cliente')) {
+                    // Clientes se quedan en la parte pública
+                    return redirect()->route('welcome.index');
+                }
+
+                // Cualquier otro rol (actual o futuro) va al panel admin
+                return redirect('/admin');
             }
         }
 

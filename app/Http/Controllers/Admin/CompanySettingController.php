@@ -98,7 +98,10 @@ class CompanySettingController extends Controller
                 $logoPath = null;
             }
             if ($request->hasFile('logo')) {
-                Storage::disk('public')->delete($logoPath);
+                if ($logoPath) {
+                    Storage::disk('public')->delete($logoPath);
+                }
+
                 $companyName = $data->get('name') ?? $setting->name ?? 'company-logo';
                 $slug = Str::slug($companyName, '-');
                 if ($slug === '') {

@@ -14,11 +14,17 @@
             <!-- Body del formulario -->
             <div class="auth-body">
                 <!-- Errores de validación -->
+
                 @if ($errors->any())
                     <div class="form-error-banner">
                         <i class="ri-error-warning-line form-error-icon"></i>
                         <div>
-                            <p>{{ $errors->first() }}</p>
+                            <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 @endif
@@ -35,18 +41,33 @@
 
                     <div class="input-group">
                         <label for="name" class="label-form">
-                            Nombre completo
+                            Nombre
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-user-line input-icon"></i>
                             <input type="text" id="name" name="name" class="input-form"
-                                placeholder="Ingresa tu nombre" value="{{ old('name') }}" required
-                                autocomplete="off"
+                                placeholder="Ingresa tu nombre" value="{{ old('name') }}" required autocomplete="off"
                                 data-validate="required|alpha|min:3|max:50"
                                 data-validate-messages='{
                                     "required":"El nombre es obligatorio",
                                     "alpha":"Solo se permiten letras",
                                     "min":"Mínimo 3 caracteres",
+                                    "max":"Máximo 50 caracteres"
+                                }'>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="last_name" class="label-form">
+                            Apellido
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-user-3-line input-icon"></i>
+                            <input type="text" id="last_name" name="last_name" class="input-form"
+                                placeholder="Ingresa tu apellido" value="{{ old('last_name') }}" autocomplete="off"
+                                data-validate="alpha|max:50"
+                                data-validate-messages='{
+                                    "alpha":"Solo se permiten letras",
                                     "max":"Máximo 50 caracteres"
                                 }'>
                         </div>
@@ -69,14 +90,29 @@
                     </div>
 
                     <div class="input-group">
+                        <label for="address" class="label-form">
+                            Dirección
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-map-pin-line input-icon"></i>
+                            <input type="text" id="address" name="address" class="input-form"
+                                placeholder="Ingresa tu dirección" value="{{ old('address') }}" autocomplete="off"
+                                data-validate="max:255"
+                                data-validate-messages='{
+                                    "max":"Máximo 255 caracteres"
+                                }'>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
                         <label for="password" class="label-form">
                             Contraseña
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-lock-password-line input-icon"></i>
-                            <input type="password" id="password" name="password"
-                                class="input-form password-input" placeholder="Crea una contraseña" required
-                                autocomplete="off" data-validate="required|min:6"
+                            <input type="password" id="password" name="password" class="input-form password-input"
+                                placeholder="Crea una contraseña" required autocomplete="off"
+                                data-validate="required|min:6"
                                 data-validate-messages='{
                                     "required":"La contraseña es obligatoria",
                                     "min":"Debe tener al menos 6 caracteres"

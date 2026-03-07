@@ -24,19 +24,29 @@ class RegisteredUserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:255',
+            'last_name' => 'nullable|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'address' => 'nullable|string|max:255',
         ]);
 
         $name = ucwords(mb_strtolower($validated['name']));
+        $lastName = !empty($validated['last_name'])
+            ? ucwords(mb_strtolower($validated['last_name']))
+            : null;
 
         $user = User::create([
             'name' => $name,
+            'last_name' => $lastName,
             'email' => $validated['email'],
             // El cast "hashed" en el modelo se encarga de encriptar
             'password' => $validated['password'],
+            'address' => $validated['address'] ?? null,
             'status' => true,
         ]);
+
+        // Asignar rol Cliente usando Spatie Permissions
+        $user->assignRole('Cliente');
 
         Session::flash('toast', [
             'type' => 'success',

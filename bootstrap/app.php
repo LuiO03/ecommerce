@@ -18,7 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 'web',
                 'auth:sanctum',
                 config('jetstream.auth_session'),
-                'verified'
+                'verified',
+                'admin.only',
             ])
                 ->prefix('admin')
                 ->group(base_path('routes/admin.php'));
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Alias personalizado para guest que redirija a /
         $middleware->alias([
             'auth.guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'admin.only' => \App\Http\Middleware\PreventClienteFromAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

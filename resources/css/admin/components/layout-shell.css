@@ -183,6 +183,12 @@
     padding-inline: 15px;
 }
 
+.sidebar-header .sidebar-logo-default{
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
 .sidebar-header .sidebar-logo-texto {
     font-size: 22px;
     text-transform: uppercase;

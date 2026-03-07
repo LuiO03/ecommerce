@@ -7,6 +7,7 @@
         </div>
         Lista de Familias
     </x-slot>
+
     <x-slot name="action">
         <!-- Menú desplegable de exportación -->
         @can('familias.export')

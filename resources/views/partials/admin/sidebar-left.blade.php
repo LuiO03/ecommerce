@@ -89,11 +89,11 @@
                 <img src="{{ $sidebarLogoUrl }}" class="h-8" alt="{{ $companyDisplayName ?? 'Logo' }}">
                 @if ($companyDisplayName)
                     <div class="sidebar-logo-texto">
-                        <strong>Gecko</strong><span>merce</span>
+                        {{ $companyDisplayName }}
                     </div>
                 @endif
             @else
-                <img src="{{ asset('images/logos/logo-geckomerce.png') }}" alt="Logo">
+                <img src="{{ asset('images/logos/logo-geckomerce.png') }}" alt="Logo" class="sidebar-logo-default">
                 <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
             @endif
         </a>
@@ -123,6 +123,7 @@
             @endcan
 
             <!-- Submenú Tienda -->
+            @canany(['familias.index', 'categorias.index', 'productos.index'])
             <li class="submenu-container">
                 <button type="button" class="sidebar-link w-full submenu-btn flex items-center" data-tooltip="Tienda">
                     <i class="ri-store-line sidebar-icon"></i>
@@ -165,6 +166,7 @@
                     @endcan
                 </ul>
             </li>
+            @endcanany
 
             <!-- Posts -->
             @can('posts.index')
@@ -199,6 +201,7 @@
                 </li>
             @endcan
             <!-- Submenú Gestion de Acceso -->
+            @canany(['usuarios.index', 'roles.index', 'accesos.index', 'auditorias.index'])
             <li class="submenu-container">
                 <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
                     data-tooltip="Gestión de Acceso">
@@ -252,6 +255,7 @@
                     @endcan
                 </ul>
             </li>
+            @endcanany
         </ul>
     </div>
 
