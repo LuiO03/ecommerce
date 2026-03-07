@@ -119,11 +119,11 @@
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
                                     {{-- === BOTÓN EDITAR === --}}
-                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador']))
+                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']))
                                         @can('roles.edit')
                                         <a href="{{ route('admin.roles.edit', $role) }}" class="boton boton-warning"
                                             title="Editar rol">
-                                            <span class="boton-icon"><i class="ri-edit-2-fill"></i></span>
+                                            <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
                                             <span class="boton-text">Editar</span>
                                         </a>
                                         @else
@@ -140,23 +140,23 @@
                                     @endif
 
                                     {{-- === BOTÓN ELIMINAR === --}}
-                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador']) && $role->users_count == 0)
+                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']) && $role->users_count == 0)
                                         @can('roles.delete')
-                                        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
-                                        class="delete-form" data-entity="rol">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="boton boton-danger" title="Eliminar rol">
-                                                <span class="boton-text">Borrar</span>
-                                                <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                            </button>
-                                        </form>
+                                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
+                                            class="delete-form" data-entity="rol">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="boton boton-danger" title="Eliminar rol">
+                                                    <span class="boton-text">Borrar</span>
+                                                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                                </button>
+                                            </form>
                                         @else
-                                        <button class="boton boton-danger disabled" title="No se puede eliminar"
-                                            disabled>
-                                            <span class="boton-text">Borrar</span>
-                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
-                                        </button>
+                                            <button class="boton boton-danger disabled" title="No se puede eliminar"
+                                                disabled>
+                                                <span class="boton-text">Borrar</span>
+                                                <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                            </button>
                                         @endcan
                                     @else
                                         <button class="boton boton-danger disabled" title="No se puede eliminar"

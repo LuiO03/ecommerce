@@ -3,18 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UpdateCompanySettingRequest;
 use App\Models\Audit;
 use App\Models\CompanySetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Admin\UpdateCompanyContactRequest;
 use App\Http\Requests\Admin\UpdateCompanyIdentityRequest;
-use App\Http\Requests\Admin\UpdateCompanylegalRequest;
+use App\Http\Requests\Admin\UpdateCompanyLegalRequest;
 use App\Http\Requests\Admin\UpdateCompanyGeneralRequest;
 use App\Http\Requests\Admin\UpdateCompanySocialRequest;
 

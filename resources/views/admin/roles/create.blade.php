@@ -51,11 +51,14 @@
 
                 <!-- === Descripción === -->
                 <div class="input-group">
-                    <label for="description" class="label-form label-textarea">Descripción del rol</label>
+                    <label for="description" class="label-form label-textarea">
+                        Descripción del rol
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
                     <div class="input-icon-container">
                         <i class="ri-file-text-line input-icon"></i>
                         <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
-                            maxlength="500" data-validate="min:10|max:500">{{ old('description') }}</textarea>
+                            maxlength="500" data-validate="required|min:10|max:500">{{ old('description') }}</textarea>
                     </div>
                 </div>
             </div>

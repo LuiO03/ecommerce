@@ -140,7 +140,7 @@ class RoleController extends Controller
     {
         $request->validate([
             'name'        => 'required|string|min:3|max:255|unique:roles,name',
-            'description' => 'nullable|string|max:500',
+            'description' => 'required|string|max:500',
             'permissions' => 'nullable|array',
         ]);
 
@@ -171,7 +171,7 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        if (in_array($role->name, ['Administrador', 'Superadministrador'])) {
+        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',
@@ -219,7 +219,7 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        if (in_array($role->name, ['Administrador', 'Superadministrador'])) {
+        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',
