@@ -7,9 +7,8 @@
         <div class="auth-card">
             <!-- Header con logo -->
             <div class="auth-header">
-
-                <h2 class="auth-title">Bienvenido/a</h2>
-                <p class="auth-subtitle">Inicia sesión con tu correo electrónico o registrate para acceder</p>
+                <h2 class="auth-title">Crear cuenta</h2>
+                <p class="auth-subtitle">Ingresa tus datos para registrarte en la tienda.</p>
             </div>
 
             <!-- Body del formulario -->
@@ -23,6 +22,7 @@
                         </div>
                     </div>
                 @endif
+
                 <!-- Mensaje de estado -->
                 @session('status')
                     <div class="auth-status">
@@ -30,8 +30,27 @@
                     </div>
                 @endsession
 
-                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                <form method="POST" action="{{ route('register') }}" id="registerForm">
                     @csrf
+
+                    <div class="input-group">
+                        <label for="name" class="label-form">
+                            Nombre completo
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-user-line input-icon"></i>
+                            <input type="text" id="name" name="name" class="input-form"
+                                placeholder="Ingresa tu nombre" value="{{ old('name') }}" required
+                                autocomplete="off"
+                                data-validate="required|alpha|min:3|max:50"
+                                data-validate-messages='{
+                                    "required":"El nombre es obligatorio",
+                                    "alpha":"Solo se permiten letras",
+                                    "min":"Mínimo 3 caracteres",
+                                    "max":"Máximo 50 caracteres"
+                                }'>
+                        </div>
+                    </div>
 
                     <div class="input-group">
                         <label for="email" class="label-form">
@@ -40,19 +59,28 @@
                         <div class="input-icon-container">
                             <i class="ri-mail-line input-icon"></i>
                             <input type="email" id="email" name="email" class="input-form"
-                                placeholder="Ingresa tu correo electrónico" value="70098517@institutocajas.info"
-                                required autofocus autocomplete="off" data-validate="required|email">
+                                placeholder="Ingresa tu correo electrónico" value="{{ old('email') }}" required
+                                autocomplete="off" data-validate="required|email"
+                                data-validate-messages='{
+                                    "required":"El correo es obligatorio",
+                                    "email":"Ingresa un correo válido"
+                                }'>
                         </div>
                     </div>
+
                     <div class="input-group">
                         <label for="password" class="label-form">
                             Contraseña
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-lock-password-line input-icon"></i>
-                            <input type="password" id="password" name="password" class="input-form password-input"
-                                placeholder="Ingresa tu contraseña" value="luis988434679kira" required
-                                autocomplete="off" data-validate="required|min:6">
+                            <input type="password" id="password" name="password"
+                                class="input-form password-input" placeholder="Crea una contraseña" required
+                                autocomplete="off" data-validate="required|min:6"
+                                data-validate-messages='{
+                                    "required":"La contraseña es obligatoria",
+                                    "min":"Debe tener al menos 6 caracteres"
+                                }'>
                             <button type="button" class="toggle-password" tabindex="-1"
                                 aria-label="Mostrar contraseña">
                                 <i class="ri-eye-line"></i>
@@ -60,20 +88,24 @@
                         </div>
                     </div>
 
-                    <!-- Remember me -->
-                    <div class="auth-options">
-                        <div class="auth-remember">
-                            <input type="checkbox" id="remember_me" name="remember" class="auth-checkbox">
-                            <label for="remember_me" class="auth-checkbox-label">Recordarme</label>
+                    <div class="input-group">
+                        <label for="password_confirmation" class="label-form">
+                            Confirmar contraseña
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-lock-line input-icon"></i>
+                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                class="input-form password-input" placeholder="Repite tu contraseña" required
+                                autocomplete="off" data-validate="required|confirmed:password"
+                                data-validate-messages='{
+                                    "required":"La confirmación es obligatoria",
+                                    "confirmed":"Las contraseñas no coinciden"
+                                }'>
+                            <button type="button" class="toggle-password" tabindex="-1"
+                                aria-label="Mostrar contraseña">
+                                <i class="ri-eye-line"></i>
+                            </button>
                         </div>
-                        <!-- Footer con link de recuperación -->
-                        @if (Route::has('password.request'))
-                            <div class="auth-recovery">
-                                <a href="{{ route('password.request') }}" class="auth-link">
-                                    ¿Olvidaste tu contraseña?
-                                </a>
-                            </div>
-                        @endif
                     </div>
 
                     <div class="form-footer mt-4">
@@ -81,12 +113,12 @@
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>
-                            <span class="boton-form-text">Atras</span>
+                            <span class="boton-form-text">Atrás</span>
                         </a>
-                        <!-- Botón de login -->
-                        <button class="boton-form boton-success" type="submit" id="loginBtn">
-                            <span class="boton-form-icon"> <i class="ri-login-box-line"></i> </span>
-                            <span class="boton-form-text">Iniciar Sesión</span>
+                        <!-- Botón de registro -->
+                        <button class="boton-form boton-success" type="submit" id="registerBtn">
+                            <span class="boton-form-icon"> <i class="ri-user-add-line"></i> </span>
+                            <span class="boton-form-text">Crear cuenta</span>
                         </button>
                     </div>
                 </form>
@@ -94,32 +126,27 @@
             <hr class="w-full my-4 border-default">
             <div class="auth-footer">
                 <span>
-                    ¿No tienes una cuenta?
+                    ¿Ya tienes una cuenta?
                 </span>
-                <a href="{{ route('register') }}" class="auth-link-accent">Regístrate aquí</a>
+                <a href="{{ route('login') }}" class="auth-link-accent">Inicia sesión aquí</a>
             </div>
         </div>
     </div>
 
     <script>
-        console.log('=== SCRIPT INLINE EJECUTÁNDOSE ===');
+        console.log('=== SCRIPT INLINE REGISTER EJECUTÁNDOSE ===');
 
-        // Esperar a que el DOM esté listo
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeLogin);
+            document.addEventListener('DOMContentLoaded', initializeRegister);
         } else {
-            initializeLogin();
+            initializeRegister();
         }
 
-        function initializeLogin() {
-            console.log('=== INICIALIZANDO LOGIN ===');
-            console.log('window object:', window);
+        function initializeRegister() {
+            console.log('=== INICIALIZANDO REGISTER ===');
             console.log('initFormValidator:', window.initFormValidator);
             console.log('initSubmitLoader:', window.initSubmitLoader);
-            console.log('typeof initFormValidator:', typeof window.initFormValidator);
-            console.log('typeof initSubmitLoader:', typeof window.initSubmitLoader);
 
-            // Verificar si las funciones existen
             if (typeof window.initFormValidator !== 'function') {
                 console.error('❌ initFormValidator NO está disponible');
                 return;
@@ -130,30 +157,27 @@
                 return;
             }
 
-            console.log('✅ Ambas funciones disponibles, inicializando...');
-
             try {
-                // 1. Inicializar validación de formulario
-                const formValidator = window.initFormValidator('#loginForm', {
+                const formValidator = window.initFormValidator('#registerForm', {
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true,
-                    showSuccessIndicators: true
+                    showSuccessIndicators: true,
                 });
-                console.log('✅ FormValidator inicializado:', formValidator);
+                console.log('✅ FormValidator (register) inicializado:', formValidator);
 
-                // 2. Inicializar submit loader
                 const submitLoader = window.initSubmitLoader({
-                    formId: 'loginForm',
-                    buttonId: 'loginBtn',
-                    loadingText: 'Iniciando sesión...'
+                    formId: 'registerForm',
+                    buttonId: 'registerBtn',
+                    loadingText: 'Creando cuenta...'
                 });
-                console.log('✅ SubmitLoader inicializado:', submitLoader);
+                console.log('✅ SubmitLoader (register) inicializado:', submitLoader);
 
-                // 3. Toggle password visibility
                 document.querySelectorAll('.toggle-password').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const input = this.parentElement.querySelector('.password-input');
+                        if (!input) return;
+
                         if (input.type === 'password') {
                             input.type = 'text';
                             this.querySelector('i').classList.remove('ri-eye-line');
@@ -165,18 +189,17 @@
                             this.querySelector('i').classList.add('ri-eye-line');
                             this.querySelector('i').style.animation = 'eyeBlink 0.3s';
                         }
+
                         setTimeout(() => {
                             this.querySelector('i').style.animation = '';
                         }, 300);
                     });
                 });
 
-                console.log('=== INICIALIZACIÓN COMPLETA ===');
+                console.log('=== INICIALIZACIÓN REGISTER COMPLETA ===');
             } catch (error) {
-                console.error('❌ Error durante inicialización:', error);
+                console.error('❌ Error durante inicialización de registro:', error);
             }
         }
     </script>
 </x-app-layout>
-
-</html>

@@ -23,7 +23,7 @@ class ProductController extends Controller
             ->map(function ($features) {
                 $option = $features->first()?->option;
 
-                return [
+                return (object) [
                     'option_id' => $option?->id,
                     'name' => $option?->name ?? 'Opcion',
                     'slug' => $option?->slug,
@@ -31,7 +31,7 @@ class ProductController extends Controller
                     'features' => $features
                         ->unique('id')
                         ->values()
-                        ->map(fn ($feature) => [
+                        ->map(fn ($feature) => (object) [
                             'id' => $feature->id,
                             'value' => $feature->value,
                             'description' => $feature->description,

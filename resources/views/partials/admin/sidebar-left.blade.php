@@ -93,7 +93,7 @@
                     </div>
                 @endif
             @else
-                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Logo">
+                <img src="{{ asset('images/logos/logo-geckomerce.png') }}" alt="Logo">
                 <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
             @endif
         </a>
@@ -104,7 +104,7 @@
             @foreach ($links as $link)
             @endforeach
             <li class="ripple-btn">
-                <a href="{{ route('admin.dashboard') }}"
+                <a href="{{ request()->routeIs('admin.dashboard') ? '#' : route('admin.dashboard') }}"
                     class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                     data-tooltip="Dashboard">
                     <i class="ri-dashboard-line sidebar-icon"></i>
@@ -113,7 +113,7 @@
             </li>
             @can('portadas.index')
                 <li class="ripple-btn">
-                    <a href="{{ route('admin.covers.index') }}"
+                    <a href="{{ request()->routeIs('admin.covers.*') ? '#' : route('admin.covers.index') }}"
                         class="sidebar-link {{ request()->routeIs('admin.covers.*') ? 'active' : '' }}"
                         data-tooltip="Portadas">
                         <i class="ri-image-2-line sidebar-icon"></i>
@@ -134,7 +134,7 @@
 
                     @can('familias.index')
                         <li class="ripple-btn">
-                            <a href="{{ route('admin.families.index') }}"
+                            <a href="{{ request()->routeIs('admin.families.*') ? '#' : route('admin.families.index') }}"
                                 class="sidebar-sublink {{ request()->routeIs('admin.families.*') ? 'active' : '' }}"
                                 data-tooltip="Familias">
                                 <i class="ri-apps-line sidebar-icon"></i>
@@ -145,7 +145,7 @@
 
                     @can('categorias.index')
                         <li>
-                            <a href="{{ route('admin.categories.index') }}"
+                            <a href="{{ request()->routeIs('admin.categories.*') ? '#' : route('admin.categories.index') }}"
                                 class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                                 data-tooltip="Categorías">
                                 <i aria-busy=""class="ri-price-tag-3-line sidebar-icon"></i>
@@ -153,15 +153,9 @@
                             </a>
                         </li>
                     @endcan
-                    <li>
-                        <a href="#" class="sidebar-sublink" data-tooltip="Marcas">
-                            <i class="ri-award-line sidebar-icon"></i>
-                            <span>Marcas</span>
-                        </a>
-                    </li>
                     @can('productos.index')
                         <li>
-                            <a href="{{ route('admin.products.index') }}"
+                            <a href="{{ request()->routeIs('admin.products.*') ? '#' : route('admin.products.index') }}"
                                 class="sidebar-sublink {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
                                 data-tooltip="Productos">
                                 <i class="ri-box-3-line sidebar-icon"></i>
@@ -175,7 +169,7 @@
             <!-- Posts -->
             @can('posts.index')
                 <li class="ripple-btn">
-                    <a href="{{ route('admin.posts.index') }}"
+                    <a href="{{ request()->routeIs('admin.posts.*') ? '#' : route('admin.posts.index') }}"
                         class="sidebar-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
                         data-tooltip="Posts">
                         <i class="ri-article-line sidebar-icon"></i>
@@ -186,7 +180,7 @@
 
             @can('opciones.index')
                 <li class="ripple-btn">
-                    <a href="{{ route('admin.options.index') }}"
+                    <a href="{{ request()->routeIs('admin.options.*') ? '#' : route('admin.options.index') }}"
                         class="sidebar-link {{ request()->routeIs('admin.options.*') ? 'active' : '' }}"
                         data-tooltip="Opciones y Valores">
                         <i class="ri-settings-3-line sidebar-icon"></i>
@@ -196,7 +190,7 @@
             @endcan
             @can('configuracion.index')
                 <li class="ripple-btn">
-                    <a href="{{ route('admin.company-settings.index') }}"
+                    <a href="{{ request()->routeIs('admin.company-settings.*') ? '#' : route('admin.company-settings.index') }}"
                         class="sidebar-link {{ request()->routeIs('admin.company-settings.*') ? 'active' : '' }}"
                         data-tooltip="Configuración">
                         <i class="ri-building-4-line sidebar-icon"></i>
@@ -217,7 +211,7 @@
 
                     @can('usuarios.index')
                         <li class="ripple-btn">
-                            <a href="{{ route('admin.users.index') }}"
+                            <a href="{{ request()->routeIs('admin.users.*') ? '#' : route('admin.users.index') }}"
                                 class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                                 data-tooltip="Users">
                                 <i class="ri-id-card-line sidebar-icon"></i>
@@ -228,7 +222,7 @@
 
                     @can('roles.index')
                         <li class="ripple-btn">
-                            <a href="{{ route('admin.roles.index') }}"
+                            <a href="{{ request()->routeIs('admin.roles.*') ? '#' : route('admin.roles.index') }}"
                                 class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
                                 data-tooltip="Roles y Permisos">
                                 <i class="ri-shield-user-line sidebar-icon"></i>
@@ -238,7 +232,7 @@
                     @endcan
                     @can('accesos.index')
                         <li class="ripple-btn">
-                            <a href="{{ route('admin.access-logs.index') }}"
+                            <a href="{{ request()->routeIs('admin.access-logs.*') ? '#' : route('admin.access-logs.index') }}"
                                 class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
                                 data-tooltip="Registros de acceso">
                                 <i class="ri-login-circle-line sidebar-icon"></i>
@@ -248,7 +242,7 @@
                     @endcan
                     @can('auditorias.index')
                         <li class="ripple-btn">
-                            <a href="{{ route('admin.audits.index') }}"
+                            <a href="{{ request()->routeIs('admin.audits.*') ? '#' : route('admin.audits.index') }}"
                                 class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
                                 data-tooltip="Auditoría">
                                 <i class="ri-file-list-3-line sidebar-icon"></i>

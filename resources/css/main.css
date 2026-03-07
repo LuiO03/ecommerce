@@ -9,3 +9,6 @@
 
 @import "./visuals/material-design.css";
 @import "./visuals/background-design.css";
+
+@import "./components/auth.css";
+@import "./components/form.css";

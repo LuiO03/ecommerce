@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Cover;
 use App\Models\Product;
 
@@ -21,6 +20,7 @@ class WellcomeController extends Controller
             ->get();
 
         $lastProducts = Product::with('category', 'images')
+            ->where('status', true)
             ->latest('created_at')
             ->take(8)
             ->get()

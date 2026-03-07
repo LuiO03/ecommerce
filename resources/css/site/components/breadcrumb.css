@@ -12,7 +12,6 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.35rem;
-    padding: 0.5rem 0.9rem;
     background: var(--breadcrumb-bg);
 }
 
@@ -20,7 +19,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-p);
     color: black;
 }
 

@@ -33,14 +33,18 @@
                 <!-- Acciones del header -->
                 <div class="header-actions">
                     <!-- Icono carrito de compras -->
-                    <a href="" class="nav-icon" aria-label="Carrito de compras" title="Ver carrito de compras">
+                    <a href="{{ route('carts.show') }}" class="nav-icon" aria-label="Carrito de compras" title="Ver carrito de compras">
                         <i class="ri-shopping-cart-2-line"></i>
-                        <span class="nav-icon-badge">3</span>
+                        @if($cartCount > 0)
+                            <span class="nav-icon-badge">{{ $cartCount }}</span>
+                        @endif
                     </a>
                     <!-- Icono whishlist (solo desktop) -->
                     <a href="{{ route('wishlists.show') }}" class="nav-icon" aria-label="Lista de deseos" title="Ver lista de deseos">
                         <i class="ri-heart-line"></i>
-                        <span class="nav-icon-badge">{{ $wishlistCount }}</span>
+                        @if($wishlistCount > 0)
+                            <span class="nav-icon-badge">{{ $wishlistCount }}</span>
+                        @endif
                     </a>
                     <!-- Botón de inicio de sesión / usuario -->
                     @guest
@@ -48,6 +52,7 @@
                             <span class="boton-icon">
                                 <i class="ri-user-line"></i>
                             </span>
+
                             <span class="boton-text">Iniciar Sesión</span>
                         </a>
                     @else

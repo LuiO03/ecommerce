@@ -6,24 +6,23 @@
 .auth-wrapper {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* color de fondo degradado */
-    background: linear-gradient(135deg, var(--color-main-bg) 0%, var(--color-accent) 100%);
     padding: 1rem;
 }
 
 .auth-card {
-    width: 100%;
-    max-width: 420px;
-    background: var(--color-card-bg);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-material);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
+    max-width: 420px;
+    overflow: hidden;
     gap: 0;
-    padding: 10px;
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    border: 1px solid var(--color-border);
 }
 
 .auth-header {
@@ -31,19 +30,29 @@
 }
 
 .auth-logo {
-    margin: 0 auto;
+    margin: 0px auto 10px auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
 }
 
-.auth-logo i {
-    font-size: 5rem;
-    color: var(--color-accent);
+.auth-logo img{
+    width: 45px;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+}
+
+.auth-logo .sidebar-logo-texto {
+    font-size: var(--font-size-h2);
+    text-transform: uppercase;
+}
+
+.auth-logo .sidebar-logo-texto span {
+    font-weight: 300;
 }
 
 .auth-title {
-    font-size: var(--font-size-h2);
     font-weight: bolder;
     margin: 0;
     color: var(--color-text);
@@ -51,13 +60,9 @@
 }
 
 .auth-subtitle {
-    font-size: 0.875rem;
     color: var(--color-muted);
 }
 
-.auth-body {
-    padding: 1rem;
-}
 
 .auth-body form {
     display: flex;
@@ -116,6 +121,21 @@
     color: var(--color-text);
 }
 
+.auth-link-accent {
+    color: var(--color-accent);
+    font-weight: bold;
+    cursor: pointer;
+    font-family: var(--font-secondary);
+}
+
+.auth-footer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: var(--font-size-sm);
+}
+
 /* === Responsive === */
 @media (max-width: 640px) {
     .auth-wrapper {
@@ -125,7 +145,7 @@
 
     .auth-card {
         box-shadow: none;
-        border-radius: 0;
+        padding: 1.5rem;
     }
 
     .auth-header {
@@ -140,14 +160,6 @@
 
     .auth-logo i {
         font-size: 2.5rem;
-    }
-
-    .auth-title {
-        font-size: 1.25rem;
-    }
-
-    .auth-body {
-        padding: 1.5rem 1.5rem 1.5rem 1.5rem;
     }
 }
 

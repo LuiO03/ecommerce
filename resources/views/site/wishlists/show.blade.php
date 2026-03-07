@@ -1,4 +1,9 @@
 <x-app-layout>
+    @include('partials.site.breadcrumb', [
+        'items' => $breadcrumbItems ?? [
+            ['label' => 'Mis favoritos', 'icon' => 'ri-heart-fill'],
+        ],
+    ])
     <section class="site-container wishlist-page">
         <header class="wishlist-header">
             <div class="section-header">

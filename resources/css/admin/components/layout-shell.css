@@ -239,6 +239,7 @@
     font-family: var(--font-secondary);
     box-shadow: 0 8px 18px var(--shadow-accent);
     animation: sidebar-active-enter 0.28s ease-out both;
+    cursor: default;
 }
 
 .sidebar-link.active:hover {
@@ -263,6 +264,7 @@
     font-family: var(--font-secondary);
     box-shadow: 0 8px 18px var(--shadow-accent);
     animation: sidebar-active-enter 0.28s ease-out both;
+    cursor: default;
 }
 
 .sidebar-sublink.active .sidebar-icon {

@@ -208,6 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const quantityDecrementBtn = quantityRoot?.querySelector('[data-quantity-decrement]');
         const quantityIncrementBtn = quantityRoot?.querySelector('[data-quantity-increment]');
 
+        const livewireVariantInput = variantRoot.querySelector('[data-livewire-variant]');
+        const livewireQuantityInput = variantRoot.querySelector('[data-livewire-quantity]');
+
         let currentStock = null;
         let currentQuantity = 1;
 
@@ -286,6 +289,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             quantityValueEl.textContent = String(currentQuantity);
 
+            if (livewireQuantityInput) {
+                livewireQuantityInput.value = String(currentQuantity);
+                livewireQuantityInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
             const canDecrement = currentQuantity > 1;
             const canIncrement = currentQuantity < maxQty;
 
@@ -318,6 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateAddToCart(false, promptAddToCartText);
                 updateAvailability();
                 currentStock = null;
+                if (livewireVariantInput) {
+                    livewireVariantInput.value = '';
+                    livewireVariantInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
                 updateQuantityUI();
                 return;
             }
@@ -337,12 +349,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateAddToCart(false, promptAddToCartText);
                 updateAvailability();
                 currentStock = null;
+                if (livewireVariantInput) {
+                    livewireVariantInput.value = '';
+                    livewireVariantInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
                 updateQuantityUI();
                 return;
             }
 
             const priceBase = match.price && Number(match.price) > 0 ? Number(match.price) : basePrice;
             updatePrice(priceBase);
+
+            if (livewireVariantInput) {
+                livewireVariantInput.value = String(match.id);
+                livewireVariantInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
 
             if (stockEl) {
                 if (match.stock <= 0) {

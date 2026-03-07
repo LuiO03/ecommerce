@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const valueEl = root.querySelector('[data-quantity-value]');
         const decrementBtn = root.querySelector('[data-quantity-decrement]');
         const incrementBtn = root.querySelector('[data-quantity-increment]');
+        const hiddenInput = root.querySelector('[data-quantity-input]');
 
         if (!valueEl || !decrementBtn || !incrementBtn) {
             return;
@@ -28,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             valueEl.textContent = String(currentQuantity);
+
+            if (hiddenInput) {
+                hiddenInput.value = String(currentQuantity);
+            }
 
             const canDecrement = currentQuantity > 1;
             const canIncrement = currentQuantity < maxQuantity;

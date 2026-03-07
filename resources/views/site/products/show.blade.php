@@ -104,29 +104,29 @@
                 @if ($variantOptions->isNotEmpty())
                     <div class="product-variants">
                         @foreach ($variantOptions as $option)
-                            <div class="variant-group" data-option-id="{{ $option['option_id'] }}"
-                                data-option-slug="{{ $option['slug'] }}">
+                            <div class="variant-group" data-option-id="{{ $option->option_id }}"
+                                data-option-slug="{{ $option->slug }}">
                                 <h4 class="Subtitle-product">
-                                    {{ $option['name'] }}
+                                    {{ $option->name }}
                                 </h4>
                                 <div class="variant-values">
-                                    @foreach ($option['features'] as $feature)
-                                        @if ($option['is_color'])
+                                    @foreach ($option->features as $feature)
+                                        @if ($option->is_color)
                                             <button type="button"
-                                                class="variant-value {{ $option['is_color'] ? 'is-color' : 'is-size' }}"
-                                                data-feature-id="{{ $feature['id'] }}" aria-pressed="false"
-                                                title="{{ $feature['description'] ?? $feature['value'] }}"
-                                                aria-label="{{ $feature['description'] ?? $feature['value'] }}">
+                                                class="variant-value {{ $option->is_color ? 'is-color' : 'is-size' }}"
+                                                data-feature-id="{{ $feature->id }}" aria-pressed="false"
+                                                title="{{ $feature->description ?? $feature->value }}"
+                                                aria-label="{{ $feature->description ?? $feature->value }}">
                                                 <span class="variant-swatch"
-                                                    style="background-color: {{ $feature['value'] }}"></span>
+                                                    style="background-color: {{ $feature->value }}"></span>
                                             </button>
                                         @else
                                             <button type="button"
-                                                class="variant-value {{ $option['is_color'] ? 'is-color' : 'is-size' }}"
-                                                data-feature-id="{{ $feature['id'] }}" aria-pressed="false"
-                                                title="{{ $feature['description'] ?? $feature['value'] }}"
-                                                aria-label="{{ $feature['description'] ?? $feature['value'] }}">
-                                                <span class="variant-size">{{ $feature['value'] }}</span>
+                                                class="variant-value {{ $option->is_color ? 'is-color' : 'is-size' }}"
+                                                data-feature-id="{{ $feature->id }}" aria-pressed="false"
+                                                title="{{ $feature->description ?? $feature->value }}"
+                                                aria-label="{{ $feature->description ?? $feature->value }}">
+                                                <span class="variant-size">{{ $feature->value }}</span>
                                             </button>
                                         @endif
                                     @endforeach
@@ -151,12 +151,9 @@
                         </button>
                     </div>
                     <div class="product-action-buttons">
-                        <button class="product-action-cart" type="button" data-add-to-cart
-                            data-default-text="Agregar al carrito" data-prompt-text="Selecciona tus opciones"
-                            data-out-of-stock-text="Sin stock">
-                            <i class="ri-shopping-cart-line"></i>
-                            <span data-add-to-cart-label>Agregar al carrito</span>
-                        </button>
+                        @livewire('site.add-to-cart', [
+                            'productId' => $product->id,
+                        ])
 
                         @livewire('site.add-to-wishlist', [
                             'productId' => $product->id,

@@ -9,6 +9,13 @@ import './site-modules/quantity-counter';
 import './site-modules/auth-wishlist-modal';
 import './modules/custom-select';
 
+import { initFormValidator } from './utils/form-validator.js';
+import { initSubmitLoader } from './utils/submit-button-loader.js';
+
+// Exponer helpers de formularios para vistas públicas (login, etc.)
+window.initFormValidator = initFormValidator;
+window.initSubmitLoader = initSubmitLoader;
+
 // Swiper Slider
 import Swiper from 'swiper';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
