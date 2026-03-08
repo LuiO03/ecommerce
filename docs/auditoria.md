@@ -200,8 +200,7 @@ Ubicación: `resources/views/admin/audits/index.blade.php`.
   - ID (`column-id-th/td`).
   - Usuario (badge con nombre o "Sistema / Invitado").
   - Evento (columna con `data-event` y badges por tipo).
-  - Modelo (`class_basename(auditable_type)`).
-  - ID del modelo (`auditable_id`).
+  - Modelo + ID combinados (por ejemplo: `Producto · #15`).
   - IP de origen.
   - Fecha (`created_at` formateado `d/m/Y H:i`).
 - JS de inicialización:
@@ -230,6 +229,39 @@ public function audits()
 
 Con esto, podrás hacer `$product->audits` o `$category->audits` para listar sus cambios históricos.
 
+## 11. Casos especiales: Clientes y auto-registro
+
+Con la incorporación del módulo **Clientes** y del autoregistro público de usuarios, se añadieron
+algunas reglas específicas al sistema de auditoría para evitar ruido innecesario y para etiquetar
+correctamente las acciones:
+
+1. **Autoregistro de clientes (`/register`)**
+   - El trait `Auditable` detecta cuando se crea un `User` desde la ruta pública de registro
+     (`POST /register`) estando autenticación como invitado.
+   - En ese caso **no** se crea una fila en `audits` para el evento `created`, de forma que no se
+     llenen las auditorías con altas masivas de clientes.
+
+2. **Diferenciación entre Usuarios de panel y Clientes**
+   - El modelo `Audit` expone un accessor `model_name` que se muestra en la columna *Modelo* de la
+     vista admin.
+   - Cuando `auditable_type` es `App\Models\User`, se aplica lógica adicional:
+     - Si el registro de auditoría proviene de una exportación del módulo Clientes
+       (`new_values['module'] === 'clientes'`), el modelo se etiqueta como **Cliente** / **Clientes**.
+     - Si `auditable_id` apunta a un usuario cuyo rol principal es `Cliente`, también se muestra
+       como **Cliente** en lugar de **Usuario**.
+
+3. **Exportaciones del módulo Clientes**
+   - Las exportaciones Excel/CSV/PDF realizadas desde `ClientController` registran auditorías con:
+     - `auditable_type = App\Models\User`.
+     - `auditable_id = null` (acción a nivel de módulo).
+     - `event` = `excel_exported`, `csv_exported` o `pdf_exported`.
+     - `new_values['module'] = 'clientes'` para que el visor y los reportes puedan distinguirlo.
+
+Gracias a estas reglas, el histórico de auditoría sigue siendo legible incluso con un volumen
+alto de clientes registrados y exportaciones frecuentes.
+
 ---
 
-Este módulo está diseñado para ser ligero, sin paquetes externos y seguro en contextos de consola (`artisan migrate`, `seeders`), manteniendo un historial consistente de las acciones críticas del sistema.
+Este módulo está diseñado para ser ligero, sin paquetes externos y seguro en contextos de consola
+(`artisan migrate`, `seeders`), manteniendo un historial consistente de las acciones críticas del
+sistema.

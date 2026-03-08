@@ -31,6 +31,7 @@
             'families' => ['label' => 'Familias', 'icon' => 'ri-apps-fill'],
             'covers' => ['label' => 'Portadas', 'icon' => 'ri-image-2-fill'],
             'users' => ['label' => 'Usuarios', 'icon' => 'ri-user-3-fill'],
+            'clients' => ['label' => 'Clientes', 'icon' => 'ri-user-5-fill'],
             'profile' => ['label' => 'Perfil', 'icon' => 'ri-user-3-fill'],
             'categories' => ['label' => 'Categorías', 'icon' => 'ri-price-tag-3-fill'],
             'products' => ['label' => 'Productos', 'icon' => 'ri-box-3-fill'],

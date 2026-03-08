@@ -51,6 +51,26 @@ class Audit extends Model
         if (!$this->auditable_type) {
             return 'Sistema';
         }
+        // Caso especial: diferenciar Usuarios del panel vs Clientes (mismo modelo User)
+        if ($this->auditable_type === User::class) {
+            // 1) Exportaciones del módulo Clientes (auditable_id suele ser null)
+            //    Se marca desde ClientController con new_values['module' => 'clientes']
+            $values = (array) ($this->new_values ?: $this->old_values ?: []);
+
+            if (($values['module'] ?? null) === 'clientes') {
+                // Nombre del módulo en plural para la columna "Modelo · ID"
+                return 'Cliente';
+            }
+
+            // 2) Acciones sobre un registro concreto cuyo rol principal es Cliente
+            if ($this->auditable_id) {
+                $user = User::find($this->auditable_id);
+
+                if ($user && method_exists($user, 'hasRole') && $user->hasRole('Cliente')) {
+                    return 'Cliente';
+                }
+            }
+        }
 
         return $this->mapAuditableTypeToModuleName($this->auditable_type);
     }
@@ -451,6 +471,7 @@ class Audit extends Model
 
         $map = [
             'User'            => 'Usuario',
+            'Client'          => 'Cliente',
             'Role'            => 'Rol',
             'Family'          => 'Familia',
             'Category'        => 'Categoría',
@@ -458,6 +479,7 @@ class Audit extends Model
             'Post'            => 'Publicación',
             'CompanySetting'  => 'Configuración de la empresa',
             'Audit'           => 'Auditoría',
+            'Cover'           => 'Portada',
             'Option'          => 'Opción',
         ];
 
@@ -515,6 +537,13 @@ class Audit extends Model
         $ids = $values['ids'] ?? null;
         $exportAll = (bool) ($values['export_all'] ?? false);
 
+        // Ajuste de nombre para módulo Clientes (exportaciones desde ClientController)
+        if (($values['module'] ?? null) === 'clientes') {
+            // Usamos "Clientes" para que las descripciones digan
+            // "registros de Clientes" y sea coherente con el módulo.
+            $modelName = 'Clientes';
+        }
+
         // Exportación de todos los registros del módulo
         if ($exportAll) {
             return "Se exportaron todos los registros de {$modelName} a {$format}";
@@ -534,6 +563,11 @@ class Audit extends Model
                             $label = (string) $record->{$key};
                             break;
                         }
+                    }
+
+                    // Si es un User con rol Cliente, ajustar el nombre de módulo para la exportación
+                    if ($this->auditable_type === User::class && method_exists($record, 'hasRole') && $record->hasRole('Cliente')) {
+                        $modelName = 'Cliente';
                     }
                 }
             }

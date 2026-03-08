@@ -132,7 +132,7 @@
                         </th>
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Usuario</th>
-                        <th>Modelo · ID</th>
+                        <th>Modelo</th>
                         <th>Evento</th>
                         <th>Descripción</th>
                         <th>IP</th>

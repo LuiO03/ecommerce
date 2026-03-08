@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CoverController;
 use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CompanySettingController;
@@ -205,6 +206,14 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/users/export/excel', 'exportExcel')->name('admin.users.export.excel');
     Route::post('/users/export/pdf', 'exportPdf')->name('admin.users.export.pdf');
     Route::post('/users/export/csv', 'exportCsv')->name('admin.users.export.csv');
+});
+
+// CLIENTS (solo usuarios con rol Cliente)
+Route::controller(ClientController::class)->group(function () {
+    Route::get('/clients', 'index')->name('admin.clients.index');
+    Route::post('/clients/export/excel', 'exportExcel')->name('admin.clients.export.excel');
+    Route::post('/clients/export/pdf', 'exportPdf')->name('admin.clients.export.pdf');
+    Route::post('/clients/export/csv', 'exportCsv')->name('admin.clients.export.csv');
 });
 
 // ROLES

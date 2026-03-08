@@ -222,6 +222,29 @@ Ver documentación detallada en `docs/category-hierarchy-manager.md` y `docs/cat
   - Cerrar sesión en otros dispositivos (`logoutSession`).
   - Exportar su propia información en Excel/PDF/CSV.
 
+### 9.4 Clientes
+
+**Modelo base**: `app/Models/User.php` (filtrado por rol `Cliente`).
+
+**Controlador**: `app/Http/Controllers/Admin/ClientController.php`
+
+- Módulo dedicado para gestionar **usuarios finales con rol Cliente** de forma separada de los usuarios internos del panel.
+- Funcionalidades del listado (vista `resources/views/admin/clients/index.blade.php`):
+  - Búsqueda por nombre y email.
+  - Filtros por estado (activo/inactivo), verificación de email y rol (Cliente / sin rol).
+  - Selección múltiple con barra de acciones (exportar / eliminar).
+  - Cambio rápido de estado (si el rol tiene `clientes.update-status`).
+- Exportaciones específicas del módulo:
+  - Excel: `App\Exports\ClientsExcelExport`.
+  - CSV: `App\Exports\ClientsCsvExport`.
+  - PDF: vista `resources/views/admin/export/clients-pdf.blade.php`.
+- Todas las exportaciones registran auditoría en la tabla `audits` con `module = 'clientes'` en `new_values`, lo que permite distinguirlas del resto de acciones sobre `User`.
+- Permisos principales definidos en `RolePermissionSeeder`:
+  - `clientes.index`, `clientes.delete`, `clientes.export`, `clientes.update-status`.
+
+Para una descripción más detallada del módulo, ver:  
+`docs/clients-module.md`.
+
 ## 10. Patrones de Listado, Estado y Eliminación
 
 El sistema reutiliza varios componentes front y patrones JS comunes (ver carpeta `docs/`).

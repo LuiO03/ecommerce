@@ -14,6 +14,11 @@ class LogSuccessfulLogin
 
     public function handle(Login $event): void
     {
+        // Omitir registro de accesos para usuarios con rol "Cliente"
+        if ($event->user->hasRole('Cliente')) {
+            return;
+        }
+
         AccessLog::create([
             'user_id'    => $event->user->id,
             'email'      => $event->user->email,

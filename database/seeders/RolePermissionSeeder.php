@@ -68,6 +68,14 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'usuarios.update-status', 'description' => 'Puede activar o desactivar usuarios'],
             ],
 
+            // --- Clientes ---
+            'clientes' => [
+                ['name' => 'clientes.index', 'description' => 'Puede ver la lista de clientes'],
+                ['name' => 'clientes.delete', 'description' => 'Puede eliminar clientes'],
+                ['name' => 'clientes.export', 'description' => 'Puede exportar clientes en varios formatos'],
+                ['name' => 'clientes.update-status', 'description' => 'Puede activar o desactivar clientes'],
+            ],
+
             // --- Configuración ---
             'configuracion' => [
                 ['name' => 'configuracion.index', 'description' => 'Puede acceder a la configuración del sistema'],

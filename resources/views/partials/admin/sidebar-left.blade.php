@@ -201,7 +201,7 @@
                 </li>
             @endcan
             <!-- Submenú Gestion de Acceso -->
-            @canany(['usuarios.index', 'roles.index', 'accesos.index', 'auditorias.index'])
+            @canany(['usuarios.index', 'clientes.index', 'roles.index', 'accesos.index', 'auditorias.index'])
             <li class="submenu-container">
                 <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
                     data-tooltip="Gestión de Acceso">
@@ -219,6 +219,16 @@
                                 data-tooltip="Users">
                                 <i class="ri-id-card-line sidebar-icon"></i>
                                 <span>Usuarios</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('clientes.index')
+                        <li class="ripple-btn">
+                            <a href="{{ request()->routeIs('admin.clients.*') ? '#' : route('admin.clients.index') }}"
+                                class="sidebar-sublink {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}"
+                                data-tooltip="Clientes">
+                                <i class="ri-user-5-line sidebar-icon"></i>
+                                <span>Clientes</span>
                             </a>
                         </li>
                     @endcan

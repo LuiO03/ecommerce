@@ -1,0 +1,48 @@
+/* === SHIMMER LOADER === */
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    background: var(--shimmer-bg);
+}
+.shimmer::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        var(--shimmer-bg) 0%,
+        var(--shimmer-gradient) 40%,
+        var(--shimmer-highlight) 50%,
+        var(--shimmer-gradient) 60%,
+        var(--shimmer-bg) 100%
+    );
+    animation: shimmerMove 1.2s infinite;
+    opacity: 0.8;
+}
+.shimmer-cell {
+    height: 22px;
+    border-radius: var(--radius-input);
+    margin: 2px 0;
+}
+.shimmer-img {
+    width: 100%;
+    min-height: 220px;
+    border-radius: var(--radius-card);
+    margin-bottom: 8px;
+}
+.shimmer-title {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+@keyframes shimmerMove {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}

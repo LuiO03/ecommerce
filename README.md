@@ -47,6 +47,7 @@ Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseña
 * ✅ Interfaz responsive con sidebar colapsable
 * ✅ Tema claro/oscuro con persistencia en localStorage
 * ✅ DataTables con búsqueda, ordenamiento y filtros personalizados
+* ✅ Indicadores de carga tipo shimmer (skeleton) para mejorar la UX
 * ✅ Toggle de estado instantáneo (sin modales ni reload)
 * ✅ Eliminación múltiple con confirmación inteligente
 * ✅ Exportación a Excel, CSV y PDF con auditoria
@@ -94,6 +95,8 @@ Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseña
 * ✅ Creación y asignación de roles personalizados
 * ✅ Gestión granular de permisos por módulo
 * ✅ Roles predefinidos: Administrador, Superadministrador, Editor, Revisor
+* ✅ Segmentación entre usuarios internos del panel y clientes (rol "Cliente")
+* ✅ Módulo dedicado de clientes con filtros avanzados y exportación (Excel/CSV/PDF)
 * ✅ Foto de perfil con actualización en tiempo real
 
 ### ⚙️ **Configuración de Empresa**
@@ -206,6 +209,7 @@ El proyecto incluye ~30 archivos de documentación en [docs/](docs/):
 - **[category-hierarchy-manager.md](docs/category-hierarchy-manager.md)** - Selector jerárquico de categorías
 - **[product-variants-manager.md](docs/product-variants-manager.md)** - Gestión de variantes y opciones
 - **[gallery-manager.md](docs/gallery-manager.md)** - Upload, reorder y crop de imágenes
+- **[clients-module.md](docs/clients-module.md)** - Gestión de clientes (usuarios con rol Cliente)
 
 ### Frontend y UI:
 - **[datatable-manager-usage.md](docs/datatable-manager-usage.md)** - Sistema modular de tablas DataTables
@@ -213,6 +217,7 @@ El proyecto incluye ~30 archivos de documentación en [docs/](docs/):
 - **[status-toggle-handler.md](docs/status-toggle-handler.md)** - Toggle de estado sin reload
 - **[multiple-delete-global.md](docs/multiple-delete-global.md)** - Eliminación múltiple global
 - **[js-entry-points-separation.md](docs/js-entry-points-separation.md)** - Separación de entry points Vite
+- **[shimmer-loader.md](docs/shimmer-loader.md)** - Loader shimmer / skeleton para estados de carga
 
 ### Patrones y Convenciones:
 - **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Guía para agentes IA
@@ -523,6 +528,7 @@ const table = new DataTableManager({
 | **Portadas** | `/admin/covers` | CRUD, slider, overlay, fechas vigencia |
 | **Opciones** | `/admin/options` | CRUD de opciones y sus valores (features) |
 | **Usuarios** | `/admin/users` | CRUD, asignación de roles, foto de perfil |
+| **Clientes** | `/admin/clients` | Listado de clientes (rol Cliente), filtros y exportación |
 | **Roles** | `/admin/roles` | CRUD, asignación de permisos granular |
 | **Permisos** | `/admin/permissions` | CRUD de permisos por módulo |
 | **Auditorías** | `/admin/audits` | Visor de cambios, exportación |
@@ -543,7 +549,7 @@ const table = new DataTableManager({
 - 📱 **API REST** completa con Laravel Sanctum
 - ⭐ **Sistema de reviews y ratings**
 - 🎁 **Promociones y descuentos**
-- 👥 **Sistema de clientes** con historial de compras
+- 👥 Historial de compras para clientes (integrado al módulo Clientes)
 
 ---
 

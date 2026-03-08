@@ -4,23 +4,23 @@
 
 ```
 resources/css/
-├── base.css              # Variables y resets globales (compartido)
-├── admin.css            # Entry point para panel admin
-├── site.css             # Entry point para sitio público
+├── base.css              # Variables y resets globales (tema claro/oscuro)
+├── main.css              # Componentes globales (formularios, auth, shimmer, etc.)
+├── app.css               # Entry point único de Tailwind (importa base + main)
 │
-├── admin/               # CSS del Panel Admin
-│   ├── layout.css      
-│   ├── modules/         # dashboard.css, categories.css, etc.
-│   └── components/      # table.css, form.css, etc.
+├── admin/                # CSS del Panel Admin (solo admin)
+│   ├── layout.css        # Shell del dashboard (sidebar, topbar, tablas, etc.)
+│   ├── components/       # Componentes internos del admin
+│   └── modules/          # Estilos por módulo (dashboard, categorías, productos, etc.)
 │
-├── site/                # CSS del Sitio Público
-│   ├── layout.css       # Header, footer, grid principal
-│   ├── modules/         # home.css, products.css, cart.css, checkout.css
-│   └── components/      # navigation.css, product-card.css, filters.css
+├── site/                 # CSS del Sitio Público (solo frontend)
+│   ├── layout.css        # Layout general, cards, sliders, etc.
+│   ├── components/       # Componentes reutilizables del sitio
+│   └── modules/          # home.css, cart.css, checkout.css, product-details.css, etc.
 │
-└── shared/              # Componentes compartidos entre admin y sitio
-    ├── alert.css
-    └── button.css
+├── components/           # Pequeños componentes globales específicos
+├── shared/               # Estilos compartidos entre admin y sitio
+└── visuals/              # Efectos visuales y helpers (por ejemplo, ripples)
 ```
 
 ## 🎨 Cómo Usar
@@ -28,13 +28,15 @@ resources/css/
 ### En el Panel Admin
 ```blade
 <!-- resources/views/layouts/admin.blade.php -->
-@vite(['resources/css/base.css', 'resources/css/admin.css', 'resources/js/app.js'])
+@vite(['resources/css/admin/layout.css'])
+@vite(['resources/css/app.css', 'resources/js/admin.js'])
 ```
 
 ### En el Sitio Público
 ```blade
-<!-- resources/views/layouts/site.blade.php -->
-@vite(['resources/css/base.css', 'resources/css/site.css', 'resources/js/app.js'])
+<!-- resources/views/layouts/app.blade.php -->
+@vite(['resources/css/site/layout.css'])
+@vite(['resources/css/app.css', 'resources/js/site.js'])
 ```
 
 ## 🔧 Clases CSS Disponibles - Sitio Público
@@ -157,17 +159,17 @@ resources/css/
 ### Para el Sitio Público
 
 1. Crear archivo en `resources/css/site/modules/mi-modulo.css`
-2. Agregar import en `resources/css/site.css`:
+2. Agregar import en `resources/css/site/layout.css`:
    ```css
-   @import "./site/modules/mi-modulo.css";
+    @import "./modules/mi-modulo.css";
    ```
 
 ### Para el Panel Admin
 
 1. Crear archivo en `resources/css/admin/modules/mi-modulo.css`
-2. Agregar import en `resources/css/admin.css`:
+2. Agregar import en `resources/css/admin/layout.css`:
    ```css
-   @import "./admin/modules/mi-modulo.css";
+    @import "./modules/mi-modulo.css";
    ```
 
 ## 📝 Convenciones
@@ -198,16 +200,19 @@ cp resources/css/components/button.css resources/css/shared/
 
 ## ⚠️ Importante
 
-- El `vite.config.js` debe incluir los entry points:
-  ```js
-  input: [
-      'resources/css/app.css',
-      'resources/css/admin.css',  // Panel admin
-      'resources/css/site.css',   // Sitio público
-      'resources/js/app.js'
-  ]
-  ```
+- El `vite.config.js` actual define como entry points:
+    ```js
+    input: [
+            'resources/css/app.css',
+            'resources/js/app.js',
+            'resources/js/admin.js',
+            'resources/js/site.js',
+    ]
+    ```
 
-- No mezclar CSS del admin con el sitio para evitar conflictos
-- Usar `site-container` en lugar de `container` para el sitio público
-- Las variables CSS globales están en `base.css`
+    Los CSS específicos de admin (`admin/layout.css`) y sitio (`site/layout.css`) se cargan
+    directamente desde los layouts Blade mediante `@vite(...)`.
+
+- No mezclar CSS del admin con el sitio para evitar conflictos.
+- Usar los contenedores propios del diseño público (`site-container`, `site-main`, etc.).
+- Las variables CSS globales (tema, colores, radii, shimmer, etc.) están en `base.css`.

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RolesExcelExport;
 use App\Exports\RolesCsvExport;
@@ -357,6 +356,6 @@ class RoleController extends Controller
 
         Session::flash('highlightRow', $role->id);
 
-        return redirect()->route('admin.roles.index');
+        return redirect()->route('admin.roles.permissions', $role->id);
     }
 }

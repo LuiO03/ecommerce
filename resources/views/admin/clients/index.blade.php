@@ -1,15 +1,14 @@
-@section('title', 'Usuarios')
+@section('title', 'Clientes')
 
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
         <div class="page-icon card-success">
             <i class="ri-user-line"></i>
         </div>
-        Lista de Usuarios
+        Lista de Clientes
     </x-slot>
     <x-slot name="action">
-        <!-- Menú desplegable de exportación -->
-        @can('usuarios.export')
+        @can('clientes.export')
         <div class="export-menu-container">
             <button type="button" class="boton-form boton-action" id="exportMenuBtn">
                 <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
@@ -32,20 +31,14 @@
             </div>
         </div>
         @endcan
-        @can('usuarios.create')
-        <a href="{{ route('admin.users.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Usuario</span>
-        </a>
-        @endcan
+        {{-- No hay botón de crear en la vista de clientes --}}
     </x-slot>
 
     <div class="actions-container">
-        <!-- === Controles personalizados === -->
         <div class="tabla-controles">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
-                <input type="text" id="customSearch" placeholder="Buscar usuarios por nombre o email"
+                <input type="text" id="customSearch" placeholder="Buscar clientes por nombre o email"
                     autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
@@ -89,13 +82,14 @@
                     </div>
                 </div>
 
-                <!-- Rol -->
                 <div class="tabla-select-wrapper">
                     <div class="selector">
                         <select id="roleFilter">
                             <option value="">Todos los roles</option>
                             @foreach($roles as $role)
-                                <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                                @if($role->name === 'Cliente')
+                                    <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                                @endif
                             @endforeach
                             <option value="sin-rol">Sin rol</option>
                         </select>
@@ -103,30 +97,27 @@
                     </div>
                 </div>
 
-                <!-- Verificación de Email -->
                 <div class="tabla-select-wrapper">
                     <div class="selector">
                         <select id="verifiedFilter">
-                            <option value="">Todos los usuarios</option>
+                            <option value="">Todos los clientes</option>
                             <option value="1">Email verificado</option>
                             <option value="0">Sin verificar</option>
                         </select>
                         <i class="ri-mail-check-line selector-icon"></i>
                     </div>
                 </div>
-                <!-- Botón para limpiar filtros -->
+
                 <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                     <span class="boton-text">Limpiar filtros</span>
                 </button>
             </div>
-
         </div>
 
-        <!-- Barra contextual de selección (oculta por defecto) -->
-        @canany(['usuarios.export', 'usuarios.delete'])
+        @canany(['clientes.export', 'clientes.delete'])
         <div class="selection-bar" id="selectionBar">
-            @can('usuarios.export')
+            @can('clientes.export')
             <div class="selection-actions">
                 <button id="exportSelectedExcel" class="boton-selection boton-success">
                     <span class="boton-selection-icon">
@@ -154,7 +145,7 @@
                 </button>
             </div>
             @endcan
-            @can('usuarios.delete')
+            @can('clientes.delete')
             <button id="deleteSelected" class="boton-selection boton-danger">
                 <span class="boton-selection-icon">
                     <i class="ri-delete-bin-line"></i>
@@ -172,13 +163,13 @@
             </div>
         </div>
         @endcanany
-        <!-- === Tabla === -->
+
         <div class="tabla-wrapper">
             <table id="tabla" class="tabla-general display">
                 <thead>
                     <tr>
                         <th class="control"></th>
-                        @canany(['usuarios.export', 'usuarios.delete'])
+                        @canany(['clientes.export', 'clientes.delete'])
                         <th class="column-check-th column-not-order">
                             <div>
                                 <input type="checkbox" id="checkAll" name="checkAll">
@@ -189,8 +180,8 @@
                         <th class="column-name-th">Nombre</th>
                         <th class="column-last-name-th">Apellidos</th>
                         <th class="column-email-th">Email</th>
-                        <th class="column-role-th">Rol</th>
-                        @can('usuarios.update-status')
+                        <th class="column-verified-th">Verificado</th>
+                        @can('clientes.update-status')
                             <th class="column-status-th">Estado</th>
                         @endcan
                         <th class="column-date-th">Creado</th>
@@ -203,7 +194,7 @@
 
                             <td class="control" title="Expandir detalles">
                             </td>
-                            @canany(['usuarios.export', 'usuarios.delete'])
+                            @canany(['clientes.export', 'clientes.delete'])
                             <td class="column-check-td">
                                 <div>
                                     <input type="checkbox" class="check-row" id="check-row-{{ $user->id }}"
@@ -237,21 +228,21 @@
                                 </span>
                             </td>
                             <td class="column-email-td">{{ $user->email }}</td>
-                            <td class="column-role-td" data-role="{{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'sin-rol' }}">
-                                @if($user->roles->isNotEmpty())
-                                    <span class="badge badge-primary">
-                                        <i class="ri-shield-user-line"></i>
-                                        {{ $user->roles->first()->name }}
+                            <td class="column-verified-td">
+                                @if ($user->email_verified_at)
+                                    <span class="badge badge-success" title="Email verificado">
+                                        <i class="ri-checkbox-circle-fill"></i>
+                                        Verificado
                                     </span>
                                 @else
-                                    <span class="badge badge-gray">
-                                        <i class="ri-file-unknow-line"></i>
-                                        Sin rol
+                                    <span class="badge badge-danger" title="Email sin verificar">
+                                        <i class="ri-close-circle-fill"></i>
+                                        Sin verificar
                                     </span>
                                 @endif
                             </td>
-                            @can('usuarios.update-status')
-                                <td class="column-status-td">
+                            @can('clientes.update-status')
+                                <td class="column-status-td" >
                                     <label class="switch-tabla">
                                         <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
                                             {{ $user->status ? 'checked' : '' }}>
@@ -266,22 +257,16 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-usuario" data-slug="{{ $user->slug }}" title="Ver Usuario">
+                                    <button class="boton-sm boton-info btn-ver-usuario" data-slug="{{ $user->slug }}" title="Ver Cliente">
                                         <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
                                     </button>
-                                    @can('usuarios.edit')
-                                    <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning" title="Editar Usuario">
-                                        <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
-                                    </a>
-                                    @endcan
-
                                     @if (Auth::id() !== $user->id)
-                                        @can('usuarios.delete')
+                                        @can('clientes.delete')
                                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                            class="delete-form" data-entity="usuario">
+                                            class="delete-form" data-entity="cliente">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="boton-sm boton-danger" title="Eliminar Usuario">
+                                            <button type="submit" class="boton-sm boton-danger" title="Eliminar Cliente">
                                                 <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
                                             </button>
                                         </form>
@@ -308,27 +293,26 @@
             <div id="tablePagination" class="tabla-paginacion"></div>
         </div>
     </div>
+
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const tableManager = new DataTableManager('#tabla', {
-                    moduleName: 'users',
-                    entityNameSingular: 'usuario',
-                    entityNamePlural: 'usuarios',
+                    moduleName: 'clients',
+                    entityNameSingular: 'cliente',
+                    entityNamePlural: 'clientes',
                     deleteRoute: '/admin/users',
                     statusRoute: '/admin/users/{id}/status',
                     exportRoutes: {
-                        excel: '/admin/users/export/excel',
-                        csv: '/admin/users/export/csv',
-                        pdf: '/admin/users/export/pdf'
+                        excel: '/admin/clients/export/excel',
+                        csv: '/admin/clients/export/csv',
+                        pdf: '/admin/clients/export/pdf'
                     },
                     csrfToken: '{{ csrf_token() }}',
 
-                    // Configuración de DataTable
                     pageLength: 10,
                     lengthMenu: [5, 10, 25, 50],
 
-                    // Características
                     features: {
                         selection: true,
                         export: true,
@@ -338,39 +322,30 @@
                         customPagination: true
                     },
 
-                    // Callbacks personalizados (opcional)
                     callbacks: {
                         onDraw: () => {
-                            console.log('🔄 Tabla redibujada');
+                            console.log('🔄 Tabla de clientes redibujada');
                         },
                         onStatusChange: (id, status, response) => {
-                            console.log(`✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
+                            console.log(`✅ Estado actualizado: Cliente ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
                         },
                         onDelete: () => {
-                            console.log('🗑️ Registros eliminados');
+                            console.log('🗑️ Clientes eliminados');
                         },
                         onExport: (type, format, count) => {
-                            console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
+                            console.log(`📤 Exportación de clientes: ${type} (${format}) - ${count || 'todos'} registros`);
                         }
                     }
                 });
 
-                // ========================================
-                // 🔍 FILTROS PERSONALIZADOS
-                // ========================================
-
-                // Variables globales para los filtros
                 let currentRoleFilter = '';
                 let currentVerifiedFilter = '';
 
-                // Función de filtrado personalizado para DataTables
                 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                    // Solo aplicar a esta tabla
                     if (settings.nTable.id !== 'tabla') return true;
 
                     const row = tableManager.table.row(dataIndex).node();
 
-                    // Filtro por Rol
                     if (currentRoleFilter !== '') {
                         const rowRole = $(row).find('.column-role-td').attr('data-role');
                         if (rowRole !== currentRoleFilter) {
@@ -378,7 +353,6 @@
                         }
                     }
 
-                    // Filtro por Verificación de Email
                     if (currentVerifiedFilter !== '') {
                         const rowVerified = $(row).find('.column-status-td').attr('data-verified');
                         if (rowVerified !== currentVerifiedFilter) {
@@ -389,43 +363,25 @@
                     return true;
                 });
 
-                // Filtro por Rol
                 $('#roleFilter').on('change', function() {
                     currentRoleFilter = this.value;
                     tableManager.table.draw();
-
-                    // Actualizar estado de filtros activos
                     tableManager.checkFiltersActive();
-
-                    console.log(`🔍 Filtro Rol: ${currentRoleFilter || 'Todos'}`);
                 });
 
-                // Filtro por Verificación de Email
                 $('#verifiedFilter').on('change', function() {
                     currentVerifiedFilter = this.value;
                     tableManager.table.draw();
-
-                    // Actualizar estado de filtros activos
                     tableManager.checkFiltersActive();
-
-                    console.log(`🔍 Filtro Verificación: ${currentVerifiedFilter === '1' ? 'Verificados' : currentVerifiedFilter === '0' ? 'Sin verificar' : 'Todos'}`);
                 });
 
-                // Limpiar filtros personalizados cuando se presiona el botón
-                const originalClearHandler = $('#clearFiltersBtn').data('events')?.click;
                 $('#clearFiltersBtn').on('click', function() {
-                    // Limpiar filtros personalizados
                     currentRoleFilter = '';
                     currentVerifiedFilter = '';
                     $('#roleFilter').val('');
                     $('#verifiedFilter').val('');
-
-                    console.log('🧹 Filtros personalizados limpiados');
                 });
 
-                // ========================================
-                // 🎨 RESALTAR FILA CREADA/EDITADA
-                // ========================================
                 @if (Session::has('highlightRow'))
                     (function() {
                         const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
@@ -447,13 +403,11 @@
                             if (row.length) {
                                 row.addClass('row-highlight');
 
-                                // Scroll suave hacia la fila
                                 row[0].scrollIntoView({
                                     behavior: 'smooth',
                                     block: 'center'
                                 });
 
-                                // Remover la clase después de la animación
                                 setTimeout(() => {
                                     row.removeClass('row-highlight');
                                 }, 3000);
@@ -464,5 +418,6 @@
             });
         </script>
     @endpush
+
     @include('admin.users.modals.show-modal-user')
 </x-admin-layout>

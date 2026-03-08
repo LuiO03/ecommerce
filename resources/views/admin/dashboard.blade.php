@@ -86,7 +86,7 @@
         <!-- Tarjeta: Portadas -->
         @can('portadas.index')
         <a href="{{ route('admin.covers.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-info">
+            <div class="card-icon card-pink">
                 <i class="ri-image-2-line"></i>
             </div>
             <div class="card-content">
@@ -133,6 +133,19 @@
         </a>
         @endcan
 
+        <!-- Tarjeta: Clientes -->
+        @can('clientes.index')
+        <a href="{{ route('admin.clients.index') }}" class="dashboard-card ripple-card">
+            <div class="card-icon card-secondary">
+                <i class="ri-user-5-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalClients }}</h1>
+                <p class="card-label">Clientes</p>
+            </div>
+        </a>
+        @endcan
+
         <!-- Tarjeta: Posts -->
         @can('posts.index')
         <a href="{{ route('admin.posts.index') }}" class="dashboard-card ripple-card">
@@ -149,25 +162,12 @@
         <!-- Tarjeta: Opciones -->
         @can('opciones.index')
         <a href="{{ route('admin.options.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-teal">
+            <div class="card-icon card-success">
                 <i class="ri-settings-3-line"></i>
             </div>
             <div class="card-content">
                 <h1 class="card-count">{{ $totalOptions }}</h1>
                 <p class="card-label">Opciones</p>
-            </div>
-        </a>
-        @endcan
-
-        <!-- Tarjeta: Accesos -->
-        @can('accesos.index')
-        <a href="{{ route('admin.access-logs.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-pink">
-                <i class="ri-login-circle-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalAccessLogs }}</h1>
-                <p class="card-label">Accesos</p>
             </div>
         </a>
         @endcan

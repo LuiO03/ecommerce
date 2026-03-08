@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Audit;
 use Illuminate\Support\Arr;
+use App\Models\User;
 
 trait Auditable
 {
@@ -28,6 +29,20 @@ trait Auditable
     protected function recordAudit(string $event): void
     {
         try {
+            // Omitir auditoría en el autoregistro público de clientes
+            // (creación de User vía POST /register estando como invitado)
+            if (
+                $event === 'created'
+                && static::class === User::class
+                && !app()->runningInConsole()
+            ) {
+                $request = request();
+
+                if ($request && $request->is('register') && $request->isMethod('post') && auth()->guest()) {
+                    return;
+                }
+            }
+
             $userId = app()->runningInConsole() ? null : optional(auth()->user())->id;
             $ip = app()->runningInConsole() ? null : optional(request())->ip();
             $userAgent = app()->runningInConsole() ? null : optional(request())->userAgent();

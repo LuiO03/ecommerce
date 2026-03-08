@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -29,12 +30,16 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('roles')
+        // Cargar todos los usuarios excepto los que tienen rol 'Cliente'
+        // (incluye usuarios sin ningún rol asignado)
+        $users = User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'Cliente');
+        })
+            ->with('roles')
             ->select(['id', 'name', 'last_name', 'email', 'slug', 'status', 'created_at', 'image', 'dni', 'phone', 'email_verified_at'])
             ->orderByDesc('id')
             ->get();
-
-        $roles = \Spatie\Permission\Models\Role::all();
+        $roles = Role::all();
 
         return view('admin.users.index', compact('users', 'roles'));
     }
