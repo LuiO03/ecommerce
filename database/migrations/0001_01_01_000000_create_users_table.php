@@ -18,8 +18,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             // PaRA PODER USAR GOOGLE OAUTH
             $table->string('password')->nullable();// Cambiado a nullable para permitir usuarios que se registren con Google OAuth
-            $table->string('provider')->nullable(); // Para almacenar el proveedor de autenticación (e.g., 'google')
-            $table->string('provider_id')->nullable(); // Para almacenar el ID del usuario proporcionado por el proveedor de autenticación
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
+
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();

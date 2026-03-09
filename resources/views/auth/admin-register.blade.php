@@ -159,13 +159,22 @@
                     </div>
                 </form>
             </div>
-            <hr class="w-full my-4 border-default">
             <div class="auth-footer">
                 <span>
                     ¿Ya tienes una cuenta?
                 </span>
                 <a href="{{ route('login') }}" class="auth-link-accent">Inicia sesión aquí</a>
             </div>
+
+            <div class="auth-divider">
+                <hr>
+                <span>o</span>
+                <hr>
+            </div>
+            <a href="{{ route('google.redirect') }}" class="boton-google">
+                <i class="ri-google-line boton-icon"></i>
+                Regístrate con Google
+            </a>
         </div>
     </div>
 

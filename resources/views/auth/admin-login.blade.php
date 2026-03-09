@@ -1,4 +1,11 @@
 <x-app-layout>
+    <div id="g_id_onload" data-client_id="692054060080-31o88c9jv2rs17bpob44tlbgbf3o63ih.apps.googleusercontent.com" data-callback="handleGoogleLogin">
+    </div>
+
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with"
+        data-shape="rectangular">
+    </div>
+
     <div class="auth-wrapper">
         <div class="auth-logo">
             <img src="{{ asset('images/logos/logo-geckomerce.png') }}" alt="Logo">
@@ -43,6 +50,9 @@
                                 placeholder="Ingresa tu correo electrónico" value="70098517@institutocajas.info"
                                 required autofocus autocomplete="off" data-validate="required|email">
                         </div>
+                        <p class="input-help-text">
+
+                        </p>
                     </div>
                     <div class="input-group">
                         <label for="password" class="label-form">
@@ -52,12 +62,16 @@
                             <i class="ri-lock-password-line input-icon"></i>
                             <input type="password" id="password" name="password" class="input-form password-input"
                                 placeholder="Ingresa tu contraseña" value="luis988434679kira" required
-                                autocomplete="off" data-validate="required|min:6">
+                                autocomplete="off" data-validate="required|min:8|password">
                             <button type="button" class="toggle-password" tabindex="-1"
                                 aria-label="Mostrar contraseña">
                                 <i class="ri-eye-line"></i>
                             </button>
                         </div>
+                        <p class="input-help-text">
+                            La contraseña debe tener al menos 15 caracteres O al menos 8 caracteres, incluyendo un
+                            número y una letra minúscula.
+                        </p>
                     </div>
 
                     <!-- Remember me -->
@@ -91,17 +105,47 @@
                     </div>
                 </form>
             </div>
-            <hr class="w-full my-4 border-default">
             <div class="auth-footer">
                 <span>
                     ¿No tienes una cuenta?
                 </span>
                 <a href="{{ route('register') }}" class="auth-link-accent">Regístrate aquí</a>
             </div>
+            <div class="auth-divider">
+                <hr>
+                <span>o</span>
+                <hr>
+            </div>
+            <a href="{{ route('google.redirect') }}" class="boton-google">
+                <i class="ri-google-line boton-icon"></i>
+                Iniciar con Google
+            </a>
         </div>
     </div>
 
     <script>
+        function handleGoogleLogin(response) {
+            fetch('/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    credential: response.credential
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.success) {
+                    window.location.href = "/welcome.index";
+                } else {
+                    alert("Error al iniciar sesión");
+                }
+
+            });
+
+        }
         console.log('=== SCRIPT INLINE EJECUTÁNDOSE ===');
 
         // Esperar a que el DOM esté listo

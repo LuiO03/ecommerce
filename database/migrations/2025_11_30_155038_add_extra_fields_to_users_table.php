@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+
             // Campos extra
             if (!Schema::hasColumn('users', 'last_name')) {
                 $table->string('last_name', 100)->nullable();

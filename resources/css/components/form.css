@@ -185,6 +185,12 @@ input[type="checkbox"]:indeterminate {
     position: relative;
 }
 
+.input-help-text{
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+    line-height: 1;
+}
+
 /* === Ícono === */
 .input-icon {
     position: absolute;

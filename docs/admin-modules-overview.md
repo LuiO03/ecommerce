@@ -245,6 +245,9 @@ Ver documentación detallada en `docs/category-hierarchy-manager.md` y `docs/cat
 Para una descripción más detallada del módulo, ver:  
 `docs/clients-module.md`.
 
+Para detalles de la autenticación y registro con Google (Socialite) e integración con el modelo `User`, ver:  
+`docs/google-authentication.md`.
+
 ## 10. Patrones de Listado, Estado y Eliminación
 
 El sistema reutiliza varios componentes front y patrones JS comunes (ver carpeta `docs/`).

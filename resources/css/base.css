@@ -171,7 +171,6 @@
     /* Los colores pastel en dark mode son más oscuros y menos saturados */
     /* para mantener buen contraste con el fondo oscuro */
 
-    --color-primary: #2837b7;
     --color-primary-pastel: #1a2447;
 
     --color-secondary: #9d979f;

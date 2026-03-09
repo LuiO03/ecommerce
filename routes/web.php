@@ -9,6 +9,17 @@
     use App\Http\Controllers\Site\WishlistController;
     use App\Http\Controllers\Site\CartController;
     use App\Http\Controllers\Site\RegisteredUserController;
+    use App\Http\Controllers\Auth\GoogleController;
+
+    Route::get('/google-auth/redirect', [GoogleController::class, 'redirectToGoogle'])
+    ->name('google.redirect');
+
+    // Callback que Google llama tras el login (debe coincidir con GOOGLE_REDIRECT_URI)
+    Route::get('/google-auth/callback', [GoogleController::class, 'handleGoogleCallback'])
+    ->name('google.callback');
+
+    Route::post('/google-auth/one-tap', [GoogleController::class, 'handleGoogleOneTap'])
+    ->name('google.one-tap');
 
     Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
 

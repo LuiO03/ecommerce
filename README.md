@@ -210,6 +210,7 @@ El proyecto incluye ~30 archivos de documentación en [docs/](docs/):
 - **[product-variants-manager.md](docs/product-variants-manager.md)** - Gestión de variantes y opciones
 - **[gallery-manager.md](docs/gallery-manager.md)** - Upload, reorder y crop de imágenes
 - **[clients-module.md](docs/clients-module.md)** - Gestión de clientes (usuarios con rol Cliente)
+ - **[google-authentication.md](docs/google-authentication.md)** - Autenticación y registro con Google (Socialite)
 
 ### Frontend y UI:
 - **[datatable-manager-usage.md](docs/datatable-manager-usage.md)** - Sistema modular de tablas DataTables

@@ -156,7 +156,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|min:3',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|string|min:6',
             'status' => 'required|boolean',
             'role' => 'required|exists:roles,name',
@@ -191,6 +191,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'slug' => $slug,
+            'email_verified_at' => now(),
             'status' => (bool) $request->status,
             'address' => $request->address,
             'dni' => $request->dni,

@@ -12,8 +12,9 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, HasProfilePhoto, HasRoles, Auditable;
 
@@ -21,8 +22,11 @@ class User extends Authenticatable
         'name',
         'last_name',
         'email',
+        'email_verified_at',
         'slug',
         'password',
+        'provider',
+        'provider_id',
         'address',
         'dni',
         'phone',
