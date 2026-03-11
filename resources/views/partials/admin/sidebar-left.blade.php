@@ -93,7 +93,7 @@
                     </div>
                 @endif
             @else
-                <img src="{{ asset('images/logos/logo-geckomerce.png') }}" alt="Logo" class="sidebar-logo-default">
+                <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo-default">
                 <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
             @endif
         </a>

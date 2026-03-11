@@ -13,6 +13,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -26,6 +29,7 @@ class FortifyServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
+
      */
     public function boot(): void
     {
@@ -34,6 +38,37 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
+
+        // Autenticación personalizada: bloquear usuarios con status inactivo
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::where('email', $request->input(Fortify::username()))->first();
+
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                return null; // deja que Fortify maneje el mensaje de credenciales inválidas
+            }
+
+            if (! $user->status) {
+                $message = $user->hasRole('Cliente')
+                    ? 'Tu cuenta de cliente está inactiva. Revisa tu correo o contacta con soporte.'
+                    : 'Tu cuenta está inactiva. Contacta con un administrador del sistema para reactivarla.';
+
+                throw ValidationException::withMessages([
+                    Fortify::username() => $message,
+                ]);
+            }
+
+            return $user;
+        });
+
+        // Vista para solicitar enlace de recuperación de contraseña
+        Fortify::requestPasswordResetLinkView(function () {
+            return view('auth.forgot-password');
+        });
+
+        // Vista para restablecer la contraseña (formulario con nuevo password)
+        Fortify::resetPasswordView(function (Request $request) {
+            return view('auth.reset-password', ['request' => $request]);
+        });
 
         // Usar admin-login como la única vista de login
         Fortify::loginView(function () {

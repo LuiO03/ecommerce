@@ -70,7 +70,6 @@
 .boton-form {
     min-height: 35px;
     display: inline-flex;
-    max-width: fit-content;
     gap: 5px;
     align-items: center;
     justify-content: center;

@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="auth-wrapper">
         <div class="auth-logo">
-            <img src="{{ asset('images/logos/logo-geckomerce.png') }}" alt="Logo">
+            <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo">
             <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
         </div>
         <div class="auth-card">
@@ -9,6 +9,27 @@
             <div class="auth-header">
                 <h2 class="auth-title">Crear cuenta</h2>
                 <p class="auth-subtitle">Ingresa tus datos para registrarte en la tienda.</p>
+            </div>
+            {{-- Boton de google con socialite
+            <a href="{{ route('google.redirect') }}" class="boton-google">
+                <i class="ri-google-line boton-icon"></i>
+                Regístrate con Google
+            </a>
+            --}}
+            <div class="auth-provider-logins">
+                <div id="g_id_onload" data-client_id="{{ config('services.google.client_id') }}"
+                    data-callback="handleGoogleLogin">
+                </div>
+
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
+                    data-text="continue_with" data-shape="rectangular">
+                </div>
+            </div>
+
+            <div class="auth-divider">
+                <hr>
+                <span>o</span>
+                <hr>
             </div>
 
             <!-- Body del formulario -->
@@ -41,87 +62,70 @@
 
                     <div class="input-group">
                         <label for="name" class="label-form">
-                            Nombre
+                            Nombre <i class="ri-asterisk text-accent"></i>
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-user-line input-icon"></i>
                             <input type="text" id="name" name="name" class="input-form"
                                 placeholder="Ingresa tu nombre" value="{{ old('name') }}" required autocomplete="off"
-                                data-validate="required|alpha|min:3|max:50"
-                                data-validate-messages='{
-                                    "required":"El nombre es obligatorio",
-                                    "alpha":"Solo se permiten letras",
-                                    "min":"Mínimo 3 caracteres",
-                                    "max":"Máximo 50 caracteres"
-                                }'>
+                                data-validate="required|alpha|min:3|max:50">
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label for="last_name" class="label-form">
-                            Apellido
+                            Apellido <i class="ri-asterisk text-accent"></i>
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-user-3-line input-icon"></i>
                             <input type="text" id="last_name" name="last_name" class="input-form"
                                 placeholder="Ingresa tu apellido" value="{{ old('last_name') }}" autocomplete="off"
-                                data-validate="alpha|max:50"
-                                data-validate-messages='{
-                                    "alpha":"Solo se permiten letras",
-                                    "max":"Máximo 50 caracteres"
-                                }'>
+                                data-validate="alpha|max:50">
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label for="email" class="label-form">
-                            Correo electrónico
+                            Correo electrónico <i class="ri-asterisk text-accent"></i>
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-mail-line input-icon"></i>
                             <input type="email" id="email" name="email" class="input-form"
                                 placeholder="Ingresa tu correo electrónico" value="{{ old('email') }}" required
-                                autocomplete="off" data-validate="required|email"
-                                data-validate-messages='{
-                                    "required":"El correo es obligatorio",
-                                    "email":"Ingresa un correo válido"
-                                }'>
+                                autocomplete="off" data-validate="required|email">
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label for="address" class="label-form">
-                            Dirección
+                            Dirección <i class="ri-asterisk text-accent"></i>
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-map-pin-line input-icon"></i>
                             <input type="text" id="address" name="address" class="input-form"
                                 placeholder="Ingresa tu dirección" value="{{ old('address') }}" autocomplete="off"
-                                data-validate="max:255"
-                                data-validate-messages='{
-                                    "max":"Máximo 255 caracteres"
-                                }'>
+                                data-validate="max:255">
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label for="password" class="label-form">
-                            Contraseña
+                            Contraseña <i class="ri-asterisk text-accent"></i>
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-lock-password-line input-icon"></i>
                             <input type="password" id="password" name="password" class="input-form password-input"
                                 placeholder="Crea una contraseña" required autocomplete="off"
-                                data-validate="required|min:6"
-                                data-validate-messages='{
-                                    "required":"La contraseña es obligatoria",
-                                    "min":"Debe tener al menos 6 caracteres"
-                                }'>
+                                data-validate="required|min:6">
                             <button type="button" class="toggle-password" tabindex="-1"
                                 aria-label="Mostrar contraseña">
                                 <i class="ri-eye-line"></i>
                             </button>
                         </div>
+                        <p class="input-help-text">
+                            La contraseña debe tener al menos 15 caracteres O al menos 8 caracteres, incluyendo un
+                            número y una letra minúscula.
+                        </p>
                     </div>
 
                     <div class="input-group">
@@ -132,31 +136,32 @@
                             <i class="ri-lock-line input-icon"></i>
                             <input type="password" id="password_confirmation" name="password_confirmation"
                                 class="input-form password-input" placeholder="Repite tu contraseña" required
-                                autocomplete="off" data-validate="required|confirmed:password"
-                                data-validate-messages='{
-                                    "required":"La confirmación es obligatoria",
-                                    "confirmed":"Las contraseñas no coinciden"
-                                }'>
+                                autocomplete="off" data-validate="required|confirmed:password">
                             <button type="button" class="toggle-password" tabindex="-1"
                                 aria-label="Mostrar contraseña">
                                 <i class="ri-eye-line"></i>
                             </button>
                         </div>
                     </div>
-
-                    <div class="form-footer mt-4">
-                        <a href="{{ route('welcome.index') }}" class="boton-form boton-volver">
-                            <span class="boton-form-icon">
-                                <i class="ri-arrow-left-circle-fill"></i>
-                            </span>
-                            <span class="boton-form-text">Atrás</span>
-                        </a>
+                    <hr class="w-full my-0 border-default">
+                    <div class="auth-form-footer">
                         <!-- Botón de registro -->
-                        <button class="boton-form boton-success" type="submit" id="registerBtn">
+                        <button class="boton-form boton-success py-3" type="submit" id="registerBtn">
                             <span class="boton-form-icon"> <i class="ri-user-add-line"></i> </span>
                             <span class="boton-form-text">Crear cuenta</span>
                         </button>
+                        <a href="{{ route('welcome.index') }}" class="boton-form boton-volver py-3">
+                            <span class="boton-form-icon">
+                                <i class="ri-arrow-left-circle-fill"></i>
+                            </span>
+                            <span class="boton-form-text">Volver a inicio</span>
+                        </a>
                     </div>
+                    <p class="input-help-text">
+                        Al registrarte, estás creando una cuenta y aceptas las <a href=""
+                            class="auth-link">Condiciones de uso</a> y la <a href=""
+                            class="auth-link">Política de privacidad</a>
+                    </p>
                 </form>
             </div>
             <div class="auth-footer">
@@ -165,16 +170,6 @@
                 </span>
                 <a href="{{ route('login') }}" class="auth-link-accent">Inicia sesión aquí</a>
             </div>
-
-            <div class="auth-divider">
-                <hr>
-                <span>o</span>
-                <hr>
-            </div>
-            <a href="{{ route('google.redirect') }}" class="boton-google">
-                <i class="ri-google-line boton-icon"></i>
-                Regístrate con Google
-            </a>
         </div>
     </div>
 

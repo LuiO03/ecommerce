@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
@@ -88,6 +90,131 @@ class GoogleController extends Controller
     }
 
     /**
+     * Manejar el login de Google One Tap recibiendo el ID token desde el frontend.
+     */
+    public function handleOneTap(Request $request)
+    {
+        $credential = $request->input('credential');
+
+        if (!$credential) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Falta el token de Google (credential).',
+            ], 400);
+        }
+
+        try {
+            $clientId = config('services.google.client_id');
+
+            // Verificar el ID token contra Google
+            $response = Http::get('https://oauth2.googleapis.com/tokeninfo', [
+                'id_token' => $credential,
+            ]);
+
+            if (!$response->ok()) {
+                Log::warning('Google One Tap: respuesta no OK de tokeninfo', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se pudo validar el token de Google.',
+                ], 401);
+            }
+
+            $payload = $response->json();
+
+            // Validar audiencia (client_id) para asegurarnos que el token es para esta app
+            if (!isset($payload['aud']) || $payload['aud'] !== $clientId) {
+                Log::warning('Google One Tap: aud inválido en token', [
+                    'aud' => $payload['aud'] ?? null,
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token de Google inválido para esta aplicación.',
+                ], 401);
+            }
+
+            $email = $payload['email'] ?? null;
+
+            if (!$email) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El token de Google no contiene un email válido.',
+                ], 422);
+            }
+
+            $firstName = $payload['given_name'] ?? ($payload['name'] ?? 'Usuario');
+            $lastName  = $payload['family_name'] ?? null;
+            $avatarUrl = $payload['picture'] ?? null;
+            $googleId  = $payload['sub'] ?? null;
+
+            $user = User::where('email', $email)->first();
+
+            if (!$user) {
+                $slug      = User::generateUniqueSlug($firstName);
+                $imagePath = $this->storeGoogleAvatar($avatarUrl, $slug);
+
+                $user = User::create([
+                    'name'              => $firstName,
+                    'last_name'         => $lastName,
+                    'email'             => $email,
+                    'slug'              => $slug,
+                    'provider'          => 'google',
+                    'provider_id'       => $googleId,
+                    'email_verified_at' => now(),
+                    'password'          => null,
+                    'status'            => true,
+                    'image'             => $imagePath,
+                ]);
+
+                $user->assignRole('Cliente');
+            } else {
+                if (!$user->provider_id && $googleId) {
+                    $user->update([
+                        'provider'    => 'google',
+                        'provider_id' => $googleId,
+                    ]);
+                }
+
+                if (!$user->image && $avatarUrl) {
+                    $slug      = $user->slug ?: User::generateUniqueSlug($user->name, $user->id);
+                    $imagePath = $this->storeGoogleAvatar($avatarUrl, $slug);
+                    if ($imagePath) {
+                        $user->forceFill(['image' => $imagePath])->save();
+                    }
+                }
+
+                if (!$user->last_name && $lastName) {
+                    $user->forceFill(['last_name' => $lastName])->save();
+                }
+
+                if (!$user->email_verified_at && ($payload['email_verified'] ?? 'false') === 'true') {
+                    $user->forceFill(['email_verified_at' => now()])->save();
+                }
+            }
+
+            Auth::login($user);
+
+            return response()->json([
+                'success' => true,
+                'redirect_url' => route('welcome.index'),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Error en Google One Tap', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Ocurrió un error al procesar el login con Google.',
+            ], 500);
+        }
+    }
+
+    /**
      * Descargar el avatar de Google y almacenarlo en storage/app/public/users
      * devolviendo la ruta relativa para guardar en users.image.
      */
@@ -122,29 +249,6 @@ class GoogleController extends Controller
             ]);
 
             return null;
-        }
-    }
-
-    public function handleOneTap()
-    {
-        $token = request('credential');
-
-        if (!$token) {
-            return response()->json(['error' => 'Token de Google no proporcionado'], 400);
-        }
-
-        try {
-            $googleUser = Socialite::driver('google')->stateless()->userFromToken($token);
-
-            // El resto del proceso es similar a handleGoogleCallback
-            // (buscar o crear usuario, asignar rol, etc.)
-
-            // ... (puedes reutilizar la lógica de handleGoogleCallback aquí)
-
-            return response()->json(['message' => 'Login exitoso']);
-        } catch (\Exception $e) {
-            Log::error('Error en Google One Tap', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Error al autenticar con Google'], 500);
         }
     }
 }

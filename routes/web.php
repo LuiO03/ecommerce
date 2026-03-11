@@ -1,6 +1,9 @@
 <?php
 
     use Illuminate\Support\Facades\Route;
+    use Illuminate\Support\Facades\Mail;
+    use Illuminate\Http\Request;
+    use App\Models\User;
     use App\Http\Controllers\Site\WellcomeController;
     use App\Http\Controllers\Site\FamilyController;
     use App\Http\Controllers\Site\SearchController;
@@ -10,6 +13,35 @@
     use App\Http\Controllers\Site\CartController;
     use App\Http\Controllers\Site\RegisteredUserController;
     use App\Http\Controllers\Auth\GoogleController;
+    use App\Mail\TestEmail;
+
+    //para probar el email
+    Route::get('/send-test-email', function () {
+        Mail::to('lui.fenixand.1997@gmail.com')
+            ->send(new TestEmail());
+        return "Correo enviado";
+    })->name('send-test-email');
+
+    Route::get('/preview-email', function () {
+        return new TestEmail();
+    });
+
+    // Verificación de correo electrónico (enlace desde el email de registro)
+    Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+        $user = User::findOrFail($id);
+
+        if (! hash_equals(sha1($user->email), (string) $hash)) {
+            abort(403, 'Enlace de verificación inválido.');
+        }
+
+        if (! $user->email_verified_at) {
+            $user->forceFill([
+                'email_verified_at' => now(),
+            ])->save();
+        }
+
+        return redirect()->route('login')->with('status', 'Tu correo ha sido verificado correctamente. Ahora puedes iniciar sesión.');
+    })->middleware('signed')->name('verification.verify');
 
     Route::get('/google-auth/redirect', [GoogleController::class, 'redirectToGoogle'])
     ->name('google.redirect');
@@ -18,7 +50,8 @@
     Route::get('/google-auth/callback', [GoogleController::class, 'handleGoogleCallback'])
     ->name('google.callback');
 
-    Route::post('/google-auth/one-tap', [GoogleController::class, 'handleGoogleOneTap'])
+    // Endpoint para Google One Tap (recibe el ID token desde JS)
+    Route::post('/google-auth/one-tap', [GoogleController::class, 'handleOneTap'])
     ->name('google.one-tap');
 
     Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
@@ -40,6 +73,8 @@
     Route::delete('/carts', [CartController::class, 'destroy'])->name('carts.destroy');
     Route::patch('/carts/items/{cartItem}', [CartController::class, 'updateItem'])->name('carts.items.update');
     Route::delete('/carts/items/{cartItem}', [CartController::class, 'destroyItem'])->name('carts.items.destroy');
+
+
 
     // Login administrativo (único login del sistema)
     Route::get('/login', function () {

@@ -433,6 +433,12 @@ input[type="checkbox"]:indeterminate {
     gap: 10px;
 }
 
+.auth-form-footer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .form-footer-delete {
     display: flex;
     justify-content: center;

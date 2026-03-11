@@ -1,22 +1,19 @@
 <x-app-layout>
-    <div id="g_id_onload" data-client_id="692054060080-31o88c9jv2rs17bpob44tlbgbf3o63ih.apps.googleusercontent.com" data-callback="handleGoogleLogin">
-    </div>
 
-    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with"
-        data-shape="rectangular">
-    </div>
 
     <div class="auth-wrapper">
         <div class="auth-logo">
-            <img src="{{ asset('images/logos/logo-geckomerce.png') }}" alt="Logo">
+            <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo">
             <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
         </div>
         <div class="auth-card">
             <!-- Header con logo -->
             <div class="auth-header">
-
                 <h2 class="auth-title">Bienvenido/a</h2>
-                <p class="auth-subtitle">Inicia sesión con tu correo electrónico o registrate para acceder</p>
+                <p class="auth-subtitle">
+                    Inicia sesión con tu correo electrónico <br>
+                    o registrate para acceder
+                </p>
             </div>
 
             <!-- Body del formulario -->
@@ -42,7 +39,7 @@
 
                     <div class="input-group">
                         <label for="email" class="label-form">
-                            Correo electrónico
+                            Correo electrónico <i class="ri-asterisk text-accent"></i>
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-mail-line input-icon"></i>
@@ -56,22 +53,18 @@
                     </div>
                     <div class="input-group">
                         <label for="password" class="label-form">
-                            Contraseña
+                            Contraseña <i class="ri-asterisk text-accent"></i>
                         </label>
                         <div class="input-icon-container">
                             <i class="ri-lock-password-line input-icon"></i>
                             <input type="password" id="password" name="password" class="input-form password-input"
                                 placeholder="Ingresa tu contraseña" value="luis988434679kira" required
-                                autocomplete="off" data-validate="required|min:8|password">
+                                autocomplete="off" data-validate="required|min:6|password">
                             <button type="button" class="toggle-password" tabindex="-1"
                                 aria-label="Mostrar contraseña">
                                 <i class="ri-eye-line"></i>
                             </button>
                         </div>
-                        <p class="input-help-text">
-                            La contraseña debe tener al menos 15 caracteres O al menos 8 caracteres, incluyendo un
-                            número y una letra minúscula.
-                        </p>
                     </div>
 
                     <!-- Remember me -->
@@ -89,19 +82,20 @@
                             </div>
                         @endif
                     </div>
+                    <hr class="w-full my-0 border-default">
+                    <div class="auth-form-footer">
 
-                    <div class="form-footer mt-4">
-                        <a href="{{ route('welcome.index') }}" class="boton-form boton-volver">
-                            <span class="boton-form-icon">
-                                <i class="ri-arrow-left-circle-fill"></i>
-                            </span>
-                            <span class="boton-form-text">Atras</span>
-                        </a>
                         <!-- Botón de login -->
-                        <button class="boton-form boton-success" type="submit" id="loginBtn">
+                        <button class="boton-form boton-success py-3" type="submit" id="loginBtn">
                             <span class="boton-form-icon"> <i class="ri-login-box-line"></i> </span>
                             <span class="boton-form-text">Iniciar Sesión</span>
                         </button>
+                        <a href="{{ route('welcome.index') }}" class="boton-form boton-volver py-3">
+                            <span class="boton-form-icon">
+                                <i class="ri-arrow-left-circle-fill"></i>
+                            </span>
+                            <span class="boton-form-text">Volver a inicio</span>
+                        </a>
                     </div>
                 </form>
             </div>
@@ -116,34 +110,52 @@
                 <span>o</span>
                 <hr>
             </div>
+            {{-- Boton de google con socialite
             <a href="{{ route('google.redirect') }}" class="boton-google">
                 <i class="ri-google-line boton-icon"></i>
                 Iniciar con Google
             </a>
+            --}}
+
+            <div>
+                <div id="g_id_onload" data-client_id="{{ config('services.google.client_id') }}"
+                    data-callback="handleGoogleLogin">
+                </div>
+
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
+                    data-text="continue_with" data-shape="rectangular">
+                </div>
+
+            </div>
         </div>
     </div>
 
     <script>
         function handleGoogleLogin(response) {
-            fetch('/auth/google', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    credential: response.credential
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            fetch('{{ route('google.one-tap') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        credential: response.credential
+                    })
                 })
-            })
-            .then(res => res.json())
-            .then(data => {
-
-                if (data.success) {
-                    window.location.href = "/welcome.index";
-                } else {
-                    alert("Error al iniciar sesión");
-                }
-
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        alert(data.message || "Error al iniciar sesión con Google");
+                    }
+                })
+                .catch(() => {
+                    alert("Error de conexión con el servidor");
+                });
 
         }
         console.log('=== SCRIPT INLINE EJECUTÁNDOSE ===');

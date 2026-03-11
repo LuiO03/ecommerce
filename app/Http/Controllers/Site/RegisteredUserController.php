@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Mail\UserRegistered;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class RegisteredUserController extends Controller
@@ -48,14 +50,27 @@ class RegisteredUserController extends Controller
         // Asignar rol Cliente usando Spatie Permissions
         $user->assignRole('Cliente');
 
+        // Enviar correo de bienvenida / confirmación de registro
+        Mail::to($user->email)->send(new UserRegistered($user));
+
+        /*
+        Session::flash('info', [
+            'type' => 'success',
+            'title' => 'Cuenta creada',
+            'message' => "La cuenta de <strong>{$user->name}</strong> se creó correctamente. Ahora puedes iniciar sesión.",
+            ]);
+        */
         Session::flash('toast', [
             'type' => 'success',
             'title' => 'Cuenta creada',
             'message' => "La cuenta de <strong>{$user->name}</strong> se creó correctamente. Ahora puedes iniciar sesión.",
         ]);
 
+
         // Mensaje para el banner de estado en el login
-        Session::flash('status', 'Tu cuenta ha sido creada correctamente. Inicia sesión para continuar.');
+        Session::flash('status', '
+        Tu cuenta ha sido creada correctamente. Revisa tu correo para verificar tu dirección de email y activar tu cuenta.
+        ');
 
         return redirect()->route('login');
     }
