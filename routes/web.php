@@ -81,6 +81,11 @@
         return view('auth.admin-login');
     })->name('login')->middleware('auth.guest');
 
+    // Pantalla de confirmación tras enviar enlace de reset de contraseña
+    Route::get('/forgot-password/sent', function () {
+        return view('auth.admin-forgot-password-sent');
+    })->name('password.email.sent')->middleware('auth.guest');
+
     // Registro de usuarios (solo invitados)
     Route::get('/register', [RegisteredUserController::class, 'create'])
         ->name('register')

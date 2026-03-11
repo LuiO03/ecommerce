@@ -52,9 +52,9 @@
 
                 <!-- Mensaje de estado -->
                 @session('status')
-                    <div class="auth-status">
+                    <x-alert type="success" title="¡Éxito!">
                         {{ $value }}
-                    </div>
+                    </x-alert>
                 @endsession
 
                 <form method="POST" action="{{ route('register') }}" id="registerForm">

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Contracts\SuccessfulPasswordResetLinkRequestResponse as SuccessfulPasswordResetLinkRequestResponseContract;
 use Laravel\Fortify\Fortify;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +25,11 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Respuesta personalizada cuando se envía correctamente el enlace de reset
+        $this->app->bind(
+            SuccessfulPasswordResetLinkRequestResponseContract::class,
+            \App\Http\Responses\SuccessfulPasswordResetLinkRequestResponse::class,
+        );
     }
 
     /**
@@ -62,12 +67,12 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Vista para solicitar enlace de recuperación de contraseña
         Fortify::requestPasswordResetLinkView(function () {
-            return view('auth.forgot-password');
+            return view('auth.admin-forgot-password');
         });
 
         // Vista para restablecer la contraseña (formulario con nuevo password)
         Fortify::resetPasswordView(function (Request $request) {
-            return view('auth.reset-password', ['request' => $request]);
+            return view('auth.admin-reset-password', ['request' => $request]);
         });
 
         // Usar admin-login como la única vista de login

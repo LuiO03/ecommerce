@@ -8,7 +8,8 @@
             <div class="auth-header">
                 <h2 class="auth-title">¿Olvidaste tu contraseña?</h2>
                 <p class="auth-subtitle">
-                    Ingresa tu correo y te enviaremos un enlace para restablecerla.
+                    Ingresa tu correo y te enviaremos <br>
+                    un enlace para restablecerla.
                 </p>
             </div>
 
@@ -23,9 +24,9 @@
                 @endif
 
                 @session('status')
-                    <div class="auth-status">
+                    <x-alert type="success" title="¡Éxito!">
                         {{ $value }}
-                    </div>
+                    </x-alert>
                 @endsession
 
                 <form method="POST" action="{{ route('password.email') }}" id="forgotPasswordForm">

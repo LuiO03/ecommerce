@@ -15,8 +15,6 @@ body *:not(html):not(style):not(br):not(tr):not(code) {
 }
 
 body {
-    -webkit-text-size-adjust: none;
-    text-size-adjust: none;
     background-color: #ffffff;
     color: #718096;
     height: 100%;
@@ -91,8 +89,9 @@ img {
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
     background-color: var(--mail-background-color);
+    background-color: #212121;
     margin: 0;
-    padding: 0;
+    padding: 2rem 0px;
     width: 100%;
 }
 
@@ -110,17 +109,17 @@ img {
 
 .header {
     -premailer-width: 570px;
-    padding: 25px 0;
+    padding: 18px 0;
     text-align: center;
     background-color: #F1F1F1;
     margin: 0 auto;
-    width: 570px;
+    width: 100%;
+    max-width: 570px;
     border-radius: var(--border-radius) var(--border-radius) 0px 0px;
 }
 
 .header a {
     color: #3d4852;
-    font-size: 19px;
     font-weight: bold;
     text-decoration: none;
 }
@@ -131,15 +130,14 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
     color: black;
-    font-family: var(--font-primary);
 }
 
 .logo {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    aspect-ratio: 1 / 1;
     max-height: 50px;
+    margin-right: 10px;
 }
 
 .logo-texto {
@@ -177,7 +175,8 @@ img {
     box-shadow: 0 2px 0 rgba(0, 0, 150, 0.025), 2px 4px 0 rgba(0, 0, 150, 0.015);
     margin: 0 auto;
     padding: 0;
-    width: 570px;
+    width: 100%;
+    max-width: 570px;
 }
 
 .inner-body a {
@@ -205,7 +204,8 @@ img {
     margin: 0 auto;
     padding: 0;
     text-align: center;
-    width: 570px;
+    width: 100%;
+    max-width: 570px;
     background-color: #F1F1F1;
     border-radius: 0px 0px var(--border-radius) var(--border-radius);
 }
@@ -264,15 +264,14 @@ img {
 }
 
 .button {
-    -webkit-text-size-adjust: none;
-    text-size-adjust: none;
     border-radius: 4px;
     color: #fff;
     font-weight: bolder;
     display: inline-block;
     overflow: hidden;
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: 5rem;
+    padding: 6px 5px;
 }
 
 .button-accent{
@@ -340,4 +339,44 @@ img {
 
 .break-all {
     word-break: break-all;
+}
+
+/* Responsive (mobile) */
+@media only screen and (max-width: 600px) {
+    h1 {
+        font-size: 22px !important;
+        line-height: 1.2 !important;
+    }
+
+    h2 {
+        font-size: 18px !important;
+    }
+
+    h3 {
+        font-size: 14px !important;
+    }
+
+    p,
+    ul,
+    ol,
+    blockquote {
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+    }
+
+    p.sub {
+        font-size: 11px !important;
+    }
+
+    .content-cell {
+        padding: 20px !important;
+    }
+
+    .header {
+        padding: 16px 0 !important;
+    }
+
+    .button {
+        font-size: 14px !important;
+    }
 }

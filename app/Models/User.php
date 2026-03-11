@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\UserPasswordReset;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,6 +11,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -204,5 +206,22 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getImageUrlAttribute()
     {
         return $this->image ? Storage::url($this->image) : asset('images/no-image.png');
+    }
+
+    /* ============================================================
+     |  NOTIFICACIONES PERSONALIZADAS
+     |============================================================ */
+
+    /**
+     * Envía el correo de restablecimiento de contraseña usando un Mailable propio.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $resetUrl = url(route('password.reset', [
+            'token' => $token,
+            'email' => $this->getEmailForPasswordReset(),
+        ], false));
+
+        Mail::to($this->email)->send(new UserPasswordReset($this, $resetUrl));
     }
 }

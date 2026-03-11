@@ -29,9 +29,9 @@
                 @endif
                 <!-- Mensaje de estado -->
                 @session('status')
-                    <div class="auth-status">
+                    <x-alert type="success" title="¡Éxito!">
                         {{ $value }}
-                    </div>
+                    </x-alert>
                 @endsession
 
                 <form method="POST" action="{{ route('login') }}" id="loginForm">
@@ -47,9 +47,6 @@
                                 placeholder="Ingresa tu correo electrónico" value="70098517@institutocajas.info"
                                 required autofocus autocomplete="off" data-validate="required|email">
                         </div>
-                        <p class="input-help-text">
-
-                        </p>
                     </div>
                     <div class="input-group">
                         <label for="password" class="label-form">
@@ -74,13 +71,11 @@
                             <label for="remember_me" class="auth-checkbox-label">Recordarme</label>
                         </div>
                         <!-- Footer con link de recuperación -->
-                        @if (Route::has('password.request'))
-                            <div class="auth-recovery">
-                                <a href="{{ route('password.request') }}" class="auth-link">
-                                    ¿Olvidaste tu contraseña?
-                                </a>
-                            </div>
-                        @endif
+                        <div class="auth-recovery">
+                            <a href="{{ route('password.request') }}" class="auth-link">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
                     </div>
                     <hr class="w-full my-0 border-default">
                     <div class="auth-form-footer">

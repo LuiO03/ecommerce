@@ -8,7 +8,7 @@ Gracias por registrarte en **Geckommerce**. Solo falta un paso para completar la
 Para mantener tu cuenta segura y poder recuperar el acceso en el futuro, necesitamos que confirmes que este correo te pertenece.
 
 <x-mail::button :url="url('/email/verify/123/fake-hash')" color="accent">
-Verificar mi cuenta
+CAMBIAR LA CONTRASEÑA
 </x-mail::button>
 
 Si el botón no funciona, copia y pega este enlace en tu navegador:

@@ -8,7 +8,7 @@ Gracias por registrarte en **{{ config('app.name') }}**. Solo falta un paso para
 Para mantener tu cuenta segura y poder recuperar el acceso en el futuro, necesitamos que confirmes que este correo te pertenece.
 
 @isset($verificationUrl)
-<x-mail::button :url="$verificationUrl" color="green">
+<x-mail::button :url="$verificationUrl" color="accent">
 Verificar mi cuenta
 </x-mail::button>
 
