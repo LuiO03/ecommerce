@@ -30,6 +30,8 @@ class RegisteredUserController extends Controller
             'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'address' => 'nullable|string|max:255',
+            'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
+            'document_number' => 'nullable|string|max:30',
         ]);
 
         $name = ucwords(mb_strtolower($validated['name']));
@@ -44,6 +46,8 @@ class RegisteredUserController extends Controller
             // El cast "hashed" en el modelo se encarga de encriptar
             'password' => $validated['password'],
             'address' => $validated['address'] ?? null,
+            'document_type' => $validated['document_type'] ?? null,
+            'document_number' => $validated['document_number'] ?? null,
             'status' => true,
         ]);
 

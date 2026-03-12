@@ -50,6 +50,14 @@
                         <td id="user-role">-</td>
                     </tr>
                     <tr>
+                        <th>Tipo de documento</th>
+                        <td id="user-document-type">-</td>
+                    </tr>
+                    <tr>
+                        <th>N° documento</th>
+                        <td id="user-document-number">-</td>
+                    </tr>
+                    <tr>
                         <th>DNI</th>
                         <td id="user-dni">-</td>
                     </tr>
@@ -123,6 +131,8 @@
             $('#user-fullname').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#user-email').html('<div class="shimmer shimmer-cell" style="width:160px;"></div>');
             $('#user-role').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
+            $('#user-document-type').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
+            $('#user-document-number').html('<div class="shimmer shimmer-cell" style="width:110px;"></div>');
             $('#user-dni').html('<div class="shimmer shimmer-cell" style="width:70px;"></div>');
             $('#user-phone').html('<div class="shimmer shimmer-cell" style="width:80px;"></div>');
             $('#user-address').html('<div class="shimmer shimmer-cell" style="width:140px;"></div>');
@@ -153,6 +163,24 @@
                     $('#user-fullname').text(`${data.name ?? ''} ${data.last_name ?? ''}`);
 
                     $('#user-role').text(data.role ?? '-');
+
+                    // Tipo de documento
+                    if (!data.document_type) {
+                        $('#user-document-type').html(
+                            '<span class="text-muted-null">Sin tipo de documento</span>'
+                        );
+                    } else {
+                        $('#user-document-type').text(data.document_type);
+                    }
+
+                    // Número de documento
+                    if (!data.document_number) {
+                        $('#user-document-number').html(
+                            '<span class="text-muted-null">Sin número de documento</span>'
+                        );
+                    } else {
+                        $('#user-document-number').text(data.document_number);
+                    }
 
                     // Email
                     if (!data.email) {

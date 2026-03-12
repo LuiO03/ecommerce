@@ -6,8 +6,10 @@
     <title>Usuarios - {{ now()->format('d/m/Y') }}</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
+                    <th>Tipo doc.</th>
+                    <th>N° documento</th>
+                    <th>DNI</th>
+                    <th>Teléfono</th>
             box-sizing: border-box;
         }
 
@@ -19,8 +21,10 @@
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 25px;
+                        <td>{{ $user->document_type ?? '\u2014' }}</td>
+                        <td>{{ $user->document_number ?? '\\u2014' }}</td>
+                        <td>{{ $user->dni ?? '\\u2014' }}</td>
+                        <td>{{ $user->phone ?? '\\u2014' }}</td>
             padding-bottom: 15px;
             border-bottom: 3px solid #2563eb;
         }

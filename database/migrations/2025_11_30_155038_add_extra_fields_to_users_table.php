@@ -17,6 +17,13 @@ return new class extends Migration
             if (!Schema::hasColumn('users', 'address')) {
                 $table->string('address', 255)->nullable();
             }
+            // Tipo y número de documento
+            if (!Schema::hasColumn('users', 'document_type')) {
+                $table->string('document_type', 20)->nullable();
+            }
+            if (!Schema::hasColumn('users', 'document_number')) {
+                $table->string('document_number', 30)->nullable();
+            }
             if (!Schema::hasColumn('users', 'dni')) {
                 $table->string('dni', 20)->unique()->nullable();
             }
@@ -75,7 +82,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $columns = [
-                'last_name','address','dni','phone','image','status','last_login','slug',
+                'last_name','address','document_type','document_number','dni','phone','image','status','last_login','slug',
                 'created_by','updated_by','deleted_by',
                 'last_password_update','failed_attempts','blocked_until'
             ];

@@ -25,7 +25,7 @@ class UsersExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
 
     public function array(): array
     {
-        $query = User::select('id', 'name', 'last_name', 'email', 'dni', 'phone', 'status', 'created_at');
+        $query = User::select('id', 'name', 'last_name', 'email', 'document_type', 'document_number', 'dni', 'phone', 'status', 'created_at');
 
         if (!empty($this->ids)) {
             $query->whereIn('id', $this->ids);
@@ -37,6 +37,8 @@ class UsersExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
                 $user->name,
                 $user->last_name ?? '—',
                 $user->email,
+                $user->document_type ?? '—',
+                $user->document_number ?? '—',
                 $user->dni ?? '—',
                 $user->phone ?? '—',
                 $user->status == 1 ? 'Activo' : 'Inactivo',
@@ -53,8 +55,8 @@ class UsersExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
             : 'USUARIOS SELECCIONADOS';
 
         $result = [
-            [$title, '', '', '', '', '', '', ''],
-            ['ID', 'Nombre', 'Apellido', 'Email', 'DNI', 'Teléfono', 'Estado', 'Fecha de creación'],
+            [$title, '', '', '', '', '', '', '', '', ''],
+            ['ID', 'Nombre', 'Apellido', 'Email', 'Tipo doc.', 'N° documento', 'DNI', 'Teléfono', 'Estado', 'Fecha de creación'],
         ];
 
         foreach ($users as $user) {
@@ -99,10 +101,12 @@ class UsersExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
             'B' => 25,  // Nombre
             'C' => 25,  // Apellido
             'D' => 30,  // Email
-            'E' => 12,  // DNI
-            'F' => 15,  // Teléfono
-            'G' => 12,  // Estado
-            'H' => 20,  // Fecha
+            'E' => 12,  // Tipo doc.
+            'F' => 18,  // N° documento
+            'G' => 12,  // DNI
+            'H' => 15,  // Teléfono
+            'I' => 12,  // Estado
+            'J' => 20,  // Fecha
         ];
     }
 
@@ -113,7 +117,7 @@ class UsersExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
                 $lastRow = $this->dataCount + 2;
 
                 // Bordes para toda la tabla
-                $event->sheet->getStyle("A2:H{$lastRow}")->applyFromArray([
+                $event->sheet->getStyle("A2:J{$lastRow}")->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -125,13 +129,13 @@ class UsersExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
                 // Centrar ID y Estado
                 $event->sheet->getStyle("A3:A{$lastRow}")->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $event->sheet->getStyle("G3:G{$lastRow}")->getAlignment()
+                $event->sheet->getStyle("I3:I{$lastRow}")->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 // Alternar colores de filas
                 for ($row = 3; $row <= $lastRow; $row++) {
                     if ($row % 2 == 0) {
-                        $event->sheet->getStyle("A{$row}:H{$row}")->applyFromArray([
+                        $event->sheet->getStyle("A{$row}:J{$row}")->applyFromArray([
                             'fill' => [
                                 'fillType' => Fill::FILL_SOLID,
                                 'startColor' => ['argb' => 'FFF9FAFB'],

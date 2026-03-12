@@ -17,12 +17,12 @@ class UsersCsvExport implements FromArray, WithHeadings
 
     public function headings(): array
     {
-        return ['ID', 'Nombre', 'Apellido', 'Email', 'DNI', 'Teléfono', 'Estado', 'Fecha de creación'];
+        return ['ID', 'Nombre', 'Apellido', 'Email', 'Tipo doc.', 'N° documento', 'DNI', 'Teléfono', 'Estado', 'Fecha de creación'];
     }
 
     public function array(): array
     {
-        $query = User::select('id', 'name', 'last_name', 'email', 'dni', 'phone', 'status', 'created_at');
+        $query = User::select('id', 'name', 'last_name', 'email', 'document_type', 'document_number', 'dni', 'phone', 'status', 'created_at');
 
         if (!empty($this->ids)) {
             $query->whereIn('id', $this->ids);
@@ -34,6 +34,8 @@ class UsersCsvExport implements FromArray, WithHeadings
                 $user->name,
                 $user->last_name ?? '—',
                 $user->email,
+                $user->document_type ?? '—',
+                $user->document_number ?? '—',
                 $user->dni ?? '—',
                 $user->phone ?? '—',
                 $user->status ? 'Activo' : 'Inactivo',

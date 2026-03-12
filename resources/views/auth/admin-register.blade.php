@@ -4,7 +4,7 @@
             <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo">
             <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
         </div>
-        <div class="auth-card">
+        <div class="auth-card" style="max-width: 820px;">
             <!-- Header con logo -->
             <div class="auth-header">
                 <h2 class="auth-title">Crear cuenta</h2>
@@ -60,91 +60,126 @@
                 <form method="POST" action="{{ route('register') }}" id="registerForm">
                     @csrf
 
-                    <div class="input-group">
-                        <label for="name" class="label-form">
-                            Nombre <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-user-line input-icon"></i>
-                            <input type="text" id="name" name="name" class="input-form"
-                                placeholder="Ingresa tu nombre" value="{{ old('name') }}" required autocomplete="off"
-                                data-validate="required|alpha|min:3|max:50">
+                    <div class="form-row-fill">
+                        <div class="input-group">
+                            <label for="name" class="label-form">
+                                Nombre <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-user-line input-icon"></i>
+                                <input type="text" id="name" name="name" class="input-form"
+                                    placeholder="Ingresa tu nombre" value="{{ old('name') }}" required autocomplete="off"
+                                    data-validate="required|alpha|min:3|max:50">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="last_name" class="label-form">
+                                Apellido <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-user-3-line input-icon"></i>
+                                <input type="text" id="last_name" name="last_name" class="input-form"
+                                    placeholder="Ingresa tu apellido" value="{{ old('last_name') }}" autocomplete="off"
+                                    data-validate="alpha|max:50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row-fill">
+                        <div class="input-group">
+                            <label for="email" class="label-form">
+                                Correo electrónico <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-mail-line input-icon"></i>
+                                <input type="email" id="email" name="email" class="input-form"
+                                    placeholder="Ingresa tu correo electrónico" value="{{ old('email') }}" required
+                                    autocomplete="off" data-validate="required|email">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="address" class="label-form">
+                                Dirección <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-map-pin-line input-icon"></i>
+                                <input type="text" id="address" name="address" class="input-form"
+                                    placeholder="Ingresa tu dirección" value="{{ old('address') }}" autocomplete="off"
+                                    data-validate="max:255">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row-fill">
+                        <div class="input-group">
+                            <label for="document_type" class="label-form">
+                                Tipo de documento <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-id-card-line input-icon"></i>
+                                <select id="document_type" name="document_type" class="select-form"
+                                    data-validate="selected">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="DNI" {{ old('document_type') == 'DNI' ? 'selected' : '' }}>DNI</option>
+                                    <option value="RUC" {{ old('document_type') == 'RUC' ? 'selected' : '' }}>RUC</option>
+                                    <option value="CE" {{ old('document_type') == 'CE' ? 'selected' : '' }}>Carné de extranjería</option>
+                                    <option value="PASAPORTE" {{ old('document_type') == 'PASAPORTE' ? 'selected' : '' }}>Pasaporte</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="document_number" class="label-form">
+                                Número de documento <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-hashtag input-icon"></i>
+                                <input type="text" id="document_number" name="document_number" class="input-form"
+                                    placeholder="Ingresa tu número de documento" value="{{ old('document_number') }}"
+                                    autocomplete="off" data-validate="document_number|max:30">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row-fill">
+                        <div class="input-group">
+                            <label for="password" class="label-form">
+                                Contraseña <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-lock-password-line input-icon"></i>
+                                <input type="password" id="password" name="password" class="input-form password-input"
+                                    placeholder="Crea una contraseña" required autocomplete="off"
+                                    data-validate="required|min:6">
+                                <button type="button" class="toggle-password" tabindex="-1"
+                                    aria-label="Mostrar contraseña">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            </div>
+                            <p class="input-help-text">
+                                La contraseña debe tener al menos 15 caracteres O al menos 8 caracteres, incluyendo un
+                                número y una letra minúscula.
+                            </p>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="password_confirmation" class="label-form">
+                                Confirmar contraseña
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-lock-line input-icon"></i>
+                                <input type="password" id="password_confirmation" name="password_confirmation"
+                                    class="input-form password-input" placeholder="Repite tu contraseña" required
+                                    autocomplete="off" data-validate="required|confirmed:password">
+                                <button type="button" class="toggle-password" tabindex="-1"
+                                    aria-label="Mostrar contraseña">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="input-group">
-                        <label for="last_name" class="label-form">
-                            Apellido <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-user-3-line input-icon"></i>
-                            <input type="text" id="last_name" name="last_name" class="input-form"
-                                placeholder="Ingresa tu apellido" value="{{ old('last_name') }}" autocomplete="off"
-                                data-validate="alpha|max:50">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="email" class="label-form">
-                            Correo electrónico <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-mail-line input-icon"></i>
-                            <input type="email" id="email" name="email" class="input-form"
-                                placeholder="Ingresa tu correo electrónico" value="{{ old('email') }}" required
-                                autocomplete="off" data-validate="required|email">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="address" class="label-form">
-                            Dirección <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-map-pin-line input-icon"></i>
-                            <input type="text" id="address" name="address" class="input-form"
-                                placeholder="Ingresa tu dirección" value="{{ old('address') }}" autocomplete="off"
-                                data-validate="max:255">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="password" class="label-form">
-                            Contraseña <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-lock-password-line input-icon"></i>
-                            <input type="password" id="password" name="password" class="input-form password-input"
-                                placeholder="Crea una contraseña" required autocomplete="off"
-                                data-validate="required|min:6">
-                            <button type="button" class="toggle-password" tabindex="-1"
-                                aria-label="Mostrar contraseña">
-                                <i class="ri-eye-line"></i>
-                            </button>
-                        </div>
-                        <p class="input-help-text">
-                            La contraseña debe tener al menos 15 caracteres O al menos 8 caracteres, incluyendo un
-                            número y una letra minúscula.
-                        </p>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="password_confirmation" class="label-form">
-                            Confirmar contraseña
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-lock-line input-icon"></i>
-                            <input type="password" id="password_confirmation" name="password_confirmation"
-                                class="input-form password-input" placeholder="Repite tu contraseña" required
-                                autocomplete="off" data-validate="required|confirmed:password">
-                            <button type="button" class="toggle-password" tabindex="-1"
-                                aria-label="Mostrar contraseña">
-                                <i class="ri-eye-line"></i>
-                            </button>
-                        </div>
-                    </div>
                     <hr class="w-full my-0 border-default">
-                    <div class="auth-form-footer">
+                    <div class="form-footer">
                         <!-- Botón de registro -->
                         <button class="boton-form boton-success py-3" type="submit" id="registerBtn">
                             <span class="boton-form-icon"> <i class="ri-user-add-line"></i> </span>

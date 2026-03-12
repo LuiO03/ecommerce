@@ -68,7 +68,34 @@
                 </div>
             </div>
 
-            <!-- === DNI === -->
+            <!-- === Tipo de documento === -->
+            <div class="input-group">
+                <label for="document_type" class="label-form">Tipo de documento</label>
+                <div class="input-icon-container">
+                    <i class="ri-id-card-line input-icon"></i>
+                    <select name="document_type" id="document_type" class="select-form"
+                        data-validate="selected">
+                        <option value="">Seleccione una opción</option>
+                        <option value="DNI" {{ old('document_type', $user->document_type) == 'DNI' ? 'selected' : '' }}>DNI</option>
+                        <option value="RUC" {{ old('document_type', $user->document_type) == 'RUC' ? 'selected' : '' }}>RUC</option>
+                        <option value="CE" {{ old('document_type', $user->document_type) == 'CE' ? 'selected' : '' }}>Carné de extranjería</option>
+                        <option value="PASAPORTE" {{ old('document_type', $user->document_type) == 'PASAPORTE' ? 'selected' : '' }}>Pasaporte</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- === Número de documento === -->
+            <div class="input-group">
+                <label for="document_number" class="label-form">Número de documento</label>
+                <div class="input-icon-container">
+                    <i class="ri-hashtag input-icon"></i>
+                    <input type="text" name="document_number" id="document_number" class="input-form"
+                        value="{{ old('document_number', $user->document_number) }}" placeholder="Ingresa el número de documento"
+                        data-validate="document_number|max:30">
+                </div>
+            </div>
+
+            <!-- === DNI (referencial) === -->
             <div class="input-group">
                 <label for="dni" class="label-form">DNI</label>
                 <div class="input-icon-container">

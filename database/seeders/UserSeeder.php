@@ -35,6 +35,7 @@ class UserSeeder extends Seeder
                 'password'  => Hash::make('luis988434679kira'),
                 'slug'      => Str::slug($data['name'] . ' ' . $data['last_name'] . '-' . uniqid()),
                 'status'    => true,
+                'email_verified_at' => now(),
             ]
         );
 

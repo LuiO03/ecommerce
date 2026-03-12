@@ -515,6 +515,56 @@ class FormValidator {
             };
         },
 
+        // === NÚMERO DE DOCUMENTO SEGÚN TIPO SELECCIONADO ===
+        // Depende de un select en el mismo formulario con id="document_type" o name="document_type"
+        document_number: (value, _param, field) => {
+            if (!value) return { valid: true };
+
+            const form = field.closest('form');
+            if (!form) return { valid: true };
+
+            const typeField = form.querySelector('#document_type, [name="document_type"]');
+            const docType = typeField ? String(typeField.value || '').toUpperCase() : '';
+
+            const clean = value.replace(/\s+/g, '');
+
+            if (!docType) {
+                return {
+                    valid: false,
+                    message: 'Seleccione un tipo de documento'
+                };
+            }
+
+            // Reglas específicas por tipo
+            if (docType === 'DNI') {
+                const isValid = /^\d{8}$/.test(clean);
+                return {
+                    valid: isValid,
+                    message: 'El DNI debe tener 8 dígitos'
+                };
+            }
+
+            if (docType === 'RUC') {
+                const isValid = /^\d{11}$/.test(clean);
+                return {
+                    valid: isValid,
+                    message: 'El RUC debe tener 11 dígitos'
+                };
+            }
+
+            // CE o PASAPORTE: permitir letras y números, 6-15 caracteres
+            if (docType === 'CE' || docType === 'PASAPORTE') {
+                const isValid = /^[A-Za-z0-9]{6,15}$/.test(clean);
+                return {
+                    valid: isValid,
+                    message: 'Debe tener entre 6 y 15 caracteres (letras y números)'
+                };
+            }
+
+            // Si llega un tipo no controlado, no bloquear
+            return { valid: true };
+        },
+
         // === TELÉFONO PERUANO (9 dígitos, empieza con 9, solo números, sin espacios ni símbolos) ===
         phone: (value) => {
             if (!value) return { valid: true };
