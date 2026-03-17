@@ -45,14 +45,15 @@ class ShippingAddresses extends Component
             'receiver_type' => 'required|in:owner,other',
             'receiver_name' => 'required|string|min:3|max:255',
             'receiver_last_name' => 'required|string|min:2|max:255',
-            'receiver_phone' => 'required|string|min:6|max:20',
+            'receiver_phone' => 'nullable|string|min:6|max:20',
             'is_default' => 'boolean',
         ];
     }
 
-    public function updated($propertyName)
+    public function chooseReceiverType(string $type): void
     {
-        $this->validateOnly($propertyName);
+        $this->receiver_type = $type === 'owner' ? 'owner' : 'other';
+        $this->syncReceiverFields();
     }
 
     public function saveAddress(): void
@@ -197,9 +198,9 @@ class ShippingAddresses extends Component
         $this->addresses = $addresses;
     }
 
-    public function updatedReceiverType($value): void
+    protected function syncReceiverFields(): void
     {
-        if ($value === 'owner') {
+        if ($this->receiver_type === 'owner') {
             $user = Auth::user();
 
             if ($user) {
@@ -208,9 +209,8 @@ class ShippingAddresses extends Component
                 $this->receiver_last_name = (string) ($user->last_name ?? '');
                 $this->receiver_phone = (string) ($user->phone ?? '');
             }
-        }
-
-        if ($value === 'other') {
+        } else {
+            // "Otra persona": limpiar campos para que el usuario pueda escribir
             $this->receiver_name = '';
             $this->receiver_last_name = '';
             $this->receiver_phone = '';

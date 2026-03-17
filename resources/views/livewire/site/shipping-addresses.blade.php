@@ -179,7 +179,7 @@
                         <div class="option-pill-group">
                             <label class="option-pill" title="titular de la cuenta">
                                 <input type="radio" name="receiver_type" id="receiver_type_owner" value="owner"
-                                    wire:model="receiver_type">
+                                    wire:click="chooseReceiverType('owner')" @checked($receiver_type === 'owner')>
                                 <div class="option-pill-body">
                                     <div class="option-pill-main">
                                         <i class="ri-user-3-line option-pill-icon"></i>
@@ -190,7 +190,7 @@
 
                             <label class="option-pill" title="Indica quien recibirá el pedido.">
                                 <input type="radio" name="receiver_type" id="receiver_type_other" value="other"
-                                    wire:model="receiver_type">
+                                    wire:click="chooseReceiverType('other')" @checked($receiver_type === 'other')>
                                 <div class="option-pill-body">
                                     <div class="option-pill-main">
                                         <i class="ri-user-line option-pill-icon"></i>
@@ -204,41 +204,76 @@
                             ingresar el nombre y teléfono del receptor.
                         </p>
                     </div>
-
-                    <div class="input-group">
-                        <label class="label-form" for="receiver_name">
-                            Nombre del receptor <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-user-3-line input-icon"></i>
-                            <input id="receiver_name" type="text" class="input-form" wire:model="receiver_name"
-                                placeholder="Nombre de quien recibirá" data-validate="required|min:3|max:255"
-                                autocomplete="off" @disabled($receiver_type === 'owner') />
+                    @if ($receiver_type === 'owner')
+                        @php($user = auth()->user())
+                        <div class="input-group" wire:key="receiver-owner-name">
+                            <label class="label-form" for="receiver_name">
+                                Nombre<i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-user-3-line input-icon"></i>
+                                <input id="receiver_name" type="text" class="input-form"
+                                    value="{{ $user->name ?? '' }}" placeholder="Nombre del titular"
+                                    autocomplete="off" disabled />
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <label class="label-form" for="receiver_last_name">
-                            Apellido del receptor <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-user-3-line input-icon"></i>
-                            <input id="receiver_last_name" type="text" class="input-form"
-                                wire:model="receiver_last_name" placeholder="Apellido de quien recibirá"
-                                data-validate="required|min:2|max:255" autocomplete="off"
-                                @disabled($receiver_type === 'owner') />
+                        <div class="input-group" wire:key="receiver-owner-last-name">
+                            <label class="label-form" for="receiver_last_name">
+                                Apellido <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-user-3-line input-icon"></i>
+                                <input id="receiver_last_name" type="text" class="input-form"
+                                    value="{{ $user->last_name ?? '' }}" placeholder="Apellido del titular"
+                                    autocomplete="off" disabled />
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <label class="label-form" for="receiver_phone">
-                            Teléfono de contacto <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-phone-line input-icon"></i>
-                            <input id="receiver_phone" type="text" class="input-form" wire:model="receiver_phone"
-                                placeholder="Celular o teléfono de contacto" data-validate="required|phone|max:20"
-                                autocomplete="off" @disabled($receiver_type === 'owner') />
+                        <div class="input-group" wire:key="receiver-owner-phone">
+                            <label class="label-form" for="receiver_phone">
+                                Teléfono
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-phone-line input-icon"></i>
+                                <input id="receiver_phone" type="text" class="input-form"
+                                    value="{{ $user->phone ?? '' }}" placeholder="Teléfono del titular"
+                                    autocomplete="off" disabled />
+                            </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="input-group" wire:key="receiver-other-name">
+                            <label class="label-form" for="receiver_name">
+                                Nombre del receptor <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-user-3-line input-icon"></i>
+                                <input id="receiver_name" type="text" class="input-form"
+                                    wire:model="receiver_name" placeholder="Nombre de quien recibirá"
+                                    data-validate="required|min:3|max:255" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="input-group" wire:key="receiver-other-last-name">
+                            <label class="label-form" for="receiver_last_name">
+                                Apellido del receptor <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-user-3-line input-icon"></i>
+                                <input id="receiver_last_name" type="text" class="input-form"
+                                    wire:model="receiver_last_name" placeholder="Apellido de quien recibirá"
+                                    data-validate="required|min:2|max:255" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="input-group" wire:key="receiver-other-phone">
+                            <label class="label-form" for="receiver_phone">
+                                Teléfono de contacto <i class="ri-asterisk text-accent"></i>
+                            </label>
+                            <div class="input-icon-container">
+                                <i class="ri-phone-line input-icon"></i>
+                                <input id="receiver_phone" type="text" class="input-form"
+                                    wire:model="receiver_phone" placeholder="Celular o teléfono de contacto"
+                                    data-validate="required|phone|max:20" autocomplete="off"/>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 @if (auth()->check() && $receiver_type === 'owner')
@@ -325,42 +360,6 @@
                     scrollToFirstError: true,
                     showSuccessIndicators: true,
                 });
-
-                // 3) Sincronizar estado de campos dependientes (nombre, apellido, teléfono)
-                //    con la opción seleccionada ("Yo" / "Otra persona") para que siempre
-                //    se habiliten/deshabiliten correctamente en el navegador.
-                const ownerRadio = document.getElementById('receiver_type_owner');
-                const otherRadio = document.getElementById('receiver_type_other');
-                const nameInput = document.getElementById('receiver_name');
-                const lastNameInput = document.getElementById('receiver_last_name');
-                const phoneInput = document.getElementById('receiver_phone');
-
-                if (ownerRadio && otherRadio && nameInput && lastNameInput && phoneInput) {
-                    const applyState = () => {
-                        const isOwner = ownerRadio.checked;
-
-                        if (isOwner) {
-                            // Con "Yo", los campos quedan deshabilitados y Livewire rellena
-                            // los valores con los datos del usuario.
-                            [nameInput, lastNameInput, phoneInput].forEach((input) => {
-                                input.disabled = true;
-                            });
-                        } else {
-                            // Con "Otra persona", solo habilitamos los campos; Livewire se
-                            // encarga de limpiarlos (updatedReceiverType) y de reflejar el
-                            // estado correcto en el DOM.
-                            [nameInput, lastNameInput, phoneInput].forEach((input) => {
-                                input.disabled = false;
-                            });
-                        }
-                    };
-
-                    ownerRadio.addEventListener('change', applyState);
-                    otherRadio.addEventListener('change', applyState);
-
-                    // Estado inicial en base a la opción marcada al cargar el formulario
-                    applyState();
-                }
             }
 
             // Inicialización en carga inicial del DOM
