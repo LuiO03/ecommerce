@@ -200,7 +200,7 @@ User estándar: user@ecommerce.com / password
 
 ## 📚 Documentación Técnica
 
-El proyecto incluye ~30 archivos de documentación en [docs/](docs/):
+El proyecto incluye documentación detallada en [docs/](docs/):
 
 ### Módulos Principales:
 - **[admin-modules-overview.md](docs/admin-modules-overview.md)** - Visión general de todos los módulos admin
@@ -211,6 +211,7 @@ El proyecto incluye ~30 archivos de documentación en [docs/](docs/):
 - **[gallery-manager.md](docs/gallery-manager.md)** - Upload, reorder y crop de imágenes
 - **[clients-module.md](docs/clients-module.md)** - Gestión de clientes (usuarios con rol Cliente)
  - **[google-authentication.md](docs/google-authentication.md)** - Autenticación y registro con Google (Socialite)
+ - **[mail-system.md](docs/mail-system.md)** - Sistema de correos (registro, verificación, reset)
 
 ### Frontend y UI:
 - **[datatable-manager-usage.md](docs/datatable-manager-usage.md)** - Sistema modular de tablas DataTables

@@ -132,7 +132,7 @@ data-validate="url"
 
 #### 🔗 **Campos Dependientes (requiredWith)**
 
-Valida que si uno de los campos relacionados tiene valor, todos deben tener valor. Útil para grupos de campos que dependen entre sí.
+Hace que **este campo** sea obligatorio cuando alguno de los campos relacionados tiene valor. Útil para grupos de campos que dependen entre sí.
 
 ```html
 <!-- Campos del botón CTA: si se llena uno, todos son requeridos -->
@@ -151,13 +151,33 @@ Valida que si uno de los campos relacionados tiene valor, todos deben tener valo
 
 **Parámetro:** Lista de IDs de campos separados por coma.
 
-**Comportamiento:**
-- Si `button_text` tiene valor → `button_link` y `button_style` son obligatorios
-- Si `button_link` tiene valor → `button_text` y `button_style` son obligatorios
-- Si todos están vacíos → validación pasa (ninguno es obligatorio)
-- Si alguno tiene valor y otros están vacíos → muestra error indicando campos faltantes
+**Comportamiento (por campo):**
+- Si ninguno de los campos relacionados tiene valor → este campo sigue siendo opcional.
+- Si alguno de los campos relacionados tiene valor → este campo no puede ir vacío.
 
-**Mensaje de error:** `Este campo es requerido cuando se completa: [nombres de campos faltantes]`
+Aplicando la regla de forma simétrica en todos los campos del grupo (como en el ejemplo del botón CTA), el efecto práctico es: si uno se rellena, el resto también debe completarse.
+
+**Mensaje de error:** `Este campo es requerido cuando se completa: [nombres de campos relacionados que tienen valor]`
+
+**Ejemplo con tipo / número de documento:**
+
+```html
+<select id="document_type" name="document_type" class="select-form"
+    data-validate="selected">
+    <option value="">Seleccione una opción</option>
+    <option value="DNI">DNI</option>
+    <option value="RUC">RUC</option>
+    <option value="CE">Carné de extranjería</option>
+    <option value="PASAPORTE">Pasaporte</option>
+</select>
+
+<input type="text" id="document_number" name="document_number" class="input-form"
+    placeholder="Ingresa tu número de documento"
+    data-validate="document_number|max:30|requiredWith:document_type">
+```
+
+- Si no se selecciona tipo de documento → `document_number` es opcional.
+- Si se selecciona un tipo de documento → `document_number` no puede ir vacío.
 
 #### 🎨 **Patrón Regex Personalizado**
 ```html

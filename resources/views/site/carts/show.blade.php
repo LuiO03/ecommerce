@@ -42,7 +42,7 @@
         </header>
 
         @if (!Auth::check())
-            <div class="cart-empty">
+            <div class="card-empty">
                 <div class="cart-empty-icon">
                     <i class="ri-user-3-line"></i>
                 </div>
@@ -56,7 +56,7 @@
                 </a>
             </div>
         @elseif (!$hasItems)
-            <div class="cart-empty">
+            <div class="card-empty">
                 <div class="cart-empty-icon">
                     <i class="ri-shopping-cart-line"></i>
                 </div>
@@ -263,15 +263,12 @@
                     </p>
 
                     <div class="cart-summary-actions">
-                        <a href="{{ route('welcome.index') }}" class="boton-form boton-primary">
-                            <span class="boton-form-icon"><i class="ri-arrow-left-line"></i></span>
-                            <span class="boton-form-text">Seguir comprando</span>
+                        <a href="{{ route('shipping.index') }}" class="site-btn site-btn-primary">
+                            Continuar con la compra
                         </a>
-
-                        <button type="button" class="boton-form boton-success cart-summary-checkout" disabled>
-                            <span class="boton-form-icon"><i class="ri-bank-card-line"></i></span>
-                            <span class="boton-form-text">Ir al pago (próximamente)</span>
-                        </button>
+                        <a href="" class="site-btn site-btn-outline">
+                            Seguir comprando
+                        </a>
                     </div>
                 </aside>
             </div>

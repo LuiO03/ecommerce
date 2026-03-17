@@ -12,6 +12,7 @@
     use App\Http\Controllers\Site\WishlistController;
     use App\Http\Controllers\Site\CartController;
     use App\Http\Controllers\Site\RegisteredUserController;
+    use App\Http\Controllers\Site\ShippingController;
     use App\Http\Controllers\Auth\GoogleController;
     use App\Mail\TestEmail;
 
@@ -74,7 +75,7 @@
     Route::patch('/carts/items/{cartItem}', [CartController::class, 'updateItem'])->name('carts.items.update');
     Route::delete('/carts/items/{cartItem}', [CartController::class, 'destroyItem'])->name('carts.items.destroy');
 
-
+    Route::get('/shipping', [ShippingController::class, 'index'])->name('shipping.index');
 
     // Login administrativo (único login del sistema)
     Route::get('/login', function () {

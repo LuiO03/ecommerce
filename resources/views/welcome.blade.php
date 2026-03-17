@@ -63,8 +63,8 @@
     <section class="latest-products-section">
         <div class="latest-products-container">
             <div class="latest-products-header">
-                <h2 class="latest-products-title">Últimos Productos</h2>
-                <p class="latest-products-subtitle">Descubre nuestras incorporaciones más recientes</p>
+                <h1>Últimos Productos</h1>
+                <p>Descubre nuestras incorporaciones más recientes</p>
             </div>
 
             @if ($lastProducts->isNotEmpty())

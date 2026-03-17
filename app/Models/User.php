@@ -136,7 +136,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /* ============================================================
-     |  RELACIONES DE AUDITORÍA
+     |  RELACIONES
      |============================================================ */
 
     public function creator()
@@ -152,6 +152,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function deleter()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function Addresses()
+    {
+        return $this->hasMany(Addresses::class);
     }
 
     /* ============================================================

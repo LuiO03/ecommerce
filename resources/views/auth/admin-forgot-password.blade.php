@@ -49,7 +49,7 @@
                             <span class="boton-form-icon"> <i class="ri-mail-send-line"></i> </span>
                             <span class="boton-form-text">Enviar enlace</span>
                         </button>
-                        <a href="{{ route('login') }}" class="boton-form boton-volver">
+                        <a href="{{ route('login') }}" class="boton-form boton-volver py-3">
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>

@@ -33,25 +33,6 @@
     text-align: start;
 }
 
-.section-subtitle {
-    color: var(--color-muted);
-    margin: 0;
-}
-
-.latest-products-title {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 800;
-    font-family: var(--font-secondary);
-
-    margin: 0 0 0.5rem 0;
-}
-
-.latest-products-subtitle {
-    font-size: 1rem;
-    color: var(--color-muted);
-    margin: 0;
-}
-
 /* Slider */
 .products-slider {
     width: 100%;
@@ -359,10 +340,6 @@
 @media (max-width: 768px) {
     .latest-products-section {
         padding: 2rem 1rem;
-    }
-
-    .latest-products-title {
-        font-size: clamp(1.5rem, 3vw, 2rem);
     }
 
     .product-content {

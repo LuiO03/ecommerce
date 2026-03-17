@@ -113,18 +113,18 @@
                     <div class="form-row-fill">
                         <div class="input-group">
                             <label for="document_type" class="label-form">
-                                Tipo de documento <i class="ri-asterisk text-accent"></i>
+                                Tipo de documento  <i class="ri-asterisk text-accent"></i>
                             </label>
                             <div class="input-icon-container">
                                 <i class="ri-id-card-line input-icon"></i>
-                                <select id="document_type" name="document_type" class="select-form"
-                                    data-validate="selected">
+                                <select id="document_type" name="document_type" class="select-form" data-validate="required|selected">
                                     <option value="">Seleccione una opción</option>
                                     <option value="DNI" {{ old('document_type') == 'DNI' ? 'selected' : '' }}>DNI</option>
                                     <option value="RUC" {{ old('document_type') == 'RUC' ? 'selected' : '' }}>RUC</option>
                                     <option value="CE" {{ old('document_type') == 'CE' ? 'selected' : '' }}>Carné de extranjería</option>
                                     <option value="PASAPORTE" {{ old('document_type') == 'PASAPORTE' ? 'selected' : '' }}>Pasaporte</option>
                                 </select>
+                                <i class="ri-arrow-down-s-line select-arrow"></i>
                             </div>
                         </div>
 
@@ -136,7 +136,7 @@
                                 <i class="ri-hashtag input-icon"></i>
                                 <input type="text" id="document_number" name="document_number" class="input-form"
                                     placeholder="Ingresa tu número de documento" value="{{ old('document_number') }}"
-                                    autocomplete="off" data-validate="document_number|max:30">
+                                    autocomplete="off" data-validate="document_number|max:30|requiredWith:document_type">
                             </div>
                         </div>
                     </div>
@@ -247,6 +247,50 @@
                     loadingText: 'Creando cuenta...'
                 });
                 console.log('✅ SubmitLoader (register) inicializado:', submitLoader);
+
+                // Deshabilitar número de documento hasta que se elija tipo en el registro
+                (function setupDocumentFields() {
+                    const form = document.getElementById('registerForm');
+                    if (!form) return;
+
+                    const typeField = form.querySelector('#document_type');
+                    const numberField = form.querySelector('#document_number');
+                    if (!typeField || !numberField) return;
+
+                    let lastType = String(typeField.value || '').trim();
+
+                    const updateState = () => {
+                        const currentType = String(typeField.value || '').trim();
+                        const hasType = currentType !== '';
+
+                        // Si cambia de un tipo a otro distinto, limpiar el número para evitar ambigüedad
+                        if (hasType && lastType && currentType !== lastType) {
+                            numberField.value = '';
+                            if (form.__validator) {
+                                form.__validator.clearError(numberField);
+                                form.__validator.clearSuccess(numberField);
+                            }
+                        }
+
+                        if (!hasType) {
+                            numberField.value = '';
+                            numberField.disabled = true;
+
+                            if (form.__validator) {
+                                form.__validator.clearError(numberField);
+                                form.__validator.clearSuccess(numberField);
+                            }
+                        } else {
+                            numberField.disabled = false;
+                        }
+
+                        lastType = currentType;
+                    };
+
+                    // Estado inicial
+                    updateState();
+                    typeField.addEventListener('change', updateState);
+                })();
 
                 document.querySelectorAll('.toggle-password').forEach(btn => {
                     btn.addEventListener('click', function() {

@@ -159,10 +159,6 @@ input[type="checkbox"]:indeterminate {
     }
 }
 
-.card-header{
-
-}
-
 .card-title{
     font-weight: bolder;
     font-family: var(--font-secondary);
@@ -178,6 +174,91 @@ input[type="checkbox"]:indeterminate {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.input-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* === Grupo de opciones tipo pill (radios) === */
+.option-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.option-pill {
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+}
+
+.option-pill input[type="radio"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.option-pill-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 5px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--color-input-border);
+    background-color: var(--color-input-bg);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.option-pill-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-size-sm);
+    font-weight: bolder;
+    color: var(--color-text);
+}
+
+.option-pill-icon {
+    font-size: 1.25rem;
+    color: var(--color-muted);
+}
+
+.option-pill-caption {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-soft);
+}
+
+.option-pill:hover .option-pill-body {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-material);
+    transform: translateY(-1px);
+}
+
+.option-pill input[type="radio"]:checked ~ .option-pill-body{
+    background-color: var(--color-text);
+    border-color: var(--color-accent);
+    color: #ffffff;
+    box-shadow: var(--shadow-material);
+}
+
+.option-pill input[type="radio"]:checked ~ .option-pill-body span{
+    color: #ffffff;
+}
+
+.option-pill input[type="radio"]:checked ~ .option-pill-body .option-pill-icon {
+    color: #ffffff;
+}
+
+.option-pill input[type="radio"]:checked ~ .option-pill-body .option-pill-caption {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.option-pill input[type="radio"]:focus-visible ~ .option-pill-body {
+    box-shadow: 0 0 0 3px var(--shadow-accent);
 }
 
 .input-icon-container {
@@ -229,6 +310,34 @@ input[type="checkbox"]:indeterminate {
 
 #content {
     padding: 10px 12px;
+}
+
+
+.input-form:disabled,
+.select-form:disabled {
+    background-color: var(--color-input-bg-disabled);
+    color: var(--color-text-muted);
+    border-color: var(--color-input-border);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Icono y flecha cuando el campo está deshabilitado */
+.input-group:has(input.input-form:disabled) .input-icon,
+.input-group:has(input.input-form:disabled) .label-form,
+.input-group:has(input.input-form:disabled) i,
+.input-group:has(input.textarea-form:disabled) .label-form,
+.input-group:has(input.textarea-form:disabled) .input-icon,
+.input-group:has(input.textarea-form:disabled) i,
+.input-group:has(select.select-form:disabled) .input-icon,
+.input-group:has(select.select-form:disabled) i,
+.input-group:has(select.select-form:disabled) .label-form{
+    color: var(--color-muted);
+}
+
+.input-group:has(select.select-form:disabled) .select-arrow {
+    color: var(--color-muted);
+    background-color: var(--color-input-bg-disabled);
 }
 
 .input-group input::placeholder,

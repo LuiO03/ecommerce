@@ -68,13 +68,12 @@
                 </div>
             </div>
 
-            <!-- === Tipo de documento === -->
+            <!-- === Tipo de documento (opcional) === -->
             <div class="input-group">
                 <label for="document_type" class="label-form">Tipo de documento</label>
                 <div class="input-icon-container">
                     <i class="ri-id-card-line input-icon"></i>
-                    <select name="document_type" id="document_type" class="select-form"
-                        data-validate="selected">
+                    <select name="document_type" id="document_type" class="select-form">
                         <option value="">Seleccione una opción</option>
                         <option value="DNI" {{ old('document_type', $user->document_type) == 'DNI' ? 'selected' : '' }}>DNI</option>
                         <option value="RUC" {{ old('document_type', $user->document_type) == 'RUC' ? 'selected' : '' }}>RUC</option>
@@ -91,17 +90,7 @@
                     <i class="ri-hashtag input-icon"></i>
                     <input type="text" name="document_number" id="document_number" class="input-form"
                         value="{{ old('document_number', $user->document_number) }}" placeholder="Ingresa el número de documento"
-                        data-validate="document_number|max:30">
-                </div>
-            </div>
-
-            <!-- === DNI (referencial) === -->
-            <div class="input-group">
-                <label for="dni" class="label-form">DNI</label>
-                <div class="input-icon-container">
-                    <i class="ri-id-card-line input-icon"></i>
-                    <input type="text" name="dni" id="dni" class="input-form"
-                        value="{{ old('dni', $user->dni) }}" placeholder="8 dígitos" data-validate="dni">
+                        data-validate="document_number|max:30|requiredWith:document_type">
                 </div>
             </div>
 
@@ -142,6 +131,49 @@
             });
             // Inicialmente desactivar el botón de fondo
             if (saveBackgroundBtn) saveBackgroundBtn.disabled = true;
+
+            // Deshabilitar número de documento hasta que se elija tipo en el perfil
+            const form = document.getElementById('profileForm');
+            if (form) {
+                const typeField = form.querySelector('#document_type');
+                const numberField = form.querySelector('#document_number');
+
+                if (typeField && numberField) {
+                    let lastType = String(typeField.value || '').trim();
+
+                    const updateState = () => {
+                        const currentType = String(typeField.value || '').trim();
+                        const hasType = currentType !== '';
+
+                        // Si cambia de un tipo a otro distinto, limpiar el número para evitar ambigüedad
+                        if (hasType && lastType && currentType !== lastType) {
+                            numberField.value = '';
+                            if (form.__validator) {
+                                form.__validator.clearError(numberField);
+                                form.__validator.clearSuccess(numberField);
+                            }
+                        }
+
+                        if (!hasType) {
+                            numberField.value = '';
+                            numberField.disabled = true;
+
+                            if (form.__validator) {
+                                form.__validator.clearError(numberField);
+                                form.__validator.clearSuccess(numberField);
+                            }
+                        } else {
+                            numberField.disabled = false;
+                        }
+
+                        lastType = currentType;
+                    };
+
+                    // Estado inicial
+                    updateState();
+                    typeField.addEventListener('change', updateState);
+                }
+            }
         });
     </script>
     <div class="form-footer">

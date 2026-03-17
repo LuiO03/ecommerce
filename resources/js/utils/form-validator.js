@@ -63,36 +63,6 @@ class FormValidator {
         console.log('✅ FormValidator inicializado:', this.fields.size, 'campos');
     }
 
-    setupSubmitControl() {
-        const submitBtn = this.form.querySelector('button[type="submit"],input[type="submit"]');
-        if (!submitBtn) return;
-
-        // Inicialmente deshabilitado
-        submitBtn.disabled = true;
-        // Guardar estado inicial
-        const initialData = new FormData(this.form);
-
-        const checkChanges = () => {
-            const currentData = new FormData(this.form);
-            let edited = false;
-
-            for (let [key, value] of currentData.entries()) {
-                if (initialData.get(key) !== value) {
-                    edited = true;
-                    break;
-                }
-            }
-
-            submitBtn.disabled = !edited;
-        };
-
-        this.form.addEventListener('input', checkChanges);
-        this.form.addEventListener('change', checkChanges);
-
-        // Inicialmente deshabilitar si no hay cambios
-        submitBtn.disabled = true;
-    }
-
     // ========================================
     // 🔍 ESCANEAR CAMPOS CON data-validate
     // ========================================
@@ -240,16 +210,26 @@ class FormValidator {
         const config = this.fields.get(field);
         if (!config) return true;
 
+        // Saltar validación en campos deshabilitados (ej. dependientes cuando se elige "Yo")
+        if (field.disabled) {
+            this.clearError(field);
+            this.clearSuccess(field);
+            return true;
+        }
+
         const value = config.value();
         let isValid = true;
         let errorMessage = null;
         let errorMeta = null;
 
-        // Si el campo es opcional (no required) y está vacío, skip validación
+        // Si el campo es opcional (no required) y está vacío, normalmente se hace skip
+        // PERO si tiene reglas de dependencia (ej. requiredWith), se debe evaluar igual
         const isEmpty = field.type === 'file' ? value.length === 0 : value === '';
         // Considerar reglas "required" equivalentes (requiredText, fileRequired, selected)
         const hasRequiredRule = Array.isArray(config.rules) && config.rules.some(r => ['required', 'requiredText', 'fileRequired', 'selected'].includes(r.name));
-        if (!hasRequiredRule && !config.isRequired && isEmpty) {
+        // Reglas que necesitan evaluarse aunque el campo esté vacío (campos dependientes)
+        const hasDependencyRule = Array.isArray(config.rules) && config.rules.some(r => ['requiredWith'].includes(r.name));
+        if (!hasRequiredRule && !config.isRequired && !hasDependencyRule && isEmpty) {
             this.clearError(field);
             return true;
         }
@@ -316,47 +296,53 @@ class FormValidator {
     // 📚 REGLAS DE VALIDACIÓN PREDEFINIDAS
     // ========================================
     validationRules = {
-                        // === CAMPOS DEPENDIENTES ===
-        // Si alguno de los campos relacionados tiene valor, todos deben tener valor
-        // Parámetro: lista de IDs de campos separados por coma (ej: "button_text,button_link,button_style")
+        // === CAMPOS DEPENDIENTES ===
+        // Este campo es obligatorio cuando alguno de los campos relacionados tiene valor
+        // Parámetro: lista de IDs/names separados por coma (ej: "button_text,button_link,button_style")
         requiredWith: (value, param, field) => {
             if (!param) return { valid: true };
 
-            const relatedFieldIds = param.split(',').map(id => id.trim());
+            const relatedFieldIds = param.split(',').map(id => id.trim()).filter(Boolean);
+            if (!relatedFieldIds.length) return { valid: true };
+
             const form = field.closest('form');
             if (!form) return { valid: true };
 
-            // Obtener valores de todos los campos relacionados incluyendo el actual
-            const allFields = relatedFieldIds.map(id => {
+            // Obtener campos relacionados por id o name
+            const relatedFields = relatedFieldIds.map(id => {
                 const f = form.querySelector(`#${id}, [name="${id}"]`);
-                return f ? { id, value: f.value.trim(), field: f } : null;
+                return f ? { id, field: f, value: (f.value || '').trim() } : null;
             }).filter(Boolean);
 
-            // Verificar si alguno tiene valor
-            const anyHasValue = allFields.some(f => f.value !== '');
+            if (!relatedFields.length) return { valid: true };
 
-            // Si alguno tiene valor, todos deben tener valor
-            if (anyHasValue) {
-                const allHaveValue = allFields.every(f => f.value !== '');
-                if (!allHaveValue) {
-                    const emptyFields = allFields
-                        .filter(f => f.value === '')
-                        .map(f => {
-                            const label = form.querySelector(`label[for="${f.id}"]`);
-                            return label ? label.textContent.trim().replace(/\*/g, '') : f.id;
-                        });
-                    return {
-                        valid: false,
-                        message: `Este campo es requerido cuando se completa: ${emptyFields.join(', ')}`
-                    };
-                }
+            // ¿Alguno de los campos relacionados tiene valor?
+            const anyRelatedHasValue = relatedFields.some(f => f.value !== '');
+            if (!anyRelatedHasValue) {
+                // Nadie del grupo disparador tiene valor: este campo sigue siendo opcional
+                return { valid: true };
             }
 
-            return { valid: true };
+            // Si este campo tiene valor, pasa la regla
+            if ((value || '').trim() !== '') {
+                return { valid: true };
+            }
+
+            // Construir etiquetas legibles de los campos que disparan la dependencia
+            const triggeringFields = relatedFields.filter(f => f.value !== '');
+            const labels = triggeringFields.map(f => {
+                const label = form.querySelector(`label[for="${f.id}"]`);
+                return label ? label.textContent.trim().replace(/\*/g, '') : f.id;
+            });
+
+            return {
+                valid: false,
+                message: `Este campo es requerido cuando se completa: ${labels.join(', ')}`
+            };
         },
 
         // === SOLO IMAGEN ÚNICA ===
-                        imageSingle: (files, _param, field) => {
+        imageSingle: (files, _param, field) => {
                             if (!files || files.length === 0) return { valid: true };
                             const file = files[0];
                             const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
@@ -1296,30 +1282,10 @@ export function initFormValidator(formSelector, options = {}) {
     // Permite que otros módulos puedan forzar la revalidación de campos concretos.
     form.__validator = validator;
 
-    // Detectar si es formulario de edición por id o atributo personalizado
-    const isEditForm = form.hasAttribute('data-edit-form') || /Form$/.test(form.id);
-    if (isEditForm) {
-        const submitBtn = form.querySelector('button[type="submit"],input[type="submit"]');
-        if (submitBtn) {
-            // Guardar estado inicial
-            const initialData = new FormData(form);
-            let edited = false;
+    // Nota: se eliminó la lógica de deshabilitar el botón submit hasta que haya cambios,
+    // porque generaba problemas en algunos formularios (como direcciones de envío) y
+    // bloqueaba envíos válidos. Ahora el control del botón submit queda a cargo del
+    // propio formulario o de otros módulos específicos.
 
-            function checkChanges() {
-                const currentData = new FormData(form);
-                edited = false;
-                for (let [key, value] of currentData.entries()) {
-                    if (initialData.get(key) !== value) {
-                        edited = true;
-                        break;
-                    }
-                }
-                submitBtn.disabled = !edited;
-            }
-
-            form.addEventListener('input', checkChanges);
-            form.addEventListener('change', checkChanges);
-        }
-    }
     return validator;
 }

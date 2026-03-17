@@ -482,6 +482,8 @@ class UserController extends Controller
             'last_name' => $user->last_name,
             'email' => $user->email,
             'role' => $user->getRoleNames()->first(),
+            'document_type' => $user->document_type,
+            'document_number' => $user->document_number,
             'dni' => $user->dni,
             'phone' => $user->phone,
             'address' => $user->address,

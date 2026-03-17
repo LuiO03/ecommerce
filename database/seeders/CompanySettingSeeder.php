@@ -21,7 +21,7 @@ class CompanySettingSeeder extends Seeder
 
         CompanySetting::create([
             'name' => 'GeckoMercce',
-            'legal_name' => 'GeckoMercce S.A.C.',
+            'legal_name' => 'Geckommercce S.A.C.',
             'ruc' => '12345678901',
             'slogan' => 'Tu ecommerce inteligente',
             'email' => 'contacto@geckomercce.com',
