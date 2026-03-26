@@ -437,6 +437,17 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        if ($user->id === Auth::id()) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Acción prohibida',
+                'title' => 'No se puede cambiar el estado',
+                'message' => 'No puedes cambiar el estado de tu propia cuenta mientras estés autenticado.',
+            ]);
+
+            return redirect()->route('admin.users.index');
+        }
+
         $request->validate([
             'status' => 'required|boolean',
         ]);

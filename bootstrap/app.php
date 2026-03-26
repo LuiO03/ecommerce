@@ -32,6 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'admin.only' => \App\Http\Middleware\PreventClienteFromAdmin::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'checkout/paid',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

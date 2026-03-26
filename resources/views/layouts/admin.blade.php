@@ -56,6 +56,7 @@
             // Ignorar errores de acceso a localStorage
         }
     })();
+
 </script>
 
 <body>

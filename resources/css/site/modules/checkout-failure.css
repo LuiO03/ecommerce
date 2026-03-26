@@ -1,0 +1,91 @@
+/* ============================================
+   CHECKOUT FAILURE - Estado de pago fallido
+   ============================================ */
+
+.checkout-payment-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    height: calc(100dvh - 200px);
+    justify-content: center;
+}
+
+.checkout-payment-card {
+    max-width: 440px;
+    margin: 0 auto;
+    border: 3px solid;
+    padding: 4rem 2rem 2rem 2rem;
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    text-align: start;
+    gap: 1rem;
+    position: relative;
+}
+
+.payment-card-failure {
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.18);
+    border-color: var(--color-danger);
+}
+
+.payment-card-success {
+    border-color: var(--color-success);
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.18);
+}
+
+.checkout-payment-icon {
+    border-radius: 999px;
+    width: 90px;
+    aspect-ratio: 1 / 1;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -45px;
+}
+
+.payment-icon-failure {
+    background-color: var(--color-danger);
+    color: white;
+}
+
+.payment-icon-success {
+    background-color: var(--color-success);
+    color: white;
+}
+
+.checkout-payment-icon i {
+    font-size: 2.2rem;
+}
+
+.checkout-payment-title {
+    width: 100%;
+}
+
+.checkout-payment-message {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    max-width: 480px;
+}
+
+.checkout-payment-detail {
+    margin-top: 0.5rem;
+    font-size: var(--font-size-xs);
+    color: var(--color-danger-hover);
+}
+
+.checkout-payment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.checkout-payment-actions .site-btn {
+    min-width: 180px;
+}
+

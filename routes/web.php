@@ -13,9 +13,20 @@
     use App\Http\Controllers\Site\CartController;
     use App\Http\Controllers\Site\RegisteredUserController;
     use App\Http\Controllers\Site\ShippingController;
+    use App\Http\Controllers\Site\CheckoutController;
+
     use App\Http\Controllers\Auth\GoogleController;
+
     use App\Mail\TestEmail;
 
+    // Checkout
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/paid', [CheckoutController::class, 'paid'])->name('checkout.paid');
+    // Ruta para la vista de compra exitosa y detalles del pedido
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/failure', [CheckoutController::class, 'failure'])->name('checkout.failure');
+
+    // Rutas para pruebas de email y verificación
     //para probar el email
     Route::get('/send-test-email', function () {
         Mail::to('lui.fenixand.1997@gmail.com')
@@ -43,18 +54,19 @@
 
         return redirect()->route('login')->with('status', 'Tu correo ha sido verificado correctamente. Ahora puedes iniciar sesión.');
     })->middleware('signed')->name('verification.verify');
-
+    //GOOGLE AUTH
+    // 1) Rutas para autenticación con Google con Laravel Socialite
     Route::get('/google-auth/redirect', [GoogleController::class, 'redirectToGoogle'])
     ->name('google.redirect');
-
     // Callback que Google llama tras el login (debe coincidir con GOOGLE_REDIRECT_URI)
     Route::get('/google-auth/callback', [GoogleController::class, 'handleGoogleCallback'])
     ->name('google.callback');
 
-    // Endpoint para Google One Tap (recibe el ID token desde JS)
+    // 2) Endpoint para Google One Tap (recibe el ID token desde JS)
     Route::post('/google-auth/one-tap', [GoogleController::class, 'handleOneTap'])
     ->name('google.one-tap');
 
+    // Rutas públicas del sitio
     Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
 
     Route::get('/families/{family}', [FamilyController::class, 'show'])->name('families.show');

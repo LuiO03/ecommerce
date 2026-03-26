@@ -14,6 +14,9 @@
                 Agregar nueva dirección
             </button>
         @else
+            <div class="card-title">
+                Selecciona una dirección de envío:
+            </div>
             <ul class="shipping-addresses-list">
                 @foreach ($addresses as $address)
                     <li class="shipping-address-item{{ $address->is_default ? ' shipping-address-item--default' : '' }}">
@@ -47,27 +50,23 @@
                         </div>
 
                         <div class="shipping-address-meta">
+                            @php($user = auth()->user())
+                            <div class="card-title">
+                                @if ((int) $address->receiver_type === 1)
+                                    {{ $user?->name ?? 'Sin nombre registrado' }} {{ $user?->last_name ?? '' }}
+                                @else
+                                    {{ trim(($address->receiver_name ?? '') . ' ' . ($address->receiver_last_name ?? '')) ?: 'Sin nombre registrado' }}
+                                @endif
+                            </div>
                             <div>{{ $address->address_line }}</div>
                             <div>{{ $address->district }}</div>
                             @if ($address->reference)
-                                <div>Referencia: {{ $address->reference }}</div>
+                                <div>
+                                    <span class="shipping-title">Referencia:</span> <br>
+                                    {{ $address->reference }}
+                                </div>
                             @endif
-                            <div>
-                                @if ((int) $address->receiver_type === 1)
-                                    Receptor: Titular de la cuenta
-                                @else
-                                    @php
-                                        $receiverFullName = trim(
-                                            ($address->receiver_name ?? '') .
-                                                ' ' .
-                                                ($address->receiver_last_name ?? ''),
-                                        );
-                                    @endphp
-                                    Receptor:
-                                    {{ $receiverFullName !== '' ? $receiverFullName : 'Sin nombre registrado' }}
-                                @endif
-                            </div>
-                            <div>Teléfono: {{ $address->receiver_phone }}</div>
+
                         </div>
 
                         @if ($address->id)
@@ -81,15 +80,17 @@
                                     </button>
                                 @endunless
 
-                                <button type="button" class="boton-form boton-warning">
+                                <button type="button" class="boton-form boton-warning"
+                                    wire:click="editAddress({{ $address->id }})">
                                     <span class="boton-form-icon">
                                         <i class="ri-edit-circle-fill"></i>
                                     </span>
                                 </button>
 
                                 <button type="button" class="boton-form boton-danger"
-                                    wire:click="deleteAddress({{ $address->id }})"
-                                    wire:confirm="¿Eliminar esta dirección de envío?"}title="Eliminar Dirección">
+                                    data-delete-address-id="{{ $address->id }}"
+                                    data-delete-address-label="{{ $address->address_line }}"
+                                    title="Eliminar dirección de envío">
                                     <span class="boton-form-icon">
                                         <i class="ri-delete-bin-fill"></i>
                                     </span>
@@ -308,7 +309,7 @@
                     <label for="is_default">Usar como dirección predeterminada</label>
                 </div>
 
-                <div class="shipping-address-form-footer">
+                <div class="address-form-footer">
                     <button type="button" class="site-btn site-btn-outline" wire:click="cancelNewAddress">
                         <i class="ri-close-line"></i>
                         Cancelar
@@ -316,7 +317,7 @@
 
                     <button type="submit" class="site-btn site-btn-primary" id="shippingAddressSubmitBtn">
                         <i class="ri-save-line"></i>
-                        Guardar dirección
+                        {{ $editingAddressId ? 'Actualizar dirección' : 'Guardar dirección' }}
                     </button>
                 </div>
             </form>
@@ -360,18 +361,80 @@
                     scrollToFirstError: true,
                     showSuccessIndicators: true,
                 });
+
+                // 3) Integración específica con Livewire: bloquear submit si hay errores
+                // usando un listener en fase de captura que corre ANTES que Livewire.
+                if (form.__validator && !form.__livewireValidationBound) {
+                    form.__livewireValidationBound = true;
+
+                    form.addEventListener('submit', function (e) {
+                        // Ejecutar validación completa manualmente
+                        const isValid = form.__validator.validateAll();
+
+                        if (!isValid) {
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                        }
+                        // Si es válido, dejamos continuar: Livewire + submitLoader manejarán el envío
+                    }, true); // true => fase de captura, antes que Livewire
+                }
+            }
+
+            function initDeleteAddressButtons() {
+                if (typeof window.showConfirm !== 'function' || !window.Livewire || typeof window.Livewire.dispatch !== 'function') {
+                    return;
+                }
+
+                const buttons = document.querySelectorAll('[data-delete-address-id]');
+
+                buttons.forEach((btn) => {
+                    if (btn.__deleteHandlerBound) {
+                        return;
+                    }
+                    btn.__deleteHandlerBound = true;
+
+                    btn.addEventListener('click', (event) => {
+                        event.preventDefault();
+
+                        const id = btn.getAttribute('data-delete-address-id');
+                        const label = btn.getAttribute('data-delete-address-label') || '';
+
+                        window.showConfirm({
+                            type: 'danger',
+                            header: 'Eliminar dirección',
+                            title: '¿Eliminar esta dirección de envío?',
+                            message: 'Se eliminará la siguiente dirección:<br><strong>' + label + '</strong><br>Esta acción no se puede deshacer.',
+                            confirmText: 'Sí, eliminar',
+                            cancelText: 'No, mantener',
+                            onConfirm: () => {
+                                window.Livewire.dispatch('delete-address-confirmed', {
+                                    id: parseInt(id, 10)
+                                });
+                            },
+                        });
+                    });
+                });
             }
 
             // Inicialización en carga inicial del DOM
-            document.addEventListener('DOMContentLoaded', initShippingAddressForm);
+            document.addEventListener('DOMContentLoaded', function() {
+                initShippingAddressForm();
+                initDeleteAddressButtons();
+            });
 
             // Reintentar después de navegación Livewire (Livewire 3)
-            document.addEventListener('livewire:navigated', initShippingAddressForm);
+            document.addEventListener('livewire:navigated', function() {
+                initShippingAddressForm();
+                initDeleteAddressButtons();
+            });
 
             // Reintentar después de cada morph/update de Livewire (cuando se abre/cierra el formulario)
             if (window.Livewire && typeof window.Livewire.hook === 'function') {
                 window.Livewire.hook('morph.updated', () => {
-                    setTimeout(initShippingAddressForm, 100);
+                    setTimeout(() => {
+                        initShippingAddressForm();
+                        initDeleteAddressButtons();
+                    }, 100);
                 });
             }
         })();

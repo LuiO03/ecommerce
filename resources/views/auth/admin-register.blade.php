@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-row-fill">
+                    <div class="form-row-fit">
                         <div class="input-group">
                             <label for="email" class="label-form">
                                 Correo electrónico <i class="ri-asterisk text-accent"></i>
@@ -95,18 +95,6 @@
                                 <input type="email" id="email" name="email" class="input-form"
                                     placeholder="Ingresa tu correo electrónico" value="{{ old('email') }}" required
                                     autocomplete="off" data-validate="required|email">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label for="address" class="label-form">
-                                Dirección <i class="ri-asterisk text-accent"></i>
-                            </label>
-                            <div class="input-icon-container">
-                                <i class="ri-map-pin-line input-icon"></i>
-                                <input type="text" id="address" name="address" class="input-form"
-                                    placeholder="Ingresa tu dirección" value="{{ old('address') }}" autocomplete="off"
-                                    data-validate="max:255">
                             </div>
                         </div>
                     </div>
@@ -186,10 +174,10 @@
                             <span class="boton-form-text">Crear cuenta</span>
                         </button>
                         <a href="{{ route('welcome.index') }}" class="boton-form boton-volver py-3">
+                            <span class="boton-form-text">Volver a inicio</span>
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>
-                            <span class="boton-form-text">Volver a inicio</span>
                         </a>
                     </div>
                     <p class="input-help-text">

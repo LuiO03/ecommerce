@@ -24,16 +24,19 @@
         @php
             $unreadCount = auth()->user()->unreadNotifications()->count();
         @endphp
+
         <!-- boton para ir al sitio web -->
         <a class="topbar-icon-btn" href="{{ route('welcome.index') }}" target="_blank" title="Ir al sitio web">
             <i class="ri-global-line"></i>
         </a>
+        <!-- boton para ir a las notificaciones -->
         <button id="notificationSidebarToggle" class="topbar-icon-btn" title="Ver notificaciones">
             <i class="ri-notification-2-line"></i>
             @if ($unreadCount > 0)
                 <span class="notification-badge">{{ $unreadCount }}</span>
             @endif
         </button>
+        <!-- boton para ir al perfil de usuario -->
         <div class="flex items-center ms-2">
             <a href="{{ route('admin.profile.index') }}" title="Perfil de usuario">
                 @php
@@ -42,8 +45,7 @@
                 @endphp
 
                 @if ($hasAvatarImage)
-                    <img class="topbar-avatar" src="{{ asset('storage/' . $user->image) }}"
-                        alt="{{ $user->name }}">
+                    <img class="topbar-avatar" src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}">
                 @else
                     <div class="topbar-avatar"
                         style="background-color: {{ $user->avatar_colors['background'] }};

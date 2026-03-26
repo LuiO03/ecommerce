@@ -250,15 +250,23 @@
                                     </span>
                                 @endif
                             </td>
-                            @can('usuarios.update-status')
-                                <td class="column-status-td">
-                                    <label class="switch-tabla">
-                                        <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
-                                            {{ $user->status ? 'checked' : '' }}>
-                                        <span class="slider"></span>
-                                    </label>
-                                </td>
-                            @endcan
+                                @if (Auth::id() !== $user->id)
+                                    @can('usuarios.update-status')
+                                        <td class="column-status-td">
+                                            <label class="switch-tabla">
+                                                <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
+                                                    {{ $user->status ? 'checked' : '' }}>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </td>
+                                    @endcan
+                                @else
+                                    <td class="column-status-td">
+                                        <span class="badge badge-danger" title="No puedes cambiar el estado de tu propia cuenta">
+                                            <i class="ri-lock-fill"></i>
+                                        </span>
+                                    </td>
+                                @endif
                             <td>
                                 <span class="{{ $user->created_at ? '' : 'text-muted-td' }}">
                                     {{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
@@ -411,17 +419,6 @@
                     console.log(`🔍 Filtro Verificación: ${currentVerifiedFilter === '1' ? 'Verificados' : currentVerifiedFilter === '0' ? 'Sin verificar' : 'Todos'}`);
                 });
 
-                // Limpiar filtros personalizados cuando se presiona el botón
-                const originalClearHandler = $('#clearFiltersBtn').data('events')?.click;
-                $('#clearFiltersBtn').on('click', function() {
-                    // Limpiar filtros personalizados
-                    currentRoleFilter = '';
-                    currentVerifiedFilter = '';
-                    $('#roleFilter').val('');
-                    $('#verifiedFilter').val('');
-
-                    console.log('🧹 Filtros personalizados limpiados');
-                });
 
                 // ========================================
                 // 🎨 RESALTAR FILA CREADA/EDITADA
