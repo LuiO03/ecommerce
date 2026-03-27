@@ -1,6 +1,6 @@
 <div class="alert alert-{{ $type }} {{ $dismissible ? 'alert-dismissible' : '' }}" data-alert>
     <i class="{{ $icon }} alert-icon"></i>
-    
+
     <div class="alert-content">
         @if($title)
             <h4 class="alert-title">{{ $title }}</h4>

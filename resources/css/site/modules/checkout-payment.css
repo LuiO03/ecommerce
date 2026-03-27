@@ -7,7 +7,7 @@
     flex-direction: column;
     gap: 1.5rem;
     padding-top: 2rem;
-    height: calc(100dvh - 200px);
+    min-height: calc(100dvh - 200px);
     justify-content: center;
 }
 
@@ -15,7 +15,7 @@
     max-width: 440px;
     margin: 0 auto;
     border: 3px solid;
-    padding: 4rem 2rem 2rem 2rem;
+    padding: 3rem 2rem 2rem 2rem;
     border-radius: var(--radius-card);
     display: flex;
     flex-direction: column;
@@ -37,7 +37,7 @@
 
 .checkout-payment-icon {
     border-radius: 999px;
-    width: 90px;
+    width: 80px;
     aspect-ratio: 1 / 1;
     line-height: 1;
     display: flex;
@@ -69,6 +69,43 @@
     font-size: var(--font-size-sm);
     color: var(--color-muted);
     max-width: 480px;
+}
+
+.checkout-payment-pill {
+    font-size: var(--font-size-xs);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-input);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.payment-card-success .checkout-payment-pill strong{
+    font-weight: bold;
+    font-family: var(--font-secondary);
+
+}
+
+.checkout-payment-pill i {
+    font-size: 1rem;
+}
+
+/* Variante por defecto: mensaje neutro/detalle */
+.checkout-payment-pill--neutral {
+    background-color: var(--color-secondary-pastel);
+    color: var(--color-text-muted);
+}
+
+/* Variante para error (usada en failure) */
+.checkout-payment-pill--danger {
+    background-color: var(--color-danger-pastel);
+    color: var(--color-danger);
+}
+
+/* Variante para éxito / montos */
+.checkout-payment-pill--success {
+    background-color: var(--color-success-pastel);
+    color: var(--color-success);
 }
 
 .checkout-payment-detail {

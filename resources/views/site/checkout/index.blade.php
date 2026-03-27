@@ -222,12 +222,78 @@
                     </div>
 
                     <div class="checkout-summary-actions">
-                        <button type="button" id="payButton" class="boton-form boton-primary w-full py-3" onclick="VisanetCheckout.open()">
+                        <button type="button" id="payButton" class="boton-form boton-primary w-full py-3"
+                            onclick="VisanetCheckout.open()">
                             <span class="boton-form-icon"><i class="ri-wallet-3-fill"></i>
                             </span>
                             <span class="boton-form-text">Pagar ahora</span>
                         </button>
                     </div>
+
+                    @if (session('niubiz'))
+                        @php
+                            $niubiz = session('niubiz');
+                            $response = $niubiz['response'] ?? null;
+                            $purchaseNumber = $niubiz['purchaseNumber'] ?? null;
+                            $actionCode = $niubiz['actionCode'] ?? null;
+                            $friendlyMessage = $niubiz['friendlyMessage'] ?? null;
+                            $transactionDateFormatted = $niubiz['transactionDate'] ?? null;
+                            $brand = $niubiz['brand'] ?? null;
+                            $cardLast4 = $niubiz['cardLast4'] ?? null;
+                        @endphp
+
+                        @isset($response['data'])
+                            <x-alert type="danger" title="No pudimos procesar tu pago">
+                                @if ($friendlyMessage)
+                                    <p class="mb-2"></p>
+                                @endif
+
+                                <li>
+                                    <strong>Detalle del banco:</strong>
+                                    <span>
+                                        {{ $friendlyMessage ?? $response['data']['ACTION_DESCRIPTION'] }}
+                                    </span>
+                                </li>
+                                @if ($actionCode)
+                                    <li>
+                                        <strong>Código de respuesta:</strong>
+                                        <span>{{ $actionCode }}</span>
+                                    </li>
+                                @endif
+                                @if ($brand || $cardLast4)
+                                    <li>
+                                        <strong>Tarjeta:</strong>
+                                        <span>
+                                            @if ($brand)
+                                                {{ ucfirst($brand) }}
+                                            @endif
+                                            @if ($brand && $cardLast4)
+                                            @endif
+                                            @if ($cardLast4)
+                                                terminada en {{ $cardLast4 }}
+                                            @endif
+                                        </span>
+                                    </li>
+                                @endif
+                                <li>
+                                    <strong>Número del pedido:</strong>
+                                    <span>{{ $purchaseNumber }}</span>
+                                </li>
+                                @if ($transactionDateFormatted)
+                                    <li>
+                                        <strong>Fecha y hora:</strong>
+                                        <span>{{ $transactionDateFormatted }}</span>
+                                    </li>
+                                @endif
+
+                                <p class="mt-2 text-xs text-muted">
+                                    Puedes intentar nuevamente con otra tarjeta o seleccionar otro método de pago
+                                    como depósito bancario o Yape.
+                                </p>
+                            </x-alert>
+                        @endisset
+                    @endif
+
                 </aside>
             </div>
         @endif
@@ -236,7 +302,6 @@
         <script type="text/javascript" src="{{ config('services.niubiz.url_js') }}"></script>
         </script>
         <script type="text/javascript">
-
             let merchantId = '{{ config('services.niubiz.merchant_id') }}';
             let purchaseNumber = Math.floor(Math.random() * 1000000000);
             let amount = '{{ number_format($amount, 2, '.', '') }}';

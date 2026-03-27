@@ -107,10 +107,9 @@ class CheckoutController extends Controller
 
     public function paid(Request $request)
     {
-
-        // Aquí puedes validar el payload recibido y actualizar el estado del pedido en tu base de datos
-
+        // Token de seguridad para autorizar la transacción
         $access_token = $this->generateAccessToken();
+
         $merchantId = config('services.niubiz.merchant_id');
         $url_api = config('services.niubiz.url_api') . "/api.authorization/v3/authorization/ecommerce/{$merchantId}";
 
@@ -129,13 +128,71 @@ class CheckoutController extends Controller
             ],
         ])->json();
 
+        // Extraer estructuras de datos y código de acción
+        $dataMap = $response['dataMap'] ?? [];
+        $data = $response['data'] ?? [];
+
+        $actionCode = $dataMap['ACTION_CODE']
+            ?? $dataMap['ACTIONCODE']
+            ?? ($data['ACTION_CODE'] ?? ($data['ACTIONCODE'] ?? null));
+
+        // Mapear códigos de acción de Niubiz a mensajes amigables
+        $friendlyMessages = [
+            '101' => 'Tu tarjeta está vencida. Prueba con otra tarjeta o actualiza los datos.',
+            '102' => 'Esta operación no está permitida para tu tarjeta. Usa otro medio de pago.',
+            '113' => 'El monto no está permitido para esta tarjeta. Intenta con un monto menor u otra tarjeta.',
+            '116' => 'Fondos insuficientes. Revisa tu saldo o utiliza otra tarjeta.',
+            '118' => 'Tu tarjeta no es válida o no está registrada. Revisa los datos o usa otra tarjeta.',
+            '129' => 'La tarjeta no está operativa (por ejemplo, error en el CVV). Verifica los datos ingresados.',
+            '180' => 'La transacción fue considerada inválida por el emisor. Usa otro medio de pago.',
+            '190' => 'La transacción fue rechazada por el emisor. Contacta a tu banco si el problema persiste.',
+            '191' => 'Debes contactar a tu banco para autorizar este tipo de operación.',
+            '207' => 'La tarjeta fue reportada como perdida. Usa otro medio de pago.',
+            '208' => 'La tarjeta fue reportada como perdida. Usa otro medio de pago.',
+            '209' => 'La tarjeta fue reportada como robada. Usa otro medio de pago.',
+            '401' => 'La tienda no está habilitada temporalmente para procesar pagos. Inténtalo más tarde.',
+            '476' => 'Esta operación ya fue procesada previamente en un depósito.',
+            '479' => 'El comercio configurado para este pago no es válido. Inténtalo más tarde o contacta soporte.',
+            '666' => 'Hay problemas de comunicación con el banco o procesador. Inténtalo nuevamente en unos minutos.',
+            '668' => 'Hay problemas de comunicación con el sistema antifraude. Inténtalo nuevamente en unos minutos.',
+            '670' => 'La transacción fue denegada por posible fraude. Te recomendamos contactar a tu banco.',
+            '678' => 'Hubo un error en la autenticación de la tarjeta. Intenta nuevamente o usa otra tarjeta.',
+            '754' => 'El comercio configurado para este pago no es válido. Inténtalo más tarde o contacta soporte.',
+        ];
+
+        $friendlyMessage = $actionCode && isset($friendlyMessages[$actionCode])
+            ? $friendlyMessages[$actionCode]
+            : null;
+
+        // Datos de tarjeta enmascarados y marca (priorizar dataMap y luego data)
+        $brand = $dataMap['BRAND']
+            ?? ($dataMap['BRAND_NAME'] ?? ($data['BRAND'] ?? ($data['BRAND_NAME'] ?? null)));
+
+        $cardMasked = $dataMap['CARD'] ?? ($data['CARD'] ?? null); // ej. 455170******8059
+        $cardLast4 = $cardMasked ? substr($cardMasked, -4) : null;
+
+        // Fecha/hora de la transacción (formato Niubiz: dmyHis)
+        $transactionDateRaw = $dataMap['TRANSACTION_DATE'] ?? ($data['TRANSACTION_DATE'] ?? null);
+        $transactionDateFormatted = null;
+        if (!empty($transactionDateRaw) && strlen($transactionDateRaw) === 12) {
+            try {
+                $transactionDateFormatted = \Carbon\Carbon::createFromFormat('dmyHis', $transactionDateRaw)
+                    ->format('d/m/Y H:i:s');
+            } catch (\Exception $e) {
+                $transactionDateFormatted = $transactionDateRaw;
+            }
+        }
+
+        // Guardar en sesión todos los datos que necesita la vista de checkout
         session()->flash('niubiz', [
             'response' => $response,
+            'purchaseNumber' => $request->purchaseNumber,
+            'actionCode' => $actionCode,
+            'friendlyMessage' => $friendlyMessage,
+            'brand' => $brand,
+            'cardLast4' => $cardLast4,
+            'transactionDate' => $transactionDateFormatted,
         ]);
-
-        $actionCode = $response['dataMap']['ACTIONCODE']
-            ?? $response['datamap']['ACTIONCODE']
-            ?? null;
 
         if ($actionCode === '000') {
             // Enviar correo de resumen de compra al confirmar pago exitoso
@@ -170,20 +227,15 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.success');
         }
 
-        return redirect()->route('checkout.failure');
+        return redirect()->route('checkout.index');
     }
 
     public function success()
     {
         $niubiz = session('niubiz');
+        $response = $niubiz['response'] ?? null;
 
-        return view('site.checkout.success', compact('niubiz'));
+        return view('site.checkout.success', compact('niubiz', 'response'));
     }
 
-    public function failure()
-    {
-        $niubiz = session('niubiz');
-
-        return view('site.checkout.failure', compact('niubiz'));
-    }
 }

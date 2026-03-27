@@ -1,60 +1,155 @@
 <x-app-layout>
 
     <section class="site-container checkout-payment-page">
+        @if (!empty($response))
+            <div class="checkout-payment-card payment-card-success">
+                <div class="checkout-payment-icon payment-icon-success">
+                    <i class="ri-newspaper-fill"></i>
+                </div>
 
-        <div class="checkout-payment-card payment-card-success">
-            <div class="checkout-payment-icon payment-icon-success">
-                <i class="ri-check-line"></i>
-            </div>
+                <h2 class="checkout-payment-title">{{ Auth::user()->name }}, tu pago se realizó con éxito</h2>
 
-            <h2 class="checkout-payment-title">Tu pago se realizó con éxito</h2>
-            <p class="checkout-payment-message">
-                En unos minutos recibirás un correo con el resumen de tu compra. También te avisaremos cuando tu pedido
-                esté en camino.
-            </p>
+                <div class="checkout-payment-meta">
+                    @php
+                        $dataMap = $response['dataMap'] ?? [];
+                        $actionDescription = $dataMap['ACTION_DESCRIPTION'] ?? ($dataMap['ACTIONDESCRIPTION'] ?? null);
+                        $purchaseNumber = $response['order']['purchaseNumber'] ?? null;
+                        $amount = $response['order']['amount'] ?? null;
+                        $currency = $response['order']['currency'] ?? null;
 
-            <div class="checkout-payment-meta">
+                        // Fecha/hora devuelta por Niubiz: formato tipo 260326131641 => dmyHis
+                        $transactionDateRaw = $dataMap['TRANSACTION_DATE'] ?? null;
+                        $transactionDate = null;
+                        if (!empty($transactionDateRaw) && strlen($transactionDateRaw) === 12) {
+                            try {
+                                $transactionDate = \Carbon\Carbon::createFromFormat('dmyHis', $transactionDateRaw);
+                            } catch (\Exception $e) {
+                                $transactionDate = null;
+                            }
+                        }
 
-                @if (session('niubiz'))
-                    <div>
-                        <x-alert type="success" title="¡Éxito!">
-                            {{ $response['dataMap']['ACTION_DESCRIPTION'] }}
+                        $brand = $dataMap['BRAND'] ?? ($dataMap['BRAND_NAME'] ?? null);
+
+                        // Tarjeta enmascarada (ej. 455170******8059)
+                        $cardMasked = $dataMap['CARD'] ?? null;
+                        $cardLast4 = $cardMasked ? substr($cardMasked, -4) : null;
+                    @endphp
+
+                    <div class="flex flex-col gap-3">
+                        @if ($actionDescription)
+                            <p class="checkout-payment-message">
+                                {{ $actionDescription }}
+                            </p>
+                        @endif
+                        <x-alert type="success" title="Tu pedido está confirmado">
+                            En unos minutos recibirás un correo con el resumen de tu compra. También te avisaremos
+                            cuando tu pedido
+                            esté en camino.
                         </x-alert>
-                        <div class="checkout-payment-pill">
-                            <i class="ri-hashtag"></i>
-                            <span>Nro. de pedido: {{ $response['order']['PURCHASENUMBER'] }}</span>
+
+                        <div class="flex flex-wrap gap-2">
+                            @if ($purchaseNumber)
+                                <div class="checkout-payment-pill checkout-payment-pill--neutral">
+                                    <i class="ri-hashtag"></i>
+                                    <span>Nro. de pedido:</span>
+                                    <strong>{{ $purchaseNumber }}</strong>
+                                </div>
+                            @endif
+
+                            @if ($transactionDate)
+                                <div class="checkout-payment-pill checkout-payment-pill--neutral">
+                                    <i class="ri-calendar-event-line"></i>
+                                    <span>Fecha y hora:</span>
+                                    <strong>{{ $transactionDate->format('d/m/Y H:i:s') }}</strong>
+                                </div>
+                            @endif
+
+                            @if ($brand || $cardLast4)
+                                <div class="checkout-payment-pill checkout-payment-pill--neutral">
+                                    <i class="ri-bank-card-2-line"></i>
+                                    <span>Tarjeta:</span>
+                                    <strong>
+                                        @if ($brand)
+                                            {{ ucfirst($brand) }}
+                                        @endif
+                                        @if ($brand && $cardLast4)
+
+                                        @endif
+                                        @if ($cardLast4)
+                                            terminada en {{ $cardLast4 }}
+                                        @endif
+                                    </strong>
+                                </div>
+                            @endif
                         </div>
-                        <p class="checkout-payment-message">
-                            <b>Fecha y hora del pedido</b>
-                            {{ now()->createFromFormat('Y-m-d H:i:s', $response['dataMap']['TRANSACTIONDATE'])->locale('es')->format('d/m/Y H:i:s') }}
-                        </p>
                     </div>
 
-                    <div class="checkout-payment-pill">
-                        <i class="ri-wallet-3-fill"></i>
-                        <span>Total pagado: S/. {{ number_format((float) $response['order']['AMOUNT'], 2) }} {{ $response['order']['CURRENCY'] }}</span>
-                    </div>
-                @endif
-            </div>
+                    @if ($amount)
+                        <div class="checkout-payment-pill checkout-payment-pill--success mt-3">
+                            <i class="ri-wallet-3-fill"></i>
+                            <span>Total pagado:</span>
+                            <strong>
+                                S/.
+                                {{ number_format((float) $amount, 2) }}
+                                {{ $currency }}
+                            </strong>
+                        </div>
+                    @endif
 
-            <div class="checkout-payment-actions">
-                <a href="{{ route('welcome.index') }}" class="boton-form boton-success py-3">
-                    <span class="boton-form-icon">
-                        <i class="ri-store-2-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        <span>Volver a la tienda</span>
-                    </span>
-                </a>
-                <a href="{{ route('carts.show') }}" class="boton-form boton-info py-3">
-                    <span class="boton-form-icon">
-                        <i class="ri-shopping-bag-3-line"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        <span>Ver carrito</span>
-                    </span>
-                </a>
+                </div>
+
+                <div class="checkout-payment-actions">
+                    <a href="{{ route('welcome.index') }}" class="boton-form boton-success py-3">
+                        <span class="boton-form-icon">
+                            <i class="ri-store-2-fill"></i>
+                        </span>
+                        <span class="boton-form-text">
+                            <span>Volver a la tienda</span>
+                        </span>
+                    </a>
+                    <a href="{{ route('carts.show') }}" class="boton-form boton-info py-3">
+                        <span class="boton-form-icon">
+                            <i class="ri-shopping-bag-3-line"></i>
+                        </span>
+                        <span class="boton-form-text">
+                            <span>Ver carrito</span>
+                        </span>
+                    </a>
+                </div>
             </div>
-        </div>
+        @else
+            <div class="checkout-payment-card payment-card-failure">
+                <div class="checkout-payment-icon payment-icon-failure">
+                    <i class="ri-error-warning-fill"></i>
+                </div>
+
+                <h2 class="checkout-payment-title">¡Ups! No encontramos los detalles de tu compra</h2>
+                <p class="checkout-payment-message">
+                    Sin embargo, tu pago fue procesado correctamente, no te preocupes, tu pedido está confirmado y
+                    estamos trabajando para prepararlo y enviarlo lo antes posible. <br><br>
+                    Si tienes alguna duda, no dudes
+                    en contactarnos.
+                </p>
+
+                <div class="checkout-payment-actions">
+                    <a href="{{ route('welcome.index') }}" class="boton-form boton-success py-3">
+                        <span class="boton-form-icon">
+                            <i class="ri-store-2-fill"></i>
+                        </span>
+                        <span class="boton-form-text">
+                            <span>Volver a la tienda</span>
+                        </span>
+                    </a>
+                    <a href="" class="boton-form boton-danger py-3">
+                        <span class="boton-form-icon">
+                            <i class="ri-mail-send-fill"></i>
+                        </span>
+                        <span class="boton-form-text">
+                            <span>Contáctanos</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        @endif
     </section>
 </x-app-layout>
