@@ -39,6 +39,7 @@
             'posts' => ['label' => 'Posts', 'icon' => 'ri-article-fill'],
             'brands' => ['label' => 'Marcas', 'icon' => 'ri-store-2-fill'],
             'options' => ['label' => 'Opciones', 'icon' => 'ri-settings-3-fill'],
+            'orders' => ['label' => 'Órdenes', 'icon' => 'ri-shopping-bag-3-fill'],
             'company-settings' => ['label' => 'Empresa', 'icon' => 'ri-building-4-fill'],
             'access-logs' => ['label' => 'Accesos', 'icon' => 'ri-login-circle-fill'],
             'audits' => ['label' => 'Auditoría', 'icon' => 'ri-file-list-3-fill'],

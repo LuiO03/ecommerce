@@ -248,16 +248,6 @@
                     </div>
                 </div>
 
-                <!-- === DNI (referencial) === -->
-                <div class="input-group">
-                    <label for="dni" class="label-form">DNI</label>
-                    <div class="input-icon-container">
-                        <i class="ri-id-card-line input-icon"></i>
-                        <input type="text" name="dni" id="dni" class="input-form"
-                            value="{{ old('dni', $user->dni) }}" placeholder="8 dígitos" data-validate="dni">
-                    </div>
-                </div>
-
                 <!-- === Teléfono === -->
                 <div class="input-group">
                     <label for="phone" class="label-form">Teléfono</label>

@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\AuditController;
@@ -129,6 +130,19 @@ Route::controller(FamilyController::class)->group(function () {
     Route::post('/families/export/excel', 'exportExcel')->name('admin.families.export.excel');
     Route::post('/families/export/pdf', 'exportPdf')->name('admin.families.export.pdf');
     Route::post('/families/export/csv', 'exportCsv')->name('admin.families.export.csv');
+});
+
+// ORDERS
+Route::controller(OrderController::class)->group(function () {
+    Route::get('/orders', 'index')->name('admin.orders.index');
+    Route::get('/orders/{order}', 'show')->name('admin.orders.show');
+    Route::get('/orders/{order}/invoice-preview', 'invoicePreview')->name('admin.orders.invoice-preview');
+
+    // Exports
+    Route::post('/orders/export/excel', 'exportExcel')->name('admin.orders.export.excel');
+    Route::post('/orders/export/pdf', 'exportPdf')->name('admin.orders.export.pdf');
+    Route::post('/orders/export/csv', 'exportCsv')->name('admin.orders.export.csv');
+});
 
 // COVERS
 Route::controller(CoverController::class)->group(function () {
@@ -140,7 +154,6 @@ Route::controller(CoverController::class)->group(function () {
     Route::delete('/covers/{cover}', 'destroy')->name('admin.covers.destroy');
     Route::delete('/covers', 'destroyMultiple')->name('admin.covers.destroyMultiple');
     Route::patch('/covers/{cover}/status', 'updateStatus')->name('admin.covers.updateStatus');
-});
 });
 
 // CATEGORIES

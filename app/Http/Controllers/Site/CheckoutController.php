@@ -4,11 +4,18 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Addresses;
+use App\Models\CompanySetting;
 use App\Mail\OrderSummary;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class CheckoutController extends Controller
 {
@@ -194,15 +201,12 @@ class CheckoutController extends Controller
             'transactionDate' => $transactionDateFormatted,
         ]);
 
+        // Guardar orden en base de datos solo si el pago fue exitoso
         if ($actionCode === '000') {
-            // Enviar correo de resumen de compra al confirmar pago exitoso
             $user = Auth::user();
 
             if ($user) {
-                $cart = Cart::with([
-                    'items.product',
-                    'items.variant',
-                ])
+                $cart = Cart::with(['items.product', 'items.variant'])
                     ->where('user_id', $user->id)
                     ->where('is_active', true)
                     ->first();
@@ -210,8 +214,122 @@ class CheckoutController extends Controller
                 if ($cart && $cart->items->isNotEmpty()) {
                     $subtotal = $cart->total_price;
                     $shipping = 5.0; // Mantener consistente con index()
-                    $amount = $subtotal + $shipping;
+                    $amount   = $subtotal + $shipping;
 
+                    // Buscar dirección de envío: primero la predeterminada, luego cualquier otra
+                    $address = Addresses::where('user_id', $user->id)
+                        ->where('is_default', true)
+                        ->first();
+
+                    if (! $address) {
+                        $address = Addresses::where('user_id', $user->id)->first();
+                    }
+
+                    $shippingAddress = $address?->address_line ?? 'Sin dirección registrada';
+                    $shippingCity    = $address?->district;
+                    $shippingPhone   = $address?->receiver_phone ?? ($user->phone ?? null);
+
+                    // Identificador de pago del gateway (si está disponible)
+                    $paymentId = $dataMap['TRANSACTION_ID']
+                        ?? ($data['TRANSACTION_ID'] ?? ($response['order']['transactionId'] ?? null));
+
+                    $order = DB::transaction(function () use (
+                        $user,
+                        $cart,
+                        $subtotal,
+                        $shipping,
+                        $amount,
+                        $shippingAddress,
+                        $shippingCity,
+                        $shippingPhone,
+                        $paymentId,
+                        $request
+                    ) {
+                        $order = Order::create([
+                            'user_id'          => $user->id,
+                            'order_number'     => $request->purchaseNumber,
+                            'total'            => $amount,
+                            'subtotal'         => $subtotal,
+                            'shipping_cost'    => $shipping,
+                            'status'           => 'paid',
+                            'shipping_address' => $shippingAddress,
+                            'shipping_city'    => $shippingCity,
+                            'shipping_phone'   => $shippingPhone,
+                            'payment_method'   => 'niubiz',
+                            'payment_id'       => $paymentId,
+                            'payment_status'   => 'paid',
+                        ]);
+
+                        foreach ($cart->items as $item) {
+                            $product = $item->product;
+
+                            if (! $product) {
+                                continue;
+                            }
+
+                            $variant = $item->variant;
+
+                            $discountPercent = ! is_null($product->discount)
+                                ? min(max((float) $product->discount, 0), 100)
+                                : 0.0;
+                            $hasDiscount = $discountPercent > 0;
+
+                            $basePrice = ($variant && $variant->price && $variant->price > 0)
+                                ? (float) $variant->price
+                                : (float) $product->price;
+
+                            $unitPrice = $hasDiscount
+                                ? max($basePrice * (1 - $discountPercent / 100), 0)
+                                : $basePrice;
+
+                            $lineTotal = $unitPrice * (int) $item->quantity;
+
+                            OrderItem::create([
+                                'order_id'   => $order->id,
+                                'product_id' => $product->id,
+                                'variant_id' => $variant?->id,
+                                'quantity'   => $item->quantity,
+                                'unit_price' => $unitPrice,
+                                'line_total' => $lineTotal,
+                            ]);
+                        }
+
+                        // Marcar el carrito como inactivo
+                        $cart->update(['is_active' => false]);
+                        return $order;
+                    });
+
+
+
+                    // Generar y guardar factura/boleta PDF de la orden
+                    try {
+                        $orderForPdf = $order->load([
+                            'user',
+                            'items.product',
+                            'items.variant.features.option',
+                        ]);
+
+                        $companyInfo = CompanySetting::first();
+
+                        $relativePath = 'orders/documents/order-' . $orderForPdf->id . '-' . now()->format('YmdHis') . '.pdf';
+
+                        // Asegurar directorio en disco public
+                        Storage::disk('public')->makeDirectory('orders/documents');
+
+                        // Ruta absoluta basada en el disco public (más robusta que concatenar storage_path)
+                        $fullPath = Storage::disk('public')->path($relativePath);
+
+                        Pdf::view('admin.export.order-invoice', [
+                            'order' => $orderForPdf,
+                            'companyInfo' => $companyInfo,
+                        ])->format('a4')->save($fullPath);
+
+                        $orderForPdf->update(['pdf_path' => $relativePath]);
+                    } catch (\Throwable $e) {
+                        // Si falla la generación del PDF, no interrumpimos el flujo de compra
+                    }
+
+                    // Enviar correo de resumen de compra al confirmar pago exitoso
                     Mail::to($user->email)->send(new OrderSummary(
                         $user,
                         $cart,

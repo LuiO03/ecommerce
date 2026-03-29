@@ -40,7 +40,7 @@ input[type="checkbox"] {
     appearance: none;
     width: 18px;
     height: 18px;
-    border: 1px solid var(--color-border-secondary);
+    border: 1px solid var(--color-text-soft);
     border-radius: var(--radius-element);
     background-color: var(--color-input-bg);
     cursor: pointer;
@@ -58,6 +58,7 @@ input[type="checkbox"]:hover {
 input[type="checkbox"]:checked {
     color: var(--color-accent);
     border-color: var(--color-accent);
+    box-shadow: var(--shadow-material);
 }
 
 input[type="checkbox"]:indeterminate {

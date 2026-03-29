@@ -511,7 +511,6 @@
 .tabla-select-wrapper option:checked,
 .tabla-select-wrapper option:focus {
     background-color: var(--color-accent) !important;
-    color: #fff;
 }
 
 /* =======================================================
@@ -816,10 +815,41 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     align-items: center;
     justify-content: center;
     padding: 20px 0;
+    color: var(--color-muted);
 }
 
 .tabla-no-data i {
     font-size: 40px;
+}
+
+.tabla-no-data span{
+    font-family: var(--font-secondary);
+    font-weight: bold;
+
+}
+
+/* === Estado vacío === */
+.data-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    color: var(--color-muted);
+}
+
+.data-empty i {
+    font-size: 58px;
+}
+
+.data-empty span{
+    font-family: var(--font-secondary);
+    font-weight: bold;
 }
 
 .text-muted-td {

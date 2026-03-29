@@ -187,25 +187,8 @@
     color: var(--color-muted);
 }
 
-/* === Estado vacío === */
-.covers-empty {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem 2rem;
-    text-align: center;
-    background: var(--bg-secondary);
-    border: 2px dashed var(--border-color);
-    border-radius: 12px;
-    color: var(--text-muted);
-}
 
-.empty-icon {
-    font-size: 58px;
-    color: var(--color-text-soft);
-}
+
 
 .btn-create-first {
     display: inline-flex;

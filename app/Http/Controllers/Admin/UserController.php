@@ -164,7 +164,6 @@ class UserController extends Controller
             'last_name' => 'nullable|string|max:255',
             'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
             'document_number' => 'nullable|string|max:30',
-            'dni' => 'nullable|string|max:20|unique:users,dni',
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -198,7 +197,6 @@ class UserController extends Controller
             'address' => $request->address,
             'document_type' => $request->document_type,
             'document_number' => $request->document_number,
-            'dni' => $request->dni,
             'phone' => $request->phone,
             'image' => $imagePath,
 
@@ -244,7 +242,6 @@ class UserController extends Controller
             'last_name' => 'nullable|string|max:255',
             'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
             'document_number' => 'nullable|string|max:30',
-            'dni' => 'nullable|string|max:20|unique:users,dni,'.$user->id,
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
 
@@ -287,7 +284,6 @@ class UserController extends Controller
             'address' => $address,
             'document_type' => $request->document_type,
             'document_number' => $request->document_number,
-            'dni' => $request->dni,
             'phone' => $request->phone,
             'image' => $imagePath,
             'updated_by' => Auth::id(),

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('reference');
             $table->integer('receiver_type')->default(1)->comment('1: Yo, 2: Otra Persona');
             $table->string('receiver_name');
+            $table->string('receiver_last_name')->nullable();
             $table->string('receiver_phone');
             $table->boolean('is_default')
             ->default(false)

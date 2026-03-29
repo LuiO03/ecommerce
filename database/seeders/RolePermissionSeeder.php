@@ -126,6 +126,13 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'portadas.delete', 'description' => 'Puede eliminar portadas del sistema'],
                 ['name' => 'portadas.update-status', 'description' => 'Puede activar o desactivar portadas'],
             ],
+
+            // --- Órdenes ---
+            'ordenes' => [
+                ['name' => 'ordenes.index', 'description' => 'Puede ver la lista de órdenes'],
+                ['name' => 'ordenes.view', 'description' => 'Puede ver los detalles de una orden'],
+                ['name' => 'ordenes.export', 'description' => 'Puede exportar órdenes en varios formatos'],
+            ],
         ];
 
         // === CREAR PERMISOS ===
@@ -207,6 +214,9 @@ class RolePermissionSeeder extends Seeder
             // Usuarios
             'usuarios.index', 'usuarios.create', 'usuarios.edit', 'usuarios.delete',
             'usuarios.reset-password',
+
+            // Órdenes
+            'ordenes.index', 'ordenes.export',
 
             // Reportes
             'reportes.index', 'reportes.export',

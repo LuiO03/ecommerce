@@ -653,15 +653,6 @@
     text-decoration: underline;
 }
 
-.text-link {
-    color: var(--color-text-link);
-}
-
-.text-link:hover {
-    color: var(--color-primario);
-    text-decoration: underline;
-}
-
 @view-transition {
     navigation: auto;
 }

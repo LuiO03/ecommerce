@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\CompanySetting;
 use App\Models\Cover;
 use App\Models\Family;
+use App\Models\Order;
 use App\Models\Option;
 use App\Models\Post;
 use App\Models\Product;
@@ -24,6 +25,7 @@ class AdminController extends Controller
             'totalFamilies' => $user->can('familias.index') ? Family::count() : null,
             'totalCovers' => $user->can('portadas.index') ? Cover::count() : null,
             'totalProducts' => $user->can('productos.index') ? Product::count() : null,
+            'totalOrders' => $user->can('ordenes.index') ? Order::count() : null,
             'totalUsers' => $user->can('usuarios.index') ? User::count() : null,
             'totalClients' => $user->can('clientes.index')? User::role('Cliente')->count(): null,
             'totalRoles' => $user->can('roles.index') ? Role::count() : null,

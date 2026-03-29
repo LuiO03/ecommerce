@@ -122,50 +122,62 @@
                 </li>
             @endcan
 
+            @can('ordenes.index')
+                <li>
+                    <a href="{{ request()->routeIs('admin.orders.*') ? '#' : route('admin.orders.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
+                        data-tooltip="Órdenes">
+                        <i class="ri-shopping-bag-3-line sidebar-icon"></i>
+                        <span>Órdenes</span>
+                    </a>
+                </li>
+            @endcan
+
             <!-- Submenú Tienda -->
             @canany(['familias.index', 'categorias.index', 'productos.index'])
-            <li class="submenu-container">
-                <button type="button" class="sidebar-link w-full submenu-btn flex items-center" data-tooltip="Tienda">
-                    <i class="ri-store-line sidebar-icon"></i>
-                    <span class="flex-1 text-left">Tienda</span>
-                    <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
-                </button>
+                <li class="submenu-container">
+                    <button type="button" class="sidebar-link w-full submenu-btn flex items-center" data-tooltip="Tienda">
+                        <i class="ri-store-line sidebar-icon"></i>
+                        <span class="flex-1 text-left">Tienda</span>
+                        <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
+                    </button>
 
-                <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
+                    <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
 
-                    @can('familias.index')
-                        <li class="ripple-btn">
-                            <a href="{{ request()->routeIs('admin.families.*') ? '#' : route('admin.families.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.families.*') ? 'active' : '' }}"
-                                data-tooltip="Familias">
-                                <i class="ri-apps-line sidebar-icon"></i>
-                                <span>Familias</span>
-                            </a>
-                        </li>
-                    @endcan
+                        @can('familias.index')
+                            <li class="ripple-btn">
+                                <a href="{{ request()->routeIs('admin.families.*') ? '#' : route('admin.families.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.families.*') ? 'active' : '' }}"
+                                    data-tooltip="Familias">
+                                    <i class="ri-apps-line sidebar-icon"></i>
+                                    <span>Familias</span>
+                                </a>
+                            </li>
+                        @endcan
 
-                    @can('categorias.index')
-                        <li>
-                            <a href="{{ request()->routeIs('admin.categories.*') ? '#' : route('admin.categories.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
-                                data-tooltip="Categorías">
-                                <i aria-busy=""class="ri-price-tag-3-line sidebar-icon"></i>
-                                <span>Categorías</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('productos.index')
-                        <li>
-                            <a href="{{ request()->routeIs('admin.products.*') ? '#' : route('admin.products.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
-                                data-tooltip="Productos">
-                                <i class="ri-box-3-line sidebar-icon"></i>
-                                <span>Productos</span>
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-            </li>
+                        @can('categorias.index')
+                            <li>
+                                <a href="{{ request()->routeIs('admin.categories.*') ? '#' : route('admin.categories.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                                    data-tooltip="Categorías">
+                                    <i aria-busy=""class="ri-price-tag-3-line sidebar-icon"></i>
+                                    <span>Categorías</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('productos.index')
+                            <li>
+                                <a href="{{ request()->routeIs('admin.products.*') ? '#' : route('admin.products.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
+                                    data-tooltip="Productos">
+                                    <i class="ri-box-3-line sidebar-icon"></i>
+                                    <span>Productos</span>
+                                </a>
+                            </li>
+                        @endcan
+
+                    </ul>
+                </li>
             @endcanany
 
             <!-- Posts -->
@@ -202,69 +214,69 @@
             @endcan
             <!-- Submenú Gestion de Acceso -->
             @canany(['usuarios.index', 'clientes.index', 'roles.index', 'accesos.index', 'auditorias.index'])
-            <li class="submenu-container">
-                <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
-                    data-tooltip="Gestión de Acceso">
-                    <i class="ri-shield-user-line sidebar-icon"></i>
-                    <span class="flex-1 text-left">Gestión de Acceso</span>
-                    <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
-                </button>
+                <li class="submenu-container">
+                    <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
+                        data-tooltip="Gestión de Acceso">
+                        <i class="ri-shield-user-line sidebar-icon"></i>
+                        <span class="flex-1 text-left">Gestión de Acceso</span>
+                        <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
+                    </button>
 
-                <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
+                    <ul id="dropdown-acceso" class="sidebar-submenu space-y-1">
 
-                    @can('usuarios.index')
-                        <li class="ripple-btn">
-                            <a href="{{ request()->routeIs('admin.users.*') ? '#' : route('admin.users.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                                data-tooltip="Users">
-                                <i class="ri-id-card-line sidebar-icon"></i>
-                                <span>Usuarios</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('clientes.index')
-                        <li class="ripple-btn">
-                            <a href="{{ request()->routeIs('admin.clients.*') ? '#' : route('admin.clients.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}"
-                                data-tooltip="Clientes">
-                                <i class="ri-user-5-line sidebar-icon"></i>
-                                <span>Clientes</span>
-                            </a>
-                        </li>
-                    @endcan
+                        @can('usuarios.index')
+                            <li class="ripple-btn">
+                                <a href="{{ request()->routeIs('admin.users.*') ? '#' : route('admin.users.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                                    data-tooltip="Users">
+                                    <i class="ri-id-card-line sidebar-icon"></i>
+                                    <span>Usuarios</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('clientes.index')
+                            <li class="ripple-btn">
+                                <a href="{{ request()->routeIs('admin.clients.*') ? '#' : route('admin.clients.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}"
+                                    data-tooltip="Clientes">
+                                    <i class="ri-user-5-line sidebar-icon"></i>
+                                    <span>Clientes</span>
+                                </a>
+                            </li>
+                        @endcan
 
-                    @can('roles.index')
-                        <li class="ripple-btn">
-                            <a href="{{ request()->routeIs('admin.roles.*') ? '#' : route('admin.roles.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
-                                data-tooltip="Roles y Permisos">
-                                <i class="ri-shield-user-line sidebar-icon"></i>
-                                <span>Roles y Permisos</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('accesos.index')
-                        <li class="ripple-btn">
-                            <a href="{{ request()->routeIs('admin.access-logs.*') ? '#' : route('admin.access-logs.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
-                                data-tooltip="Registros de acceso">
-                                <i class="ri-login-circle-line sidebar-icon"></i>
-                                <span>Accesos</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('auditorias.index')
-                        <li class="ripple-btn">
-                            <a href="{{ request()->routeIs('admin.audits.*') ? '#' : route('admin.audits.index') }}"
-                                class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
-                                data-tooltip="Auditoría">
-                                <i class="ri-file-list-3-line sidebar-icon"></i>
-                                <span>Auditoría</span>
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-            </li>
+                        @can('roles.index')
+                            <li class="ripple-btn">
+                                <a href="{{ request()->routeIs('admin.roles.*') ? '#' : route('admin.roles.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
+                                    data-tooltip="Roles y Permisos">
+                                    <i class="ri-shield-user-line sidebar-icon"></i>
+                                    <span>Roles y Permisos</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('accesos.index')
+                            <li class="ripple-btn">
+                                <a href="{{ request()->routeIs('admin.access-logs.*') ? '#' : route('admin.access-logs.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.access-logs.*') ? 'active' : '' }}"
+                                    data-tooltip="Registros de acceso">
+                                    <i class="ri-login-circle-line sidebar-icon"></i>
+                                    <span>Accesos</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('auditorias.index')
+                            <li class="ripple-btn">
+                                <a href="{{ request()->routeIs('admin.audits.*') ? '#' : route('admin.audits.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}"
+                                    data-tooltip="Auditoría">
+                                    <i class="ri-file-list-3-line sidebar-icon"></i>
+                                    <span>Auditoría</span>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
             @endcanany
         </ul>
     </div>

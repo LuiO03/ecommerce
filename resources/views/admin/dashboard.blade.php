@@ -171,5 +171,18 @@
             </div>
         </a>
         @endcan
+
+        <!-- Tarjeta: Órdenes -->
+        @can('ordenes.index')
+        <a href="{{ route('admin.orders.index') }}" class="dashboard-card ripple-card">
+            <div class="card-icon card-primary">
+                <i class="ri-shopping-bag-3-line"></i>
+            </div>
+            <div class="card-content">
+                <h1 class="card-count">{{ $totalOrders }}</h1>
+                <p class="card-label">Órdenes</p>
+            </div>
+        </a>
+        @endcan
     </div>
 </x-admin-layout>
