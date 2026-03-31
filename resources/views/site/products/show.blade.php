@@ -115,10 +115,10 @@
                                             <button type="button"
                                                 class="variant-value {{ $option->is_color ? 'is-color' : 'is-size' }}"
                                                 data-feature-id="{{ $feature->id }}" aria-pressed="false"
-                                                title="{{ $feature->description ?? $feature->value }}"
-                                                aria-label="{{ $feature->description ?? $feature->value }}">
+                                                title="{{ $feature->value }}{{ $feature->description ? ' (' . $feature->description . ')' : '' }}"
+                                                aria-label="{{ $feature->value }}{{ $feature->description ? ' (' . $feature->description . ')' : '' }}">
                                                 <span class="variant-swatch"
-                                                    style="background-color: {{ $feature->value }}"></span>
+                                                    style="background-color: {{ $feature->description }}"></span>
                                             </button>
                                         @else
                                             <button type="button"

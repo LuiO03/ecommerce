@@ -37,8 +37,8 @@
 
     <div class="actions-container">
 
-        <!-- CONTROLES -->
-        <div class="tabla-controles">
+        <!-- Filtros -->
+        <div class="tabla-filtros">
             <!-- Buscador -->
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
@@ -49,51 +49,47 @@
                 </button>
             </div>
 
-            <!-- Filtros -->
-            <div class="tabla-filtros">
-
-                <!-- Cantidad -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="entriesSelect">
-                            <option value="10" selected>10/pág.</option>
-                            <option value="25">25/pág.</option>
-                            <option value="50">50/pág.</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line selector-icon"></i>
-                    </div>
+            <!-- Cantidad -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-
-                <!-- Acción -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="actionFilter">
-                            <option value="">Todas las acciones</option>
-                            <option value="login">Login</option>
-                            <option value="logout">Logout</option>
-                            <option value="failed">Fallido</option>
-                        </select>
-                        <i class="ri-login-box-line selector-icon"></i>
-                    </div>
-                </div>
-
-                <!-- Estado -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="statusFilterAccess">
-                            <option value="">Todos los estados</option>
-                            <option value="success">Success</option>
-                            <option value="failed">Failed</option>
-                        </select>
-                        <i class="ri-shield-check-line selector-icon"></i>
-                    </div>
-                </div>
-
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                    <i class="ri-filter-off-line"></i>
-                    Limpiar filtros
-                </button>
             </div>
+
+            <!-- Acción -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="actionFilter">
+                        <option value="">Todas las acciones</option>
+                        <option value="login">Login</option>
+                        <option value="logout">Logout</option>
+                        <option value="failed">Fallido</option>
+                    </select>
+                    <i class="ri-login-box-line selector-icon"></i>
+                </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="statusFilterAccess">
+                        <option value="">Todos los estados</option>
+                        <option value="success">Success</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                    <i class="ri-shield-check-line selector-icon"></i>
+                </div>
+            </div>
+
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
+                <i class="ri-filter-off-line"></i>
+                Limpiar filtros
+            </button>
         </div>
 
         <!-- Barra contextual -->

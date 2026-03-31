@@ -50,7 +50,7 @@
     </x-slot>
 
     <div class="actions-container">
-        <div class="tabla-controles">
+        <div class="tabla-filtros">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar posts por título" autocomplete="off" />
@@ -58,63 +58,60 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
-            <div class="tabla-filtros">
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="entriesSelect">
-                            <option value="5">5/pág.</option>
-                            <option value="10" selected>10/pág.</option>
-                            <option value="25">25/pág.</option>
-                            <option value="50">50/pág.</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line selector-icon"></i>
-                    </div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="5">5/pág.</option>
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="sortFilterTitulo">
-                            <option value="">Ordenar por</option>
-                            <option value="title-asc">Título (A-Z)</option>
-                            <option value="title-desc">Título (Z-A)</option>
-                            <option value="date-desc">Más recientes</option>
-                            <option value="date-asc">Más antiguos</option>
-                            <option value="views-desc">Más vistos</option>
-                        </select>
-                        <i class="ri-sort-asc selector-icon"></i>
-                    </div>
-                </div>
-
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="statusFilterPost">
-                            <option value="">Todos los estados</option>
-                            <option value="borrador">Borrador</option>
-                            <option value="pendiente">Pendiente</option>
-                            <option value="publicado">Publicado</option>
-                            <option value="rechazado">Rechazado</option>
-                        </select>
-                        <i class="ri-honour-line selector-icon"></i>
-                    </div>
-                </div>
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="visibilityFilterPost">
-                            <option value="">Todas las visibilidades</option>
-                            <option value="publico">Público</option>
-                            <option value="privado">Privado</option>
-                            <option value="registrado">Registrado</option>
-                        </select>
-                        <i class="ri-target-line selector-icon"></i>
-                    </div>
-                </div>
-                <!-- Botón para limpiar filtros -->
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
             </div>
+
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="sortFilterTitulo">
+                        <option value="">Ordenar por</option>
+                        <option value="title-asc">Título (A-Z)</option>
+                        <option value="title-desc">Título (Z-A)</option>
+                        <option value="date-desc">Más recientes</option>
+                        <option value="date-asc">Más antiguos</option>
+                        <option value="views-desc">Más vistos</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
+                </div>
+            </div>
+
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="statusFilterPost">
+                        <option value="">Todos los estados</option>
+                        <option value="borrador">Borrador</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="publicado">Publicado</option>
+                        <option value="rechazado">Rechazado</option>
+                    </select>
+                    <i class="ri-honour-line selector-icon"></i>
+                </div>
+            </div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="visibilityFilterPost">
+                        <option value="">Todas las visibilidades</option>
+                        <option value="publico">Público</option>
+                        <option value="privado">Privado</option>
+                        <option value="registrado">Registrado</option>
+                    </select>
+                    <i class="ri-target-line selector-icon"></i>
+                </div>
+            </div>
+            <!-- Botón para limpiar filtros -->
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->

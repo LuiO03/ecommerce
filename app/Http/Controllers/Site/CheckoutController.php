@@ -284,6 +284,7 @@ class CheckoutController extends Controller
 
                             $lineTotal = $unitPrice * (int) $item->quantity;
 
+                            // Crear ítem de orden
                             OrderItem::create([
                                 'order_id'   => $order->id,
                                 'product_id' => $product->id,
@@ -292,6 +293,21 @@ class CheckoutController extends Controller
                                 'unit_price' => $unitPrice,
                                 'line_total' => $lineTotal,
                             ]);
+
+                            // Descontar stock de la variante asociada (si aplica)
+                            if ($variant) {
+                                $currentStock = (int) ($variant->stock ?? 0);
+
+                                // Solo gestionar stock cuando es un número positivo
+                                if ($currentStock > 0) {
+                                    $newStock = max($currentStock - (int) $item->quantity, 0);
+
+                                    $variant->update([
+                                        'stock' => $newStock,
+                                        'updated_by' => $user->id,
+                                    ]);
+                                }
+                            }
                         }
 
                         // Marcar el carrito como inactivo

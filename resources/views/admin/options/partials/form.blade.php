@@ -45,8 +45,8 @@
     'Puedes añadir múltiples valores y reorganizarlos luego si lo necesitas.',
 ]" />
 
-<div class="form-columns-row">
-    <div class="form-column">
+<div class="form-body">
+    <div class="form-row-fit">
         <div class="input-group">
             <label for="name" class="label-form">
                 Nombre de la opción
@@ -77,32 +77,6 @@
                           placeholder="Describe brevemente cómo se usa esta opción"
                           data-validate="min:3|max:600">{{ old('description', $optionInstance?->description) }}</textarea>
                 <i class="ri-file-text-line input-icon"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-column">
-        <div class="option-meta-card">
-            <div class="option-meta-icon">
-                <i class="ri-settings-4-line"></i>
-            </div>
-            <div class="option-meta-copy">
-                <h4>Buenas prácticas</h4>
-                <ul>
-                    <li>Utiliza nombres cortos y fáciles de recordar.</li>
-                    <li>Para colores, usa códigos HEX (#RRGGBB).</li>
-                    <li>Las tallas se recomiendan en mayúsculas.</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="option-meta-card">
-            <div class="option-meta-icon option-meta-icon-secondary">
-                <i class="ri-lightbulb-flash-line"></i>
-            </div>
-            <div class="option-meta-copy">
-                <h4>Ayuda rápida</h4>
-                <p>Mantén al menos un valor registrado. Puedes eliminar o añadir más valores en cualquier momento.</p>
             </div>
         </div>
     </div>

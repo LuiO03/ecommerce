@@ -5,27 +5,32 @@
         <div class="page-icon card-info">
             <i class="ri-shopping-bag-3-line"></i>
         </div>
-        Orden #{{ $order->order_number }}
+
+        <div class="page-edit-title">
+            <span class="page-subtitle">Boleta Electrónica</span>
+            Pedido #{{ $order->order_number }}
+        </div>
+    </x-slot>
+
+    <x-slot name="action">
+        @if ($order->pdf_path)
+            <a href="{{ route('admin.orders.invoice-preview', $order) }}" target="_blank" class="boton-form boton-action"
+                id="exportMenuBtn" title="Ver comprobante">
+                <span class="boton-form-icon"><i class="ri-file-pdf-2-fill"></i></span>
+                <span class="boton-form-text">Obtener PDF</span>
+            </a>
+        @endif
     </x-slot>
 
     <div class="options-wrapper order-detail-page">
-        <div class="form-columns-row">
-            <div class="form-column">
+        <div class="form-row-fit">
+            <div class="meta-group">
                 <h2 class="card-title">Información de la orden</h2>
                 <hr class="w-full my-0 border-default">
-                <div class="form-row-fit">
-                    <p><strong>ID:</strong> {{ $order->id }}</p>
-                    <p><strong>N° de orden:</strong> {{ $order->order_number }}</p>
-                    <p>
-                        <strong>Cliente:</strong>
-                        {{ trim((optional($order->user)->name ?? '') . ' ' . (optional($order->user)->last_name ?? '')) ?: '—' }}
-                    </p>
-                    <p>
-                        <strong>Documento:</strong>
-                        {{ optional($order->user)->document_type ?? '—' }}
-                        {{ optional($order->user)->document_number ?? '' }}
-                    </p>
-                    <p>
+                <div class="meta-row-fit">
+                    <div><strong>ID:</strong> {{ $order->id }}</div>
+                    <div><strong>N° de orden:</strong> {{ $order->order_number }}</div>
+                    <div>
                         <strong>Estado:</strong>
                         @switch($order->status)
                             @case('pending')
@@ -75,104 +80,121 @@
                                 </span>
                             @break
                         @endswitch
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                         <strong>Estado de pago:</strong>
                         <span class="badge badge-secondary">{{ ucfirst($order->payment_status) }}</span>
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                         <strong>ID de pago:</strong> {{ $order->payment_id ?? '—' }}
-                    </p>
-                    @if ($order->pdf_path)
-                            <p>
-                                <strong>Factura/Boleta PDF:</strong>
-                                <a href="{{ route('admin.orders.invoice-preview', $order) }}" target="_blank" class="text-primary underline">
-                                    Ver comprobante (vista previa HTML)
-                                </a>
-                            </p>
-                    @endif
-                    <p>
+                    </div>
+                    <div>
                         <strong>Creado:</strong>
                         {{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '—' }}
-                    </p>
-
+                    </div>
                 </div>
             </div>
-            <div class="form-column">
+            <div class="meta-group">
+                <h2 class="card-title">Información del cliente</h2>
+                <hr class="w-full my-0 border-default">
+                <div class="meta-row-fit">
+
+                    <div>
+                        <strong>Cliente:</strong>
+                        {{ trim((optional($order->user)->name ?? '') . ' ' . (optional($order->user)->last_name ?? '')) ?: '—' }}
+                    </div>
+                    <div>
+                        <strong>Tipo de Documento:</strong>
+                        {{ optional($order->user)->document_type ?? '—' }}
+                    </div>
+                    <div>
+                        <strong>Número de Documento:</strong>
+                        {{ optional($order->user)->document_number ?? '' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="meta-group">
                 <h2 class="card-title">Datos de envío</h2>
                 <hr class="w-full my-0 border-default">
-                <div class="card-body space-y-2">
-                    <p><strong>Dirección:</strong> {{ $order->shipping_address }}</p>
-                    <p><strong>Ciudad:</strong> {{ $order->shipping_city ?? '—' }}</p>
-                    <p><strong>Teléfono:</strong> {{ $order->shipping_phone ?? '—' }}</p>
+                <div class="meta-row-fit">
+                    <div><strong>Dirección:</strong> {{ $order->shipping_address }}</div>
+                    <div><strong>Ciudad:</strong> {{ $order->shipping_city ?? '—' }}</div>
+                    <div><strong>Teléfono:</strong> {{ $order->shipping_phone ?? '—' }}</div>
                 </div>
             </div>
         </div>
         <div class="form-body">
-            <div class="form-row-fit">
-                <div class="card-body">
-                    <div class="card-header">
-                        <h2 class="card-title">Productos</h2>
-                    </div>
-                    <table class="tabla-general w-full">
-                        <thead>
+            <div class="tabla-wrapper">
+                <table class="tabla-general w-full tabla-normal" id="table">
+                    <thead>
+                        <tr>
+                            <th class="column-name-th text-start">Producto</th>
+                            <th class="text-start">Variante</th>
+                            <th class="text-center">Cant.</th>
+                            <th class="text-right">P. Unitario</th>
+                            <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($order->items as $item)
                             <tr>
-                                <th>Producto</th>
-                                <th>Variante</th>
-                                <th class="text-center">Cant.</th>
-                                <th class="text-right">P. Unitario</th>
-                                <th class="text-right">Total</th>
+                                <td class="column-name-td">{{ $item->product->name ?? '—' }}</td>
+                                <td>
+                                    @if ($item->variant && $item->variant->features->isNotEmpty())
+                                        @php
+                                            $variantLabels = [];
+                                            foreach ($item->variant->features as $feature) {
+                                                $option = $feature->option;
+                                                $optionName = $option->name ?? ($option->slug ?? null);
+                                                $label = $optionName
+                                                    ? $optionName . ': ' . $feature->value
+                                                    : $feature->value;
+                                                $variantLabels[] = $label;
+                                            }
+                                        @endphp
+                                        <span>{{ implode(' · ', $variantLabels) }}</span>
+                                    @else
+                                        —
+                                    @endif
+                                </td>
+                                <td class="text-center">{{ $item->quantity }}</td>
+                                <td class="text-right">S/. {{ number_format((float) $item->unit_price, 2) }}
+                                </td>
+                                <td class="text-right">S/. {{ number_format((float) $item->line_total, 2) }}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($order->items as $item)
-                                <tr>
-                                    <td>{{ $item->product->name ?? '—' }}</td>
-                                    <td>
-                                        @if ($item->variant && $item->variant->features->isNotEmpty())
-                                            @php
-                                                $variantLabels = [];
-                                                foreach ($item->variant->features as $feature) {
-                                                    $option = $feature->option;
-                                                    $optionName = $option->name ?? ($option->slug ?? null);
-                                                    $label = $optionName
-                                                        ? $optionName . ': ' . $feature->value
-                                                        : $feature->value;
-                                                    $variantLabels[] = $label;
-                                                }
-                                            @endphp
-                                            <span>{{ implode(' · ', $variantLabels) }}</span>
-                                        @else
-                                            —
-                                        @endif
-                                    </td>
-                                    <td class="text-center">{{ $item->quantity }}</td>
-                                    <td class="text-right">S/. {{ number_format((float) $item->unit_price, 2) }}</td>
-                                    <td class="text-right">S/. {{ number_format((float) $item->line_total, 2) }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted">No hay ítems asociados a esta
-                                        orden.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No hay ítems asociados a esta
+                                    orden.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="form-body">
-            <h2 class="card-title">Resumen de totales</h2>
-            <hr class="w-full my-0 border-default">
-            <div class="form-row-fill">
-                <div class="card-body space-y-2">
-                    <p class="flex justify-between"><span>Subtotal:</span> <span>S/.
-                            {{ number_format((float) ($order->subtotal ?? 0), 2) }}</span></p>
-                    <p class="flex justify-between"><span>Envío:</span> <span>S/.
-                            {{ number_format((float) $order->shipping_cost, 2) }}</span></p>
-                    <p class="flex justify-between font-semibold text-lg"><span>Total:</span> <span>S/.
-                            {{ number_format((float) $order->total, 2) }}</span></p>
+        <div class="form-row-fill">
+            <div class="meta-group">
+                <h2 class="card-title">Resumen de totales</h2>
+                <hr class="w-full my-0 border-default">
+                <div class="meta-row-fit">
+                    <div>
+                        <strong>Subtotal:</strong>
+                        <span>S/.
+                            {{ number_format((float) ($order->subtotal ?? 0), 2) }}
+                        </span>
+                    </div>
+                    <div>
+                        <strong>Envío:</strong> <span>S/.
+                            {{ number_format((float) $order->shipping_cost, 2) }}</span>
+                    </div>
+                </div>
+                <hr class="w-full my-0 border-default">
+                <div class="meta-total">
+                    <span>Total:</span>
+                    <span>S/.{{ number_format((float) $order->total, 2) }}</span>
                 </div>
             </div>
         </div>

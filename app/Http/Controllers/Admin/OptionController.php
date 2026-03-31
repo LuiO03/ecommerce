@@ -271,14 +271,15 @@ class OptionController extends Controller
                 $validator->errors()->add('name', 'Ya existe una opción de color registrada.');
             }
 
+            // Para color, la descripción del valor debe ser un HEX válido (#RRGGBB)
             foreach ($request->input('features', []) as $index => $feature) {
-                $value = $feature['value'] ?? '';
-                if ($value === '') {
+                $hex = $feature['description'] ?? '';
+                if ($hex === '') {
                     continue;
                 }
 
-                if (!preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $value)) {
-                    $validator->errors()->add("features.$index.value", 'Debe ser un color hexadecimal válido (#RRGGBB).');
+                if (!preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $hex)) {
+                    $validator->errors()->add("features.$index.description", 'Debe ser un color hexadecimal válido (#RRGGBB).');
                 }
             }
         });
@@ -322,13 +323,23 @@ class OptionController extends Controller
 
         $data = $validator->validate();
 
+        // Para la opción de color, "value" es el nombre y "description" el HEX
         try {
-            $normalizedValue = $this->normalizeFeatureValue($data['value'], $option->isColor());
+            // Nombre del valor (siempre como texto normalizado)
+            $normalizedValue = $this->normalizeFeatureValue($data['value'], false);
         } catch (InvalidArgumentException $exception) {
             throw ValidationException::withMessages(['value' => $exception->getMessage()]);
         }
 
-        $description = $this->normalizeFeatureDescription($data['description'] ?? null);
+        if ($option->isColor()) {
+            try {
+                $description = $this->normalizeFeatureValue($data['description'] ?? '', true);
+            } catch (InvalidArgumentException $exception) {
+                throw ValidationException::withMessages(['description' => $exception->getMessage()]);
+            }
+        } else {
+            $description = $this->normalizeFeatureDescription($data['description'] ?? null);
+        }
 
         if ($option->features()->where('value', $normalizedValue)->exists()) {
             throw ValidationException::withMessages([
@@ -385,17 +396,22 @@ class OptionController extends Controller
         return collect($features)
             ->map(function ($feature) use ($isColor) {
                 $id = isset($feature['id']) ? (int) $feature['id'] : null;
-                $value = trim((string) ($feature['value'] ?? ''));
+                $rawValue = trim((string) ($feature['value'] ?? ''));
+                $rawDescription = $feature['description'] ?? null;
 
                 if ($isColor) {
-                    $value = $this->normalizeColor($value);
+                    // Para color: value = nombre, description = HEX normalizado
+                    $value = ucwords(mb_strtolower($rawValue));
+                    $description = $rawDescription !== null ? trim($rawDescription) : null;
+                    $description = $description === '' ? null : $description;
+                    if ($description !== null) {
+                        $description = $this->normalizeColor($description);
+                    }
                 } else {
-                    $value = ucwords(mb_strtolower($value));
+                    $value = ucwords(mb_strtolower($rawValue));
+                    $description = $rawDescription !== null ? trim($rawDescription) : null;
+                    $description = $description === '' ? null : $description;
                 }
-
-                $description = $feature['description'] ?? null;
-                $description = $description !== null ? trim($description) : null;
-                $description = $description === '' ? null : $description;
 
                 return [
                     'id' => $id,

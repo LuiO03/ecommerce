@@ -35,9 +35,8 @@
     @endcan
 
     <div class="actions-container">
-        <!-- CONTROLES -->
-        <div class="tabla-controles">
-            <!-- Buscador -->
+        <!-- Filtros -->
+        <div class="tabla-filtros">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar por usuario, evento o modelo"
@@ -46,39 +45,35 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
-            <!-- Filtros -->
-            <div class="tabla-filtros">
-                <!-- Cantidad -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="entriesSelect">
-                            <option value="10" selected>10/pág.</option>
-                            <option value="25">25/pág.</option>
-                            <option value="50">50/pág.</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line selector-icon"></i>
-                    </div>
+            <!-- Cantidad -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-
-                <!-- Tipo de evento -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="eventFilter">
-                            <option value="">Todos los eventos</option>
-                            <option value="created">Created</option>
-                            <option value="updated">Updated</option>
-                            <option value="deleted">Deleted</option>
-                        </select>
-                        <i class="ri-flashlight-line selector-icon"></i>
-                    </div>
-                </div>
-
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                    <i class="ri-filter-off-line"></i>
-                    Limpiar filtros
-                </button>
             </div>
+
+            <!-- Tipo de evento -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="eventFilter">
+                        <option value="">Todos los eventos</option>
+                        <option value="created">Created</option>
+                        <option value="updated">Updated</option>
+                        <option value="deleted">Deleted</option>
+                    </select>
+                    <i class="ri-flashlight-line selector-icon"></i>
+                </div>
+            </div>
+
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
+                <i class="ri-filter-off-line"></i>
+                Limpiar filtros
+            </button>
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->

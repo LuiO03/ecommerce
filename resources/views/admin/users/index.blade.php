@@ -43,16 +43,16 @@
     <div class="actions-container">
         <!-- === Controles personalizados === -->
         <div class="tabla-controles">
-            <div class="tabla-buscador">
-                <i class="ri-search-eye-line buscador-icon"></i>
-                <input type="text" id="customSearch" placeholder="Buscar usuarios por nombre o email"
-                    autocomplete="off" />
-                <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
-                    <i class="ri-close-circle-fill"></i>
-                </button>
-            </div>
 
             <div class="tabla-filtros">
+                <div class="tabla-buscador">
+                    <i class="ri-search-eye-line buscador-icon"></i>
+                    <input type="text" id="customSearch" placeholder="Buscar usuarios por nombre o email"
+                        autocomplete="off" />
+                    <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
+                        <i class="ri-close-circle-fill"></i>
+                    </button>
+                </div>
                 <div class="tabla-select-wrapper">
                     <div class="selector">
                         <select id="entriesSelect">

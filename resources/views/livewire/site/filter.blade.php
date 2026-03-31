@@ -54,10 +54,10 @@
                                             </span>
                                             @if ($isColor)
                                                 <span class="filter-facet-swatch"
-                                                    style="--facet-color: {{ $feature->value }}"
-                                                    title="{{ $feature->value }}"
-                                                    aria-label="{{ $feature->value }}"></span>
-                                                <span class="filter-facet-name">{{ $feature->description }}</span>
+                                                    style="--facet-color: {{ $feature->description }}"
+                                                    title="{{ $feature->value }} ({{ $feature->description }})"
+                                                    aria-label="{{ $feature->value }} ({{ $feature->description }})"></span>
+                                                <span class="filter-facet-name">{{ $feature->value }}</span>
                                             @else
                                                 <span class="filter-facet-size">{{ $feature->value }}</span>
                                             @endif

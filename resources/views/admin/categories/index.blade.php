@@ -49,8 +49,7 @@
     </x-slot>
 
     <div class="actions-container">
-        <!-- Controles -->
-        <div class="tabla-controles">
+        <div class="tabla-filtros">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar categorías por nombre" autocomplete="off" />
@@ -58,77 +57,73 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
-            <div class="tabla-filtros">
-                <!-- Cantidad por página -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="entriesSelect">
-                            <option value="5">5/pág.</option>
-                            <option value="10" selected>10/pág.</option>
-                            <option value="25">25/pág.</option>
-                            <option value="50">50/pág.</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line selector-icon"></i>
-                    </div>
+            <!-- Cantidad por página -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="5">5/pág.</option>
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-
-                <!-- Orden -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="sortFilter">
-                            <option value="">Ordenar por</option>
-                            <option value="name-asc">Nombre (A-Z)</option>
-                            <option value="name-desc">Nombre (Z-A)</option>
-                            <option value="date-desc">Más recientes</option>
-                            <option value="date-asc">Más antiguos</option>
-                        </select>
-                        <i class="ri-sort-asc selector-icon"></i>
-                    </div>
-                </div>
-
-                <!-- Estado -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="statusFilter">
-                            <option value="">Todos los estados</option>
-                            <option value="1">Activos</option>
-                            <option value="0">Inactivos</option>
-                        </select>
-                        <i class="ri-filter-3-line selector-icon"></i>
-                    </div>
-                </div>
-
-                <!-- Familia -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="familyFilter">
-                            <option value="">Todas las familias</option>
-                            @foreach($families as $family)
-                                <option value="{{ $family->id }}">{{ $family->name }}</option>
-                            @endforeach
-                        </select>
-                        <i class="ri-folder-3-line selector-icon"></i>
-                    </div>
-                </div>
-
-                <!-- Nivel -->
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="levelFilter">
-                            <option value="">Todos los niveles</option>
-                            <option value="root">Raíz (sin padre)</option>
-                            <option value="subcategory">Subcategoría</option>
-                        </select>
-                        <i class="ri-node-tree selector-icon"></i>
-                    </div>
-                </div>
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
             </div>
 
+            <!-- Orden -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="sortFilter">
+                        <option value="">Ordenar por</option>
+                        <option value="name-asc">Nombre (A-Z)</option>
+                        <option value="name-desc">Nombre (Z-A)</option>
+                        <option value="date-desc">Más recientes</option>
+                        <option value="date-asc">Más antiguos</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
+                </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="1">Activos</option>
+                        <option value="0">Inactivos</option>
+                    </select>
+                    <i class="ri-filter-3-line selector-icon"></i>
+                </div>
+            </div>
+
+            <!-- Familia -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="familyFilter">
+                        <option value="">Todas las familias</option>
+                        @foreach($families as $family)
+                            <option value="{{ $family->id }}">{{ $family->name }}</option>
+                        @endforeach
+                    </select>
+                    <i class="ri-folder-3-line selector-icon"></i>
+                </div>
+            </div>
+
+            <!-- Nivel -->
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="levelFilter">
+                        <option value="">Todos los niveles</option>
+                        <option value="root">Raíz (sin padre)</option>
+                        <option value="subcategory">Subcategoría</option>
+                    </select>
+                    <i class="ri-node-tree selector-icon"></i>
+                </div>
+            </div>
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
         </div>
 
         @canany(['categorias.export', 'categorias.delete'])

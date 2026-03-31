@@ -37,8 +37,7 @@
         @endcan
     </x-slot>
     <div class="actions-container">
-        <!-- === Controles personalizados === -->
-        <div class="tabla-controles">
+        <div class="tabla-filtros">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar roles por nombre" autocomplete="off" />
@@ -46,39 +45,35 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
-            <div class="tabla-filtros">
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="entriesSelect">
-                            <option value="5">5/pág.</option>
-                            <option value="10" selected>10/pág.</option>
-                            <option value="25">25/pág.</option>
-                            <option value="50">50/pág.</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line selector-icon"></i>
-                    </div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="5">5/pág.</option>
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="sortFilter">
-                            <option value="">Ordenar por</option>
-                            <option value="name-asc">Nombre (A-Z)</option>
-                            <option value="name-desc">Nombre (Z-A)</option>
-                            <option value="date-desc">Más recientes</option>
-                            <option value="date-asc">Más antiguos</option>
-                        </select>
-                        <i class="ri-sort-asc selector-icon"></i>
-                    </div>
-                </div>
-                <!-- Botón para limpiar filtros -->
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
-                    title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
             </div>
-
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="sortFilter">
+                        <option value="">Ordenar por</option>
+                        <option value="name-asc">Nombre (A-Z)</option>
+                        <option value="name-desc">Nombre (Z-A)</option>
+                        <option value="date-desc">Más recientes</option>
+                        <option value="date-asc">Más antiguos</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
+                </div>
+            </div>
+            <!-- Botón para limpiar filtros -->
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
+                title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
         </div>
         <!-- === Tabla === -->
         <div class="tabla-wrapper">

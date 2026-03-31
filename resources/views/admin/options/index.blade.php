@@ -62,10 +62,19 @@
                             @forelse ($option->features as $feature)
                                 @php
                                     $isColor = $option->isColor();
-                                    $displayValue = $feature->value;
+
+                                    if ($isColor) {
+                                        // Para color: value = nombre, description = HEX para la previsualización.
+                                        $displayValue = $feature->value;
+                                        $hexCandidate = $feature->description ?? null;
+                                    } else {
+                                        $displayValue = $feature->value;
+                                        $hexCandidate = null;
+                                    }
+
                                     $colorPreview =
-                                        $isColor && preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $displayValue)
-                                            ? strtoupper($displayValue)
+                                        $isColor && $hexCandidate && preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $hexCandidate)
+                                            ? strtoupper($hexCandidate)
                                             : null;
                                 @endphp
                                 <div class="option-feature-pill {{ $colorPreview ? 'is-color' : '' }}"
@@ -75,7 +84,9 @@
                                         <span class="pill-color" style="--pill-color: {{ $colorPreview }}"></span>
                                     @endif
                                     <span class="pill-value">{{ $displayValue }}</span>
-                                    @if ($feature->description)
+                                    @if ($isColor && $colorPreview)
+                                        <span class="pill-description">{{ $colorPreview }}</span>
+                                    @elseif ($feature->description)
                                         <span class="pill-description">{{ $feature->description }}</span>
                                     @endif
                                     <button type="button" class="pill-remove" data-action="feature-remove"
@@ -96,10 +107,19 @@
                                     @if ($isColorOption)
                                         <div class="input-group">
                                             <div class="input-icon-container">
-                                                <i class="ri-palette-line input-icon"></i>
+                                                <i class="ri-align-left input-icon"></i>
                                                 <input type="text" id="feature-value-{{ $option->id }}"
-                                                    data-role="feature-value" name="feature_value" placeholder="#RRGGBB"
-                                                    style="cursor: pointer" autocomplete="off" data-role="feature-value"
+                                                    data-role="feature-value" name="feature_value"
+                                                    placeholder="Nombre del color" maxlength="255" autocomplete="off"
+                                                    data-validate="required|max:50|min:3" required>
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-icon-container">
+                                                <i class="ri-palette-line input-icon"></i>
+                                                <input type="text" id="feature-description-{{ $option->id }}"
+                                                    data-role="feature-description" name="feature_description" placeholder="#RRGGBB"
+                                                    style="cursor: pointer" autocomplete="off"
                                                     data-validate="required|colorCss" data-coloris>
                                             </div>
                                             <script>
@@ -124,15 +144,6 @@
                                                     }
                                                 });
                                             </script>
-                                        </div>
-                                        <div class="input-group">
-                                            <div class="input-icon-container">
-                                                <i class="ri-align-left input-icon"></i>
-                                                <input type="text" id="feature-description-{{ $option->id }}"
-                                                    data-role="feature-description" name="feature_description"
-                                                    placeholder="Nombre del color" maxlength="255" autocomplete="off"
-                                                    data-validate="required|max:50|min:3" required>
-                                            </div>
                                         </div>
                                     @else
                                         <div class="input-group">

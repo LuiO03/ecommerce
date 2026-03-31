@@ -436,10 +436,20 @@
                 // Mostrar las opciones/atributos de la variante
                 let optionsLabel = '';
                 if (Array.isArray(variant.features) && variant.features.length > 0) {
-                    optionsLabel = variant.features.map(f => {
-                        // Mostrar solo el value
-                        return escapeHtml(f.value || '');
-                    }).join(' / ');
+                    const parts = variant.features
+                        .map(f => {
+                            // Para color, el backend ya envía "label" como el nombre del color
+                            // (description) y cae al HEX si no hay nombre. Para el resto, label es value.
+                            const rawLabel = (typeof f.label === 'string' && f.label.trim().length)
+                                ? f.label.trim()
+                                : (typeof f.description === 'string' && f.description.trim().length
+                                    ? f.description.trim()
+                                    : (f.value || ''));
+                            return escapeHtml(rawLabel || '');
+                        })
+                        .filter(text => text.length > 0);
+
+                    optionsLabel = parts.length ? parts.join(' / ') : '—';
                 } else {
                     optionsLabel = '—';
                 }

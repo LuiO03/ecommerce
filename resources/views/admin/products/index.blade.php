@@ -43,78 +43,75 @@
 	</x-slot>
 
 	<div class="actions-container">
-		<div class="tabla-controles">
-			<div class="tabla-buscador">
-				<i class="ri-search-eye-line buscador-icon"></i>
-				<input type="text" id="customSearch" placeholder="Buscar productos por nombre o SKU" autocomplete="off" />
-				<button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
-					<i class="ri-close-circle-fill"></i>
-				</button>
-			</div>
+        <div class="tabla-filtros">
+            <div class="tabla-buscador">
+                <i class="ri-search-eye-line buscador-icon"></i>
+                <input type="text" id="customSearch" placeholder="Buscar productos por nombre o SKU" autocomplete="off" />
+                <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
+                    <i class="ri-close-circle-fill"></i>
+                </button>
+            </div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="5">5/pág.</option>
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
+                </div>
+            </div>
 
-			<div class="tabla-filtros">
-				<div class="tabla-select-wrapper">
-					<div class="selector">
-						<select id="entriesSelect">
-							<option value="5">5/pág.</option>
-							<option value="10" selected>10/pág.</option>
-							<option value="25">25/pág.</option>
-							<option value="50">50/pág.</option>
-						</select>
-						<i class="ri-arrow-down-s-line selector-icon"></i>
-					</div>
-				</div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="sortFilter">
+                        <option value="">Ordenar por</option>
+                        <option value="name-asc">Nombre (A-Z)</option>
+                        <option value="name-desc">Nombre (Z-A)</option>
+                        <option value="date-desc">Más recientes</option>
+                        <option value="date-asc">Más antiguos</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
+                </div>
+            </div>
 
-				<div class="tabla-select-wrapper">
-					<div class="selector">
-						<select id="sortFilter">
-							<option value="">Ordenar por</option>
-							<option value="name-asc">Nombre (A-Z)</option>
-							<option value="name-desc">Nombre (Z-A)</option>
-							<option value="date-desc">Más recientes</option>
-							<option value="date-asc">Más antiguos</option>
-						</select>
-						<i class="ri-sort-asc selector-icon"></i>
-					</div>
-				</div>
-
-				<div class="tabla-select-wrapper">
-					<div class="selector">
-						<select id="statusFilter">
-							<option value="">Todos los estados</option>
-							<option value="1">Activos</option>
-							<option value="0">Inactivos</option>
-						</select>
-						<i class="ri-filter-3-line selector-icon"></i>
-					</div>
-				</div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="1">Activos</option>
+                        <option value="0">Inactivos</option>
+                    </select>
+                    <i class="ri-filter-3-line selector-icon"></i>
+                </div>
+            </div>
 
 
-				<div class="tabla-select-wrapper">
-					<div class="selector">
-						<select id="categoryFilter">
-							<option value="">Todas las categorías</option>
-							@foreach($categories as $category)
-								<option value="{{ $category->id }}">{{ $category->name }}</option>
-							@endforeach
-						</select>
-						<i class="ri-archive-stack-line selector-icon"></i>
-					</div>
-				</div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="categoryFilter">
+                        <option value="">Todas las categorías</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                    <i class="ri-archive-stack-line selector-icon"></i>
+                </div>
+            </div>
 
-				<div class="tabla-select-wrapper" id="minStockFilterWrapper">
-					<button type="button" id="minStockFilterBtn" class="" title="Mostrar solo productos con stock bajo el mínimo">
-						<i class="ri-alert-line" style="font-size:18px;"></i>
-						<span>Stock bajo</span>
-					</button>
-				</div>
+            <div class="tabla-select-wrapper" id="minStockFilterWrapper">
+                <button type="button" id="minStockFilterBtn" class="" title="Mostrar solo productos con stock bajo el mínimo">
+                    <i class="ri-alert-line" style="font-size:18px;"></i>
+                    <span>Stock bajo</span>
+                </button>
+            </div>
 
-				<button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-					<span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-					<span class="boton-text">Limpiar filtros</span>
-				</button>
-			</div>
-		</div>
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
+        </div>
 
 		@canany(['productos.export', 'productos.delete'])
 		<div class="selection-bar" id="selectionBar">

@@ -12,21 +12,21 @@
     </div>
     <div class="option-feature-card-body">
         <div class="input-group">
-            <label class="label-form">Valor del color <i class="ri-asterisk text-accent"></i></label>
-            <div class="input-icon-container">
-                <i class="ri-palette-line input-icon"></i>
+            <label class="label-form">Nombre del color <i class="ri-asterisk text-accent"></i></label>
+            <div class="input-icon-container option-feature-value">
+                <i class="ri-align-left input-icon"></i>
                 <input type="text" id="features-__INDEX__-value" data-role="feature-value"
-                    name="features[__INDEX__][value]" placeholder="#RRGGBB" style="cursor: pointer"
-                    autocomplete="off" data-validate="required|colorCss" value="__VALUE__" data-coloris>
+                    name="features[__INDEX__][value]" placeholder="Nombre del color"
+                    autocomplete="off" data-validate="required|max:50|min:3" value="__VALUE__">
             </div>
         </div>
         <div class="input-group">
-            <label class="label-form label-textarea">Nombre del color <i class="ri-asterisk text-accent"></i></label>
+            <label class="label-form label-textarea">Valor HEX <i class="ri-asterisk text-accent"></i></label>
             <div class="input-icon-container option-feature-description">
-                <i class="ri-align-left input-icon"></i>
-                <input type="text" class="input-form" placeholder="Nombre del color"
+                <i class="ri-palette-line input-icon"></i>
+                <input type="text" class="input-form" placeholder="#RRGGBB"
                     name="features[__INDEX__][description]" data-role="feature-description"
-                    value="__DESCRIPTION__" data-validate="required|max:50|min:3">
+                    value="__DESCRIPTION__" data-validate="required|colorCss" data-coloris>
             </div>
         </div>
     </div>

@@ -39,20 +39,20 @@ class OptionSeeder extends Seeder
                 'name' => 'Color',
                 'features' => [
                     [
-                        'value' => '#FF0000',
-                        'description' => 'Rojo'
+                        'value' => 'Rojo',
+                        'description' => '#FF0000'
                     ],
                     [
-                        'value' => '#00FF00',
-                        'description' => 'Verde'
+                        'value' => 'Verde',
+                        'description' => '#00FF00'
                     ],
                     [
-                        'value' => '#0000FF',
-                        'description' => 'Azul'
+                        'value' => 'Azul',
+                        'description' => '#0000FF'
                     ],
                     [
-                        'value' => '#FFFF00',
-                        'description' => 'Amarillo'
+                        'value' => 'Amarillo',
+                        'description' => '#FFFF00'
                     ],
                 ]
             ],

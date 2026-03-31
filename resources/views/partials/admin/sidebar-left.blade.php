@@ -126,9 +126,9 @@
                 <li>
                     <a href="{{ request()->routeIs('admin.orders.*') ? '#' : route('admin.orders.index') }}"
                         class="sidebar-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
-                        data-tooltip="Órdenes">
+                        data-tooltip="Pedidos">
                         <i class="ri-shopping-bag-3-line sidebar-icon"></i>
-                        <span>Órdenes</span>
+                        <span>Pedidos</span>
                     </a>
                 </li>
             @endcan

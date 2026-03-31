@@ -32,9 +32,6 @@
     --color-normal: #ffffff;
     --color-dark-inverse: #2b242e;
 
-    /* === Tablas / Celdas === */
-    --color-cell-border: #e5e7eb;
-
     /* === Inputs === */
     --color-input-bg: #ffffff;
     --color-input-border: #342e37;
@@ -42,6 +39,8 @@
     --color-input-border-hover: #a8a8a8;
     --color-input-placeholder: #6c757d;
 
+    /* === Tablas / Celdas === */
+    --color-cell-border: #e5e7eb;
     /* === Tablas === */
     --color-table-header-bg: #ffffff;
     --color-table-striped-bg: #f9f9f9;
@@ -718,13 +717,13 @@
     --badge-info-hover-text: #ffffff;
     --badge-info-hover-border: #006064;
 
-    /* Badge Secondary - Púrpura */
-    --badge-secondary-bg: #f3e5f5;
-    --badge-secondary-text: #4a148c;
-    --badge-secondary-border: #ce93d8;
-    --badge-secondary-hover-bg: #7b1fa2;
+    /* Badge Secondary - Gris (neutral) */
+    --badge-secondary-bg: #f5f5f5;
+    --badge-secondary-text: #616161;
+    --badge-secondary-border: #bdbdbd;
+    --badge-secondary-hover-bg: #757575;
     --badge-secondary-hover-text: #ffffff;
-    --badge-secondary-hover-border: #6a1b9a;
+    --badge-secondary-hover-border: #616161;
 
     /* Badge Success - Verde */
     --badge-success-bg: #e8f5e9;
@@ -809,12 +808,12 @@
     --badge-info-hover-border: #00e5ff;
 
     /* Badge Secondary - Modo Oscuro */
-    --badge-secondary-bg: #4a148c;
-    --badge-secondary-text: #ce93d8;
-    --badge-secondary-border: #7b1fa2;
-    --badge-secondary-hover-bg: #6a1b9a;
+    --badge-secondary-bg: #2c2c2c;
+    --badge-secondary-text: #e0e0e0;
+    --badge-secondary-border: #505050;
+    --badge-secondary-hover-bg: #616161;
     --badge-secondary-hover-text: #ffffff;
-    --badge-secondary-hover-border: #4a148c;
+    --badge-secondary-hover-border: #424242;
 
     /* Badge Success - Modo Oscuro */
     --badge-success-bg: #1b5e20;
@@ -942,6 +941,7 @@
 .badge-secondary:hover {
     background-color: var(--badge-secondary-hover-bg);
     transform: translateY(-2px);
+    color: white;
     box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3);
 }
 

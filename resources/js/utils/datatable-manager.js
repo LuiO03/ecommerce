@@ -658,7 +658,10 @@ class DataTableManager {
         ------------------------------------------- */
         $('.tabla-filtros .selector select').each(function() {
             const $select = $(this);
-            if ($select.attr('id') === 'entriesSelect') return; // no aplicar estilo al selector de paginación
+            // no aplicar estilo al selector de paginación
+            if ($select.attr('id') === 'entriesSelect') return;
+
+
             if ($select.val() !== '') {
                 $select.closest('.tabla-select-wrapper').addClass('filter-active');
             } else {

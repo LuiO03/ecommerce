@@ -47,18 +47,12 @@ function buildOptionsIndex(options) {
     };
     byId.set(option.id, option);
     option.features.forEach((feat) => {
-      const normalizedColor = isColor ? normalizeHexColor(feat.value) : null;
-      let label;
+      // Para color: feat.value = nombre, feat.description = HEX
+      const normalizedColor = isColor ? normalizeHexColor(feat.description) : null;
       const rawValue = String(feat.value ?? '').trim();
-      const rawDescription = feat.description != null ? String(feat.description).trim() : '';
 
-      if (isColor) {
-        // Para colores, mostrar el nombre (description) y caer al HEX si no hay nombre.
-        label = rawDescription || rawValue;
-      } else {
-        // Para otras opciones, usar siempre el value (S, M, L, Masculino, etc.).
-        label = rawValue;
-      }
+      // Para todas las opciones, label visible es el value (nombre, talla, etc.)
+      const label = rawValue;
 
       featureToOption.set(feat.id, {
         optionId: option.id,
@@ -125,8 +119,7 @@ function buildVariantLabel(featuresMeta) {
   if (!featuresMeta || !featuresMeta.length) return 'Variante sin opciones';
 
   // Mostrar solo los valores en orden, sin el nombre de la opción.
-  // Para color ya viene meta.label con la description (nombre),
-  // y para el resto meta.label es el value (S, M, L, etc.).
+  // Para color y el resto, meta.label lleva el value (nombre).
   const parts = featuresMeta
     .map((meta) => (meta.label || String(meta.rawValue ?? '').trim()))
     .filter((text) => !!text);

@@ -2,10 +2,10 @@
 
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
-        <div class="page-icon card-primary">
+        <div class="page-icon card-info">
             <i class="ri-shopping-bag-3-line"></i>
         </div>
-        Lista de Órdenes
+        Lista de Pedidos
     </x-slot>
 
     <x-slot name="action">
@@ -35,7 +35,7 @@
     </x-slot>
 
     <div class="actions-container">
-        <div class="tabla-controles">
+        <div class="tabla-filtros">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar órdenes por cliente o N°" autocomplete="off" />
@@ -43,53 +43,80 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
-            <div class="tabla-filtros">
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="entriesSelect">
-                            <option value="5">5/pág.</option>
-                            <option value="10" selected>10/pág.</option>
-                            <option value="25">25/pág.</option>
-                            <option value="50">50/pág.</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line selector-icon"></i>
-                    </div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="5">5/pág.</option>
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="sortFilter">
-                            <option value="">Ordenar por</option>
-                            <option value="date-desc">Más recientes</option>
-                            <option value="date-asc">Más antiguos</option>
-                            <option value="name-asc">Cliente (A-Z)</option>
-                            <option value="name-desc">Cliente (Z-A)</option>
-                        </select>
-                        <i class="ri-sort-asc selector-icon"></i>
-                    </div>
-                </div>
-
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="statusFilter">
-                            <option value="">Todos los estados</option>
-                            <option value="pending">Pendientes</option>
-                            <option value="paid">Pagadas</option>
-                            <option value="processing">En proceso</option>
-                            <option value="shipped">Enviadas</option>
-                            <option value="delivered">Entregadas</option>
-                            <option value="cancelled">Canceladas</option>
-                        </select>
-                        <i class="ri-filter-3-line selector-icon"></i>
-                    </div>
-                </div>
-
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
             </div>
+
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="sortFilter">
+                        <option value="">Ordenar por</option>
+                        <option value="date-desc">Más recientes</option>
+                        <option value="date-asc">Más antiguos</option>
+                        <option value="name-asc">Cliente (A-Z)</option>
+                        <option value="name-desc">Cliente (Z-A)</option>
+                        <option value="total-desc">Monto (mayor a menor)</option>
+                        <option value="total-asc">Monto (menor a mayor)</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
+                </div>
+            </div>
+
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="paid">Pagadas</option>
+                        <option value="processing">En proceso</option>
+                        <option value="shipped">Enviadas</option>
+                        <option value="delivered">Entregadas</option>
+                        <option value="cancelled">Canceladas</option>
+                    </select>
+                    <i class="ri-filter-3-line selector-icon"></i>
+                </div>
+            </div>
+
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="paymentStatusFilter">
+                        <option value="">Pago (todos)</option>
+                        <option value="pending">Pendiente</option>
+                        <option value="paid">Pagado</option>
+                        <option value="processing">En proceso</option>
+                        <option value="refunded">Reembolsado</option>
+                        <option value="failed">Fallido</option>
+                    </select>
+                    <i class="ri-bank-card-line selector-icon"></i>
+                </div>
+            </div>
+
+            <div class="tabla-select-wrapper tabla-select-double">
+                <!-- Filtros de fecha, con la fecha actual por defecto -->
+                <div class="selector">
+                    <input type="date" id="dateFrom" name="dateFrom" max="{{ date('Y-m-d') }}" >
+                    <i class="ri-calendar-line selector-icon"></i>
+                </div>
+                <p>Hasta</p>
+                <div class="selector">
+                    <input type="date" id="dateTo" name="dateTo" max="{{ date('Y-m-d') }}" value="{{ now()->format('Y-m-d') }}">
+                    <i class="ri-calendar-line selector-icon"></i>
+                </div>
+
+            </div>
+
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
         </div>
 
         @can('ordenes.export')
@@ -264,7 +291,7 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            $(document).ready(function() {
                 const tableManager = new DataTableManager('#tabla', {
                     moduleName: 'orders',
                     entityNameSingular: 'orden',
@@ -287,6 +314,184 @@
                         responsive: true,
                         customPagination: true
                     }
+                });
+
+                const table = tableManager.getTable();
+                const idColumn = tableManager.config.columns.id;
+                const nameColumn = tableManager.config.columns.name;
+                const dateColumn = tableManager.config.columns.date;
+                const totalColumn = $('#tabla thead th.column-total-th').index();
+
+                const originalCheckFiltersActive = tableManager.checkFiltersActive.bind(tableManager);
+
+                tableManager.checkFiltersActive = function () {
+                    // Ejecutar lógica original (search + selects)
+                    originalCheckFiltersActive();
+
+                    // Extender con el rango de fechas
+                    const fromVal = $('#dateFrom').val();
+                    const toVal = $('#dateTo').val();
+                    const hasRange = (fromVal && fromVal.trim() !== '') || (toVal && toVal.trim() !== '');
+
+                    $('.tabla-select-double').toggleClass('filter-active', hasRange);
+
+                    if (hasRange) {
+                        $('#clearFiltersBtn').addClass('active');
+                    }
+                };
+
+                // Eliminar el filtro genérico de status de DataTableManager (usa switch-status)
+                if ($.fn.dataTable.ext.search.length) {
+                    $.fn.dataTable.ext.search.pop();
+                }
+
+                // Re-configurar ordenamiento personalizado (incluye monto total)
+                $('#sortFilter').off('change').on('change', function() {
+                    const sortValue = $(this).val();
+                    const wrapper = $(this).closest('.tabla-select-wrapper');
+
+                    if (!sortValue) {
+                        wrapper.removeClass('filter-active');
+                        if (idColumn !== null) {
+                            table.order([[idColumn, 'desc']]).draw();
+                        } else {
+                            table.order([[0, 'desc']]).draw();
+                        }
+                        return;
+                    }
+
+                    wrapper.addClass('filter-active');
+
+                    switch (sortValue) {
+                        case 'name-asc':
+                            if (nameColumn !== null) table.order([[nameColumn, 'asc']]).draw();
+                            break;
+                        case 'name-desc':
+                            if (nameColumn !== null) table.order([[nameColumn, 'desc']]).draw();
+                            break;
+                        case 'date-desc':
+                            if (dateColumn !== null) table.order([[dateColumn, 'desc']]).draw();
+                            break;
+                        case 'date-asc':
+                            if (dateColumn !== null) table.order([[dateColumn, 'asc']]).draw();
+                            break;
+                        case 'total-desc':
+                            if (totalColumn !== -1) table.order([[totalColumn, 'desc']]).draw();
+                            break;
+                        case 'total-asc':
+                            if (totalColumn !== -1) table.order([[totalColumn, 'asc']]).draw();
+                            break;
+                    }
+                });
+
+                function parseDateTime(value) {
+                    if (!value || value.trim() === '' || value === 'Sin fecha') {
+                        return null;
+                    }
+
+                    const parts = value.split(' ');
+                    const dateParts = (parts[0] || '').split('/');
+                    const timeParts = (parts[1] || '00:00').split(':');
+
+                    if (dateParts.length !== 3) return null;
+
+                    const day = parseInt(dateParts[0], 10);
+                    const month = parseInt(dateParts[1], 10) - 1;
+                    const year = parseInt(dateParts[2], 10);
+
+                    const hours = parseInt(timeParts[0] || '0', 10);
+                    const minutes = parseInt(timeParts[1] || '0', 10);
+
+                    return new Date(year, month, day, hours, minutes, 0, 0);
+                }
+
+                // Filtro combinado por estado, estado de pago y rango de fechas
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    if (settings.nTable.id !== 'tabla') return true;
+
+                    const $row = $(table.row(dataIndex).node());
+
+                    const selectedStatus = $('#statusFilter').val();
+                    const selectedPaymentStatus = $('#paymentStatusFilter').val();
+                    const dateFromVal = $('#dateFrom').val();
+                    const dateToVal = $('#dateTo').val();
+
+                    // Estado de la orden (primera columna status)
+                    if (selectedStatus) {
+                        const rowStatusCell = $row.find('td.column-status-td').eq(0);
+                        const rowStatus = (rowStatusCell.data('status') || '').toString();
+                        if (rowStatus !== selectedStatus) {
+                            return false;
+                        }
+                    }
+
+                    // Estado de pago (segunda columna status)
+                    if (selectedPaymentStatus) {
+                        const rowPaymentCell = $row.find('td.column-status-td').eq(1);
+                        const rowPaymentStatus = (rowPaymentCell.data('status') || '').toString();
+                        if (rowPaymentStatus !== selectedPaymentStatus) {
+                            return false;
+                        }
+                    }
+
+                    // Filtro por rango de fechas (columna "Creado")
+                    if (dateColumn !== null && (dateFromVal || dateToVal)) {
+                        const createdText = data[dateColumn];
+                        const createdDate = parseDateTime(createdText);
+
+                        // Si la fila no tiene fecha válida y se está filtrando por rango, la excluimos
+                        if (!createdDate) {
+                            return false;
+                        }
+
+                        if (dateFromVal) {
+                            const fromParts = dateFromVal.split('-');
+                            const fromDate = new Date(
+                                parseInt(fromParts[0], 10),
+                                parseInt(fromParts[1], 10) - 1,
+                                parseInt(fromParts[2], 10),
+                                0,
+                                0,
+                                0,
+                                0
+                            );
+                            if (createdDate < fromDate) {
+                                return false;
+                            }
+                        }
+
+                        if (dateToVal) {
+                            const toParts = dateToVal.split('-');
+                            const toDate = new Date(
+                                parseInt(toParts[0], 10),
+                                parseInt(toParts[1], 10) - 1,
+                                parseInt(toParts[2], 10),
+                                23,
+                                59,
+                                59,
+                                999
+                            );
+                            if (createdDate > toDate) {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                });
+
+                $('#statusFilter, #paymentStatusFilter, #dateFrom, #dateTo').on('change', function() {
+                    table.draw();
+                    tableManager.checkFiltersActive();
+                });
+
+                // Extender botón de "Limpiar filtros" para también resetear fechas
+                $('#clearFiltersBtn').off('click').on('click', function() {
+                    tableManager.clearFilters();
+                    $('#dateFrom').val('');
+                    $('#dateTo').val('');
+                    table.draw();
+                    tableManager.checkFiltersActive();
                 });
             });
         </script>

@@ -118,11 +118,6 @@
     align-items: start;
 }
 
-.card-title {
-    font-weight: bolder;
-    margin: 0;
-}
-
 /* === Meta información === */
 .card-meta {
     display: flex;

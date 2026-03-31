@@ -180,7 +180,7 @@
             </div>
             <div class="card-content">
                 <h1 class="card-count">{{ $totalOrders }}</h1>
-                <p class="card-label">Órdenes</p>
+                <p class="card-label">Pedidos</p>
             </div>
         </a>
         @endcan

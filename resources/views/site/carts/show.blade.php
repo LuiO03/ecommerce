@@ -168,11 +168,13 @@
                                         <p class="cart-item-variant">
                                             @foreach ($colorFeatures as $feature)
                                                 @php
-                                                    $rawColor = (string) ($feature->value ?? '');
-                                                    $normalized = ltrim($rawColor, '#');
+                                                    $rawHex = (string) ($feature->description ?? '');
+                                                    $normalized = ltrim($rawHex, '#');
                                                     $displayColor = $normalized !== '' ? '#' . $normalized : '#000000';
+                                                    $colorName = trim((string) ($feature->value ?? ''));
                                                 @endphp
-                                                <span class="cart-item-color-pill" title="Color {{ $displayColor }}">
+                                                <span class="cart-item-color-pill"
+                                                    title="Color {{ $colorName !== '' ? $colorName . ' (' . $displayColor . ')' : $displayColor }}">
                                                     <span class="cart-item-color-dot"
                                                         style="background-color: {{ $displayColor }};"></span>
                                                 </span>
@@ -266,7 +268,7 @@
                         <a href="{{ route('shipping.index') }}" class="site-btn site-btn-primary">
                             Continuar con la compra
                         </a>
-                        <a href="" class="site-btn site-btn-outline">
+                        <a href="{{ route('welcome.index') }}" class="site-btn site-btn-outline">
                             Seguir comprando
                         </a>
                     </div>

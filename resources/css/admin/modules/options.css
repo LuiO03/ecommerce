@@ -33,7 +33,7 @@
 }
 
 .option-card.is-highlighted {
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 16px 32px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 3px var(--color-success-pastel);
     animation: optionHighlight 0.9s ease-in-out 2;
 }
 
@@ -88,8 +88,8 @@
     gap: 0.45rem;
     padding: 8px 10px;
     border-radius: var(--radius-input);
-    background: var(--color-info-pastel);
-    border: 1px solid var(--option-pill-border);
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--color-text);
@@ -240,56 +240,6 @@
 }
 
 /* === FORM STYLES === */
-.option-meta-card {
-    display: flex;
-    gap: 0.8rem;
-    padding: 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: 1rem;
-    background: var(--color-card-bg);
-    box-shadow: var(--shadow-material-soft);
-    margin-bottom: 1rem;
-}
-
-.option-meta-icon {
-    flex: 0 0 auto;
-    width: 46px;
-    height: 46px;
-    border-radius: 1rem;
-    background: rgba(88, 101, 242, 0.12);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-accent);
-    font-size: 1.4rem;
-}
-
-.option-meta-icon-secondary {
-    background: rgba(14, 165, 233, 0.12);
-    color: #0284c7;
-}
-
-.option-meta-copy h4 {
-    margin: 0 0 0.35rem;
-    font-size: 0.96rem;
-    font-weight: 700;
-}
-
-.option-meta-copy ul {
-    margin: 0;
-    padding-left: 1.1rem;
-    color: var(--color-text-soft);
-    font-size: 0.85rem;
-    display: grid;
-    gap: 0.2rem;
-}
-
-.option-meta-copy p {
-    margin: 0;
-    color: var(--color-text-soft);
-    font-size: 0.85rem;
-    line-height: 1.4;
-}
 
 .option-features-panel {
     display: flex;
@@ -331,7 +281,7 @@
 
     padding: 16px;
     border-radius: var(--radius-card);
-    border: 2px solid var(--color-border);
+    border: 1px solid var(--color-border);
 }
 
 .option-feature-card-header {

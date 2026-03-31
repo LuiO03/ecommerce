@@ -160,12 +160,25 @@ class ProductController extends Controller
             'variants' => $product->variants->map(function ($variant) {
                 // Cargar features y opción asociada
                 $features = $variant->features()->with('option')->get()->map(function ($feature) {
+                    $option = $feature->option;
+                    $isColor = $option?->isColor() ?? false;
+
+                    $rawValue = trim((string) ($feature->value ?? ''));
+                    $rawDescription = trim((string) ($feature->description ?? ''));
+
+                    // Para color, value = nombre y description = HEX.
+                    // La etiqueta visible siempre usa el nombre (value) y cae a description si no existe.
+                    $label = $rawValue !== '' ? $rawValue : $rawDescription;
+
                     return [
-                        'option_name' => $feature->option?->name ?? '',
+                        'option_name' => $option?->name ?? '',
+                        'is_color' => $isColor,
+                        'label' => $label,
                         'description' => $feature->description,
                         'value' => $feature->value,
                     ];
                 })->values();
+
                 return [
                     'id' => $variant->id,
                     'sku' => $variant->sku,

@@ -3,7 +3,8 @@
     $value = old("features.$index.value", $feature['value'] ?? '') ?? '';
     $description = old("features.$index.description", $feature['description'] ?? '') ?? '';
     $isColor = $isColorOption ?? false;
-    $colorCandidate = $value;
+    // Para color: value = nombre, description = HEX
+    $colorCandidate = $description;
     $colorHex =
         $isColor && preg_match('/^#([0-9A-F]{3}|[0-9A-F]{6})$/i', $colorCandidate ?? '')
             ? strtoupper($colorCandidate)
@@ -26,23 +27,23 @@
     <div class="option-feature-card-body">
         @if ($isColor)
             <div class="input-group">
-                <label for="value" class="label-form">Valor del color <i class="ri-asterisk text-accent"></i></label>
-                <div class="input-icon-container">
-                    <i class="ri-palette-line input-icon"></i>
-                    <input type="text" id="features-{{ $index }}-value" data-role="feature-value"
-                        name="features[{{ $index }}][value]" placeholder="#RRGGBB" style="cursor: pointer"
-                        autocomplete="off" data-validate="required|colorCss" value="{{ $value }}" data-coloris>
+                <label for="value" class="label-form">
+                    Nombre del color <i class="ri-asterisk text-accent"></i>
+                </label>
+                <div class="input-icon-container option-feature-value">
+                    <i class="ri-align-left input-icon"></i>
+                    <input type="text" class="input-form" name="features[{{ $index }}][value]"
+                        data-validate="required|max:50|min:3" placeholder="Nombre del color" value="{{ $value }}"
+                        data-role="feature-value" required>
                 </div>
             </div>
             <div class="input-group">
-                <label for="description" class="label-form">
-                    Nombre del color <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container option-feature-description">
-                    <i class="ri-align-left input-icon"></i>
-                    <input type="text" class="input-form" placeholder="Nombre del color"
-                        name="features[{{ $index }}][description]" data-role="feature-description"
-                        value="{{ $description }}" data-validate="required|max:50|min:3" value="{{ $description }}">
+                <label for="description" class="label-form">Valor HEX <i class="ri-asterisk text-accent"></i></label>
+                <div class="input-icon-container">
+                    <i class="ri-palette-line input-icon"></i>
+                    <input type="text" id="features-{{ $index }}-description" data-role="feature-description"
+                        name="features[{{ $index }}][description]" placeholder="#RRGGBB" style="cursor: pointer"
+                        autocomplete="off" data-validate="required|colorCss" value="{{ $description }}" data-coloris>
                 </div>
             </div>
         @else
