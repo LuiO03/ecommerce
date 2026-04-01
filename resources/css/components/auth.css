@@ -50,7 +50,6 @@
 
 .auth-logo .sidebar-logo-texto {
     font-size: var(--font-size-h2);
-    text-transform: uppercase;
 }
 
 .auth-logo .sidebar-logo-texto span {

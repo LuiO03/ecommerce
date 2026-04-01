@@ -40,13 +40,6 @@
                                 </span>
                             @break
 
-                            @case('paid')
-                                <span class="badge badge-success">
-                                    <i class="ri-check-line"></i>
-                                    Pagada
-                                </span>
-                            @break
-
                             @case('processing')
                                 <span class="badge badge-orange">
                                     <i class="ri-loader-4-line"></i>
@@ -59,6 +52,8 @@
                                     <i class="ri-truck-line"></i>
                                     Enviada
                                 </span>
+                            @break
+
                             @case('delivered')
                                 <span class="badge badge-secondary">
                                     <i class="ri-checkbox-multiple-line"></i>
@@ -130,7 +125,7 @@
                     <thead>
                         <tr>
                             <th class="column-name-th text-start">Producto</th>
-                            <th class="text-start">Variante</th>
+                            <th class="text-start">Detalles</th>
                             <th class="text-center">Cant.</th>
                             <th class="text-right">P. Unitario</th>
                             <th class="text-right">Total</th>
@@ -166,8 +161,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">No hay ítems asociados a esta
-                                    orden.</td>
+                                <td colspan="5" class="text-center text-muted">
+                                    <div class="tabla-no-data">
+                                        <i class="ri-survey-line"></i>
+                                        <span>No hay ítems asociados a esta orden.</span>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>

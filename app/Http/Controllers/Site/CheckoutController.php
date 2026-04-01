@@ -233,6 +233,8 @@ class CheckoutController extends Controller
                     $paymentId = $dataMap['TRANSACTION_ID']
                         ?? ($data['TRANSACTION_ID'] ?? ($response['order']['transactionId'] ?? null));
 
+                    // 1) REGISTRO DEL PEDIDO + ÍTEMS EN BASE DE DATOS
+                    // -----------------------------------------------------------------
                     $order = DB::transaction(function () use (
                         $user,
                         $cart,
@@ -251,7 +253,7 @@ class CheckoutController extends Controller
                             'total'            => $amount,
                             'subtotal'         => $subtotal,
                             'shipping_cost'    => $shipping,
-                            'status'           => 'paid',
+                            'status'           => 'processing',
                             'shipping_address' => $shippingAddress,
                             'shipping_city'    => $shippingCity,
                             'shipping_phone'   => $shippingPhone,
@@ -310,14 +312,13 @@ class CheckoutController extends Controller
                             }
                         }
 
-                        // Marcar el carrito como inactivo
+                        // Marcar el carrito como inactivo una vez registrados todos los ítems
                         $cart->update(['is_active' => false]);
                         return $order;
                     });
 
-
-
-                    // Generar y guardar factura/boleta PDF de la orden
+                    // 2) GENERACIÓN Y ALMACENAMIENTO DE LA BOLETA PDF
+                    // -----------------------------------------------------------------
                     try {
                         $orderForPdf = $order->load([
                             'user',
@@ -345,16 +346,21 @@ class CheckoutController extends Controller
                         // Si falla la generación del PDF, no interrumpimos el flujo de compra
                     }
 
-                    // Enviar correo de resumen de compra al confirmar pago exitoso
-                    Mail::to($user->email)->send(new OrderSummary(
-                        $user,
-                        $cart,
-                        $subtotal,
-                        $shipping,
-                        $amount,
-                        $response,
-                        $request->purchaseNumber,
-                    ));
+                    // 3) ENVÍO DEL CORREO DE RESUMEN DE COMPRA AL CLIENTE
+                    // -----------------------------------------------------------------
+                    try {
+                        Mail::to($user->email)->send(new OrderSummary(
+                            $user,
+                            $cart,
+                            $subtotal,
+                            $shipping,
+                            $amount,
+                            $response,
+                            $request->purchaseNumber,
+                        ));
+                    } catch (\Throwable $e) {
+                        report($e); // Si falla el envío del correo, no se interrumpe el flujo de compra
+                    }
                 }
             }
 

@@ -10,7 +10,7 @@
     border: 1px solid var(--color-border);
 }
 
-.targeta-usuario{
+.targeta-usuario {
     display: flex;
     gap: 15px;
     justify-content: start;
@@ -48,6 +48,20 @@
 
 .dashboard-cards {
     margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 640px) {
+    .dashboard-cards {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+
+    .dashboard-card-orders {
+        grid-column: span 3 !important;
+        grid-row: span 1 !important;
+    }
 }
 
 /* === Estilo general de las tarjetas === */
@@ -56,10 +70,33 @@
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     padding: 10px;
+    height: fit-content;
     display: flex;
     align-items: center;
     gap: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.dashboard-card-orders {
+    grid-column: span 2;
+    grid-row: span 2;
+    align-items: start;
+    padding: 15px;
+}
+
+.dashboard-graphic-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 8px;
+    width: 100%;
+}
+
+.dashboard-card-orders:hover {
+    background-color: var(--color-hover) !important;
+    color: var(--color-text) !important;
 }
 
 .dashboard-card:hover {
@@ -108,8 +145,6 @@
     font-size: var(--font-size-p);
 }
 
-
-
 /* === Responsivo === */
 @media (max-width: 640px) {
     .dashboard-user-avatar {
@@ -125,7 +160,7 @@
         align-items: center;
         text-align: center;
         gap: 10px;
-        padding: 15px;
+        padding: 5px;
     }
 
     .card-icon {

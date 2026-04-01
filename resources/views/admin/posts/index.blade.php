@@ -220,11 +220,9 @@
                             <td class="column-views-td">{{ $post->views }}</td>
                             <td class="column-allow-comments-td">
                                 @if ($post->allow_comments)
-                                    <span class="badge badge-success"><i class="ri-checkbox-circle-line"></i>
-                                        Sí
-                                    </span>
+                                    <span>Sí</span>
                                 @else
-                                    <span class="badge badge-danger"><i class="ri-close-circle-line"></i> No</span>
+                                    <span>No</span>
                                 @endif
                             </td>
                             <td class="column-status-post-td">

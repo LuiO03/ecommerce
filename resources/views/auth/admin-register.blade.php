@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="auth-wrapper">
         <div class="auth-logo">
-            <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo">
-            <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
+            @include('partials.components.company-brand')
         </div>
         <div class="auth-card" style="max-width: 820px;">
             <!-- Header con logo -->
@@ -68,7 +67,7 @@
                             <div class="input-icon-container">
                                 <i class="ri-user-line input-icon"></i>
                                 <input type="text" id="name" name="name" class="input-form"
-                                    placeholder="Ingresa tu nombre" value="{{ old('name') }}" required autocomplete="off"
+                                    placeholder="Ingresa tu nombre" value="lui" required autocomplete="off"
                                     data-validate="required|alpha|min:3|max:50">
                             </div>
                         </div>
@@ -80,7 +79,7 @@
                             <div class="input-icon-container">
                                 <i class="ri-user-3-line input-icon"></i>
                                 <input type="text" id="last_name" name="last_name" class="input-form"
-                                    placeholder="Ingresa tu apellido" value="{{ old('last_name') }}" autocomplete="off"
+                                    placeholder="Ingresa tu apellido" value="osorio" autocomplete="off"
                                     data-validate="alpha|max:50">
                             </div>
                         </div>
@@ -93,7 +92,7 @@
                             <div class="input-icon-container">
                                 <i class="ri-mail-line input-icon"></i>
                                 <input type="email" id="email" name="email" class="input-form"
-                                    placeholder="Ingresa tu correo electrónico" value="{{ old('email') }}" required
+                                    placeholder="Ingresa tu correo electrónico" value="lui.fenixand.1997@gmail.com" required
                                     autocomplete="off" data-validate="required|email">
                             </div>
                         </div>
@@ -107,7 +106,7 @@
                                 <i class="ri-id-card-line input-icon"></i>
                                 <select id="document_type" name="document_type" class="select-form" data-validate="required|selected">
                                     <option value="">Seleccione una opción</option>
-                                    <option value="DNI" {{ old('document_type') == 'DNI' ? 'selected' : '' }}>DNI</option>
+                                    <option value="DNI" {{ old('document_type') == 'DNI' ? 'selected' : '' }} selected>DNI</option>
                                     <option value="RUC" {{ old('document_type') == 'RUC' ? 'selected' : '' }}>RUC</option>
                                     <option value="CE" {{ old('document_type') == 'CE' ? 'selected' : '' }}>Carné de extranjería</option>
                                     <option value="PASAPORTE" {{ old('document_type') == 'PASAPORTE' ? 'selected' : '' }}>Pasaporte</option>
@@ -123,7 +122,7 @@
                             <div class="input-icon-container">
                                 <i class="ri-hashtag input-icon"></i>
                                 <input type="text" id="document_number" name="document_number" class="input-form"
-                                    placeholder="Ingresa tu número de documento" value="{{ old('document_number') }}"
+                                    placeholder="Ingresa tu número de documento" value="70098517"
                                     autocomplete="off" data-validate="document_number|max:30|requiredWith:document_type">
                             </div>
                         </div>
@@ -135,7 +134,7 @@
                             </label>
                             <div class="input-icon-container">
                                 <i class="ri-lock-password-line input-icon"></i>
-                                <input type="password" id="password" name="password" class="input-form password-input"
+                                <input type="password" id="password" name="password" class="input-form password-input" value="123456"
                                     placeholder="Crea una contraseña" required autocomplete="off"
                                     data-validate="required|min:6">
                                 <button type="button" class="toggle-password" tabindex="-1"
@@ -156,7 +155,7 @@
                             <div class="input-icon-container">
                                 <i class="ri-lock-line input-icon"></i>
                                 <input type="password" id="password_confirmation" name="password_confirmation"
-                                    class="input-form password-input" placeholder="Repite tu contraseña" required
+                                    class="input-form password-input" placeholder="Repite tu contraseña" required value="123456"
                                     autocomplete="off" data-validate="required|confirmed:password">
                                 <button type="button" class="toggle-password" tabindex="-1"
                                     aria-label="Mostrar contraseña">
@@ -169,16 +168,16 @@
                     <hr class="w-full my-0 border-default">
                     <div class="form-footer">
                         <!-- Botón de registro -->
-                        <button class="boton-form boton-success py-3" type="submit" id="registerBtn">
-                            <span class="boton-form-icon"> <i class="ri-user-add-line"></i> </span>
-                            <span class="boton-form-text">Crear cuenta</span>
-                        </button>
                         <a href="{{ route('welcome.index') }}" class="boton-form boton-volver py-3">
                             <span class="boton-form-text">Volver a inicio</span>
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>
                         </a>
+                        <button class="boton-form boton-success py-3" type="submit" id="registerBtn">
+                            <span class="boton-form-icon"> <i class="ri-user-add-line"></i> </span>
+                            <span class="boton-form-text">Crear cuenta</span>
+                        </button>
                     </div>
                     <p class="input-help-text">
                         Al registrarte, estás creando una cuenta y aceptas las <a href=""

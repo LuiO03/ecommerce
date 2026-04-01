@@ -1,8 +1,12 @@
 <!-- SIDEBAR DERECHO (Perfil de usuario) -->
+@php
+    $user = auth()->user();
+@endphp
+
+@if ($user)
 <aside id="userSidebar" class="sidebar-usuario z-[60] translate-x-full">
 
     @php
-        $user = auth()->user();
         $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
         $unreadCount = $user->unreadNotifications()->count();
         $notifications = $user->notifications()->latest()->limit(15)->get();
@@ -40,8 +44,8 @@
                     </div>
                     <div class="info-usuario">
                         <!-- nombre y apellido -->
-                        <span class="avatar-nombre">{{ auth()->user()->name }} {{ auth()->user()->last_name }}</span>
-                        <p class="avatar-rol">{{ auth()->user()->role_list ?? 'Sin rol' }}(a)</p>
+                        <span class="avatar-nombre">{{ $user->name }} {{ $user->last_name }}</span>
+                        <p class="avatar-rol">{{ $user->role_list ?? 'Sin rol' }}(a)</p>
                     </div>
                 </div>
 
@@ -118,6 +122,7 @@
         </div>
     </div>
 </aside>
+@endif
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const logoutBtnRight = document.getElementById('logoutBtnRight');

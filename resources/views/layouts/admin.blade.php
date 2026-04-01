@@ -1,3 +1,21 @@
+@php
+    $companySettings = function_exists('company_setting') ? company_setting() : null;
+
+    $brandLogoUrl = null;
+
+    if ($companySettings && $companySettings->logo_path) {
+        $path = ltrim($companySettings->logo_path, '/');
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            $brandLogoUrl = $path;
+        } elseif (Storage::disk('public')->exists($path)) {
+            $brandLogoUrl = asset('storage/' . $path);
+        }
+    }
+
+    $brandName = $companySettings->name ?? null;
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -11,6 +29,13 @@
     <!-- Optimización Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Logo de la empresa en la pestaña -->
+    @if ($brandLogoUrl)
+        <link rel="icon" href="{{ $brandLogoUrl }}" type="image/png">
+    @else
+        <link rel="icon" href="{{ asset('images/logos/logo-geckommerce.png') }}" type="image/png">
+    @endif
 
     <!-- Carga combinada de Lato y Poppins -->
     <link

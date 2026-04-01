@@ -37,7 +37,7 @@
                             <i class="ri-store-2-line input-icon"></i>
                             <input type="text" name="name" id="name" class="input-form" required
                                 value="{{ old('name', $setting->name) }}" placeholder="Ej. GeckoCommerce"
-                                data-validate="required|min:3|max:255">
+                                data-validate="required|min:3|max:12">
                         </div>
                     </div>
 

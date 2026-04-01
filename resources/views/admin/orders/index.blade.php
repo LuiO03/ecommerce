@@ -34,6 +34,10 @@
         @endcan
     </x-slot>
 
+    @push('styles')
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    @endpush
+
     <div class="actions-container">
         <div class="tabla-filtros">
             <div class="tabla-buscador">
@@ -100,17 +104,10 @@
             </div>
 
             <div class="tabla-select-wrapper tabla-select-double">
-                <!-- Filtros de fecha, con la fecha actual por defecto -->
                 <div class="selector">
-                    <input type="date" id="dateFrom" name="dateFrom" max="{{ date('Y-m-d') }}" >
+                    <input type="text" id="dateRange" name="dateRange" placeholder="Seleccionar rango de fechas" autocomplete="off">
                     <i class="ri-calendar-line selector-icon"></i>
                 </div>
-                <p>Hasta</p>
-                <div class="selector">
-                    <input type="date" id="dateTo" name="dateTo" max="{{ date('Y-m-d') }}" value="{{ now()->format('Y-m-d') }}">
-                    <i class="ri-calendar-line selector-icon"></i>
-                </div>
-
             </div>
 
             <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
@@ -169,11 +166,12 @@
                         </th>
                         @endcan
                         <th class="column-id-th">ID</th>
-                        <th class="column-name-th">N° Orden</th>
-                        <th class="column-client-th">Cliente</th>
+                        <th class="column-name-th">Cliente</th>
+                        <th class="column-order-th">N° Orden</th>
                         <th class="column-total-th">Total</th>
                         <th class="column-status-th">Estado</th>
-                        <th class="column-status-th">Pago</th>
+                        <th class="column-status-th">Tipo de Pago</th>
+                        <th class="column-status-th">Estado de Pago</th>
                         <th class="column-status-th">ID Pago</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
@@ -194,10 +192,10 @@
                                 <span class="id-text">{{ $order->id }}</span>
                             </td>
                             <td class="column-name-td">
-                                {{ $order->order_number }}
-                            </td>
-                            <td class="column-client-td">
                                 {{ $order->user->name ?? '—' }}
+                            </td>
+                            <td class="column-order-td">
+                                {{ $order->order_number }}
                             </td>
                             <td class="column-total-td">
                                 S/. {{ number_format((float) $order->total, 2) }}
@@ -218,12 +216,6 @@
                                         <span class="badge badge-warning">
                                             <i class="ri-time-line"></i>
                                             Pendiente
-                                        </span>
-                                    @break
-                                    @case('paid')
-                                        <span class="badge badge-success">
-                                            <i class="ri-check-line"></i>
-                                            Pagada
                                         </span>
                                     @break
                                     @case('processing')
@@ -255,10 +247,40 @@
                                             Cancelada
                                         </span>
                                     @break
+                                    @default
+                                        <span class="badge badge-secondary">
+                                            <i class="ri-question-line"></i>
+                                            {{ ucfirst($order->status) }}
+                                        </span>
+
                                 @endswitch
                             </td>
                             <td class="column-status-td" data-status="{{ $order->payment_status }}">
-                                <span class="badge badge-secondary">{{ ucfirst($order->payment_status) }}</span>
+                                <span class="badge badge-secondary">
+                                    {{ $order->payment_method ? ucfirst($order->payment_method) : '—' }}
+                                </span>
+                            </td>
+                            <td class="column-status-td" data-status="{{ $order->payment_status }}">
+                                @switch($order->payment_status)
+                                    @case('pending')
+                                        <span class="badge badge-warning">
+                                            <i class="ri-time-line"></i>
+                                            Pendiente
+                                        </span>
+                                    @break
+                                    @case('paid')
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-line"></i>
+                                            Pagado
+                                        </span>
+                                    @break
+                                    @case('cancelled')
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-line"></i>
+                                            Cancelado
+                                        </span>
+                                    @break
+                                @endswitch
                             </td>
                             <td class="column-status-td">
                                 <span>{{ $order->payment_id ?? '—' }}</span>
@@ -290,6 +312,8 @@
     </div>
 
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
         <script>
             $(document).ready(function() {
                 const tableManager = new DataTableManager('#tabla', {
@@ -325,20 +349,44 @@
                 const originalCheckFiltersActive = tableManager.checkFiltersActive.bind(tableManager);
 
                 tableManager.checkFiltersActive = function () {
-                    // Ejecutar lógica original (search + selects)
-                    originalCheckFiltersActive();
+                    // Reimplementar lógica de filtros activos + incluir rango de fechas
 
-                    // Extender con el rango de fechas
-                    const fromVal = $('#dateFrom').val();
-                    const toVal = $('#dateTo').val();
-                    const hasRange = (fromVal && fromVal.trim() !== '') || (toVal && toVal.trim() !== '');
+                    const searchVal = $('#customSearch').val();
+                    let anyFilterActive = !!(searchVal && searchVal.trim() !== '');
 
-                    $('.tabla-select-double').toggleClass('filter-active', hasRange);
+                    // Selects estándar de filtros (excepto entriesSelect)
+                    $('.tabla-filtros .selector select').each(function () {
+                        const $select = $(this);
+                        if ($select.attr('id') === 'entriesSelect') return;
 
-                    if (hasRange) {
-                        $('#clearFiltersBtn').addClass('active');
-                    }
+                        const hasValue = ($select.val() ?? '') !== '';
+                        $select.closest('.tabla-select-wrapper').toggleClass('filter-active', hasValue);
+                        if (hasValue) anyFilterActive = true;
+                    });
+
+                    // Rango de fechas (input con Flatpickr)
+                    const rangeVal = $('#dateRange').val();
+                    const hasRange = !!(rangeVal && rangeVal.trim() !== '');
+                    $('.tabla-select-wrapper.tabla-select-double').toggleClass('filter-active', hasRange);
+                    if (hasRange) anyFilterActive = true;
+
+                    // Botón global de limpiar filtros
+                    $('#clearFiltersBtn').toggleClass('active', anyFilterActive);
                 };
+
+                // Inicializar Flatpickr en modo rango sobre un solo input
+                if (window.flatpickr) {
+                    flatpickr('#dateRange', {
+                        mode: 'range',
+                        dateFormat: 'Y-m-d',
+                        maxDate: 'today',
+                        locale: window.flatpickr.l10ns.es || 'es',
+                        rangeSeparator: ' a ',
+                        onChange: function () {
+                            $('#dateRange').trigger('change');
+                        }
+                    });
+                }
 
                 // Eliminar el filtro genérico de status de DataTableManager (usa switch-status)
                 if ($.fn.dataTable.ext.search.length) {
@@ -413,8 +461,7 @@
 
                     const selectedStatus = $('#statusFilter').val();
                     const selectedPaymentStatus = $('#paymentStatusFilter').val();
-                    const dateFromVal = $('#dateFrom').val();
-                    const dateToVal = $('#dateTo').val();
+                    const dateRangeVal = $('#dateRange').val();
 
                     // Estado de la orden (primera columna status)
                     if (selectedStatus) {
@@ -434,8 +481,20 @@
                         }
                     }
 
-                    // Filtro por rango de fechas (columna "Creado")
-                    if (dateColumn !== null && (dateFromVal || dateToVal)) {
+                    // Filtro por rango de fechas (columna "Creado") usando un solo input con rango
+                    if (dateColumn !== null && dateRangeVal) {
+                        let dateFromVal = null;
+                        let dateToVal = null;
+
+                        const parts = dateRangeVal.split(' a ');
+                        if (parts.length === 2) {
+                            dateFromVal = parts[0].trim();
+                            dateToVal = parts[1].trim();
+                        }
+
+                        if (!dateFromVal && !dateToVal) {
+                            return true;
+                        }
                         const createdText = data[dateColumn];
                         const createdDate = parseDateTime(createdText);
 
@@ -480,7 +539,7 @@
                     return true;
                 });
 
-                $('#statusFilter, #paymentStatusFilter, #dateFrom, #dateTo').on('change', function() {
+                $('#statusFilter, #paymentStatusFilter, #dateRange').on('change', function() {
                     table.draw();
                     tableManager.checkFiltersActive();
                 });
@@ -488,8 +547,12 @@
                 // Extender botón de "Limpiar filtros" para también resetear fechas
                 $('#clearFiltersBtn').off('click').on('click', function() {
                     tableManager.clearFilters();
-                    $('#dateFrom').val('');
-                    $('#dateTo').val('');
+                    const $dateRange = $('#dateRange');
+                    $dateRange.val('');
+                    const inputEl = $dateRange[0];
+                    if (inputEl && inputEl._flatpickr) {
+                        inputEl._flatpickr.clear();
+                    }
                     table.draw();
                     tableManager.checkFiltersActive();
                 });

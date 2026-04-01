@@ -9,16 +9,17 @@
             <div class="targeta-usuario">
                 @php
                     $dashboardUser = auth()->user();
-                    $dashboardHasImage = $dashboardUser->image && Storage::disk('public')->exists($dashboardUser->image);
+                    $dashboardHasImage =
+                        $dashboardUser->image && Storage::disk('public')->exists($dashboardUser->image);
                 @endphp
                 @if ($dashboardHasImage)
-                    <img src="{{ asset('storage/' . $dashboardUser->image) }}"
-                        alt="{{ $dashboardUser->name }}" class="dashboard-user-avatar">
+                    <img src="{{ asset('storage/' . $dashboardUser->image) }}" alt="{{ $dashboardUser->name }}"
+                        class="dashboard-user-avatar">
                 @else
-                        <div class="dashboard-user-avatar"
-                            style="background-color: {{ $dashboardUser->avatar_colors['background'] ?? '#cccccc' }}; color: {{ $dashboardUser->avatar_colors['color'] ?? '#333333' }}; border-color: {{ $dashboardUser->avatar_colors['color'] ?? '#333333' }};">
-                            {{ $dashboardUser->initials }}
-                        </div>
+                    <div class="dashboard-user-avatar"
+                        style="background-color: {{ $dashboardUser->avatar_colors['background'] ?? '#cccccc' }}; color: {{ $dashboardUser->avatar_colors['color'] ?? '#333333' }}; border-color: {{ $dashboardUser->avatar_colors['color'] ?? '#333333' }};">
+                        {{ $dashboardUser->initials }}
+                    </div>
                 @endif
 
                 <div class="dashboard-user-info">
@@ -44,145 +45,229 @@
             </button>
         </div>
     </div>
-    <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 dashboard-cards">
-        <!-- Tarjeta: Productos -->
-        @can('productos.index')
-        <a href="{{ route('admin.products.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-danger">
-                <i class="ri-box-3-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalProducts }}</h1>
-                <p class="card-label">Productos</p>
-            </div>
-        </a>
-        @endcan
-        <!-- Tarjeta: Categorías -->
-        @can('categorias.index')
-        <a href="{{ route('admin.categories.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-info">
-                <i class="ri-price-tag-3-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalCategories }}</h1>
-                <p class="card-label">Categorías</p>
-            </div>
-        </a>
-        @endcan
+    <div class="dashboard-cards">
+        <!-- 5 pedidos recientes -->
+        <div class="dashboard-card ripple-card dashboard-card-orders">
+            <div class="dashboard-graphic-container">
+                <div class="flex items-center justify-between">
+                    <span class="card-title">Últimos pedidos</span>
+                    <a href="{{ route('admin.orders.index') }}" class="boton-form boton-action">
+                        <span class="boton-form-text">Ver todos</span>
+                        <span class="boton-form-icon">
+                            <i class="ri-arrow-right-line"></i>
+                        </span>
+                    </a>
+                </div>
+                <table class="tabla-normal" id="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Estado</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($orders as $order)
+                            <tr data-id="{{ $order->id }}" data-name="{{ $order->order_number }}">
+                                <td class="text-center">
+                                    <span class="id-text">{{ $order->id }}</span>
+                                </td>
+                                <td>
+                                    {{ $order->user->name . ' ' . $order->user->last_name ?? '—' }}
+                                </td>
+                                <td class="text-center" data-status="{{ $order->status }}">
+                                    @switch($order->status)
+                                        @case('pending')
+                                            <span class="badge badge-warning">
+                                                <i class="ri-time-line"></i>
+                                                Pendiente
+                                            </span>
+                                        @break
 
-        <!-- Tarjeta: Familias -->
-        @can('familias.index')
-        <a href="{{ route('admin.families.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-success">
-                <i class="ri-apps-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalFamilies }}</h1>
-                <p class="card-label">Familias</p>
-            </div>
-        </a>
-        @endcan
+                                        @case('processing')
+                                            <span class="badge badge-orange">
+                                                <i class="ri-loader-4-line"></i>
+                                                En proceso
+                                            </span>
+                                        @break
 
-        <!-- Tarjeta: Portadas -->
-        @can('portadas.index')
-        <a href="{{ route('admin.covers.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-pink">
-                <i class="ri-image-2-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalCovers }}</h1>
-                <p class="card-label">Portadas</p>
-            </div>
-        </a>
-        @endcan
+                                        @case('shipped')
+                                            <span class="badge badge-secondary">
+                                                <i class="ri-truck-line"></i>
+                                                Enviada
+                                            </span>
+                                        @case('delivered')
+                                            <span class="badge badge-secondary">
+                                                <i class="ri-checkbox-multiple-line"></i>
+                                                Entregada
+                                            </span>
+                                        @break
 
-        <!-- Tarjeta: Marcas -->
-        <a href="" class="dashboard-card ripple-card">
-            <div class="card-icon card-warning">
-                <i class="ri-award-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">15</h1>
-                <p class="card-label">Marcas</p>
-            </div>
-        </a>
+                                        @case('refunded')
+                                            <span class="badge badge-info">
+                                                <i class="ri-refund-2-line"></i>
+                                                Reembolsada
+                                            </span>
+                                        @break
 
-        <!-- Tarjeta: Roles -->
-        @can('roles.index')
-        <a href="{{ route('admin.roles.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-primary">
-                <i class="ri-shield-user-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalRoles }}</h1>
-                <p class="card-label">Roles</p>
-            </div>
-        </a>
-        @endcan
+                                        @case('cancelled')
+                                            <span class="badge badge-danger">
+                                                <i class="ri-close-circle-line"></i>
+                                                Cancelada
+                                            </span>
+                                        @break
 
-        <!-- Tarjeta: Usuarios -->
-        @can('usuarios.index')
-        <a href="{{ route('admin.users.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-purple">
-                <i class="ri-admin-line"></i>
+                                        @default
+                                            <span class="badge badge-secondary">
+                                                <i class="ri-question-line"></i>
+                                                {{ ucfirst($order->status) }}
+                                            </span>
+                                    @endswitch
+                                </td>
+                                <td>
+                                    S/. {{ number_format((float) $order->total, 2) }}
+                                </td>
+                            </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        <div class="tabla-no-data">
+                                            <i class="ri-survey-line"></i>
+                                            <span>No hay órdenes disponibles</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalUsers }}</h1>
-                <p class="card-label">Usuarios</p>
-            </div>
-        </a>
-        @endcan
+            <!-- Tarjeta: Productos -->
+            @can('productos.index')
+                <a href="{{ route('admin.products.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-danger">
+                        <i class="ri-box-3-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalProducts }}</h1>
+                        <p class="card-label">Productos</p>
+                    </div>
+                </a>
+            @endcan
+            <!-- Tarjeta: Categorías -->
+            @can('categorias.index')
+                <a href="{{ route('admin.categories.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-info">
+                        <i class="ri-price-tag-3-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalCategories }}</h1>
+                        <p class="card-label">Categorías</p>
+                    </div>
+                </a>
+            @endcan
 
-        <!-- Tarjeta: Clientes -->
-        @can('clientes.index')
-        <a href="{{ route('admin.clients.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-secondary">
-                <i class="ri-user-5-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalClients }}</h1>
-                <p class="card-label">Clientes</p>
-            </div>
-        </a>
-        @endcan
+            <!-- Tarjeta: Familias -->
+            @can('familias.index')
+                <a href="{{ route('admin.families.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-success">
+                        <i class="ri-apps-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalFamilies }}</h1>
+                        <p class="card-label">Familias</p>
+                    </div>
+                </a>
+            @endcan
 
-        <!-- Tarjeta: Posts -->
-        @can('posts.index')
-        <a href="{{ route('admin.posts.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-orange">
-                <i class="ri-article-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalPosts }}</h1>
-                <p class="card-label">Posts</p>
-            </div>
-        </a>
-        @endcan
+            <!-- Tarjeta: Portadas -->
+            @can('portadas.index')
+                <a href="{{ route('admin.covers.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-pink">
+                        <i class="ri-image-2-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalCovers }}</h1>
+                        <p class="card-label">Portadas</p>
+                    </div>
+                </a>
+            @endcan
 
-        <!-- Tarjeta: Opciones -->
-        @can('opciones.index')
-        <a href="{{ route('admin.options.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-success">
-                <i class="ri-settings-3-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalOptions }}</h1>
-                <p class="card-label">Opciones</p>
-            </div>
-        </a>
-        @endcan
+            <!-- Tarjeta: Marcas -->
+            <a href="" class="dashboard-card ripple-card">
+                <div class="card-icon card-warning">
+                    <i class="ri-award-line"></i>
+                </div>
+                <div class="card-content">
+                    <h1 class="card-count">15</h1>
+                    <p class="card-label">Marcas</p>
+                </div>
+            </a>
 
-        <!-- Tarjeta: Órdenes -->
-        @can('ordenes.index')
-        <a href="{{ route('admin.orders.index') }}" class="dashboard-card ripple-card">
-            <div class="card-icon card-primary">
-                <i class="ri-shopping-bag-3-line"></i>
-            </div>
-            <div class="card-content">
-                <h1 class="card-count">{{ $totalOrders }}</h1>
-                <p class="card-label">Pedidos</p>
-            </div>
-        </a>
-        @endcan
-    </div>
-</x-admin-layout>
+            <!-- Tarjeta: Roles -->
+            @can('roles.index')
+                <a href="{{ route('admin.roles.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-primary">
+                        <i class="ri-shield-user-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalRoles }}</h1>
+                        <p class="card-label">Roles</p>
+                    </div>
+                </a>
+            @endcan
+
+            <!-- Tarjeta: Usuarios -->
+            @can('usuarios.index')
+                <a href="{{ route('admin.users.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-purple">
+                        <i class="ri-admin-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalUsers }}</h1>
+                        <p class="card-label">Usuarios</p>
+                    </div>
+                </a>
+            @endcan
+
+            <!-- Tarjeta: Clientes -->
+            @can('clientes.index')
+                <a href="{{ route('admin.clients.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-secondary">
+                        <i class="ri-user-5-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalClients }}</h1>
+                        <p class="card-label">Clientes</p>
+                    </div>
+                </a>
+            @endcan
+
+            <!-- Tarjeta: Posts -->
+            @can('posts.index')
+                <a href="{{ route('admin.posts.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-orange">
+                        <i class="ri-article-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalPosts }}</h1>
+                        <p class="card-label">Posts</p>
+                    </div>
+                </a>
+            @endcan
+
+            <!-- Tarjeta: Opciones -->
+            @can('opciones.index')
+                <a href="{{ route('admin.options.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-success">
+                        <i class="ri-settings-3-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalOptions }}</h1>
+                        <p class="card-label">Opciones</p>
+                    </div>
+                </a>
+            @endcan
+        </div>
+    </x-admin-layout>

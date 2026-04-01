@@ -299,21 +299,6 @@
     border-radius: 50%;
 }
 
-/* --- Animaciones y transiciones --- */
-.fade-in {
-    animation: fadeInTab 0.4s ease;
-}
-@keyframes fadeInTab {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 /* --- Responsive --- */
 @media (max-width: 639px) {
     .profile-container {

@@ -288,7 +288,6 @@
    🎛️ CONTROLES DE TABLA
 ======================================================= */
 
-
 /* Botón de limpiar filtros */
 .boton-clear-filters {
     display: none;
@@ -399,6 +398,10 @@
     color: var(--color-accent);
 }
 
+#dateRange::placeholder {
+    color: var(--color-input-placeholder);
+}
+
 /* Botón para limpiar búsqueda */
 .buscador-clear {
     position: absolute;
@@ -436,9 +439,10 @@
     align-items: center;
     width: 100%;
     gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease. border-radius 0.2s ease;
 }
 
-.tabla-select-double{
+.tabla-select-double {
     grid-column: span 2;
 }
 
@@ -450,8 +454,8 @@
 }
 
 .tabla-select-wrapper.filter-active {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 2px var(--color-accent-pastel);
+    transform: scale(0.99);
+    box-shadow: 0 0 0 3px var(--color-accent-pastel);
     border-radius: var(--radius-input);
 }
 
@@ -476,7 +480,7 @@
     appearance: none;
 }
 
-.tabla-select-wrapper input{
+.tabla-select-wrapper input {
     padding: 8px 30px 8px 10px;
     width: 100%;
     border: 1px solid var(--color-input-border);
@@ -584,9 +588,15 @@
 }
 
 /* Tabla normal - sin datatables */
+.tabla-normal {
+    border-collapse: collapse;
+    width: 100%;
+}
+
 .tabla-normal td,
 .tabla-normal th {
     padding: 0.5rem;
+    border: 1px solid var(--color-cell-border);
 }
 /* cabecera y filas pares de otro color */
 .tabla-normal thead th {
@@ -594,6 +604,15 @@
 }
 .tabla-normal tbody tr:nth-child(even) {
     background-color: var(--color-table-striped-bg);
+}
+
+.tabla-normal td{
+    font-size: var(--font-size-p);
+}
+
+.tabla-normal tbody tr:hover,
+.tabla-normal thead th:hover{
+    background-color: var(--color-table-hover-bg);
 }
 
 /* =======================================================
@@ -668,7 +687,8 @@ table.dataTable.dtr-inline.collapsed td.control::before {
 }
 
 .tabla-info {
-    font-weight: normal;
+    font-weight: bolder;
+    font-size: var(--font-size-sm);
 }
 
 .filter-indicator {
@@ -878,14 +898,15 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     justify-content: center;
     padding: 4rem 2rem;
     text-align: center;
-    background: var(--bg-secondary);
-    border: 2px dashed var(--border-color);
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     color: var(--color-muted);
 }
 
 .data-empty i {
     font-size: 58px;
+    line-height: 1;
 }
 
 .data-empty span {
@@ -1019,7 +1040,6 @@ table.dataTable.dtr-inline.collapsed td.control::before {
 
 /* Tablets y pantallas medianas */
 @media (max-width: 1024px) {
-
     .tabla-filtros {
         justify-self: stretch;
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -1039,7 +1059,6 @@ table.dataTable.dtr-inline.collapsed td.control::before {
 
 /* Pantallas pequeñas - Móviles grandes */
 @media (max-width: 768px) {
-
     .tabla-filtros {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
@@ -1067,7 +1086,6 @@ table.dataTable.dtr-inline.collapsed td.control::before {
 
 /* Móviles pequeños */
 @media (max-width: 480px) {
-
     .tabla-buscador {
         min-width: 160px;
     }

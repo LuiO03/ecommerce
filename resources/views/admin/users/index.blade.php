@@ -262,7 +262,7 @@
                                     @endcan
                                 @else
                                     <td class="column-status-td">
-                                        <span class="badge badge-danger" title="No puedes cambiar el estado de tu propia cuenta">
+                                        <span class="badge badge-danger py-1.5 px-5" title="No puedes cambiar el estado de tu propia cuenta">
                                             <i class="ri-lock-fill"></i>
                                         </span>
                                     </td>

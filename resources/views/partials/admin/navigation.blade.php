@@ -22,7 +22,8 @@
 
     <div class="topbar-right">
         @php
-            $unreadCount = auth()->user()->unreadNotifications()->count();
+            $user = auth()->user();
+            $unreadCount = $user ? $user->unreadNotifications()->count() : 0;
         @endphp
 
         <!-- boton para ir al sitio web -->
@@ -37,24 +38,25 @@
             @endif
         </button>
         <!-- boton para ir al perfil de usuario -->
-        <div class="flex items-center ms-2">
-            <a href="{{ route('admin.profile.index') }}" title="Perfil de usuario">
-                @php
-                    $user = auth()->user();
-                    $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
-                @endphp
+        @if ($user)
+            <div class="flex items-center ms-2">
+                <a href="{{ route('admin.profile.index') }}" title="Perfil de usuario">
+                    @php
+                        $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
+                    @endphp
 
-                @if ($hasAvatarImage)
-                    <img class="topbar-avatar" src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}">
-                @else
-                    <div class="topbar-avatar"
-                        style="background-color: {{ $user->avatar_colors['background'] }};
-                       color: {{ $user->avatar_colors['color'] }};">
-                        {{ $user->initials }}
-                    </div>
-                @endif
-            </a>
-        </div>
+                    @if ($hasAvatarImage)
+                        <img class="topbar-avatar" src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}">
+                    @else
+                        <div class="topbar-avatar"
+                            style="background-color: {{ $user->avatar_colors['background'] }};
+                           color: {{ $user->avatar_colors['color'] }};">
+                            {{ $user->initials }}
+                        </div>
+                    @endif
+                </a>
+            </div>
+        @endif
 
         <div class="topbar-user-menu">
             <button id="userSidebarToggle" class="hamburger-btn z-[70]" aria-label="Abrir menú de usuario">

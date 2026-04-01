@@ -2,6 +2,7 @@
 
     use Illuminate\Support\Facades\Route;
     use Illuminate\Support\Facades\Mail;
+    use Illuminate\Support\Facades\Session;
     use Illuminate\Http\Request;
     use App\Models\User;
     use App\Http\Controllers\Site\WellcomeController;
@@ -18,6 +19,7 @@
     use App\Http\Controllers\Auth\GoogleController;
 
     use App\Mail\TestEmail;
+    use App\Mail\UserRegistered;
 
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -38,12 +40,57 @@
         return new TestEmail();
     });
 
-    // Verificación de correo electrónico (enlace desde el email de registro)
-    Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    // Reenvío de correo de verificación (flujo público)
+    Route::post('/account/email/resend', function (Request $request) {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        // Cooldown simple por email usando sesión (5 minutos)
+        $email = mb_strtolower(trim($request->input('email')));
+        $sessionKey = 'verification_resend_' . sha1($email);
+        $cooldownSeconds = 300; // 5 minutos
+
+        $lastSentAt = Session::get($sessionKey);
+        if ($lastSentAt && now()->diffInSeconds($lastSentAt) < $cooldownSeconds) {
+            $remaining = $cooldownSeconds - now()->diffInSeconds($lastSentAt);
+
+            return back()->with('toast', [
+                'type' => 'warning',
+                'title' => 'Espera antes de volver a intentar',
+                'message' => 'Ya hemos enviado recientemente un correo de verificación. Por favor, inténtalo de nuevo en unos minutos.',
+            ]);
+        }
+
+        $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
+
+        if (! $user || $user->email_verified_at) {
+            // Respuesta genérica para no filtrar existencia de cuentas
+            return back()->with('toast', [
+                'type' => 'info',
+                'title' => 'Si tu cuenta existe...',
+                'message' => 'Si tu cuenta existe y aún no ha sido verificada, te enviaremos un nuevo correo en unos momentos.',
+            ]);
+        }
+
+        Mail::to($user->email)->send(new UserRegistered($user));
+
+        Session::put($sessionKey, now());
+
+        return back()->with('toast', [
+            'type' => 'success',
+            'title' => 'Correo reenviado',
+            'message' => 'Si el correo es correcto y tu cuenta no ha sido verificada, deberías recibir un nuevo enlace de verificación en breve.',
+        ]);
+    })->name('site.verification.resend');
+
+    // Verificación de correo electrónico (enlace desde el email de registro - flujo público)
+    Route::get('/account/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
         $user = User::findOrFail($id);
 
+        // Si el hash del correo no coincide, mostramos vista de fallo genérica
         if (! hash_equals(sha1($user->email), (string) $hash)) {
-            abort(403, 'Enlace de verificación inválido.');
+            return response()->view('auth.admin-confirm-email-failure', [], 403);
         }
 
         if (! $user->email_verified_at) {
@@ -52,8 +99,11 @@
             ])->save();
         }
 
-        return redirect()->route('login')->with('status', 'Tu correo ha sido verificado correctamente. Ahora puedes iniciar sesión.');
-    })->middleware('signed')->name('verification.verify');
+        // Vista de confirmación de correo exitosa
+        return view('auth.admin-confirm-email-success', [
+            'user' => $user,
+        ]);
+    })->middleware('signed')->name('site.verification.verify');
     //GOOGLE AUTH
     // 1) Rutas para autenticación con Google con Laravel Socialite
     Route::get('/google-auth/redirect', [GoogleController::class, 'redirectToGoogle'])

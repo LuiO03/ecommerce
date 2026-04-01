@@ -36,7 +36,7 @@ class UserController extends Controller
             $query->where('name', 'Cliente');
         })
             ->with('roles')
-            ->select(['id', 'name', 'last_name', 'email', 'slug', 'status', 'created_at', 'image', 'dni', 'phone', 'email_verified_at'])
+            ->select(['id', 'name', 'last_name', 'email', 'slug', 'status', 'created_at', 'image', 'phone', 'email_verified_at'])
             ->orderByDesc('id')
             ->get();
         $roles = Role::all();
@@ -491,7 +491,6 @@ class UserController extends Controller
             'role' => $user->getRoleNames()->first(),
             'document_type' => $user->document_type,
             'document_number' => $user->document_number,
-            'dni' => $user->dni,
             'phone' => $user->phone,
             'address' => $user->address,
             'status' => $user->status,

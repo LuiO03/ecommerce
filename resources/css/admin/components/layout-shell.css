@@ -57,6 +57,12 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+@media (max-width: 640px) {
+    .topbar-icon-btn {
+        display: none;
+    }
+}
+
 .topbar-icon-btn:hover {
     background-color: var(--color-hover);
     color: var(--color-accent);
@@ -191,7 +197,6 @@
 
 .sidebar-header .sidebar-logo-texto {
     font-size: 22px;
-    text-transform: uppercase;
 }
 
 .sidebar-header .sidebar-logo-texto span {

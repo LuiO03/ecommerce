@@ -134,7 +134,7 @@
             max-width: 280px;
             margin-left: auto;
             margin-top: 12px;
-            border-top: 1px solid #111;
+            border-top: 1px solid #6b7280;
             padding-top: 8px;
         }
 
@@ -172,21 +172,43 @@
         <!-- HEADER -->
         <div class="header">
             <div class="company">
-                @if ($companyInfo->logo_path)
-                    <img src="{{ asset('storage/' . $companyInfo->logo_path) }}" alt="Logo de la empresa">
+                @php
+                    $companySettings = $companyInfo ?? (function_exists('company_setting') ? company_setting() : null);
+
+                    $pdfLogoUrl = null;
+
+                    if ($companySettings && $companySettings->logo_path) {
+                        $path = ltrim($companySettings->logo_path, '/');
+
+                        if (Str::startsWith($path, ['http://', 'https://'])) {
+                            $pdfLogoUrl = $path;
+                        } elseif (Storage::disk('public')->exists($path)) {
+                            $pdfLogoUrl = asset('storage/' . $path);
+                        }
+                    }
+
+                    $pdfCompanyName = $companySettings->name ?? config('app.name');
+                    $pdfAddress = $companySettings->address ?? '-';
+                    $pdfEmail = $companySettings->email ?? '-';
+                    $pdfPhone = $companySettings->phone ?? '-';
+                    $pdfRuc = $companySettings->ruc ?? '-';
+                @endphp
+
+                @if ($pdfLogoUrl)
+                    <img src="{{ $pdfLogoUrl }}" alt="Logo de la empresa">
                 @else
                     <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo">
                 @endif
 
-                <h1>{{ $companyInfo->name ?? config('app.name') }}</h1>
+                <h1>{{ $pdfCompanyName }}</h1>
 
-                <p><strong>Dirección:</strong> {{ $companyInfo->address ?? '-' }}</p>
-                <p><strong>Email:</strong> {{ $companyInfo->email ?? '-' }}</p>
-                <p><strong>Teléfono:</strong> {{ $companyInfo->phone ?? '-' }}</p>
+                <p><strong>Dirección:</strong> {{ $pdfAddress }}</p>
+                <p><strong>Email:</strong> {{ $pdfEmail }}</p>
+                <p><strong>Teléfono:</strong> {{ $pdfPhone }}</p>
             </div>
 
             <div class="meta-box">
-                <div class="ruc">RUC: {{ $companyInfo->ruc ?? '-' }}</div>
+                <div class="ruc">RUC: {{ $pdfRuc }}</div>
                 <div class="doc-type">BOLETA DE VENTA</div>
                 <div class="doc-number">{{ $order->order_number }}</div>
             </div>
@@ -220,9 +242,9 @@
         <table>
             <thead>
                 <tr>
-                    <th>Producto</th>
-                    <th class="text-center">Cant.</th>
+                    <th>Descripción</th>
                     <th class="text-right">P. Unit</th>
+                    <th class="text-center">Cant.</th>
                     <th class="text-right">Total</th>
                 </tr>
             </thead>
@@ -256,8 +278,8 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="text-center">{{ $item->quantity }}</td>
                         <td class="text-right">S/. {{ number_format($item->unit_price, 2) }}</td>
+                        <td class="text-center">{{ $item->quantity }}</td>
                         <td class="text-right">S/. {{ number_format($item->line_total, 2) }}</td>
                     </tr>
                 @endforeach

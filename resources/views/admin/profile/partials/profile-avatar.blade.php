@@ -1,5 +1,5 @@
 <div id="avatarModal" class="modal-avatar hidden">
-    <div class="modal-avatar-content animate-in">
+    <div class="modal-avatar-content">
         <div class="info-header bg-accent" id="avatarModalHeader">
             <h6 id="avatarModalHeaderText">Cambiar foto de perfil</h6>
             <button type="button" id="closeAvatarModal" class="info-close ripple-btn">

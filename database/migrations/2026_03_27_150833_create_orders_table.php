@@ -23,7 +23,6 @@ return new class extends Migration
 
             $table->enum('status', [
                 'pending',     // pendiente
-                'paid',        // pagado
                 'processing',  // en proceso
                 'shipped',     // enviado
                 'delivered',   // entregado
@@ -38,7 +37,12 @@ return new class extends Migration
             $table->string('payment_method')->nullable()->default(1); // niubiz, yape, etc.
             // pending, authorized, captured, failed, refunded, etc.
             $table->string('payment_id')->nullable(); // id de transacción del gateway
-            $table->string('payment_status')->default('pending');
+            $table->enum('payment_status', [
+                'pending',
+                'paid',
+                'failed',
+                'refunded'
+            ])->default('pending');
 
             $table->timestamps();
             $table->softDeletes();

@@ -868,7 +868,7 @@ class DataTableManager {
 
         // Siempre mostrar la información de registros
         $('#tableInfo').html(
-            `Mostrando <strong>${info.start + 1}</strong> a <strong>${info.end}</strong> de <strong>${info.recordsDisplay}</strong> registros`
+            `Mostrando ${info.start + 1} a ${info.end} de ${info.recordsDisplay} registros`
         );
 
         // Si solo hay 1 página o menos, no mostrar botones de paginación

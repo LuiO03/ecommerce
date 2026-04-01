@@ -68,7 +68,7 @@ h3 {
 }
 
 p {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.5em;
     margin-top: 0;
     text-align: left;
@@ -229,20 +229,24 @@ img {
     -premailer-width: 100%;
     margin: 30px auto;
     width: 100%;
+    /* hacer que no haya espacio entre celdas */
+    border-collapse: collapse;
 }
 
 .table th {
-    border-bottom: 1px solid #edeff2;
+    border: 1px solid #3d4852;
     margin: 0;
-    padding-bottom: 8px;
+    padding: 10px 5px;
+    color: black;
+    text-align: center;
 }
 
 .table td {
-    color: #74787e;
-    font-size: 15px;
-    line-height: 18px;
+    color: #718096;
+    font-size: 12px;
     margin: 0;
-    padding: 10px 0;
+    padding: 8px 5px;
+    border: 1px solid #3d4852;
 }
 
 .content-cell {
@@ -271,7 +275,7 @@ img {
     overflow: hidden;
     text-decoration: none;
     border-radius: 5rem;
-    padding: 6px 5px;
+    padding: 4px 5px;
 }
 
 .button-accent{

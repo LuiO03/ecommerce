@@ -22,7 +22,7 @@ class TestEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'site.emails.test-email-two',
+            markdown: 'site.emails.orders.test-summary',
         );
     }
 

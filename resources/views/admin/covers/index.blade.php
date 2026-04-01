@@ -17,7 +17,7 @@
     </x-slot>
 
     <div class="options-wrapper">
-        <div class="tabla-controles">
+        <div class="tabla-filtros">
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar portadas por nombre" autocomplete="off" />
@@ -25,38 +25,34 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
-            <div class="tabla-filtros">
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="sortFilter">
-                            <option value="">Ordenar por</option>
-                            <option value="name-asc">Nombre (A-Z)</option>
-                            <option value="name-desc">Nombre (Z-A)</option>
-                            <option value="date-desc">Más recientes</option>
-                            <option value="date-asc">Más antiguos</option>
-                        </select>
-                        <i class="ri-sort-asc selector-icon"></i>
-                    </div>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="sortFilter">
+                        <option value="">Ordenar por</option>
+                        <option value="name-asc">Nombre (A-Z)</option>
+                        <option value="name-desc">Nombre (Z-A)</option>
+                        <option value="date-desc">Más recientes</option>
+                        <option value="date-asc">Más antiguos</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
                 </div>
-
-                <div class="tabla-select-wrapper">
-                    <div class="selector">
-                        <select id="statusFilter">
-                            <option value="">Todos los estados</option>
-                            <option value="1">Activos</option>
-                            <option value="0">Inactivos</option>
-                        </select>
-                        <i class="ri-filter-3-line selector-icon"></i>
-                    </div>
-                </div>
-                <!-- Botón para limpiar filtros -->
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
-                    title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
             </div>
+
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="1">Activos</option>
+                        <option value="0">Inactivos</option>
+                    </select>
+                    <i class="ri-filter-3-line selector-icon"></i>
+                </div>
+            </div>
+            <!-- Botón para limpiar filtros -->
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
         </div>
 
         <!-- Galería de tarjetas -->
@@ -139,8 +135,7 @@
             @empty
                 <div class="data-empty">
                     <i class="ri-image-add-line"></i>
-                    <span>No hay portadas</span>
-                    <p>Crea tu primera portada para comenzar</p>
+                    <span>Aún no hay portadas registradas</span>
                 </div>
             @endforelse
         </div>

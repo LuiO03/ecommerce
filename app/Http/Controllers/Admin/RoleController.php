@@ -188,6 +188,17 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
+        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Protegido',
+                'title' => 'Rol del sistema',
+                'message' => "El rol <strong>{$role->name}</strong> no puede ser modificado.",
+            ]);
+
+            return redirect()->route('admin.roles.index');
+        }
+
         $request->validate([
             'name'        => 'required|string|min:3|max:255|unique:roles,name,' . $role->id,
             'description' => 'nullable|string|max:500',
@@ -252,6 +263,17 @@ class RoleController extends Controller
 
     public function permissions(Role $role)
     {
+        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Protegido',
+                'title' => 'Rol del sistema',
+                'message' => "Los permisos del rol <strong>{$role->name}</strong> no pueden ser modificados.",
+            ]);
+
+            return redirect()->route('admin.roles.index');
+        }
+
         $role->load('permissions');
 
         // Traer todos los permisos ordenados
@@ -282,6 +304,17 @@ class RoleController extends Controller
     // Actualizar los permisos asignados a un rol.
     public function updatePermissions(Request $request, Role $role)
     {
+        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
+            Session::flash('info', [
+                'type' => 'warning',
+                'header' => 'Protegido',
+                'title' => 'Rol del sistema',
+                'message' => "Los permisos del rol <strong>{$role->name}</strong> no pueden ser modificados.",
+            ]);
+
+            return redirect()->route('admin.roles.index');
+        }
+
         $validated = $request->validate([
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',

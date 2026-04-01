@@ -1,108 +1,15 @@
-@php
-    $links = [
-        [
-            'label' => 'Dashboard',
-            'icon' => 'ri-dashboard-line',
-            'route' => 'admin.dashboard',
-        ],
-        [
-            'label' => 'Kanban',
-            'icon' => 'ri-stack-line',
-            'route' => 'admin.kanban',
-            'badge' => 'Pro',
-        ],
-        [
-            'label' => 'Inbox',
-            'icon' => 'ri-mail-line',
-            'route' => 'admin.inbox',
-            'badge' => '3',
-        ],
-        [
-            'label' => 'Gestión',
-            'icon' => 'ri-settings-3-line',
-            'submenu' => [
-                [
-                    'label' => 'Categorías',
-                    'icon' => 'ri-apps-line',
-                    'route' => 'admin.categorias',
-                ],
-                [
-                    'label' => 'Marcas',
-                    'icon' => 'ri-price-tag-3-line',
-                    'route' => 'admin.marcas',
-                ],
-                [
-                    'label' => 'Productos',
-                    'icon' => 'ri-box-3-line',
-                    'route' => 'admin.productos',
-                ],
-            ],
-        ],
-        [
-            'label' => 'Usuarios',
-            'icon' => 'ri-id-card-line',
-            'route' => 'admin.usuarios',
-        ],
-        [
-            'label' => 'Productos',
-            'icon' => 'ri-shopping-bag-3-line',
-            'route' => 'admin.products',
-        ],
-    ];
-
-    // Función helper para manejar rutas inexistentes
-    function safe_route($name)
-    {
-        try {
-            return route($name);
-        } catch (\Exception $e) {
-            return '#';
-        }
-    }
-
-    $companySettings = company_setting();
-
-    $sidebarLogoUrl = null;
-
-    if ($companySettings && $companySettings->logo_path) {
-        $path = ltrim($companySettings->logo_path, '/');
-
-        // Si es URL externa
-        if (Str::startsWith($path, ['http://', 'https://'])) {
-            $sidebarLogoUrl = $path;
-        }
-        // Si es archivo local
-        elseif (Storage::disk('public')->exists($path)) {
-            $sidebarLogoUrl = asset('storage/' . $path);
-        }
-    }
-
-    $companyDisplayName = $companySettings?->name;
-@endphp
 
 <!-- SIDEBAR IZQUIERDO -->
 <aside id="logo-sidebar" class="sidebar-principal z-40 w-64 -translate-x-full sm:translate-x-0" aria-label="Sidebar">
 
     <div class="sidebar-header">
-        <a href="{{ safe_route('admin.dashboard') }}" class="flex items-center gap-2">
-            @if ($sidebarLogoUrl)
-                <img src="{{ $sidebarLogoUrl }}" class="h-8" alt="{{ $companyDisplayName ?? 'Logo' }}">
-                @if ($companyDisplayName)
-                    <div class="sidebar-logo-texto">
-                        {{ $companyDisplayName }}
-                    </div>
-                @endif
-            @else
-                <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo-default">
-                <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
-            @endif
+        <a href="{{ request()->routeIs('admin.dashboard') ? '#' : route('admin.dashboard') }}" class="flex items-center gap-2">
+            @include('partials.components.company-brand')
         </a>
     </div>
 
     <div class="sidebar-contenido">
         <ul class="space-y-1">
-            @foreach ($links as $link)
-            @endforeach
             <li class="ripple-btn">
                 <a href="{{ request()->routeIs('admin.dashboard') ? '#' : route('admin.dashboard') }}"
                     class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"

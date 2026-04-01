@@ -28,9 +28,9 @@ class UserRegistered extends Mailable
      */
     public function build(): static
     {
-        // URL firmada para verificación de correo (igual que la notificación por defecto)
+        // URL firmada para verificación de correo (flujo público del sitio)
         $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
+            'site.verification.verify',
             now()->addMinutes((int) Config::get('auth.admin-verification', 60)),
             [
                 'id' => $this->user->getKey(),

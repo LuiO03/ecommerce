@@ -44,6 +44,7 @@
     /* === Tablas === */
     --color-table-header-bg: #ffffff;
     --color-table-striped-bg: #f9f9f9;
+    --color-table-hover-bg: #f1f1f1;
 
     /* === Scrollbar === */
     --scrollbar-track: #ffffff;
@@ -93,8 +94,7 @@
     --color-normal: #111111;
     --color-dark-inverse: #e9e9e9;
 
-    /* === Tablas / Celdas === */
-    --color-cell-border: #242424;
+
 
     /* === Inputs === */
     --color-input-bg: #1c1918;
@@ -103,10 +103,12 @@
     --color-input-border-hover: #666;
     --color-input-placeholder: #aaaaaa;
 
+    /* === Tablas / Celdas === */
+    --color-cell-border: #242424;
     /* === Tablas === */
     --color-table-header-bg: #181818;
     --color-table-striped-bg: #212121;
-
+    --color-table-hover-bg: #2a2a2a;
     /* === Scrollbar === */
     --scrollbar-track: #181818;
     --scrollbar-thumb: #444;

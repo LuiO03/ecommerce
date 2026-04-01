@@ -1,40 +1,54 @@
 <x-mail::message>
-# ¡Gracias por tu compra, {{ $user->name }}!
+# Resumen de tu compra
 
-Hemos recibido tu pedido y estamos procesándolo.
+Hola {{ $user->name }}, gracias por tu pedido.
 
-## Detalle de la compra
+Hemos recibido tu orden y la estamos procesando. A continuación encontrarás un resumen claro de tu compra.
 
 @php
-    $items = $cart->items;
+  $items = $cart->items;
 @endphp
 
 @if($items->isNotEmpty())
-| Producto | Variación | Cantidad | Precio |
-| -------- | --------- | -------- | ------ |
+<x-mail::table>
+| Producto                                                 | Cant. | Precio U. | Importe   |
+|----------------------------------------------------------|:-----:|-------------:|----------:|
 @foreach($items as $item)
-| {{ $item->product?->name ?? 'Producto eliminado' }} |
-  {{ $item->variant?->name ?? '-' }} |
-  {{ $item->quantity }} |
-  S/ {{ number_format($item->quantity * ($item->variant?->price ?? $item->product?->price ?? 0), 2) }} |
+@php
+  $productName = $item->product?->name ?? 'Producto eliminado';
+  $variantName = $item->variant?->name ?? '';
+  $basePrice = $item->variant?->price ?? $item->product?->price ?? 0;
+  $unitPrice = (float) $basePrice;
+  $lineTotal = $unitPrice * (int) $item->quantity;
+@endphp
+| {{ $productName }} {{ $variantName ? ' · ' . $variantName : '' }} |  {{ $item->quantity }}  | S/ {{ number_format($unitPrice, 2) }} | S/ {{ number_format($lineTotal, 2) }} |
 @endforeach
+</x-mail::table>
 @endif
 
-**Subtotal:** S/ {{ number_format($subtotal, 2) }}
-**Envío:** S/ {{ number_format($shipping, 2) }}
-**Total:** **S/ {{ number_format($amount, 2) }}**
+**Subtotal productos:** S/ {{ number_format($subtotal, 2) }}<br>
+**Envío:** S/ {{ number_format($shipping, 2) }}<br>
+**Total pagado:** **S/ {{ number_format($amount, 2) }}**
 
 @if(!empty($purchaseNumber))
-Número de pedido / compra: **{{ $purchaseNumber }}**
+Número de pedido: **{{ $purchaseNumber }}**<br>
 @endif
 
-@if(!empty($paymentData['dataMap']['BRAND']))
-Método de pago: **{{ $paymentData['dataMap']['BRAND'] }}**
+@php
+  $brand = $paymentData['dataMap']['BRAND']
+    ?? ($paymentData['dataMap']['BRAND_NAME'] ?? null
+    ?? ($paymentData['data']['BRAND'] ?? ($paymentData['data']['BRAND_NAME'] ?? null) ?? null));
+@endphp
+
+@if(!empty($brand))
+Método de pago: Tarjeta de crédito **{{ $brand }}**
 @endif
 
 <x-mail::button :url="url('/')">
 Ir a la tienda
 </x-mail::button>
+
+Si tienes alguna duda sobre tu compra, solo responde a este correo y nuestro equipo de soporte te ayudará.
 
 Gracias por confiar en nosotros,<br>
 {{ config('app.name') }}

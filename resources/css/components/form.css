@@ -201,6 +201,13 @@ input[type="checkbox"]:indeterminate {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
+@media (max-width: 768px) {
+    .meta-row-fit {
+        gap: 10px;
+        grid-template-columns: 1fr;
+    }
+}
+
 .meta-row-fit div{
     font-size: var(--font-size-sm);
     display: flex;
@@ -346,7 +353,6 @@ input[type="checkbox"]:indeterminate {
     padding: 10px 12px;
 }
 
-
 .input-form:disabled,
 .select-form:disabled {
     background-color: var(--color-input-bg-disabled);
@@ -411,7 +417,6 @@ input[type="checkbox"]:indeterminate {
 .input-group textarea:focus {
     border-color: var(--color-accent);
     outline: none;
-    box-shadow: var(--shadow-material);
     box-shadow: 0 0 0 3px var(--shadow-accent);
     outline: none;
 }

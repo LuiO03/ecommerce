@@ -129,8 +129,6 @@
                     if (submitBtn) submitBtn.disabled = true;
                 });
             });
-            // Inicialmente desactivar el botón de fondo
-            if (saveBackgroundBtn) saveBackgroundBtn.disabled = true;
 
             // Deshabilitar número de documento hasta que se elija tipo en el perfil
             const form = document.getElementById('profileForm');
@@ -181,7 +179,7 @@
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
             <span class="boton-form-text">Volver al inicio</span>
         </a>
-        <button class="boton-form boton-accent" type="submit" id="submitBtn" disabled>
+        <button class="boton-form boton-accent" type="submit" id="submitBtn">
             <span class="boton-form-icon"><i class="ri-save-line"></i></span>
             <span class="boton-form-text">Guardar cambios</span>
         </button>

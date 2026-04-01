@@ -58,10 +58,6 @@
                         <td id="user-document-number">-</td>
                     </tr>
                     <tr>
-                        <th>DNI</th>
-                        <td id="user-dni">-</td>
-                    </tr>
-                    <tr>
                         <th>Teléfono</th>
                         <td id="user-phone">-</td>
                     </tr>
@@ -133,7 +129,6 @@
             $('#user-role').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
             $('#user-document-type').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
             $('#user-document-number').html('<div class="shimmer shimmer-cell" style="width:110px;"></div>');
-            $('#user-dni').html('<div class="shimmer shimmer-cell" style="width:70px;"></div>');
             $('#user-phone').html('<div class="shimmer shimmer-cell" style="width:80px;"></div>');
             $('#user-address').html('<div class="shimmer shimmer-cell" style="width:140px;"></div>');
             $('#user-status').html('<div class="shimmer shimmer-cell" style="width:80px;"></div>');
@@ -207,14 +202,6 @@
                             '<span class="text-muted-null">Sin teléfono registrado</span>');
                     } else {
                         $('#user-phone').text(data.phone);
-                    }
-
-                    // Dni
-                    if (!data.dni) {
-                        $('#user-dni').html(
-                            '<span class="text-muted-null">Sin DNI registrado</span>');
-                    } else {
-                        $('#user-dni').text(data.dni);
                     }
 
                     if (data.status) {
