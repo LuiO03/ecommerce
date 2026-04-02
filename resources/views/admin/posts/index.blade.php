@@ -42,9 +42,9 @@
         @endcan
 
         @can('posts.create')
-            <a href="{{ route('admin.posts.create') }}" class="boton boton-primary">
-                <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-                <span class="boton-text">Crear Post</span>
+            <a href="{{ route('admin.posts.create') }}" class="boton-form boton-accent">
+                <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+                <span class="boton-form-text">Crear Post</span>
             </a>
         @endcan
     </x-slot>

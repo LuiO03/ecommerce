@@ -269,5 +269,19 @@
                     </div>
                 </a>
             @endcan
+
+            <!-- Tarjeta: Conductores -->
+            @can('conductores.index')
+                <a href="{{ route('admin.drivers.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-info">
+                        <i class="ri-steering-2-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalDrivers }}</h1>
+                        <p class="card-label">Conductores</p>
+                    </div>
+                </a>
+            @endcan
+
         </div>
     </x-admin-layout>

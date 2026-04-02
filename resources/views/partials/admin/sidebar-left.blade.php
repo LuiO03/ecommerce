@@ -18,6 +18,8 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+
+            <!-- Portadas -->
             @can('portadas.index')
                 <li class="ripple-btn">
                     <a href="{{ request()->routeIs('admin.covers.*') ? '#' : route('admin.covers.index') }}"
@@ -29,6 +31,7 @@
                 </li>
             @endcan
 
+            <!-- Pedidos -->
             @can('ordenes.index')
                 <li>
                     <a href="{{ request()->routeIs('admin.orders.*') ? '#' : route('admin.orders.index') }}"
@@ -36,6 +39,18 @@
                         data-tooltip="Pedidos">
                         <i class="ri-shopping-bag-3-line sidebar-icon"></i>
                         <span>Pedidos</span>
+                    </a>
+                </li>
+            @endcan
+
+            <!-- Conductores -->
+            @can('conductores.index')
+                <li>
+                    <a href="{{ request()->routeIs('admin.drivers.*') ? '#' : route('admin.drivers.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.drivers.*') ? 'active' : '' }}"
+                        data-tooltip="Conductores">
+                        <i class="ri-user-2-line sidebar-icon"></i>
+                        <span>Conductores</span>
                     </a>
                 </li>
             @endcan

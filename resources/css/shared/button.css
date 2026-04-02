@@ -78,7 +78,7 @@
     z-index: 1;
     border-radius: var(--radius-input);
     overflow: hidden;
-    padding: 8px 15px;
+    padding: 10px 15px;
     cursor: pointer;
     position: relative;
     border: 1px solid transparent;

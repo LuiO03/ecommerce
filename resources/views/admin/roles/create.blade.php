@@ -6,7 +6,7 @@
         Nuevo Rol
     </x-slot>
     <x-slot name="action">
-        <a href="{{ route('admin.roles.index') }}" class="boton-form boton-action">
+        <a href="{{ route('admin.roles.index') }}" class="boton-form boton-accent">
             <span class="boton-form-icon"><i class="ri-arrow-left-circle-fill"></i></span>
             <span class="boton-form-text">Volver</span>
         </a>

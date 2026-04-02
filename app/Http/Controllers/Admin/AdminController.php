@@ -12,6 +12,7 @@ use App\Models\Option;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Driver;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Models\Role;
 
@@ -45,6 +46,7 @@ class AdminController extends Controller
             'totalRoles'      => $this->countIfCan($user, 'roles.index', 'count_roles', fn() => Role::count()),
             'totalPosts'      => $this->countIfCan($user, 'posts.index', 'count_posts', fn() => Post::count()),
             'totalOptions'    => $this->countIfCan($user, 'opciones.index', 'count_options', fn() => Option::count()),
+            'totalDrivers'    => $this->countIfCan($user, 'conductores.index', 'count_drivers', fn() => Driver::count()),
 
             // Configuración empresa
             'companyName' => Cache::remember('company_name', 3600, function () {

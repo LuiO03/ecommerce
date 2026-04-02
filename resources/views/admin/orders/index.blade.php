@@ -172,7 +172,6 @@
                         <th class="column-status-th">Estado</th>
                         <th class="column-status-th">Tipo de Pago</th>
                         <th class="column-status-th">Estado de Pago</th>
-                        <th class="column-status-th">ID Pago</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -282,9 +281,6 @@
                                     @break
                                 @endswitch
                             </td>
-                            <td class="column-status-td">
-                                <span>{{ $order->payment_id ?? '—' }}</span>
-                            </td>
                             <td>
                                 <span>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</span>
                             </td>
@@ -298,6 +294,23 @@
                                             <span class="boton-sm-icon"><i class="ri-file-pdf-2-fill"></i></span>
                                         </a>
                                     @endif
+                                    @can('ordenes.update')
+                                        @if ($order->status === 'pending')
+                                            <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="order-dispatch-form" data-order="{{ $order->order_number }}" style="display:inline-block;">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="processing">
+                                                <button type="submit" class="boton boton-primary" title="Marcar como listo para despachar">
+                                                    <span class="boton-text">Despachar</span>
+                                                    <span class="boton-icon"><i class="ri-check-double-line"></i></span>
+                                                </button>
+                                            </form>
+                                        @elseif ($order->status === 'processing')
+                                            <a href="{{ route('admin.orders.show', $order) }}" class="boton-sm boton-info" title="Asignar repartidor">
+                                                <span class="boton-sm-icon"><i class="ri-user-follow-line"></i></span>
+                                            </a>
+                                        @endif
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -339,6 +352,45 @@
                         customPagination: true
                     }
                 });
+
+                // ========================================
+                // 🎨 RESALTAR FILA CREADA/EDITADA
+                // ========================================
+                @if (Session::has('highlightRow'))
+                    (function() {
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
+                            ? performance.getEntriesByType('navigation')
+                            : [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
+                            ? performance.navigation.type
+                            : null;
+                        const navType = navEntries.length ? navEntries[0].type : legacyNav;
+                        const isBackNavigation = navType === 'back_forward' || navType === 2;
+
+                        if (isBackNavigation) {
+                            return;
+                        }
+
+                        const highlightId = {{ Session::get('highlightRow') }};
+                        setTimeout(() => {
+                            const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
+                            if (row.length) {
+                                row.addClass('row-highlight');
+
+                                // Scroll suave hacia la fila
+                                row[0].scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
+
+                                // Remover la clase después de la animación
+                                setTimeout(() => {
+                                    row.removeClass('row-highlight');
+                                }, 3000);
+                            }
+                        }, 100);
+                    })();
+                @endif
 
                 const table = tableManager.getTable();
                 const idColumn = tableManager.config.columns.id;
@@ -555,6 +607,30 @@
                     }
                     table.draw();
                     tableManager.checkFiltersActive();
+                });
+
+                // Confirmación antes de marcar una orden como "lista para despachar"
+                $(document).on('submit', '.order-dispatch-form', function(e) {
+                    e.preventDefault();
+                    const form = this;
+                    const orderNumber = $(form).data('order');
+
+                    if (typeof window.showConfirm !== 'function') {
+                        form.submit();
+                        return;
+                    }
+
+                    window.showConfirm({
+                        type: 'info',
+                        header: 'Confirmar despacho',
+                        title: '¿Marcar orden como lista para despachar?',
+                        message: `Vas a marcar la orden <strong>${orderNumber}</strong> como <strong>En proceso</strong>.`,
+                        confirmText: 'Sí, despachar',
+                        cancelText: 'No, cancelar',
+                        onConfirm: function () {
+                            form.submit();
+                        }
+                    });
                 });
             });
         </script>

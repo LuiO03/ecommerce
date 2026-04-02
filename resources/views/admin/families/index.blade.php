@@ -34,9 +34,9 @@
             </div>
         @endcan
         @can('familias.create')
-            <a href="{{ route('admin.families.create') }}" class="boton boton-primary">
-                <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-                <span class="boton-text">Crear Familia</span>
+            <a href="{{ route('admin.families.create') }}" class="boton-form boton-accent">
+                <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+                <span class="boton-form-text">Crear Familia</span>
             </a>
         @endcan
     </x-slot>

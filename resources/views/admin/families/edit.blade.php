@@ -9,17 +9,17 @@
         </div>
     </x-slot>
     <x-slot name="action">
-        <a href="{{ route('admin.families.index') }}" class="boton boton-secondary">
-            <span class="boton-icon"><i class="ri-arrow-go-back-line"></i></span>
-            <span class="boton-text">Volver</span>
+        <a href="{{ route('admin.families.index') }}" class="boton-form boton-accent">
+            <span class="boton-form-icon"><i class="ri-arrow-go-back-line"></i></span>
+            <span class="boton-form-text">Volver</span>
         </a>
         <form action="{{ route('admin.families.destroy', $family) }}" method="POST" class="delete-form"
             data-entity="familia" style="margin: 0;">
             @csrf
             @method('DELETE')
-            <button class="boton boton-danger" type="submit">
-                <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                <span class="boton-text">Eliminar</span>
+            <button class="boton-form boton-danger" type="submit">
+                <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                <span class="boton-form-text">Eliminar</span>
             </button>
         </form>
     </x-slot>

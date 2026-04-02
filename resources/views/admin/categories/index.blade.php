@@ -35,15 +35,15 @@
         </div>
         @endcan
         @can('categorias.manage-tree')
-        <a href="{{ route('admin.categories.hierarchy') }}" class="boton boton-purple">
-            <span class="boton-icon"><i class="ri-node-tree"></i></span>
-            <span class="boton-text">Gestor Jerárquico</span>
+        <a href="{{ route('admin.categories.hierarchy') }}" class="boton-form boton-action">
+            <span class="boton-form-icon"><i class="ri-node-tree"></i></span>
+            <span class="boton-form-text">Gestor Jerárquico</span>
         </a>
         @endcan
         @can('categorias.create')
-        <a href="{{ route('admin.categories.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Categoría</span>
+        <a href="{{ route('admin.categories.create') }}" class="boton-form boton-accent">
+            <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-form-text">Crear Categoría</span>
         </a>
         @endcan
     </x-slot>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryHierarchyController;
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\CoverController;
 use App\Http\Controllers\Admin\FamilyController;
+use App\Http\Controllers\Admin\DriverController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ClientController;
@@ -138,6 +139,9 @@ Route::controller(OrderController::class)->group(function () {
     Route::get('/orders/{order}', 'show')->name('admin.orders.show');
     Route::get('/orders/{order}/invoice-preview', 'invoicePreview')->name('admin.orders.invoice-preview');
 
+    // Actualizar estado de la orden (ej. pendiente -> en proceso)
+    Route::patch('/orders/{order}/status', 'updateStatus')->name('admin.orders.update-status');
+
     // Exports
     Route::post('/orders/export/excel', 'exportExcel')->name('admin.orders.export.excel');
     Route::post('/orders/export/pdf', 'exportPdf')->name('admin.orders.export.pdf');
@@ -227,6 +231,17 @@ Route::controller(ClientController::class)->group(function () {
     Route::post('/clients/export/excel', 'exportExcel')->name('admin.clients.export.excel');
     Route::post('/clients/export/pdf', 'exportPdf')->name('admin.clients.export.pdf');
     Route::post('/clients/export/csv', 'exportCsv')->name('admin.clients.export.csv');
+});
+
+// DRIVERS (conductores)
+Route::controller(DriverController::class)->group(function () {
+    Route::get('/drivers', 'index')->name('admin.drivers.index');
+    Route::get('/drivers/create', 'create')->name('admin.drivers.create');
+    Route::post('/drivers', 'store')->name('admin.drivers.store');
+    Route::get('/drivers/{driver}/edit', 'edit')->name('admin.drivers.edit');
+    Route::put('/drivers/{driver}', 'update')->name('admin.drivers.update');
+    Route::delete('/drivers/{driver}', 'destroy')->name('admin.drivers.destroy');
+    Route::delete('/drivers', 'destroyMultiple')->name('admin.drivers.destroy-multiple');
 });
 
 // ROLES

@@ -9,9 +9,9 @@
     </x-slot>
     <x-slot name="action">
         @can('portadas.create')
-            <a href="{{ route('admin.covers.create') }}" class="boton boton-primary">
-                <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-                <span class="boton-text">Crear Portada</span>
+            <a href="{{ route('admin.covers.create') }}" class="boton-form boton-accent">
+                <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+                <span class="boton-form-text">Crear Portada</span>
             </a>
         @endcan
     </x-slot>

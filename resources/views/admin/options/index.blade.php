@@ -11,9 +11,9 @@
         Opciones y Valores
     </x-slot>
     <x-slot name="action">
-        <a href="{{ route('admin.options.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-circle-fill"></i></span>
-            <span class="boton-text">Crear opción</span>
+        <a href="{{ route('admin.options.create') }}" class="boton-form boton-accent">
+            <span class="boton-form-icon"><i class="ri-add-circle-fill"></i></span>
+            <span class="boton-form-text">Crear opción</span>
         </a>
     </x-slot>
 

@@ -30,9 +30,9 @@
         </div>
         @endcan
         @can('roles.create')
-        <a href="{{ route('admin.roles.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Rol</span>
+        <a href="{{ route('admin.roles.create') }}" class="boton-form boton-accent">
+            <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-form-text">Crear Rol</span>
         </a>
         @endcan
     </x-slot>

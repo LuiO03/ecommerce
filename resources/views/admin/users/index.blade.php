@@ -33,9 +33,9 @@
         </div>
         @endcan
         @can('usuarios.create')
-        <a href="{{ route('admin.users.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Usuario</span>
+        <a href="{{ route('admin.users.create') }}" class="boton-form boton-accent">
+            <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-form-text">Crear Usuario</span>
         </a>
         @endcan
     </x-slot>

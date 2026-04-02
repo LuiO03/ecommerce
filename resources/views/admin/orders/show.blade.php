@@ -20,6 +20,10 @@
                 <span class="boton-form-text">Obtener PDF</span>
             </a>
         @endif
+        <a href="{{ route('admin.orders.index') }}" class="boton-form boton-accent">
+            <span class="boton-form-icon"><i class="ri-arrow-go-back-line"></i></span>
+            <span class="boton-form-text">Volver</span>
+        </a>
     </x-slot>
 
     <div class="options-wrapper order-detail-page">
@@ -196,6 +200,14 @@
                     <span>S/.{{ number_format((float) $order->total, 2) }}</span>
                 </div>
             </div>
+        </div>
+        <div class="form-footer">
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
+                <span class="boton-form-text">Volver</span>
+            </a>
         </div>
     </div>
 </x-admin-layout>

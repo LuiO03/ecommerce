@@ -35,9 +35,9 @@
 		@endcan
 
 		@can('productos.create')
-		<a href="{{ route('admin.products.create') }}" class="boton boton-primary">
-			<span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-			<span class="boton-text">Crear Producto</span>
+		<a href="{{ route('admin.products.create') }}" class="boton-form boton-accent">
+			<span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+			<span class="boton-form-text">Crear Producto</span>
 		</a>
 		@endcan
 	</x-slot>

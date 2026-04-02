@@ -253,7 +253,7 @@ class CheckoutController extends Controller
                             'total'            => $amount,
                             'subtotal'         => $subtotal,
                             'shipping_cost'    => $shipping,
-                            'status'           => 'processing',
+                            'status'           => 'pending',
                             'shipping_address' => $shippingAddress,
                             'shipping_city'    => $shippingCity,
                             'shipping_phone'   => $shippingPhone,

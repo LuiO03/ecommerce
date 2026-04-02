@@ -132,6 +132,15 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'ordenes.index', 'description' => 'Puede ver la lista de órdenes'],
                 ['name' => 'ordenes.view', 'description' => 'Puede ver los detalles de una orden'],
                 ['name' => 'ordenes.export', 'description' => 'Puede exportar órdenes en varios formatos'],
+                ['name' => 'ordenes.update', 'description' => 'Puede actualizar el estado de una orden'],
+            ],
+
+            // --- Conductores ---
+            'conductores' => [
+                ['name' => 'conductores.index', 'description' => 'Puede ver la lista de conductores'],
+                ['name' => 'conductores.create', 'description' => 'Puede crear nuevos conductores'],
+                ['name' => 'conductores.edit', 'description' => 'Puede editar conductores existentes'],
+                ['name' => 'conductores.delete', 'description' => 'Puede eliminar conductores del sistema'],
             ],
         ];
 

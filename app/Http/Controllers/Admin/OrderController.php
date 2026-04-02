@@ -18,6 +18,7 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->middleware('can:ordenes.index')->only(['index', 'show', 'invoicePreview']);
+        $this->middleware('can:ordenes.update')->only(['updateStatus']);
         $this->middleware('can:ordenes.export')->only(['exportExcel', 'exportPdf', 'exportCsv']);
     }
 
@@ -48,6 +49,43 @@ class OrderController extends Controller
             'order' => $order,
             'companyInfo' => $companyInfo,
         ]);
+    }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'status' => ['required', 'string', 'in:pending,paid,processing,shipped,delivered,cancelled'],
+        ]);
+
+        $oldStatus = $order->status;
+        $newStatus = $request->input('status');
+
+        if ($oldStatus === $newStatus) {
+            return back();
+        }
+
+        $order->update(['status' => $newStatus]);
+
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'status_updated',
+            'auditable_type' => Order::class,
+            'auditable_id'   => $order->id,
+            'old_values'     => ['status' => $oldStatus],
+            'new_values'     => ['status' => $newStatus],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
+        Session::flash('toast', [
+            'type'    => 'success',
+            'title'   => 'Estado actualizado',
+            'message' => 'La orden se actualizó a "' . ucfirst($newStatus) . '" correctamente.',
+        ]);
+
+        Session::flash('highlightRow', $order->id);
+
+        return back();
     }
 
     public function exportExcel(Request $request)
