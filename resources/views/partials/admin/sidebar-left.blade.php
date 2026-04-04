@@ -4,7 +4,7 @@
 
     <div class="sidebar-header">
         <a href="{{ request()->routeIs('admin.dashboard') ? '#' : route('admin.dashboard') }}" class="flex items-center gap-2">
-            @include('partials.components.company-brand')
+            @include('partials.admin.company-brand')
         </a>
     </div>
 

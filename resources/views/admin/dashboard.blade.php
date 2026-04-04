@@ -51,9 +51,9 @@
             <div class="dashboard-graphic-container">
                 <div class="flex items-center justify-between">
                     <span class="card-title">Últimos pedidos</span>
-                    <a href="{{ route('admin.orders.index') }}" class="boton-form boton-action">
-                        <span class="boton-form-text">Ver todos</span>
-                        <span class="boton-form-icon">
+                    <a href="{{ route('admin.orders.index') }}" class="boton-single" title="Ver todos los pedidos">
+                        <span class="boton-single-text">Ver todos</span>
+                        <span class="boton-single-icon">
                             <i class="ri-arrow-right-line"></i>
                         </span>
                     </a>

@@ -65,7 +65,6 @@
 .site-body {
     background-color: white;
     position: relative;
-    color: var(--color-site-text);
     padding-top: var(--site-nav-height);
     font-family: var(--font-primary);
 }

@@ -270,15 +270,26 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    width: 40px;
-    min-height: 35px;
+    padding: 5px 10px;
     z-index: 1;
     overflow: hidden;
     cursor: pointer;
     position: relative;
     transition: transform 0.3s ease, font-weight 0.3s ease;
-    font-size: var(--font-size-h4);
+    gap: 5px;
     border-radius: var(--radius-input);
+    border: 1px solid transparent;
+}
+
+.boton-single-icon {
+    font-size: var(--font-size-h4);
+}
+
+.boton-single-text {
+    font-size: var(--font-size-sm);
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    margin-left: 5px;
 }
 
 .boton-single:active {
@@ -286,7 +297,7 @@
 }
 .boton-single:hover {
     background-color: var(--color-hover);
-    border: 1px solid var(--color-border);
+    border-color: var(--color-border);
 }
 
 /* Boton Google */

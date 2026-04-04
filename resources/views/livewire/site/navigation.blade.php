@@ -8,16 +8,15 @@
                 </button>
 
                 <!-- Logo -->
-                <a href="{{ route('welcome.index') }}" class="site-logo">
-                    <span class="site-logo-title">Geckommerce</span>
-                    <span class="site-logo-subtitle">Tienda Virtual</span>
-                </a>
+                <div href="{{ route('welcome.index') }}" class="site-logo">
+                    @include('partials.admin.company-brand')
+                </div>
 
                 <!-- Buscador desktop -->
                 <div class="search-desktop">
                     <form class="site-search" role="search" aria-label="Buscar productos"
-                        action="{{ route('search.index') }}" method="GET"
-                        data-search-form data-search-suggestions="{{ route('search.suggestions') }}">
+                        action="{{ route('search.index') }}" method="GET" data-search-form
+                        data-search-suggestions="{{ route('search.suggestions') }}">
                         <input type="search" name="q" class="site-search-input" data-search-input
                             placeholder="Buscar productos, marcas o categorías..." autocomplete="off" />
                         <button type="submit" class="site-search-btn" aria-label="Buscar">
@@ -33,16 +32,18 @@
                 <!-- Acciones del header -->
                 <div class="header-actions">
                     <!-- Icono carrito de compras -->
-                    <a href="{{ route('carts.show') }}" class="nav-icon" aria-label="Carrito de compras" title="Ver carrito de compras">
+                    <a href="{{ route('carts.show') }}" class="nav-icon" aria-label="Carrito de compras"
+                        title="Ver carrito de compras">
                         <i class="ri-shopping-cart-2-line"></i>
-                        @if($cartCount > 0)
+                        @if ($cartCount > 0)
                             <span class="nav-icon-badge">{{ $cartCount }}</span>
                         @endif
                     </a>
                     <!-- Icono whishlist (solo desktop) -->
-                    <a href="{{ route('wishlists.show') }}" class="nav-icon" aria-label="Lista de deseos" title="Ver lista de deseos">
+                    <a href="{{ route('wishlists.show') }}" class="nav-icon" aria-label="Lista de deseos"
+                        title="Ver lista de deseos">
                         <i class="ri-heart-line"></i>
-                        @if($wishlistCount > 0)
+                        @if ($wishlistCount > 0)
                             <span class="nav-icon-badge">{{ $wishlistCount }}</span>
                         @endif
                     </a>
@@ -114,8 +115,8 @@
         <!-- Buscador mobile -->
         <div class="search-mobile">
             <form class="site-search site-search-mobile" role="search" aria-label="Buscar productos"
-                action="{{ route('search.index') }}" method="GET"
-                data-search-form data-search-suggestions="{{ route('search.suggestions') }}">
+                action="{{ route('search.index') }}" method="GET" data-search-form
+                data-search-suggestions="{{ route('search.suggestions') }}">
                 <input type="search" name="q" class="site-search-input" data-search-input
                     placeholder="Buscar en la tienda..." autocomplete="off" />
                 <button type="submit" class="site-search-btn" aria-label="Buscar">
@@ -188,7 +189,10 @@
                     </div>
                     <div class="site-flyout-content">
                         @forelse($family->categories as $category)
-                            @include('livewire.site.category-flyout', ['category' => $category, 'level' => 0])
+                            @include('livewire.site.category-flyout', [
+                                'category' => $category,
+                                'level' => 0,
+                            ])
                         @empty
                             <div class="site-flyout-empty">Sin categorías disponibles</div>
                         @endforelse

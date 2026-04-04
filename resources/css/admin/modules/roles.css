@@ -80,69 +80,6 @@
     }
 }
 
-.actions-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 1rem;
-}
-
-.actions-bar .tabla-select-wrapper {
-    max-width: 200px;
-}
-
-.actions-bar .module-search {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    min-width: 250px;
-}
-
-.actions-bar .module-search i:first-child {
-    position: absolute;
-    left: 12px;
-    color: var(--color-text-soft);
-    pointer-events: none;
-    font-size: var(--font-size-h3);
-}
-
-.actions-bar .module-search input {
-    width: 100%;
-    padding: 8px 40px 8px 40px;
-    border: 2px solid var(--color-input-border);
-    border-radius: var(--radius-input);
-    background-color: var(--color-input-bg);
-    font-size: var(--font-size-xs);
-    transition: border-color 0.2s ease;
-}
-
-.actions-barmodule-search input:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: var(--shadow-material);
-}
-
-.actions-bar .module-search input::placeholder {
-    color: var(--color-input-placeholder);
-    font-size: var(--font-size-xs);
-}
-
-.actions-bar .module-search i:last-child {
-    position: absolute;
-    right: 10px;
-    border: none;
-    color: var(--color-danger);
-    cursor: pointer;
-    border-radius: var(--radius-sm);
-    display: none;
-    transition: all 0.2s ease;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.125rem;
-}
 
 /* Estilos para los marcadores de permisos y tarjetas modificadas */
 .perm-mark {

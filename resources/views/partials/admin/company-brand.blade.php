@@ -18,17 +18,17 @@
 
 @if ($brandLogoUrl || $brandName)
     @if ($brandLogoUrl)
-        <img src="{{ $brandLogoUrl }}" alt="{{ $brandName ?? 'Logo' }}" class="sidebar-logo-default">
+        <img src="{{ $brandLogoUrl }}" alt="{{ $brandName ?? 'Logo' }}" class="sidebar-logo">
     @else
-        <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo-default">
+        <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo">
     @endif
 
     @if ($brandName)
-        <div class="sidebar-logo-texto tracking-wide"><strong>{{ $brandName }}</strong></div>
+        <div class="sidebar-logo-texto tracking-wide">{{ $brandName }}</div>
     @else
-        <div class="sidebar-logo-texto"><strong>Gecko</strong><span>mmerce</span></div>
+        <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
     @endif
 @else
     <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo-default">
-    <div class="sidebar-logo-texto"><strong>Gecko</strong><span>mmerce</span></div>
+    <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
 @endif

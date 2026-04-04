@@ -9,14 +9,14 @@
     </x-slot>
 
     <x-slot name="action">
-        <a href="{{ route('admin.categories.index') }}" class="boton boton-secondary">
-            <span class="boton-icon"><i class="ri-table-line"></i></span>
-            <span class="boton-text">Vista Tabla</span>
+        <a href="{{ route('admin.categories.index') }}" class="boton-form boton-action">
+            <span class="boton-form-icon"><i class="ri-table-line"></i></span>
+            <span class="boton-form-text">Vista Tabla</span>
         </a>
 
-        <a href="{{ route('admin.categories.create') }}" class="boton boton-primary">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Crear Categoría</span>
+        <a href="{{ route('admin.categories.create') }}" class="boton-form boton-primary">
+            <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-form-text">Crear Categoría</span>
         </a>
     </x-slot>
 

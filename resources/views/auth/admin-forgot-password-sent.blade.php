@@ -1,8 +1,7 @@
 <x-app-layout>
     <div class="auth-wrapper">
         <div class="auth-logo">
-            <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo">
-            <div class="sidebar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
+            @include('partials.admin.company-brand')
         </div>
 
         <div class="auth-card">

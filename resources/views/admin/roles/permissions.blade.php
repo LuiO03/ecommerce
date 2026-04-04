@@ -17,18 +17,16 @@
         </a>
     </x-slot>
 
-    <div class="form-container">
-        <!-- Buscador + botón global -->
-        <div class="actions-bar">
-            <div class="module-search flex-1">
-                <i class="ri-search-eye-line"></i>
-                <input type="text" id="searchPerm" placeholder="Buscar módulo o acción..." autocomplete="off">
-                <button type="button" class="module-search-clear" id="clearSearchPerm" aria-label="Limpiar búsqueda"
-                    hidden>
+    <!-- Buscador + botón global -->
+    <div class="actions-container">
+        <div class="tabla-filtros">
+            <div class="tabla-buscador">
+                <i class="ri-search-eye-line buscador-icon"></i>
+                <input type="text" id="searchPerm" placeholder="Buscar módulo o acción..." autocomplete="off" />
+                <button type="button" id="clearSearchPerm" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
             <div class="tabla-select-wrapper" title="Ordenar permisos">
                 <div class="selector">
                     <select id="permissionSort">
@@ -38,12 +36,18 @@
                     <i class="ri-sort-asc selector-icon"></i>
                 </div>
             </div>
+            <button type="button" class="boton-form boton-success" id="toggleAllBtn">
+                <span class="boton-form-icon"><i class="ri-checkbox-multiple-blank-fill"></i></span>
+                <span class="boton-form-text" id="toggleAllText">Marcar todo</span>
+            </button>
 
-            <button type="button" class="boton boton-accent" id="toggleAllBtn">
-                <span class="boton-icon"><i class="ri-checkbox-multiple-blank-fill"></i></span>
-                <span class="boton-text" id="toggleAllText">Marcar todo</span>
+            <button type="button" class="boton-form boton-warning" id="resetAllBtn">
+                <span class="boton-form-icon"><i class="ri-reset-left-line"></i></span>
+                <span class="boton-form-text">Restablecer todo</span>
             </button>
         </div>
+    </div>
+    <div class="form-container">
 
         <form method="POST" action="{{ route('admin.roles.update-permissions', $role) }}" autocomplete="off"
             class="form-container" id="permissionForm">
@@ -151,13 +155,20 @@
                             const text = el.textContent;
                             if (val && text.toLowerCase().includes(val)) {
                                 el.innerHTML = text.replace(new RegExp(`(${val})`, 'gi'),
-                                    '<mark class="perm-mark">$1</mark>');
+                                    '<mark class="perm-mark">$1<\/mark>');
                             } else {
                                 el.innerHTML = text;
                             }
                         });
 
                         row.style.display = match ? '' : 'none';
+                    });
+
+                    // Ocultar módulos (cards) que no tengan ninguna fila visible
+                    const cards = document.querySelectorAll('.permissions-card');
+                    cards.forEach(card => {
+                        const visibleRow = Array.from(card.querySelectorAll('.perm-row')).some(r => r.style.display !== 'none');
+                        card.style.display = visibleRow || !val ? '' : 'none';
                     });
 
                     if (clearBtn) {
@@ -285,6 +296,7 @@
                 // --- Global toggle ---
                 const toggleAllBtn = document.getElementById('toggleAllBtn');
                 const toggleAllText = document.getElementById('toggleAllText');
+                const resetAllBtn = document.getElementById('resetAllBtn');
 
                 toggleAllBtn.addEventListener('click', function() {
                     const boxes = document.querySelectorAll('.perm-checkbox');
@@ -308,6 +320,29 @@
                     const boxes = document.querySelectorAll('.perm-checkbox');
                     const allChecked = [...boxes].every(cb => cb.checked);
                     toggleAllText.textContent = allChecked ? 'Desmarcar todo' : 'Marcar todo';
+                }
+
+                // --- Restablecer todos los permisos al estado original ---
+                if (resetAllBtn) {
+                    resetAllBtn.addEventListener('click', function() {
+                        const boxes = document.querySelectorAll('.perm-checkbox');
+
+                        boxes.forEach(cb => {
+                            const original = cb.dataset.originalChecked === '1';
+                            cb.checked = original;
+                        });
+
+                        document.querySelectorAll('.permissions-card').forEach(card => {
+                            card.classList.remove('card-modified');
+                            const resetBtn = card.querySelector('.reset-module-btn');
+                            if (resetBtn) {
+                                resetBtn.classList.add('is-hidden');
+                            }
+                        });
+
+                        updateAllBtnText();
+                        updateModuleBtnText();
+                    });
                 }
 
                 // --- Selección por módulo ---

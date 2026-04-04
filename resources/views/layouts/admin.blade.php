@@ -93,7 +93,10 @@
     @include('partials.admin.navigation')
     @include('partials.admin.sidebar-left')
     @include('partials.admin.sidebar-right')
-    @include('partials.admin.mobile-dropdown')
+    {{--
+    @include('partial s.admin.mobile-dropdown')
+    --}}
+
     @props(['useSlotContainer' => true])
     <main id="mainContent" class="main-container">
         <div class="page-header">

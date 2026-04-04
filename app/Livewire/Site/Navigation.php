@@ -8,12 +8,33 @@ use App\Models\Wishlist;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Navigation extends Component
 {
+
     public function render()
     {
-        return view('livewire.site.navigation');
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
+
+        $brandLogoUrl = null;
+
+        if ($companySettings && $companySettings->logo_path) {
+            $path = ltrim($companySettings->logo_path, '/');
+
+            if (Str::startsWith($path, ['http://', 'https://'])) {
+                $brandLogoUrl = $path;
+            } elseif (Storage::disk('public')->exists($path)) {
+                $brandLogoUrl = asset('storage/' . $path);
+            }
+        }
+
+        $brandName = $companySettings->name ?? null;
+        return view('livewire.site.navigation', [
+            'brandLogoUrl' => $brandLogoUrl,
+            'brandName' => $brandName,
+        ]);
     }
 
     public $families;

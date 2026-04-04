@@ -302,6 +302,7 @@
     font-family: var(--font-secondary);
     font-weight: bold;
     cursor: pointer;
+    padding: 5px;
     transition: all 0.3s ease;
     white-space: nowrap;
 }
@@ -359,7 +360,6 @@
     align-items: center;
     color: var(--color-text);
     font-size: var(--font-size-h3);
-    transition: color 0.2s ease;
 }
 
 .tabla-buscador input {
@@ -379,10 +379,12 @@
     padding-right: 10px;
 }
 
-.tabla-buscador input:focus {
-    border-color: var(--color-accent) !important;
+.tabla-filtros .tabla-buscador input:focus,
+.tabla-filtros .tabla-buscador textarea:focus {
+    border-color: var(--color-accent);
     outline: none;
-    box-shadow: var(--shadow-material);
+    box-shadow: 0 0 0 3px var(--shadow-accent);
+    outline: none;
 }
 
 .tabla-buscador input:hover {
@@ -450,7 +452,6 @@
     width: 100%;
     display: flex;
     position: relative;
-    transition: color 0.2s ease;
 }
 
 .tabla-select-wrapper.filter-active {
@@ -523,7 +524,7 @@
 .tabla-select-wrapper select:focus {
     border-color: var(--color-accent) !important;
     outline: none;
-    box-shadow: var(--shadow-material);
+    box-shadow: 0 0 0 3px var(--shadow-accent) !important;
 }
 
 .tabla-select-wrapper:has(select:focus) i,
@@ -695,16 +696,16 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     color: var(--color-accent);
     font-weight: bold;
     font-size: var(--font-size-xs);
-    background-color: var(--color-accent-light, var(--color-hover));
+    background-color: green;
     padding: 2px 8px;
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     margin-left: 8px;
 }
 
 .tabla-paginacion {
     display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: 8px;
 }
 
 .pagina-btn {
@@ -714,7 +715,7 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     gap: 6px;
     padding: 8px 10px;
     border: 1px solid var(--color-input-border);
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     background-color: var(--color-input-bg);
     font-weight: bold;
     font-size: var(--font-size-xs);
@@ -736,7 +737,7 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     background-color: var(--color-accent);
     border-color: var(--color-accent);
     color: #fff;
-    box-shadow: var(--shadow-material);
+    box-shadow: 0 0 0 3px var(--shadow-accent);
 }
 
 .pagina-btn .btn-text {

@@ -160,13 +160,29 @@
                                             <span class="boton-icon"><i class="ri-lock-fill"></i></span>
                                         </button>
                                     @endif
-                                    @can('roles.assign-permissions')
-                                    <a href="{{ route('admin.roles.permissions', $role) }}"
-                                        class="boton boton-primary" title="Ver y gestionar permisos">
-                                        <span class="boton-icon"><i class="ri-key-2-fill"></i></span>
-                                        <span class="boton-text">Permisos</span>
-                                    </a>
-                                    @endcan
+                                    {{-- === BOTÓN PERMISOS === --}}
+                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']))
+                                        @can('roles.edit')
+                                            <a href="{{ route('admin.roles.permissions', $role) }}" class="boton boton-info"
+                                            title="Gestionar permisos">
+                                                <span class="boton-text">Permisos</span>
+                                                <span class="boton-icon"><i class="ri-key-2-fill"></i></span>
+                                            </a>
+                                        @else
+                                            <button class="boton boton-info disabled" title="No se pueden gestionar permisos"
+                                                disabled>
+                                                <span class="boton-text">Permisos</span>
+                                                <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                            </button>
+                                        @endcan
+                                    @else
+                                        <button class="boton boton-info disabled" title="No se pueden gestionar permisos"
+                                            disabled>
+                                            <span class="boton-text">Permisos</span>
+                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                        </button>
+                                    @endif
+
                                 </div>
                             </td>
                         </tr>

@@ -28,25 +28,29 @@
 }
 
 /* ===== Logo ===== */
+
 .site-logo {
+    margin: 0px auto 0px auto;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-decoration: none;
-    gap: 0.25rem;
-    color: var(--color-normal);
+    justify-content: center;
+    gap: 10px;
 }
 
-.site-logo-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    font-family: var(--font-secondary);
-    line-height: 1;
+.site-logo img{
+    width: 30px;
+    aspect-ratio: 1/1;
+    object-fit: contain;
 }
 
-.site-logo-subtitle {
-    font-size: 0.75rem;
-    opacity: 0.85;
+.site-logo .sidebar-logo-texto {
+    font-size: var(--font-size-h4);
+    color: white;
+    font-weight: bolder;
+}
+
+.site-logo .sidebar-logo-texto span {
+    font-weight: 300;
 }
 
 /* ===== Menú Hamburguesa ===== */

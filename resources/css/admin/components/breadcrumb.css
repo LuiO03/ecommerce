@@ -58,7 +58,8 @@
 }
 
 @media (max-width: 768px) {
-    .breadcrumb-list {
-        justify-content: center;
+    .breadcrumb-link,
+    .breadcrumb-current {
+        padding: 0px 5px; /* Solo horizontal, sin afectar el alto */
     }
 }

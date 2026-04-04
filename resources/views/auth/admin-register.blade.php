@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="auth-wrapper">
         <div class="auth-logo">
-            @include('partials.components.company-brand')
+            @include('partials.admin.company-brand')
         </div>
         <div class="auth-card" style="max-width: 820px;">
             <!-- Header con logo -->

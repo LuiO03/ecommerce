@@ -189,14 +189,15 @@
     padding-inline: 15px;
 }
 
-.sidebar-header .sidebar-logo-default{
+.sidebar-header .sidebar-logo{
     width: 40px;
-    height: 40px;
+    aspect-ratio: 1/1;
     object-fit: contain;
 }
 
 .sidebar-header .sidebar-logo-texto {
     font-size: 22px;
+    font-weight: bolder;
 }
 
 .sidebar-header .sidebar-logo-texto span {

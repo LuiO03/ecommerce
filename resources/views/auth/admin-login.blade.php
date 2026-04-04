@@ -3,7 +3,7 @@
 
     <div class="auth-wrapper">
         <div class="auth-logo">
-            @include('partials.components.company-brand')
+            @include('partials.admin.company-brand')
         </div>
         <div class="auth-card">
             <!-- Header con logo -->
