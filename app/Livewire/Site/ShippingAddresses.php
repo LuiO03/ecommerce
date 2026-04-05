@@ -25,6 +25,9 @@ class ShippingAddresses extends Component
     public $receiver_phone = '';
     public $is_default = false;
 
+    public $owner_document_type = '';
+    public $owner_document_number = '';
+
     public function mount()
     {
         $this->loadAddresses();
@@ -35,6 +38,8 @@ class ShippingAddresses extends Component
             $this->receiver_name = $user->name ?? $this->receiver_name;
             $this->receiver_last_name = $user->last_name ?? $this->receiver_last_name;
             $this->receiver_phone = $user->phone ?? $this->receiver_phone;
+            $this->owner_document_type = $user->document_type ?? '';
+            $this->owner_document_number = $user->document_number ?? '';
         }
     }
 
@@ -49,6 +54,8 @@ class ShippingAddresses extends Component
             'receiver_name' => 'required|string|min:3|max:255',
             'receiver_last_name' => 'required|string|min:2|max:255',
             'receiver_phone' => 'nullable|string|min:6|max:20',
+            'owner_document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
+            'owner_document_number' => 'nullable|string|max:30',
             'is_default' => 'boolean',
         ];
     }
@@ -116,6 +123,28 @@ class ShippingAddresses extends Component
             ]);
         }
 
+        // Si el receptor es el titular ("Yo"), completar datos faltantes del usuario
+        $user = Auth::user();
+        if ($user && $this->receiver_type === 'owner') {
+            $dataToUpdate = [];
+
+            if (empty($user->document_type) && !empty($this->owner_document_type)) {
+                $dataToUpdate['document_type'] = $this->owner_document_type;
+            }
+
+            if (empty($user->document_number) && !empty($this->owner_document_number)) {
+                $dataToUpdate['document_number'] = $this->owner_document_number;
+            }
+
+            if (empty($user->phone) && !empty($this->receiver_phone)) {
+                $dataToUpdate['phone'] = $this->receiver_phone;
+            }
+
+            if (!empty($dataToUpdate)) {
+                $user->update($dataToUpdate);
+            }
+        }
+
         $this->resetForm();
         $this->loadAddresses();
         $this->newAddress = false;
@@ -175,6 +204,8 @@ class ShippingAddresses extends Component
             'receiver_name',
             'receiver_last_name',
             'receiver_phone',
+            'owner_document_type',
+            'owner_document_number',
             'is_default',
             'editingAddressId',
         ]);
@@ -189,6 +220,8 @@ class ShippingAddresses extends Component
             $this->receiver_name = $user->name ?? '';
             $this->receiver_last_name = $user->last_name ?? '';
             $this->receiver_phone = $user->phone ?? '';
+            $this->owner_document_type = $user->document_type ?? '';
+            $this->owner_document_number = $user->document_number ?? '';
         }
     }
 
@@ -256,12 +289,16 @@ class ShippingAddresses extends Component
                 $this->receiver_name = (string) ($user->name ?? '');
                 $this->receiver_last_name = (string) ($user->last_name ?? '');
                 $this->receiver_phone = (string) ($user->phone ?? '');
+                $this->owner_document_type = (string) ($user->document_type ?? '');
+                $this->owner_document_number = (string) ($user->document_number ?? '');
             }
         } else {
             // "Otra persona": limpiar campos para que el usuario pueda escribir
             $this->receiver_name = '';
             $this->receiver_last_name = '';
             $this->receiver_phone = '';
+            $this->owner_document_type = '';
+            $this->owner_document_number = '';
         }
     }
 

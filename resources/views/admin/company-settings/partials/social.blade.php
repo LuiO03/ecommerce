@@ -186,7 +186,7 @@
             </div>
         </div>
 
-        <div class="form-footer">
+        <div class="form-footer-static">
             <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">
                 <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
                 <span class="boton-form-text">Volver al inicio</span>

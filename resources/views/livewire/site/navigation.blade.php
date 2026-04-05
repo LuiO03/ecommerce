@@ -18,7 +18,7 @@
                         action="{{ route('search.index') }}" method="GET" data-search-form
                         data-search-suggestions="{{ route('search.suggestions') }}">
                         <input type="search" name="q" class="site-search-input" data-search-input
-                            placeholder="Buscar productos, marcas o categorías..." autocomplete="off" />
+                            placeholder="¿Que producto estas buscando?" autocomplete="off" />
                         <button type="submit" class="site-search-btn" aria-label="Buscar">
                             <i class="ri-search-2-line"></i>
                             <span>Buscar</span>

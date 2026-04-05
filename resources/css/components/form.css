@@ -599,7 +599,6 @@ input[type="checkbox"]:indeterminate {
     justify-content: center;
     gap: 10px;
     position: fixed;
-    /* centrar horizontalmente sin width */
     bottom: 0;
     left: calc(50% + var(--sidebar-expanded-width) / 2);
     transform: translateX(-50%);
@@ -609,6 +608,13 @@ input[type="checkbox"]:indeterminate {
     z-index: 100;
     border-radius: var(--radius-card) var(--radius-card) 0 0;
     transition: left 0.1s ease;
+}
+
+.form-footer-static {
+    display: flex;
+    position: static;
+    justify-content: center;
+    gap: 10px;
 }
 
 body.sidebar-collapsed .form-footer {

@@ -174,7 +174,7 @@
             }
         });
     </script>
-    <div class="form-footer">
+    <div class="form-footer-static">
         <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">
             <span class="boton-form-icon"><i class="ri-home-smile-2-fill"></i></span>
             <span class="boton-form-text">Volver al inicio</span>
@@ -242,7 +242,7 @@
             </div>
         </div>
     </div>
-    <div class="form-footer">
+    <div class="form-footer-static">
         <button type="submit" id="saveBackgroundBtn" class="boton-form boton-accent">
             <span class="boton-form-icon"><i class="ri-paint-brush-fill"></i></span>
             <span class="boton-form-text">Guardar fondo</span>

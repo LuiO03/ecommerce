@@ -231,13 +231,19 @@
                         </div>
                         <div class="input-group" wire:key="receiver-owner-phone">
                             <label class="label-form" for="receiver_phone">
-                                Teléfono
+                                Teléfono <i class="ri-asterisk text-accent"></i>
                             </label>
                             <div class="input-icon-container">
                                 <i class="ri-phone-line input-icon"></i>
-                                <input id="receiver_phone" type="text" class="input-form"
-                                    value="{{ $user->phone ?? '' }}" placeholder="Teléfono del titular"
-                                    autocomplete="off" disabled />
+                                @if (!empty($user?->phone))
+                                    <input id="receiver_phone" type="text" class="input-form"
+                                        value="{{ $user->phone }}" placeholder="Teléfono del titular"
+                                        autocomplete="off" disabled />
+                                @else
+                                    <input id="receiver_phone" type="text" class="input-form"
+                                        wire:model="receiver_phone" placeholder="Teléfono del titular"
+                                        data-validate="required|phone|max:20" autocomplete="off" />
+                                @endif
                             </div>
                         </div>
                     @else
@@ -280,25 +286,42 @@
                 @if (auth()->check() && $receiver_type === 'owner')
                     <div class="form-row-fit">
                         <div class="input-group">
-                            <label class="label-form" for="owner_document_type">
-                                Documento del titular
+                            <label class="label-form" for="document_type">
+                                Documento del titular <i class="ri-asterisk text-accent"></i>
                             </label>
                             <div class="input-icon-container">
                                 <i class="ri-id-card-line input-icon"></i>
                                 @php($user = auth()->user())
-                                <input id="owner_document_type" type="text" class="input-form"
-                                    value="{{ $user->document_type ?? 'No registrado' }}" disabled>
+                                @if (empty($user?->document_type))
+                                    <select id="document_type" name="document_type" class="select-form"
+                                        wire:model="owner_document_type" data-validate="required|selected">
+                                        <option value="">Selecciona tipo de documento</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="RUC">RUC</option>
+                                        <option value="CE">Carné de Extranjería</option>
+                                        <option value="PASAPORTE">Pasaporte</option>
+                                    </select>
+                                @else
+                                    <input id="document_type" type="text" class="input-form"
+                                        value="{{ $user->document_type }}" disabled>
+                                @endif
                             </div>
                         </div>
                         <div class="input-group">
-                            <label class="label-form" for="owner_document_number">
-                                Número de documento
+                            <label class="label-form" for="document_number">
+                                Número de documento <i class="ri-asterisk text-accent"></i>
                             </label>
                             <div class="input-icon-container">
                                 <i class="ri-hashtag input-icon"></i>
                                 @php($user = auth()->user())
-                                <input id="owner_document_number" type="text" class="input-form"
-                                    value="{{ $user->document_number ?? 'No registrado' }}" disabled>
+                                @if (empty($user?->document_number))
+                                    <input id="document_number" name="document_number" type="text" class="input-form"
+                                        wire:model="owner_document_number" placeholder="Número de documento"
+                                        data-validate="document_number|max:30|requiredWith:document_type" autocomplete="off" disabled />
+                                @else
+                                    <input id="document_number" type="text" class="input-form"
+                                        value="{{ $user->document_number }}" disabled>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -361,6 +384,50 @@
                     scrollToFirstError: true,
                     showSuccessIndicators: true,
                 });
+
+                // 2.1) Deshabilitar número de documento hasta que se elija tipo (mismo patrón que admin-register)
+                (function setupDocumentFields() {
+                    if (!form) return;
+
+                    const typeField = form.querySelector('#document_type');
+                    const numberField = form.querySelector('#document_number');
+
+                    if (!typeField || !numberField) return;
+
+                    let lastType = String(typeField.value || '').trim();
+
+                    const updateState = () => {
+                        const currentType = String(typeField.value || '').trim();
+                        const hasType = currentType !== '';
+
+                        // Si cambia de un tipo a otro distinto, limpiar el número para evitar ambigüedad
+                        if (hasType && lastType && currentType !== lastType) {
+                            numberField.value = '';
+                            if (form.__validator) {
+                                form.__validator.clearError(numberField);
+                                form.__validator.clearSuccess(numberField);
+                            }
+                        }
+
+                        if (!hasType) {
+                            numberField.value = '';
+                            numberField.disabled = true;
+
+                            if (form.__validator) {
+                                form.__validator.clearError(numberField);
+                                form.__validator.clearSuccess(numberField);
+                            }
+                        } else {
+                            numberField.disabled = false;
+                        }
+
+                        lastType = currentType;
+                    };
+
+                    // Estado inicial
+                    updateState();
+                    typeField.addEventListener('change', updateState);
+                })();
 
                 // 3) Integración específica con Livewire: bloquear submit si hay errores
                 // usando un listener en fase de captura que corre ANTES que Livewire.
