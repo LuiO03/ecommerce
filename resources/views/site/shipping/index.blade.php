@@ -23,9 +23,9 @@
 
     <section class="site-container shipping-page">
         <div class="section-header">
-            <h1>Direcciones de envío</h1>
+            <h1>Completa tu orden</h1>
             <p>
-                Aquí puedes gestionar tus direcciones de envío y revisar el resumen de tu compra.
+
             </p>
         </div>
 
@@ -46,7 +46,144 @@
         @else
             <div class="shipping-layout">
                 <div class="shipping-main">
-                    @livewire('site.shipping-addresses')
+
+                    @if ($errors->any())
+                        <x-alert type="danger" title="Revisa los datos de tu dirección">
+                            <ul class="list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </x-alert>
+                    @endif
+
+                    @php
+                        $hasAddress = isset($address) && $address;
+                    @endphp
+
+                    <form id="shippingAddressForm" class="form-body" method="POST"
+                        action="{{ route('shipping.addresses.store') }}"
+                        data-editing="{{ $hasAddress ? '1' : '0' }}" novalidate>
+                        @csrf
+                        <h3 class="card-title">
+                            Dirección de envío
+                        </h3>
+                            <div class="form-row-fit">
+                                <div class="input-group">
+                                    <label class="label-form" for="address_type">
+                                        Tipo de dirección <i class="ri-asterisk text-accent"></i>
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-home-4-line input-icon"></i>
+                                        @php
+                                            $typeOld = old('type', $hasAddress ? $address->type : 'home');
+                                        @endphp
+                                        <select id="address_type" class="select-form" name="type"
+                                            data-validate="selected">
+                                            <option value="home" {{ $typeOld === 'home' ? 'selected' : '' }}>Casa
+                                            </option>
+                                            <option value="office" {{ $typeOld === 'office' ? 'selected' : '' }}>
+                                                Oficina</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label class="label-form" for="address_line">
+                                        Dirección completa <i class="ri-asterisk text-accent"></i>
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-map-pin-line input-icon"></i>
+                                        <input id="address_line" type="text" class="input-form" name="address_line"
+                                            value="{{ old('address_line', $hasAddress ? $address->address_line : null) }}"
+                                            placeholder="Av. Siempre Viva 742, Interior 3"
+                                            data-validate="required|min:5|max:255" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row-fit">
+                                <div class="input-group">
+                                    <label class="label-form" for="district">
+                                        Distrito / Ciudad <i class="ri-asterisk text-accent"></i>
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-building-2-line input-icon"></i>
+                                        <input id="district" type="text" class="input-form" name="district"
+                                            value="{{ old('district', $hasAddress ? $address->district : null) }}"
+                                            placeholder="Ej: Miraflores, Lima" data-validate="required|min:3|max:120"
+                                            autocomplete="off" />
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label class="label-form" for="reference">
+                                        Referencia <i class="ri-asterisk text-accent"></i>
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-map-pin-2-line input-icon"></i>
+                                        <textarea id="reference" class="input-form" name="reference"
+                                            placeholder="Ej: Casa de fachada azul, portón negro, cerca al parque" data-validate="required|max:255">{{ old('reference', !empty($editingAddress) ? $editingAddress->reference : null) }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="card-title">
+                                Datos Personales
+                            </h3>
+
+                            <div class="form-row-fill">
+                                <div class="input-group">
+                                    <label class="label-form" for="receiver_name">
+                                        Nombre completo del receptor <i class="ri-asterisk text-accent"></i>
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-user-3-line input-icon"></i>
+                                        <input id="receiver_name" type="text" class="input-form"
+                                            name="receiver_name"
+                                            value="{{ old('receiver_name', $hasAddress ? $address->receiver_name : auth()->user()?->name) }}"
+                                            placeholder="Nombre de quien recibirá"
+                                            data-validate="required|min:3|max:255" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label class="label-form" for="receiver_last_name">
+                                        Apellido del receptor
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-user-3-line input-icon"></i>
+                                        <input id="receiver_last_name" type="text" class="input-form"
+                                            name="receiver_last_name"
+                                            value="{{ old('receiver_last_name', $hasAddress ? $address->receiver_last_name : auth()->user()?->last_name) }}"
+                                            placeholder="Apellido de quien recibirá" data-validate="min:2|max:255"
+                                            autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row-fill">
+                                <div class="input-group">
+                                    <label class="label-form" for="receiver_phone">
+                                        Teléfono de contacto <i class="ri-asterisk text-accent"></i>
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-phone-line input-icon"></i>
+                                        <input id="receiver_phone" type="text" class="input-form"
+                                            name="receiver_phone"
+                                            value="{{ old('receiver_phone', $hasAddress ? $address->receiver_phone : auth()->user()?->phone) }}"
+                                            placeholder="Celular o teléfono de contacto"
+                                            data-validate="required|phone|max:20" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="address-form-footer mt-4">
+                                <button type="submit" class="site-btn site-btn-primary"
+                                    id="shippingAddressSubmitBtn">
+                                    <i class="ri-save-line"></i>
+                                    Guardar dirección
+                                </button>
+                            </div>
+                        </form>
                 </div>
 
                 <aside class="shipping-summary">
@@ -71,7 +208,9 @@
                                     $variant && $variant->price && $variant->price > 0
                                         ? (float) $variant->price
                                         : (float) $product->price;
-                                $discounted = $hasDiscount ? max($basePrice * (1 - $discountPercent / 100), 0) : $basePrice;
+                                $discounted = $hasDiscount
+                                    ? max($basePrice * (1 - $discountPercent / 100), 0)
+                                    : $basePrice;
 
                                 $lineTotal = $discounted * (int) $item->quantity;
                                 $subtotal += $lineTotal;
@@ -103,9 +242,11 @@
                                 <div class="shipping-summary-main">
                                     <div class="shipping-summary-name">{{ $product->name }}</div>
                                     <div class="shipping-summary-meta">
-                                        <span class="shipping-summary-price">S/.{{ number_format($discounted, 2) }}</span>
+                                        <span
+                                            class="shipping-summary-price">S/.{{ number_format($discounted, 2) }}</span>
                                         @if ($hasDiscount)
-                                            <span class="shipping-summary-price-original">S/.{{ number_format($basePrice, 2) }}</span>
+                                            <span
+                                                class="shipping-summary-price-original">S/.{{ number_format($basePrice, 2) }}</span>
                                         @endif
                                         @if (!empty($variantLabels))
                                             <span class="shipping-summary-variant">
@@ -133,8 +274,8 @@
                             <span>S/. {{ number_format($subtotal, 2) }}</span>
                         </div>
                     </div>
-                    <div class="cart-summary-actions">
-                        <a href=" {{ route('checkout.index') }}" class="site-btn site-btn-primary">
+                    <div class="shipping-summary-actions">
+                        <a href="{{ route('checkout.index') }}" class="site-btn site-btn-primary">
                             Continuar con el pago
                         </a>
                     </div>
@@ -142,4 +283,29 @@
             </div>
         @endif
     </section>
+    @push('js')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('shippingAddressForm');
+                const submitBtn = document.getElementById('shippingAddressSubmitBtn');
+
+                if (form && submitBtn && typeof window.initSubmitLoader === 'function' && typeof window
+                    .initFormValidator === 'function') {
+                    window.initSubmitLoader({
+                        formId: 'shippingAddressForm',
+                        buttonId: 'shippingAddressSubmitBtn',
+                        loadingText: form.getAttribute('data-editing') === '1' ? 'Actualizando dirección...' :
+                            'Guardando dirección...'
+                    });
+
+                    window.initFormValidator('#shippingAddressForm', {
+                        validateOnBlur: true,
+                        validateOnInput: false,
+                        scrollToFirstError: true,
+                        showSuccessIndicators: true,
+                    });
+                }
+            });
+        </script>
+    @endpush
 </x-app-layout>

@@ -296,7 +296,7 @@
     transform: scale(0.95);
 }
 .boton-single:hover {
-    background-color: var(--color-hover);
+    background-color: rgba(0, 0, 0, 0.1);
     border-color: var(--color-border);
 }
 

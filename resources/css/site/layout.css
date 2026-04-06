@@ -19,5 +19,5 @@
 @import "./modules/home.css";
 @import "./modules/product-details.css";
 @import "./modules/wishlist.css";
-@import "./modules/shipping-addresses.css";
 @import "./modules/checkout-payment.css";
+@import "./modules/shipping.css";

@@ -141,50 +141,46 @@
 
                             <div class="cart-item-main">
                                 <div class="cart-item-header">
-                                    <div class="flex flex-wrap justify-between w-full">
-                                        <div>
-                                            <a href="{{ route('products.show', $product) }}" class="cart-item-name">
-                                                {{ $product->name }}
-                                            </a>
-                                            <p class="cart-item-category">
-                                                {{ $product->category?->name ?? 'Sin categoría' }}
-                                            </p>
-                                        </div>
-                                        <div class="cart-item-side">
-                                            <div class="cart-item-line-total">
-                                                <span class="cart-item-line-label">Subtotal</span>
-                                                <span class="cart-item-line-value">
-                                                    S/.{{ number_format($lineTotal, 2) }}
-                                                </span>
-                                            </div>
-
-
-                                        </div>
+                                    <div>
+                                        <a href="{{ route('products.show', $product) }}" class="cart-item-name">
+                                            {{ $product->name }}
+                                        </a>
+                                        <p class="cart-item-category">
+                                            {{ $product->category?->name ?? 'Sin categoría' }}
+                                        </p>
                                     </div>
 
-                                </div>
-                                <div class="flex flex-wrap justify-between w-full gap-1">
-                                    @if (!empty($variantLabels) || !empty($colorFeatures))
-                                        <p class="cart-item-variant">
-                                            @foreach ($colorFeatures as $feature)
-                                                @php
-                                                    $rawHex = (string) ($feature->description ?? '');
-                                                    $normalized = ltrim($rawHex, '#');
-                                                    $displayColor = $normalized !== '' ? '#' . $normalized : '#000000';
-                                                    $colorName = trim((string) ($feature->value ?? ''));
-                                                @endphp
-                                                <span class="cart-item-color-pill"
-                                                    title="Color {{ $colorName !== '' ? $colorName . ' (' . $displayColor . ')' : $displayColor }}">
-                                                    <span class="cart-item-color-dot"
-                                                        style="background-color: {{ $displayColor }};"></span>
-                                                </span>
-                                            @endforeach
+                                    <div class="cart-item-price-block">
+                                        <span class="cart-item-price-current">
+                                            S/.{{ number_format($discounted, 2) }}
+                                        </span>
+                                        @if ($hasDiscount)
+                                            <span class="cart-item-price-original">
+                                                S/.{{ number_format($basePrice, 2) }}
+                                            </span>
+                                        @endif
+                                        @if (!empty($variantLabels) || !empty($colorFeatures))
+                                            <p class="cart-item-variant">
+                                                @foreach ($colorFeatures as $feature)
+                                                    @php
+                                                        $rawHex = (string) ($feature->description ?? '');
+                                                        $normalized = ltrim($rawHex, '#');
+                                                        $displayColor = $normalized !== '' ? '#' . $normalized : '#000000';
+                                                        $colorName = trim((string) ($feature->value ?? ''));
+                                                    @endphp
+                                                    <span class="cart-item-color-pill"
+                                                        title="Color {{ $colorName !== '' ? $colorName : $displayColor }}">
+                                                        <span class="cart-item-color-dot"
+                                                            style="background-color: {{ $displayColor }};"></span>
+                                                    </span>
+                                                @endforeach
 
-                                            @foreach ($variantLabels as $label)
-                                                <span class="cart-item-variant-pill">{{ $label }}</span>
-                                            @endforeach
-                                        </p>
-                                    @endif
+                                                @foreach ($variantLabels as $label)
+                                                    <span class="cart-item-variant-pill">{{ $label }}</span>
+                                                @endforeach
+                                            </p>
+                                        @endif
+                                    </div>
                                     <form method="POST" action="{{ route('carts.items.update', $item) }}"
                                         class="cart-item-quantity-form">
                                         @csrf
@@ -195,7 +191,8 @@
                                                 data-quantity-decrement aria-label="Disminuir cantidad">
                                                 <i class="ri-subtract-line"></i>
                                             </button>
-                                            <div class="quantity-value" data-quantity-value>{{ $item->quantity }}</div>
+                                            <div class="quantity-value" data-quantity-value>{{ $item->quantity }}
+                                            </div>
                                             <button class="quantity-btn quantity-btn--plus" type="button"
                                                 data-quantity-increment aria-label="Aumentar cantidad">
                                                 <i class="ri-add-line"></i>
@@ -211,18 +208,6 @@
                                 </div>
 
                                 <div class="cart-item-meta">
-                                    <div class="cart-item-price-block">
-                                        <span class="cart-item-price-current">
-                                            S/.{{ number_format($discounted, 2) }}
-                                        </span>
-                                        @if ($hasDiscount)
-                                            <span class="cart-item-price-original">
-                                                S/.{{ number_format($basePrice, 2) }}
-                                            </span>
-                                        @endif
-                                    </div>
-
-
                                     <form method="POST" action="{{ route('carts.items.destroy', $item) }}"
                                         class="cart-item-remove-form">
                                         @csrf
@@ -235,10 +220,15 @@
                                             <span class="boton-form-text">Quitar</span>
                                         </button>
                                     </form>
+
+                                    <div class="cart-item-line-total">
+                                        <span class="cart-item-line-label">Subtotal</span>
+                                        <span class="cart-item-line-value">
+                                            S/.{{ number_format($lineTotal, 2) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-
-
                         </article>
                     @endforeach
                 </div>

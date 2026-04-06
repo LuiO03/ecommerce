@@ -137,7 +137,13 @@
     Route::patch('/carts/items/{cartItem}', [CartController::class, 'updateItem'])->name('carts.items.update');
     Route::delete('/carts/items/{cartItem}', [CartController::class, 'destroyItem'])->name('carts.items.destroy');
 
+    // Rutas de envío (direcciones del cliente)
     Route::get('/shipping', [ShippingController::class, 'index'])->name('shipping.index');
+    Route::post('/shipping/addresses', [ShippingController::class, 'store'])->name('shipping.addresses.store');
+    Route::get('/shipping/addresses/{address}/edit', [ShippingController::class, 'edit'])->name('shipping.addresses.edit');
+    Route::put('/shipping/addresses/{address}', [ShippingController::class, 'update'])->name('shipping.addresses.update');
+    Route::post('/shipping/addresses/{address}/default', [ShippingController::class, 'setDefault'])->name('shipping.addresses.default');
+    Route::delete('/shipping/addresses/{address}', [ShippingController::class, 'destroy'])->name('shipping.addresses.destroy');
 
     // Login administrativo (único login del sistema)
     Route::get('/login', function () {
