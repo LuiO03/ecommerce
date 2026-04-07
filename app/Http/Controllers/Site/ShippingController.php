@@ -71,33 +71,28 @@ class ShippingController extends Controller
             'is_default' => true,
         ];
 
-        $address = Addresses::where('user_id', $userId)->first();
+        $address = Addresses::where('user_id', $userId)
+            ->orderByDesc('is_default')
+            ->orderByDesc('id')
+            ->first();
 
         if ($address) {
             $address->update($payload);
-
-            $toast = [
-                'type' => 'success',
-                'title' => 'Dirección actualizada',
-                'message' => 'Tu dirección de envío se ha actualizado correctamente.',
-            ];
         } else {
             Addresses::create(
                 array_merge($payload, [
                     'user_id' => $userId,
                 ]),
             );
-
-            $toast = [
-                'type' => 'success',
-                'title' => 'Dirección guardada',
-                'message' => 'Tu dirección de envío se ha guardado correctamente.',
-            ];
         }
 
         return redirect()
-            ->route('shipping.index')
-            ->with('toast', $toast);
+            ->route('checkout.index')
+            ->with('toast', [
+                'type' => 'success',
+                'title' => 'Dirección confirmada',
+                'message' => 'Usaremos esta dirección para el envío de tu pedido.',
+            ]);
     }
 
     public function edit(Addresses $address)

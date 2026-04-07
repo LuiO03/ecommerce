@@ -22,7 +22,7 @@
                     <img src="{{ asset('storage/' . $user->image) }}" alt="Foto de perfil" class="profile-avatar">
                 @else
                     <div class="profile-avatar"
-                        style="background-color: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}; border-color: {{ $user->avatar_colors['color'] }}; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; font-weight: bold;">
+                        style="background-color: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}; border-color: {{ $user->avatar_colors['color'] }}">
                         <i class="ri-user-3-line"></i>
                     </div>
                 @endif

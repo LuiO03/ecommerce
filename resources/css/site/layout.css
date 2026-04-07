@@ -6,6 +6,7 @@
 @import "./components/filter-facets.css";
 @import "./components/pagination.css";
 @import "./components/search-autocomplete.css";
+@import "./components/search-modal.css";
 @import "./components/footer.css";
 @import "./components/latest-products.css";
 @import "./components/layout-site.css";
@@ -21,3 +22,8 @@
 @import "./modules/wishlist.css";
 @import "./modules/checkout-payment.css";
 @import "./modules/shipping.css";
+@import "./modules/blog.css";
+@import "./modules/legal-terms.css";
+@import "./modules/legal-privacy.css";
+@import "./modules/legal-claims.css";
+@import "./modules/profile.css";

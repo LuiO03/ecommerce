@@ -2,35 +2,36 @@
     <header class="site-header" id="siteHeader">
         <div class="site-header-container">
             <div class="site-header-top">
-                <!-- Menú hamburguesa -->
-                <button id="siteMenuToggle" class="menu-toggle nav-icon" aria-label="Abrir menú">
-                    <i class="ri-menu-fill"></i>
-                </button>
+                <div class="header-actions">
+                    <!-- Menú hamburguesa -->
+                    <button id="siteMenuToggle" class="menu-toggle nav-icon" aria-label="Abrir menú">
+                        <i class="ri-menu-fill"></i>
+                    </button>
 
-                <!-- Logo -->
-                <div href="{{ route('welcome.index') }}" class="site-logo">
-                    @include('partials.admin.company-brand')
+                    <!-- Logo -->
+                    <a class="site-logo" href="{{ route('welcome.index') }}" aria-label="Ir a la página principal">
+                        @include('partials.admin.company-brand')
+                    </a>
                 </div>
+                <div class="header-actions">
+                    <!-- Navegación principal (solo desktop) -->
+                    <nav class="site-nav-desktop">
+                        <a href="#" class="site-nav-link">Nosotros</a>
+                        <a href="{{ route('site.blog.index') }}" class="site-nav-link">Blog</a>
+                        <a href="#" class="site-nav-link">Contacto</a>
+                    </nav>
 
-                <!-- Buscador desktop -->
-                <div class="search-desktop">
-                    <form class="site-search" role="search" aria-label="Buscar productos"
-                        action="{{ route('search.index') }}" method="GET" data-search-form
-                        data-search-suggestions="{{ route('search.suggestions') }}">
-                        <input type="search" name="q" class="site-search-input" data-search-input
-                            placeholder="¿Que producto estas buscando?" autocomplete="off" />
-                        <button type="submit" class="site-search-btn" aria-label="Buscar">
-                            <i class="ri-search-2-line"></i>
-                            <span>Buscar</span>
-                        </button>
-                        <div class="search-suggestions" data-search-dropdown>
-                            <div class="search-suggestions-results" data-search-results></div>
-                        </div>
-                    </form>
                 </div>
 
                 <!-- Acciones del header -->
                 <div class="header-actions">
+                    <!-- Buscador desktop como icono -->
+
+                    <button type="button" class="nav-icon" data-site-search-open aria-label="Buscar productos"
+                        title="Buscar productos">
+                        <i class="ri-search-2-line"></i>
+                    </button>
+
                     <!-- Icono carrito de compras -->
                     <a href="{{ route('carts.show') }}" class="nav-icon" aria-label="Carrito de compras"
                         title="Ver carrito de compras">
@@ -40,13 +41,15 @@
                         @endif
                     </a>
                     <!-- Icono whishlist (solo desktop) -->
-                    <a href="{{ route('wishlists.show') }}" class="nav-icon" aria-label="Lista de deseos"
-                        title="Ver lista de deseos">
-                        <i class="ri-heart-line"></i>
-                        @if ($wishlistCount > 0)
-                            <span class="nav-icon-badge">{{ $wishlistCount }}</span>
-                        @endif
-                    </a>
+                    <div class="button-desktop">
+                        <a href="{{ route('wishlists.show') }}" class="nav-icon" aria-label="Lista de deseos"
+                            title="Ver lista de deseos">
+                            <i class="ri-heart-line"></i>
+                            @if ($wishlistCount > 0)
+                                <span class="nav-icon-badge">{{ $wishlistCount }}</span>
+                            @endif
+                        </a>
+                    </div>
                     <!-- Botón de inicio de sesión / usuario -->
                     @guest
                         <a href="{{ route('login') }}" class="nav-login-button" title="Iniciar sesión">
@@ -59,30 +62,41 @@
                     @else
                         <div class="nav-user-dropdown">
                             <button class="nav-user-button" id="userMenuBtn" aria-label="Mi cuenta" aria-haspopup="true">
-                                <span class="boton-icon">
-                                    <i class="ri-user-line"></i>
-                                </span>
-                                <span class="boton-text">{{ Auth::user()->name }}</span>
+                                @if ($hasAvatarImage)
+                                    <img class="nav-avatar" src="{{ asset('storage/' . $user->image) }}"
+                                        alt="{{ $user->name }}">
+                                @else
+                                    <div class="nav-avatar"
+                                        style="background-color: {{ $user->avatar_colors['background'] }};
+                                        color: {{ $user->avatar_colors['color'] }};">
+                                        {{ $user->initials }}
+                                    </div>
+                                @endif
                                 <i class="ri-arrow-down-s-line dropdown-arrow"></i>
                             </button>
                             <div class="nav-user-menu" id="userMenu">
-                                <a href="{{ route('profile.show') }}" class="nav-user-menu-item">
+                                <a href="{{ route('site.profile.index') }}" class="nav-user-menu-item">
                                     <i class="ri-user-line"></i>
                                     <span>Mi Cuenta</span>
                                 </a>
-                                <a href="" class="nav-user-menu-item">
+                                <div class="button-mobile">
+                                    <a href="{{ route('wishlists.show') }}" class="nav-user-menu-item">
+                                        <i class="ri-heart-line"></i>
+                                        <span>Mi Lista de Deseos</span>
+                                    </a>
+                                </div>
+                                <a href="{{ route('site.profile.orders') }}" class="nav-user-menu-item">
                                     <i class="ri-shopping-bag-line"></i>
                                     <span>Mis Pedidos</span>
                                 </a>
-                                <a href="" class="nav-user-menu-item">
+                                <a href="{{ route('site.profile.addresses') }}" class="nav-user-menu-item">
                                     <i class="ri-map-pin-line"></i>
                                     <span>Mis Direcciones</span>
                                 </a>
-                                <a href="" class="nav-user-menu-item">
+                                <a href="{{ route('site.profile.security') }}" class="nav-user-menu-item">
                                     <i class="ri-settings-3-line"></i>
                                     <span>Configuración</span>
                                 </a>
-                                <hr class="nav-user-divider">
                                 <form method="POST" action="{{ route('logout') }}" style="display: none;" id="logoutForm">
                                     @csrf
                                 </form>
@@ -110,23 +124,6 @@
             <button id="siteMenuClose" aria-label="Cerrar menú">
                 <i class="ri-close-line"></i>
             </button>
-        </div>
-
-        <!-- Buscador mobile -->
-        <div class="search-mobile">
-            <form class="site-search site-search-mobile" role="search" aria-label="Buscar productos"
-                action="{{ route('search.index') }}" method="GET" data-search-form
-                data-search-suggestions="{{ route('search.suggestions') }}">
-                <input type="search" name="q" class="site-search-input" data-search-input
-                    placeholder="Buscar en la tienda..." autocomplete="off" />
-                <button type="submit" class="site-search-btn" aria-label="Buscar">
-                    <i class="ri-search-2-line"></i>
-                    <span>Buscar</span>
-                </button>
-                <div class="search-suggestions" data-search-dropdown>
-                    <div class="search-suggestions-results" data-search-results></div>
-                </div>
-            </form>
         </div>
         <!-- Contenido del sidebar -->
         <div class="site-sidebar-content">
@@ -201,4 +198,6 @@
             @endforeach
         </div>
     </aside>
+
+    @include('partials.site.search-modal')
 </div>

@@ -29,6 +29,6 @@
         <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
     @endif
 @else
-    <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo-default">
+    <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo">
     <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
 @endif

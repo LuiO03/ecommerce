@@ -85,12 +85,16 @@
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
+    align-items: flex-start;
+    height: 100%;
 }
 
 .shipping-summary-name {
-    font-weight: 600;
+    font-weight: bold;
     color: var(--color-site-nav);
     text-overflow: ellipsis;
+    font-size: var(--font-size-p);
+    font-family: var(--font-secondary);
     overflow: hidden;
     white-space: nowrap;
 }

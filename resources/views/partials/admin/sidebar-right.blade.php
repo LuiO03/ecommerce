@@ -68,7 +68,7 @@
                         <li>
                             <form id="logoutFormRight" action="{{ route('logout') }}" method="POST" onsubmit="return false;">
                                 @csrf
-                                <button type="button" id="logoutBtnRight" class="menu-item-logout">
+                                <button type="button" id="logoutBtnRight" class="menu-item-logout" title="Cerrar sesión" aria-label="Cerrar sesión">
                                     <i class="ri-shut-down-line sidebar-icon"></i>
                                     <span>Cerrar sesión</span>
                                 </button>

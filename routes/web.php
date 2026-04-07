@@ -15,6 +15,9 @@
     use App\Http\Controllers\Site\RegisteredUserController;
     use App\Http\Controllers\Site\ShippingController;
     use App\Http\Controllers\Site\CheckoutController;
+    use App\Http\Controllers\Site\LegalDocumentationController;
+    use App\Http\Controllers\Site\ProfileController as SiteProfileController;
+    use App\Http\Controllers\Site\BlogController;
 
     use App\Http\Controllers\Auth\GoogleController;
 
@@ -119,12 +122,30 @@
     // Rutas públicas del sitio
     Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
 
+    // Blog público
+    Route::get('/blog', [BlogController::class, 'index'])->name('site.blog.index');
+    Route::get('/blog/{post}', [BlogController::class, 'show'])->name('site.blog.show');
+
+    // Documentación legal
+    Route::get('/terminos-y-condiciones', [LegalDocumentationController::class, 'terms'])->name('site.legal.terms');
+    Route::get('/politica-de-privacidad', [LegalDocumentationController::class, 'privacy'])->name('site.legal.privacy');
+    Route::get('/libro-de-reclamaciones', [LegalDocumentationController::class, 'claims'])->name('site.legal.claims');
+
     Route::get('/families/{family}', [FamilyController::class, 'show'])->name('families.show');
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
     Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('search.suggestions');
+
+    // Área de cuenta del cliente
+    Route::middleware('auth')->group(function () {
+        Route::get('/mi-cuenta', [SiteProfileController::class, 'index'])->name('site.profile.index');
+        Route::get('/mi-cuenta/pedidos', [SiteProfileController::class, 'orders'])->name('site.profile.orders');
+        Route::get('/mi-cuenta/favoritos', [SiteProfileController::class, 'wishlist'])->name('site.profile.wishlist');
+        Route::get('/mi-cuenta/direcciones', [SiteProfileController::class, 'addresses'])->name('site.profile.addresses');
+        Route::get('/mi-cuenta/seguridad', [SiteProfileController::class, 'security'])->name('site.profile.security');
+    });
 
     // Rutas para la lista de deseos (wishlist)
     Route::get('/wishlists', [WishlistController::class, 'show'])->name('wishlists.show');

@@ -4,6 +4,7 @@ import './site-modules/sidebar-manager';
 import './site-modules/user-dropdown';
 import './site-modules/infinite-products';
 import './site-modules/search-autocomplete';
+import './site-modules/search-modal';
 import './site-modules/product-detail';
 import './site-modules/quantity-counter';
 import './site-modules/auth-wishlist-modal';

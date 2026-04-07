@@ -63,7 +63,10 @@ const initSearchAutocomplete = () => {
             timeoutId = setTimeout(async () => {
                 const data = await fetchSuggestions(value);
 
-                const productSection = renderSection('Productos', data.products || [], (item) => {
+                const maxProducts = 8;
+                const products = (data.products || []).slice(0, maxProducts);
+
+                const productSection = renderSection('Productos', products, (item) => {
                     return `
                         <a class="search-suggestions-item" href="/products/${item.slug}">
                             <span class="search-suggestions-name">${item.name}</span>

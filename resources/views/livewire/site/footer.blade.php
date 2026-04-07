@@ -3,10 +3,9 @@
     <div class="site-footer-container">
         <div class="site-footer-top">
             <div class="footer-brand">
-                <div class="footer-logo">
-                    <span class="footer-logo-mark">G</span>
-                    <span class="footer-logo-text">GeckoMerce</span>
-                </div>
+                <a class="footer-logo" href="{{ route('welcome.index') }}" aria-label="Ir a la página principal">
+                    @include('partials.admin.company-brand')
+                </a>
                 <p class="footer-description">
                     Tu tienda online con productos seleccionados, envíos rápidos y una experiencia de compra sin fricciones.
                 </p>
@@ -48,10 +47,10 @@
             <div class="footer-links">
                 <h4 class="footer-title">Ayuda</h4>
                 <ul>
-                    <li><a href="#">Centro de ayuda</a></li>
-                    <li><a href="#">Envíos y devoluciones</a></li>
-                    <li><a href="#">Métodos de pago</a></li>
-                    <li><a href="#">Garantías</a></li>
+                    <li><a href="{{ route('site.legal.terms') }}">Terminos y condiciones</a></li>
+                    <li><a href="{{ route('site.legal.privacy') }}">Política de privacidad</a></li>
+                    <li><a href="{{ route('site.legal.claims') }}">Libro de reclamaciones</a></li>
+                    <li><a href="#">Preguntas frecuentes</a></li>
                 </ul>
             </div>
 
@@ -60,7 +59,7 @@
                 <ul>
                     <li><a href="#">Sobre nosotros</a></li>
                     <li><a href="#">Trabaja con nosotros</a></li>
-                    <li><a href="#">Blog</a></li>
+                    <li><a href="{{ route('site.blog.index') }}">Blog</a></li>
                     <li><a href="#">Contacto</a></li>
                 </ul>
             </div>
@@ -82,8 +81,8 @@
         <div class="site-footer-bottom">
             <p>© {{ date('Y') }} GeckoMerce. Todos los derechos reservados.</p>
             <div class="footer-bottom-links">
-                <a href="#">Privacidad</a>
-                <a href="#">Términos</a>
+                <a href="{{ route('site.legal.privacy') }}">Privacidad</a>
+                <a href="{{ route('site.legal.terms') }}">Términos</a>
                 <a href="#">Cookies</a>
             </div>
         </div>

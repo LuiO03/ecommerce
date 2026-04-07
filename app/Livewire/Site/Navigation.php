@@ -16,6 +16,14 @@ class Navigation extends Component
 
     public function render()
     {
+        $user = auth()->user();
+
+        $hasAvatarImage = false;
+
+        if ($user) {
+            $hasAvatarImage = $user->image && Storage::disk('public')->exists($user->image);
+        }
+
         $companySettings = function_exists('company_setting') ? company_setting() : null;
 
         $brandLogoUrl = null;
@@ -32,8 +40,10 @@ class Navigation extends Component
 
         $brandName = $companySettings->name ?? null;
         return view('livewire.site.navigation', [
+            'user' => $user,
             'brandLogoUrl' => $brandLogoUrl,
             'brandName' => $brandName,
+            'hasAvatarImage' => $hasAvatarImage,
         ]);
     }
 

@@ -29,27 +29,30 @@
 
 /* ===== Logo ===== */
 
-.site-logo {
-    margin: 0px auto 0px auto;
+.site-logo,
+.footer-logo {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     gap: 10px;
 }
 
-.site-logo img{
+.site-logo img,
+.footer-logo img {
     width: 30px;
     aspect-ratio: 1/1;
     object-fit: contain;
 }
 
-.site-logo .sidebar-logo-texto {
+.site-logo .sidebar-logo-texto,
+.footer-logo .sidebar-logo-texto {
     font-size: var(--font-size-h4);
     color: white;
     font-weight: bolder;
 }
 
-.site-logo .sidebar-logo-texto span {
+.site-logo .sidebar-logo-texto span,
+.footer-logo .sidebar-logo-texto span {
     font-weight: 300;
 }
 
@@ -71,9 +74,12 @@
     transform: scale(1.1);
 }
 
-/* ===== Buscador Desktop ===== */
-.search-desktop {
-    flex: 1;
+/* ===== wishlist Desktop ===== */
+.button-desktop {
+    display: block;
+}
+
+.button-mobile{
     display: none;
 }
 
@@ -89,7 +95,10 @@
     background: var(--color-card-bg);
     border: 1px solid var(--color-border);
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
 .site-search:focus-within {
@@ -98,70 +107,27 @@
     transform: translateY(-1px);
 }
 
-.site-search-icon {
-    width: 42px;
-    height: 42px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: var(--color-primary-pastel);
-    color: var(--color-accent);
-    font-size: 1.1rem;
-    flex: 0 0 auto;
-}
 
-.search-desktop input.site-search-input, .search-mobile input.site-search-input {
-    flex: 1 1 auto;
-    width: 100%;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: var(--color-text);
-    font-size: var(--font-size-xs);
-    font-family: var(--font-primary);
-    box-shadow: none;
-}
-
-.search-desktop input.site-search-input::placeholder, .search-mobile input.site-search-input::placeholder {
-    color: var(--color-input-placeholder);
-}
-
-.site-search-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    border: 0;
-    border-radius: 999px;
-    padding: 0.6rem 1rem;
-    background: var(--color-accent);
-    color: var(--color-normal);
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.site-search-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
-}
-
-.site-search-btn:active {
-    transform: translateY(0);
-}
-
-@media (min-width: 768px) {
-    .search-desktop {
-        display: block;
-    }
-}
 
 /* ===== Acciones Header ===== */
 .header-actions {
     display: flex;
     gap: 5px;
     align-items: center;
+}
+
+.site-nav-desktop{
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.site-nav-desktop .site-nav-link{
+    color: white;
+    font-size: var(--font-size-h5);
+    font-family: var(--font-secondary);
+    font-weight: 500;
+    transition: color 0.2s ease;
 }
 
 .nav-icon {
@@ -176,11 +142,33 @@
     transition: color 0.2s ease;
 }
 
+@media (max-width: 768px) {
+    .button-desktop,
+    .sidebar-logo,
+    .site-nav-desktop {
+        display: none;
+    }
+
+    .button-mobile {
+        display: block;
+    }
+
+    .header-actions{
+        gap: 3px;
+    }
+
+    .nav-icon{
+        font-size: 1.45rem;
+        padding: 0.25rem;
+        line-height: 1;
+    }
+}
+
 .nav-icon:hover {
     color: var(--color-primary-pastel);
 }
 
-.nav-login-button{
+.nav-login-button {
     display: flex;
     gap: 5px;
     color: white;
@@ -191,15 +179,16 @@
     border-radius: var(--radius-input);
 }
 
-.nav-login-button .boton-text{
+.nav-login-button .boton-text {
     font-weight: 500;
 }
 
-.nav-login-button:hover{
+.nav-login-button:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.nav-login-button i, .nav-user-button i{
+.nav-login-button i,
+.nav-user-button i {
     font-size: 1.5rem;
 }
 
@@ -219,7 +208,6 @@
     font-weight: 600;
 }
 
-
 .nav-user-dropdown {
     position: relative;
 }
@@ -238,6 +226,24 @@
 .nav-user-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-avatar {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-weight: bolder;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    object-fit: cover;
+    border-radius: 50%;
+    box-sizing: content-box;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border 0.3s ease;
 }
 
 .dropdown-arrow {
@@ -276,7 +282,9 @@
     padding: 0.75rem 1rem;
     color: var(--color-text);
     text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     font-size: 0.9rem;
 }
 
@@ -298,38 +306,6 @@
     color: white;
 }
 
-.nav-user-divider {
-    border: none;
-    border-top: 1px solid var(--color-border);
-    margin: 0.5rem 0;
-}
-
-/* ===== Buscador Mobile ===== */
-.search-mobile {
-    display: block;
-    width: 100%;
-}
-
-.site-search-mobile {
-    max-width: 100%;
-    padding: 2px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-}
-
-.site-search-mobile .site-search-btn span {
-    display: none;
-}
-
-.site-search-mobile .site-search-btn {
-    padding: 0.6rem 0.75rem;
-}
-
-@media (min-width: 768px) {
-    .search-mobile {
-        display: none;
-    }
-}
-
 /* ===== Overlay - tapa header y contenido ===== */
 #siteOverlay {
     position: fixed;
@@ -341,7 +317,9 @@
     opacity: 0;
     visibility: hidden;
     z-index: 50;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
 }
 
 #siteOverlay.active {
@@ -442,7 +420,9 @@
     color: var(--color-text);
     text-decoration: none;
     border-radius: 0.5rem;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     cursor: pointer;
     font-family: var(--font-primary);
     font-size: 0.95rem;
@@ -479,7 +459,7 @@
     font-family: var(--font-secondary);
 }
 
-.nav-menu-list li a{
+.nav-menu-list li a {
     color: #374151;
 }
 
@@ -507,7 +487,9 @@
     border: 1px solid var(--color-border);
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     text-align: left;
 }
 
@@ -529,7 +511,7 @@
     font-size: 1.25rem;
 }
 
-.site-arrow-family-content{
+.site-arrow-family-content {
     background-color: var(--color-site-hover);
     height: 100%;
     width: 40px;
@@ -560,7 +542,9 @@
     opacity: 0;
     pointer-events: none;
     transform: translateX(-8px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
     z-index: 55;
 }
 
@@ -625,7 +609,7 @@
     background: var(--color-sub-menu-button-bg);
 }
 
-.site-flyout-header-title{
+.site-flyout-header-title {
     font-size: var(--font-size-h3);
     font-weight: bolder;
     font-family: var(--font-secondary);
@@ -682,7 +666,9 @@
     border-radius: 0.5rem;
     text-decoration: none;
     color: var(--color-text);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     font-size: 0.92rem;
 }
 
@@ -711,7 +697,7 @@
     color: var(--color-accent);
 }
 
-.site-flyout-children{
+.site-flyout-children {
     display: flex;
     flex-direction: column;
     gap: 0px;
@@ -724,16 +710,16 @@
         gap: 1rem;
     }
 
-    .site-header-container{
+    .site-header-container {
         padding: 0.5rem 0.4rem;
     }
 
-    .nav-login-button{
+    .nav-login-button {
         padding: 0px;
     }
 
     .nav-login-button .boton-text,
-    .nav-user-button .boton-text{
+    .nav-user-button .boton-text {
         display: none;
     }
 }

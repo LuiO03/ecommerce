@@ -25,7 +25,7 @@
         <div class="section-header">
             <h1>Completa tu orden</h1>
             <p>
-
+                Ingresa tu dirección de envío para continuar con el pago.
             </p>
         </div>
 
@@ -123,7 +123,7 @@
                                     <div class="input-icon-container">
                                         <i class="ri-map-pin-2-line input-icon"></i>
                                         <textarea id="reference" class="input-form" name="reference"
-                                            placeholder="Ej: Casa de fachada azul, portón negro, cerca al parque" data-validate="required|max:255">{{ old('reference', !empty($editingAddress) ? $editingAddress->reference : null) }}</textarea>
+                                            placeholder="Ej: Casa de fachada azul, portón negro, cerca al parque" data-validate="required|max:255">{{ old('reference', $hasAddress ? $address->reference : null) }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -175,13 +175,6 @@
                                             data-validate="required|phone|max:20" autocomplete="off" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="address-form-footer mt-4">
-                                <button type="submit" class="site-btn site-btn-primary"
-                                    id="shippingAddressSubmitBtn">
-                                    <i class="ri-save-line"></i>
-                                    Guardar dirección
-                                </button>
                             </div>
                         </form>
                 </div>
@@ -275,9 +268,11 @@
                         </div>
                     </div>
                     <div class="shipping-summary-actions">
-                        <a href="{{ route('checkout.index') }}" class="site-btn site-btn-primary">
+                        <button type="submit" class="site-btn site-btn-primary" id="shippingAddressSubmitBtn"
+                            form="shippingAddressForm">
+                            <i class="ri-wallet-3-fill"></i>
                             Continuar con el pago
-                        </a>
+                        </button>
                     </div>
                 </aside>
             </div>

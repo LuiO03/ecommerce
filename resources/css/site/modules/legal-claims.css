@@ -1,0 +1,56 @@
+/* ==============================
+   Módulo: Libro de Reclamaciones
+   ============================== */
+
+.legal-hero--claims {
+    background: radial-gradient(circle at top, var(--color-warning) 0, var(--color-dark) 45%, var(--color-dark-hover) 100%);
+}
+
+.legal-article--claims {
+    border-color: var(--color-warning);
+}
+
+.legal-cta--emphasis {
+    background: linear-gradient(135deg, var(--color-warning), var(--color-orange));
+}
+
+.legal-cta--emphasis .legal-cta__button {
+    background: #fff;
+    color: var(--color-dark);
+    text-wrap: nowrap;
+}
+
+/* Formulario de Libro de Reclamaciones */
+
+.legal-form {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--color-border);
+}
+
+.legal-form__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.legal-form__subtitle {
+    font-size: 0.9rem;
+    color: var(--color-text-soft);
+    margin-bottom: 1.25rem;
+}
+
+.legal-form__grid{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-size: var(--font-size-p);
+    background-color: var(--color-sidebar-bg);
+}
+
+.legal-form__hint {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-soft);
+}
+

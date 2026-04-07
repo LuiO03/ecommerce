@@ -148,6 +148,8 @@
 .boton-volver {
   border-color: var(--color-accent);
   color: var(--color-accent);
+  background-color: var(--color-card-bg);
+  border-width: 2px;
 }
 
 .boton-action{
@@ -167,7 +169,7 @@
     text-decoration: none;
     min-height: 35px;
     z-index: 1;
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-input);
     overflow: hidden;
     padding: 6px 12px;
     cursor: pointer;

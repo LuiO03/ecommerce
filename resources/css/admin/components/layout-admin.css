@@ -134,14 +134,15 @@
     padding: 6px 8px;
     border-radius: var(--radius-input);
     background-color: var(--color-danger-pastel);
-    border: 1px solid transparent;
     color: var(--color-danger);
-    transition: border-color 0.2s ease, font-weight 0.2s ease;
+    font-weight: bold;
+    border: 1px solid var(--color-danger);
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
 .menu-item-logout:hover {
-    font-weight: bold;
-    border-color: var(--color-danger);
+    background-color: var(--color-danger);
+    color: white;
 }
 
 /* === Fondo decorativo usuario === */

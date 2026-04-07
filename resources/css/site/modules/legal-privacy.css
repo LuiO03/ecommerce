@@ -1,0 +1,20 @@
+/* ==============================
+   Módulo: Política de Privacidad
+   ============================== */
+
+.legal-hero--privacy {
+    background: radial-gradient(circle at top right, #1b9fff 0, #0f0b1f 45%, #050312 100%);
+}
+
+.legal-article--privacy {
+    border-color: rgba(27, 159, 255, 0.2);
+}
+
+.legal-cta--subtle {
+    background: linear-gradient(135deg, rgba(27, 159, 255, 0.12), rgba(61, 49, 178, 0.1));
+}
+
+.legal-cta--subtle .legal-cta__button {
+    background: #1b9fff;
+    color: #fff;
+}
