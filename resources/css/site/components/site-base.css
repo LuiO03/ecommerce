@@ -125,6 +125,11 @@
     align-items: start;
 }
 
+/* Layout de resultados de búsqueda sin sidebar: una sola columna */
+.products-layout--full {
+    grid-template-columns: minmax(0, 1fr);
+}
+
 .products-sidebar {
     position: sticky;
     top: calc(var(--site-nav-height) + 1rem);
@@ -140,6 +145,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .products-count {

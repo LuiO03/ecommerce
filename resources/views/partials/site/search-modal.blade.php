@@ -2,7 +2,7 @@
     <div class="site-search-backdrop" data-site-search-close></div>
 
     <div class="site-search-dialog" role="dialog" aria-modal="true" aria-labelledby="siteSearchModalTitle">
-        <button type="button" class="site-search-close" data-site-search-close aria-label="Cerrar">
+        <button type="button" class="site-search-close" data-site-search-close aria-label="Cerrar" title="Cerrar búsqueda">
             <i class="ri-close-line"></i>
         </button>
 
@@ -17,11 +17,14 @@
             action="{{ route('search.index') }}" method="GET" data-search-form
             data-search-suggestions="{{ route('search.suggestions') }}">
             <div class="site-search-input-wrapper">
+
                 <i class="ri-search-2-line site-search-input-icon" aria-hidden="true"></i>
+
                 <input type="search" name="q" class="site-search-input" data-search-input
                     placeholder="¿Qué producto estás buscando?" autocomplete="off" />
+
                 <button type="submit" class="site-search-btn" aria-label="Buscar">
-                    <span>Ver todo</span>
+                    <span>Buscar</span>
                 </button>
             </div>
 

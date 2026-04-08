@@ -1,6 +1,8 @@
 <x-app-layout>
     @section('title', 'Mi cuenta')
-
+    @include('partials.site.breadcrumb', [
+        'items' => $breadcrumbItems ?? [['label' => 'Mi cuenta', 'icon' => 'ri-user-3-fill']],
+    ])
     <section class="site-container profile-page">
         <header
             class="profile-header {{ $user->background_style && $user->background_style !== '' ? $user->background_style : 'fondo-estilo-2' }}">

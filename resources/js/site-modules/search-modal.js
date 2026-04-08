@@ -54,6 +54,20 @@ function setupSearchModal() {
 			closeSearchModal();
 		}
 	});
+
+	// Evitar enviar la búsqueda si el término está vacío
+	const form = modal.querySelector('[data-search-form]');
+	if (form) {
+		const input = form.querySelector('[data-search-input]');
+		form.addEventListener('submit', (event) => {
+			if (!input) return;
+			const term = input.value.trim();
+			if (!term) {
+				event.preventDefault();
+				input.focus();
+			}
+		});
+	}
 }
 
 document.addEventListener('DOMContentLoaded', setupSearchModal);

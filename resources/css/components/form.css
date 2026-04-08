@@ -67,6 +67,11 @@ input[type="checkbox"]:indeterminate {
     color: var(--color-accent);
 }
 
+input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 /* =======================================================
    📦 CONTENEDOR PRINCIPAL
 ======================================================= */

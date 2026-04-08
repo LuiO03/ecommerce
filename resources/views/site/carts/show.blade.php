@@ -1,5 +1,5 @@
 <x-app-layout>
-
+    @section('title', 'Carrito de compras')
     @include('partials.site.breadcrumb', [
         'items' => $breadcrumbItems ?? [['label' => 'Carrito de compras', 'icon' => 'ri-shopping-cart-fill']],
     ])

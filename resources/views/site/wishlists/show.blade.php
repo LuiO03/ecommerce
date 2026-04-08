@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Mis favoritos')
     @include('partials.site.breadcrumb', [
         'items' => $breadcrumbItems ?? [
             ['label' => 'Mis favoritos', 'icon' => 'ri-heart-fill'],

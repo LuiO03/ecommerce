@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class Filter extends Component
 {
+    public $search;
     public $family_id;
     public $category_id;
     public $family;
@@ -95,17 +96,24 @@ class Filter extends Component
     protected function loadProducts(): void
     {
         $featuresByOption = [];
-        if (!empty($this->selectedFeatures)) {
-            $featuresByOption = Feature::query()
-                ->whereIn('id', $this->selectedFeatures)
-                ->get(['id', 'option_id'])
-                ->groupBy('option_id')
-                ->map(fn ($items) => $items->pluck('id')->all())
-                ->all();
-        }
+        $categoryIds = [];
 
-        $categoryIds = $this->resolveCategoryIds();
-        $this->loadOptions($categoryIds);
+        if ($this->search) {
+            // Modo búsqueda global: sin filtros por variantes/opciones
+            $this->options = [];
+        } else {
+            if (!empty($this->selectedFeatures)) {
+                $featuresByOption = Feature::query()
+                    ->whereIn('id', $this->selectedFeatures)
+                    ->get(['id', 'option_id'])
+                    ->groupBy('option_id')
+                    ->map(fn ($items) => $items->pluck('id')->all())
+                    ->all();
+            }
+
+            $categoryIds = $this->resolveCategoryIds();
+            $this->loadOptions($categoryIds);
+        }
 
         $baseProductQuery = DB::table('products')
             ->join('categories', 'categories.id', '=', 'products.category_id')
@@ -121,6 +129,15 @@ class Filter extends Component
 
         if (!empty($categoryIds)) {
             $baseProductQuery->whereIn('products.category_id', $categoryIds);
+        }
+
+        if ($this->search) {
+            $term = '%' . $this->search . '%';
+            $baseProductQuery->where(function ($builder) use ($term) {
+                $builder->where('products.name', 'like', $term)
+                    ->orWhere('products.sku', 'like', $term)
+                    ->orWhere('products.description', 'like', $term);
+            });
         }
 
         if (!empty($featuresByOption)) {

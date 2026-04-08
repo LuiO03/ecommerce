@@ -6,7 +6,6 @@
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
-    padding-block: 2.5rem;
 }
 
 .blog-hero {
@@ -193,10 +192,6 @@
 }
 
 /* Artículo */
-
-.blog-article-page {
-    padding-block: 2.5rem;
-}
 
 .blog-article-layout {
     display: grid;

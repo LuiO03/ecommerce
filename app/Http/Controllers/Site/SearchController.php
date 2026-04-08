@@ -12,48 +12,12 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         $query = trim((string) $request->query('q'));
-
-        $products = collect();
-        $categories = collect();
-
-        if ($query !== '') {
-            $products = Product::query()
-                ->with(['category', 'images'])
-                ->where('status', true)
-                ->whereHas('variants', function ($variantQuery) {
-                    $variantQuery->where('status', true);
-                })
-                ->where(function ($builder) use ($query) {
-                    $builder->where('name', 'like', '%' . $query . '%')
-                        ->orWhere('sku', 'like', '%' . $query . '%')
-                        ->orWhere('description', 'like', '%' . $query . '%');
-                })
-                ->latest('created_at')
-                ->limit(60)
-                ->get()
-                ->map(function ($product) {
-                    $product->mainImage = $product->images
-                        ->where('is_main', true)
-                        ->first() ?? $product->images
-                        ->sortBy('order')
-                        ->first();
-
-                    return $product;
-                });
-
-            $categories = Category::query()
-                ->where('status', true)
-                ->where('name', 'like', '%' . $query . '%')
-                ->with(['family:id,name'])
-                ->orderBy('name')
-                ->limit(20)
-                ->get();
+        if ($query === '') {
+            return redirect()->route('welcome.index');
         }
 
-        return view('site.search.index', [
+        return view('site.search.results', [
             'query' => $query,
-            'products' => $products,
-            'categories' => $categories,
         ]);
     }
 
@@ -69,22 +33,45 @@ class SearchController extends Controller
         }
 
         $products = Product::query()
-            ->select('id', 'name', 'slug', 'price', 'discount')
+            ->with(['images' => function ($q) {
+                $q->orderBy('is_main', 'desc')->orderBy('order');
+            }])
             ->where('status', true)
             ->whereHas('variants', function ($variantQuery) {
                 $variantQuery->where('status', true);
             })
             ->where('name', 'like', '%' . $query . '%')
             ->orderBy('name')
-            ->limit(5)
-            ->get();
+            ->limit(8)
+            ->get()
+            ->map(function (Product $product) {
+                $image = $product->images->first();
+
+                $price = (float) $product->price;
+                $discountPercent = ! is_null($product->discount)
+                    ? min(max((float) $product->discount, 0), 100)
+                    : 0;
+                $hasDiscount = $discountPercent > 0;
+                $discounted = $hasDiscount
+                    ? max($price * (1 - $discountPercent / 100), 0)
+                    : $price;
+
+                return [
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'price' => $price,
+                    'discounted_price' => $discounted,
+                    'has_discount' => $hasDiscount,
+                    'image_url' => $image ? asset('storage/' . $image->path) : null,
+                ];
+            });
 
         $categories = Category::query()
-            ->select('id', 'name', 'slug', 'family_id')
+            ->select('id', 'name', 'slug')
             ->where('status', true)
             ->where('name', 'like', '%' . $query . '%')
             ->orderBy('name')
-            ->limit(5)
+            ->limit(8)
             ->get();
 
         return response()->json([

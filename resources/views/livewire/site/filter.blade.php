@@ -1,108 +1,123 @@
 <div class="site-container">
-    <div class="products-layout">
-        <aside class="products-sidebar">
-            <section class="filters" aria-label="Filtros de productos">
-                <div class="filters-header">
-                    <div class="filters-title">
-                        <i class="ri-filter-2-line"></i>
-                        <span>Filtrar productos</span>
+    <div class="products-layout {{ !empty($search) ? 'products-layout--full' : '' }}">
+        @if (empty($search))
+            <aside class="products-sidebar">
+                <section class="filters" aria-label="Filtros de productos">
+                    <div class="filters-header">
+                        <div class="filters-title">
+                            <i class="ri-filter-2-line"></i>
+                            <span>Filtrar productos</span>
+                        </div>
+                        <button type="button" class="filters-clear" aria-label="Limpiar filtros" wire:click="clearFilters">
+                            <i class="ri-refresh-line"></i>
+                            <span>Limpiar</span>
+                        </button>
                     </div>
-                    <button type="button" class="filters-clear" aria-label="Limpiar filtros" wire:click="clearFilters">
-                        <i class="ri-refresh-line"></i>
-                        <span>Limpiar</span>
-                    </button>
-                </div>
 
-                <div class="filters-body">
-                    @if (!empty($subcategories))
-                        <section class="filters-subcategories" aria-label="Subcategorias">
-                            <span class="filters-subcategories-title">Subcategorias</span>
-                            <div class="filters-subcategories-chips">
-                                @foreach ($subcategories as $subcategory)
-                                    <a class="filter-chip" href="{{ route('categories.show', $subcategory) }}">
-                                        <span>{{ $subcategory->name }}</span>
-                                    </a>
-                                @endforeach
+                    <div class="filters-body">
+                        @if (!empty($subcategories))
+                            <section class="filters-subcategories" aria-label="Subcategorias">
+                                <span class="filters-subcategories-title">Subcategorias</span>
+                                <div class="filters-subcategories-chips">
+                                    @foreach ($subcategories as $subcategory)
+                                        <a class="filter-chip" href="{{ route('categories.show', $subcategory) }}">
+                                            <span>{{ $subcategory->name }}</span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </section>
+                        @else
+                            <div class="filters-empty">
+                                <i class="ri-information-line"></i>
+                                <span>No hay subcategorias para esta categoria.</span>
                             </div>
-                        </section>
-                    @else
-                        <div class="filters-empty">
-                            <i class="ri-information-line"></i>
-                            <span>No hay subcategorias para esta categoria.</span>
-                        </div>
-                    @endif
+                        @endif
 
-                    @forelse ($options as $option)
-                        @php
-                            $isColor = method_exists($option, 'isColor') && $option->isColor();
-                        @endphp
-
-                        <details class="filter-group" open>
-                            <summary class="filter-group-title">
-                                <span>{{ $option->name }}</span>
-                                <i class="ri-arrow-down-s-line"></i>
-                            </summary>
-                            <div class="filter-group-content">
-                                @forelse ($option->features as $feature)
-                                    <label class="filter-item" wire:key="feature-{{ $feature->id }}">
-                                        <span class="filter-facet-left">
-                                            <input class="filter-facet-input" type="checkbox"
-                                                value="{{ $feature->id }}" name="selectedFeatures[]"
-                                                wire:model="selectedFeatures" />
-                                            <span class="filter-facet-box" aria-hidden="true">
-                                                <i class="ri-check-line"></i>
-                                            </span>
-                                            @if ($isColor)
-                                                <span class="filter-facet-swatch"
-                                                    style="--facet-color: {{ $feature->description }}"
-                                                    title="{{ $feature->value }} ({{ $feature->description }})"
-                                                    aria-label="{{ $feature->value }} ({{ $feature->description }})"></span>
-                                                <span class="filter-facet-name">{{ $feature->value }}</span>
-                                            @else
-                                                <span class="filter-facet-size">{{ $feature->value }}</span>
+                        @forelse ($options as $option)
+                            @php
+                                $selectedCount = $selectedFeaturesByOption[$option->id] ?? 0;
+                                $isColorOption = method_exists($option, 'isColor') && $option->isColor();
+                            @endphp
+                            <details class="filter-group" open>
+                                <summary class="filter-group-title">
+                                    <span class="filters-name">{{ $option->name }}</span>
+                                    @if ($selectedCount > 0)
+                                        <span class="filters-badge">{{ $selectedCount }}</span>
+                                    @endif
+                                    <i class="ri-arrow-down-s-line"></i>
+                                </summary>
+                                <div class="filter-group-content">
+                                    @foreach ($option->features as $feature)
+                                        @php
+                                            // Para color: value = nombre, description = HEX
+                                            $rawHex = $isColorOption ? (string) ($feature->description ?? $feature->value ?? '') : null;
+                                            $normalized = $rawHex !== null ? ltrim($rawHex, '#') : null;
+                                            $displayColor = $normalized !== null && $normalized !== '' ? '#' . $normalized : null;
+                                        @endphp
+                                        <label class="filter-item {{ $isColorOption ? 'filter-item--color' : '' }}">
+                                            <input type="checkbox" wire:model.defer="selectedFeatures" value="{{ $feature->id }}">
+                                            @if ($isColorOption && $displayColor)
+                                                <span class="filter-color-dot" style="--filter-color: {{ $displayColor }};"></span>
                                             @endif
-                                        </span>
-                                        <span
-                                            class="filter-facet-count">({{ $featureCounts[$feature->id] ?? 0 }})</span>
-                                    </label>
-                                @empty
-                                    <div class="filter-empty">Sin opciones disponibles</div>
-                                @endforelse
+                                            <span class="filter-item-label">{{ $feature->value }}</span>
+                                            @if (isset($featureCounts[$feature->id]))
+                                                <span class="filters-count">{{ $featureCounts[$feature->id] }}</span>
+                                            @endif
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </details>
+                            @empty
+                            <div class="filters-empty">
+                                <i class="ri-information-line"></i>
+                                <span>No hay características configuradas para esta categoría.</span>
                             </div>
-                        </details>
-                    @empty
-                        <div class="filters-empty">
-                            <i class="ri-information-line"></i>
-                            <span>No hay filtros para esta familia.</span>
-                        </div>
-                    @endforelse
-                </div>
+                        @endforelse
 
-                <div class="filters-footer">
-                    <button type="button" class="filters-apply" wire:click="applyFilters" wire:loading.attr="disabled">
-                        <i class="ri-equalizer-line"></i>
-                        <span wire:loading.remove>Aplicar filtros</span>
-                        <span wire:loading>Aplicando...</span>
-                    </button>
-                </div>
-            </section>
-        </aside>
+                        @if (count($options) > 0)
+                            <div class="filters-footer">
+                                <button type="button" class="filters-apply" wire:click="applyFilters">
+                                    <i class="ri-check-line"></i>
+                                    <span>Aplicar filtros</span>
+                                </button>
+                            </div>
+                        @endif
+                    </div>
+                </section>
+            </aside>
+        @endif
 
         <main class="products-main">
-            <div class="mb-3">
-                @if ($category)
-                    <h1>{{ $family?->name }}</h1>
-                    <h2>{{ $category->name }}</h2>
-                    <p>{{ $category->description }}</p>
-                @elseif ($family)
-                    <h1>{{ $family->name }}</h1>
-                    <p>{{ $family->description }}</p>
-                @else
-                    <h1>Todos los productos</h1>
-                @endif
-            </div>
-
             <div class="products-header">
+                <div>
+                    <h1 class="products-title">
+                        @if (!empty($search))
+                            Resultados de búsqueda
+                        @elseif ($category)
+                            {{ $category->name }}
+                        @elseif ($family)
+                            {{ $family->name }}
+                        @else
+                            Todos los productos
+                        @endif
+                    </h1>
+                    <p class="products-count">
+                        @if (!empty($search))
+                            @if ($totalProducts > 0)
+                                {{ $totalProducts }}
+                                {{ Str::plural('producto', $totalProducts) }}
+                                encontrado{{ $totalProducts === 1 ? '' : 's' }} para
+                                "{{ $search }}"
+                            @else
+                                No se encontraron productos para "{{ $search }}"
+                            @endif
+                        @else
+                            {{ $totalProducts }}
+                            {{ Str::plural('producto', $totalProducts) }}
+                            encontrado{{ $totalProducts === 1 ? '' : 's' }}
+                        @endif
+                    </p>
+                </div>
 
                 <div class="site-select">
                     <div class="site-select-trigger">
@@ -160,11 +175,12 @@
                     </div>
                 </div>
             </div>
+
             @if ($products->isNotEmpty())
                 <div class="products-results" data-infinite-products>
                     <div class="products-grid">
                         @foreach ($products as $product)
-                            <article class="product-card">
+                            <div class="product-card">
                                 <a href="{{ route('products.show', $product) }}" class="product-image">
                                     @if ($product->mainImage)
                                         <img src="{{ asset('storage/' . $product->mainImage->path) }}"
@@ -189,18 +205,15 @@
                                         </div>
                                     @endif
 
-                                    @if (!is_null($product->discount) && (float) $product->discount > 0)
-                                        <span class="product-badge">-{{ number_format($product->discount, 0) }}%
-                                            OFF</span>
+                                    @if ($product->discount)
+                                        <span class="product-badge">-{{ number_format($product->discount, 0) }}% OFF</span>
                                     @endif
                                 </a>
 
                                 <div class="product-details">
-
                                     <div class="product-content">
                                         <div class="flex justify-between flex-wrap">
-                                            <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}
-                                            </p>
+                                            <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
                                             <p class="product-rating">
                                                 <i class="ri-star-fill"></i>
                                                 <span>4.5 (128)</span>
@@ -212,40 +225,26 @@
                                                 @if (!is_null($product->discount) && (float) $product->discount > 0)
                                                     @php
                                                         $discountPercent = min(max((float) $product->discount, 0), 100);
-                                                        $discounted = max(
-                                                            (float) $product->price * (1 - $discountPercent / 100),
-                                                            0,
-                                                        );
+                                                        $discounted = max((float) $product->price * (1 - ($discountPercent / 100)), 0);
                                                     @endphp
-                                                    <span class="product-price">
-                                                        S/.{{ number_format($discounted, 2) }}
-                                                    </span>
-                                                    <div class="product-price-info">
-                                                        <span>Antes</span>
-                                                        <span class="product-price-original">
-                                                             S/.{{ number_format($product->price, 2) }}
-                                                        </span>
-                                                    </div>
+                                                    <span class="product-price">S/.{{ number_format($discounted, 2) }}</span>
+                                                    <span class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
                                                 @else
-                                                    <span class="product-price">
-                                                        S/.{{ number_format($product->price, 2) }}
-                                                    </span>
+                                                    <span class="product-price">S/.{{ number_format($product->price, 2) }}</span>
                                                 @endif
                                             </div>
-
                                         </div>
                                     </div>
 
                                     <div class="product-footer">
                                         <livewire:site.add-to-wishlist-card :product-id="$product->id" :key="'wishlist-card-' . $product->id" />
-                                        <button class="product-btn" aria-label="Agregar al carrito"
-                                            title="Agregar al carrito">
+                                        <button class="product-btn" aria-label="Agregar al carrito" title="Agregar al carrito">
                                             <i class="ri-shopping-bag-line"></i>
                                             Agregar
                                         </button>
                                     </div>
                                 </div>
-                            </article>
+                            </div>
                         @endforeach
                     </div>
 
@@ -269,8 +268,7 @@
                             }
                         @endphp
                         <nav class="site-pagination" aria-label="Paginacion">
-                            <button type="button" class="pagination-btn" wire:click="previousPage"
-                                {{ $currentPage === 1 ? 'disabled' : '' }}>
+                            <button type="button" class="pagination-btn" wire:click="previousPage" {{ $currentPage === 1 ? 'disabled' : '' }}>
                                 <i class="ri-arrow-left-s-line"></i>
                                 <span>Anterior</span>
                             </button>
@@ -279,16 +277,13 @@
                                     @if ($page === '...')
                                         <span class="pagination-ellipsis">...</span>
                                     @else
-                                        <button type="button"
-                                            class="pagination-page {{ $page === $currentPage ? 'is-active' : '' }}"
-                                            wire:click="goToPage({{ $page }})">
+                                        <button type="button" class="pagination-page {{ $page === $currentPage ? 'is-active' : '' }}" wire:click="goToPage({{ $page }})">
                                             {{ $page }}
                                         </button>
                                     @endif
                                 @endforeach
                             </div>
-                            <button type="button" class="pagination-btn" wire:click="nextPage"
-                                {{ $currentPage === $totalPages ? 'disabled' : '' }}>
+                            <button type="button" class="pagination-btn" wire:click="nextPage" {{ $currentPage === $totalPages ? 'disabled' : '' }}>
                                 <span>Siguiente</span>
                                 <i class="ri-arrow-right-s-line"></i>
                             </button>
@@ -297,8 +292,7 @@
 
                     @if ($hasMore)
                         <div class="filters-footer products-infinite">
-                            <button type="button" class="filters-apply" data-load-more-button wire:click="loadMore"
-                                wire:loading.attr="disabled">
+                            <button type="button" class="filters-apply" data-load-more-button wire:click="loadMore" wire:loading.attr="disabled">
                                 <i class="ri-add-line"></i>
                                 <span wire:loading.remove>Cargar más</span>
                                 <span wire:loading>Cargando...</span>
@@ -310,7 +304,11 @@
             @else
                 <div class="filters-empty">
                     <i class="ri-box-3-line"></i>
-                    <span>No hay productos para esta categoría o estos filtros.</span>
+                    @if (!empty($search))
+                        <span>No se encontraron productos para "{{ $search }}".</span>
+                    @else
+                        <span>No hay productos para esta categoría o estos filtros.</span>
+                    @endif
                 </div>
             @endif
         </main>

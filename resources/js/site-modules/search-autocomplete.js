@@ -17,14 +17,14 @@ const initSearchAutocomplete = () => {
             dropdown.classList.remove('is-open');
         };
 
-        const renderSection = (title, items, formatter) => {
+        const renderSection = (title, items, formatter, sectionClass = '') => {
             if (!items.length) {
                 return '';
             }
 
             const listItems = items.map(formatter).join('');
             return `
-                <div class="search-suggestions-section">
+                <div class="search-suggestions-section ${sectionClass}">
                     <div class="search-suggestions-title">${title}</div>
                     ${listItems}
                 </div>
@@ -63,36 +63,75 @@ const initSearchAutocomplete = () => {
             timeoutId = setTimeout(async () => {
                 const data = await fetchSuggestions(value);
 
-                const maxProducts = 8;
-                const products = (data.products || []).slice(0, maxProducts);
+                const products = data.products || [];
+                const categories = data.categories || [];
 
                 const productSection = renderSection('Productos', products, (item) => {
+                        const basePrice = (item.discounted_price ?? item.price) || 0;
+                        const currentPrice = Number(basePrice).toFixed(2);
+                    const originalPrice = Number(item.price || 0).toFixed(2);
+
                     return `
-                        <a class="search-suggestions-item" href="/products/${item.slug}">
-                            <span class="search-suggestions-name">${item.name}</span>
-                            <span class="search-suggestions-meta">S/.${Number(item.price).toFixed(2)}</span>
+                        <a class="search-suggestions-item search-suggestions-item-product" href="/products/${item.slug}">
+                            <div class="search-suggestion-product-main">
+                                <div class="search-suggestion-thumb">
+                                    ${item.image_url
+                                        ? `<img src="${item.image_url}" alt="${item.name}">`
+                                        : '<i class="ri-image-line"></i>'}
+                                </div>
+                                <div class="search-suggestion-text">
+                                    <span class="search-suggestions-name">${item.name}</span>
+                                </div>
+                            </div>
+                            <div class="search-suggestion-price">
+                                <span class="search-suggestion-price-current">S/.${currentPrice}</span>
+                                ${item.has_discount
+                                    ? `<span class="search-suggestion-price-original">S/.${originalPrice}</span>`
+                                    : ''}
+                            </div>
                         </a>
                     `;
-                });
+                }, 'search-suggestions-section--products');
 
-                const categorySection = renderSection('Categorias', data.categories || [], (item) => {
+                const categorySection = renderSection('Categorías', categories, (item) => {
                     return `
                         <a class="search-suggestions-item" href="/categories/${item.slug}">
                             <span class="search-suggestions-name">${item.name}</span>
-                            <span class="search-suggestions-meta">Categoria</span>
                         </a>
                     `;
                 });
 
+                const hasAny = products.length > 0 || categories.length > 0;
                 const combined = `${productSection}${categorySection}`.trim();
 
-                if (!combined) {
+                if (!hasAny || !combined) {
                     clearResults();
                     return;
                 }
 
-                resultsList.innerHTML = combined;
+                let footer = '';
+                if (hasAny && value.length >= 2) {
+                    footer = `
+                        <div class="search-suggestions-footer">
+                            <button type="button" class="search-suggestions-see-all" data-search-see-all>
+                                Ver todo
+                            </button>
+                        </div>
+                    `;
+                }
+
+                resultsList.innerHTML = `${combined}${footer}`;
                 dropdown.classList.add('is-open');
+
+                const seeAllBtn = form.querySelector('[data-search-see-all]');
+                if (seeAllBtn) {
+                    seeAllBtn.onclick = () => {
+                        const term = input.value.trim();
+                        if (!term) return;
+                        const params = new URLSearchParams({ q: term });
+                        window.location.href = `${form.action}?${params.toString()}`;
+                    };
+                }
             }, 250);
         });
 

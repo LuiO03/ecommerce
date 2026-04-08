@@ -1,4 +1,10 @@
 <x-app-layout>
+    @section('title', 'Blog')
+
+    @include('partials.site.breadcrumb', [
+        'items' => $breadcrumbItems ?? [['label' => 'Blog', 'icon' => 'ri-newspaper-fill']],
+    ])
+
     <section class="site-container blog-page">
         <header class="blog-hero">
             <div class="blog-hero-content">

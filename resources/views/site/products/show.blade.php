@@ -1,5 +1,5 @@
 <x-app-layout>
-
+    @section('title', $product->name)
     @include('partials.site.breadcrumb', [
         'items' => $breadcrumbItems,
     ])
