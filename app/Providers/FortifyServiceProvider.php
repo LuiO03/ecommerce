@@ -85,12 +85,12 @@ class FortifyServiceProvider extends ServiceProvider
             $user = $request->user();
 
             if (! $user) {
-                return route('welcome.index');
+                return route('site.home');
             }
 
             // Solo el rol "Cliente" se queda en la parte pública
             if ($user->hasRole('Cliente')) {
-                return route('welcome.index');
+                return route('site.home');
             }
 
             // Cualquier otro rol (actual o futuro) va al panel admin

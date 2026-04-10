@@ -1,79 +1,266 @@
-<x-site-layout>
+<x-app-layout>
     @section('title', 'Inicio')
+    @if ($covers->isNotEmpty())
+        <section class="covers-section">
+            <div class="swiper covers-slider">
+                <div class="swiper-wrapper">
+                    @foreach ($covers as $cover)
+                        <div class="swiper-slide">
+                            <div class="cover-item"
+                                style="background-image: url('{{ asset('storage/' . $cover->image_path) }}');">
+                                <!-- Overlay transparente degradado según posición -->
+                                @if ($cover->overlay_bg_enabled)
+                                    <div class="cover-bg-overlay position-{{ $cover->text_position }}"
+                                        style="--overlay-bg-opacity: {{ $cover->overlay_bg_opacity ?? 0.35 }};"></div>
+                                @endif
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">Bienvenido a Geckommerce</h1>
-            <p class="hero-subtitle">Encuentra los mejores productos al mejor precio</p>
-            <a href="{{ route('products') }}" class="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-100 transition">
-                Explorar Productos
-            </a>
-        </div>
-    </section>
+                                <!-- Container con límite de ancho -->
+                                <div class="cover-container">
+                                    <!-- Contenido de texto -->
+                                    <div class="cover-content position-{{ $cover->text_position }}"
+                                        style="color: {{ $cover->text_color }};">
+                                        @if ($cover->overlay_text)
+                                            <h1 class="cover-title">{{ $cover->overlay_text }}</h1>
+                                        @endif
 
-    <!-- Categorías Destacadas -->
-    <section class="categories-section">
-        <div class="site-container">
-            <h2 class="section-title">Categorías Destacadas</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="category-card">
-                    <i class="category-icon ri-shirt-line"></i>
-                    <p class="category-name">Ropa</p>
-                </div>
-                <div class="category-card">
-                    <i class="category-icon ri-smartphone-line"></i>
-                    <p class="category-name">Electrónica</p>
-                </div>
-                <div class="category-card">
-                    <i class="category-icon ri-home-4-line"></i>
-                    <p class="category-name">Hogar</p>
-                </div>
-                <div class="category-card">
-                    <i class="category-icon ri-book-line"></i>
-                    <p class="category-name">Libros</p>
-                </div>
-            </div>
-        </div>
-    </section>
+                                        @if ($cover->overlay_subtext)
+                                            <p class="cover-subtitle">{{ $cover->overlay_subtext }}</p>
+                                        @endif
 
-    <!-- Productos Destacados -->
-    <section class="featured-section">
-        <div class="site-container">
-            <h2 class="section-title">Productos Destacados</h2>
-            <div class="products-grid">
-                @for($i = 1; $i <= 8; $i++)
-                <div class="product-card relative">
-                    @if($i % 3 == 0)
-                    <span class="product-card-badge">-20%</span>
-                    @endif
-                    <img src="https://via.placeholder.com/300x200" alt="Producto {{ $i }}" class="product-card-image">
-                    <div class="product-card-body">
-                        <h3 class="product-card-title">Producto de Ejemplo {{ $i }}</h3>
-                        <div class="flex items-center gap-2 mt-2">
-                            <span class="product-card-price">${{ rand(100, 999) }}</span>
-                            @if($i % 3 == 0)
-                            <span class="product-card-old-price">${{ rand(1000, 1299) }}</span>
-                            @endif
+                                        @if ($cover->button_text && $cover->button_link)
+                                            <a href="{{ $cover->button_link }}"
+                                                class="cover-btn btn-{{ $cover->button_style }}">
+                                                {{ $cover->button_text }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <button class="w-full mt-4 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition">
-                            Agregar al Carrito
-                        </button>
-                    </div>
+                    @endforeach
                 </div>
-                @endfor
+
+                <!-- Navegación -->
+                <div class="swiper-button-prev">
+                </div>
+                <div class="swiper-button-next">
+                </div>
+
+                <!-- Paginación -->
+                <div class="swiper-pagination"></div>
             </div>
+        </section>
+    @else
+        <section class="no-covers">
+            <div class="no-covers-content">
+                <i class="ri-gallery-line"></i>
+                <h2>No hay portadas disponibles</h2>
+                <p>Pronto habrá contenido destacado aquí</p>
+            </div>
+        </section>
+    @endif
+
+    <!-- Sección de Últimos Productos -->
+    <section class="latest-products-section">
+        <div class="latest-products-container">
+            <div class="latest-products-header">
+                <h1>Últimos Productos</h1>
+                <p>Descubre nuestras incorporaciones más recientes</p>
+            </div>
+
+            @if ($lastProducts->isNotEmpty())
+                <div class="swiper products-slider">
+                    <div class="swiper-wrapper">
+                        @foreach ($lastProducts as $product)
+                            <div class="swiper-slide products-slide">
+                                <div class="product-card">
+                                    <!-- Imagen Principal -->
+                                    <a  href="{{ route('products.show', $product) }}" class="product-image">
+                                        @if ($product->mainImage)
+                                            <img src="{{ asset('storage/' . $product->mainImage->path) }}"
+                                                alt="{{ $product->mainImage->alt ?? $product->name }}"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="product-image-fallback" style="display: none;">
+                                                <i class="ri-image-line"></i>
+                                                <span>Imagen no disponible</span>
+                                            </div>
+                                        @elseif ($product->image_path)
+                                            <img src="{{ asset('storage/' . $product->image_path) }}"
+                                                alt="{{ $product->name }}"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="product-image-fallback" style="display: none;">
+                                                <i class="ri-image-line"></i>
+                                                <span>Imagen no disponible</span>
+                                            </div>
+                                        @else
+                                            <div class="product-image-fallback">
+                                                <i class="ri-image-line"></i>
+                                                <span>Imagen no disponible</span>
+                                            </div>
+                                        @endif
+
+                                        @if ($product->discount)
+                                            <span class="product-badge">-{{ number_format($product->discount, 0) }}% OFF</span>
+                                        @endif
+                                    </a>
+
+                                    <div class="product-details">
+                                        <!-- Contenido -->
+                                        <div class="product-content">
+                                            <div class="flex justify-between">
+                                                <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
+                                                <!-- Rating -->
+                                                <p class="product-rating">
+                                                    <i class="ri-star-fill"></i>
+                                                    <span>4.5 (128)</span>
+                                                </p>
+                                            </div>
+                                            <h3 class="product-name">{{ $product->name }}</h3>
+
+                                            <div class="flex w-full flex-col">
+                                                <!-- Precio -->
+                                                <div class="product-pricing">
+                                                    @if (!is_null($product->discount) && (float) $product->discount > 0)
+                                                        @php
+                                                            $discountPercent = min(max((float) $product->discount, 0), 100);
+                                                            $discounted = max((float) $product->price * (1 - ($discountPercent / 100)), 0);
+                                                        @endphp
+                                                        <span class="product-price">S/.{{ number_format($discounted, 2) }}</span>
+                                                        <span class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
+                                                    @else
+                                                        <span class="product-price">S/.{{ number_format($product->price, 2) }}</span>
+                                                    @endif
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!-- Botones -->
+                                        <div class="product-footer">
+                                            <livewire:site.add-to-wishlist-card
+											:product-id="$product->id"
+											:key="'wishlist-card-' . $product->id" />
+
+                                            <button class="product-btn" aria-label="Agregar al carrito"title="Agregar al carrito">
+                                                <i class="ri-shopping-bag-line"></i>
+                                                Agregar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Navegación -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                    <!-- Paginación -->
+                    <div class="swiper-pagination"></div>
+                </div>
+            @else
+                <div class="no-products">
+                    <i class="ri-box-3-line"></i>
+                    <p>No hay productos disponibles en este momento</p>
+                </div>
+            @endif
         </div>
     </section>
 
-    <!-- Call to Action -->
-    <section class="py-16 bg-gradient-to-r from-purple-600 to-pink-500 text-white">
-        <div class="site-container text-center">
-            <h2 class="text-4xl font-bold mb-4">¿Listo para comenzar?</h2>
-            <p class="text-xl mb-8">Regístrate y obtén un 10% de descuento en tu primera compra</p>
-            <a href="{{ route('register') }}" class="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-100 transition inline-block">
-                Crear Cuenta
-            </a>
-        </div>
-    </section>
-</x-site-layout>
+    @push('js')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Slider de portadas
+                const coversSliderEl = document.querySelector('.covers-slider');
+                if (coversSliderEl) {
+                    new Swiper('.covers-slider', {
+                        modules: [
+                            window.SwiperModules.Navigation,
+                            window.SwiperModules.Pagination,
+                            window.SwiperModules.Autoplay,
+                        ],
+                        effect: 'slide',
+                        loop: true,
+                        autoplay: {
+                            delay: 5000,
+                            disableOnInteraction: false,
+                            pauseOnMouseEnter: true,
+                        },
+                        speed: 400,
+                        navigation: {
+                            nextEl: '.covers-slider .swiper-button-next',
+                            prevEl: '.covers-slider .swiper-button-prev',
+                        },
+                        pagination: {
+                            el: '.covers-slider .swiper-pagination',
+                            clickable: true,
+                            dynamicBullets: true,
+                        },
+                        keyboard: {
+                            enabled: true,
+                        },
+                        a11y: {
+                            prevSlideMessage: 'Portada anterior',
+                            nextSlideMessage: 'Siguiente portada',
+                            firstSlideMessage: 'Esta es la primera portada',
+                            lastSlideMessage: 'Esta es la última portada',
+                        },
+                    });
+                }
+
+                // Slider de productos
+                const productsSliderEl = document.querySelector('.products-slider');
+                if (productsSliderEl) {
+                    new Swiper('.products-slider', {
+                        modules: [
+                            window.SwiperModules.Navigation,
+                            window.SwiperModules.Pagination,
+                            window.SwiperModules.Autoplay,
+                        ],
+                        loop: true,
+                        autoplay: {
+                            delay: 6000,
+                            disableOnInteraction: true,
+                            pauseOnMouseEnter: true,
+                        },
+                        speed: 200,
+                        navigation: {
+                            nextEl: '.products-slider .swiper-button-next',
+                            prevEl: '.products-slider .swiper-button-prev',
+                        },
+                        pagination: {
+                            el: '.products-slider .swiper-pagination',
+                            clickable: true,
+                            dynamicBullets: false,
+                            dynamicMainBullets: 3,
+                        },
+                        breakpoints: {
+                            320: {
+                                slidesPerView: 2,
+                                spaceBetween: 15,
+                            },
+                            640: {
+                                slidesPerView: 2,
+                                spaceBetween: 15,
+                            },
+                            1024: {
+                                slidesPerView: 3,
+                                spaceBetween: 20,
+                            },
+                            1280: {
+                                slidesPerView: 5,
+                                spaceBetween: 20,
+                            },
+                        },
+                        keyboard: {
+                            enabled: true,
+                        },
+                        a11y: {
+                            prevSlideMessage: 'Producto anterior',
+                            nextSlideMessage: 'Siguiente producto',
+                        },
+                    });
+                }
+            });
+        </script>
+    @endpush
+</x-app-layout>

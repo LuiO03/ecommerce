@@ -112,9 +112,8 @@
 /* Contenedor principal */
 .site-container {
     max-width: var(--site-max-width);
-    margin: 0 auto;
     padding: 0 var(--site-spacing);
-    margin: 32px auto;
+    margin: 1rem auto;
 }
 
 /* Layout de listado de productos + filtros */
@@ -174,7 +173,7 @@
 @media (max-width: 768px) {
     .site-container {
         padding: 1rem;
-        margin: 16px auto;
+        margin: 0px auto;
     }
 
     .products-grid {

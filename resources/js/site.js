@@ -8,6 +8,7 @@ import './site-modules/search-modal';
 import './site-modules/product-detail';
 import './site-modules/quantity-counter';
 import './site-modules/auth-wishlist-modal';
+import './site-modules/wishlist-page';
 import './modules/custom-select';
 
 import { initFormValidator } from './utils/form-validator.js';

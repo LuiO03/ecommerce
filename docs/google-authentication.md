@@ -218,7 +218,7 @@ public function handleGoogleCallback()
 
     Auth::login($user);
 
-    return redirect()->route('welcome.index');
+    return redirect()->route('site.home');
 }
 ```
 
@@ -338,7 +338,7 @@ Este botón inicia el flujo en `/google-auth/redirect`.
    - Usar una cuenta de Google cuyo email **no exista aún** en `users`.
    - Tras el callback:
      - El usuario debe ser creado con rol `Cliente`.
-     - Debe ser redirigido a `welcome.index`.
+    - Debe ser redirigido a `site.home`.
      - Debe tener `email_verified_at` no nulo.
      - Debe tener `image` apuntando a una ruta `users/...` en `storage`.
 

@@ -54,7 +54,6 @@
     border: none;
     font-weight: lighter;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @media (max-width: 640px) {
@@ -228,7 +227,7 @@
     border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
     transition: padding 0.3s ease, border-radius 0.1s ease,
-        font-weight 0.2s ease, font-family 0.2s ease;
+        font-weight 0.2s ease, font-family 0.2s ease, transform 0.2s ease;
 }
 
 .sidebar-link:hover {
@@ -252,6 +251,7 @@
     box-shadow: 0 8px 18px var(--shadow-accent);
     animation: sidebar-active-enter 0.28s ease-out both;
     cursor: default;
+    transform: scale(0.97);
 }
 
 .sidebar-link.active:hover {

@@ -134,9 +134,9 @@
                             </div>
                         @endforeach
                     </div>
+                    <hr class="w-full my-0 border-default">
                 @endif
 
-                <hr class="w-full my-0 border-default">
 
                 <div class="product-actions">
                     <div class="quantity-counter" data-quantity-root>

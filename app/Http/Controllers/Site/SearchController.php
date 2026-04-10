@@ -13,7 +13,7 @@ class SearchController extends Controller
     {
         $query = trim((string) $request->query('q'));
         if ($query === '') {
-            return redirect()->route('welcome.index');
+            return redirect()->route('site.home');
         }
 
         return view('site.search.results', [

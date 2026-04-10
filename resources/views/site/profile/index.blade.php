@@ -38,6 +38,11 @@
                         <i class="ri-user-3-line"></i>
                         <span>Resumen</span>
                     </a>
+                    <a href="{{ route('site.profile.details') }}"
+                        class="profile-nav-item {{ $activeSection === 'details' ? 'is-active' : '' }}">
+                        <i class="ri-id-card-line"></i>
+                        <span>Detalles de la cuenta</span>
+                    </a>
                     <a href="{{ route('site.profile.orders') }}"
                         class="profile-nav-item {{ $activeSection === 'orders' ? 'is-active' : '' }}">
                         <i class="ri-shopping-bag-3-line"></i>
@@ -74,6 +79,8 @@
             <section class="profile-content">
                 @if ($activeSection === 'overview')
                     @include('site.profile.partials.overview')
+                @elseif ($activeSection === 'details')
+                    @include('site.profile.partials.details')
                 @elseif ($activeSection === 'orders')
                     @include('site.profile.partials.orders')
                 @elseif ($activeSection === 'wishlist')

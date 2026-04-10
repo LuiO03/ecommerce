@@ -1,9 +1,7 @@
 <x-app-layout>
     @section('title', 'Mis favoritos')
     @include('partials.site.breadcrumb', [
-        'items' => $breadcrumbItems ?? [
-            ['label' => 'Mis favoritos', 'icon' => 'ri-heart-fill'],
-        ],
+        'items' => $breadcrumbItems ?? [['label' => 'Mis favoritos', 'icon' => 'ri-heart-fill']],
     ])
     <section class="site-container wishlist-page">
         <header class="wishlist-header">
@@ -14,7 +12,24 @@
                 </p>
             </div>
             @if ($wishlists->isNotEmpty())
-                <span class="wishlist-count">{{ $wishlists->count() }} productos</span>
+                <div class="flex gap-1">
+                    <div class="cart-header-summary">
+                        <span class="cart-pill">
+                            <i class="ri-heart-line"></i>
+                            {{ $wishlists->count() }} {{ $wishlists->count() === 1 ? 'producto' : 'productos' }}
+                        </span>
+                    </div>
+                    <div>
+                        <form id="wishlist-clear-form" method="POST" action="{{ route('wishlists.clear') }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="cart-pill cart-clear-btn" id="wishlist-clear-btn">
+                                <i class="ri-close-large-line"></i>
+                                Limpiar lista de deseos
+                            </button>
+                        </form>
+                    </div>
+                </div>
             @endif
         </header>
 
@@ -39,7 +54,7 @@
                 </div>
                 <h2 class="card-title">No tienes productos en tu lista de deseos</h2>
                 <p>Explora el catálogo y guarda tus productos favoritos para verlos aquí.</p>
-                <a href="{{ route('welcome.index') }}" class="boton-form boton-success py-3 px-5">
+                <a href="{{ route('site.home') }}" class="boton-form boton-success py-3 px-5">
                     <span class="boton-form-icon"><i class="ri-store-2-fill"></i></span>
                     <span class="boton-form-text">Ir a la tienda</span>
                 </a>
@@ -74,6 +89,15 @@
                                         <span>Imagen no disponible</span>
                                     </div>
                                 @endif
+
+                                <form method="POST" action="{{ route('wishlists.destroy', $wishlist) }}" class="card-delete-btn">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" title="Eliminar de favoritos"
+                                        aria-label="Eliminar de favoritos">
+                                        <i class="ri-close-large-fill"></i>
+                                    </button>
+                                </form>
                             </a>
 
                             <div class="wishlist-info">
@@ -88,22 +112,6 @@
                                         S/.{{ number_format($discounted ?? $product->price, 2) }}
                                     </span>
                                 </div>
-                                <div class="wishlist-actions">
-                                    <div class="wishlist-buttons">
-
-                                        <form method="POST" action="{{ route('wishlists.destroy', $wishlist) }}"
-                                            class="wishlist-delete-form">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="boton-form boton-danger"
-                                                title="Eliminar de favoritos" aria-label="Eliminar de favoritos">
-                                                <span class="boton-form-icon"><i
-                                                        class="ri-delete-bin-2-fill"></i></span>
-                                                <span class="boton-form-text">Eliminar</span>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
 
                         </article>
@@ -112,4 +120,30 @@
             </div>
         @endif
     </section>
+    @push('js')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const clearBtn = document.getElementById('wishlist-clear-btn');
+                const clearForm = document.getElementById('wishlist-clear-form');
+
+                if (!clearBtn || !clearForm || typeof window.showConfirm !== 'function') {
+                    return;
+                }
+
+                clearBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+
+                    window.showConfirm({
+                        type: 'danger',
+                        header: 'Vaciar lista de deseos',
+                        title: '¿Vaciar toda tu lista de deseos?',
+                        message: 'Se eliminarán todos los productos de tu lista de deseos.<br>Esta acción no se puede deshacer.',
+                        confirmText: 'Sí, vaciar lista',
+                        cancelText: 'No, mantener',
+                        onConfirm: () => clearForm.submit(),
+                    });
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>

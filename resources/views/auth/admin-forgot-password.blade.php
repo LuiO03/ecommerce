@@ -7,8 +7,7 @@
             <div class="auth-header">
                 <h2 class="auth-title">¿Olvidaste tu contraseña?</h2>
                 <p class="auth-subtitle">
-                    Ingresa tu correo y te enviaremos <br>
-                    un enlace para restablecerla.
+                    Por favor, introduce tu correo electrónico. Recibirás un enlace para crear una contraseña nueva por correo electrónico.
                 </p>
             </div>
 
@@ -45,7 +44,7 @@
                     <hr class="w-full my-0 border-default">
                     <div class="auth-form-footer">
                         <button class="boton-form boton-success w-full py-3" type="submit" id="forgotPasswordBtn">
-                            <span class="boton-form-icon"> <i class="ri-mail-send-line"></i> </span>
+                            <span class="boton-form-icon"> <i class="ri-mail-send-fill"></i> </span>
                             <span class="boton-form-text">Enviar enlace</span>
                         </button>
                         <a href="{{ route('login') }}" class="boton-form boton-volver py-3">

@@ -27,7 +27,7 @@
         @endphp
 
         <!-- boton para ir al sitio web -->
-        <a class="topbar-icon-btn" href="{{ route('welcome.index') }}" target="_blank" title="Ir al sitio web">
+        <a class="topbar-icon-btn" href="{{ route('site.home') }}" target="_blank" title="Ir al sitio web">
             <i class="ri-global-line"></i>
         </a>
         <!-- boton para ir a las notificaciones -->

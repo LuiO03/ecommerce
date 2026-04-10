@@ -24,7 +24,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Dashboard') | {{ config('app.name') }}</title>
+    <title>@yield('title', 'Dashboard') | {{ $brandName ?: config('app.name') }}</title>
 
     <!-- Optimización Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,9 +37,9 @@
         <link rel="icon" href="{{ asset('images/logos/logo-geckommerce.png') }}" type="image/png">
     @endif
 
-    <!-- Carga combinada de Lato y Poppins -->
+    <!-- Lato + Poppins + Montserrat -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@100;300;400;500;600;700;900&display=swap"
         rel="stylesheet">
     <!-- Remix Icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
@@ -81,7 +81,6 @@
             // Ignorar errores de acceso a localStorage
         }
     })();
-
 </script>
 
 <body>
@@ -150,8 +149,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType ===
                         'function') ?
-                    performance.getEntriesByType('navigation') :
-                    [];
+                    performance.getEntriesByType('navigation') : [];
                 const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
                     performance.navigation.type :
                     null;

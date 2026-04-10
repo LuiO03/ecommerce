@@ -3,7 +3,7 @@
     <div class="site-footer-container">
         <div class="site-footer-top">
             <div class="footer-brand">
-                <a class="footer-logo" href="{{ route('welcome.index') }}" aria-label="Ir a la página principal">
+                <a class="footer-logo" href="{{ route('site.home') }}" aria-label="Ir a la página principal">
                     @include('partials.admin.company-brand')
                 </a>
                 <p class="footer-description">

@@ -84,7 +84,7 @@
                             <span class="boton-form-icon"> <i class="ri-login-box-line"></i> </span>
                             <span class="boton-form-text">Iniciar Sesión</span>
                         </button>
-                        <a href="{{ route('welcome.index') }}" class="boton-form boton-volver py-3">
+                        <a href="{{ route('site.home') }}" class="boton-form boton-volver py-3">
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>

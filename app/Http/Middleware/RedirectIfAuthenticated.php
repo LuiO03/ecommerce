@@ -23,7 +23,7 @@ class RedirectIfAuthenticated
 
                 if ($user && $user->hasRole('Cliente')) {
                     // Clientes se quedan en la parte pública
-                    return redirect()->route('welcome.index');
+                    return redirect()->route('site.home');
                 }
 
                 // Cualquier otro rol (actual o futuro) va al panel admin

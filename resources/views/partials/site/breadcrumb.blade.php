@@ -1,6 +1,6 @@
 @php
     $items = $items ?? [];
-    $homeUrl = $homeUrl ?? route('welcome.index');
+    $homeUrl = $homeUrl ?? route('site.home');
     $homeLabel = $homeLabel ?? 'Inicio';
 @endphp
 

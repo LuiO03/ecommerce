@@ -45,7 +45,6 @@
                     los documentos oficiales.
                 </p>
             </div>
-            <hr class="w-full my-0 border-default">
             <div class="form-row-fit">
                 <div class="input-group">
                     <label for="primary_color" class="label-form">Color primario</label>

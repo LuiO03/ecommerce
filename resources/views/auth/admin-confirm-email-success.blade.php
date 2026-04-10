@@ -23,7 +23,7 @@
             </div>
 
             <div class="checkout-payment-actions">
-                <a href="{{ route('welcome.index') }}" class="boton-form boton-success py-3">
+                <a href="{{ route('site.home') }}" class="boton-form boton-success py-3">
                     <span class="boton-form-icon">
                         <i class="ri-store-2-fill"></i>
                     </span>

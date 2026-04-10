@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
                 ], 419);
             }
 
-            return redirect()->route('welcome.index');
+            return redirect()->route('site.home');
         }
 
         // Enlaces firmados inválidos o expirados (por ejemplo, verificación de correo)

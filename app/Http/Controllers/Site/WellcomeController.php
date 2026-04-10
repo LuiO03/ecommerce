@@ -35,6 +35,6 @@ class WellcomeController extends Controller
                 return $product;
             });
 
-        return view('welcome', compact('covers', 'lastProducts'));
+        return view('site.home', compact('covers', 'lastProducts'));
     }
 }

@@ -180,7 +180,7 @@
             <span class="boton-form-text">Volver al inicio</span>
         </a>
         <button class="boton-form boton-accent" type="submit" id="submitBtn">
-            <span class="boton-form-icon"><i class="ri-save-line"></i></span>
+            <span class="boton-form-icon"><i class="ri-save-fill"></i></span>
             <span class="boton-form-text">Guardar cambios</span>
         </button>
     </div>

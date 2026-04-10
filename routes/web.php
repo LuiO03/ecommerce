@@ -120,7 +120,7 @@
     ->name('google.one-tap');
 
     // Rutas públicas del sitio
-    Route::get('/', [WellcomeController::class, 'index'])->name('welcome.index');
+    Route::get('/', [WellcomeController::class, 'index'])->name('site.home');
 
     // Blog público
     Route::get('/blog', [BlogController::class, 'index'])->name('site.blog.index');
@@ -141,6 +141,9 @@
     // Área de cuenta del cliente
     Route::middleware('auth')->group(function () {
         Route::get('/mi-cuenta', [SiteProfileController::class, 'index'])->name('site.profile.index');
+        Route::get('/mi-cuenta/detalles', [SiteProfileController::class, 'details'])->name('site.profile.details');
+        Route::put('/mi-cuenta/detalles', [SiteProfileController::class, 'updateDetails'])->name('site.profile.details.update');
+        Route::put('/mi-cuenta/detalles/password', [SiteProfileController::class, 'updatePassword'])->name('site.profile.details.password');
         Route::get('/mi-cuenta/pedidos', [SiteProfileController::class, 'orders'])->name('site.profile.orders');
         Route::get('/mi-cuenta/favoritos', [SiteProfileController::class, 'wishlist'])->name('site.profile.wishlist');
         Route::get('/mi-cuenta/direcciones', [SiteProfileController::class, 'addresses'])->name('site.profile.addresses');
@@ -148,8 +151,9 @@
     });
 
     // Rutas para la lista de deseos (wishlist)
-    Route::get('/wishlists', [WishlistController::class, 'show'])->name('wishlists.show');
+    Route::get('/wishlists', [WishlistController::class, 'index'])->name('wishlists.index');
     Route::post('/wishlists', [WishlistController::class, 'store'])->name('wishlists.store');
+    Route::delete('/wishlists', [WishlistController::class, 'destroyAll'])->name('wishlists.clear');
     Route::delete('/wishlists/{wishlistItem}', [WishlistController::class, 'destroy'])->name('wishlists.destroy');
 
     // Rutas para el carrito de compras

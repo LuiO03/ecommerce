@@ -19,7 +19,7 @@ class PreventClienteFromAdmin
 
         if ($user && $user->hasRole('Cliente')) {
             // Usuarios con rol Cliente no deben acceder al panel admin
-            return redirect()->route('welcome.index');
+            return redirect()->route('site.home');
         }
 
         return $next($request);

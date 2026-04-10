@@ -9,7 +9,7 @@
                     </button>
 
                     <!-- Logo -->
-                    <a class="site-logo" href="{{ route('welcome.index') }}" aria-label="Ir a la página principal">
+                    <a class="site-logo" href="{{ route('site.home') }}" aria-label="Ir a la página principal">
                         @include('partials.admin.company-brand')
                     </a>
                 </div>
@@ -42,9 +42,9 @@
                     </a>
                     <!-- Icono whishlist (solo desktop) -->
                     <div class="button-desktop">
-                        <a href="{{ route('wishlists.show') }}" class="nav-icon" aria-label="Lista de deseos"
+                        <a href="{{ route('wishlists.index') }}" class="nav-icon" aria-label="Lista de deseos"
                             title="Ver lista de deseos">
-                            <i class="ri-heart-line"></i>
+                            <i class="ri-heart-3-line"></i>
                             @if ($wishlistCount > 0)
                                 <span class="nav-icon-badge">{{ $wishlistCount }}</span>
                             @endif
@@ -80,8 +80,8 @@
                                     <span>Mi Cuenta</span>
                                 </a>
                                 <div class="button-mobile">
-                                    <a href="{{ route('wishlists.show') }}" class="nav-user-menu-item">
-                                        <i class="ri-heart-line"></i>
+                                    <a href="{{ route('wishlists.index') }}" class="nav-user-menu-item">
+                                        <i class="ri-heart-3-line"></i>
                                         <span>Mi Lista de Deseos</span>
                                     </a>
                                 </div>

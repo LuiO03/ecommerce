@@ -168,7 +168,7 @@
                     <hr class="w-full my-0 border-default">
                     <div class="form-footer">
                         <!-- Botón de registro -->
-                        <a href="{{ route('welcome.index') }}" class="boton-form boton-volver py-3">
+                        <a href="{{ route('site.home') }}" class="boton-form boton-volver py-3">
                             <span class="boton-form-text">Volver a inicio</span>
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>

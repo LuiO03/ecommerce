@@ -86,7 +86,7 @@ class GoogleController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('welcome.index');
+        return redirect()->route('site.home');
     }
 
     /**
@@ -200,7 +200,7 @@ class GoogleController extends Controller
 
             return response()->json([
                 'success' => true,
-                'redirect_url' => route('welcome.index'),
+                'redirect_url' => route('site.home'),
             ]);
         } catch (\Throwable $e) {
             Log::error('Error en Google One Tap', [

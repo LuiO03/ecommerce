@@ -23,7 +23,7 @@
             <div class="security-card-body">
                 <h3>Contraseña</h3>
                 <p class="overview-muted">Por motivos de seguridad, no mostramos tu contraseña.</p>
-                <a href="{{ route('profile.show') }}" class="security-link">
+                <a href="{{ route('site.profile.details') }}#password-section" class="security-link">
                     <i class="ri-arrow-right-up-line"></i>
                     Cambiar contraseña desde panel seguro
                 </a>

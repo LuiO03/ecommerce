@@ -26,7 +26,6 @@
 .ripple-card {
     position: relative;
     overflow: hidden;
-    user-select: none;
     transition: transform 0.2s ease;
 }
 

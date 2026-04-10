@@ -64,7 +64,7 @@
                 <p>
                     Aún no has agregado productos. Explora nuestro catálogo y empieza tu compra.
                 </p>
-                <a href="{{ route('welcome.index') }}" class="boton-form boton-success py-3 px-5">
+                <a href="{{ route('site.home') }}" class="boton-form boton-success py-3 px-5">
                     <span class="boton-form-icon"><i class="ri-store-2-fill"></i></span>
                     <span class="boton-form-text">Ir a la tienda</span>
                 </a>
@@ -212,12 +212,9 @@
                                         class="cart-item-remove-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="boton-form boton-danger cart-item-remove-btn"
+                                        <button type="submit" class="cart-item-remove-btn"
                                             title="Eliminar del carrito" aria-label="Eliminar del carrito">
-                                            <span class="boton-form-icon">
-                                                <i class="ri-close-large-line"></i>
-                                            </span>
-                                            <span class="boton-form-text">Quitar</span>
+                                            <i class="ri-close-large-fill"></i>
                                         </button>
                                     </form>
 
@@ -258,7 +255,7 @@
                         <a href="{{ route('shipping.index') }}" class="site-btn site-btn-primary">
                             Continuar con la compra
                         </a>
-                        <a href="{{ route('welcome.index') }}" class="site-btn site-btn-outline">
+                        <a href="{{ route('site.home') }}" class="site-btn site-btn-outline">
                             Seguir comprando
                         </a>
                     </div>

@@ -275,9 +275,3 @@ select.input-success:focus {
         border-color 0.3s ease,
         box-shadow 0.3s ease;
 }
-
-.input-icon,
-.select-arrow,
-.label-form {
-    transition: color 0.3s ease;
-}
