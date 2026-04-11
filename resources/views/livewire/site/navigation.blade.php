@@ -16,9 +16,9 @@
                 <div class="header-actions">
                     <!-- Navegación principal (solo desktop) -->
                     <nav class="site-nav-desktop">
-                        <a href="#" class="site-nav-link">Nosotros</a>
+                        <a href="{{ route('about.index') }}" class="site-nav-link">Nosotros</a>
                         <a href="{{ route('site.blog.index') }}" class="site-nav-link">Blog</a>
-                        <a href="#" class="site-nav-link">Contacto</a>
+                        <a href="{{ route('contact.index') }}" class="site-nav-link">Contacto</a>
                     </nav>
 
                 </div>

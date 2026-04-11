@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RegisteredUserController extends Controller
 {
@@ -24,14 +26,41 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'name' => 'required|string|min:3|max:255',
             'last_name' => 'nullable|string|max:255',
             'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
-            'document_number' => 'nullable|string|max:30',
-        ]);
+            'document_number' => [
+                'nullable',
+                'string',
+                'max:30',
+                Rule::unique('users', 'document_number')
+                    ->where(fn ($query) => $query->where('document_type', $request->input('document_type'))),
+            ],
+        ];
+
+        $messages = [
+            'document_number.unique' => 'Ya existe una cuenta con ese tipo y número de documento.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            if ($validator->errors()->has('document_number')) {
+                Session::flash('info', [
+                    'type' => 'warning',
+                    'header' => 'Documento duplicado',
+                    'title' => 'Documento ya registrado',
+                    'message' => 'Ya existe una cuenta con ese tipo y número de documento.',
+                ]);
+            }
+
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $validated = $validator->validated();
 
         $name = ucwords(mb_strtolower($validated['name']));
         $lastName = !empty($validated['last_name'])

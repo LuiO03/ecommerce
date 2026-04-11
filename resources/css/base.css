@@ -33,7 +33,12 @@
     --color-dark-inverse: #2b242e;
 
     /* === Inputs === */
+    --color-input-focus-border: #1d61d0;
+    --color-input-focus-shadow: rgba(29, 97, 208, 0.3);
+    --color-input-active-border: #b2f0ff;
+
     --color-input-bg: #ffffff;
+
     --color-input-border: #342e37;
     /* --color-input-border: #ced4da; */
     --color-input-border-hover: #a8a8a8;
@@ -94,9 +99,11 @@
     --color-normal: #111111;
     --color-dark-inverse: #e9e9e9;
 
-
-
     /* === Inputs === */
+    --color-input-focus-border: #4AD5B8;;
+    --color-input-focus-shadow: rgba(74, 213, 184, 0.3);
+    --color-input-active-border: #4AD5B8;
+
     --color-input-bg: #1c1918;
     /*--color-input-bg: #e2e2e2;*/
     --color-input-border: #444;

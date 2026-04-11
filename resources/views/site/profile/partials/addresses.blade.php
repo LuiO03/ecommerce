@@ -9,7 +9,7 @@
 
                 <a href="{{ route('shipping.index') }}" class="boton-form boton-success">
                     <span class="boton-form-icon"><i class="ri-map-pin-2-fill"></i></span>
-                    <span class="boton-form-text">Agregar nueva dirección</span>
+                    <span class="boton-form-text">Agregar dirección</span>
                 </a>
             </div>
         </div>

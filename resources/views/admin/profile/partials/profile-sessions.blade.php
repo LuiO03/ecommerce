@@ -1,4 +1,5 @@
 <div class="form-profile-column">
+    <div class="form-body">
     <div class="card-header">
         <span class="card-title">Dispositivos y sesiones activas</span>
         <p class="card-description">Administra tus dispositivos y sesiones activas para mantener la seguridad de tu
@@ -84,11 +85,12 @@
                             </div>
                             <div class="sessions-meta">
                                 <span class="sessions-ip">
-                                    <i class="ri-map-pin-line"></i>
+                                    <i class="ri-map-pin-fill"></i>
                                     {{ $session->ip_address ?? 'IP desconocida' }}
                                 </span>
+                                <span class="agent-dot">•</span>
                                 <span class="sessions-last-active">
-                                    <i class="ri-time-line"></i>
+                                    <i class="ri-time-fill"></i>
                                     {{ \Carbon\Carbon::createFromTimestampUTC($session->last_activity)->timezone(config('app.timezone'))->format('d/m/Y H:i') }}
                                 </span>
                             </div>
@@ -96,8 +98,10 @@
                     </div>
                     <div class="sessions-actions">
                         @if ($isCurrent)
-                            <span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> Sesión
-                                actual</span>
+                            <span class="badge badge-success">
+                                <i class="ri-checkbox-circle-fill"></i>
+                                Sesión actual
+                            </span>
                         @else
                             <form method="POST" action="{{ route('admin.profile.logout-session') }}"
                                 style="display:inline;" class="logout-session-form">
@@ -140,4 +144,5 @@
             No hay otras sesiones abiertas en otros dispositivos.
         </x-alert>
     @endif
+    </div>
 </div>

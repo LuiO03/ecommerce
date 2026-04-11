@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\Permission\Models\Role;
@@ -154,7 +156,7 @@ class UserController extends Controller
     // ======================
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255|min:3',
             'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|string|min:6',
@@ -163,11 +165,36 @@ class UserController extends Controller
 
             'last_name' => 'nullable|string|max:255',
             'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
-            'document_number' => 'nullable|string|max:30',
+            'document_number' => [
+                'nullable',
+                'string',
+                'max:30',
+                Rule::unique('users', 'document_number')
+                    ->where(fn ($query) => $query->where('document_type', $request->input('document_type'))),
+            ],
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        ];
+
+        $messages = [
+            'document_number.unique' => 'Ya existe un usuario con ese tipo y número de documento.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            if ($validator->errors()->has('document_number')) {
+                Session::flash('info', [
+                    'type' => 'warning',
+                    'header' => 'Documento duplicado',
+                    'title' => 'Documento ya registrado',
+                    'message' => 'Ya existe un usuario con ese tipo y número de documento.',
+                ]);
+            }
+
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         // Capitalizar nombre y apellido
         $name = ucwords(mb_strtolower($request->name));
@@ -233,7 +260,7 @@ class UserController extends Controller
     // ======================
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255|min:3',
             'email' => 'required|email|unique:users,email,'.$user->id,
             'status' => 'required|boolean',
@@ -241,12 +268,38 @@ class UserController extends Controller
 
             'last_name' => 'nullable|string|max:255',
             'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
-            'document_number' => 'nullable|string|max:30',
+            'document_number' => [
+                'nullable',
+                'string',
+                'max:30',
+                Rule::unique('users', 'document_number')
+                    ->where(fn ($query) => $query->where('document_type', $request->input('document_type')))
+                    ->ignore($user->id),
+            ],
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
 
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        ];
+
+        $messages = [
+            'document_number.unique' => 'Ya existe un usuario con ese tipo y número de documento.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            if ($validator->errors()->has('document_number')) {
+                Session::flash('info', [
+                    'type' => 'warning',
+                    'header' => 'Documento duplicado',
+                    'title' => 'Documento ya registrado',
+                    'message' => 'Ya existe un usuario con ese tipo y número de documento.',
+                ]);
+            }
+
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         // Capitalizar nombre, apellido y dirección
         $name = ucwords(mb_strtolower($request->name));

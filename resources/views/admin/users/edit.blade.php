@@ -153,8 +153,8 @@
                 </div>
             </div>
         </div>
-        <div class="form-columns-row">
-            <div class="form-column">
+        <div class="form-user">
+            <div class="form-body">
                 <!-- === Imagen === -->
                 <div class="image-upload-section">
                     <label class="label-form">Foto de perfil</label>
@@ -199,7 +199,8 @@
 
                         <!-- Overlay único para todas las imágenes -->
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="boton-form boton-info" id="changeImageBtn" title="Cambiar imagen">
+                            <button type="button" class="boton-form boton-info" id="changeImageBtn"
+                                title="Cambiar imagen">
                                 <i class="ri-upload-2-line"></i>
                                 <span class="boton-form-text">Cambiar</span>
                             </button>
@@ -220,34 +221,44 @@
                 </div>
             </div>
 
-            <div class="form-column">
-                <!-- === Tipo de documento (opcional) === -->
-                <div class="input-group">
-                    <label for="document_type" class="label-form">Tipo de documento</label>
-                    <div class="input-icon-container">
-                        <i class="ri-id-card-line input-icon"></i>
-                        <select name="document_type" id="document_type" class="select-form">
-                            <option value="">Seleccione una opción</option>
-                            <option value="DNI" {{ old('document_type', $user->document_type) == 'DNI' ? 'selected' : '' }}>DNI</option>
-                            <option value="RUC" {{ old('document_type', $user->document_type) == 'RUC' ? 'selected' : '' }}>RUC</option>
-                            <option value="CE" {{ old('document_type', $user->document_type) == 'CE' ? 'selected' : '' }}>Carné de extranjería</option>
-                            <option value="PASAPORTE" {{ old('document_type', $user->document_type) == 'PASAPORTE' ? 'selected' : '' }}>Pasaporte</option>
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
+            <div class="form-body">
+                <div class="form-row-fit">
+                    <!-- === Tipo de documento (opcional) === -->
+                    <div class="input-group">
+                        <label for="document_type" class="label-form">Tipo de documento</label>
+                        <div class="input-icon-container">
+                            <i class="ri-id-card-line input-icon"></i>
+                            <select name="document_type" id="document_type" class="select-form">
+                                <option value="">Seleccione una opción</option>
+                                <option value="DNI"
+                                    {{ old('document_type', $user->document_type) == 'DNI' ? 'selected' : '' }}>DNI
+                                </option>
+                                <option value="RUC"
+                                    {{ old('document_type', $user->document_type) == 'RUC' ? 'selected' : '' }}>RUC
+                                </option>
+                                <option value="CE"
+                                    {{ old('document_type', $user->document_type) == 'CE' ? 'selected' : '' }}>Carné de
+                                    extranjería</option>
+                                <option value="PASAPORTE"
+                                    {{ old('document_type', $user->document_type) == 'PASAPORTE' ? 'selected' : '' }}>
+                                    Pasaporte</option>
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- === Número de documento === -->
+                    <div class="input-group">
+                        <label for="document_number" class="label-form">Número de documento</label>
+                        <div class="input-icon-container">
+                            <i class="ri-hashtag input-icon"></i>
+                            <input type="text" name="document_number" id="document_number" class="input-form"
+                                value="{{ old('document_number', $user->document_number) }}"
+                                placeholder="Ingresa el número de documento"
+                                data-validate="document_number|max:30|requiredWith:document_type">
+                        </div>
                     </div>
                 </div>
-
-                <!-- === Número de documento === -->
-                <div class="input-group">
-                    <label for="document_number" class="label-form">Número de documento</label>
-                    <div class="input-icon-container">
-                        <i class="ri-hashtag input-icon"></i>
-                        <input type="text" name="document_number" id="document_number" class="input-form"
-                            value="{{ old('document_number', $user->document_number) }}" placeholder="Ingresa el número de documento"
-                            data-validate="document_number|max:30|requiredWith:document_type">
-                    </div>
-                </div>
-
                 <!-- === Teléfono === -->
                 <div class="input-group">
                     <label for="phone" class="label-form">Teléfono</label>

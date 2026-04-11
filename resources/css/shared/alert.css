@@ -10,9 +10,9 @@
     border-left: 4px solid;
     border-radius: var(--radius-element);
     font-size: var(--font-size-sm);
-    color: var(--color-text);
     position: relative;
     transition: opacity 0.3s ease, transform 0.3s ease;
+    height: fit-content;
 }
 
 /* === Ícono === */
@@ -41,6 +41,7 @@
     color: var(--color-text-soft);
     font-size: var(--font-size-xs);
     line-height: 1.5;
+
 }
 
 .alert-list {

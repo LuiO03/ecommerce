@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if (! Auth::check()) {
             return redirect()->route('login');
@@ -24,22 +26,32 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
+        // Secciones para la vista unificada (tipo SPA ligera)
+        $activeSection = $request->get('section', 'overview');
+
+        // Pedidos (se usa en resumen y en la pestaña de pedidos)
         $orders = Order::with('items.product.images')
             ->where('user_id', $user->id)
             ->orderByDesc('created_at')
-            ->limit(5)
-            ->get();
+            ->paginate(10);
 
+        // Direcciones (resumen + pestaña de direcciones)
         $addresses = Addresses::where('user_id', $user->id)
             ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->get();
 
+        // Favoritos (resumen + pestaña de favoritos)
         $wishlistItems = WishlistItem::with('product.images', 'product.category', 'wishlist')
             ->whereHas('wishlist', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->limit(6)
+            ->get();
+
+        // Sesiones activas (pestaña de seguridad)
+        $sessions = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->orderByDesc('last_activity')
             ->get();
 
         return view('site.profile.index', [
@@ -47,7 +59,8 @@ class ProfileController extends Controller
             'orders' => $orders,
             'addresses' => $addresses,
             'wishlistItems' => $wishlistItems,
-            'activeSection' => 'overview',
+            'sessions' => $sessions,
+            'activeSection' => $activeSection,
         ]);
     }
 
@@ -57,12 +70,7 @@ class ProfileController extends Controller
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
-
-        return view('site.profile.index', [
-            'user' => $user,
-            'activeSection' => 'details',
-        ]);
+        return redirect()->route('site.profile.index', ['section' => 'details']);
     }
 
     public function orders()
@@ -71,18 +79,7 @@ class ProfileController extends Controller
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
-
-        $orders = Order::with('items.product.images')
-            ->where('user_id', $user->id)
-            ->orderByDesc('created_at')
-            ->paginate(10);
-
-        return view('site.profile.index', [
-            'user' => $user,
-            'orders' => $orders,
-            'activeSection' => 'orders',
-        ]);
+        return redirect()->route('site.profile.index', ['section' => 'orders']);
     }
 
     public function wishlist()
@@ -91,19 +88,7 @@ class ProfileController extends Controller
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
-
-        $wishlistItems = WishlistItem::with('product.images', 'product.category', 'wishlist')
-            ->whereHas('wishlist', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->get();
-
-        return view('site.profile.index', [
-            'user' => $user,
-            'wishlistItems' => $wishlistItems,
-            'activeSection' => 'wishlist',
-        ]);
+        return redirect()->route('site.profile.index', ['section' => 'wishlist']);
     }
 
     public function addresses()
@@ -112,18 +97,7 @@ class ProfileController extends Controller
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
-
-        $addresses = Addresses::where('user_id', $user->id)
-            ->orderByDesc('is_default')
-            ->orderByDesc('id')
-            ->get();
-
-        return view('site.profile.index', [
-            'user' => $user,
-            'addresses' => $addresses,
-            'activeSection' => 'addresses',
-        ]);
+        return redirect()->route('site.profile.index', ['section' => 'addresses']);
     }
 
     public function security()
@@ -132,18 +106,7 @@ class ProfileController extends Controller
             return redirect()->route('login');
         }
 
-        $user = Auth::user();
-
-        $sessions = DB::table('sessions')
-            ->where('user_id', $user->id)
-            ->orderByDesc('last_activity')
-            ->get();
-
-        return view('site.profile.index', [
-            'user' => $user,
-            'sessions' => $sessions,
-            'activeSection' => 'security',
-        ]);
+        return redirect()->route('site.profile.index', ['section' => 'security']);
     }
 
     public function logoutSession(Request $request)
@@ -167,7 +130,7 @@ class ProfileController extends Controller
             'message' => 'La sesión de ese dispositivo se cerró correctamente.',
         ]);
 
-        return redirect()->route('site.profile.security');
+        return redirect()->route('site.profile.index', ['section' => 'security']);
     }
 
     public function updateDetails(Request $request)
@@ -178,17 +141,45 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
-        $validated = $request->validate([
+        $rules = [
             'name'            => 'required|string|max:255|min:3',
             'last_name'       => 'nullable|string|max:255',
             'email'           => 'required|email|unique:users,email,' . $user->id,
             'phone'           => 'nullable|string|max:20',
             'address'         => 'nullable|string|max:255',
             'document_type'   => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
-            'document_number' => 'nullable|string|max:30',
+            'document_number' => [
+                'nullable',
+                'string',
+                'max:30',
+                Rule::unique('users', 'document_number')
+                    ->where(fn ($query) => $query->where('document_type', $request->input('document_type')))
+                    ->ignore($user->id),
+            ],
             'image'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'remove_image'    => 'nullable|in:0,1',
-        ]);
+        ];
+
+        $messages = [
+            'document_number.unique' => 'Ya existe una cuenta con ese tipo y número de documento.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            if ($validator->errors()->has('document_number')) {
+                Session::flash('info', [
+                    'type' => 'warning',
+                    'header' => 'Documento duplicado',
+                    'title' => 'Documento ya registrado',
+                    'message' => 'Ya existe una cuenta con ese tipo y número de documento.',
+                ]);
+            }
+
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $validated = $validator->validated();
 
         $name = ucwords(mb_strtolower($validated['name']));
         $address = isset($validated['address']) && $validated['address'] !== null
@@ -235,7 +226,7 @@ class ProfileController extends Controller
             'message' => 'Tus datos de cuenta se han actualizado correctamente.',
         ]);
 
-        return redirect()->route('site.profile.details');
+        return redirect()->route('site.profile.index', ['section' => 'details']);
     }
 
     public function updatePassword(Request $request)
@@ -263,6 +254,6 @@ class ProfileController extends Controller
             'message' => 'Tu contraseña se ha cambiado correctamente.',
         ]);
 
-        return redirect()->route('site.profile.details', ['#password-section' => null]);
+        return redirect()->to(route('site.profile.index', ['section' => 'security']) . '#password-section');
     }
 }

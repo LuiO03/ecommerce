@@ -13,18 +13,18 @@
 
 /* Cambiar el borde de .ck-editor al hacer focus a  .ck-editor__editable*/
 .ck-editor:focus-within {
-    border-color: var(--color-accent) !important;
-    box-shadow: 0 0 0 3px var(--shadow-accent) !important;
+    border-color: var(--color-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow) !important;
 }
 
 /* Mantener color de foco acorde al estado si existe */
 .ck-editor.input-error {
-    border-color: var(--color-danger) !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 .ck-editor.input-success{
-    border-color: var(--color-success) !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
 .ck-editor__editable {
@@ -79,7 +79,7 @@
 }
 /* Botones activos en la toolbar */
 .ck.ck-toolbar .ck-button.ck-on {
-    background-color: var(--color-accent) !important; /* Fondo cuando está activo */
+    background-color: var(--color-input-focus-border) !important; /* Fondo cuando está activo */
     color: #fff !important; /* Color del ícono/texto */
 }
 
@@ -90,7 +90,7 @@
 }
 /* Cambiar fondo de botones al hover */
 .ck.ck-toolbar .ck-button:hover {
-    background-color: var(--color-accent) !important;
+    background-color: var(--color-input-focus-border) !important;
     color: #fff !important;
 }
 

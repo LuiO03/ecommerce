@@ -381,9 +381,8 @@
 
 .tabla-filtros .tabla-buscador input:focus,
 .tabla-filtros .tabla-buscador textarea:focus {
-    border-color: var(--color-accent);
-    outline: none;
-    box-shadow: 0 0 0 3px var(--shadow-accent);
+    border-color: var(--color-input-focus-border);
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow);
     outline: none;
 }
 
@@ -397,7 +396,7 @@
 }
 
 .tabla-buscador:has(input:focus) i {
-    color: var(--color-accent);
+    color: var(--color-input-focus-border);
 }
 
 #dateRange::placeholder {
@@ -492,9 +491,9 @@
 }
 
 .tabla-select-wrapper input:focus {
-    border-color: var(--color-accent) !important;
+    border-color: var(--color-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow);
     outline: none;
-    box-shadow: var(--shadow-material);
 }
 
 /* Iconos dentro del selector */
@@ -522,14 +521,14 @@
 }
 
 .tabla-select-wrapper select:focus {
-    border-color: var(--color-accent) !important;
+    border-color: var(--color-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow);
     outline: none;
-    box-shadow: 0 0 0 3px var(--shadow-accent) !important;
 }
 
 .tabla-select-wrapper:has(select:focus) i,
 .selector:has(select:focus) i {
-    color: var(--color-accent);
+    color: var(--color-input-focus-border);
 }
 
 .select-form option {

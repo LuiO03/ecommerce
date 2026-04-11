@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\DB;
@@ -119,7 +120,14 @@ class ProfileController extends Controller
             'email'     => 'required|email|unique:users,email,' . $user->id,
             'last_name' => 'nullable|string|max:255',
             'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
-            'document_number' => 'nullable|string|max:30',
+            'document_number' => [
+                'nullable',
+                'string',
+                'max:30',
+                Rule::unique('users', 'document_number')
+                    ->where(fn ($query) => $query->where('document_type', $request->input('document_type')))
+                    ->ignore($user->id),
+            ],
             'dni'       => 'nullable|string|max:20|unique:users,dni,' . $user->id,
             'phone'     => 'nullable|string|max:15',
             'address'   => 'nullable|string|max:255',

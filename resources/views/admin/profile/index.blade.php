@@ -43,19 +43,19 @@
         </div>
         <div class="profile-tabs">
             <button class="profile-tab-btn" data-tab="info" title="Información">
-                <i class="ri-user-3-line"></i>
+                <i class="ri-user-3-line" data-icon-line="ri-user-3-line" data-icon-fill="ri-user-3-fill"></i>
                 <span class="profile-tab-text">Información</span>
             </button>
             <button class="profile-tab-btn" data-tab="password" title="Cambiar contraseña">
-                <i class="ri-lock-password-line"></i>
+                <i class="ri-lock-password-line" data-icon-line="ri-lock-password-line" data-icon-fill="ri-lock-password-fill"></i>
                 <span class="profile-tab-text">Cambiar contraseña</span>
             </button>
             <button class="profile-tab-btn" data-tab="export" title="Descargar datos">
-                <i class="ri-download-line"></i>
+                <i class="ri-download-2-line" data-icon-line="ri-download-2-line" data-icon-fill="ri-download-2-fill"></i>
                 <span class="profile-tab-text">Descargar datos</span>
             </button>
                <button class="profile-tab-btn" data-tab="sessions" title="Sesiones activas">
-                   <i class="ri-device-line"></i>
+                   <i class="ri-device-line" data-icon-line="ri-device-line" data-icon-fill="ri-device-fill"></i>
                    <span class="profile-tab-text">Sesiones</span>
                </button>
         </div>
@@ -78,6 +78,23 @@
     @include('admin.profile.partials.profile-avatar')
 
     <script>
+        function updateProfileTabIcons() {
+            document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+                const icon = btn.querySelector('i[data-icon-line][data-icon-fill]');
+                if (!icon) return;
+                const lineClass = icon.getAttribute('data-icon-line');
+                const fillClass = icon.getAttribute('data-icon-fill');
+
+                if (btn.classList.contains('active')) {
+                    icon.classList.remove(lineClass);
+                    icon.classList.add(fillClass);
+                } else {
+                    icon.classList.remove(fillClass);
+                    icon.classList.add(lineClass);
+                }
+            });
+        }
+
         document.querySelectorAll('.profile-tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.profile-tab-content').forEach(tab => {
@@ -91,6 +108,8 @@
                 this.classList.add('active');
                    // Guardar tab activo en localStorage
                    localStorage.setItem('profileActiveTab', this.dataset.tab);
+
+                updateProfileTabIcons();
             });
         });
             // Activar el tab guardado en localStorage o el primero por defecto
@@ -102,5 +121,7 @@
             document.getElementById('tab-' + initialTab).classList.add('fade-in');
             document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelector('.profile-tab-btn[data-tab="' + initialTab + '"]').classList.add('active');
+
+            updateProfileTabIcons();
     </script>
 </x-admin-layout>

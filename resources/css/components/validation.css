@@ -88,6 +88,10 @@
     color: var(--color-danger) !important;
 }
 
+.input-group:has(.input-error) .label-form i{
+    color: var(--color-danger) !important;
+}
+
 /* Mensaje de error inline */
 .input-error-message {
     display: flex;
@@ -141,6 +145,10 @@ select.input-success:focus {
 /* Flecha del select con éxito */
 .input-group:has(.input-success) .select-arrow,
 .input-group:has(select.input-success) .select-arrow {
+    color: var(--color-success) !important;
+}
+
+.input-group:has(.input-success) .label-form i{
     color: var(--color-success) !important;
 }
 

@@ -131,6 +131,10 @@
     Route::get('/politica-de-privacidad', [LegalDocumentationController::class, 'privacy'])->name('site.legal.privacy');
     Route::get('/libro-de-reclamaciones', [LegalDocumentationController::class, 'claims'])->name('site.legal.claims');
 
+    // Páginas informativas
+    Route::view('/nosotros', 'site.about.index')->name('about.index');
+    Route::view('/contacto', 'site.contact.index')->name('contact.index');
+
     Route::get('/families/{family}', [FamilyController::class, 'show'])->name('families.show');
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');

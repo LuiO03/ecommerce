@@ -3,67 +3,70 @@
     @csrf
     @method('PUT')
 
-    <x-alert type="danger" title="Seguridad:" :dismissible="true" :items="[
-        'Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.',
-        'Si no deseas cambiar tu contraseña, deja los campos en blanco.',
-    ]" />
+    <div class="form-user">
+        <x-alert type="danger" title="Seguridad:" :dismissible="false" :items="[
+            'Para cambiar tu contraseña, ingresa la actual y la nueva dos veces.',
+            'Si no deseas cambiar tu contraseña, deja los campos en blanco.',
+        ]" />
+        <div class="form-body">
+            <div class="card-header">
+                <span class="card-title">Cambiar contraseña</span>
+                <p class="card-description">Elige una contraseña segura que solo tú conozcas.</p>
+            </div>
+            <div class="form-row-fit">
+                <!-- === Contraseña actual === -->
+                <div class="input-group">
+                    <label for="current_password" class="label-form">
+                        Contraseña actual
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-lock-line input-icon"></i>
+                        <input type="password" name="current_password" id="current_password"
+                            class="input-form password-input" placeholder="Ingresa tu contraseña actual" required
+                            data-validate="required">
+                        <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                            <i class="ri-eye-line"></i>
+                        </button>
+                    </div>
+                </div>
 
-    <div class="form-columns-row">
-        <div class="form-profile-column column-password">
-            <!-- === Contraseña actual === -->
-            <div class="input-group">
-                <label for="current_password" class="label-form">
-                    Contraseña actual
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-lock-line input-icon"></i>
-                    <input type="password" name="current_password" id="current_password"
-                        class="input-form password-input" placeholder="Ingresa tu contraseña actual" required
-                        data-validate="required">
-                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
-                        <i class="ri-eye-line"></i>
-                    </button>
-                </div>
             </div>
-        </div>
-        <div class="form-profile-column column-password">
-            <!-- === Nueva contraseña === -->
-            <div class="input-group">
-                <label for="password" class="label-form">
-                    Nueva contraseña
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-lock-password-line input-icon"></i>
-                    <input type="password" name="password" id="password" class="input-form password-input"
-                        placeholder="Ingresa la nueva contraseña" required data-validate="required|min:6">
-                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
-                        <i class="ri-eye-line"></i>
-                    </button>
+            <div class="form-row-fit">
+                <!-- === Nueva contraseña === -->
+                <div class="input-group">
+                    <label for="password" class="label-form">
+                        Nueva contraseña
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-lock-password-line input-icon"></i>
+                        <input type="password" name="password" id="password" class="input-form password-input"
+                            placeholder="Ingresa la nueva contraseña" required data-validate="required|min:6">
+                        <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                            <i class="ri-eye-line"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="form-profile-column column-password">
-            <!-- === Confirmar nueva contraseña === -->
-            <div class="input-group">
-                <label for="password_confirmation" class="label-form">
-                    Confirmar nueva contraseña
-                    <i class="ri-asterisk text-accent"></i>
-                </label>
-                <div class="input-icon-container">
-                    <i class="ri-lock-password-line input-icon"></i>
-                    <input type="password" name="password_confirmation" id="password_confirmation"
-                        class="input-form password-input" placeholder="Repite la nueva contraseña" required
-                        data-validate="required|confirmed:password">
-                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
-                        <i class="ri-eye-line"></i>
-                    </button>
+                <!-- === Confirmar nueva contraseña === -->
+                <div class="input-group">
+                    <label for="password_confirmation" class="label-form">
+                        Confirmar nueva contraseña
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-lock-password-line input-icon"></i>
+                        <input type="password" name="password_confirmation" id="password_confirmation"
+                            class="input-form password-input" placeholder="Repite la nueva contraseña" required
+                            data-validate="required|confirmed:password">
+                        <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                            <i class="ri-eye-line"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- === FOOTER DE ACCIONES === -->
     <div class="form-footer-static">
         <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">

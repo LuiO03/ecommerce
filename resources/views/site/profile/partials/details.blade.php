@@ -10,7 +10,7 @@
         id="profileDetailsForm" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-        <div class="cards-profile">
+        <div class="form-user">
             <div class="form-body">
                 <div class="card-header">
                     <span class="card-title">Foto de perfil</span>

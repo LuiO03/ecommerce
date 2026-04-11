@@ -22,19 +22,19 @@
 }
 
 .image-preview-zone:hover {
-    border-color: var(--color-accent);
+    border-color: var(--color-input-focus-border);
     background-color: var(--color-sidebar);
 }
 
 .image-preview-zone.drag-over {
-    border-color: var(--color-accent);
+    border-color: var(--color-success);
     background-color: var(--color-success-pastel);
     color: var(--color-success);
     transform: scale(1.02);
 }
 
 .image-preview-zone.has-image {
-    border: 3px dotted var(--color-accent);
+    border-color:var(--color-input-focus-border);
     cursor: default;
     align-items: center;
     justify-content: center;
