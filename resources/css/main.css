@@ -12,4 +12,6 @@
 
 @import "./components/auth.css";
 @import "./components/form.css";
+@import "./components/image-media.css";
+@import "./components/table.css";
 @import "./components/shimmer.css";

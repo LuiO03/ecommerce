@@ -304,11 +304,6 @@
         gap: 0.5rem;
     }
 
-    .card-title {
-        font-size: 13px;
-        -webkit-line-clamp: 1;
-    }
-
     .covers-controls {
         padding: 0.75rem;
         gap: 0.5rem;

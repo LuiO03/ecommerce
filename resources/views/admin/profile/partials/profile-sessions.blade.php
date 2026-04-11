@@ -89,7 +89,7 @@
                                 </span>
                                 <span class="sessions-last-active">
                                     <i class="ri-time-line"></i>
-                                    {{ $session->last_activity ? \Carbon\Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '' }}
+                                    {{ \Carbon\Carbon::createFromTimestampUTC($session->last_activity)->timezone(config('app.timezone'))->format('d/m/Y H:i') }}
                                 </span>
                             </div>
                         </div>

@@ -199,16 +199,6 @@
                             <td class="column-total-td">
                                 S/. {{ number_format((float) $order->total, 2) }}
                             </td>
-                            <!--
-                                $table->enum('status', [
-                                    'pending',     // pendiente
-                                    'paid',        // pagado
-                                    'processing',  // en proceso
-                                    'shipped',     // enviado
-                                    'delivered',   // entregado
-                                    'cancelled'    // cancelado
-                                ])->default('pending');
-                            -->
                             <td class="column-status-td" data-status="{{ $order->status }}">
                                 @switch($order->status)
                                     @case('pending')

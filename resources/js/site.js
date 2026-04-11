@@ -11,10 +11,12 @@ import './site-modules/auth-wishlist-modal';
 import './site-modules/wishlist-page';
 import './modules/custom-select';
 
+import { initImageUpload } from './utils/image-upload-handler.js';
 import { initFormValidator } from './utils/form-validator.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
 
 // Exponer helpers de formularios para vistas públicas (login, etc.)
+window.initImageUpload = initImageUpload;
 window.initFormValidator = initFormValidator;
 window.initSubmitLoader = initSubmitLoader;
 

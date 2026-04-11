@@ -19,8 +19,6 @@
 @import "./modules/error-403.css";
 
 @import "./components/breadcrumb.css";
-@import "./components/table.css";
-@import "./components/image-media.css";
 @import "./components/connection-status.css";
 @import "./components/mobile-dropdown.css";
 @import "./components/datatable-highlight.css";

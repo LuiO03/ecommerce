@@ -148,6 +148,7 @@
         Route::get('/mi-cuenta/favoritos', [SiteProfileController::class, 'wishlist'])->name('site.profile.wishlist');
         Route::get('/mi-cuenta/direcciones', [SiteProfileController::class, 'addresses'])->name('site.profile.addresses');
         Route::get('/mi-cuenta/seguridad', [SiteProfileController::class, 'security'])->name('site.profile.security');
+        Route::post('/mi-cuenta/seguridad/logout-session', [SiteProfileController::class, 'logoutSession'])->name('site.profile.logout-session');
     });
 
     // Rutas para la lista de deseos (wishlist)

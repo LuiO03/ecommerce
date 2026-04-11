@@ -307,7 +307,7 @@
     }
     .profile-tab-btn {
         padding: 8px 20px;
-        border-radius: var(--radius-xl);
+        border-radius: var(--radius-input);
     }
     .profile-tabs {
         gap: 0.5rem;

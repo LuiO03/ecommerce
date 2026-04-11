@@ -17,7 +17,6 @@
 .legal-cta--emphasis .legal-cta__button {
     background: #fff;
     color: var(--color-dark);
-    text-wrap: nowrap;
 }
 
 /* Formulario de Libro de Reclamaciones */

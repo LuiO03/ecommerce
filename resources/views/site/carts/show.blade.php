@@ -16,7 +16,7 @@
         <header class="cart-header">
             <div class="section-header">
                 <h1 class="section-title">Mi carrito</h1>
-                <h5 class="section-subtitle">Revisa tus productos antes de confirmar tu compra.</h5>
+                <p class="section-subtitle">Revisa tus productos antes de confirmar tu compra.</p>
             </div>
             @if ($hasItems)
                 <div class="flex gap-1">

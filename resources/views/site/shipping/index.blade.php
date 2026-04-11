@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Envío - Completa tu orden')
     @include('partials.site.breadcrumb', [
         'items' => $breadcrumbItems ?? [
             [

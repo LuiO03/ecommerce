@@ -171,6 +171,15 @@ input[type="checkbox"]:focus {
     }
 }
 
+.card-header-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .card-title {
     font-weight: bolder;
     font-family: var(--font-secondary);
@@ -181,6 +190,12 @@ input[type="checkbox"]:focus {
 .card-description {
     color: var(--color-text-soft);
     font-size: var(--font-size-xs);
+}
+
+.card-column{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .input-group {
@@ -666,7 +681,7 @@ body.sidebar-collapsed .form-footer {
     display: flex;
     flex-direction: column;
     gap: 10px;
-
+    height: min-content;
     padding: 16px;
     background-color: var(--color-sidebar-bg);
     border-radius: var(--radius-card);
