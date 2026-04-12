@@ -4,7 +4,7 @@
  * ============================================================================
  * Sistema reutilizable para manejo de carga y previsualización de imágenes
  * en formularios de creación y edición.
- * 
+ *
  * @author GECKОМERCE
  * @version 1.0.0
  */
@@ -129,7 +129,9 @@ export class ImageUploadHandler {
             const files = e.dataTransfer.files;
             if (files.length > 0 && files[0].type.startsWith('image/')) {
                 input.files = files;
-                this.showImagePreview(files[0]);
+                // Disparar change para que cualquier validador/escucha reaccione
+                const changeEvent = new Event('change', { bubbles: true });
+                input.dispatchEvent(changeEvent);
             }
         });
 

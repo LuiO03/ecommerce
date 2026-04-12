@@ -96,16 +96,20 @@
 .input-error-message {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-top: -4px;
+    gap: 5px;
+    margin-top: -2px;
     padding: 6px 10px;
+    /*
+    background: linear-gradient(90deg, var(--color-danger-pastel) 0%, rgba(239, 68, 68, 0) 100%);
+    */
     background-color: var(--color-danger-pastel);
     border-left: 3px solid var(--color-danger);
-    border-radius: var(--radius-element);
+    border-radius: var(--radius-element) var(--radius-input) var(--radius-input) var(--radius-element);
     color: var(--color-danger);
     font-size: var(--font-size-xs);
-    font-weight: 500;
     animation: shake 0.3s ease-in-out;
+    line-height: 1.1;
+    font-weight: 500;
 }
 
 .input-error-message i {
@@ -269,6 +273,15 @@ select.input-success:focus {
 .input-group:has(.input-success) .label-form,
 .input-group:has(select.input-success) .label-form {
     color: var(--color-success) !important;
+}
+
+/* Label y borde cuando la imagen única tiene error de validación */
+.image-upload-section:has(.file-input.input-error) .label-form {
+    color: var(--color-danger) !important;
+}
+
+.image-upload-section:has(.file-input.input-error) .image-preview-zone {
+    border-color: var(--color-danger) !important;
 }
 
 /* ========================================

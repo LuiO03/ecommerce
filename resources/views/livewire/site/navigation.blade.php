@@ -177,7 +177,7 @@
                 <div class="site-flyout-panel" data-family-panel="{{ $family->id }}">
                     <div class="site-flyout-header">
                         <span class="site-flyout-header-title">{{ $family->name }}</span>
-                        <a href="{{ route('families.show', $family) }}" class="boton-form boton-accent">
+                        <a href="{{ route('families.show', $family) }}" class="site-btn site-btn-primary">
                             <span class="boton-form-icon">
                                 <i class="ri-eye-line"></i>
                             </span>

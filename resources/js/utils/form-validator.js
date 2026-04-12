@@ -153,15 +153,18 @@ class FormValidator {
         }
 
         // Validación inmediata en inputs de archivo al seleccionar (change)
-        // Nota: para inputs dentro de .image-upload-section (galerías),
-        // la validación se dispara manualmente desde gallery-manager,
-        // una vez que los previews ya fueron renderizados.
+        // Nota: para inputs dentro de .image-upload-section que usan galería
+        // (tienen .preview-container), la validación se dispara manualmente
+        // desde gallery-manager, una vez que los previews ya fueron renderizados.
         this.fields.forEach((config, field) => {
             if (field.type === 'file') {
-                const isGalleryFile = typeof field.closest === 'function'
+                const uploadSection = typeof field.closest === 'function'
                     ? field.closest('.image-upload-section')
                     : null;
 
+                const isGalleryFile = uploadSection && uploadSection.querySelector('.preview-container');
+
+                // Inputs de archivo "simples" (sin galería) se validan en change
                 if (!isGalleryFile) {
                     field.addEventListener('change', () => this.validateField(field));
                 }

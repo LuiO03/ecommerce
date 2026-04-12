@@ -151,6 +151,10 @@
         Route::get('/mi-cuenta/pedidos', [SiteProfileController::class, 'orders'])->name('site.profile.orders');
         Route::get('/mi-cuenta/favoritos', [SiteProfileController::class, 'wishlist'])->name('site.profile.wishlist');
         Route::get('/mi-cuenta/direcciones', [SiteProfileController::class, 'addresses'])->name('site.profile.addresses');
+        Route::post('/mi-cuenta/direcciones', [SiteProfileController::class, 'storeAddress'])->name('site.profile.addresses.store');
+        Route::put('/mi-cuenta/direcciones/{address}', [SiteProfileController::class, 'updateAddress'])->name('site.profile.addresses.update');
+        Route::post('/mi-cuenta/direcciones/{address}/default', [SiteProfileController::class, 'setDefaultAddress'])->name('site.profile.addresses.default');
+        Route::delete('/mi-cuenta/direcciones/{address}', [SiteProfileController::class, 'destroyAddress'])->name('site.profile.addresses.destroy');
         Route::get('/mi-cuenta/seguridad', [SiteProfileController::class, 'security'])->name('site.profile.security');
         Route::post('/mi-cuenta/seguridad/logout-session', [SiteProfileController::class, 'logoutSession'])->name('site.profile.logout-session');
     });

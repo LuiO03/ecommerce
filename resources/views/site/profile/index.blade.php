@@ -26,6 +26,8 @@
                         <p class="profile-subtitle">Administra tus datos personales, pedidos y direcciones desde un
                             mismo lugar.</p>
                     </div>
+
+                    @include('site.profile.partials.address-modal')
                 </div>
             </div>
         </header>

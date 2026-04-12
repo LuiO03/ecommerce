@@ -9,6 +9,7 @@ import './site-modules/product-detail';
 import './site-modules/quantity-counter';
 import './site-modules/auth-wishlist-modal';
 import './site-modules/wishlist-page';
+import './site-modules/profile-addresses';
 import './modules/custom-select';
 
 import { initImageUpload } from './utils/image-upload-handler.js';

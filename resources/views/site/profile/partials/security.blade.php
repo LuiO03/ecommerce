@@ -27,7 +27,9 @@
                 </div>
             </article>
         </div>
-        <hr class="w-full my-0 border-default">
+
+        <hr class="w-full my-3 border-default">
+
         <div class="card-header">
             <span class="card-title">Dispositivos y sesiones activas</span>
             <p class="card-description">Administra tus dispositivos y sesiones activas para mantener la seguridad de
@@ -180,7 +182,9 @@
                 No hay otras sesiones abiertas en otros dispositivos.
             </x-alert>
         @endif
-        <hr class="w-full my-0 border-default">
+
+        <hr class="w-full my-3 border-default">
+
         <div class="card-header">
             <span class="card-title">Cambiar contraseña</span>
             <p class="card-description">Elige una contraseña segura que solo tú conozcas.</p>

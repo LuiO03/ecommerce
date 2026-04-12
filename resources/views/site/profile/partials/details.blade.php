@@ -157,7 +157,7 @@
                             <i class="ri-hashtag input-icon"></i>
                             <input type="text" name="document_number" id="document_number" class="input-form"
                                 placeholder="Ingresa tu número de documento"
-                                value="{{ old('document_number', $user->document_number) }}" data-validate="max:30">
+                                value="{{ old('document_number', $user->document_number) }}" data-validate="document_number|max:30|requiredWith:document_type">
                         </div>
                     </div>
                 </div>

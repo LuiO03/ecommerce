@@ -100,6 +100,198 @@ class ProfileController extends Controller
         return redirect()->route('site.profile.index', ['section' => 'addresses']);
     }
 
+    public function storeAddress(Request $request)
+    {
+        if (! Auth::check()) {
+            return $request->wantsJson()
+                ? response()->json(['message' => 'Unauthenticated.'], 401)
+                : redirect()->route('login');
+        }
+
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'type'             => 'required|in:home,office',
+            'address_line'     => 'required|string|min:5|max:255',
+            'district'         => 'required|string|max:120',
+            'reference'        => 'required|string|max:255',
+            'receiver_name'    => 'required|string|min:3|max:255',
+            'receiver_last_name' => 'nullable|string|min:2|max:255',
+            'receiver_phone'   => 'required|string|min:6|max:20',
+        ]);
+
+        $hasAnyAddress = Addresses::where('user_id', $user->id)->exists();
+
+        $payload = [
+            'user_id'          => $user->id,
+            'type'             => $validated['type'],
+            'address_line'     => ucfirst(mb_strtolower($validated['address_line'])),
+            'district'         => ucfirst(mb_strtolower($validated['district'])),
+            'reference'        => ucfirst(mb_strtolower($validated['reference'])),
+            'receiver_type'    => 1,
+            'receiver_name'    => ucwords(mb_strtolower($validated['receiver_name'])),
+            'receiver_last_name' => ! empty($validated['receiver_last_name'])
+                ? ucwords(mb_strtolower($validated['receiver_last_name']))
+                : null,
+            'receiver_phone'   => $validated['receiver_phone'],
+            'is_default'       => ! $hasAnyAddress,
+        ];
+
+        Addresses::create($payload);
+
+        $addresses = Addresses::where('user_id', $user->id)
+            ->orderByDesc('is_default')
+            ->orderByDesc('id')
+            ->get();
+
+        $toast = [
+            'type'    => 'success',
+            'title'   => 'Dirección agregada',
+            'message' => 'Tu nueva dirección se ha guardado correctamente.',
+        ];
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
+                'toast'  => $toast,
+            ]);
+        }
+
+        Session::flash('toast', $toast);
+
+        return redirect()->route('site.profile.index', ['section' => 'addresses']);
+    }
+
+    public function updateAddress(Request $request, Addresses $address)
+    {
+        if (! Auth::check() || $address->user_id !== Auth::id()) {
+            return $request->wantsJson()
+                ? response()->json(['message' => 'Forbidden.'], 403)
+                : abort(403);
+        }
+
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'type'             => 'required|in:home,office',
+            'address_line'     => 'required|string|min:5|max:255',
+            'district'         => 'required|string|max:120',
+            'reference'        => 'required|string|max:255',
+            'receiver_name'    => 'required|string|min:3|max:255',
+            'receiver_last_name' => 'nullable|string|min:2|max:255',
+            'receiver_phone'   => 'required|string|min:6|max:20',
+        ]);
+
+        $address->update([
+            'type'             => $validated['type'],
+            'address_line'     => ucfirst(mb_strtolower($validated['address_line'])),
+            'district'         => ucfirst(mb_strtolower($validated['district'])),
+            'reference'        => ucfirst(mb_strtolower($validated['reference'])),
+            'receiver_name'    => ucwords(mb_strtolower($validated['receiver_name'])),
+            'receiver_last_name' => ! empty($validated['receiver_last_name'])
+                ? ucwords(mb_strtolower($validated['receiver_last_name']))
+                : null,
+            'receiver_phone'   => $validated['receiver_phone'],
+        ]);
+
+        $addresses = Addresses::where('user_id', $user->id)
+            ->orderByDesc('is_default')
+            ->orderByDesc('id')
+            ->get();
+
+        $toast = [
+            'type'    => 'success',
+            'title'   => 'Dirección actualizada',
+            'message' => 'Tu dirección se ha actualizado correctamente.',
+        ];
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
+                'toast'  => $toast,
+            ]);
+        }
+
+        Session::flash('toast', $toast);
+
+        return redirect()->route('site.profile.index', ['section' => 'addresses']);
+    }
+
+    public function setDefaultAddress(Request $request, Addresses $address)
+    {
+        if (! Auth::check() || $address->user_id !== Auth::id()) {
+            return $request->wantsJson()
+                ? response()->json(['message' => 'Forbidden.'], 403)
+                : abort(403);
+        }
+
+        $user = Auth::user();
+
+        Addresses::where('user_id', $user->id)->update(['is_default' => false]);
+        $address->update(['is_default' => true]);
+
+        $addresses = Addresses::where('user_id', $user->id)
+            ->orderByDesc('is_default')
+            ->orderByDesc('id')
+            ->get();
+
+        $toast = [
+            'type'    => 'success',
+            'title'   => 'Dirección principal actualizada',
+            'message' => 'Hemos actualizado tu dirección principal.',
+        ];
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
+                'toast'  => $toast,
+            ]);
+        }
+
+        Session::flash('toast', $toast);
+
+        return redirect()->route('site.profile.index', ['section' => 'addresses']);
+    }
+
+    public function destroyAddress(Request $request, Addresses $address)
+    {
+        if (! Auth::check() || $address->user_id !== Auth::id()) {
+            return $request->wantsJson()
+                ? response()->json(['message' => 'Forbidden.'], 403)
+                : abort(403);
+        }
+
+        $user = Auth::user();
+
+        $address->delete();
+
+        $addresses = Addresses::where('user_id', $user->id)
+            ->orderByDesc('is_default')
+            ->orderByDesc('id')
+            ->get();
+
+        $toast = [
+            'type'    => 'success',
+            'title'   => 'Dirección eliminada',
+            'message' => 'La dirección se ha eliminado correctamente.',
+        ];
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
+                'toast'  => $toast,
+            ]);
+        }
+
+        Session::flash('toast', $toast);
+
+        return redirect()->route('site.profile.index', ['section' => 'addresses']);
+    }
+
     public function security()
     {
         if (! Auth::check()) {

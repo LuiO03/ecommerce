@@ -45,7 +45,7 @@
                     <span class="boton-form-text">Subir imagen</span>
                 </button>
                 <hr class="w-full my-0 border-default">
-                <button type="submit" class="boton-form boton-accent" id="submitAvatarBtn">
+                <button type="submit" class="boton-form boton-success" id="submitAvatarBtn">
                     <span class="boton-form-icon"><i class="ri-save-3-fill"></i></span>
                     <span class="boton-form-text">Guardar foto</span>
                 </button>
@@ -92,10 +92,9 @@
     const closeAvatarModalBtn = document.getElementById('closeAvatarModal');
     const cancelButtonAvatar = document.getElementById('cancelButtonAvatar');
     document.getElementById('editAvatarBtn').addEventListener('click', function() {
+        // Mostrar modal: el resto de la animación la hace CSS
         avatarModal.classList.remove('hidden');
         avatarModal.classList.add('flex');
-        avatarDialog.classList.remove('animate-out');
-        avatarDialog.classList.add('animate-in');
     });
 
     // Mover modal al final del body para garantizar z-index máximo
@@ -104,12 +103,9 @@
     }
 
     function closeAvatarModal() {
-        avatarDialog.classList.remove('animate-in');
-        avatarDialog.classList.add('animate-out');
-        setTimeout(() => {
-            avatarModal.classList.add('hidden');
-            avatarModal.classList.remove('flex');
-        }, 250);
+        // Ocultar modal: CSS ya manejó la animación de entrada
+        avatarModal.classList.add('hidden');
+        avatarModal.classList.remove('flex');
     }
     closeAvatarModalBtn.addEventListener('click', closeAvatarModal);
     cancelButtonAvatar.addEventListener('click', closeAvatarModal);

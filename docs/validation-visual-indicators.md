@@ -141,6 +141,8 @@ const formValidator = initFormValidator('#categoryForm', {
 |----------|--------|
 | `.input-group:has(.input-error) .label-form` | Label rojo en error |
 | `.input-group:has(.input-success) .label-form` | Label verde en éxito |
+| `.image-upload-section:has(.file-input.input-error) .label-form` | Label rojo cuando la imagen tiene error |
+| `.image-upload-section:has(.file-input.input-error) .image-preview-zone` | Borde rojo en zona de preview de imagen |
 
 ### Iconos
 | Selector | Efecto |

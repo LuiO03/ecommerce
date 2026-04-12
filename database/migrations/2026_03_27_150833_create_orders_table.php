@@ -21,6 +21,12 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2)->nullable();
             $table->decimal('shipping_cost', 10, 2)->default(0);
 
+            // Método de entrega: delivery a domicilio o recojo en tienda
+            $table->enum('delivery_type', [
+                'delivery', // envío a domicilio
+                'pickup',   // recojo en tienda
+            ])->default('delivery');
+
             $table->enum('status', [
                 'pending',     // pendiente
                 'processing',  // en proceso

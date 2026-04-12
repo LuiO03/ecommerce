@@ -212,6 +212,7 @@ El proyecto incluye documentación detallada en [docs/](docs/):
 - **[clients-module.md](docs/clients-module.md)** - Gestión de clientes (usuarios con rol Cliente)
  - **[google-authentication.md](docs/google-authentication.md)** - Autenticación y registro con Google (Socialite)
  - **[mail-system.md](docs/mail-system.md)** - Sistema de correos (registro, verificación, reset)
+ - **[profile-addresses.md](docs/profile-addresses.md)** - Direcciones de envío desde el perfil del cliente (Mi cuenta)
 
 ### Frontend y UI:
 - **[datatable-manager-usage.md](docs/datatable-manager-usage.md)** - Sistema modular de tablas DataTables

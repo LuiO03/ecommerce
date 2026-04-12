@@ -5,6 +5,7 @@
 
 @import "./components/layout-shell.css";
 @import "./components/layout-admin.css";
+@import "./components/profile-avatar-modal.css";
 
 @import "./modules/dashboard.css";
 @import "./modules/categories.css";

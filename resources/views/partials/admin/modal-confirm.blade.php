@@ -109,15 +109,6 @@ window.showConfirm = function(options) {
         }, 250);
     }
 
-    function onConfirm() {
-        closeModal();
-        if (typeof options.onConfirm === 'function') options.onConfirm();
-    }
-
-    confirmBtn.addEventListener('click', onConfirm);
-    cancelBtn.addEventListener('click', closeModal);
-    closeBtn.addEventListener('click', closeModal);
-
     // 🖱️ Cerrar al hacer clic fuera SOLO la confirmación
     function clickOutsideConfirmListener(e) {
         if (e.target === modal) {
@@ -139,12 +130,17 @@ window.showConfirm = function(options) {
         document.removeEventListener('keydown', escConfirmListener);
         modal.removeEventListener('click', clickOutsideConfirmListener);
     }
+
+    function onConfirm() {
+        if (typeof options.onConfirm === 'function') {
+            options.onConfirm();
+        }
+        closeModalAndCleanup();
+    }
+
+    confirmBtn.addEventListener('click', onConfirm);
     cancelBtn.addEventListener('click', closeModalAndCleanup);
     closeBtn.addEventListener('click', closeModalAndCleanup);
-    confirmBtn.addEventListener('click', function() {
-        closeModalAndCleanup();
-        if (typeof options.onConfirm === 'function') options.onConfirm();
-    });
 };
 </script>
 

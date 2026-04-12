@@ -1,4 +1,4 @@
-<div class="profile-section">
+<div class="profile-section" id="profileAddressesSection" data-store-url="{{ route('site.profile.addresses.store') }}">
     <div class="form-body">
         <div class="card-header-container">
             <div class="card-header">
@@ -6,11 +6,10 @@
                 <p class="card-description">Gestiona tus direcciones de envío favoritas.</p>
             </div>
             <div class="card-header-actions">
-
-                <a href="{{ route('shipping.index') }}" class="boton-form boton-success">
+                <button type="button" class="boton-form boton-success" data-address-modal-open="create">
                     <span class="boton-form-icon"><i class="ri-map-pin-2-fill"></i></span>
                     <span class="boton-form-text">Agregar dirección</span>
-                </a>
+                </button>
             </div>
         </div>
         @if (!isset($addresses) || $addresses->isEmpty())
@@ -20,10 +19,10 @@
                 </div>
                 <h3 class="card-title">Aún no tienes direcciones guardadas</h3>
                 <p>Registra una dirección para agilizar tus próximas compras.</p>
-                <a href="{{ route('shipping.index') }}" class="boton-form boton-success">
+                <button type="button" class="boton-form boton-success" data-address-modal-open="create">
                     <span class="boton-form-icon"><i class="ri-truck-fill"></i></span>
                     <span class="boton-form-text">Agregar dirección</span>
-                </a>
+                </button>
             </div>
         @else
             <div class="addresses-grid">
@@ -42,37 +41,69 @@
                             </div>
                         </header>
                         <div class="address-card-body">
-                            <span class="card-title">{{ $address->receiver_name }}
-                                {{ $address->receiver_last_name }}</span>
-                            <p class="address-line">{{ $address->address_line }}</p>
-                            <p class="address-city">{{ $address->district }}</p>
-                            <p class="address-reference">{{ $address->reference }}</p>
-                            <p class="address-phone">{{ $address->receiver_phone }}</p>
                             @if ($address->is_default)
-                                <span class="badge badge-primary">
+                                <span class="badge bg-success">
                                     <i class="ri-lock-star-fill"></i>
                                     Principal
                                 </span>
                             @endif
+                            <span class="card-title">
+                                {{ $address->receiver_name }}
+                                {{ $address->receiver_last_name }}
+                            </span>
+                            <ul>
+                                <li class="address-line">{{ $address->address_line }}</li>
+                                <li class="address-city">{{ $address->district }}</li>
+                                <li class="address-reference">{{ $address->reference }}</li>
+                                <li class="address-phone">{{ $address->receiver_phone }}</li>
+                            </ul>
+
                         </div>
                         <div class="address-card-actions">
-                            <a href="" class="boton-pastel card-warning" title="Editar dirección"
-                                aria-label="Editar dirección">
+                            <button
+                                type="button"
+                                class="boton-pastel card-warning address-edit-btn"
+                                title="Editar dirección"
+                                aria-label="Editar dirección"
+                                data-address-modal-open="edit"
+                                data-address-id="{{ $address->id }}"
+                                data-address-type="{{ $address->type }}"
+                                data-address-line="{{ e($address->address_line) }}"
+                                data-address-district="{{ e($address->district) }}"
+                                data-address-reference="{{ e($address->reference) }}"
+                                data-address-receiver-name="{{ e($address->receiver_name) }}"
+                                data-address-receiver-last-name="{{ e($address->receiver_last_name) }}"
+                                data-address-receiver-phone="{{ e($address->receiver_phone) }}"
+                                data-update-url="{{ route('site.profile.addresses.update', $address) }}"
+                            >
                                 <i class="ri-pencil-fill"></i>
-                            </a>
-                            <form method="POST" action="">
+                            </button>
+                            <form method="POST" action="{{ route('site.profile.addresses.destroy', $address) }}" class="address-delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="boton-pastel card-danger" title="Eliminar dirección"
-                                    aria-label="Eliminar dirección">
+                                <button
+                                    type="submit"
+                                    class="boton-pastel card-danger address-delete-btn"
+                                    title="Eliminar dirección"
+                                    aria-label="Eliminar dirección"
+                                    data-address-delete-url="{{ route('site.profile.addresses.destroy', $address) }}"
+                                >
                                     <i class="ri-delete-bin-5-fill"></i>
                                 </button>
                             </form>
                             @if (!$address->is_default)
-                                <button type="button" class="boton-pastel card-accent"
-                                    title="Establecer como principal" aria-label="Establecer como principal">
-                                    <i class="ri-star-fill"></i>
-                                </button>
+                                <form method="POST" action="{{ route('site.profile.addresses.default', $address) }}" class="address-default-form">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="boton-pastel card-success address-default-btn"
+                                        title="Establecer como principal"
+                                        aria-label="Establecer como principal"
+                                        data-address-default-url="{{ route('site.profile.addresses.default', $address) }}"
+                                    >
+                                        <i class="ri-star-fill"></i>
+                                    </button>
+                                </form>
                             @endif
                         </div>
                     </article>

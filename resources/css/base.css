@@ -493,6 +493,7 @@
 .boton-success,
 .bg-success {
     background-color: var(--color-success);
+    color: white;
 }
 
 .boton-warning,
