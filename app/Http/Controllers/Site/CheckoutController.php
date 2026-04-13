@@ -28,6 +28,7 @@ class CheckoutController extends Controller
         $subtotal = 0.0;
         $shipping = 5.0;
         $amount = 0.0;
+        $addresses = collect();
 
         if ($userId) {
             $cart = Cart::with([
@@ -38,6 +39,12 @@ class CheckoutController extends Controller
                 ->where('user_id', $userId)
                 ->where('is_active', true)
                 ->first();
+
+            // Direcciones del usuario para selección rápida en checkout
+            $addresses = Addresses::where('user_id', $userId)
+                ->orderByDesc('is_default')
+                ->orderByDesc('id')
+                ->get();
 
             if ($cart && $cart->items->isNotEmpty()) {
                 $subtotal = $cart->total_price;
@@ -50,7 +57,7 @@ class CheckoutController extends Controller
             }
         }
 
-        return view('site.checkout.index', compact('cart', 'session_token', 'subtotal', 'shipping', 'amount'));
+        return view('site.checkout.index', compact('cart', 'session_token', 'subtotal', 'shipping', 'amount', 'addresses'));
     }
 
     public function generateAccessToken(): ?string
@@ -216,18 +223,54 @@ class CheckoutController extends Controller
                     $shipping = 5.0; // Mantener consistente con index()
                     $amount   = $subtotal + $shipping;
 
+                    // Datos de flujo de checkout (tipo de entrega y selección de dirección/tienda)
+                    $deliveryType = $request->query('delivery_type', 'delivery');
+                    $selectedAddressId = $request->query('address_id');
+                    $selectedStoreId = $request->query('store_id');
+
                     // Buscar dirección de envío: primero la predeterminada, luego cualquier otra
-                    $address = Addresses::where('user_id', $user->id)
-                        ->where('is_default', true)
-                        ->first();
+                    $address = null;
 
-                    if (! $address) {
-                        $address = Addresses::where('user_id', $user->id)->first();
+                    if ($deliveryType === 'delivery') {
+                        if ($selectedAddressId) {
+                            $address = Addresses::where('user_id', $user->id)
+                                ->where('id', $selectedAddressId)
+                                ->first();
+                        }
+
+                        if (! $address) {
+                            $address = Addresses::where('user_id', $user->id)
+                                ->orderByDesc('is_default')
+                                ->orderByDesc('id')
+                                ->first();
+                        }
+
+                        $shippingAddress = $address?->address_line ?? 'Sin dirección registrada';
+                        $shippingCity    = $address?->district;
+                        $shippingPhone   = $address?->receiver_phone ?? ($user->phone ?? null);
+                    } else {
+                        // Recojo en tienda: mapear tienda seleccionada a una dirección descriptiva
+                        $stores = [
+                            'store_central' => [
+                                'name'    => 'Tienda Central',
+                                'address' => 'Av. Principal 123, Miraflores',
+                                'city'    => 'Miraflores, Lima',
+                            ],
+                            'store_sucursal_1' => [
+                                'name'    => 'Sucursal Norte',
+                                'address' => 'Av. Las Flores 456, Los Olivos',
+                                'city'    => 'Los Olivos, Lima',
+                            ],
+                        ];
+
+                        $store = $stores[$selectedStoreId] ?? null;
+
+                        $shippingAddress = $store
+                            ? ($store['name'] . ' - ' . $store['address'])
+                            : 'Recojo en tienda';
+                        $shippingCity  = $store['city'] ?? null;
+                        $shippingPhone = $user->phone ?? null;
                     }
-
-                    $shippingAddress = $address?->address_line ?? 'Sin dirección registrada';
-                    $shippingCity    = $address?->district;
-                    $shippingPhone   = $address?->receiver_phone ?? ($user->phone ?? null);
 
                     // Identificador de pago del gateway (si está disponible)
                     $paymentId = $dataMap['TRANSACTION_ID']
@@ -241,6 +284,7 @@ class CheckoutController extends Controller
                         $subtotal,
                         $shipping,
                         $amount,
+                            $deliveryType,
                         $shippingAddress,
                         $shippingCity,
                         $shippingPhone,
@@ -253,6 +297,7 @@ class CheckoutController extends Controller
                             'total'            => $amount,
                             'subtotal'         => $subtotal,
                             'shipping_cost'    => $shipping,
+                                'delivery_type'    => $deliveryType === 'pickup' ? 'pickup' : 'delivery',
                             'status'           => 'pending',
                             'shipping_address' => $shippingAddress,
                             'shipping_city'    => $shippingCity,

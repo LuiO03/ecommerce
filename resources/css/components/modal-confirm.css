@@ -111,7 +111,7 @@
 .confirm-body {
     display: flex;
     padding: 15px;
-    gap: 5px;
+    gap: 15px;
     text-align: start;
     width: 100%;
 }
@@ -124,7 +124,7 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    width: 80%;
+    width: 100%;
     gap: 5px;
 }
 
@@ -138,10 +138,14 @@
     font-family: var(--font-primary);
 }
 
+.confirm-icon-container{
+    height: fit-content;
+}
+
 .confirm-icon {
     font-size: 50px;
     display: flex;
-    width: 20%;
+    line-height: 1;
     align-items: center;
     justify-content: center;
 }

@@ -1,5 +1,5 @@
 /* ============================================
-   CHECKOUT - Proceso de compra
+   CHECKOUT - Proceso de compra (flujo por pasos)
    ============================================ */
 .checkout-page {
    display: flex;
@@ -7,22 +7,339 @@
    gap: 1.5rem;
 }
 
-.checkout-layout {
+/* Barra de progreso superior */
+.checkout-progress {
+   display: flex;
+   align-items: center;
+   gap: 0.75rem;
+   padding: 0.75rem 1rem;
+   border-radius: var(--radius-card);
+   background-color: var(--color-card-bg);
+   border: 1px solid var(--color-border);
+}
+
+.checkout-progress-step {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   color: var(--color-muted);
+   font-size: var(--font-size-xs);
+}
+
+.checkout-progress-step .checkout-progress-index {
+   width: 24px;
+   height: 24px;
+   border-radius: 999px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: 1px solid var(--color-border);
+   background-color: var(--color-bg);
+}
+
+.checkout-progress-step.is-active {
+   color: var(--color-text);
+}
+
+.checkout-progress-step.is-active .checkout-progress-index {
+   border-color: var(--color-secondary);
+   background-color: var(--color-secondary-pastel);
+   color: var(--color-secondary);
+}
+
+.checkout-progress-step.is-completed {
+   color: var(--color-muted);
+}
+
+.checkout-progress-step.is-completed .checkout-progress-index {
+   border-color: var(--color-success);
+   background-color: var(--color-success-pastel);
+   color: var(--color-success);
+}
+
+.checkout-progress-label {
+   white-space: nowrap;
+}
+
+.checkout-progress-separator {
+   flex: 1 1 auto;
+   height: 1px;
+   background: linear-gradient(to right, transparent, var(--color-border), transparent);
+}
+
+/* Layout principal: pasos a la izquierda, resumen a la derecha */
+.checkout-flow {
    display: grid;
    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
    gap: 1.5rem;
    align-items: flex-start;
 }
 
-.checkout-main {
+.checkout-flow-main {
    min-width: 0;
+   display: flex;
+   flex-direction: column;
+   gap: 1rem;
 }
 
-.checkout-main-title {
-   font-size: var(--font-size-h3);
+.checkout-section {
+   border-radius: var(--radius-card);
+   border: 1px solid var(--color-border);
+   background-color: var(--color-card-bg);
+   padding: 1rem 1.25rem;
+   transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.2s ease;
+}
+
+.checkout-section + .checkout-section {
+   margin-top: 0.25rem;
+}
+
+.checkout-section.is-hidden {
+   display: none;
+}
+
+.checkout-section.is-collapsed {
+   opacity: 0.5;
+   max-height: 80px;
+   overflow: hidden;
+}
+
+.checkout-section-title {
+   font-size: var(--font-size-h4);
+   margin-bottom: 0.25rem;
+}
+
+.checkout-section-subtitle {
+   font-size: var(--font-size-xs);
+   color: var(--color-muted);
    margin-bottom: 0.75rem;
 }
 
+.checkout-wizard-actions {
+   margin-top: 1rem;
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.5rem;
+   justify-content: flex-end;
+}
+
+/* Paso 1: tipo de entrega */
+.delivery-type-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+   gap: 0.75rem;
+}
+
+.delivery-type-card {
+   display: flex;
+   align-items: center;
+   gap: 0.75rem;
+   border-radius: var(--radius-card);
+   border: 1px solid var(--color-border);
+   padding: 0.75rem 1rem;
+   background-color: var(--color-card-bg);
+   cursor: pointer;
+   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.delivery-type-card:hover {
+   border-color: var(--color-secondary);
+   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+}
+
+.delivery-type-card .delivery-type-icon {
+   width: 40px;
+   height: 40px;
+   border-radius: 999px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-secondary-pastel);
+   color: var(--color-secondary);
+}
+
+.delivery-type-card .delivery-type-icon i {
+   font-size: 1.6rem;
+}
+
+.delivery-type-body {
+   display: flex;
+   flex-direction: column;
+   gap: 0.15rem;
+}
+
+.delivery-type-title {
+   font-weight: 600;
+}
+
+.delivery-type-helper {
+   font-size: var(--font-size-xs);
+   color: var(--color-muted);
+}
+
+.delivery-type-card input[type="radio"] {
+   position: absolute;
+   opacity: 0;
+   pointer-events: none;
+}
+
+.delivery-type-card:has(input[type="radio"]:checked) {
+   border-color: var(--color-secondary);
+   background-color: var(--color-secondary-pastel);
+}
+
+/* Paso 2: lista de direcciones */
+.address-list {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+   gap: 0.75rem;
+}
+
+.checkout-section .address-card {
+   display: flex;
+   flex-direction: column;
+   border-radius: var(--radius-card);
+   border: 1px solid var(--color-border);
+   padding: 0.75rem 0.9rem;
+   background-color: var(--color-bg);
+   cursor: pointer;
+   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.checkout-section .address-card input[type="radio"] {
+   position: absolute;
+   opacity: 0;
+   pointer-events: none;
+}
+
+.checkout-section .address-card:hover {
+   border-color: var(--color-secondary);
+   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+}
+
+.checkout-section .address-card:has(input[type="radio"]:checked) {
+   border-color: var(--color-secondary);
+   background-color: var(--color-secondary-pastel);
+}
+
+.checkout-section .address-card-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 0.25rem;
+}
+
+.address-alias {
+   font-weight: 600;
+}
+
+.address-badge {
+   margin-left: 0.25rem;
+   padding: 0 0.4rem;
+   border-radius: 999px;
+   background-color: var(--color-success-pastel);
+   color: var(--color-success);
+   font-size: var(--font-size-xxs);
+}
+
+.address-city {
+   font-size: var(--font-size-xs);
+   color: var(--color-muted);
+}
+
+.checkout-section .address-card-body {
+   display: flex;
+   flex-direction: column;
+   gap: 0.15rem;
+   font-size: var(--font-size-xs);
+}
+
+.address-contact {
+   color: var(--color-muted);
+}
+
+.checkout-inline-actions {
+   margin-top: 0.75rem;
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.5rem;
+}
+
+.checkout-inline-actions .link-inline {
+   font-size: var(--font-size-xs);
+   color: var(--color-primary);
+   display: inline-flex;
+   align-items: center;
+   gap: 0.25rem;
+}
+
+/* Paso 2B: tiendas para recojo */
+.store-list {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+   gap: 0.75rem;
+}
+
+.store-card {
+   display: flex;
+   flex-direction: column;
+   border-radius: var(--radius-card);
+   border: 1px solid var(--color-border);
+   padding: 0.75rem 0.9rem;
+   background-color: var(--color-bg);
+   cursor: pointer;
+   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.store-card input[type="radio"] {
+   position: absolute;
+   opacity: 0;
+   pointer-events: none;
+}
+
+.store-card:hover {
+   border-color: var(--color-secondary);
+   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+}
+
+.store-card:has(input[type="radio"]:checked) {
+   border-color: var(--color-secondary);
+   background-color: var(--color-secondary-pastel);
+}
+
+.store-card-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 0.25rem;
+}
+
+.store-name {
+   font-weight: 600;
+}
+
+.store-badge {
+   padding: 0 0.4rem;
+   border-radius: 999px;
+   background-color: var(--color-secondary-pastel);
+   color: var(--color-secondary);
+   font-size: var(--font-size-xxs);
+}
+
+.store-card-body {
+   font-size: var(--font-size-xs);
+   color: var(--color-muted);
+}
+
+.store-address {
+   font-weight: 500;
+}
+
+.store-schedule {
+   margin-top: 0.15rem;
+}
+
+/* Paso 3: métodos de pago (se reutiliza estructura existente) */
 .payment-methods-form {
    display: flex;
    flex-direction: column;
@@ -262,11 +579,19 @@
 }
 
 @media (max-width: 1024px) {
-   .checkout-layout {
+   .checkout-flow {
       grid-template-columns: minmax(0, 1fr);
    }
 
    .checkout-summary {
       max-height: none;
+   }
+
+   .checkout-progress {
+      flex-wrap: wrap;
+   }
+
+   .checkout-progress-label {
+      font-size: var(--font-size-xxs);
    }
 }

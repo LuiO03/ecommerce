@@ -1,5 +1,5 @@
 <x-app-layout>
-
+    @section('title', 'Error de verificación de correo electrónico')
     <section class="site-container checkout-payment-page">
         <div class="checkout-payment-card payment-card-failure">
             <div class="checkout-payment-icon payment-icon-failure">

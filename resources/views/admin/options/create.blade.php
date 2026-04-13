@@ -27,7 +27,7 @@
                 <span class="boton-form-text">Cancelar</span>
             </a>
             <button type="reset" class="boton-form boton-warning">
-                <span class="boton-form-icon"><i class="ri-eraser-fill"></i></span>
+                <span class="boton-form-icon"> <i class="ri-paint-brush-fill"></i> </span>
                 <span class="boton-form-text">Limpiar</span>
             </button>
             <button type="submit" class="boton-form boton-success" id="submitBtn">

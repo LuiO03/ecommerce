@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Crear cuenta')
     <div class="auth-wrapper">
         <div class="auth-logo">
             @include('partials.admin.company-brand')

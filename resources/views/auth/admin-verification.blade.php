@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Verificación de correo electrónico')
     <div class="auth-wrapper">
         <div class="auth-logo">
             @include('partials.admin.company-brand')

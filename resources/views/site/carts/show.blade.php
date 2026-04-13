@@ -241,10 +241,6 @@
                             <dt>Unidades totales</dt>
                             <dd>{{ $itemsQuantity }}</dd>
                         </div>
-                        <div class="cart-summary-row cart-summary-total">
-                            <dt>Subtotal estimado</dt>
-                            <dd>S/. {{ number_format($subtotal, 2) }}</dd>
-                        </div>
                     </dl>
 
                     <p class="cart-summary-note">
@@ -252,7 +248,7 @@
                     </p>
 
                     <div class="cart-summary-actions">
-                        <a href="{{ route('shipping.index') }}" class="site-btn site-btn-primary">
+                        <a href="{{ route('checkout.index') }}" class="site-btn site-btn-primary">
                             Continuar con la compra
                         </a>
                         <a href="{{ route('site.home') }}" class="site-btn site-btn-outline">

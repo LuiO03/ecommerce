@@ -1,5 +1,5 @@
 <x-app-layout>
-
+    @section('title', 'Confirmación de correo electrónico')
     <section class="site-container checkout-payment-page">
         <div class="checkout-payment-card payment-card-success">
             <div class="checkout-payment-icon payment-icon-success">

@@ -201,7 +201,7 @@
     padding: 7px 20px;
     background: var(--color-card-bg);
     opacity: 0;
-    width: calc(100% - var(--sidebar-expanded-width));
+    width: min-content;
     visibility: hidden;
     transform: translateY(100%);
     transition:
@@ -211,7 +211,6 @@
         opacity 0.3s ease,
         visibility 0.3s ease;
     z-index: 1000;
-    height: 55px;
     border: 1px solid var(--color-border);
     /*sombra parte superior*/
     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);

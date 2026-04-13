@@ -9,11 +9,13 @@
         </div>
         <div class="flex flex-col w-full ripple-card">
             <div class="confirm-body">
+                <div class="confirm-icon-container">
+                    <i id="confirmIcon" class="ri-error-warning-line confirm-icon"></i>
+                </div>
                 <div class="confirm-text">
                     <h6 class="confirm-title" id="confirmTitle">¿Estás seguro?</h6>
                     <p class="confirm-message" id="confirmMessage">Esta acción no se puede deshacer.</p>
                 </div>
-                <i id="confirmIcon" class="ri-error-warning-line confirm-icon"></i>
             </div>
             <div class="confirm-actions">
                 <button type="button" class="boton boton-modal-close" id="confirmCancelButton">
