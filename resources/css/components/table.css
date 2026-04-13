@@ -192,34 +192,54 @@
 ======================================================= */
 .selection-bar {
     position: fixed;
-    bottom: 0;
-    left: var(--sidebar-expanded-width);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    bottom: 10px;
+    left: calc(50% + var(--sidebar-expanded-width) / 2);
     gap: 15px;
-    padding: 7px 20px;
-    background: var(--color-card-bg);
+    padding: 8px 15px;
+    background-color: var(--color-bg-transparent);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius-card);
     opacity: 0;
-    width: min-content;
+    width: fit-content;
+    transform: translateX(-50%);
     visibility: hidden;
-    transform: translateY(100%);
     transition:
         left var(--transition-sidebar-base),
         width var(--transition-sidebar-base),
-        transform 0.3s ease,
-        opacity 0.3s ease,
-        visibility 0.3s ease;
+        transform var(--transition-sidebar-base),
+        opacity var(--transition-sidebar-base),
+        visibility var(--transition-sidebar-base);
     z-index: 1000;
-    border: 1px solid var(--color-border);
     /*sombra parte superior*/
-    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-material);
+}
+
+body.sidebar-collapsed .selection-bar {
+    left: calc(50% + var(--sidebar-collapsed-width) / 2);
 }
 
 .selection-bar.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
+}
+
+@media (max-width: 768px) {
+
+    .selection-info span{
+        display: none !important;
+    }
+
+    .selection-bar.active {
+        /* colocar .selection-bar centrada horizontalmente en modo mobile */
+
+        max-width: fit-content;
+        transform: translateX(0%);
+    }
+
 }
 
 .selection-info {
@@ -228,6 +248,7 @@
     font-family: var(--font-secondary);
     font-weight: bold;
     white-space: nowrap;
+    gap: 10px;
 }
 
 .selection-actions {
@@ -265,17 +286,13 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    padding: 5px 10px;
-    color: var(--color-text);
+    line-height: 1;
     font-size: var(--font-size-h4);
     cursor: pointer;
     transition: transform 0.2s ease;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
 }
 
 .selection-close:hover {
-    background: var(--color-hover);
     transform: rotate(90deg);
 }
 
@@ -1024,18 +1041,9 @@ table.dataTable.dtr-inline.collapsed td.control::before {
    📱 RESPONSIVIDAD CONTROLES DE TABLA
 ======================================================= */
 
-/* Ajuste de barra cuando sidebar está colapsado (Desktop) */
-@media (min-width: 640px) {
-    .selection-bar {
-        left: 16rem;
-        width: calc(100% - 16rem);
-    }
-
-    body.sidebar-collapsed .selection-bar {
-        left: var(--sidebar-collapsed-width);
-        width: calc(100% - var(--sidebar-collapsed-width));
-    }
-}
+/* Ajuste de barra cuando sidebar está colapsado (Desktop)
+   Ya no se fuerza el ancho completo; la barra se centra horizontalmente
+   con width auto, así que no se necesitan overrides específicos aquí. */
 
 /* Tablets y pantallas medianas */
 @media (max-width: 1024px) {
@@ -1043,11 +1051,6 @@ table.dataTable.dtr-inline.collapsed td.control::before {
         justify-self: stretch;
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 10px;
-    }
-
-    .selection-info {
-        justify-content: end;
-        gap: 8px;
     }
 
     .selection-actions {
@@ -1061,19 +1064,6 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     .tabla-filtros {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
-    }
-
-    .selection-bar {
-        padding: 7px 10px;
-        display: none !important;
-    }
-
-    .selection-info {
-        gap: 6px;
-    }
-
-    .selection-info i {
-        font-size: var(--font-size-h3);
     }
 
     .selection-close {

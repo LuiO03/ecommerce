@@ -118,7 +118,7 @@
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
                 @can('posts.export')
-                    <button id="exportSelectedExcel" class="boton-selection boton-success">
+                    <button id="exportSelectedExcel" class="boton-selection bg-success">
                         <span class="boton-selection-icon">
                             <i class="ri-file-excel-2-line"></i>
                         </span>
@@ -126,7 +126,7 @@
                         <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="excelBadge">0</span>
                     </button>
-                    <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                    <button id="exportSelectedCsv" class="boton-selection bg-orange">
                         <span class="boton-selection-icon">
                             <i class="ri-file-text-line"></i>
                         </span>
@@ -134,7 +134,7 @@
                         <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="csvBadge">0</span>
                     </button>
-                    <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                    <button id="exportSelectedPdf" class="boton-selection bg-secondary">
                         <span class="boton-selection-icon">
                             <i class="ri-file-pdf-2-line"></i>
                         </span>
@@ -145,7 +145,7 @@
                 @endcan
             </div>
             @can('posts.delete')
-                <button id="deleteSelected" class="boton-selection boton-danger">
+                <button id="deleteSelected" class="boton-selection bg-danger">
                     <span class="boton-selection-icon">
                         <i class="ri-delete-bin-line"></i>
                     </span>
