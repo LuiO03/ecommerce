@@ -1204,7 +1204,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 
     .column-name-td {
         font-weight: bolder;
-        font-size: var(--font-size-h3);
+        font-size: var(--font-size-h6);
         font-family: var(--font-secondary);
     }
 
@@ -1219,6 +1219,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
     .tabla-general tbody {
         flex-wrap: wrap;
         display: flex;
+
         width: 100%;
         gap: 5px;
     }
@@ -1230,15 +1231,11 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         border: none;
     }
 
-    .tabla-general td {
-        text-align: left;
-    }
-
     .tabla-general tbody tr,
     table.dataTable tbody tr {
         flex: 1 1 200px;
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         box-sizing: border-box;
         position: relative;
         border-radius: var(--radius-card);
@@ -1246,6 +1243,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         gap: 5px;
         padding: 15px;
         transition: border 0.3s ease;
+        height: fit-content;
     }
 
     .tabla-general tbody tr.row-selected,
@@ -1270,12 +1268,16 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         border: none;
     }
     .tabla-general td {
+        flex: 1 1 80px;
         border: none;
+        text-align: left !important;
         padding: 0px !important;
     }
     /* Para las filas del cuerpo */
-    .tabla-general tbody tr td:last-child {
-        width: 100%;
+    .tabla-general tbody tr .column-name-td,
+    .tabla-general tbody tr td:first-child {
+        /*hacer que ocupen toda la fila */
+        flex: 1 1 100%;
         text-align: center;
     }
 
