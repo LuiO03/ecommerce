@@ -663,8 +663,6 @@ body.sidebar-collapsed .form-footer {
         left: 50%;
         width: max-content;
         padding: 10px;
-
-        border-radius: var(--radius-card);
     }
 }
 

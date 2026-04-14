@@ -436,8 +436,7 @@
    ============================================================ */
 @media (max-width: 639px) {
     .navbar,
-    .main-container,
-    .selection-bar {
+    .main-container {
         left: 0 !important;
         width: 100% !important;
     }

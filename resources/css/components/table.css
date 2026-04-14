@@ -228,18 +228,14 @@ body.sidebar-collapsed .selection-bar {
 }
 
 @media (max-width: 768px) {
-
-    .selection-info span{
+    .selection-info span {
         display: none !important;
     }
 
     .selection-bar.active {
-        /* colocar .selection-bar centrada horizontalmente en modo mobile */
-
-        max-width: fit-content;
-        transform: translateX(0%);
+        left: 50%;
+        width: max-content;
     }
-
 }
 
 .selection-info {
@@ -456,7 +452,10 @@ body.sidebar-collapsed .selection-bar {
     align-items: center;
     width: 100%;
     gap: 10px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease. border-radius 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease. border-radius 0.2s ease;
 }
 
 .tabla-select-double {
@@ -622,12 +621,12 @@ body.sidebar-collapsed .selection-bar {
     background-color: var(--color-table-striped-bg);
 }
 
-.tabla-normal td{
+.tabla-normal td {
     font-size: var(--font-size-p);
 }
 
 .tabla-normal tbody tr:hover,
-.tabla-normal thead th:hover{
+.tabla-normal thead th:hover {
     background-color: var(--color-table-hover-bg);
 }
 
@@ -1224,13 +1223,15 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         gap: 5px;
     }
 
-    .tabla-general,
-    .tabla-general td {
+    .tabla-general {
         display: flex;
         flex-direction: column;
         width: 100%;
-        text-align: left;
         border: none;
+    }
+
+    .tabla-general td {
+        text-align: left;
     }
 
     .tabla-general tbody tr,
@@ -1290,6 +1291,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         border-bottom: none !important;
     }
 }
+
 @media (max-width: 490px) {
     .tabla-general tbody {
         gap: 10px;
