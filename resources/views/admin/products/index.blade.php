@@ -222,29 +222,30 @@
 							</td>
 							<td class="column-discount-td">
 								@if(!is_null($product->discount) && (float) $product->discount > 0)
-									<span class="badge badge-warning">
-										{{ number_format($product->discount, 2) }}
-									</span>
+										{{ number_format($product->discount, 1) }} %
 								@else
 									<span class="text-muted-td">Sin descuento</span>
 								@endif
 							</td>
 							<td class="column-variants-td">
-								<span class="badge badge-secondary">
-									<i class="ri-shape-2-line"></i>
-									{{ $product->variants_count }}
-								</span>
+                                {{ $product->variants_count }}
 							</td>
 							<td class="column-stock-td">
 								@php
 									$stockTotal = (int) ($product->variants_stock_sum ?? 0);
 									$minStock = method_exists($product, 'getMinStock') ? $product->getMinStock() : (property_exists($product, 'min_stock') ? ($product->min_stock ?? config('products.min_stock', 10)) : config('products.min_stock', 10));
-									$stockBadgeClass = $stockTotal < $minStock ? 'badge-danger' : 'badge-success';
 								@endphp
-								<span class="badge {{ $stockBadgeClass }}">
-									<i class="ri-stack-line"></i>
-									{{ $stockTotal }}
-								</span>
+                                @if($stockTotal < $minStock)
+                                    <span class="badge badge-danger">
+                                        <i class="ri-close-circle-fill"></i>
+                                        {{ $stockTotal }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-success">
+                                        <i class="ri-checkbox-circle-fill"></i>
+                                        {{ $stockTotal }}
+                                    </span>
+                                @endif
 							</td>
 							@can('productos.update-status')
 							<td class="column-status-td">
@@ -262,11 +263,11 @@
 							<td class="column-actions-td">
 								<div class="tabla-botones">
 									<button class="boton-sm boton-info btn-ver-producto" data-slug="{{ $product->slug }}">
-										<span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
+										<i class="ri-eye-2-fill"></i>
 									</button>
 									@can('productos.edit')
 									<a href="{{ route('admin.products.edit', $product) }}" class="boton-sm boton-warning">
-										<span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
+										<i class="ri-edit-circle-fill"></i>
 									</a>
 									@endcan
 									@can('productos.delete')
@@ -274,7 +275,7 @@
 										@csrf
 										@method('DELETE')
 										<button type="submit" class="boton-sm boton-danger">
-											<span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
+											<i class="ri-delete-bin-2-fill"></i>
 										</button>
 									</form>
 									@endcan

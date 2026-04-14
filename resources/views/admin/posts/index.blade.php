@@ -58,6 +58,14 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
+            <button class="boton-single open-filter-mobile" title="Filtros">
+                <span class="boton-single-icon">
+                    <i class="ri-filter-2-line"></i>
+                </span>
+                <span class="boton-single-text">
+                    Filtros
+                </span>
+            </button>
             <div class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
@@ -96,6 +104,7 @@
                     <i class="ri-honour-line selector-icon"></i>
                 </div>
             </div>
+
             <div class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="visibilityFilterPost">
@@ -113,7 +122,6 @@
                 <span class="boton-text">Limpiar filtros</span>
             </button>
         </div>
-
         <!-- Barra contextual de selección (oculta por defecto) -->
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
@@ -209,13 +217,13 @@
                             </td>
                             <td class="column-name-td">{{ $post->title }}</td>
                             @can('posts.review')
-                            <td class="column-author-td">
-                                @if ($post->creator)
-                                    {{ $post->creator->name }} {{ $post->creator->last_name }}
-                                @else
-                                    <span class="text-muted">Sistema</span>
-                                @endif
-                            </td>
+                                <td class="column-author-td">
+                                    @if ($post->creator)
+                                        {{ $post->creator->name }} {{ $post->creator->last_name }}
+                                    @else
+                                        <span class="text-muted">Sistema</span>
+                                    @endif
+                                </td>
                             @endcan
                             <td class="column-views-td">{{ $post->views }}</td>
                             <td class="column-allow-comments-td">
@@ -263,13 +271,20 @@
                             </td>
                             <td class="column-created-td">{{ $post->created_at->format('d/m/Y H:i') }}</td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <span class="boton-single-icon">
+                                        <i class="ri-more-fill"></i>
+                                    </span>
+                                </button>
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-post" data-slug="{{ $post->slug }}" title="Ver Post">
-                                        <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
+                                    <button class="boton-sm boton-info btn-ver-post" data-slug="{{ $post->slug }}"
+                                        title="Ver Post">
+                                        <i class="ri-eye-2-fill"></i>
                                     </button>
                                     @can('posts.edit')
-                                        <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning" title="Editar Post">
-                                            <span class="boton-sm-icon"><i class="ri-edit-circle-fill"></i></span>
+                                        <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning"
+                                            title="Editar Post">
+                                            <i class="ri-edit-circle-fill"></i>
                                         </a>
                                     @endcan
 
@@ -279,7 +294,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="boton-sm boton-danger" title="Eliminar Post">
-                                                <span class="boton-sm-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                                <i class="ri-delete-bin-2-fill"></i>
                                             </button>
                                         </form>
                                     @endcan
@@ -289,7 +304,8 @@
                                             <form action="{{ route('admin.posts.approve', $post) }}" method="POST"
                                                 class="form-approve d-inline">
                                                 @csrf
-                                                <button type="button" class="boton-sm boton-success btn-approve" title="Aprobar Post">
+                                                <button type="button" class="boton-sm boton-success btn-approve"
+                                                    title="Aprobar Post">
                                                     <i class="ri-send-plane-fill"></i>
                                                 </button>
                                             </form>
@@ -297,7 +313,8 @@
                                             <form action="{{ route('admin.posts.reject', $post) }}" method="POST"
                                                 class="form-reject d-inline">
                                                 @csrf
-                                                <button type="button" class="boton-sm boton-danger btn-reject" title="Rechazar Post">
+                                                <button type="button" class="boton-sm boton-danger btn-reject"
+                                                    title="Rechazar Post">
                                                     <i class="ri-close-circle-fill"></i>
                                                 </button>
                                             </form>
@@ -363,7 +380,8 @@
                     const visibilityText = $(row).find('.column-visibility-td').text().trim().toLowerCase();
 
                     const statusOk = selectedStatus ? statusText === selectedStatus.toLowerCase() : true;
-                    const visibilityOk = selectedVisibility ? visibilityText === selectedVisibility.toLowerCase() : true;
+                    const visibilityOk = selectedVisibility ? visibilityText === selectedVisibility
+                        .toLowerCase() : true;
 
                     return statusOk && visibilityOk;
                 });
@@ -411,12 +429,12 @@
                 // ========================================
                 @if (Session::has('highlightRow'))
                     (function() {
-                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-                            ? performance.getEntriesByType('navigation')
-                            : [];
-                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-                            ? performance.navigation.type
-                            : null;
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') : [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
                         const navType = navEntries.length ? navEntries[0].type : legacyNav;
                         const isBackNavigation = navType === 'back_forward' || navType === 2;
 
@@ -488,4 +506,69 @@
         </script>
     @endpush
     @include('admin.posts.modals.show-modal-post')
+
+    <div class="filter-container-mobile">
+        <div class="card-header">
+            <span class="card-title">Filtros y opciones</span>
+        </div>
+        <article class="filter-conteiner">
+            <span>Cantidad de páginas:</span>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="entriesSelect">
+                        <option value="5">5/pág.</option>
+                        <option value="10" selected>10/pág.</option>
+                        <option value="25">25/pág.</option>
+                        <option value="50">50/pág.</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line selector-icon"></i>
+                </div>
+            </div>
+        </article>
+        <article class="filter-conteiner">
+            <span>Ordenar por:</span>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="sortFilterTitulo">
+                        <option value="">Ordenar por</option>
+                        <option value="title-asc">Título (A-Z)</option>
+                        <option value="title-desc">Título (Z-A)</option>
+                        <option value="date-desc">Más recientes</option>
+                        <option value="date-asc">Más antiguos</option>
+                        <option value="views-desc">Más vistos</option>
+                    </select>
+                    <i class="ri-sort-asc selector-icon"></i>
+                </div>
+            </div>
+        </article>
+        <article class="filter-conteiner">
+            <span>Estado:</span>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="statusFilterPost">
+                        <option value="">Todos los estados</option>
+                        <option value="borrador">Borrador</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="publicado">Publicado</option>
+                        <option value="rechazado">Rechazado</option>
+                    </select>
+                    <i class="ri-honour-line selector-icon"></i>
+                </div>
+            </div>
+        </article>
+        <article class="filter-conteiner">
+            <span>Visibilidad:</span>
+            <div class="tabla-select-wrapper">
+                <div class="selector">
+                    <select id="visibilityFilterPost">
+                        <option value="">Todas las visibilidades</option>
+                        <option value="publico">Público</option>
+                        <option value="privado">Privado</option>
+                        <option value="registrado">Registrado</option>
+                    </select>
+                    <i class="ri-target-line selector-icon"></i>
+                </div>
+            </div>
+        </article>
+    </div>
 </x-admin-layout>

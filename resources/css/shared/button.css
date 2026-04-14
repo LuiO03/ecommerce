@@ -257,7 +257,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.boton-sm .boton-sm-icon i {
+.boton-sm i {
     font-size: 16px;
     transition: transform 0.2s ease;
 }
@@ -265,9 +265,6 @@
 /* Hover */
 .boton-sm:hover {
     box-shadow: var(--shadow-material);
-}
-
-.boton-sm:hover .boton-sm-icon i {
     transform: scale(1.1);
 }
 

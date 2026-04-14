@@ -276,14 +276,18 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
+                                    @can('ordenes.view')
                                     <a href="{{ route('admin.orders.show', $order) }}" class="boton-sm boton-warning" title="Ver orden">
-                                        <span class="boton-sm-icon"><i class="ri-eye-fill"></i></span>
+                                        <i class="ri-eye-fill"></i>
                                     </a>
+                                    @endcan
+                                    @can('ordenes.export')
                                     @if ($order->pdf_path)
                                         <a href="{{ asset('storage/' . $order->pdf_path) }}" target="_blank" class="boton-sm boton-danger" title="Ver boleta PDF">
-                                            <span class="boton-sm-icon"><i class="ri-file-pdf-2-fill"></i></span>
+                                            <i class="ri-file-pdf-2-fill"></i>
                                         </a>
                                     @endif
+                                    @endcan
                                     @can('ordenes.update')
                                         @if ($order->status === 'pending')
                                             <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="order-dispatch-form" data-order="{{ $order->order_number }}" style="display:inline-block;">
@@ -297,7 +301,7 @@
                                             </form>
                                         @elseif ($order->status === 'processing')
                                             <a href="{{ route('admin.orders.show', $order) }}" class="boton-sm boton-info" title="Asignar repartidor">
-                                                <span class="boton-sm-icon"><i class="ri-user-follow-line"></i></span>
+                                                <i class="ri-user-follow-line"></i>
                                             </a>
                                         @endif
                                     @endcan

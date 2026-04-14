@@ -118,7 +118,7 @@
                                 <div class="tabla-botones">
                                     @can('conductores.edit')
                                     <a href="{{ route('admin.drivers.edit', $driver) }}" class="boton-sm boton-warning" title="Editar conductor">
-                                        <span class="boton-sm-icon"><i class="ri-edit-2-fill"></i></span>
+                                        <i class="ri-edit-2-fill"></i>
                                     </a>
                                     @endcan
                                     @can('conductores.delete')
@@ -126,7 +126,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="boton-sm boton-danger" title="Eliminar conductor">
-                                            <span class="boton-sm-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                            <i class="ri-delete-bin-6-fill"></i>
                                         </button>
                                     </form>
                                     @endcan
