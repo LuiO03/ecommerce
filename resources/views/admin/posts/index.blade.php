@@ -41,12 +41,12 @@
             </div>
         @endcan
 
-        <button class="boton-form boton-action" title="Filtros">
-            <span class="boton-single-icon">
-                <i class="ri-filter-2-line"></i>
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
             </span>
-            <span class="boton-single-text">
-                Filtros
+            <span class="boton-form-text">
+                Buscar o filtrar
             </span>
         </button>
 
@@ -136,10 +136,20 @@
                 </div>
             </article>
             <!-- Botón para limpiar filtros -->
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
+            <div class="filters-actions">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
+                <button class="boton-apply-filters" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Aplicar filtros
+                    </span>
+                </button>
+            </div>
         </aside>
         <!-- Barra contextual de selección (oculta por defecto) -->
         <div class="selection-bar" id="selectionBar">

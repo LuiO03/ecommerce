@@ -30,6 +30,7 @@ import {
   initGalleryCreateWithConfig,
   initGalleryEditWithConfig
 } from './utils/gallery-manager.js';
+import { initMobileFiltersPanel } from './utils/mobile-filters-panel.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
@@ -52,4 +53,5 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('Dashboard JS inicializado ✅');
   initTextareaAutosize();
   initConnectionStatusBar();
+  initMobileFiltersPanel();
 });

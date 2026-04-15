@@ -301,22 +301,44 @@ body.sidebar-collapsed .selection-bar {
 ======================================================= */
 
 /* Botón de limpiar filtros */
-.boton-clear-filters {
+.filters-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column: span 2;
+    gap: 10px;
+}
+
+.boton-clear-filters,
+.boton-apply-filters {
     display: none;
     align-items: center;
     gap: 5px;
     justify-content: center;
     background: transparent;
-    border: 1px solid var(--color-warning);
     border-radius: var(--radius-input);
-    color: var(--color-warning);
+    height: 40px;
     font-size: var(--font-size-xs);
     font-family: var(--font-secondary);
     font-weight: bold;
     cursor: pointer;
     padding: 5px;
-    transition: all 0.3s ease;
+    transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
     white-space: nowrap;
+}
+
+.boton-clear-filters {
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
+}
+
+.boton-apply-filters {
+    color: var(--color-info);
+    border: 1px solid var(--color-info);
+    grid-column: 2;
 }
 
 .boton-clear-filters.active {
@@ -330,6 +352,13 @@ body.sidebar-collapsed .selection-bar {
     color: black;
     /* sombra luminaosa */
     box-shadow: 0 0 10px var(--color-warning);
+}
+
+.boton-apply-filters:hover {
+    background: var(--color-info);
+    border-color: var(--color-info);
+    color: white;
+    box-shadow: 0 0 10px var(--color-info);
 }
 
 .boton-clear-filters:active {
@@ -350,7 +379,7 @@ body.sidebar-collapsed .selection-bar {
     align-items: center;
 }
 
-.tabla-filtros-title{
+.tabla-filtros-title {
     display: none;
 }
 
@@ -465,7 +494,7 @@ body.sidebar-collapsed .selection-bar {
     grid-column: span 2;
 }
 
-.selector-label{
+.selector-label {
     display: none;
 }
 
@@ -1298,7 +1327,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         background-color: transparent;
     }
 
-    .column-actions-td  {
+    .column-actions-td {
         position: absolute;
         display: flex;
         flex-direction: column;
@@ -1307,12 +1336,12 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         top: 1rem;
     }
 
-    .column-actions-td .boton-show-actions{
+    .column-actions-td .boton-show-actions {
         display: block;
         padding: 10px;
     }
 
-    .column-actions-td .tabla-botones{
+    .column-actions-td .tabla-botones {
         display: flex;
         flex-direction: column;
         background-color: var(--color-bg-transparent);
@@ -1348,8 +1377,70 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 ======================================================= */
 
 @media (max-width: 639px) {
+        /* Overlay que bloquea el contenido alrededor del aside cuando está abierto */
+    .tabla-filtros-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 40; /* por debajo de .tabla-filtros (150) */
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            opacity 0.3s ease,
+            visibility 0.3s ease;
+    }
 
-    .tabla-filtros-title{
+    .tabla-filtros-overlay.is-visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .tabla-filtros {
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        padding: 1rem;
+        z-index: 150;
+        background-color: var(--color-bg);
+        width: 94%;
+        left: 3%;
+        border: var(--color-border);
+        border-radius: var(--radius-card) var(--radius-card) 0px 0px;
+        box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+        /* Estado inicial: oculto como bottom sheet */
+        transform: translateY(100%);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            transform 0.3s ease,
+            opacity 0.3s ease,
+            visibility 0.3s ease;
+        touch-action: pan-y;
+    }
+
+    .tabla-filtros.is-open {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* "Handle" visual para arrastrar el panel */
+    .tabla-filtros::before {
+        content: "";
+        display: block;
+        width: 80px;
+        grid-column: span 2;
+        margin: 0px auto;
+        height: 5px;
+        border-radius: 30px;
+        background-color: var(--color-muted);
+    }
+
+    .tabla-filtros-title {
         display: block;
         font-family: var(--font-secondary);
         font-weight: bold;
@@ -1357,42 +1448,15 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         grid-column: span 2;
     }
 
-    .boton-clear-filters {
-        grid-column: span 2;
-    }
-
-    .tabla-filtros{
-        position: fixed;
-        bottom: 0px;
-        left: 0px;
-        padding: 1rem;
-        z-index: 150;
-        background-color: var(--color-bg);
-        width: 100%;
-        border: var(--color-border);
-        border-radius: var(--radius-card) var(--radius-card) 0px 0px;
-        box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
-         /* animación de subida */
-        animation: slideInUp 0.3s ease;
-    }
-
-    @keyframes slideInUp {
-        from {
-            opacity: 0;
-            transform: translateY(15px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .selector-label{
+    .selector-label {
         display: block;
         white-space: nowrap;
     }
 
-    .tabla-select-wrapper{
+    .boton-apply-filters {
+        display: flex;
+        justify-content: center;
+        width: 100%;
     }
 }
 
