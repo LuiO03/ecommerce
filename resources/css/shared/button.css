@@ -73,14 +73,14 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    min-height: 35px;
     z-index: 1;
     border-radius: var(--radius-input);
     overflow: hidden;
-    padding: 12px 15px;
+    padding: 0px 15px;
     cursor: pointer;
     position: relative;
     transition: color 0.3s ease, transform 0.3s ease;
+    height: 40px;
 }
 
 .boton-form[disabled],

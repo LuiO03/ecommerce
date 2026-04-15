@@ -41,6 +41,15 @@
             </div>
         @endcan
 
+        <button class="boton-form boton-action" title="Filtros">
+            <span class="boton-single-icon">
+                <i class="ri-filter-2-line"></i>
+            </span>
+            <span class="boton-single-text">
+                Filtros
+            </span>
+        </button>
+
         @can('posts.create')
             <a href="{{ route('admin.posts.create') }}" class="boton-form boton-accent">
                 <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
@@ -50,23 +59,24 @@
     </x-slot>
 
     <div class="actions-container">
-        <div class="tabla-filtros">
-            <div class="tabla-buscador">
+        <aside class="tabla-filtros">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
+            <article class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar posts por título" autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
+            </article>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
+            <div class="selector-label">
+                Cantidad de entradas
             </div>
-            <button class="boton-single open-filter-mobile" title="Filtros">
-                <span class="boton-single-icon">
-                    <i class="ri-filter-2-line"></i>
-                </span>
-                <span class="boton-single-text">
-                    Filtros
-                </span>
-            </button>
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
                         <option value="5">5/pág.</option>
@@ -76,9 +86,12 @@
                     </select>
                     <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <div class="selector-label">
+                Ordenar por
+            </div>
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilterTitulo">
                         <option value="">Ordenar por</option>
@@ -90,9 +103,12 @@
                     </select>
                     <i class="ri-sort-asc selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <div class="selector-label">
+                Estado
+            </div>
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilterPost">
                         <option value="">Todos los estados</option>
@@ -103,9 +119,12 @@
                     </select>
                     <i class="ri-honour-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <div class="selector-label">
+                Visibilidad
+            </div>
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="visibilityFilterPost">
                         <option value="">Todas las visibilidades</option>
@@ -115,13 +134,13 @@
                     </select>
                     <i class="ri-target-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
             <!-- Botón para limpiar filtros -->
             <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
                 <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                 <span class="boton-text">Limpiar filtros</span>
             </button>
-        </div>
+        </aside>
         <!-- Barra contextual de selección (oculta por defecto) -->
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
@@ -506,69 +525,4 @@
         </script>
     @endpush
     @include('admin.posts.modals.show-modal-post')
-
-    <div class="filter-container-mobile">
-        <div class="card-header">
-            <span class="card-title">Filtros y opciones</span>
-        </div>
-        <article class="filter-conteiner">
-            <span>Cantidad de páginas:</span>
-            <div class="tabla-select-wrapper">
-                <div class="selector">
-                    <select id="entriesSelect">
-                        <option value="5">5/pág.</option>
-                        <option value="10" selected>10/pág.</option>
-                        <option value="25">25/pág.</option>
-                        <option value="50">50/pág.</option>
-                    </select>
-                    <i class="ri-arrow-down-s-line selector-icon"></i>
-                </div>
-            </div>
-        </article>
-        <article class="filter-conteiner">
-            <span>Ordenar por:</span>
-            <div class="tabla-select-wrapper">
-                <div class="selector">
-                    <select id="sortFilterTitulo">
-                        <option value="">Ordenar por</option>
-                        <option value="title-asc">Título (A-Z)</option>
-                        <option value="title-desc">Título (Z-A)</option>
-                        <option value="date-desc">Más recientes</option>
-                        <option value="date-asc">Más antiguos</option>
-                        <option value="views-desc">Más vistos</option>
-                    </select>
-                    <i class="ri-sort-asc selector-icon"></i>
-                </div>
-            </div>
-        </article>
-        <article class="filter-conteiner">
-            <span>Estado:</span>
-            <div class="tabla-select-wrapper">
-                <div class="selector">
-                    <select id="statusFilterPost">
-                        <option value="">Todos los estados</option>
-                        <option value="borrador">Borrador</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="publicado">Publicado</option>
-                        <option value="rechazado">Rechazado</option>
-                    </select>
-                    <i class="ri-honour-line selector-icon"></i>
-                </div>
-            </div>
-        </article>
-        <article class="filter-conteiner">
-            <span>Visibilidad:</span>
-            <div class="tabla-select-wrapper">
-                <div class="selector">
-                    <select id="visibilityFilterPost">
-                        <option value="">Todas las visibilidades</option>
-                        <option value="publico">Público</option>
-                        <option value="privado">Privado</option>
-                        <option value="registrado">Registrado</option>
-                    </select>
-                    <i class="ri-target-line selector-icon"></i>
-                </div>
-            </div>
-        </article>
-    </div>
 </x-admin-layout>
