@@ -1377,32 +1377,12 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 ======================================================= */
 
 @media (max-width: 639px) {
-        /* Overlay que bloquea el contenido alrededor del aside cuando está abierto */
-    .tabla-filtros-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        z-index: 40; /* por debajo de .tabla-filtros (150) */
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition:
-            opacity 0.3s ease,
-            visibility 0.3s ease;
-    }
-
-    .tabla-filtros-overlay.is-visible {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
-
     .tabla-filtros {
         position: fixed;
         bottom: 0px;
         left: 0px;
         padding: 1rem;
-        z-index: 150;
+        z-index: 5;
         background-color: var(--color-bg);
         width: 94%;
         left: 3%;

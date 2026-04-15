@@ -13,25 +13,18 @@ export function initMobileFiltersPanel() {
 
     const mobileQuery = window.matchMedia('(max-width: 639px)');
 
-    // Overlay para bloquear el contenido alrededor del aside cuando está abierto
-    const overlay = document.createElement('div');
-    overlay.className = 'tabla-filtros-overlay';
-    document.body.appendChild(overlay);
-
     const isMobile = () => mobileQuery.matches;
 
     const openPanel = () => {
         if (!isMobile()) return;
         filtersPanel.classList.add('is-open');
         filtersPanel.style.transform = '';
-        overlay.classList.add('is-visible');
     };
 
     const closePanel = () => {
         if (!isMobile()) return;
         filtersPanel.classList.remove('is-open');
         filtersPanel.style.transform = '';
-        overlay.classList.remove('is-visible');
         isDragging = false;
         currentDeltaY = 0;
     };
@@ -59,10 +52,19 @@ export function initMobileFiltersPanel() {
         });
     }
 
-    // Cerrar al tocar el overlay (tap fuera del panel)
-    overlay.addEventListener('click', () => {
+    // Cerrar al tocar fuera del panel (usando el overlay CSS en body::before)
+    document.addEventListener('click', (event) => {
         if (!isMobile()) return;
         if (!filtersPanel.classList.contains('is-open')) return;
+
+        const target = event.target;
+
+        // Ignorar clicks dentro del panel o en los botones relacionados
+        if (filtersPanel.contains(target)) return;
+        if (toggleBtn.contains(target)) return;
+        if (clearBtn && clearBtn.contains(target)) return;
+        if (applyBtn && applyBtn.contains(target)) return;
+
         closePanel();
     });
 
@@ -141,6 +143,5 @@ export function initMobileFiltersPanel() {
         filtersPanel.style.transform = '';
         isDragging = false;
         currentDeltaY = 0;
-        overlay.classList.remove('is-visible');
     });
 }

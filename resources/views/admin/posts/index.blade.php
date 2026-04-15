@@ -73,9 +73,9 @@
             <span class="tabla-filtros-title">
                 Aplicar filtros
             </span>
-            <div class="selector-label">
+            <article class="selector-label">
                 Cantidad de entradas
-            </div>
+            </article>
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
@@ -88,9 +88,9 @@
                 </div>
             </article>
 
-            <div class="selector-label">
+            <article class="selector-label">
                 Ordenar por
-            </div>
+            </article>
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilterTitulo">
@@ -105,9 +105,9 @@
                 </div>
             </article>
 
-            <div class="selector-label">
+            <article class="selector-label">
                 Estado
-            </div>
+            </article>
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilterPost">
@@ -121,9 +121,9 @@
                 </div>
             </article>
 
-            <div class="selector-label">
+            <article class="selector-label">
                 Visibilidad
-            </div>
+            </article>
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="visibilityFilterPost">
@@ -136,7 +136,7 @@
                 </div>
             </article>
             <!-- Botón para limpiar filtros -->
-            <div class="filters-actions">
+            <article class="filters-actions">
                 <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                     <span class="boton-text">Limpiar filtros</span>
@@ -146,10 +146,10 @@
                         <i class="ri-filter-fill"></i>
                     </span>
                     <span class="boton-form-text">
-                        Aplicar filtros
+                        Aplicar/cerrar filtros
                     </span>
                 </button>
-            </div>
+            </article>
         </aside>
         <!-- Barra contextual de selección (oculta por defecto) -->
         <div class="selection-bar" id="selectionBar">

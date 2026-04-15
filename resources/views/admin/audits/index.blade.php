@@ -37,6 +37,9 @@
     <div class="actions-container">
         <!-- Filtros -->
         <div class="tabla-filtros">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar por usuario, evento o modelo"
@@ -45,7 +48,13 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
             <!-- Cantidad -->
+            <article class="selector-label">
+                Cantidad de entradas
+            </article>
             <div class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
@@ -58,6 +67,9 @@
             </div>
 
             <!-- Tipo de evento -->
+            <article class="selector-label">
+                Tipo de evento
+            </article>
             <div class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="eventFilter">
@@ -70,10 +82,20 @@
                 </div>
             </div>
 
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                <i class="ri-filter-off-line"></i>
-                Limpiar filtros
-            </button>
+            <article class="filters-actions">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
+                <button class="boton-apply-filters" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Aplicar/cerrar filtros
+                    </span>
+                </button>
+            </article>
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->

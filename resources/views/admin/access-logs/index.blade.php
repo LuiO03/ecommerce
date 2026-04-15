@@ -32,6 +32,14 @@
                 </button>
             </div>
         </div>
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
     </x-slot>
     @endcan
 
@@ -39,6 +47,9 @@
 
         <!-- Filtros -->
         <div class="tabla-filtros">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
             <!-- Buscador -->
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
@@ -48,7 +59,12 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
-
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
+            <article class="selector-label">
+                Cantidad de entradas
+            </article>
             <!-- Cantidad -->
             <div class="tabla-select-wrapper">
                 <div class="selector">
@@ -60,8 +76,10 @@
                     <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
             </div>
-
             <!-- Acción -->
+            <article class="selector-label">
+                Acción
+            </article>
             <div class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="actionFilter">
@@ -75,6 +93,9 @@
             </div>
 
             <!-- Estado -->
+            <article class="selector-label">
+                Estado
+            </article>
             <div class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilterAccess">
@@ -86,10 +107,20 @@
                 </div>
             </div>
 
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                <i class="ri-filter-off-line"></i>
-                Limpiar filtros
-            </button>
+            <article class="filters-actions">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
+                <button class="boton-apply-filters" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Aplicar/cerrar filtros
+                    </span>
+                </button>
+            </article>
         </div>
 
         <!-- Barra contextual -->
