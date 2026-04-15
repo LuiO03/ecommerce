@@ -8,43 +8,43 @@
         Auditoría del Sistema
     </x-slot>
     @can('auditorias.export')
-    <x-slot name="action">
-        <!-- Menú desplegable de exportación -->
-        <div class="export-menu-container">
-            <button type="button" class="boton-form boton-action" id="exportMenuBtn">
-                <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
-                <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line boton-form-icon"></i>
-            </button>
-            <div class="export-dropdown" id="exportDropdown">
-                <button type="button" class="export-option" id="exportAllExcel">
-                    <i class="ri-file-excel-2-fill"></i>
-                    <span>Exportar todo a Excel</span>
+        <x-slot name="action">
+            <!-- Menú desplegable de exportación -->
+            <div class="export-menu-container">
+                <button type="button" class="boton-form boton-action" id="exportMenuBtn">
+                    <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
+                    <span class="boton-form-text">Exportar</span>
+                    <i class="ri-arrow-down-s-line boton-form-icon"></i>
                 </button>
-                <button type="button" class="export-option" id="exportAllCsv">
-                    <i class="ri-file-text-fill"></i>
-                    <span>Exportar todo a CSV</span>
-                </button>
-                <button type="button" class="export-option" id="exportAllPdf">
-                    <i class="ri-file-pdf-2-fill"></i>
-                    <span>Exportar todo a PDF</span>
-                </button>
+                <div class="export-dropdown" id="exportDropdown">
+                    <button type="button" class="export-option" id="exportAllExcel">
+                        <i class="ri-file-excel-2-fill"></i>
+                        <span>Exportar todo a Excel</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllCsv">
+                        <i class="ri-file-text-fill"></i>
+                        <span>Exportar todo a CSV</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllPdf">
+                        <i class="ri-file-pdf-2-fill"></i>
+                        <span>Exportar todo a PDF</span>
+                    </button>
+                </div>
             </div>
-        </div>
-        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
-            <span class="boton-form-icon">
-                <i class="ri-search-eye-fill"></i>
-            </span>
-            <span class="boton-form-text">
-                Buscar o filtrar
-            </span>
-        </button>
-    </x-slot>
+            <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-search-eye-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Buscar o filtrar
+                </span>
+            </button>
+        </x-slot>
     @endcan
 
     <div class="actions-container">
         <!-- Filtros -->
-        <div class="tabla-filtros">
+        <aside class="tabla-filtros">
             <span class="tabla-filtros-title">
                 Buscar
             </span>
@@ -84,58 +84,56 @@
                 </div>
             </article>
 
-            <article class="filters-actions">
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
-                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
-                    <span class="boton-form-icon">
-                        <i class="ri-filter-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        Mostrar resultados
-                    </span>
-                </button>
-            </article>
-        </div>
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
+            <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-filter-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Mostrar resultados
+                </span>
+            </button>
+        </aside>
 
         <!-- Barra contextual de selección (oculta por defecto) -->
         @can('auditorias.export')
-        <div class="selection-bar" id="selectionBar">
-            <div class="selection-actions">
-                <button id="exportSelectedExcel" class="boton-selection boton-success">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-excel-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">Excel</span>
-                    l
-                    <span class="selection-badge" id="excelBadge">0</span>
-                </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-text-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">CSV</span>
-                    l
-                    <span class="selection-badge" id="csvBadge">0</span>
-                </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-pdf-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">PDF</span>
-                    l
-                    <span class="selection-badge" id="pdfBadge">0</span>
-                </button>
+            <div class="selection-bar" id="selectionBar">
+                <div class="selection-actions">
+                    <button id="exportSelectedExcel" class="boton-selection boton-success">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-excel-2-fill"></i>
+                        </span>
+                        <span class="boton-selection-text">Excel</span>
+                        l
+                        <span class="selection-badge" id="excelBadge">0</span>
+                    </button>
+                    <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-text-fill"></i>
+                        </span>
+                        <span class="boton-selection-text">CSV</span>
+                        l
+                        <span class="selection-badge" id="csvBadge">0</span>
+                    </button>
+                    <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-pdf-2-fill"></i>
+                        </span>
+                        <span class="boton-selection-text">PDF</span>
+                        l
+                        <span class="selection-badge" id="pdfBadge">0</span>
+                    </button>
+                </div>
+                <div class="selection-info">
+                    <span id="selectionCount">0 seleccionados</span>
+                    <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
+                        <i class="ri-close-large-fill"></i>
+                    </button>
+                </div>
             </div>
-            <div class="selection-info">
-                <span id="selectionCount">0 seleccionados</span>
-                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
-                    <i class="ri-close-large-fill"></i>
-                </button>
-            </div>
-        </div>
         @endcan
 
         <!-- TABLA -->
@@ -162,7 +160,9 @@
                 <tbody>
                     @foreach ($audits as $audit)
                         @php
-                            $modelName = $audit->model_name ?? ($audit->auditable_type ? class_basename($audit->auditable_type) : '—');
+                            $modelName =
+                                $audit->model_name ??
+                                ($audit->auditable_type ? class_basename($audit->auditable_type) : '—');
                             $modelId = $audit->auditable_id ?? '—';
                         @endphp
                         <tr data-id="{{ $audit->id }}">

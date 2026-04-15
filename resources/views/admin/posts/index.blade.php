@@ -125,20 +125,18 @@
                 </div>
             </article>
             <!-- Botón para limpiar filtros -->
-            <article class="filters-actions">
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
-                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
-                    <span class="boton-form-icon">
-                        <i class="ri-filter-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        Mostrar resultados
-                    </span>
-                </button>
-            </article>
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
+            <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-filter-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Mostrar resultados
+                </span>
+            </button>
         </aside>
         <!-- Barra contextual de selección (oculta por defecto) -->
         <div class="selection-bar" id="selectionBar">
@@ -290,19 +288,19 @@
                             <td class="column-created-td">{{ $post->created_at->format('d/m/Y H:i') }}</td>
                             <td class="column-actions-td">
                                 <button class="boton-show-actions">
-                                    <span class="boton-single-icon">
-                                        <i class="ri-more-fill"></i>
-                                    </span>
+                                    <i class="ri-more-fill"></i>
                                 </button>
                                 <div class="tabla-botones">
                                     <button class="boton-sm boton-info btn-ver-post" data-slug="{{ $post->slug }}"
                                         title="Ver Post">
                                         <i class="ri-eye-2-fill"></i>
+                                        <span class="inline md:hidden">Ver</span>
                                     </button>
                                     @can('posts.edit')
                                         <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning"
                                             title="Editar Post">
                                             <i class="ri-edit-circle-fill"></i>
+                                            <span class="inline md:hidden">Editar</span>
                                         </a>
                                     @endcan
 
@@ -313,6 +311,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="boton-sm boton-danger" title="Eliminar Post">
                                                 <i class="ri-delete-bin-2-fill"></i>
+                                                <span class="inline md:hidden">Eliminar</span>
                                             </button>
                                         </form>
                                     @endcan
@@ -325,6 +324,7 @@
                                                 <button type="button" class="boton-sm boton-success btn-approve"
                                                     title="Aprobar Post">
                                                     <i class="ri-send-plane-fill"></i>
+                                                    <span class="inline md:hidden">Aprobar</span>
                                                 </button>
                                             </form>
 
@@ -334,6 +334,7 @@
                                                 <button type="button" class="boton-sm boton-danger btn-reject"
                                                     title="Rechazar Post">
                                                     <i class="ri-close-circle-fill"></i>
+                                                    <span class="inline md:hidden">Rechazar</span>
                                                 </button>
                                             </form>
                                         @endif

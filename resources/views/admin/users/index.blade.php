@@ -50,7 +50,7 @@
 
     <div class="actions-container">
         <!-- === Controles personalizados === -->
-        <div class="tabla-filtros">
+        <aside class="tabla-filtros">
             <span class="tabla-filtros-title">
                 Buscar
             </span>
@@ -127,22 +127,19 @@
                 </div>
             </article>
             <!-- Botón para limpiar filtros -->
-            <article class="filters-actions">
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
-                    title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
-                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
-                    <span class="boton-form-icon">
-                        <i class="ri-filter-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        Mostrar resultados
-                    </span>
-                </button>
-            </article>
-        </div>
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
+            <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-filter-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Mostrar resultados
+                </span>
+            </button>
+        </aside>
 
 
         <!-- Barra contextual de selección (oculta por defecto) -->
@@ -450,7 +447,7 @@
 
                     console.log(
                         `🔍 Filtro Verificación: ${currentVerifiedFilter === '1' ? 'Verificados' : currentVerifiedFilter === '0' ? 'Sin verificar' : 'Todos'}`
-                        );
+                    );
                 });
 
 
@@ -461,8 +458,7 @@
                     (function() {
                         const navEntries = (typeof performance !== 'undefined' && typeof performance
                                 .getEntriesByType === 'function') ?
-                            performance.getEntriesByType('navigation') :
-                            [];
+                            performance.getEntriesByType('navigation') : [];
                         const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
                             performance.navigation.type :
                             null;

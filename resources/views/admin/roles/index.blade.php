@@ -45,7 +45,7 @@
         @endcan
     </x-slot>
     <div class="actions-container">
-        <div class="tabla-filtros">
+        <aside class="tabla-filtros">
             <span class="tabla-filtros-title">
                 Buscar
             </span>
@@ -83,7 +83,6 @@
                 </div>
             </article>
             <!-- Botón para limpiar filtros -->
-            <article class="filters-actions">
                 <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
                     title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
@@ -97,8 +96,7 @@
                         Mostrar resultados
                     </span>
                 </button>
-            </article>
-        </div>
+        </aside>
         <!-- === Tabla === -->
         <div class="tabla-wrapper">
             <table id="tabla" class="tabla-general display">

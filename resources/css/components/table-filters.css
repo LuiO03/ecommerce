@@ -3,13 +3,6 @@
 ======================================================= */
 
 /* Botón de limpiar filtros */
-.filters-actions {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-column: span 2;
-    gap: 10px;
-}
-
 .boton-clear-filters {
     display: none;
     align-items: center;
@@ -294,6 +287,10 @@
         display: block;
     }
 
+    #toggleFiltersBtn{
+        grid-column: 1;
+    }
+
     #applyFiltersBtn{
         grid-column: 2;
     }
@@ -328,8 +325,9 @@
         bottom: 0px;
         left: 0px;
         padding: 1rem;
-        /* Por encima del overlay global (#overlay, z-50/60) */
-        z-index: 100 !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        z-index: 100;
         background-color: var(--color-bg);
         width: 94%;
         left: 3%;
@@ -386,21 +384,8 @@
     }
 }
 
-@media (max-width: 1024px) {
-    .tabla-filtros {
-        justify-self: stretch;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 10px;
-    }
-}
-
 /* Pantallas pequeñas - Móviles grandes */
 @media (max-width: 768px) {
-    .tabla-filtros {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-
     .tabla-buscador input,
     .tabla-select-wrapper input,
     .tabla-select-wrapper select {
@@ -410,17 +395,7 @@
 }
 
 /* Móviles pequeños */
-/* Móviles pequeños */
 @media (max-width: 480px) {
-    .tabla-buscador {
-        min-width: 160px;
-    }
-
-    .tabla-buscador input {
-        font-size: var(--font-size-sm, 14px);
-        padding: 8px 10px 8px 35px;
-    }
-
     .tabla-buscador i {
         width: 35px;
         font-size: var(--font-size-p);
@@ -441,5 +416,51 @@
     .selector i {
         width: 30px;
         font-size: var(--font-size-p);
+    }
+}
+
+/* =======================================================
+   🚨 BOTÓN FILTRO STOCK MÍNIMO (ESTILO OUTLINE PINK)
+======================================================= */
+#minStockFilterWrapper #minStockFilterBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--color-danger);
+    border-radius: var(--radius-input);
+    color: var(--color-danger);
+    font-size: 13px;
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    padding: 6px 16px;
+    width: 100%;
+    box-shadow: none;
+}
+
+#minStockFilterWrapper #minStockFilterBtn:hover {
+    background: var(--color-danger);
+    color: white;
+    border-color: var(--color-danger);
+}
+
+#minStockFilterWrapper.filter-active #minStockFilterBtn {
+    background: var(--color-danger);
+    color: white;
+    border-color: var(--color-danger);
+}
+
+#minStockFilterWrapper.filter-active #minStockFilterBtn i {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    #minStockFilterBtn {
+        font-size: 12px;
+        padding: 6px 8px;
     }
 }

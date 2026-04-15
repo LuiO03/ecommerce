@@ -9,27 +9,27 @@
     </x-slot>
     <x-slot name="action">
         @can('clientes.export')
-        <div class="export-menu-container">
-            <button type="button" class="boton-form boton-action" id="exportMenuBtn">
-                <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
-                <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line boton-form-icon"></i>
-            </button>
-            <div class="export-dropdown" id="exportDropdown">
-                <button type="button" class="export-option" id="exportAllExcel">
-                    <i class="ri-file-excel-2-fill"></i>
-                    <span>Exportar todo a Excel</span>
+            <div class="export-menu-container">
+                <button type="button" class="boton-form boton-action" id="exportMenuBtn">
+                    <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
+                    <span class="boton-form-text">Exportar</span>
+                    <i class="ri-arrow-down-s-line boton-form-icon"></i>
                 </button>
-                <button type="button" class="export-option" id="exportAllCsv">
-                    <i class="ri-file-text-fill"></i>
-                    <span>Exportar todo a CSV</span>
-                </button>
-                <button type="button" class="export-option" id="exportAllPdf">
-                    <i class="ri-file-pdf-2-fill"></i>
-                    <span>Exportar todo a PDF</span>
-                </button>
+                <div class="export-dropdown" id="exportDropdown">
+                    <button type="button" class="export-option" id="exportAllExcel">
+                        <i class="ri-file-excel-2-fill"></i>
+                        <span>Exportar todo a Excel</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllCsv">
+                        <i class="ri-file-text-fill"></i>
+                        <span>Exportar todo a CSV</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllPdf">
+                        <i class="ri-file-pdf-2-fill"></i>
+                        <span>Exportar todo a PDF</span>
+                    </button>
+                </div>
             </div>
-        </div>
         @endcan
         <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
             <span class="boton-form-icon">
@@ -43,7 +43,7 @@
 
     <div class="actions-container">
 
-        <div class="tabla-filtros">
+        <aside class="tabla-filtros">
             <span class="tabla-filtros-title">
                 Buscar
             </span>
@@ -98,8 +98,8 @@
                 <div class="selector">
                     <select id="roleFilter">
                         <option value="">Todos los roles</option>
-                        @foreach($roles as $role)
-                            @if($role->name === 'Cliente')
+                        @foreach ($roles as $role)
+                            @if ($role->name === 'Cliente')
                                 <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
                             @endif
                         @endforeach
@@ -120,70 +120,67 @@
                 </div>
             </article>
 
-            <article class="filters-actions">
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
-                    title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
-                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
-                    <span class="boton-form-icon">
-                        <i class="ri-filter-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        Mostrar resultados
-                    </span>
-                </button>
-            </article>
-        </div>
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
+            <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-filter-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Mostrar resultados
+                </span>
+            </button>
+        </aside>
 
         @canany(['clientes.export', 'clientes.delete'])
-        <div class="selection-bar" id="selectionBar">
-            @can('clientes.export')
-            <div class="selection-actions">
-                <button id="exportSelectedExcel" class="boton-selection boton-success">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-excel-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">Excel</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="excelBadge">0</span>
-                </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-text-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">CSV</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="csvBadge">0</span>
-                </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
-                    <span class="boton-selection-icon">
-                        <i class="ri-file-pdf-2-fill"></i>
-                    </span>
-                    <span class="boton-selection-text">PDF</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="pdfBadge">0</span>
-                </button>
+            <div class="selection-bar" id="selectionBar">
+                @can('clientes.export')
+                    <div class="selection-actions">
+                        <button id="exportSelectedExcel" class="boton-selection boton-success">
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-excel-2-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">Excel</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="excelBadge">0</span>
+                        </button>
+                        <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-text-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">CSV</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="csvBadge">0</span>
+                        </button>
+                        <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-pdf-2-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">PDF</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="pdfBadge">0</span>
+                        </button>
+                    </div>
+                @endcan
+                @can('clientes.delete')
+                    <button id="deleteSelected" class="boton-selection boton-danger">
+                        <span class="boton-selection-icon">
+                            <i class="ri-delete-bin-line"></i>
+                        </span>
+                        <span class="boton-selection-text">Eliminar</span>
+                        <span class="boton-selection-dot">•</span>
+                        <span class="selection-badge" id="deleteBadge">0</span>
+                    </button>
+                @endcan
+                <div class="selection-info">
+                    <span id="selectionCount">0 seleccionados</span>
+                    <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
+                        <i class="ri-close-large-fill"></i>
+                    </button>
+                </div>
             </div>
-            @endcan
-            @can('clientes.delete')
-            <button id="deleteSelected" class="boton-selection boton-danger">
-                <span class="boton-selection-icon">
-                    <i class="ri-delete-bin-line"></i>
-                </span>
-                <span class="boton-selection-text">Eliminar</span>
-                <span class="boton-selection-dot">•</span>
-                <span class="selection-badge" id="deleteBadge">0</span>
-            </button>
-            @endcan
-            <div class="selection-info">
-                <span id="selectionCount">0 seleccionados</span>
-                <button class="selection-close" id="clearSelection" title="Deseleccionar todo">
-                    <i class="ri-close-large-fill"></i>
-                </button>
-            </div>
-        </div>
         @endcanany
 
         <div class="tabla-wrapper">
@@ -192,11 +189,11 @@
                     <tr>
                         <th class="control"></th>
                         @canany(['clientes.export', 'clientes.delete'])
-                        <th class="column-check-th column-not-order">
-                            <div>
-                                <input type="checkbox" id="checkAll" name="checkAll">
-                            </div>
-                        </th>
+                            <th class="column-check-th column-not-order">
+                                <div>
+                                    <input type="checkbox" id="checkAll" name="checkAll">
+                                </div>
+                            </th>
                         @endcanany
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
@@ -217,12 +214,12 @@
                             <td class="control" title="Expandir detalles">
                             </td>
                             @canany(['clientes.export', 'clientes.delete'])
-                            <td class="column-check-td">
-                                <div>
-                                    <input type="checkbox" class="check-row" id="check-row-{{ $user->id }}"
-                                        name="users[]" value="{{ $user->id }}">
-                                </div>
-                            </td>
+                                <td class="column-check-td">
+                                    <div>
+                                        <input type="checkbox" class="check-row" id="check-row-{{ $user->id }}"
+                                            name="users[]" value="{{ $user->id }}">
+                                    </div>
+                                </td>
                             @endcanany
                             <td class="column-id-td">
                                 <span class="id-text">{{ $user->id }}</span>
@@ -231,8 +228,10 @@
                                 <div class="user-info">
                                     @if ($user->image)
                                         <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}"
-                                            class="user-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="user-avatar-placeholder" style="display: none; background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
+                                            class="user-avatar"
+                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="user-avatar-placeholder"
+                                            style="display: none; background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
                                             {{ $user->initials }}
                                         </div>
                                     @else
@@ -264,7 +263,7 @@
                                 @endif
                             </td>
                             @can('clientes.update-status')
-                                <td class="column-status-td" >
+                                <td class="column-status-td">
                                     <label class="switch-tabla">
                                         <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
                                             {{ $user->status ? 'checked' : '' }}>
@@ -279,23 +278,26 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-usuario" data-slug="{{ $user->slug }}" title="Ver Cliente">
+                                    <button class="boton-sm boton-info btn-ver-usuario"
+                                        data-slug="{{ $user->slug }}" title="Ver Cliente">
                                         <i class="ri-eye-2-fill"></i>
                                     </button>
                                     @if (Auth::id() !== $user->id)
                                         @can('clientes.delete')
-                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                            class="delete-form" data-entity="cliente">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="boton-sm boton-danger" title="Eliminar Cliente">
-                                                <i class="ri-delete-bin-2-fill"></i>
-                                            </button>
-                                        </form>
+                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                                                class="delete-form" data-entity="cliente">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="boton-sm boton-danger"
+                                                    title="Eliminar Cliente">
+                                                    <i class="ri-delete-bin-2-fill"></i>
+                                                </button>
+                                            </form>
                                         @else
-                                        <button class="boton-sm boton-danger disabled" title="Sin permiso para eliminar" disabled>
-                                            <i class="ri-lock-fill"></i>
-                                        </button>
+                                            <button class="boton-sm boton-danger disabled"
+                                                title="Sin permiso para eliminar" disabled>
+                                                <i class="ri-lock-fill"></i>
+                                            </button>
                                         @endcan
                                     @else
                                         <button class="boton-sm boton-danger disabled"
@@ -349,13 +351,17 @@
                             console.log('🔄 Tabla de clientes redibujada');
                         },
                         onStatusChange: (id, status, response) => {
-                            console.log(`✅ Estado actualizado: Cliente ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
+                            console.log(
+                                `✅ Estado actualizado: Cliente ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`
+                                );
                         },
                         onDelete: () => {
                             console.log('🗑️ Clientes eliminados');
                         },
                         onExport: (type, format, count) => {
-                            console.log(`📤 Exportación de clientes: ${type} (${format}) - ${count || 'todos'} registros`);
+                            console.log(
+                                `📤 Exportación de clientes: ${type} (${format}) - ${count || 'todos'} registros`
+                                );
                         }
                     }
                 });
@@ -406,12 +412,13 @@
 
                 @if (Session::has('highlightRow'))
                     (function() {
-                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-                            ? performance.getEntriesByType('navigation')
-                            : [];
-                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-                            ? performance.navigation.type
-                            : null;
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') :
+                            [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
                         const navType = navEntries.length ? navEntries[0].type : legacyNav;
                         const isBackNavigation = navType === 'back_forward' || navType === 2;
 

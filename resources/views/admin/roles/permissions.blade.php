@@ -27,7 +27,7 @@
 
     <!-- Buscador + botón global -->
     <div class="actions-container">
-        <div class="tabla-filtros">
+        <aside class="tabla-filtros">
             <span class="tabla-filtros-title">
                 Buscar
             </span>
@@ -60,17 +60,15 @@
                 <span class="boton-form-text">Restablecer todo</span>
             </button>
 
-            <article class="filters-actions" style="grid-column: 1 span;">
-                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
-                    <span class="boton-form-icon">
-                        <i class="ri-filter-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        Mostrar resultados
-                    </span>
-                </button>
-            </article>
-        </div>
+            <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-filter-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Mostrar resultados
+                </span>
+            </button>
+        </aside>
     </div>
     <div class="form-container">
 
@@ -194,7 +192,8 @@
                     // Ocultar módulos (cards) que no tengan ninguna fila visible
                     const cards = document.querySelectorAll('.permissions-card');
                     cards.forEach(card => {
-                        const visibleRow = Array.from(card.querySelectorAll('.perm-row')).some(r => r.style.display !== 'none');
+                        const visibleRow = Array.from(card.querySelectorAll('.perm-row')).some(r => r.style
+                            .display !== 'none');
                         card.style.display = visibleRow || !val ? '' : 'none';
                     });
 
@@ -261,12 +260,12 @@
                         case 'alpha_asc':
                             return (a, b) => (
                                 (a.dataset.moduleName || '').toLowerCase()
-                                    .localeCompare((b.dataset.moduleName || '').toLowerCase())
+                                .localeCompare((b.dataset.moduleName || '').toLowerCase())
                             );
                         case 'alpha_desc':
                             return (a, b) => (
                                 (b.dataset.moduleName || '').toLowerCase()
-                                    .localeCompare((a.dataset.moduleName || '').toLowerCase())
+                                .localeCompare((a.dataset.moduleName || '').toLowerCase())
                             );
                         case 'created_asc':
                             return (a, b) => {
@@ -376,7 +375,8 @@
                 document.querySelectorAll('.select-all-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const module = btn.dataset.module;
-                        const boxes = document.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
+                        const boxes = document.querySelectorAll(
+                            `.perm-row[data-module="${module}"] .perm-checkbox`);
                         const allChecked = [...boxes].every(cb => cb.checked);
 
                         boxes.forEach(cb => cb.checked = !allChecked);
@@ -400,7 +400,8 @@
                     btn.addEventListener('click', function() {
                         const module = btn.dataset.module;
                         const card = btn.closest('.permissions-card');
-                        const boxes = card.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
+                        const boxes = card.querySelectorAll(
+                            `.perm-row[data-module="${module}"] .perm-checkbox`);
 
                         boxes.forEach(cb => {
                             const original = cb.dataset.originalChecked === '1';
@@ -420,7 +421,8 @@
                 function updateModuleBtnText() {
                     document.querySelectorAll('.permissions-card').forEach(card => {
                         const module = card.querySelector('.select-all-btn').dataset.module;
-                        const boxes = card.querySelectorAll(`.perm-row[data-module="${module}"] .perm-checkbox`);
+                        const boxes = card.querySelectorAll(
+                        `.perm-row[data-module="${module}"] .perm-checkbox`);
                         const txt = card.querySelector('.select-all-text');
 
                         const allChecked = [...boxes].length > 0 && [...boxes].every(cb => cb.checked);

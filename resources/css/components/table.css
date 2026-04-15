@@ -41,51 +41,7 @@
         font-size: 15px;
     }
 }
-/* =======================================================
-   🚨 BOTÓN FILTRO STOCK MÍNIMO (ESTILO OUTLINE PINK)
-======================================================= */
-#minStockFilterWrapper #minStockFilterBtn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    justify-content: center;
-    background: transparent;
-    border: 1px solid var(--color-danger);
-    border-radius: var(--radius-input);
-    color: var(--color-danger);
-    font-size: 13px;
-    font-family: var(--font-secondary);
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    padding: 6px 16px;
-    width: 100%;
-    box-shadow: none;
-}
 
-#minStockFilterWrapper #minStockFilterBtn:hover {
-    background: var(--color-danger);
-    color: white;
-    border-color: var(--color-danger);
-}
-
-#minStockFilterWrapper.filter-active #minStockFilterBtn {
-    background: var(--color-danger);
-    color: white;
-    border-color: var(--color-danger);
-}
-
-#minStockFilterWrapper.filter-active #minStockFilterBtn i {
-    color: white;
-}
-
-@media (max-width: 768px) {
-    #minStockFilterBtn {
-        font-size: 12px;
-        padding: 6px 8px;
-    }
-}
 /* =======================================================
    📦 CONTENEDOR PRINCIPAL
 ======================================================= */
@@ -421,6 +377,7 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     justify-content: center;
     gap: 5px;
     max-width: 100%;
+    z-index: 90;
 }
 
 .tabla-general .tabla-botones .boton {
@@ -996,18 +953,41 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
     }
 
     .column-actions-td .boton-show-actions {
+        border: 1px solid var(--color-muted);
         display: block;
-        padding: 10px;
+        height: 40px;
+    }
+
+    .column-actions-td .boton-show-actions i{
+        font-size: var(--font-size-h6);
     }
 
     .column-actions-td .tabla-botones {
         display: flex;
         flex-direction: column;
-        background-color: var(--color-bg-transparent);
+        width: max-content;
+        gap: 0px;
         border-radius: var(--radius-card);
-        -webkit-backdrop-filter: blur(4px);
-        backdrop-filter: blur(4px);
+        overflow: hidden;
+        border: 1px solid var(--color-muted);
+    }
+
+    .column-actions-td .tabla-botones .boton-sm{
+        width: 100%;
+        display: flex;
+        gap: 5px;
+        text-align: start;
+        justify-content: start;
         padding: 10px;
+        background-color: var(--color-sidebar-bg);
+        color: var(--color-text);
+        border-radius: 0px;
+    }
+
+    .column-actions-td .tabla-botones .boton-sm:hover{
+        transform: none;
+        background-color: var(--color-hover);
+        border-radius: 0px;
     }
 
     .tabla-botones .boton-text {
