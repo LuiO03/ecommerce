@@ -6,27 +6,64 @@ export function initMobileFiltersPanel() {
     const filtersPanel = document.querySelector('.tabla-filtros');
     const clearBtn = document.getElementById('clearFiltersBtn');
     const applyBtn = document.getElementById('applyFiltersBtn');
+    // Overlay dedicado solo para el panel de filtros móvil
+    const filtersOverlay = document.createElement('div');
+    filtersOverlay.className = 'tabla-filtros-overlay';
+    document.body.appendChild(filtersOverlay);
 
     if (!toggleBtn || !filtersPanel) {
         return;
     }
 
+
+
     const mobileQuery = window.matchMedia('(max-width: 639px)');
 
     const isMobile = () => mobileQuery.matches;
 
+    // Guardar posición original del panel para poder restaurarla en escritorio
+    const originalParent = filtersPanel.parentElement;
+    const originalNextSibling = filtersPanel.nextElementSibling;
+
+    const movePanelToBody = () => {
+        if (filtersPanel.parentElement !== document.body) {
+            document.body.appendChild(filtersPanel);
+        }
+    };
+
+    const restorePanelToOriginal = () => {
+        if (!originalParent) return;
+        if (filtersPanel.parentElement === originalParent) return;
+
+        if (originalNextSibling && originalNextSibling.parentElement === originalParent) {
+            originalParent.insertBefore(filtersPanel, originalNextSibling);
+        } else {
+            originalParent.appendChild(filtersPanel);
+        }
+    };
+
+    // Sólo mover al body cuando estamos en móvil (max-width: 639px)
+    if (isMobile()) {
+        movePanelToBody();
+    }
+
     const openPanel = () => {
         if (!isMobile()) return;
+        // Asegurar que en móvil el panel cuelga del body para respetar z-index
+        movePanelToBody();
         filtersPanel.classList.add('is-open');
         filtersPanel.style.transform = '';
+        filtersOverlay.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
     };
 
     const closePanel = () => {
         if (!isMobile()) return;
         filtersPanel.classList.remove('is-open');
-        filtersPanel.style.transform = '';
         isDragging = false;
         currentDeltaY = 0;
+        filtersOverlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
     };
 
     // Toggle con el botón principal
@@ -52,18 +89,18 @@ export function initMobileFiltersPanel() {
         });
     }
 
-    // Cerrar al tocar fuera del panel (usando el overlay CSS en body::before)
+    // Cerrar al hacer click fuera del panel (en cualquier parte de la página)
     document.addEventListener('click', (event) => {
         if (!isMobile()) return;
         if (!filtersPanel.classList.contains('is-open')) return;
 
         const target = event.target;
 
-        // Ignorar clicks dentro del panel o en los botones relacionados
+        // Si el click fue dentro del panel, no cerramos
         if (filtersPanel.contains(target)) return;
-        if (toggleBtn.contains(target)) return;
-        if (clearBtn && clearBtn.contains(target)) return;
-        if (applyBtn && applyBtn.contains(target)) return;
+
+        // Si el click fue en el botón de toggle, dejamos que su handler maneje el estado
+        if (toggleBtn && toggleBtn.contains(target)) return;
 
         closePanel();
     });
@@ -143,5 +180,14 @@ export function initMobileFiltersPanel() {
         filtersPanel.style.transform = '';
         isDragging = false;
         currentDeltaY = 0;
+        filtersOverlay.classList.remove('is-visible');
+        document.body.style.overflow = '';
+
+        // Sincronizar ubicación del panel según el breakpoint actual
+        if (isMobile()) {
+            movePanelToBody();
+        } else {
+            restorePanelToOriginal();
+        }
     });
 }

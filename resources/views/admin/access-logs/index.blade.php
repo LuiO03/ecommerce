@@ -51,22 +51,19 @@
                 Buscar
             </span>
             <!-- Buscador -->
-            <div class="tabla-buscador">
+            <article class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar por usuario, email o IP"
                     autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear">
                     <i class="ri-close-circle-fill"></i>
                 </button>
-            </div>
+            </article>
             <span class="tabla-filtros-title">
                 Aplicar filtros
             </span>
-            <article class="selector-label">
-                Cantidad de entradas
-            </article>
             <!-- Cantidad -->
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
                         <option value="10" selected>10/pág.</option>
@@ -75,12 +72,9 @@
                     </select>
                     <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-            </div>
-            <!-- Acción -->
-            <article class="selector-label">
-                Acción
             </article>
-            <div class="tabla-select-wrapper">
+            <!-- Acción -->
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="actionFilter">
                         <option value="">Todas las acciones</option>
@@ -90,13 +84,10 @@
                     </select>
                     <i class="ri-login-box-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
             <!-- Estado -->
-            <article class="selector-label">
-                Estado
-            </article>
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilterAccess">
                         <option value="">Todos los estados</option>
@@ -105,19 +96,19 @@
                     </select>
                     <i class="ri-shield-check-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
             <article class="filters-actions">
                 <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                     <span class="boton-text">Limpiar filtros</span>
                 </button>
-                <button class="boton-apply-filters" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
                     <span class="boton-form-icon">
                         <i class="ri-filter-fill"></i>
                     </span>
                     <span class="boton-form-text">
-                        Aplicar/cerrar filtros
+                        Mostrar resultados
                     </span>
                 </button>
             </article>

@@ -33,6 +33,14 @@
                 </div>
             </div>
         @endcan
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
         @can('familias.create')
             <a href="{{ route('admin.families.create') }}" class="boton-form boton-accent">
                 <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
@@ -43,14 +51,20 @@
 
     <div class="actions-container">
         <div class="tabla-filtros">
-            <div class="tabla-buscador">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
+            <article class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar familias por nombre" autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
-            </div>
-            <div class="tabla-select-wrapper">
+            </article>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
                         <option value="5">5/pág.</option>
@@ -60,9 +74,9 @@
                     </select>
                     <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilter">
                         <option value="">Ordenar por</option>
@@ -73,9 +87,9 @@
                     </select>
                     <i class="ri-sort-asc selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilter">
                         <option value="">Todos los estados</option>
@@ -84,13 +98,23 @@
                     </select>
                     <i class="ri-filter-3-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
             <!-- Botón para limpiar filtros -->
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
-                title="Limpiar todos los filtros">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
+            <article class="filters-actions">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
+                    title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
+                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Mostrar resultados
+                    </span>
+                </button>
+            </article>
         </div>
 
         <!-- Barra contextual de selección (oculta por defecto) -->

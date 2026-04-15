@@ -12,53 +12,67 @@
     <x-slot name="action">
         <!-- Menú de exportación -->
         @can('categorias.export')
-        <div class="export-menu-container">
-            <button type="button" class="boton-form boton-action" id="exportMenuBtn">
-                <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
-                <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line boton-form-icon"></i>
-            </button>
-            <div class="export-dropdown" id="exportDropdown">
-                <button type="button" class="export-option" id="exportAllExcel">
-                    <i class="ri-file-excel-2-fill"></i>
-                    <span>Exportar todo a Excel</span>
+            <div class="export-menu-container">
+                <button type="button" class="boton-form boton-action" id="exportMenuBtn">
+                    <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
+                    <span class="boton-form-text">Exportar</span>
+                    <i class="ri-arrow-down-s-line boton-form-icon"></i>
                 </button>
-                <button type="button" class="export-option" id="exportAllCsv">
-                    <i class="ri-file-text-fill"></i>
-                    <span>Exportar todo a CSV</span>
-                </button>
-                <button type="button" class="export-option" id="exportAllPdf">
-                    <i class="ri-file-pdf-2-fill"></i>
-                    <span>Exportar todo a PDF</span>
-                </button>
+                <div class="export-dropdown" id="exportDropdown">
+                    <button type="button" class="export-option" id="exportAllExcel">
+                        <i class="ri-file-excel-2-fill"></i>
+                        <span>Exportar todo a Excel</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllCsv">
+                        <i class="ri-file-text-fill"></i>
+                        <span>Exportar todo a CSV</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllPdf">
+                        <i class="ri-file-pdf-2-fill"></i>
+                        <span>Exportar todo a PDF</span>
+                    </button>
+                </div>
             </div>
-        </div>
         @endcan
         @can('categorias.manage-tree')
-        <a href="{{ route('admin.categories.hierarchy') }}" class="boton-form boton-action">
-            <span class="boton-form-icon"><i class="ri-node-tree"></i></span>
-            <span class="boton-form-text">Gestor Jerárquico</span>
-        </a>
+            <a href="{{ route('admin.categories.hierarchy') }}" class="boton-form boton-action">
+                <span class="boton-form-icon"><i class="ri-node-tree"></i></span>
+                <span class="boton-form-text">Gestor Jerárquico</span>
+            </a>
         @endcan
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
         @can('categorias.create')
-        <a href="{{ route('admin.categories.create') }}" class="boton-form boton-accent">
-            <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-form-text">Crear Categoría</span>
-        </a>
+            <a href="{{ route('admin.categories.create') }}" class="boton-form boton-accent">
+                <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+                <span class="boton-form-text">Crear Categoría</span>
+            </a>
         @endcan
     </x-slot>
 
     <div class="actions-container">
         <div class="tabla-filtros">
-            <div class="tabla-buscador">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
+            <article class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar categorías por nombre" autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
-            </div>
-            <!-- Cantidad por página -->
-            <div class="tabla-select-wrapper">
+            </article>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
+            <!-- Cantidad -->
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
                         <option value="5">5/pág.</option>
@@ -68,10 +82,10 @@
                     </select>
                     <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
             <!-- Orden -->
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilter">
                         <option value="">Ordenar por</option>
@@ -82,10 +96,10 @@
                     </select>
                     <i class="ri-sort-asc selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
             <!-- Estado -->
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilter">
                         <option value="">Todos los estados</option>
@@ -94,23 +108,23 @@
                     </select>
                     <i class="ri-filter-3-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
             <!-- Familia -->
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="familyFilter">
                         <option value="">Todas las familias</option>
-                        @foreach($families as $family)
+                        @foreach ($families as $family)
                             <option value="{{ $family->id }}">{{ $family->name }}</option>
                         @endforeach
                     </select>
                     <i class="ri-folder-3-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
             <!-- Nivel -->
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="levelFilter">
                         <option value="">Todos los niveles</option>
@@ -119,53 +133,64 @@
                     </select>
                     <i class="ri-node-tree selector-icon"></i>
                 </div>
-            </div>
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
+            </article>
+            <article class="filters-actions">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
+                    title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
+                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Mostrar resultados
+                    </span>
+                </button>
+            </article>
         </div>
 
         @canany(['categorias.export', 'categorias.delete'])
-        <!-- Barra contextual -->
-        <div class="selection-bar" id="selectionBar">
-            @can('categorias.export')
-            <div class="selection-actions">
-                <button id="exportSelectedExcel" class="boton-selection boton-success">
-                    <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
-                    <span class="boton-selection-text">Excel</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="excelBadge">0</span>
-                </button>
-                <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                    <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
-                    <span class="boton-selection-text">CSV</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="csvBadge">0</span>
-                </button>
-                <button id="exportSelectedPdf" class="boton-selection boton-secondary">
-                    <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
-                    <span class="boton-selection-text">PDF</span>
-                    <span class="boton-selection-dot">•</span>
-                    <span class="selection-badge" id="pdfBadge">0</span>
-                </button>
+            <!-- Barra contextual -->
+            <div class="selection-bar" id="selectionBar">
+                @can('categorias.export')
+                    <div class="selection-actions">
+                        <button id="exportSelectedExcel" class="boton-selection boton-success">
+                            <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
+                            <span class="boton-selection-text">Excel</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="excelBadge">0</span>
+                        </button>
+                        <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                            <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
+                            <span class="boton-selection-text">CSV</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="csvBadge">0</span>
+                        </button>
+                        <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                            <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
+                            <span class="boton-selection-text">PDF</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="pdfBadge">0</span>
+                        </button>
+                    </div>
+                @endcan
+                @can('categorias.delete')
+                    <button id="deleteSelected" class="boton-selection boton-danger">
+                        <span class="boton-selection-icon"><i class="ri-delete-bin-line"></i></span>
+                        <span class="boton-selection-text">Eliminar</span>
+                        <span class="boton-selection-dot">•</span>
+                        <span class="selection-badge" id="deleteBadge">0</span>
+                    </button>
+                @endcan
+                <div class="selection-info">
+                    <span id="selectionCount">0 seleccionados</span>
+                    <button class="selection-close" id="clearSelection">
+                        <i class="ri-close-large-fill"></i>
+                    </button>
+                </div>
             </div>
-            @endcan
-            @can('categorias.delete')
-            <button id="deleteSelected" class="boton-selection boton-danger">
-                <span class="boton-selection-icon"><i class="ri-delete-bin-line"></i></span>
-                <span class="boton-selection-text">Eliminar</span>
-                <span class="boton-selection-dot">•</span>
-                <span class="selection-badge" id="deleteBadge">0</span>
-            </button>
-            @endcan
-            <div class="selection-info">
-                <span id="selectionCount">0 seleccionados</span>
-                <button class="selection-close" id="clearSelection">
-                    <i class="ri-close-large-fill"></i>
-                </button>
-            </div>
-        </div>
         @endcanany
 
         <!-- Tabla -->
@@ -175,9 +200,9 @@
                     <tr>
                         <th class="control"></th>
                         @canany(['categorias.export', 'categorias.delete'])
-                        <th class="column-check-th column-not-order">
-                            <div><input type="checkbox" id="checkAll"></div>
-                        </th>
+                            <th class="column-check-th column-not-order">
+                                <div><input type="checkbox" id="checkAll"></div>
+                            </th>
                         @endcanany
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
@@ -198,8 +223,7 @@
                             <td class="control"></td>
                             <td class="column-check-td">
                                 <div>
-                                    <input type="checkbox" class="check-row"
-                                        value="{{ $cat->id }}">
+                                    <input type="checkbox" class="check-row" value="{{ $cat->id }}">
                                 </div>
                             </td>
                             <td class="column-id-td">{{ $cat->id }}</td>
@@ -210,7 +234,7 @@
                                 </span>
                             </td>
                             <td class="column-family-td" data-family-id="{{ $cat->family_id ?? '' }}">
-                                @if($cat->family)
+                                @if ($cat->family)
                                     <span class="badge badge-info">
                                         <i class="ri-archive-stack-line"></i>
                                         {{ $cat->family->name }}
@@ -222,8 +246,9 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="column-parent-td" data-search="{{ $cat->parent ? $cat->parent->name : 'Categoría Raíz' }}">
-                                @if($cat->parent)
+                            <td class="column-parent-td"
+                                data-search="{{ $cat->parent ? $cat->parent->name : 'Categoría Raíz' }}">
+                                @if ($cat->parent)
                                     <span class="badge badge-secondary">
                                         <i class="ri-node-tree"></i>
                                         {{ $cat->parent->name }}
@@ -238,8 +263,7 @@
                             @can('categorias.update-status')
                                 <td class="column-status-td">
                                     <label class="switch-tabla">
-                                        <input type="checkbox" class="switch-status"
-                                            data-id="{{ $cat->id }}"
+                                        <input type="checkbox" class="switch-status" data-id="{{ $cat->id }}"
                                             {{ $cat->status ? 'checked' : '' }}>
                                         <span class="slider"></span>
                                     </label>
@@ -252,7 +276,8 @@
                             </td>
                             <td class="column-actions-td">
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-categoria" data-slug="{{ $cat->slug }}">
+                                    <button class="boton-sm boton-info btn-ver-categoria"
+                                        data-slug="{{ $cat->slug }}">
                                         <i class="ri-eye-2-fill"></i>
                                     </button>
                                     @can('categorias.edit')
@@ -262,15 +287,14 @@
                                         </a>
                                     @endcan
                                     @can('categorias.delete')
-                                    <form action="{{ route('admin.categories.destroy', $cat) }}"
-                                        method="POST" class="delete-form"
-                                        data-entity="categoría">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="boton-sm boton-danger">
-                                            <i class="ri-delete-bin-2-fill"></i>
-                                        </button>
-                                    </form>
+                                        <form action="{{ route('admin.categories.destroy', $cat) }}" method="POST"
+                                            class="delete-form" data-entity="categoría">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="boton-sm boton-danger">
+                                                <i class="ri-delete-bin-2-fill"></i>
+                                            </button>
+                                        </form>
                                     @endcan
                                 </div>
                             </td>
@@ -326,13 +350,15 @@
                             console.log('🔄 Tabla redibujada');
                         },
                         onStatusChange: (id, status, response) => {
-                            console.log(`✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
+                            console.log(
+                                `✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
                         },
                         onDelete: () => {
                             console.log('🗑️ Registros eliminados');
                         },
                         onExport: (type, format, count) => {
-                            console.log(`📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
+                            console.log(
+                                `📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
                         }
                     }
                 });
@@ -402,12 +428,13 @@
                 // ========================================
                 @if (Session::has('highlightRow'))
                     (function() {
-                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-                            ? performance.getEntriesByType('navigation')
-                            : [];
-                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-                            ? performance.navigation.type
-                            : null;
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') :
+                            [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
                         const navType = navEntries.length ? navEntries[0].type : legacyNav;
                         const isBackNavigation = navType === 'back_forward' || navType === 2;
 

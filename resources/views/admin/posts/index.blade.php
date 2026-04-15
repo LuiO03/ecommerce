@@ -73,9 +73,7 @@
             <span class="tabla-filtros-title">
                 Aplicar filtros
             </span>
-            <article class="selector-label">
-                Cantidad de entradas
-            </article>
+
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
@@ -88,9 +86,6 @@
                 </div>
             </article>
 
-            <article class="selector-label">
-                Ordenar por
-            </article>
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilterTitulo">
@@ -105,9 +100,6 @@
                 </div>
             </article>
 
-            <article class="selector-label">
-                Estado
-            </article>
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilterPost">
@@ -121,9 +113,6 @@
                 </div>
             </article>
 
-            <article class="selector-label">
-                Visibilidad
-            </article>
             <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="visibilityFilterPost">
@@ -141,12 +130,12 @@
                     <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                     <span class="boton-text">Limpiar filtros</span>
                 </button>
-                <button class="boton-apply-filters" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
                     <span class="boton-form-icon">
                         <i class="ri-filter-fill"></i>
                     </span>
                     <span class="boton-form-text">
-                        Aplicar/cerrar filtros
+                        Mostrar resultados
                     </span>
                 </button>
             </article>

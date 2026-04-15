@@ -11,6 +11,14 @@
     </x-slot>
 
     <x-slot name="action">
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
         <a href="{{ route('admin.roles.index') }}" class="boton-form boton-accent">
             <span class="boton-form-icon"><i class="ri-arrow-go-back-line"></i></span>
             <span class="boton-form-text">Volver</span>
@@ -20,14 +28,20 @@
     <!-- Buscador + botón global -->
     <div class="actions-container">
         <div class="tabla-filtros">
-            <div class="tabla-buscador">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
+            <article class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="searchPerm" placeholder="Buscar módulo o acción..." autocomplete="off" />
                 <button type="button" id="clearSearchPerm" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
-            </div>
-            <div class="tabla-select-wrapper" title="Ordenar permisos">
+            </article>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
+            <article class="tabla-select-wrapper" title="Ordenar permisos">
                 <div class="selector">
                     <select id="permissionSort">
                         <option value="alpha_asc">A - Z</option>
@@ -35,7 +49,7 @@
                     </select>
                     <i class="ri-sort-asc selector-icon"></i>
                 </div>
-            </div>
+            </article>
             <button type="button" class="boton-form boton-success" id="toggleAllBtn">
                 <span class="boton-form-icon"><i class="ri-checkbox-multiple-blank-fill"></i></span>
                 <span class="boton-form-text" id="toggleAllText">Marcar todo</span>
@@ -45,6 +59,17 @@
                 <span class="boton-form-icon"><i class="ri-reset-left-line"></i></span>
                 <span class="boton-form-text">Restablecer todo</span>
             </button>
+
+            <article class="filters-actions" style="grid-column: 1 span;">
+                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Mostrar resultados
+                    </span>
+                </button>
+            </article>
         </div>
     </div>
     <div class="form-container">
@@ -57,7 +82,9 @@
                 @forelse($modules as $module => $perms)
                     <div class="permissions-card ripple-card" data-module-name="{{ $module }}">
                         <div class="permissions-card-header">
-                            <span class="card-title">{{ ucfirst($module) }}</span>
+                            <div class="card-header">
+                                <span class="card-title">{{ ucfirst($module) }}</span>
+                            </div>
 
                             <div class="flex gap-1">
                                 <button type="button" class="boton-single reset-module-btn is-hidden"

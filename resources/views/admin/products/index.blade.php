@@ -16,7 +16,6 @@
 				<span class="boton-form-text">Exportar</span>
 				<i class="ri-arrow-down-s-line boton-form-icon"></i>
 			</button>
-
 			<div class="export-dropdown" id="exportDropdown">
 				<button type="button" class="export-option" id="exportAllExcel">
 					<i class="ri-file-excel-2-fill"></i>
@@ -34,6 +33,15 @@
 		</div>
 		@endcan
 
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
+
 		@can('productos.create')
 		<a href="{{ route('admin.products.create') }}" class="boton-form boton-accent">
 			<span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
@@ -44,14 +52,20 @@
 
 	<div class="actions-container">
         <div class="tabla-filtros">
-            <div class="tabla-buscador">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
+            <article class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar productos por nombre o SKU" autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
-            </div>
-            <div class="tabla-select-wrapper">
+            </article>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
                         <option value="5">5/pág.</option>
@@ -61,9 +75,9 @@
                     </select>
                     <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilter">
                         <option value="">Ordenar por</option>
@@ -74,9 +88,9 @@
                     </select>
                     <i class="ri-sort-asc selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilter">
                         <option value="">Todos los estados</option>
@@ -85,10 +99,9 @@
                     </select>
                     <i class="ri-filter-3-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="categoryFilter">
                         <option value="">Todas las categorías</option>
@@ -98,19 +111,31 @@
                     </select>
                     <i class="ri-archive-stack-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper" id="minStockFilterWrapper">
+            <article class="tabla-select-wrapper" id="minStockFilterWrapper">
                 <button type="button" id="minStockFilterBtn" class="" title="Mostrar solo productos con stock bajo el mínimo">
                     <i class="ri-alert-line" style="font-size:18px;"></i>
                     <span>Stock bajo</span>
                 </button>
-            </div>
+            </article>
 
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
+            <!-- Botón para limpiar filtros -->
+            <article class="filters-actions">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
+                    title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
+                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Mostrar resultados
+                    </span>
+                </button>
+            </article>
         </div>
 
 		@canany(['productos.export', 'productos.delete'])

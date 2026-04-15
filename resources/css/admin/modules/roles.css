@@ -22,8 +22,8 @@
 
 .permissions-name {
     text-transform: capitalize;
-    font-size: var(--font-size-h5);
-    font-weight: bolder;
+    font-size: var(--font-size-h6);
+    font-weight: bold;
     font-family: var(--font-secondary);
     color: var(--color-accent);
 }

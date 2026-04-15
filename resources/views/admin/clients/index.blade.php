@@ -31,21 +31,34 @@
             </div>
         </div>
         @endcan
-        {{-- No hay botón de crear en la vista de clientes --}}
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
     </x-slot>
 
     <div class="actions-container">
 
         <div class="tabla-filtros">
-            <div class="tabla-buscador">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
+            <article class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar clientes por nombre o email"
                     autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                     <i class="ri-close-circle-fill"></i>
                 </button>
-            </div>
-            <div class="tabla-select-wrapper">
+            </article>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="entriesSelect">
                         <option value="5">5/pág.</option>
@@ -55,9 +68,9 @@
                     </select>
                     <i class="ri-arrow-down-s-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilter">
                         <option value="">Ordenar por</option>
@@ -68,9 +81,9 @@
                     </select>
                     <i class="ri-sort-asc selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="statusFilter">
                         <option value="">Todos los estados</option>
@@ -79,9 +92,9 @@
                     </select>
                     <i class="ri-filter-3-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="roleFilter">
                         <option value="">Todos los roles</option>
@@ -94,9 +107,9 @@
                     </select>
                     <i class="ri-shield-user-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <div class="tabla-select-wrapper">
+            <article class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="verifiedFilter">
                         <option value="">Todos los clientes</option>
@@ -105,12 +118,23 @@
                     </select>
                     <i class="ri-mail-check-line selector-icon"></i>
                 </div>
-            </div>
+            </article>
 
-            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
-                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                <span class="boton-text">Limpiar filtros</span>
-            </button>
+            <article class="filters-actions">
+                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
+                    title="Limpiar todos los filtros">
+                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                    <span class="boton-text">Limpiar filtros</span>
+                </button>
+                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                    <span class="boton-form-icon">
+                        <i class="ri-filter-fill"></i>
+                    </span>
+                    <span class="boton-form-text">
+                        Mostrar resultados
+                    </span>
+                </button>
+            </article>
         </div>
 
         @canany(['clientes.export', 'clientes.delete'])
