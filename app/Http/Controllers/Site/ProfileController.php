@@ -163,7 +163,7 @@ class ProfileController extends Controller
             'message' => 'Tu nueva dirección se ha guardado correctamente.',
         ];
 
-        if ($request->wantsJson()) {
+        if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
                 'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
@@ -219,7 +219,7 @@ class ProfileController extends Controller
             'message' => 'Tu dirección se ha actualizado correctamente.',
         ];
 
-        if ($request->wantsJson()) {
+        if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
                 'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
@@ -255,7 +255,7 @@ class ProfileController extends Controller
             'message' => 'La dirección se ha eliminado correctamente.',
         ];
 
-        if ($request->wantsJson()) {
+        if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
                 'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),

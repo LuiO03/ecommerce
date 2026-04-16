@@ -906,11 +906,13 @@
                 }
 
                 function renderAddressCards() {
-                    if (!addressList || !addressEmptyState) return;
+                    if (!addressList) return;
 
                     const hasAddresses = checkoutAddresses.length > 0;
                     addressList.classList.toggle('is-hidden', !hasAddresses);
-                    addressEmptyState.classList.toggle('is-hidden', hasAddresses);
+                    if (addressEmptyState) {
+                        addressEmptyState.classList.toggle('is-hidden', hasAddresses);
+                    }
 
                     if (!hasAddresses) {
                         addressList.innerHTML = '';
@@ -1044,7 +1046,7 @@
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest',
                                 'X-CSRF-TOKEN': csrfToken,
-                                'Accept': 'application/json',
+                                'Accept': 'application/json, text/plain, */*',
                             },
                             body: formData,
                         });
@@ -1059,7 +1061,12 @@
                             return false;
                         }
 
-                        checkoutAddresses = normalizeAddressCollection(data.addresses || []);
+                        if (data.status !== 'success' || !Array.isArray(data.addresses)) {
+                            setAddressFeedback('No se pudo actualizar la lista de direcciones. Recarga la página e intenta nuevamente.', 'error');
+                            return false;
+                        }
+
+                        checkoutAddresses = normalizeAddressCollection(data.addresses);
 
                         if (method === 'POST' && checkoutAddresses.length > 0) {
                             selectedAddressId = Number(checkoutAddresses[0].id);
