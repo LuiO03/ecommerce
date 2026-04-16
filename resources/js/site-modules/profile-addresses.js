@@ -204,7 +204,6 @@ function setupProfileAddresses() {
 
     function bindDeleteAndDefaultButtons() {
         const deleteButtons = section.querySelectorAll('.address-delete-btn');
-        const defaultButtons = section.querySelectorAll('.address-default-btn');
 
         deleteButtons.forEach((btn) => {
             btn.addEventListener('click', (event) => {
@@ -237,20 +236,6 @@ function setupProfileAddresses() {
             });
         });
 
-        defaultButtons.forEach((btn) => {
-            btn.addEventListener('click', async (event) => {
-                event.preventDefault();
-
-                const url = btn.getAttribute('data-address-default-url');
-                if (!url) return;
-
-                btn.disabled = true;
-                await sendAddressRequest(url, {
-                    method: 'POST',
-                });
-                btn.disabled = false;
-            });
-        });
     }
 
     async function handleSubmit(event) {

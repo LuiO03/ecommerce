@@ -28,7 +28,6 @@ class ShippingController extends Controller
             ->first();
 
         $address = Addresses::where('user_id', $userId)
-            ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->first();
 
@@ -68,11 +67,9 @@ class ShippingController extends Controller
                 ? ucwords(mb_strtolower($validated['receiver_last_name']))
                 : null,
             'receiver_phone' => $validated['receiver_phone'],
-            'is_default' => true,
         ];
 
         $address = Addresses::where('user_id', $userId)
-            ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->first();
 
@@ -113,7 +110,6 @@ class ShippingController extends Controller
             ->first();
 
         $addresses = Addresses::where('user_id', $userId)
-            ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->get();
 
@@ -138,14 +134,7 @@ class ShippingController extends Controller
             'receiver_name' => 'required|string|min:3|max:255',
             'receiver_last_name' => 'nullable|string|min:2|max:255',
             'receiver_phone' => 'required|string|min:6|max:20',
-            'is_default' => 'sometimes|boolean',
         ]);
-
-        $isDefault = $request->boolean('is_default');
-
-        if ($isDefault) {
-            Addresses::where('user_id', $userId)->update(['is_default' => false]);
-        }
 
         $address->update([
             'type' => $validated['type'],
@@ -157,7 +146,6 @@ class ShippingController extends Controller
                 ? ucwords(mb_strtolower($validated['receiver_last_name']))
                 : null,
             'receiver_phone' => $validated['receiver_phone'],
-            'is_default' => $isDefault,
         ]);
 
         return redirect()
@@ -166,27 +154,6 @@ class ShippingController extends Controller
                 'type' => 'success',
                 'title' => 'Dirección actualizada',
                 'message' => 'Tu dirección de envío se ha actualizado correctamente.',
-            ]);
-    }
-
-    public function setDefault(Addresses $address)
-    {
-        if (! Auth::check() || $address->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $userId = Auth::id();
-
-        Addresses::where('user_id', $userId)->update(['is_default' => false]);
-
-        $address->update(['is_default' => true]);
-
-        return redirect()
-            ->route('shipping.index')
-            ->with('toast', [
-                'type' => 'success',
-                'title' => 'Dirección predeterminada',
-                'message' => 'Hemos actualizado tu dirección de envío predeterminada.',
             ]);
     }
 

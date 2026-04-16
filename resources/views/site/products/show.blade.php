@@ -65,7 +65,8 @@
             </div>
 
             <div class="product-summary" data-variant-root data-base-price="{{ $product->price }}"
-                data-discount="{{ $discountPercent }}">
+                data-discount="{{ $discountPercent }}" data-has-variants="{{ $hasActiveVariants ? '1' : '0' }}"
+                data-has-available-variants="{{ $hasAvailableVariants ? '1' : '0' }}">
                 <div class="product-summary-header">
                     <a href="{{ route('categories.show', $product->category) }}" class="product-category">
                         {{ $product->category?->name ?? 'Sin categoria' }}
@@ -92,12 +93,20 @@
                     <div class="product-meta">
                         <span class="product-status {{ $product->status ? 'is-active' : 'is-inactive' }}">
                             <i class="ri-circle-fill"></i>
-                            {{ $product->status ? 'Disponible' : 'No disponible' }}
+                            {{ $product->status ? 'Producto Disponible' : 'Producto No Disponible' }}
                         </span>
                     </div>
                     <span class="product-stock" data-stock>
                         <i class="ri-stack-line"></i>
-                        Stock disponible
+                        @if (!$hasActiveVariants)
+                            Sin stock disponible
+                        @elseif($hasActiveVariants && !$hasAvailableVariants)
+                            Sin stock disponible
+                        @elseif($hasActiveVariants)
+                            Selecciona una opcion para ver stock
+                        @else
+                            Stock disponible
+                        @endif
                     </span>
                 </div>
                 <hr class="w-full my-0 border-default">

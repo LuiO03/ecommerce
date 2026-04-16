@@ -299,16 +299,21 @@
                                 <span>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</span>
                             </td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <i class="ri-more-fill"></i>
+                                </button>
                                 <div class="tabla-botones">
                                     @can('ordenes.view')
                                     <a href="{{ route('admin.orders.show', $order) }}" class="boton-sm boton-warning" title="Ver orden">
                                         <i class="ri-eye-fill"></i>
+                                        <span class="boton-sm-text">Ver Pedido</span>
                                     </a>
                                     @endcan
                                     @can('ordenes.export')
                                     @if ($order->pdf_path)
                                         <a href="{{ asset('storage/' . $order->pdf_path) }}" target="_blank" class="boton-sm boton-danger" title="Ver boleta PDF">
                                             <i class="ri-file-pdf-2-fill"></i>
+                                            <span class="boton-sm-text">Boleta PDF</span>
                                         </a>
                                     @endif
                                     @endcan
@@ -318,14 +323,15 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="status" value="processing">
-                                                <button type="submit" class="boton boton-primary" title="Marcar como listo para despachar">
-                                                    <span class="boton-text">Despachar</span>
-                                                    <span class="boton-icon"><i class="ri-check-double-line"></i></span>
+                                                <button type="submit" class="boton-sm boton-primary" title="Marcar como listo para despachar">
+                                                    <i class="ri-check-double-line"></i>
+                                                    <span class="boton-sm-text">Despachar</span>
                                                 </button>
                                             </form>
                                         @elseif ($order->status === 'processing')
                                             <a href="{{ route('admin.orders.show', $order) }}" class="boton-sm boton-info" title="Asignar repartidor">
                                                 <i class="ri-user-follow-line"></i>
+                                                <span class="boton-sm-text">Asignar repartidor</span>
                                             </a>
                                         @endif
                                     @endcan

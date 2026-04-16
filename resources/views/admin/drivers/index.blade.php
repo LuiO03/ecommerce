@@ -145,11 +145,15 @@
                                     <span>{{ $driver->created_at ? $driver->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</span>
                                 </td>
                                 <td class="column-actions-td">
+                                    <button class="boton-show-actions">
+                                        <i class="ri-more-fill"></i>
+                                    </button>
                                     <div class="tabla-botones">
                                         @can('conductores.edit')
                                             <a href="{{ route('admin.drivers.edit', $driver) }}" class="boton-sm boton-warning"
                                                 title="Editar conductor">
                                                 <i class="ri-edit-2-fill"></i>
+                                                <span class="boton-sm-text">Editar Conductor</span>
                                             </a>
                                         @endcan
                                         @can('conductores.delete')
@@ -160,6 +164,7 @@
                                                 <button type="submit" class="boton-sm boton-danger"
                                                     title="Eliminar conductor">
                                                     <i class="ri-delete-bin-6-fill"></i>
+                                                    <span class="boton-sm-text">Eliminar Conductor</span>
                                                 </button>
                                             </form>
                                         @endcan
@@ -207,8 +212,7 @@
                         (function() {
                             const navEntries = (typeof performance !== 'undefined' && typeof performance
                                     .getEntriesByType === 'function') ?
-                                performance.getEntriesByType('navigation') :
-                                [];
+                                performance.getEntriesByType('navigation') : [];
                             const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
                                 performance.navigation.type :
                                 null;

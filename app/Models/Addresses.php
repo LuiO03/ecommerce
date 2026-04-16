@@ -16,11 +16,6 @@ class Addresses extends Model
         'receiver_name',
         'receiver_last_name',
         'receiver_phone',
-        'is_default',
-    ];
-
-    protected $casts = [
-        'is_default' => 'boolean',
     ];
 
     public function user()

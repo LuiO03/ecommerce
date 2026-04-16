@@ -27,6 +27,7 @@
             <p>
                 Completa los pasos para confirmar tu pedido: entrega, dirección o tienda, pago y resumen final.
             </p>
+
         </div>
 
         @if (!Auth::check() || !$hasItems)
@@ -47,8 +48,7 @@
             @php
                 $addresses = $addresses ?? collect();
                 $hasAddresses = $addresses->isNotEmpty();
-                $defaultAddressId = optional($addresses->firstWhere('is_default', true))->id
-                    ?? optional($addresses->first())->id;
+                $defaultAddressId = optional($addresses->first())->id;
             @endphp
 
             {{-- Indicador de progreso (solo UI, 3 pasos principales) --}}
@@ -73,31 +73,35 @@
                 <div class="checkout-flow-main">
                     {{-- PASO 1: Tipo de entrega --}}
                     <section class="checkout-section" id="checkoutStepDelivery">
-                        <h2 class="checkout-section-title">1. ¿Cómo quieres recibir tu pedido?</h2>
-                        <p class="checkout-section-subtitle">Selecciona una opción para continuar.</p>
+                        <div class="card-header">
+                            <span class="card-title">1. ¿Cómo quieres recibir tu pedido?</span>
+                            <p class="card-description">Selecciona una opción para continuar.</p>
+                        </div>
 
-                        <div class="delivery-type-grid" data-delivery-type-root>
-                            <label class="delivery-type-card" data-delivery-option="delivery">
+                        <div class="checkout-cards-grid" data-delivery-type-root>
+                            <label class="checkout-card" data-delivery-option="delivery">
                                 <input type="radio" name="delivery_type" value="delivery" class="sr-only"
                                     {{ old('delivery_type', 'delivery') === 'delivery' ? 'checked' : '' }}>
-                                <div class="delivery-type-icon">
+                                <div class="checkout-card-icon">
                                     <i class="ri-truck-line"></i>
                                 </div>
-                                <div class="delivery-type-body">
-                                    <span class="delivery-type-title">Delivery a domicilio</span>
-                                    <span class="delivery-type-helper">Recibe tus productos en la dirección que elijas.</span>
+                                <div class="checkout-card-body">
+                                    <span class="checkout-card-title">Delivery a domicilio</span>
+                                    <span class="checkout-card-helper">Recibe tus productos en la dirección que
+                                        elijas.</span>
                                 </div>
                             </label>
 
-                            <label class="delivery-type-card" data-delivery-option="pickup">
+                            <label class="checkout-card" data-delivery-option="pickup">
                                 <input type="radio" name="delivery_type" value="pickup" class="sr-only"
                                     {{ old('delivery_type') === 'pickup' ? 'checked' : '' }}>
-                                <div class="delivery-type-icon">
+                                <div class="checkout-card-icon">
                                     <i class="ri-store-2-line"></i>
                                 </div>
-                                <div class="delivery-type-body">
-                                    <span class="delivery-type-title">Recojo en tienda</span>
-                                    <span class="delivery-type-helper">Pasa por uno de nuestros locales autorizados.</span>
+                                <div class="checkout-card-body">
+                                    <span class="checkout-card-title">Recojo en tienda</span>
+                                    <span class="checkout-card-helper">Pasa por uno de nuestros locales
+                                        autorizados.</span>
                                 </div>
                             </label>
                         </div>
@@ -111,48 +115,81 @@
 
                     {{-- PASO 2A: Dirección (solo delivery) --}}
                     <section class="checkout-section" id="checkoutStepAddress" data-step-dependent="delivery">
-                        <h2 class="checkout-section-title">2. Dirección de envío</h2>
+                        <div class="card-header-container">
+                            <div class="card-header">
+                                <span class="card-title">2. Dirección de envío</span>
+                                <p class="card-description">Selecciona una de tus direcciones guardadas.</p>
+                            </div>
+                            <div class="card-header-actions">
+                                <button type="button" class="boton-form boton-success"
+                                    data-address-modal-open="create">
+                                    <span class="boton-form-icon"><i class="ri-map-pin-2-fill"></i></span>
+                                    <span class="boton-form-text">Agregar dirección</span>
+                                </button>
+                            </div>
+                        </div>
                         @if ($hasAddresses)
-                            <p class="checkout-section-subtitle">Selecciona una de tus direcciones guardadas.</p>
-
-                            <div class="address-list" data-address-list>
+                            <div class="checkout-cards-grid" data-address-list>
                                 @foreach ($addresses as $address)
-                                    <label class="address-card">
+                                    <label class="checkout-card">
                                         <input type="radio" name="address_id" value="{{ $address->id }}"
                                             class="sr-only" {{ $address->id === $defaultAddressId ? 'checked' : '' }}>
-                                        <div class="address-card-header">
-                                            <span class="address-alias">
-                                                {{ $address->type === 'office' ? 'Trabajo' : 'Casa' }}
-                                                @if ($address->is_default)
-                                                    <span class="address-badge">Predeterminada</span>
-                                                @endif
-                                            </span>
-                                            <span class="address-city">{{ $address->district }}</span>
+
+                                        <div class="checkout-card-icon"
+                                            title="{{ $address->type === 'office' ? 'Dirección de oficina' : 'Dirección de casa' }}">
+
+                                            @if ($address->type === 'office')
+                                                <i class="ri-building-2-line"></i>
+                                                <span class="address-card-title">Oficina</span>
+                                            @else
+                                                <i class="ri-home-2-line"></i>
+                                                <span class="address-card-title">Casa</span>
+                                            @endif
                                         </div>
-                                        <div class="address-card-body">
-                                            <p class="address-line">{{ $address->address_line }}</p>
-                                            <p class="address-reference">{{ $address->reference }}</p>
-                                            <p class="address-contact">
-                                                <i class="ri-user-3-line"></i>
+                                        <div class="checkout-card-body">
+                                            <span class="card-title">
                                                 {{ $address->receiver_name }}
-                                                @if ($address->receiver_last_name)
-                                                    {{ $address->receiver_last_name }}
-                                                @endif
-                                                · <i class="ri-phone-line"></i> {{ $address->receiver_phone }}
-                                            </p>
+                                                {{ $address->receiver_last_name }}
+                                            </span>
+                                            <ul>
+                                                <li class="address-line">{{ $address->address_line }}</li>
+                                                <li class="address-city">{{ $address->district }}</li>
+                                                <li class="address-reference">{{ $address->reference }}</li>
+                                                <li class="address-phone">{{ $address->receiver_phone }}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="address-card-actions">
+                                            <button type="button" class="boton-pastel card-warning address-edit-btn"
+                                                title="Editar dirección" aria-label="Editar dirección"
+                                                data-address-modal-open="edit" data-address-id="{{ $address->id }}"
+                                                data-address-type="{{ $address->type }}"
+                                                data-address-line="{{ e($address->address_line) }}"
+                                                data-address-district="{{ e($address->district) }}"
+                                                data-address-reference="{{ e($address->reference) }}"
+                                                data-address-receiver-name="{{ e($address->receiver_name) }}"
+                                                data-address-receiver-last-name="{{ e($address->receiver_last_name) }}"
+                                                data-address-receiver-phone="{{ e($address->receiver_phone) }}"
+                                                data-update-url="{{ route('site.profile.addresses.update', $address) }}">
+                                                <i class="ri-pencil-fill"></i>
+                                            </button>
+                                            <form method="POST"
+                                                action="{{ route('site.profile.addresses.destroy', $address) }}"
+                                                class="address-delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="boton-pastel card-danger address-delete-btn"
+                                                    title="Eliminar dirección" aria-label="Eliminar dirección"
+                                                    data-address-delete-url="{{ route('site.profile.addresses.destroy', $address) }}">
+                                                    <i class="ri-delete-bin-5-fill"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </label>
                                 @endforeach
                             </div>
-
-                            <div class="checkout-inline-actions">
-                                <a href="{{ route('site.profile.addresses') }}" class="link-inline">
-                                    <i class="ri-edit-2-line"></i>
-                                    Gestionar direcciones
-                                </a>
-                            </div>
                         @else
-                            <p class="checkout-section-subtitle">
+                            <p class="card-description">
                                 Aún no tienes direcciones guardadas. Antes de pagar, registra al menos una.
                             </p>
                             <div class="checkout-inline-actions">
@@ -175,31 +212,50 @@
 
                     {{-- PASO 2B: Recojo en tienda (solo pickup) --}}
                     <section class="checkout-section" id="checkoutStepPickup" data-step-dependent="pickup">
-                        <h2 class="checkout-section-title">2. Punto de recojo</h2>
-                        <p class="checkout-section-subtitle">Selecciona la tienda donde recogerás tu pedido.</p>
+                        <div class="card-header">
+                            <span class="card-title">2. Punto de recojo</span>
+                            <p class="card-description">Selecciona la tienda donde recogerás tu pedido.</p>
+                        </div>
 
-                        <div class="store-list" data-store-list>
+                        <div class="checkout-cards-grid" data-store-list>
                             {{-- Por ahora, locales estáticos; se puede migrar a tabla stores luego --}}
-                            <label class="store-card">
+                            <label class="checkout-card">
                                 <input type="radio" name="store_id" value="store_central" class="sr-only">
-                                <div class="store-card-header">
+                                <div class="checkout-card-icon">
+                                    <i class="ri-store-2-line"></i>
                                     <span class="store-name">Tienda Central</span>
-                                    <span class="store-badge">Recomendado</span>
                                 </div>
-                                <div class="store-card-body">
-                                    <p class="store-address">Av. Principal 123, Miraflores</p>
-                                    <p class="store-schedule">Lun - Sáb: 9:00 am - 8:00 pm</p>
+                                <div class="checkout-card-body">
+                                    <span class="checkout-card-title">
+                                        <i class="ri-map-pin-2-line"></i>
+                                        Dirección:
+                                    </span>
+                                    <p class="checkout-card-helper">Av. Principal 123, Miraflores</p>
+                                    <span class="checkout-card-title">
+                                        <i class="ri-time-line"></i>
+                                        Horario de atención:
+                                    </span>
+                                    <p class="checkout-card-helper">Lun - Sáb: 9:00 am - 8:00 pm</p>
                                 </div>
                             </label>
 
-                            <label class="store-card">
+                            <label class="checkout-card">
                                 <input type="radio" name="store_id" value="store_sucursal_1" class="sr-only">
-                                <div class="store-card-header">
+                                <div class="checkout-card-icon">
+                                    <i class="ri-store-2-line"></i>
                                     <span class="store-name">Sucursal Norte</span>
                                 </div>
-                                <div class="store-card-body">
-                                    <p class="store-address">Av. Las Flores 456, Los Olivos</p>
-                                    <p class="store-schedule">Lun - Sáb: 10:00 am - 7:00 pm</p>
+                                <div class="checkout-card-body">
+                                    <span class="checkout-card-title">
+                                        <i class="ri-map-pin-2-line"></i>
+                                        Dirección:
+                                    </span>
+                                    <p class="checkout-card-helper">Av. Las Flores 456, Los Olivos</p>
+                                    <span class="checkout-card-title">
+                                        <i class="ri-time-line"></i>
+                                        Horario de atención:
+                                    </span>
+                                    <p class="checkout-card-helper">Lun - Sáb: 10:00 am - 7:00 pm</p>
                                 </div>
                             </label>
                         </div>
@@ -216,78 +272,83 @@
 
                     {{-- PASOS 4 y 5: Método de pago + Resumen (contenido existente) --}}
                     <section class="checkout-section" id="checkoutStepPayment">
-                        <h2 class="checkout-section-title">3. Método de pago</h2>
+                        <div class="card-header">
+                            <span class="card-title">3. Método de pago</span>
+                            <p class="card-description">Selecciona cómo deseas pagar tu pedido.</p>
+                        </div>
 
                         <form class="payment-methods-form" id="paymentMethodsForm">
-                        <div class="payment-method-option">
-                            <input type="radio" value="card" name="payment_method" id="payment_method_card"
-                                class="payment-method-radio" checked>
-                            <label for="payment_method_card" class="payment-method-card">
-                                <div class="payment-method-header">
-                                    <div class="payment-method-icon">
-                                        <i class="ri-bank-card-line"></i>
+                            <div class="payment-method-option">
+                                <input type="radio" value="card" name="payment_method" id="payment_method_card"
+                                    class="payment-method-radio" checked>
+                                <label for="payment_method_card" class="payment-method-card">
+                                    <div class="payment-method-header">
+                                        <div class="payment-method-icon">
+                                            <i class="ri-bank-card-line"></i>
+                                        </div>
+                                        <div class="payment-method-text">
+                                            <span class="card-title">Tarjeta de crédito/débito</span>
+                                            <span class="payment-method-helper">Paga con Visa, Mastercard u otras
+                                                tarjetas.</span>
+                                        </div>
                                     </div>
-                                    <div class="payment-method-text">
-                                        <span class="card-title">Tarjeta de crédito/débito</span>
-                                        <span class="payment-method-helper">Paga con Visa, Mastercard u otras
-                                            tarjetas.</span>
-                                    </div>
+                                    <img class="payment-method-img"
+                                        src="{{ asset('images/checkout/cards_pay.png') }}"
+                                        alt="Formas de pago con tarjeta">
+                                </label>
+
+
+                                <div class="payment-method-body">
+                                    <p class="input-help-text mb-2">
+                                        Luego de hacer click en "Pagar ahora" se abrira el checkout de Niubiz para que
+                                        completes los datos de tu tarjeta y finalices tu compra de forma segura.
+                                    </p>
+                                    <ul class="payment-method-info">
+                                        <li>Aceptamos Visa, Mastercard, American Express y otras tarjetas.</li>
+                                        <li>El pago se procesa de forma segura a través de Niubiz.</li>
+                                        <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
+                                    </ul>
                                 </div>
-                                <img class="payment-method-img" src="{{ asset('images/checkout/cards_pay.png') }}"
-                                    alt="Formas de pago con tarjeta">
-                            </label>
-
-
-                            <div class="payment-method-body">
-                                <p class="input-help-text mb-2">
-                                    Luego de hacer click en "Pagar ahora" se abrira el checkout de Niubiz para que
-                                    completes los datos de tu tarjeta y finalices tu compra de forma segura.
-                                </p>
-                                <ul class="payment-method-info">
-                                    <li>Aceptamos Visa, Mastercard, American Express y otras tarjetas.</li>
-                                    <li>El pago se procesa de forma segura a través de Niubiz.</li>
-                                    <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
-                                </ul>
                             </div>
-                        </div>
 
-                        <div class="payment-method-option">
-                            <input type="radio" value="bank" name="payment_method" id="payment_method_bank"
-                                class="payment-method-radio">
-                            <label for="payment_method_bank" class="payment-method-card">
-                                <div class="payment-method-header">
-                                    <div class="payment-method-icon">
-                                        <i class="ri-exchange-dollar-line"></i>
+                            <div class="payment-method-option">
+                                <input type="radio" value="bank" name="payment_method" id="payment_method_bank"
+                                    class="payment-method-radio">
+                                <label for="payment_method_bank" class="payment-method-card">
+                                    <div class="payment-method-header">
+                                        <div class="payment-method-icon">
+                                            <i class="ri-exchange-dollar-line"></i>
+                                        </div>
+                                        <div class="payment-method-text">
+                                            <span class="card-title">Depósito bancario o Yape</span>
+                                            <span class="payment-method-helper">Transfiere desde tu banco o paga con
+                                                Yape.</span>
+                                        </div>
                                     </div>
-                                    <div class="payment-method-text">
-                                        <span class="card-title">Depósito bancario o Yape</span>
-                                        <span class="payment-method-helper">Transfiere desde tu banco o paga con
-                                            Yape.</span>
-                                    </div>
+                                    <img class="payment-method-img" src="{{ asset('images/checkout/yape-pay.png') }}"
+                                        alt="Depósito bancario o Yape">
+                                </label>
+
+                                <div class="payment-method-body">
+                                    <p class="input-help-text mb-2">
+                                        Al confirmar tu pedido, te mostraremos los datos de la cuenta bancaria o el
+                                        número
+                                        de
+                                        Yape para completar el pago.
+                                    </p>
+                                    <ul class="payment-method-info">
+                                        <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
+                                        <li>Envía el comprobante para acelerar la confirmación.</li>
+                                    </ul>
                                 </div>
-                                <img class="payment-method-img" src="{{ asset('images/checkout/yape-pay.png') }}"
-                                    alt="Depósito bancario o Yape">
-                            </label>
-
-                            <div class="payment-method-body">
-                                <p class="input-help-text mb-2">
-                                    Al confirmar tu pedido, te mostraremos los datos de la cuenta bancaria o el número
-                                    de
-                                    Yape para completar el pago.
-                                </p>
-                                <ul class="payment-method-info">
-                                    <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
-                                    <li>Envía el comprobante para acelerar la confirmación.</li>
-                                </ul>
                             </div>
-                        </div>
-                    </form>
+                        </form>
 
-                    <div class="checkout-wizard-actions">
-                        <button type="button" class="site-btn site-btn-outline" data-checkout-prev="3">
-                            Volver al paso anterior
-                        </button>
-                    </div>
+                        <div class="checkout-wizard-actions">
+                            <button type="button" class="site-btn site-btn-outline" data-checkout-prev="3">
+                                Volver al paso anterior
+                            </button>
+                        </div>
                 </div>
 
                 <aside class="checkout-summary">
@@ -394,8 +455,7 @@
                     </div>
 
                     <div class="checkout-summary-actions">
-                        <button type="button" id="payButton" class="boton-form boton-primary w-full py-3" disabled
-                            >
+                        <button type="button" id="payButton" class="boton-form boton-primary w-full py-3" disabled>
                             <span class="boton-form-icon"><i class="ri-wallet-3-fill"></i>
                             </span>
                             <span class="boton-form-text">Pagar ahora</span>
@@ -483,6 +543,7 @@
                 const progressSteps = document.querySelectorAll('.checkout-progress-step');
                 const nextButtons = document.querySelectorAll('[data-checkout-next]');
                 const prevButtons = document.querySelectorAll('[data-checkout-prev]');
+                const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
                 const payButton = document.getElementById('payButton');
                 const amount = '{{ number_format($amount, 2, '.', '') }}';
                 const merchantId = '{{ config('services.niubiz.merchant_id') }}';
@@ -612,6 +673,88 @@
                     });
                 }
 
+                function ensureSelectedBadge(label) {
+                    if (!label) return;
+
+                    let badgeWrapper = label.querySelector(':scope > .store-badge');
+                    if (!badgeWrapper) {
+                        badgeWrapper = document.createElement('div');
+                        badgeWrapper.className = 'store-badge';
+                        badgeWrapper.innerHTML = '<span class="badge bg-success"><i class="ri-checkbox-circle-fill"></i> Seleccionado</span>';
+                        label.appendChild(badgeWrapper);
+                    }
+                }
+
+                function removeSelectedBadge(label) {
+                    if (!label) return;
+                    const badgeWrapper = label.querySelector(':scope > .store-badge');
+                    if (badgeWrapper) {
+                        badgeWrapper.remove();
+                    }
+                }
+
+                function updateSelectedCardsBadges() {
+                    const groups = [{
+                            name: 'delivery_type',
+                            selector: '.checkout-card'
+                        },
+                        {
+                            name: 'address_id',
+                            selector: '.checkout-card'
+                        },
+                        {
+                            name: 'store_id',
+                            selector: '.checkout-card'
+                        },
+                        {
+                            name: 'payment_method',
+                            selector: '.payment-method-card'
+                        },
+                    ];
+
+                    groups.forEach((group) => {
+                        const radios = document.querySelectorAll(`input[name="${group.name}"]`);
+
+                        radios.forEach((input) => {
+                            const label = input.closest(group.selector) || document.querySelector(
+                                `label[for="${input.id}"]`);
+                            if (!label) return;
+
+                            // Mantener badge "Recomendado" existente en tiendas sin tocarlo.
+                            const recommendedBadge = label.querySelector(':scope > .store-badge > .store-badge');
+                            if (recommendedBadge) {
+                                return;
+                            }
+
+                            if (input.checked) {
+                                ensureSelectedBadge(label);
+                            } else {
+                                removeSelectedBadge(label);
+                            }
+                        });
+                    });
+                }
+
+                function clearRadioSelectionByName(name) {
+                    const radios = document.querySelectorAll(`input[name="${name}"]`);
+                    radios.forEach((radio) => {
+                        radio.checked = false;
+                    });
+                }
+
+                function clearForwardSelections(targetStep) {
+                    if (targetStep <= 1) {
+                        clearRadioSelectionByName('address_id');
+                        clearRadioSelectionByName('store_id');
+                        clearRadioSelectionByName('payment_method');
+                        return;
+                    }
+
+                    if (targetStep === 2) {
+                        clearRadioSelectionByName('payment_method');
+                    }
+                }
+
                 function goToStep(targetStep) {
                     if (targetStep < 1 || targetStep > 3) return;
                     currentStep = targetStep;
@@ -642,11 +785,15 @@
                         const fromStep = parseInt(btn.getAttribute('data-checkout-prev'), 10) || 2;
 
                         if (fromStep === 2) {
+                            clearForwardSelections(1);
+                            updateSelectedCardsBadges();
                             goToStep(1);
                             return;
                         }
 
                         if (fromStep === 3) {
+                            clearForwardSelections(2);
+                            updateSelectedCardsBadges();
                             goToStep(2);
                         }
                     });
@@ -659,6 +806,13 @@
                         updatePayButtonState();
                         updateProgressBar();
                         updateNextButtonsState();
+                        updateSelectedCardsBadges();
+                    });
+                });
+
+                paymentRadios.forEach((input) => {
+                    input.addEventListener('change', () => {
+                        updateSelectedCardsBadges();
                     });
                 });
 
@@ -671,6 +825,7 @@
                         updatePayButtonState();
                         updateProgressBar();
                         updateNextButtonsState();
+                        updateSelectedCardsBadges();
                     }
                 });
 
@@ -679,6 +834,7 @@
                 updatePayButtonState();
                 updateProgressBar();
                 updateNextButtonsState();
+                updateSelectedCardsBadges();
 
                 // Click en pagar ahora: configurar Niubiz con los parámetros de entrega seleccionados
                 if (payButton) {
@@ -698,12 +854,12 @@
                         }
 
                         const purchaseNumber = Math.floor(Math.random() * 1000000000);
-                        let action = '{{ route('checkout.paid') }}'
-                            + '?amount=' + amount
-                            + '&purchaseNumber=' + purchaseNumber
-                            + '&delivery_type=' + encodeURIComponent(type || '')
-                            + '&address_id=' + encodeURIComponent(addressId || '')
-                            + '&store_id=' + encodeURIComponent(storeId || '');
+                        let action = '{{ route('checkout.paid') }}' +
+                            '?amount=' + amount +
+                            '&purchaseNumber=' + purchaseNumber +
+                            '&delivery_type=' + encodeURIComponent(type || '') +
+                            '&address_id=' + encodeURIComponent(addressId || '') +
+                            '&store_id=' + encodeURIComponent(storeId || '');
 
                         VisanetCheckout.configure({
                             sessiontoken: sessionToken,

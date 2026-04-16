@@ -134,25 +134,28 @@
                             <td class="column-date-td">
                                 {{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <i class="ri-more-fill"></i>
+                                </button>
                                 <div class="tabla-botones">
                                     {{-- === BOTÓN EDITAR === --}}
                                     @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']))
                                         @can('roles.edit')
-                                        <a href="{{ route('admin.roles.edit', $role) }}" class="boton boton-warning"
+                                        <a href="{{ route('admin.roles.edit', $role) }}" class="boton-sm boton-warning"
                                             title="Editar rol">
-                                            <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                                            <span class="boton-text">Editar</span>
+                                            <i class="ri-edit-circle-fill"></i>
+                                            <span class="boton-sm-text">Editar Rol</span>
                                         </a>
                                         @else
-                                        <button class="boton boton-warning disabled" title="No editable" disabled>
-                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
-                                            <span class="boton-text">Editar</span>
+                                        <button class="boton-sm boton-warning disabled" title="No editable" disabled>
+                                            <i class="ri-lock-fill"></i>
+                                            <span class="boton-sm-text">Editar Rol</span>
                                         </button>
                                         @endcan
                                     @else
-                                        <button class="boton boton-warning disabled" title="No editable" disabled>
-                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
-                                            <span class="boton-text">Editar</span>
+                                        <button class="boton-sm boton-warning disabled" title="No editable" disabled>
+                                            <i class="ri-lock-fill"></i>
+                                            <span class="boton-sm-text">Editar Rol</span>
                                         </button>
                                     @endif
 
@@ -163,45 +166,45 @@
                                             class="delete-form" data-entity="rol">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="boton boton-danger" title="Eliminar rol">
-                                                    <span class="boton-text">Borrar</span>
-                                                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                                <button type="submit" class="boton-sm boton-danger" title="Eliminar rol">
+                                                    <i class="ri-delete-bin-6-fill"></i>
+                                                    <span class="boton-sm-text">Borrar Rol</span>
                                                 </button>
                                             </form>
                                         @else
-                                            <button class="boton boton-danger disabled" title="No se puede eliminar"
+                                            <button class="boton-sm boton-danger disabled" title="No se puede eliminar"
                                                 disabled>
-                                                <span class="boton-text">Borrar</span>
-                                                <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                                <i class="ri-lock-fill"></i>
+                                                <span class="boton-sm-text">Borrar Rol</span>
                                             </button>
                                         @endcan
                                     @else
-                                        <button class="boton boton-danger disabled" title="No se puede eliminar"
+                                        <button class="boton-sm boton-danger disabled" title="No se puede eliminar"
                                             disabled>
-                                            <span class="boton-text">Borrar</span>
-                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                            <i class="ri-lock-fill"></i>
+                                            <span class="boton-sm-text">Borrar Rol</span>
                                         </button>
                                     @endif
                                     {{-- === BOTÓN PERMISOS === --}}
                                     @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']))
                                         @can('roles.edit')
-                                            <a href="{{ route('admin.roles.permissions', $role) }}" class="boton boton-info"
+                                            <a href="{{ route('admin.roles.permissions', $role) }}" class="boton-sm boton-info"
                                             title="Gestionar permisos">
-                                                <span class="boton-text">Permisos</span>
-                                                <span class="boton-icon"><i class="ri-key-2-fill"></i></span>
+                                                <i class="ri-key-2-fill"></i>
+                                                <span class="boton-sm-text">Configurar Permisos</span>
                                             </a>
                                         @else
-                                            <button class="boton boton-info disabled" title="No se pueden gestionar permisos"
+                                            <button class="boton-sm boton-info disabled" title="No se pueden gestionar permisos"
                                                 disabled>
-                                                <span class="boton-text">Permisos</span>
-                                                <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                                <i class="ri-lock-fill"></i>
+                                                <span class="boton-sm-text">Configurar Permisos</span>
                                             </button>
                                         @endcan
                                     @else
-                                        <button class="boton boton-info disabled" title="No se pueden gestionar permisos"
+                                        <button class="boton-sm boton-info disabled" title="No se pueden gestionar permisos"
                                             disabled>
-                                            <span class="boton-text">Permisos</span>
-                                            <span class="boton-icon"><i class="ri-lock-fill"></i></span>
+                                            <i class="ri-lock-fill"></i>
+                                            <span class="boton-sm-text">Configurar Permisos</span>
                                         </button>
                                     @endif
 

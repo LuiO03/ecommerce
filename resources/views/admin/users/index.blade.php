@@ -296,15 +296,20 @@
                                 </span>
                             </td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <i class="ri-more-fill"></i>
+                                </button>
                                 <div class="tabla-botones">
                                     <button class="boton-sm boton-info btn-ver-usuario"
                                         data-slug="{{ $user->slug }}" title="Ver Usuario">
                                         <i class="ri-eye-2-fill"></i>
+                                        <span class="boton-sm-text">Ver Usuario</span>
                                     </button>
                                     @can('usuarios.edit')
                                         <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning"
                                             title="Editar Usuario">
                                             <i class="ri-edit-circle-fill"></i>
+                                            <span class="boton-sm-text">Editar Usuario</span>
                                         </a>
                                     @endcan
 
@@ -317,18 +322,21 @@
                                                 <button type="submit" class="boton-sm boton-danger"
                                                     title="Eliminar Usuario">
                                                     <i class="ri-delete-bin-2-fill"></i>
+                                                    <span class="boton-sm-text">Eliminar Usuario</span>
                                                 </button>
                                             </form>
                                         @else
                                             <button class="boton-sm boton-danger disabled"
                                                 title="Sin permiso para eliminar" disabled>
                                                 <i class="ri-lock-fill"></i>
+                                                <span class="boton-sm-text">Eliminar Usuario</span>
                                             </button>
                                         @endcan
                                     @else
                                         <button class="boton-sm boton-danger disabled"
                                             title="No puedes eliminar tu propia cuenta" disabled>
                                             <i class="ri-lock-fill"></i>
+                                            <span class="boton-sm-text">Eliminar Usuario</span>
                                         </button>
                                     @endif
                                 </div>

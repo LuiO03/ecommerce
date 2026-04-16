@@ -30,7 +30,6 @@
         <div class="form-row-fit">
             <div class="meta-group">
                 <h2 class="card-title">Información de la orden</h2>
-                <hr class="w-full my-0 border-default">
                 <div class="meta-row-fit">
                     <div><strong>ID:</strong> {{ $order->id }}</div>
                     <div><strong>N° de orden:</strong> {{ $order->order_number }}</div>
@@ -95,7 +94,6 @@
             </div>
             <div class="meta-group">
                 <h2 class="card-title">Información del cliente</h2>
-                <hr class="w-full my-0 border-default">
                 <div class="meta-row-fit">
 
                     <div>
@@ -115,7 +113,6 @@
 
             <div class="meta-group">
                 <h2 class="card-title">Datos de envío</h2>
-                <hr class="w-full my-0 border-default">
                 <div class="meta-row-fit">
                     <div><strong>Dirección:</strong> {{ $order->shipping_address }}</div>
                     <div><strong>Ciudad:</strong> {{ $order->shipping_city ?? '—' }}</div>
@@ -124,6 +121,9 @@
             </div>
         </div>
         <div class="form-body">
+            <div class="card-header">
+                <span class="card-title">Productos</span>
+            </div>
             <div class="tabla-wrapper">
                 <table class="tabla-general w-full tabla-normal" id="table">
                     <thead>
@@ -181,7 +181,6 @@
         <div class="form-row-fill">
             <div class="meta-group">
                 <h2 class="card-title">Resumen de totales</h2>
-                <hr class="w-full my-0 border-default">
                 <div class="meta-row-fit">
                     <div>
                         <strong>Subtotal:</strong>

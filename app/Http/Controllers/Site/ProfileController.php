@@ -37,7 +37,6 @@ class ProfileController extends Controller
 
         // Direcciones (resumen + pestaña de direcciones)
         $addresses = Addresses::where('user_id', $user->id)
-            ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->get();
 
@@ -120,8 +119,6 @@ class ProfileController extends Controller
             'receiver_phone'   => 'required|string|min:6|max:20',
         ]);
 
-        $hasAnyAddress = Addresses::where('user_id', $user->id)->exists();
-
         $payload = [
             'user_id'          => $user->id,
             'type'             => $validated['type'],
@@ -134,13 +131,11 @@ class ProfileController extends Controller
                 ? ucwords(mb_strtolower($validated['receiver_last_name']))
                 : null,
             'receiver_phone'   => $validated['receiver_phone'],
-            'is_default'       => ! $hasAnyAddress,
         ];
 
         Addresses::create($payload);
 
         $addresses = Addresses::where('user_id', $user->id)
-            ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->get();
 
@@ -196,7 +191,6 @@ class ProfileController extends Controller
         ]);
 
         $addresses = Addresses::where('user_id', $user->id)
-            ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->get();
 
@@ -204,43 +198,6 @@ class ProfileController extends Controller
             'type'    => 'success',
             'title'   => 'Dirección actualizada',
             'message' => 'Tu dirección se ha actualizado correctamente.',
-        ];
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'status' => 'success',
-                'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
-                'toast'  => $toast,
-            ]);
-        }
-
-        Session::flash('toast', $toast);
-
-        return redirect()->route('site.profile.index', ['section' => 'addresses']);
-    }
-
-    public function setDefaultAddress(Request $request, Addresses $address)
-    {
-        if (! Auth::check() || $address->user_id !== Auth::id()) {
-            return $request->wantsJson()
-                ? response()->json(['message' => 'Forbidden.'], 403)
-                : abort(403);
-        }
-
-        $user = Auth::user();
-
-        Addresses::where('user_id', $user->id)->update(['is_default' => false]);
-        $address->update(['is_default' => true]);
-
-        $addresses = Addresses::where('user_id', $user->id)
-            ->orderByDesc('is_default')
-            ->orderByDesc('id')
-            ->get();
-
-        $toast = [
-            'type'    => 'success',
-            'title'   => 'Dirección principal actualizada',
-            'message' => 'Hemos actualizado tu dirección principal.',
         ];
 
         if ($request->wantsJson()) {
@@ -269,7 +226,6 @@ class ProfileController extends Controller
         $address->delete();
 
         $addresses = Addresses::where('user_id', $user->id)
-            ->orderByDesc('is_default')
             ->orderByDesc('id')
             ->get();
 

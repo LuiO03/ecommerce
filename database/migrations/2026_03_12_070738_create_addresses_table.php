@@ -22,9 +22,6 @@ return new class extends Migration
             $table->string('receiver_name');
             $table->string('receiver_last_name')->nullable();
             $table->string('receiver_phone');
-            $table->boolean('is_default')
-            ->default(false)
-            ->comment('Dirección predeterminada');
             $table->timestamps();
         });
     }

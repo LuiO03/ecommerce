@@ -273,15 +273,20 @@
                                 </span>
                             </td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <i class="ri-more-fill"></i>
+                                </button>
                                 <div class="tabla-botones">
                                     <button class="boton-sm boton-info btn-ver-categoria"
                                         data-slug="{{ $cat->slug }}">
                                         <i class="ri-eye-2-fill"></i>
+                                        <span class="boton-sm-text">Ver Categoría</span>
                                     </button>
                                     @can('categorias.edit')
                                         <a href="{{ route('admin.categories.edit', $cat) }}"
                                             class="boton-sm boton-warning">
                                             <i class="ri-edit-circle-fill"></i>
+                                            <span class="boton-sm-text">Editar Categoría</span>
                                         </a>
                                     @endcan
                                     @can('categorias.delete')
@@ -291,6 +296,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="boton-sm boton-danger">
                                                 <i class="ri-delete-bin-2-fill"></i>
+                                                <span class="boton-sm-text">Eliminar Categoría</span>
                                             </button>
                                         </form>
                                     @endcan

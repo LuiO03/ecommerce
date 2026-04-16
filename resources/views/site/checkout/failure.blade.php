@@ -1,5 +1,5 @@
 <x-app-layout>
-
+    @section('title', 'Pago no procesado')
     @php
         $response = $niubiz['response'] ?? null;
         $dataMap = $response['dataMap'] ?? [];

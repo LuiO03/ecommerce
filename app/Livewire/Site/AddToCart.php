@@ -5,7 +5,7 @@ namespace App\Livewire\Site;
 use Livewire\Component;
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Variant;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class AddToCart extends Component
@@ -64,10 +64,46 @@ class AddToCart extends Component
             $quantity = 999;
         }
 
+        $product = Product::with(['variants' => function ($query) {
+            $query->where('status', true);
+        }])->find($this->productId);
+
+        if (! $product) {
+            $this->dispatch('toast', [
+                'type' => 'danger',
+                'title' => 'Producto no disponible',
+                'message' => 'No se pudo agregar este producto al carrito.',
+            ]);
+
+            return;
+        }
+
+        $hasActiveVariants = $product->variants->isNotEmpty();
+
+        if (! $hasActiveVariants) {
+            $this->dispatch('toast', [
+                'type' => 'warning',
+                'title' => 'Sin stock',
+                'message' => 'Este producto no tiene variantes disponibles para compra.',
+            ]);
+
+            return;
+        }
+
+        if ($hasActiveVariants && ! $variantId) {
+            $this->dispatch('toast', [
+                'type' => 'warning',
+                'title' => 'Selecciona una variacion',
+                'message' => 'Debes elegir una opcion disponible antes de agregar al carrito.',
+            ]);
+
+            return;
+        }
+
         // Limitar por stock de la variante cuando aplica
         $maxAddable = $quantity;
         if ($variantId) {
-            $variant = Variant::find($variantId);
+            $variant = $product->variants->firstWhere('id', $variantId);
             if ($variant) {
                 $stock = (int) $variant->stock;
 
@@ -93,6 +129,14 @@ class AddToCart extends Component
                 if ($maxAddable > $remaining) {
                     $maxAddable = $remaining;
                 }
+            } else {
+                $this->dispatch('toast', [
+                    'type' => 'warning',
+                    'title' => 'Variacion no valida',
+                    'message' => 'Selecciona una variacion valida para continuar.',
+                ]);
+
+                return;
             }
         }
 

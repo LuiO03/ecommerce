@@ -11,11 +11,17 @@ class ProductController extends Controller
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->with(['category', 'images'])->firstOrFail();
+        $hasActiveVariants = $product->variants()
+            ->where('status', true)
+            ->exists();
+
         $variants = $product->variants()
             ->where('status', true)
             ->where('stock', '>', 0)
             ->with('features.option')
             ->get();
+
+        $hasAvailableVariants = $variants->isNotEmpty();
 
         $variantOptions = $variants
             ->flatMap(fn ($variant) => $variant->features)
@@ -83,7 +89,9 @@ class ProductController extends Controller
             'breadcrumbItems',
             'variants',
             'variantOptions',
-            'variantsPayload'
+            'variantsPayload',
+            'hasActiveVariants',
+            'hasAvailableVariants'
         ));
     }
 }

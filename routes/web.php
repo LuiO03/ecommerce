@@ -153,7 +153,6 @@
         Route::get('/mi-cuenta/direcciones', [SiteProfileController::class, 'addresses'])->name('site.profile.addresses');
         Route::post('/mi-cuenta/direcciones', [SiteProfileController::class, 'storeAddress'])->name('site.profile.addresses.store');
         Route::put('/mi-cuenta/direcciones/{address}', [SiteProfileController::class, 'updateAddress'])->name('site.profile.addresses.update');
-        Route::post('/mi-cuenta/direcciones/{address}/default', [SiteProfileController::class, 'setDefaultAddress'])->name('site.profile.addresses.default');
         Route::delete('/mi-cuenta/direcciones/{address}', [SiteProfileController::class, 'destroyAddress'])->name('site.profile.addresses.destroy');
         Route::get('/mi-cuenta/seguridad', [SiteProfileController::class, 'security'])->name('site.profile.security');
         Route::post('/mi-cuenta/seguridad/logout-session', [SiteProfileController::class, 'logoutSession'])->name('site.profile.logout-session');
@@ -176,7 +175,6 @@
     Route::post('/shipping/addresses', [ShippingController::class, 'store'])->name('shipping.addresses.store');
     Route::get('/shipping/addresses/{address}/edit', [ShippingController::class, 'edit'])->name('shipping.addresses.edit');
     Route::put('/shipping/addresses/{address}', [ShippingController::class, 'update'])->name('shipping.addresses.update');
-    Route::post('/shipping/addresses/{address}/default', [ShippingController::class, 'setDefault'])->name('shipping.addresses.default');
     Route::delete('/shipping/addresses/{address}', [ShippingController::class, 'destroy'])->name('shipping.addresses.destroy');
 
     // Login administrativo (único login del sistema)

@@ -235,6 +235,7 @@
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-top: 1rem;
 }
 
 .address-card {
@@ -245,12 +246,10 @@
     gap: 1rem;
     height: fit-content;
     position: relative;
-}
-
-.address-card--default {
-    border-color: var(--color-success);
-    background-color: var(--color-success-pastel);
-    padding: 1.2rem 1rem 1rem 1rem;
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        background-color 0.3s ease;
 }
 
 .address-card--default  .address-card-title-wrapper{
@@ -269,13 +268,6 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-}
-
-.address-card-body .badge, .address-card-body .badge:hover{
-    position: absolute;
-    top: -15px;
-    right: 50%;
-    transform: translateX(50%);
 }
 
 .address-card-body li{
@@ -309,6 +301,7 @@
 .address-reference,
 .address-phone {
     font-size: var(--font-size-xs);
+    color: var(--color-muted);
 }
 
 .profile-section {

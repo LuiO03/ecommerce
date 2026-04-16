@@ -189,8 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const variantRoot = document.querySelector('[data-variant-root]');
     const variantsDataEl = document.getElementById('product-variants-data');
 
-    if (variantRoot && variantsDataEl) {
-        const variants = JSON.parse(variantsDataEl.textContent || '[]');
+    if (variantRoot) {
+        const variants = variantsDataEl ? JSON.parse(variantsDataEl.textContent || '[]') : [];
+        const hasVariants = variantRoot.dataset.hasVariants === '1';
+        const hasAvailableVariants = variantRoot.dataset.hasAvailableVariants === '1';
         const basePrice = parseFloat(variantRoot.dataset.basePrice || '0');
         const discount = parseFloat(variantRoot.dataset.discount || '0');
         const priceCurrent = variantRoot.querySelector('[data-price-current]');
@@ -278,7 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const maxQty = typeof currentStock === 'number' && currentStock > 0 ? currentStock : 1;
+            const maxQty = typeof currentStock === 'number'
+                ? Math.max(currentStock, 1)
+                : 999;
 
             if (currentQuantity < 1) {
                 currentQuantity = 1;
@@ -315,6 +319,43 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const updateVariant = () => {
+            // Producto sin variantes activas: sin stock comprable.
+            if (!hasVariants) {
+                updatePrice(basePrice);
+                if (stockEl) {
+                    stockEl.textContent = 'Sin stock';
+                }
+                if (helperEl) {
+                    helperEl.textContent = 'Este producto no tiene variantes disponibles para compra.';
+                }
+                updateAddToCart(false, outOfStockText);
+                currentStock = 0;
+                if (livewireVariantInput) {
+                    livewireVariantInput.value = '';
+                    livewireVariantInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                updateQuantityUI();
+                return;
+            }
+
+            // Producto con variantes pero sin disponibilidad.
+            if (hasVariants && !hasAvailableVariants) {
+                if (stockEl) {
+                    stockEl.textContent = 'Sin stock';
+                }
+                if (helperEl) {
+                    helperEl.textContent = 'No hay variantes disponibles en este momento.';
+                }
+                updateAddToCart(false, outOfStockText);
+                currentStock = 0;
+                if (livewireVariantInput) {
+                    livewireVariantInput.value = '';
+                    livewireVariantInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                updateQuantityUI();
+                return;
+            }
+
             if (selection.size < optionCount) {
                 updatePrice(basePrice);
                 if (helperEl) {

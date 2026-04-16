@@ -294,13 +294,13 @@
                                     <button class="boton-sm boton-info btn-ver-post" data-slug="{{ $post->slug }}"
                                         title="Ver Post">
                                         <i class="ri-eye-2-fill"></i>
-                                        <span class="inline md:hidden">Ver</span>
+                                        <span class="boton-sm-text">Ver Post</span>
                                     </button>
                                     @can('posts.edit')
                                         <a href="{{ route('admin.posts.edit', $post) }}" class="boton-sm boton-warning"
                                             title="Editar Post">
                                             <i class="ri-edit-circle-fill"></i>
-                                            <span class="inline md:hidden">Editar</span>
+                                            <span class="boton-sm-text">Editar Post</span>
                                         </a>
                                     @endcan
 
@@ -311,7 +311,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="boton-sm boton-danger" title="Eliminar Post">
                                                 <i class="ri-delete-bin-2-fill"></i>
-                                                <span class="inline md:hidden">Eliminar</span>
+                                                <span class="boton-sm-text">Eliminar Post</span>
                                             </button>
                                         </form>
                                     @endcan
@@ -324,7 +324,7 @@
                                                 <button type="button" class="boton-sm boton-success btn-approve"
                                                     title="Aprobar Post">
                                                     <i class="ri-send-plane-fill"></i>
-                                                    <span class="inline md:hidden">Aprobar</span>
+                                                    <span class="boton-sm-text">Aprobar Post</span>
                                                 </button>
                                             </form>
 
@@ -334,7 +334,7 @@
                                                 <button type="button" class="boton-sm boton-danger btn-reject"
                                                     title="Rechazar Post">
                                                     <i class="ri-close-circle-fill"></i>
-                                                    <span class="inline md:hidden">Rechazar</span>
+                                                    <span class="boton-sm-text">Rechazar Post</span>
                                                 </button>
                                             </form>
                                         @endif

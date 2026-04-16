@@ -31,6 +31,7 @@ import {
   initGalleryEditWithConfig
 } from './utils/gallery-manager.js';
 import { initMobileFiltersPanel } from './utils/mobile-filters-panel.js';
+import { initMobileActionsMenu } from './utils/mobile-actions-menu.js';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
@@ -54,4 +55,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initTextareaAutosize();
   initConnectionStatusBar();
   initMobileFiltersPanel();
+  initMobileActionsMenu();
 });

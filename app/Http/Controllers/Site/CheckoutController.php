@@ -42,7 +42,6 @@ class CheckoutController extends Controller
 
             // Direcciones del usuario para selección rápida en checkout
             $addresses = Addresses::where('user_id', $userId)
-                ->orderByDesc('is_default')
                 ->orderByDesc('id')
                 ->get();
 
@@ -240,7 +239,6 @@ class CheckoutController extends Controller
 
                         if (! $address) {
                             $address = Addresses::where('user_id', $user->id)
-                                ->orderByDesc('is_default')
                                 ->orderByDesc('id')
                                 ->first();
                         }

@@ -277,6 +277,7 @@
     gap: 5px;
     font-size: var(--font-size-sm);
     padding: 5px 10px;
+    border-radius: var(--radius-input);
 }
 
 .product-status i {

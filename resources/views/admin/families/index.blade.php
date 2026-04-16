@@ -218,17 +218,20 @@
                             @endcan
                             <td>{{ $family->created_at ? $family->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <i class="ri-more-fill"></i>
+                                </button>
                                 <div class="tabla-botones">
-                                    <button class="boton boton-info btn-ver-familia" data-slug="{{ $family->slug }}"
+                                    <button class="boton-sm boton-info btn-ver-familia" data-slug="{{ $family->slug }}"
                                         title="Ver Familia">
-                                        <span class="boton-text">Ver</span>
-                                        <span class="boton-icon"><i class="ri-eye-2-fill"></i></span>
+                                        <i class="ri-eye-2-fill"></i>
+                                        <span class="boton-sm-text">Ver Familia</span>
                                     </button>
                                     @can('familias.edit')
                                         <a href="{{ route('admin.families.edit', $family) }}" title="Editar Familia"
-                                            class="boton boton-warning">
-                                            <span class="boton-icon"><i class="ri-edit-circle-fill"></i></span>
-                                            <span class="boton-text">Editar</span>
+                                            class="boton-sm boton-warning">
+                                            <i class="ri-edit-circle-fill"></i>
+                                            <span class="boton-sm-text">Editar Familia</span>
                                         </a>
                                     @endcan
                                     @can('familias.delete')
@@ -236,9 +239,9 @@
                                             class="delete-form" data-entity="familia">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" title="Eliminar Familia" class="boton boton-danger">
-                                                <span class="boton-text">Borrar</span>
-                                                <span class="boton-icon"><i class="ri-delete-bin-2-fill"></i></span>
+                                            <button type="submit" title="Eliminar Familia" class="boton-sm boton-danger">
+                                                <i class="ri-delete-bin-2-fill"></i>
+                                                <span class="boton-sm-text">Eliminar Familia</span>
                                             </button>
                                         </form>
                                     @endcan

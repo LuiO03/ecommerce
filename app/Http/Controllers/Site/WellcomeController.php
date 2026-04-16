@@ -21,6 +21,10 @@ class WellcomeController extends Controller
 
         $lastProducts = Product::with('category', 'images')
             ->where('status', true)
+            ->whereHas('variants', function ($query) {
+                $query->where('status', true)
+                    ->where('stock', '>', 0);
+            })
             ->latest('created_at')
             ->take(8)
             ->get()

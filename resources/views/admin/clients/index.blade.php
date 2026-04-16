@@ -277,10 +277,14 @@
                                 </span>
                             </td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <i class="ri-more-fill"></i>
+                                </button>
                                 <div class="tabla-botones">
                                     <button class="boton-sm boton-info btn-ver-usuario"
                                         data-slug="{{ $user->slug }}" title="Ver Cliente">
                                         <i class="ri-eye-2-fill"></i>
+                                        <span class="boton-sm-text">Ver Cliente</span>
                                     </button>
                                     @if (Auth::id() !== $user->id)
                                         @can('clientes.delete')
@@ -291,18 +295,21 @@
                                                 <button type="submit" class="boton-sm boton-danger"
                                                     title="Eliminar Cliente">
                                                     <i class="ri-delete-bin-2-fill"></i>
+                                                    <span class="boton-sm-text">Eliminar Cliente</span>
                                                 </button>
                                             </form>
                                         @else
                                             <button class="boton-sm boton-danger disabled"
                                                 title="Sin permiso para eliminar" disabled>
                                                 <i class="ri-lock-fill"></i>
+                                                <span class="boton-sm-text">Sin permiso</span>
                                             </button>
                                         @endcan
                                     @else
                                         <button class="boton-sm boton-danger disabled"
                                             title="No puedes eliminar tu propia cuenta" disabled>
                                             <i class="ri-lock-fill"></i>
+                                            <span class="boton-sm-text">No puedes eliminar tu cuenta</span>
                                         </button>
                                     @endif
                                 </div>

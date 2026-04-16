@@ -331,11 +331,14 @@
                                 {{ optional($audit->created_at)->format('d/m/Y H:i') }}
                             </td>
                             <td class="column-actions-td">
+                                <button class="boton-show-actions">
+                                    <i class="ri-more-fill"></i>
+                                </button>
                                 <div class="tabla-botones">
-                                    <button class="boton boton-info btn-ver-audit" data-id="{{ $audit->id }}"
+                                    <button class="boton-sm boton-info btn-ver-audit" data-id="{{ $audit->id }}"
                                         title="Ver cambios">
-                                        <span class="boton-text">Ver cambios</span>
-                                        <span class="boton-icon"><i class="ri-eye-2-fill"></i></span>
+                                        <i class="ri-eye-2-fill"></i>
+                                        <span class="boton-sm-text">Ver cambios</span>
                                     </button>
                                 </div>
                             </td>

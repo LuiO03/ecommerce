@@ -1,5 +1,5 @@
 <x-app-layout>
-
+    @section('title', 'Pago exitoso')
     <section class="site-container checkout-payment-page">
         @if (!empty($response))
             <div class="checkout-payment-card payment-card-success">

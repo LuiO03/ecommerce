@@ -27,7 +27,7 @@
         @else
             <div class="addresses-grid">
                 @foreach ($addresses as $address)
-                    <article class="address-card {{ $address->is_default ? 'address-card--default' : '' }}">
+                    <article class="address-card">
                         <header class="address-card-header">
                             <div class="address-card-title-wrapper"
                                 title="{{ $address->type === 'office' ? 'Dirección de oficina' : 'Dirección de casa' }}">
@@ -41,12 +41,6 @@
                             </div>
                         </header>
                         <div class="address-card-body">
-                            @if ($address->is_default)
-                                <span class="badge bg-success">
-                                    <i class="ri-lock-star-fill"></i>
-                                    Principal
-                                </span>
-                            @endif
                             <span class="card-title">
                                 {{ $address->receiver_name }}
                                 {{ $address->receiver_last_name }}
@@ -57,7 +51,6 @@
                                 <li class="address-reference">{{ $address->reference }}</li>
                                 <li class="address-phone">{{ $address->receiver_phone }}</li>
                             </ul>
-
                         </div>
                         <div class="address-card-actions">
                             <button
@@ -91,20 +84,6 @@
                                     <i class="ri-delete-bin-5-fill"></i>
                                 </button>
                             </form>
-                            @if (!$address->is_default)
-                                <form method="POST" action="{{ route('site.profile.addresses.default', $address) }}" class="address-default-form">
-                                    @csrf
-                                    <button
-                                        type="submit"
-                                        class="boton-pastel card-success address-default-btn"
-                                        title="Establecer como principal"
-                                        aria-label="Establecer como principal"
-                                        data-address-default-url="{{ route('site.profile.addresses.default', $address) }}"
-                                    >
-                                        <i class="ri-star-fill"></i>
-                                    </button>
-                                </form>
-                            @endif
                         </div>
                     </article>
                 @endforeach
