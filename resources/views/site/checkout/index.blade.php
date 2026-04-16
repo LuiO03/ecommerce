@@ -23,7 +23,7 @@
 
     <section class="site-container checkout-page">
         <div class="section-header">
-            <h1>Checkout</h1>
+            <h1 class="section-title">Checkout</h1>
             <p>
                 Completa los pasos para confirmar tu pedido: entrega, dirección o tienda, pago y resumen final.
             </p>
@@ -49,33 +49,33 @@
                 $addresses = $addresses ?? collect();
                 $hasAddresses = $addresses->isNotEmpty();
                 $defaultAddressId = optional($addresses->first())->id;
+                $addressesPayload = $addresses
+                    ->map(function ($address) {
+                        return [
+                            'id' => $address->id,
+                            'type' => $address->type,
+                            'address_line' => $address->address_line,
+                            'district' => $address->district,
+                            'reference' => $address->reference,
+                            'receiver_name' => $address->receiver_name,
+                            'receiver_last_name' => $address->receiver_last_name,
+                            'receiver_phone' => $address->receiver_phone,
+                            'update_url' => route('site.profile.addresses.update', $address),
+                            'delete_url' => route('site.profile.addresses.destroy', $address),
+                        ];
+                    })
+                    ->values();
             @endphp
 
-            {{-- Indicador de progreso (solo UI, 3 pasos principales) --}}
-            <div class="checkout-progress">
-                <div class="checkout-progress-step is-active" data-step="1">
-                    <span class="checkout-progress-index">1</span>
-                    <span class="checkout-progress-label">Tipo de entrega</span>
-                </div>
-                <div class="checkout-progress-separator"></div>
-                <div class="checkout-progress-step" data-step="2">
-                    <span class="checkout-progress-index">2</span>
-                    <span class="checkout-progress-label">Dirección o tienda</span>
-                </div>
-                <div class="checkout-progress-separator"></div>
-                <div class="checkout-progress-step" data-step="3">
-                    <span class="checkout-progress-index">3</span>
-                    <span class="checkout-progress-label">Pago y resumen</span>
-                </div>
-            </div>
-
-            <div class="checkout-flow">
+            <div class="checkout-layout">
                 <div class="checkout-flow-main">
                     {{-- PASO 1: Tipo de entrega --}}
                     <section class="checkout-section" id="checkoutStepDelivery">
-                        <div class="card-header">
-                            <span class="card-title">1. ¿Cómo quieres recibir tu pedido?</span>
-                            <p class="card-description">Selecciona una opción para continuar.</p>
+                        <div class="card-header-container">
+                            <div class="card-header">
+                                <span class="card-title">1. ¿Cómo quieres recibir tu pedido?</span>
+                                <p class="card-description">Selecciona una opción para continuar.</p>
+                            </div>
                         </div>
 
                         <div class="checkout-cards-grid" data-delivery-type-root>
@@ -105,108 +105,204 @@
                                 </div>
                             </label>
                         </div>
-
-                        <div class="checkout-wizard-actions">
-                            <button type="button" class="site-btn site-btn-primary" data-checkout-next="1">
-                                Continuar
-                            </button>
-                        </div>
                     </section>
 
                     {{-- PASO 2A: Dirección (solo delivery) --}}
-                    <section class="checkout-section" id="checkoutStepAddress" data-step-dependent="delivery">
+                    <section class="checkout-section" id="checkoutStepAddress" data-step-dependent="delivery"
+                        data-checkout-addresses-root data-store-url="{{ route('site.profile.addresses.store') }}"
+                        data-initial-addresses='@json($addressesPayload)'
+                        data-selected-address-id="{{ $defaultAddressId }}">
                         <div class="card-header-container">
                             <div class="card-header">
                                 <span class="card-title">2. Dirección de envío</span>
-                                <p class="card-description">Selecciona una de tus direcciones guardadas.</p>
+                                <p class="card-description">Selecciona, crea, edita o elimina direcciones sin salir
+                                    del
+                                    checkout.</p>
                             </div>
+                            @if ($hasAddresses)
                             <div class="card-header-actions">
-                                <button type="button" class="boton-form boton-success"
-                                    data-address-modal-open="create">
+                                <button type="button" class="boton-form boton-success" data-address-form-open>
                                     <span class="boton-form-icon"><i class="ri-map-pin-2-fill"></i></span>
                                     <span class="boton-form-text">Agregar dirección</span>
                                 </button>
                             </div>
+
+                            @endif
                         </div>
-                        @if ($hasAddresses)
-                            <div class="checkout-cards-grid" data-address-list>
-                                @foreach ($addresses as $address)
-                                    <label class="checkout-card">
-                                        <input type="radio" name="address_id" value="{{ $address->id }}"
-                                            class="sr-only" {{ $address->id === $defaultAddressId ? 'checked' : '' }}>
+                        <p class="checkout-addresses-feedback card-description is-hidden" data-address-feedback></p>
 
-                                        <div class="checkout-card-icon"
-                                            title="{{ $address->type === 'office' ? 'Dirección de oficina' : 'Dirección de casa' }}">
+                        <div class="checkout-cards-grid {{ $hasAddresses ? '' : 'is-hidden' }}" data-address-list>
+                            @foreach ($addresses as $address)
+                                <label class="checkout-card">
+                                    <input type="radio" name="address_id" value="{{ $address->id }}" class="sr-only"
+                                        {{ $address->id === $defaultAddressId ? 'checked' : '' }}>
 
-                                            @if ($address->type === 'office')
-                                                <i class="ri-building-2-line"></i>
-                                                <span class="address-card-title">Oficina</span>
-                                            @else
-                                                <i class="ri-home-2-line"></i>
-                                                <span class="address-card-title">Casa</span>
-                                            @endif
-                                        </div>
-                                        <div class="checkout-card-body">
-                                            <span class="card-title">
-                                                {{ $address->receiver_name }}
-                                                {{ $address->receiver_last_name }}
-                                            </span>
-                                            <ul>
-                                                <li class="address-line">{{ $address->address_line }}</li>
-                                                <li class="address-city">{{ $address->district }}</li>
-                                                <li class="address-reference">{{ $address->reference }}</li>
-                                                <li class="address-phone">{{ $address->receiver_phone }}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="address-card-actions">
-                                            <button type="button" class="boton-pastel card-warning address-edit-btn"
-                                                title="Editar dirección" aria-label="Editar dirección"
-                                                data-address-modal-open="edit" data-address-id="{{ $address->id }}"
-                                                data-address-type="{{ $address->type }}"
-                                                data-address-line="{{ e($address->address_line) }}"
-                                                data-address-district="{{ e($address->district) }}"
-                                                data-address-reference="{{ e($address->reference) }}"
-                                                data-address-receiver-name="{{ e($address->receiver_name) }}"
-                                                data-address-receiver-last-name="{{ e($address->receiver_last_name) }}"
-                                                data-address-receiver-phone="{{ e($address->receiver_phone) }}"
-                                                data-update-url="{{ route('site.profile.addresses.update', $address) }}">
-                                                <i class="ri-pencil-fill"></i>
-                                            </button>
-                                            <form method="POST"
-                                                action="{{ route('site.profile.addresses.destroy', $address) }}"
-                                                class="address-delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="boton-pastel card-danger address-delete-btn"
-                                                    title="Eliminar dirección" aria-label="Eliminar dirección"
-                                                    data-address-delete-url="{{ route('site.profile.addresses.destroy', $address) }}">
-                                                    <i class="ri-delete-bin-5-fill"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </label>
-                                @endforeach
+                                    <div class="checkout-card-icon"
+                                        title="{{ $address->type === 'office' ? 'Dirección de oficina' : 'Dirección de casa' }}">
+
+                                        @if ($address->type === 'office')
+                                            <i class="ri-building-2-line"></i>
+                                            <span class="address-card-title">Oficina</span>
+                                        @else
+                                            <i class="ri-home-2-line"></i>
+                                            <span class="address-card-title">Casa</span>
+                                        @endif
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="card-title">
+                                            {{ $address->receiver_name }}
+                                            {{ $address->receiver_last_name }}
+                                        </span>
+                                        <ul>
+                                            <li class="address-line">{{ $address->address_line }}</li>
+                                            <li class="address-city">{{ $address->district }}</li>
+                                            <li class="address-reference">{{ $address->reference }}</li>
+                                            <li class="address-phone">{{ $address->receiver_phone }}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="address-card-actions">
+                                        <button type="button" class="boton-pastel card-warning address-edit-btn"
+                                            title="Editar dirección" aria-label="Editar dirección"
+                                            data-address-id="{{ $address->id }}"
+                                            data-address-type="{{ $address->type }}"
+                                            data-address-line="{{ e($address->address_line) }}"
+                                            data-address-district="{{ e($address->district) }}"
+                                            data-address-reference="{{ e($address->reference) }}"
+                                            data-address-receiver-name="{{ e($address->receiver_name) }}"
+                                            data-address-receiver-last-name="{{ e($address->receiver_last_name) }}"
+                                            data-address-receiver-phone="{{ e($address->receiver_phone) }}"
+                                            data-update-url="{{ route('site.profile.addresses.update', $address) }}">
+                                            <i class="ri-pencil-fill"></i>
+                                        </button>
+                                        <button type="button" class="boton-pastel card-danger address-delete-btn"
+                                            title="Eliminar dirección" aria-label="Eliminar dirección"
+                                            data-address-delete-url="{{ route('site.profile.addresses.destroy', $address) }}">
+                                            <i class="ri-delete-bin-5-fill"></i>
+                                        </button>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+
+                        <div class="checkout-address-form-panel {{ $hasAddresses ? 'is-hidden' : '' }}"
+                            data-address-form-panel>
+                            <div class="card-header mb-2">
+                                <span class="card-title"
+                                    data-address-form-title>{{ $hasAddresses ? 'Agregar dirección' : 'Nueva dirección' }}</span>
+                                <p class="card-description" data-address-form-description>Completa los datos de
+                                    entrega.</p>
                             </div>
-                        @else
-                            <p class="card-description">
-                                Aún no tienes direcciones guardadas. Antes de pagar, registra al menos una.
-                            </p>
-                            <div class="checkout-inline-actions">
-                                <a href="{{ route('site.profile.addresses') }}" class="site-btn site-btn-outline">
-                                    <i class="ri-map-pin-add-line"></i>
-                                    Agregar nueva dirección
-                                </a>
-                            </div>
-                        @endif
 
-                        <div class="checkout-wizard-actions">
-                            <button type="button" class="site-btn site-btn-outline" data-checkout-prev="2">
-                                Volver al paso anterior
-                            </button>
-                            <button type="button" class="site-btn site-btn-primary" data-checkout-next="2">
-                                Continuar a pago
-                            </button>
+                            <form id="checkoutInlineAddressForm" class="checkout-inline-address-form" novalidate>
+                                @csrf
+                                <input type="hidden" name="_method" value="POST" data-address-form-method>
+                                <div class="form-row-fit">
+                                    <div class="input-group">
+                                        <label class="label-form" for="checkout_inline_type">
+                                            Tipo de dirección <i class="ri-asterisk text-accent"></i>
+                                        </label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-home-4-line input-icon"></i>
+                                            <select id="checkout_inline_type" class="select-form" name="type"
+                                                data-validate="selected">
+                                                <option value="home">Casa</option>
+                                                <option value="office">Oficina</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <label class="label-form" for="checkout_inline_address_line">
+                                            Dirección completa <i class="ri-asterisk text-accent"></i>
+                                        </label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-map-pin-line input-icon"></i>
+                                            <input id="checkout_inline_address_line" type="text"
+                                                class="input-form" name="address_line"
+                                                placeholder="Av. Siempre Viva 742, Interior 3"
+                                                data-validate="required|min:5|max:255" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-fit">
+                                    <div class="input-group">
+                                        <label class="label-form" for="checkout_inline_district">
+                                            Distrito / Ciudad <i class="ri-asterisk text-accent"></i>
+                                        </label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-building-2-line input-icon"></i>
+                                            <input id="checkout_inline_district" type="text" class="input-form"
+                                                name="district" placeholder="Ej: Miraflores, Lima"
+                                                data-validate="required|min:3|max:120" autocomplete="off" />
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <label class="label-form" for="checkout_inline_reference">
+                                            Referencia <i class="ri-asterisk text-accent"></i>
+                                        </label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-map-pin-2-line input-icon"></i>
+                                            <textarea id="checkout_inline_reference" class="input-form" name="reference"
+                                                placeholder="Ej: Casa de fachada azul, portón negro, cerca al parque" data-validate="required|max:255"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-fill">
+                                    <div class="input-group">
+                                        <label class="label-form" for="checkout_inline_receiver_name">
+                                            Nombre destinatario <i class="ri-asterisk text-accent"></i>
+                                        </label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-user-3-line input-icon"></i>
+                                            <input id="checkout_inline_receiver_name" type="text"
+                                                class="input-form" name="receiver_name"
+                                                placeholder="Nombre de quien recibirá"
+                                                data-validate="required|min:3|max:255" autocomplete="off" />
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <label class="label-form" for="checkout_inline_receiver_last_name">
+                                            Apellido destinatario
+                                        </label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-user-3-line input-icon"></i>
+                                            <input id="checkout_inline_receiver_last_name" type="text"
+                                                class="input-form" name="receiver_last_name"
+                                                placeholder="Apellido de quien recibirá" data-validate="min:2|max:255"
+                                                autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-fill">
+                                    <div class="input-group">
+                                        <label class="label-form" for="checkout_inline_receiver_phone">
+                                            Teléfono <i class="ri-asterisk text-accent"></i>
+                                        </label>
+                                        <div class="input-icon-container">
+                                            <i class="ri-phone-line input-icon"></i>
+                                            <input id="checkout_inline_receiver_phone" type="text"
+                                                class="input-form" name="receiver_phone"
+                                                placeholder="Celular o teléfono de contacto"
+                                                data-validate="required|phone|max:20" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="checkout-inline-actions">
+                                    <button type="button" class="site-btn site-btn-outline" data-address-form-cancel>
+                                        Cancelar
+                                    </button>
+                                    <button type="submit" class="site-btn site-btn-primary"
+                                        data-inline-address-submit>
+                                        Guardar dirección
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </section>
 
@@ -259,15 +355,6 @@
                                 </div>
                             </label>
                         </div>
-
-                        <div class="checkout-wizard-actions">
-                            <button type="button" class="site-btn site-btn-outline" data-checkout-prev="2">
-                                Volver al paso anterior
-                            </button>
-                            <button type="button" class="site-btn site-btn-primary" data-checkout-next="2">
-                                Continuar a pago
-                            </button>
-                        </div>
                     </section>
 
                     {{-- PASOS 4 y 5: Método de pago + Resumen (contenido existente) --}}
@@ -300,7 +387,8 @@
 
                                 <div class="payment-method-body">
                                     <p class="input-help-text mb-2">
-                                        Luego de hacer click en "Pagar ahora" se abrira el checkout de Niubiz para que
+                                        Luego de hacer click en "Pagar ahora" se abrira el checkout de Niubiz para
+                                        que
                                         completes los datos de tu tarjeta y finalices tu compra de forma segura.
                                     </p>
                                     <ul class="payment-method-info">
@@ -321,7 +409,8 @@
                                         </div>
                                         <div class="payment-method-text">
                                             <span class="card-title">Depósito bancario o Yape</span>
-                                            <span class="payment-method-helper">Transfiere desde tu banco o paga con
+                                            <span class="payment-method-helper">Transfiere desde tu banco o paga
+                                                con
                                                 Yape.</span>
                                         </div>
                                     </div>
@@ -343,12 +432,7 @@
                                 </div>
                             </div>
                         </form>
-
-                        <div class="checkout-wizard-actions">
-                            <button type="button" class="site-btn site-btn-outline" data-checkout-prev="3">
-                                Volver al paso anterior
-                            </button>
-                        </div>
+                    </section>
                 </div>
 
                 <aside class="checkout-summary">
@@ -540,16 +624,59 @@
                 const addressSection = document.getElementById('checkoutStepAddress');
                 const pickupSection = document.getElementById('checkoutStepPickup');
                 const paymentSection = document.getElementById('checkoutStepPayment');
-                const progressSteps = document.querySelectorAll('.checkout-progress-step');
-                const nextButtons = document.querySelectorAll('[data-checkout-next]');
-                const prevButtons = document.querySelectorAll('[data-checkout-prev]');
                 const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
                 const payButton = document.getElementById('payButton');
+                const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
+
+                const addressesRoot = document.querySelector('[data-checkout-addresses-root]');
+                const addressList = addressesRoot ? addressesRoot.querySelector('[data-address-list]') : null;
+                const addressEmptyState = addressesRoot ? addressesRoot.querySelector('[data-address-empty-state]') :
+                    null;
+                const addressFormPanel = addressesRoot ? addressesRoot.querySelector('[data-address-form-panel]') :
+                    null;
+                const addressFeedback = addressesRoot ? addressesRoot.querySelector('[data-address-feedback]') : null;
+                const inlineAddressForm = document.getElementById('checkoutInlineAddressForm');
+                const inlineAddressSubmitBtn = inlineAddressForm ?
+                    inlineAddressForm.querySelector('[data-inline-address-submit]') :
+                    null;
+                const addressFormTitle = addressesRoot ? addressesRoot.querySelector('[data-address-form-title]') :
+                    null;
+                const addressFormDescription = addressesRoot ? addressesRoot.querySelector(
+                    '[data-address-form-description]') : null;
+                const addressFormMethodInput = inlineAddressForm ? inlineAddressForm.querySelector(
+                    '[data-address-form-method]') : null;
+                const addressFormCancelBtn = inlineAddressForm ? inlineAddressForm.querySelector(
+                    '[data-address-form-cancel]') : null;
+                const addressFormOpenButtons = addressesRoot ? addressesRoot.querySelectorAll(
+                    '[data-address-form-open]') : [];
+
                 const amount = '{{ number_format($amount, 2, '.', '') }}';
                 const merchantId = '{{ config('services.niubiz.merchant_id') }}';
                 const sessionToken = '{{ $session_token }}';
 
-                let currentStep = 1;
+                const storeAddressUrl = addressesRoot ? addressesRoot.getAttribute('data-store-url') : '';
+                const initialAddressesRaw = addressesRoot ? addressesRoot.getAttribute('data-initial-addresses') : '[]';
+                const initialSelectedAddressId = addressesRoot ? addressesRoot.getAttribute(
+                    'data-selected-address-id') : '';
+
+                let checkoutAddresses = [];
+                let selectedAddressId = initialSelectedAddressId ? Number(initialSelectedAddressId) : null;
+                let addressMode = 'create';
+                let addressUpdateUrl = null;
+                let isAddressSubmitting = false;
+                let inlineAddressValidator = null;
+
+                try {
+                    const parsed = JSON.parse(initialAddressesRaw || '[]');
+                    checkoutAddresses = Array.isArray(parsed) ? parsed : [];
+                } catch (error) {
+                    checkoutAddresses = [];
+                }
+
+                if (!selectedAddressId && checkoutAddresses.length) {
+                    selectedAddressId = Number(checkoutAddresses[0].id);
+                }
 
                 function getCurrentDeliveryType() {
                     let value = null;
@@ -561,12 +688,7 @@
                     return value;
                 }
 
-                function getCurrentStep() {
-                    return currentStep;
-                }
-
                 function updateSectionVisibility() {
-                    const step = getCurrentStep();
                     const type = getCurrentDeliveryType();
 
                     const hide = (el, shouldHide) => {
@@ -574,56 +696,10 @@
                         el.classList.toggle('is-hidden', shouldHide);
                     };
 
-                    // Paso 1: solo tipo de entrega
-                    if (step === 1) {
-                        hide(deliverySection, false);
-                        hide(addressSection, true);
-                        hide(pickupSection, true);
-                        hide(paymentSection, true);
-                        return;
-                    }
-
-                    // Paso 2: dirección o tienda según tipo
-                    if (step === 2) {
-                        hide(deliverySection, true);
-                        if (type === 'delivery') {
-                            hide(addressSection, false);
-                            hide(pickupSection, true);
-                        } else if (type === 'pickup') {
-                            hide(addressSection, true);
-                            hide(pickupSection, false);
-                        } else {
-                            hide(addressSection, true);
-                            hide(pickupSection, true);
-                        }
-                        hide(paymentSection, true);
-                        return;
-                    }
-
-                    // Paso 3: método de pago + resumen
-                    if (step === 3) {
-                        hide(deliverySection, true);
-                        hide(addressSection, true);
-                        hide(pickupSection, true);
-                        hide(paymentSection, false);
-                    }
-                }
-
-                function updateProgressBar() {
-                    if (!progressSteps.length) return;
-
-                    const currentStep = getCurrentStep();
-
-                    progressSteps.forEach((stepEl) => {
-                        const stepIndex = parseInt(stepEl.getAttribute('data-step'), 10) || 0;
-                        stepEl.classList.remove('is-active', 'is-completed');
-
-                        if (stepIndex < currentStep) {
-                            stepEl.classList.add('is-completed');
-                        } else if (stepIndex === currentStep) {
-                            stepEl.classList.add('is-active');
-                        }
-                    });
+                    hide(deliverySection, false);
+                    hide(addressSection, type !== 'delivery');
+                    hide(pickupSection, type !== 'pickup');
+                    hide(paymentSection, false);
                 }
 
                 function isFlowComplete() {
@@ -649,30 +725,6 @@
                     payButton.disabled = !ready;
                 }
 
-                function updateNextButtonsState() {
-                    const type = getCurrentDeliveryType();
-
-                    const step1Next = document.querySelector('[data-checkout-next="1"]');
-                    const step2NextButtons = document.querySelectorAll('[data-checkout-next="2"]');
-
-                    // Paso 1: requiere elegir tipo de entrega
-                    if (step1Next) {
-                        step1Next.disabled = !type;
-                    }
-
-                    // Paso 2: requiere dirección (delivery) o tienda (pickup)
-                    let canGoToStep3 = false;
-                    if (type === 'delivery') {
-                        canGoToStep3 = !!document.querySelector('input[name="address_id"]:checked');
-                    } else if (type === 'pickup') {
-                        canGoToStep3 = !!document.querySelector('input[name="store_id"]:checked');
-                    }
-
-                    step2NextButtons.forEach((btn) => {
-                        btn.disabled = !canGoToStep3;
-                    });
-                }
-
                 function ensureSelectedBadge(label) {
                     if (!label) return;
 
@@ -680,7 +732,8 @@
                     if (!badgeWrapper) {
                         badgeWrapper = document.createElement('div');
                         badgeWrapper.className = 'store-badge';
-                        badgeWrapper.innerHTML = '<span class="badge bg-success"><i class="ri-checkbox-circle-fill"></i> Seleccionado</span>';
+                        badgeWrapper.innerHTML =
+                            '<span class="badge bg-success"><i class="ri-checkbox-circle-fill"></i> Seleccionado</span>';
                         label.appendChild(badgeWrapper);
                     }
                 }
@@ -721,7 +774,8 @@
                             if (!label) return;
 
                             // Mantener badge "Recomendado" existente en tiendas sin tocarlo.
-                            const recommendedBadge = label.querySelector(':scope > .store-badge > .store-badge');
+                            const recommendedBadge = label.querySelector(
+                                ':scope > .store-badge > .store-badge');
                             if (recommendedBadge) {
                                 return;
                             }
@@ -742,77 +796,400 @@
                     });
                 }
 
-                function clearForwardSelections(targetStep) {
-                    if (targetStep <= 1) {
-                        clearRadioSelectionByName('address_id');
-                        clearRadioSelectionByName('store_id');
-                        clearRadioSelectionByName('payment_method');
+                function refreshCheckoutUI() {
+                    updateSectionVisibility();
+                    updatePayButtonState();
+                    updateSelectedCardsBadges();
+                }
+
+                function escapeHtml(value) {
+                    return String(value ?? '')
+                        .replaceAll('&', '&amp;')
+                        .replaceAll('<', '&lt;')
+                        .replaceAll('>', '&gt;')
+                        .replaceAll('"', '&quot;')
+                        .replaceAll("'", '&#039;');
+                }
+
+                function fillAddressForm(address = null) {
+                    if (!inlineAddressForm) return;
+
+                    inlineAddressForm.querySelector('#checkout_inline_type').value = address ? (address.type ||
+                            'home') :
+                        'home';
+                    inlineAddressForm.querySelector('#checkout_inline_address_line').value = address ? (address
+                        .address_line || '') : '';
+                    inlineAddressForm.querySelector('#checkout_inline_district').value = address ? (address
+                        .district || '') : '';
+                    inlineAddressForm.querySelector('#checkout_inline_reference').value = address ? (address
+                        .reference || '') : '';
+                    inlineAddressForm.querySelector('#checkout_inline_receiver_name').value = address ? (address
+                        .receiver_name || '') : '';
+                    inlineAddressForm.querySelector('#checkout_inline_receiver_last_name').value = address ? (address
+                        .receiver_last_name || '') : '';
+                    inlineAddressForm.querySelector('#checkout_inline_receiver_phone').value = address ? (address
+                        .receiver_phone || '') : '';
+                }
+
+                function resetAddressForm() {
+                    if (!inlineAddressForm) return;
+
+                    inlineAddressForm.reset();
+                    if (addressFormMethodInput) {
+                        addressFormMethodInput.value = 'POST';
+                    }
+                    if (inlineAddressValidator && typeof inlineAddressValidator.reset === 'function') {
+                        inlineAddressValidator.reset();
+                    }
+                }
+
+                function openAddressForm(mode = 'create', address = null) {
+                    if (!addressFormPanel || !inlineAddressForm) return;
+
+                    addressMode = mode;
+                    addressUpdateUrl = mode === 'edit' && address ? address.update_url : null;
+                    if (addressFormMethodInput) {
+                        addressFormMethodInput.value = mode === 'edit' ? 'PUT' : 'POST';
+                    }
+
+                    if (addressFormTitle) {
+                        addressFormTitle.textContent = mode === 'edit' ? 'Editar dirección' : 'Agregar dirección';
+                    }
+                    if (addressFormDescription) {
+                        addressFormDescription.textContent = mode === 'edit' ?
+                            'Modifica los datos de la dirección seleccionada.' :
+                            'Completa los datos de entrega.';
+                    }
+                    if (inlineAddressSubmitBtn) {
+                        inlineAddressSubmitBtn.textContent = mode === 'edit' ? 'Actualizar dirección' :
+                            'Guardar dirección';
+                    }
+
+                    fillAddressForm(address);
+
+                    if (inlineAddressValidator && typeof inlineAddressValidator.reset === 'function') {
+                        inlineAddressValidator.reset();
+                    }
+
+                    addressFormPanel.classList.remove('is-hidden');
+                    addressFormPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+                function closeAddressForm() {
+                    if (!addressFormPanel) return;
+
+                    addressFormPanel.classList.add('is-hidden');
+                    resetAddressForm();
+                    addressMode = 'create';
+                    addressUpdateUrl = null;
+                    isAddressSubmitting = false;
+                }
+
+                function setAddressFeedback(message, type = 'info') {
+                    if (!addressFeedback) return;
+
+                    if (!message) {
+                        addressFeedback.textContent = '';
+                        addressFeedback.classList.add('is-hidden');
+                        addressFeedback.classList.remove('text-danger', 'text-success');
                         return;
                     }
 
-                    if (targetStep === 2) {
-                        clearRadioSelectionByName('payment_method');
+                    addressFeedback.textContent = message;
+                    addressFeedback.classList.remove('is-hidden', 'text-danger', 'text-success');
+                    if (type === 'error') {
+                        addressFeedback.classList.add('text-danger');
+                    }
+                    if (type === 'success') {
+                        addressFeedback.classList.add('text-success');
                     }
                 }
 
-                function goToStep(targetStep) {
-                    if (targetStep < 1 || targetStep > 3) return;
-                    currentStep = targetStep;
-                    updateSectionVisibility();
-                    updateProgressBar();
-                    updatePayButtonState();
-                    updateNextButtonsState();
+                function renderAddressCards() {
+                    if (!addressList || !addressEmptyState) return;
+
+                    const hasAddresses = checkoutAddresses.length > 0;
+                    addressList.classList.toggle('is-hidden', !hasAddresses);
+                    addressEmptyState.classList.toggle('is-hidden', hasAddresses);
+
+                    if (!hasAddresses) {
+                        addressList.innerHTML = '';
+                        selectedAddressId = null;
+                        addressMode = 'create';
+                        addressUpdateUrl = null;
+                        if (addressFormMethodInput) {
+                            addressFormMethodInput.value = 'POST';
+                        }
+                        if (addressFormTitle) {
+                            addressFormTitle.textContent = 'Nueva dirección';
+                        }
+                        if (addressFormDescription) {
+                            addressFormDescription.textContent = 'Completa los datos de entrega.';
+                        }
+                        if (inlineAddressSubmitBtn) {
+                            inlineAddressSubmitBtn.textContent = 'Guardar dirección';
+                        }
+                        if (addressFormPanel) {
+                            addressFormPanel.classList.remove('is-hidden');
+                        }
+                        refreshCheckoutUI();
+                        return;
+                    }
+
+                    if (addressFormPanel && addressMode === 'create' && !addressUpdateUrl) {
+                        addressFormPanel.classList.add('is-hidden');
+                    }
+
+                    const existsSelected = checkoutAddresses.some((address) => Number(address.id) === Number(
+                        selectedAddressId));
+                    if (!existsSelected) {
+                        selectedAddressId = Number(checkoutAddresses[0].id);
+                    }
+
+                    const html = checkoutAddresses.map((address) => {
+                        const addressId = Number(address.id);
+                        const isSelected = addressId === Number(selectedAddressId);
+                        const typeLabel = address.type === 'office' ? 'Oficina' : 'Casa';
+                        const typeIcon = address.type === 'office' ? 'ri-building-2-line' : 'ri-home-2-line';
+                        const receiverFullName =
+                            `${address.receiver_name || ''} ${address.receiver_last_name || ''}`.trim();
+
+                        return `
+                            <label class="checkout-card">
+                                <input type="radio" name="address_id" value="${addressId}" class="sr-only" ${isSelected ? 'checked' : ''}>
+                                <div class="checkout-card-icon" title="Dirección de ${address.type === 'office' ? 'oficina' : 'casa'}">
+                                    <i class="${typeIcon}"></i>
+                                    <span class="address-card-title">${typeLabel}</span>
+                                </div>
+                                <div class="checkout-card-body">
+                                    <span class="card-title">${escapeHtml(receiverFullName)}</span>
+                                    <ul>
+                                        <li class="address-line">${escapeHtml(address.address_line)}</li>
+                                        <li class="address-city">${escapeHtml(address.district)}</li>
+                                        <li class="address-reference">${escapeHtml(address.reference)}</li>
+                                        <li class="address-phone">${escapeHtml(address.receiver_phone)}</li>
+                                    </ul>
+                                </div>
+                                <div class="address-card-actions">
+                                    <button
+                                        type="button"
+                                        class="boton-pastel card-warning address-edit-btn"
+                                        title="Editar dirección"
+                                        aria-label="Editar dirección"
+                                        data-address-id="${addressId}"
+                                    >
+                                        <i class="ri-pencil-fill"></i>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="boton-pastel card-danger address-delete-btn"
+                                        title="Eliminar dirección"
+                                        aria-label="Eliminar dirección"
+                                        data-address-delete-url="${escapeHtml(address.delete_url)}"
+                                        data-address-id="${addressId}"
+                                    >
+                                        <i class="ri-delete-bin-5-fill"></i>
+                                    </button>
+                                </div>
+                            </label>
+                        `;
+                    }).join('');
+
+                    addressList.innerHTML = html;
+
+                    refreshCheckoutUI();
                 }
 
-                // Navegación con botones Siguiente
-                nextButtons.forEach((btn) => {
-                    btn.addEventListener('click', () => {
-                        const fromStep = parseInt(btn.getAttribute('data-checkout-next'), 10) || 1;
-                        if (fromStep === 1) {
-                            goToStep(2);
+                function normalizeAddressCollection(payload) {
+                    if (!Array.isArray(payload)) {
+                        return [];
+                    }
+
+                    return payload.map((address) => ({
+                        id: Number(address.id),
+                        type: address.type || 'home',
+                        address_line: address.address_line || '',
+                        district: address.district || '',
+                        reference: address.reference || '',
+                        receiver_name: address.receiver_name || '',
+                        receiver_last_name: address.receiver_last_name || '',
+                        receiver_phone: address.receiver_phone || '',
+                        update_url: address.update_url || '',
+                        delete_url: address.delete_url || '',
+                    }));
+                }
+
+                async function submitAddressRequest({
+                    url,
+                    formData,
+                    method = 'POST',
+                    successMessage = '',
+                }) {
+                    if (!url || !csrfToken) {
+                        setAddressFeedback('No se pudo procesar la operación de direcciones.', 'error');
+                        return false;
+                    }
+
+                    if (method !== 'POST') {
+                        formData.set('_method', method);
+                    }
+
+                    if (!formData.has('_token')) {
+                        formData.set('_token', csrfToken);
+                    }
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                            },
+                            body: formData,
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+
+                        if (!response.ok) {
+                            const firstError = data && data.errors ?
+                                Object.values(data.errors)[0][0] :
+                                (data.message || 'No se pudo guardar la dirección.');
+                            setAddressFeedback(firstError, 'error');
+                            return false;
+                        }
+
+                        checkoutAddresses = normalizeAddressCollection(data.addresses || []);
+
+                        if (method === 'POST' && checkoutAddresses.length > 0) {
+                            selectedAddressId = Number(checkoutAddresses[0].id);
+                        } else if (!checkoutAddresses.some((item) => Number(item.id) === Number(
+                                selectedAddressId))) {
+                            selectedAddressId = checkoutAddresses.length ? Number(checkoutAddresses[0].id) : null;
+                        }
+
+                        renderAddressCards();
+                        if (successMessage) {
+                            setAddressFeedback(successMessage, 'success');
+                        }
+
+                        return true;
+                    } catch (error) {
+                        setAddressFeedback('Error de red. Intenta nuevamente.', 'error');
+                        return false;
+                    }
+                }
+
+                if (addressesRoot) {
+                    renderAddressCards();
+
+                    addressFormOpenButtons.forEach((button) => {
+                        button.addEventListener('click', () => {
+                            setAddressFeedback('');
+                            openAddressForm('create');
+                        });
+                    });
+
+                    addressesRoot.addEventListener('click', async (event) => {
+                        const editButton = event.target.closest('.address-edit-btn');
+                        if (editButton && addressesRoot.contains(editButton)) {
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            const addressId = Number(editButton.getAttribute('data-address-id'));
+                            const address = checkoutAddresses.find((item) => Number(item.id) === addressId);
+                            if (!address) return;
+
+                            setAddressFeedback('');
+                            openAddressForm('edit', address);
                             return;
                         }
 
-                        if (fromStep === 2) {
-                            goToStep(3);
+                        const deleteButton = event.target.closest('.address-delete-btn');
+                        if (deleteButton && addressesRoot.contains(deleteButton)) {
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            const deleteUrl = deleteButton.getAttribute('data-address-delete-url');
+                            if (!deleteUrl) return;
+
+                            deleteButton.disabled = true;
+                            await submitAddressRequest({
+                                url: deleteUrl,
+                                formData: new FormData(),
+                                method: 'DELETE',
+                                successMessage: 'Dirección eliminada correctamente.',
+                            });
+                            deleteButton.disabled = false;
                         }
                     });
-                });
 
-                // Navegación con botones Atrás
-                prevButtons.forEach((btn) => {
-                    btn.addEventListener('click', () => {
-                        const fromStep = parseInt(btn.getAttribute('data-checkout-prev'), 10) || 2;
+                    if (typeof window.initFormValidator === 'function' && inlineAddressForm) {
+                        inlineAddressValidator = window.initFormValidator('#checkoutInlineAddressForm', {
+                            validateOnBlur: true,
+                            validateOnInput: false,
+                            scrollToFirstError: true,
+                            showSuccessIndicators: true,
+                        });
+                    }
 
-                        if (fromStep === 2) {
-                            clearForwardSelections(1);
-                            updateSelectedCardsBadges();
-                            goToStep(1);
-                            return;
-                        }
+                    if (addressFormCancelBtn) {
+                        addressFormCancelBtn.addEventListener('click', () => {
+                            closeAddressForm();
+                        });
+                    }
 
-                        if (fromStep === 3) {
-                            clearForwardSelections(2);
-                            updateSelectedCardsBadges();
-                            goToStep(2);
-                        }
-                    });
-                });
+                    if (inlineAddressForm) {
+                        inlineAddressForm.addEventListener('submit', async (event) => {
+                            event.preventDefault();
+
+                            if (isAddressSubmitting) return;
+                            if (inlineAddressValidator && !inlineAddressValidator.validateAll()) return;
+
+                            const targetUrl = addressMode === 'edit' ? addressUpdateUrl : storeAddressUrl;
+                            if (!targetUrl) {
+                                setAddressFeedback('No se pudo detectar la URL de la operación.', 'error');
+                                return;
+                            }
+
+                            isAddressSubmitting = true;
+                            if (inlineAddressSubmitBtn) inlineAddressSubmitBtn.disabled = true;
+
+                            const ok = await submitAddressRequest({
+                                url: targetUrl,
+                                formData: new FormData(inlineAddressForm),
+                                method: addressMode === 'edit' ? 'PUT' : 'POST',
+                                successMessage: addressMode === 'edit' ?
+                                    'Dirección actualizada correctamente.' :
+                                    'Dirección guardada correctamente.',
+                            });
+
+                            if (ok) {
+                                closeAddressForm();
+                            }
+
+                            isAddressSubmitting = false;
+                            if (inlineAddressSubmitBtn) inlineAddressSubmitBtn.disabled = false;
+                        });
+                    }
+                }
 
                 // Eventos de cambio en tipo de entrega
                 deliveryRadios.forEach((input) => {
                     input.addEventListener('change', () => {
-                        updateSectionVisibility();
-                        updatePayButtonState();
-                        updateProgressBar();
-                        updateNextButtonsState();
-                        updateSelectedCardsBadges();
+                        if (input.value === 'delivery') {
+                            clearRadioSelectionByName('store_id');
+                        }
+                        if (input.value === 'pickup') {
+                            clearRadioSelectionByName('address_id');
+                        }
+                        refreshCheckoutUI();
                     });
                 });
 
                 paymentRadios.forEach((input) => {
                     input.addEventListener('change', () => {
-                        updateSelectedCardsBadges();
+                        refreshCheckoutUI();
                     });
                 });
 
@@ -821,20 +1198,15 @@
                     const target = event.target;
                     if (!target) return;
                     if (target.name === 'address_id' || target.name === 'store_id') {
-                        updateSectionVisibility();
-                        updatePayButtonState();
-                        updateProgressBar();
-                        updateNextButtonsState();
-                        updateSelectedCardsBadges();
+                        if (target.name === 'address_id') {
+                            selectedAddressId = Number(target.value);
+                        }
+                        refreshCheckoutUI();
                     }
                 });
 
                 // Estado inicial
-                updateSectionVisibility();
-                updatePayButtonState();
-                updateProgressBar();
-                updateNextButtonsState();
-                updateSelectedCardsBadges();
+                refreshCheckoutUI();
 
                 // Click en pagar ahora: configurar Niubiz con los parámetros de entrega seleccionados
                 if (payButton) {

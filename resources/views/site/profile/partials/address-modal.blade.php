@@ -68,12 +68,10 @@
                 </div>
             </div>
 
-            <h4 class="profile-address-section-title">Datos personales</h4>
-
             <div class="form-row-fill">
                 <div class="input-group">
                     <label class="label-form" for="pa_receiver_name">
-                        Nombre completo del receptor <i class="ri-asterisk text-accent"></i>
+                        Nombre destinatario <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-user-3-line input-icon"></i>
@@ -84,7 +82,7 @@
                 </div>
                 <div class="input-group">
                     <label class="label-form" for="pa_receiver_last_name">
-                        Apellido del receptor
+                        Apellido destinatario
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-user-3-line input-icon"></i>
@@ -98,7 +96,7 @@
             <div class="form-row-fill">
                 <div class="input-group">
                     <label class="label-form" for="pa_receiver_phone">
-                        Teléfono de contacto <i class="ri-asterisk text-accent"></i>
+                        Teléfono <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-phone-line input-icon"></i>

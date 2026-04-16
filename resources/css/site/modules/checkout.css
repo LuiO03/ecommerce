@@ -7,81 +7,20 @@
     gap: 1.5rem;
 }
 
-/* Barra de progreso superior */
-.checkout-progress {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.checkout-progress-step {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--color-muted);
-    font-size: var(--font-size-xs);
-}
-
-.checkout-progress-step .checkout-progress-index {
-    width: 40px;
-    height: 40px;
-    border-radius: 50px;
-    display: flex;
-    font-size: var(--font-size-h3);
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-family: var(--font-secondary);
-    background-color: var(--color-secondary-pastel);
-}
-
-.checkout-progress-step.is-active {
-    color: var(--color-text);
-}
-
-.checkout-progress-step.is-active .checkout-progress-index {
-    background-color: var(--color-site-nav);
-    color: white;
-}
-
-.checkout-progress-step.is-completed {
-    color: var(--color-muted);
-}
-
-.checkout-progress-step.is-completed .checkout-progress-index {
-    background-color: var(--color-success);
-    color: white;
-}
-
-.checkout-progress-label {
-    white-space: nowrap;
-}
-
-.checkout-progress-separator {
-    flex: 1 1 auto;
-    border-bottom: 1px dashed var(--color-primary);
-}
-
-/* Layout principal: pasos a la izquierda, resumen a la derecha */
-.checkout-flow {
+.checkout-layout {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    grid-template-columns: 1.5fr 1fr;
     gap: 1.5rem;
     align-items: flex-start;
 }
+
+
 
 .checkout-flow-main {
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-}
-
-.checkout-section {
-}
-
-.checkout-section + .checkout-section {
-    margin-top: 0.25rem;
 }
 
 .checkout-section.is-hidden {
@@ -94,19 +33,12 @@
     overflow: hidden;
 }
 
-.checkout-wizard-actions {
-    margin-top: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-end;
-}
-
 .checkout-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+    width: 100%;
 }
 
 .checkout-card {
@@ -195,11 +127,57 @@
     width: 100%;
 }
 
-
-
-
-
 /* Paso 2: lista de direcciones */
+
+.checkout-address-empty {
+    margin-top: 1rem;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    background: rgba(148, 163, 184, 0.06);
+}
+
+[data-address-list].is-hidden,
+.checkout-address-empty.is-hidden {
+    display: none;
+}
+
+.checkout-address-form-panel {
+    margin-top: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    background: var(--color-card-bg);
+    max-height: 1200px;
+    opacity: 1;
+    transform: translateY(0);
+    overflow: hidden;
+    transition: max-height 0.28s ease, opacity 0.22s ease, transform 0.22s ease, margin-top 0.22s ease, padding 0.22s ease, border-width 0.22s ease;
+}
+
+.checkout-address-form-panel.is-hidden {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    pointer-events: none;
+}
+
+.checkout-inline-address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checkout-inline-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
 
 
 
@@ -449,7 +427,7 @@
 }
 
 @media (max-width: 1024px) {
-    .checkout-flow {
+    .checkout-layout {
         grid-template-columns: minmax(0, 1fr);
     }
 
@@ -457,11 +435,4 @@
         max-height: none;
     }
 
-    .checkout-progress {
-        flex-wrap: wrap;
-    }
-
-    .checkout-progress-label {
-        font-size: var(--font-size-xxs);
-    }
 }

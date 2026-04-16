@@ -99,6 +99,24 @@ class ProfileController extends Controller
         return redirect()->route('site.profile.index', ['section' => 'addresses']);
     }
 
+    private function serializeAddresses($addresses): array
+    {
+        return $addresses->map(function ($address) {
+            return [
+                'id' => $address->id,
+                'type' => $address->type,
+                'address_line' => $address->address_line,
+                'district' => $address->district,
+                'reference' => $address->reference,
+                'receiver_name' => $address->receiver_name,
+                'receiver_last_name' => $address->receiver_last_name,
+                'receiver_phone' => $address->receiver_phone,
+                'update_url' => route('site.profile.addresses.update', $address),
+                'delete_url' => route('site.profile.addresses.destroy', $address),
+            ];
+        })->values()->all();
+    }
+
     public function storeAddress(Request $request)
     {
         if (! Auth::check()) {
@@ -150,6 +168,7 @@ class ProfileController extends Controller
                 'status' => 'success',
                 'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
                 'toast'  => $toast,
+                'addresses' => $this->serializeAddresses($addresses),
             ]);
         }
 
@@ -205,6 +224,7 @@ class ProfileController extends Controller
                 'status' => 'success',
                 'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
                 'toast'  => $toast,
+                'addresses' => $this->serializeAddresses($addresses),
             ]);
         }
 
@@ -240,6 +260,7 @@ class ProfileController extends Controller
                 'status' => 'success',
                 'html'   => view('site.profile.partials.addresses', compact('addresses'))->render(),
                 'toast'  => $toast,
+                'addresses' => $this->serializeAddresses($addresses),
             ]);
         }
 
