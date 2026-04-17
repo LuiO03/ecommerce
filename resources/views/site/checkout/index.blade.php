@@ -121,10 +121,10 @@
                         data-selected-address-id="{{ $defaultAddressId }}">
                         <article class="checkout-progress-step" data-step="2">
                             <span class="checkout-progress-index">2</span>
-                            <span class="checkout-progress-label">Dirección o tienda</span>
+                            <span class="checkout-progress-label">Dirección</span>
                             <div class="checkout-progress-separator"></div>
                         </article>
-                        <article class="w-full">
+                        <article class="w-full flex gap-1 flex-col">
                             <div class="card-header-container">
                                 <div class="card-header">
                                     <span class="card-title">Dirección de envío</span>
@@ -165,10 +165,22 @@
                                                 {{ $address->receiver_last_name }}
                                             </span>
                                             <ul>
-                                                <li class="address-line">{{ $address->address_line }}</li>
-                                                <li class="address-city">{{ $address->district }}</li>
-                                                <li class="address-reference">{{ $address->reference }}</li>
-                                                <li class="address-phone">{{ $address->receiver_phone }}</li>
+                                                <li class="address-line">
+                                                    <i class="ri-map-pin-fill"></i>
+                                                    {{ $address->address_line }}
+                                                </li>
+                                                <li class="address-city">
+                                                    <i class="ri-building-fill"></i>
+                                                    {{ $address->district }}
+                                                </li>
+                                                <li class="address-phone">
+                                                    <i class="ri-phone-fill"></i>
+                                                    {{ $address->receiver_phone }}
+                                                </li>
+                                                <li class="address-reference">
+                                                    <i class="ri-information-2-fill"></i>
+                                                    {{ $address->reference }}
+                                                </li>
                                             </ul>
                                         </div>
                                         <div class="address-card-actions">
@@ -319,6 +331,12 @@
                                     </div>
                                 </form>
                             </div>
+                            <div class="alert-info-note">
+                                <i class="ri-information-fill"></i>
+                                <span>
+                                    No te molestaremos con llamadas. Solo lo usaremos para informarte de tu pedido.
+                                </span>
+                            </div>
                         </article>
                     </section>
 
@@ -326,7 +344,7 @@
                     <section class="checkout-section" id="checkoutStepPickup" data-step-dependent="pickup">
                         <article class="checkout-progress-step" data-step="2">
                             <span class="checkout-progress-index">2</span>
-                            <span class="checkout-progress-label">Dirección o tienda</span>
+                            <span class="checkout-progress-label">Tienda</span>
                             <div class="checkout-progress-separator"></div>
                         </article>
                         <article class="w-full">
@@ -678,6 +696,7 @@
                     '[data-address-form-cancel]') : null;
                 const addressFormOpenButtons = addressesRoot ? addressesRoot.querySelectorAll(
                     '[data-address-form-open]') : [];
+                const progressSteps = document.querySelectorAll('.checkout-progress-step');
 
                 const amount = '{{ number_format($amount, 2, '.', '') }}';
                 const merchantId = '{{ config('services.niubiz.merchant_id') }}';
@@ -745,6 +764,51 @@
                     }
 
                     return false;
+                }
+
+                function updateProgressSteps() {
+                    const deliveryType = getCurrentDeliveryType();
+                    const addressChecked = document.querySelector('input[name="address_id"]:checked');
+                    const storeChecked = document.querySelector('input[name="store_id"]:checked');
+
+                    const step1Completed = !!deliveryType;
+                    const step2Completed = deliveryType === 'delivery' ?
+                        !!addressChecked :
+                        deliveryType === 'pickup' ?
+                        !!storeChecked :
+                        false;
+
+                    const stepStates = {
+                        1: {
+                            active: !step1Completed,
+                            completed: step1Completed,
+                        },
+                        2: {
+                            active: step1Completed && !step2Completed,
+                            completed: step1Completed && step2Completed,
+                        },
+                        3: {
+                            active: step1Completed && step2Completed,
+                            completed: false,
+                        },
+                    };
+
+                    progressSteps.forEach((step) => {
+                        const stepNumber = Number(step.getAttribute('data-step'));
+                        const state = stepStates[stepNumber] || {
+                            active: false,
+                            completed: false
+                        };
+
+                        step.classList.toggle('is-active', state.active);
+                        step.classList.toggle('is-completed', state.completed);
+
+                        if (state.active) {
+                            step.setAttribute('aria-current', 'step');
+                        } else {
+                            step.removeAttribute('aria-current');
+                        }
+                    });
                 }
 
                 function updatePayButtonState() {
@@ -819,6 +883,7 @@
 
                 function refreshCheckoutUI() {
                     updateSectionVisibility();
+                    updateProgressSteps();
                     updatePayButtonState();
                     updateSelectedCardsBadges();
                 }
@@ -986,11 +1051,24 @@
                                 </div>
                                 <div class="checkout-card-body">
                                     <span class="card-title">${escapeHtml(receiverFullName)}</span>
+
                                     <ul>
-                                        <li class="address-line">${escapeHtml(address.address_line)}</li>
-                                        <li class="address-city">${escapeHtml(address.district)}</li>
-                                        <li class="address-reference">${escapeHtml(address.reference)}</li>
-                                        <li class="address-phone">${escapeHtml(address.receiver_phone)}</li>
+                                        <li class="address-line">
+                                            <i class="ri-map-pin-fill"></i>
+                                            ${escapeHtml(address.address_line)}
+                                        </li>
+                                        <li class="address-city">
+                                            <i class="ri-building-fill"></i>
+                                            ${escapeHtml(address.district)}
+                                        </li>
+                                        <li class="address-phone">
+                                            <i class="ri-phone-fill"></i>
+                                            ${escapeHtml(address.receiver_phone)}
+                                        </li>
+                                        <li class="address-reference">
+                                            <i class="ri-information-2-fill"></i>
+                                            ${escapeHtml(address.reference)}
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="address-card-actions">

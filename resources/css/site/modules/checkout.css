@@ -37,6 +37,11 @@
     color: white;
 }
 
+/*
+.checkout-progress-step.is-active .checkout-progress-separator {
+    background-color: var(--color-site-nav);
+}*/
+
 .checkout-progress-step.is-completed {
     color: var(--color-muted);
 }
@@ -46,6 +51,9 @@
     color: white;
 }
 
+.checkout-progress-step.is-completed .checkout-progress-separator {
+    background-color: var(--color-success);
+}
 
 .checkout-progress-separator {
     flex: 1 1 auto;
@@ -64,9 +72,10 @@
 
 .checkout-layout {
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
+    grid-template-columns: 2fr 1fr;
     gap: 1.5rem;
     align-items: flex-start;
+    margin-top: 1.25rem;
 }
 
 .checkout-flow-main {
@@ -97,6 +106,10 @@
     gap: 1rem;
     margin-top: 1.5rem;
     width: 100%;
+}
+
+.checkout-addresses-feedback{
+    display: none;
 }
 
 .checkout-card {

@@ -11,7 +11,7 @@
         @csrf
         @method('PUT')
         <div class="form-user">
-            <div class="form-body">
+            <div class="form-body" style="border-radius: var(--radius-card);background-color: var(--color-card-bg);border: none;">
                 <div class="card-header">
                     <span class="card-title">Foto de perfil</span>
                     <p class="card-description">Agrega una foto para personalizar tu cuenta.</p>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-body">
+            <div class="form-body" style="border-radius: var(--radius-card);background-color: var(--color-card-bg);border: none;">
                 <div class="card-header">
                     <span class="card-title">Datos personales</span>
                     <p class="card-description">Mantén tu información actualizada para facilitar tus compras y
