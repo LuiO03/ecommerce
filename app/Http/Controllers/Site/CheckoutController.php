@@ -296,6 +296,8 @@ class CheckoutController extends Controller
                             'subtotal'         => $subtotal,
                             'shipping_cost'    => $shipping,
                                 'delivery_type'    => $deliveryType === 'pickup' ? 'pickup' : 'delivery',
+                                'address_id'       => $deliveryType === 'delivery' ? $address?->id : null,
+                                'pickup_store_code' => $deliveryType === 'pickup' ? $selectedStoreId : null,
                             'status'           => 'pending',
                             'shipping_address' => $shippingAddress,
                             'shipping_city'    => $shippingCity,

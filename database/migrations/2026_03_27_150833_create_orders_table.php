@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('address_id')->nullable()->constrained('addresses')->nullOnDelete(); // Solo se llena si es delivery
+            $table->string('pickup_store_code')->nullable();
             $table->string('pdf_path')->nullable();
 
             $table->string('order_number')->unique(); // código tipo ORD-0001

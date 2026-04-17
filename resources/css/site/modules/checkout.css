@@ -1,3 +1,58 @@
+.checkout-progress-step {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    color: var(--color-muted);
+    align-items: center;
+    gap: 5px;
+    width: 80px;
+}
+
+.checkout-progress-step .checkout-progress-index {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    display: flex;
+    font-size: var(--font-size-h3);
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: var(--font-secondary);
+    background-color: var(--color-secondary-pastel);
+}
+
+.checkout-progress-label {
+    text-align: center;
+    line-height: 1;
+    font-size: var(--font-size-xs);
+}
+
+
+.checkout-progress-step.is-active {
+    color: var(--color-text);
+}
+
+.checkout-progress-step.is-active .checkout-progress-index {
+    background-color: var(--color-site-nav);
+    color: white;
+}
+
+.checkout-progress-step.is-completed {
+    color: var(--color-muted);
+}
+
+.checkout-progress-step.is-completed .checkout-progress-index {
+    background-color: var(--color-success);
+    color: white;
+}
+
+
+.checkout-progress-separator {
+    flex: 1 1 auto;
+    width: 2px;
+    background-color: var(--color-border);
+}
+
 /* ============================================
    CHECKOUT - Proceso de compra (flujo por pasos)
    ============================================ */
@@ -14,12 +69,15 @@
     align-items: flex-start;
 }
 
-
-
 .checkout-flow-main {
     min-width: 0;
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
+}
+
+.checkout-section{
+    display: flex;
     gap: 1rem;
 }
 
@@ -61,6 +119,7 @@
 .checkout-section .checkout-card:has(input[type="radio"]:checked) {
     border-color: var(--color-success);
     background-color: var(--color-success-pastel);
+    box-shadow: var(--shadow-material);
     padding: 1.2rem 1rem 1rem 1rem;
 }
 
@@ -178,8 +237,6 @@
     gap: 0.5rem;
     justify-content: flex-end;
 }
-
-
 
 /* Paso 2B: tiendas para recojo */
 

@@ -71,40 +71,47 @@
                 <div class="checkout-flow-main">
                     {{-- PASO 1: Tipo de entrega --}}
                     <section class="checkout-section" id="checkoutStepDelivery">
-                        <div class="card-header-container">
-                            <div class="card-header">
-                                <span class="card-title">1. ¿Cómo quieres recibir tu pedido?</span>
-                                <p class="card-description">Selecciona una opción para continuar.</p>
+                        <article class="checkout-progress-step is-active" data-step="1">
+                            <span class="checkout-progress-index">1</span>
+                            <span class="checkout-progress-label">Tipo de entrega</span>
+                            <div class="checkout-progress-separator"></div>
+                        </article>
+                        <article class="w-full">
+                            <div class="card-header-container">
+                                <div class="card-header">
+                                    <span class="card-title">¿Cómo quieres recibir tu pedido?</span>
+                                    <p class="card-description">Selecciona una opción para continuar.</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="checkout-cards-grid" data-delivery-type-root>
-                            <label class="checkout-card" data-delivery-option="delivery">
-                                <input type="radio" name="delivery_type" value="delivery" class="sr-only"
-                                    {{ old('delivery_type', 'delivery') === 'delivery' ? 'checked' : '' }}>
-                                <div class="checkout-card-icon">
-                                    <i class="ri-truck-line"></i>
-                                </div>
-                                <div class="checkout-card-body">
-                                    <span class="checkout-card-title">Delivery a domicilio</span>
-                                    <span class="checkout-card-helper">Recibe tus productos en la dirección que
-                                        elijas.</span>
-                                </div>
-                            </label>
+                            <div class="checkout-cards-grid" data-delivery-type-root>
+                                <label class="checkout-card" data-delivery-option="delivery">
+                                    <input type="radio" name="delivery_type" value="delivery" class="sr-only"
+                                        {{ old('delivery_type', 'delivery') === 'delivery' ? 'checked' : '' }}>
+                                    <div class="checkout-card-icon">
+                                        <i class="ri-truck-line"></i>
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">Delivery a domicilio</span>
+                                        <span class="checkout-card-helper">Recibe tus productos en la dirección que
+                                            elijas.</span>
+                                    </div>
+                                </label>
 
-                            <label class="checkout-card" data-delivery-option="pickup">
-                                <input type="radio" name="delivery_type" value="pickup" class="sr-only"
-                                    {{ old('delivery_type') === 'pickup' ? 'checked' : '' }}>
-                                <div class="checkout-card-icon">
-                                    <i class="ri-store-2-line"></i>
-                                </div>
-                                <div class="checkout-card-body">
-                                    <span class="checkout-card-title">Recojo en tienda</span>
-                                    <span class="checkout-card-helper">Pasa por uno de nuestros locales
-                                        autorizados.</span>
-                                </div>
-                            </label>
-                        </div>
+                                <label class="checkout-card" data-delivery-option="pickup">
+                                    <input type="radio" name="delivery_type" value="pickup" class="sr-only"
+                                        {{ old('delivery_type') === 'pickup' ? 'checked' : '' }}>
+                                    <div class="checkout-card-icon">
+                                        <i class="ri-store-2-line"></i>
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">Recojo en tienda</span>
+                                        <span class="checkout-card-helper">Pasa por uno de nuestros locales
+                                            autorizados.</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </article>
                     </section>
 
                     {{-- PASO 2A: Dirección (solo delivery) --}}
@@ -112,326 +119,349 @@
                         data-checkout-addresses-root data-store-url="{{ route('site.profile.addresses.store') }}"
                         data-initial-addresses='@json($addressesPayload)'
                         data-selected-address-id="{{ $defaultAddressId }}">
-                        <div class="card-header-container">
-                            <div class="card-header">
-                                <span class="card-title">2. Dirección de envío</span>
-                                <p class="card-description">Selecciona, crea, edita o elimina direcciones sin salir
-                                    del
-                                    checkout.</p>
-                            </div>
-                            @if ($hasAddresses)
-                            <div class="card-header-actions">
-                                <button type="button" class="boton-form boton-success" data-address-form-open>
-                                    <span class="boton-form-icon"><i class="ri-map-pin-2-fill"></i></span>
-                                    <span class="boton-form-text">Agregar dirección</span>
-                                </button>
-                            </div>
-
-                            @endif
-                        </div>
-                        <p class="checkout-addresses-feedback card-description is-hidden" data-address-feedback></p>
-
-                        <div class="checkout-cards-grid {{ $hasAddresses ? '' : 'is-hidden' }}" data-address-list>
-                            @foreach ($addresses as $address)
-                                <label class="checkout-card">
-                                    <input type="radio" name="address_id" value="{{ $address->id }}" class="sr-only"
-                                        {{ $address->id === $defaultAddressId ? 'checked' : '' }}>
-
-                                    <div class="checkout-card-icon"
-                                        title="{{ $address->type === 'office' ? 'Dirección de oficina' : 'Dirección de casa' }}">
-
-                                        @if ($address->type === 'office')
-                                            <i class="ri-building-2-line"></i>
-                                            <span class="address-card-title">Oficina</span>
-                                        @else
-                                            <i class="ri-home-2-line"></i>
-                                            <span class="address-card-title">Casa</span>
-                                        @endif
-                                    </div>
-                                    <div class="checkout-card-body">
-                                        <span class="card-title">
-                                            {{ $address->receiver_name }}
-                                            {{ $address->receiver_last_name }}
-                                        </span>
-                                        <ul>
-                                            <li class="address-line">{{ $address->address_line }}</li>
-                                            <li class="address-city">{{ $address->district }}</li>
-                                            <li class="address-reference">{{ $address->reference }}</li>
-                                            <li class="address-phone">{{ $address->receiver_phone }}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="address-card-actions">
-                                        <button type="button" class="boton-pastel card-warning address-edit-btn"
-                                            title="Editar dirección" aria-label="Editar dirección"
-                                            data-address-id="{{ $address->id }}"
-                                            data-address-type="{{ $address->type }}"
-                                            data-address-line="{{ e($address->address_line) }}"
-                                            data-address-district="{{ e($address->district) }}"
-                                            data-address-reference="{{ e($address->reference) }}"
-                                            data-address-receiver-name="{{ e($address->receiver_name) }}"
-                                            data-address-receiver-last-name="{{ e($address->receiver_last_name) }}"
-                                            data-address-receiver-phone="{{ e($address->receiver_phone) }}"
-                                            data-update-url="{{ route('site.profile.addresses.update', $address) }}">
-                                            <i class="ri-pencil-fill"></i>
-                                        </button>
-                                        <button type="button" class="boton-pastel card-danger address-delete-btn"
-                                            title="Eliminar dirección" aria-label="Eliminar dirección"
-                                            data-address-delete-url="{{ route('site.profile.addresses.destroy', $address) }}">
-                                            <i class="ri-delete-bin-5-fill"></i>
+                        <article class="checkout-progress-step" data-step="2">
+                            <span class="checkout-progress-index">2</span>
+                            <span class="checkout-progress-label">Dirección o tienda</span>
+                            <div class="checkout-progress-separator"></div>
+                        </article>
+                        <article class="w-full">
+                            <div class="card-header-container">
+                                <div class="card-header">
+                                    <span class="card-title">Dirección de envío</span>
+                                    <p class="card-description">Selecciona, crea, edita o elimina direcciones sin salir
+                                        del
+                                        checkout.</p>
+                                </div>
+                                @if ($hasAddresses)
+                                    <div class="card-header-actions">
+                                        <button type="button" class="boton-form boton-success" data-address-form-open>
+                                            <span class="boton-form-icon"><i class="ri-map-pin-2-fill"></i></span>
+                                            <span class="boton-form-text">Agregar dirección</span>
                                         </button>
                                     </div>
-                                </label>
-                            @endforeach
-                        </div>
-
-                        <div class="checkout-address-form-panel {{ $hasAddresses ? 'is-hidden' : '' }}"
-                            data-address-form-panel>
-                            <div class="card-header mb-2">
-                                <span class="card-title"
-                                    data-address-form-title>{{ $hasAddresses ? 'Agregar dirección' : 'Nueva dirección' }}</span>
-                                <p class="card-description" data-address-form-description>Completa los datos de
-                                    entrega.</p>
+                                @endif
                             </div>
 
-                            <form id="checkoutInlineAddressForm" class="checkout-inline-address-form" novalidate>
-                                @csrf
-                                <input type="hidden" name="_method" value="POST" data-address-form-method>
-                                <div class="form-row-fit">
-                                    <div class="input-group">
-                                        <label class="label-form" for="checkout_inline_type">
-                                            Tipo de dirección <i class="ri-asterisk text-accent"></i>
-                                        </label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-home-4-line input-icon"></i>
-                                            <select id="checkout_inline_type" class="select-form" name="type"
-                                                data-validate="selected">
-                                                <option value="home">Casa</option>
-                                                <option value="office">Oficina</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                            <div class="checkout-cards-grid {{ $hasAddresses ? '' : 'is-hidden' }}" data-address-list>
+                                @foreach ($addresses as $address)
+                                    <label class="checkout-card">
+                                        <input type="radio" name="address_id" value="{{ $address->id }}"
+                                            class="sr-only" {{ $address->id === $defaultAddressId ? 'checked' : '' }}>
 
-                                    <div class="input-group">
-                                        <label class="label-form" for="checkout_inline_address_line">
-                                            Dirección completa <i class="ri-asterisk text-accent"></i>
-                                        </label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-map-pin-line input-icon"></i>
-                                            <input id="checkout_inline_address_line" type="text"
-                                                class="input-form" name="address_line"
-                                                placeholder="Av. Siempre Viva 742, Interior 3"
-                                                data-validate="required|min:5|max:255" autocomplete="off" />
+                                        <div class="checkout-card-icon"
+                                            title="{{ $address->type === 'office' ? 'Dirección de oficina' : 'Dirección de casa' }}">
+
+                                            @if ($address->type === 'office')
+                                                <i class="ri-building-2-line"></i>
+                                                <span class="address-card-title">Oficina</span>
+                                            @else
+                                                <i class="ri-home-2-line"></i>
+                                                <span class="address-card-title">Casa</span>
+                                            @endif
                                         </div>
-                                    </div>
+                                        <div class="checkout-card-body">
+                                            <span class="card-title">
+                                                {{ $address->receiver_name }}
+                                                {{ $address->receiver_last_name }}
+                                            </span>
+                                            <ul>
+                                                <li class="address-line">{{ $address->address_line }}</li>
+                                                <li class="address-city">{{ $address->district }}</li>
+                                                <li class="address-reference">{{ $address->reference }}</li>
+                                                <li class="address-phone">{{ $address->receiver_phone }}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="address-card-actions">
+                                            <button type="button" class="boton-pastel card-warning address-edit-btn"
+                                                title="Editar dirección" aria-label="Editar dirección"
+                                                data-address-id="{{ $address->id }}"
+                                                data-address-type="{{ $address->type }}"
+                                                data-address-line="{{ e($address->address_line) }}"
+                                                data-address-district="{{ e($address->district) }}"
+                                                data-address-reference="{{ e($address->reference) }}"
+                                                data-address-receiver-name="{{ e($address->receiver_name) }}"
+                                                data-address-receiver-last-name="{{ e($address->receiver_last_name) }}"
+                                                data-address-receiver-phone="{{ e($address->receiver_phone) }}"
+                                                data-update-url="{{ route('site.profile.addresses.update', $address) }}">
+                                                <i class="ri-pencil-fill"></i>
+                                            </button>
+                                            <button type="button" class="boton-pastel card-danger address-delete-btn"
+                                                title="Eliminar dirección" aria-label="Eliminar dirección"
+                                                data-address-delete-url="{{ route('site.profile.addresses.destroy', $address) }}">
+                                                <i class="ri-delete-bin-5-fill"></i>
+                                            </button>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
+                            <p class="checkout-addresses-feedback card-description is-hidden" data-address-feedback>
+                            </p>
+
+                            <div class="checkout-address-form-panel {{ $hasAddresses ? 'is-hidden' : '' }}"
+                                data-address-form-panel>
+                                <div class="card-header mb-2">
+                                    <span class="card-title"
+                                        data-address-form-title>{{ $hasAddresses ? 'Agregar dirección' : 'Nueva dirección' }}</span>
+                                    <p class="card-description" data-address-form-description>Completa los datos de
+                                        entrega.</p>
                                 </div>
 
-                                <div class="form-row-fit">
-                                    <div class="input-group">
-                                        <label class="label-form" for="checkout_inline_district">
-                                            Distrito / Ciudad <i class="ri-asterisk text-accent"></i>
-                                        </label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-building-2-line input-icon"></i>
-                                            <input id="checkout_inline_district" type="text" class="input-form"
-                                                name="district" placeholder="Ej: Miraflores, Lima"
-                                                data-validate="required|min:3|max:120" autocomplete="off" />
+                                <form id="checkoutInlineAddressForm" class="checkout-inline-address-form" novalidate>
+                                    @csrf
+                                    <input type="hidden" name="_method" value="POST" data-address-form-method>
+                                    <div class="form-row-fit">
+                                        <div class="input-group">
+                                            <label class="label-form" for="checkout_inline_type">
+                                                Tipo de dirección <i class="ri-asterisk text-accent"></i>
+                                            </label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-home-4-line input-icon"></i>
+                                                <select id="checkout_inline_type" class="select-form" name="type"
+                                                    data-validate="selected">
+                                                    <option value="home">Casa</option>
+                                                    <option value="office">Oficina</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label class="label-form" for="checkout_inline_address_line">
+                                                Dirección completa <i class="ri-asterisk text-accent"></i>
+                                            </label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-map-pin-line input-icon"></i>
+                                                <input id="checkout_inline_address_line" type="text"
+                                                    class="input-form" name="address_line"
+                                                    placeholder="Av. Siempre Viva 742, Interior 3"
+                                                    data-validate="required|min:5|max:255" autocomplete="off" />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="input-group">
-                                        <label class="label-form" for="checkout_inline_reference">
-                                            Referencia <i class="ri-asterisk text-accent"></i>
-                                        </label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-map-pin-2-line input-icon"></i>
-                                            <textarea id="checkout_inline_reference" class="input-form" name="reference"
-                                                placeholder="Ej: Casa de fachada azul, portón negro, cerca al parque" data-validate="required|max:255"></textarea>
+                                    <div class="form-row-fit">
+                                        <div class="input-group">
+                                            <label class="label-form" for="checkout_inline_district">
+                                                Distrito / Ciudad <i class="ri-asterisk text-accent"></i>
+                                            </label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-building-2-line input-icon"></i>
+                                                <input id="checkout_inline_district" type="text"
+                                                    class="input-form" name="district"
+                                                    placeholder="Ej: Miraflores, Lima"
+                                                    data-validate="required|min:3|max:120" autocomplete="off" />
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label class="label-form" for="checkout_inline_reference">
+                                                Referencia <i class="ri-asterisk text-accent"></i>
+                                            </label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-map-pin-2-line input-icon"></i>
+                                                <textarea id="checkout_inline_reference" class="input-form" name="reference"
+                                                    placeholder="Ej: Casa de fachada azul, portón negro, cerca al parque" data-validate="required|max:255"></textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="form-row-fill">
-                                    <div class="input-group">
-                                        <label class="label-form" for="checkout_inline_receiver_name">
-                                            Nombre destinatario <i class="ri-asterisk text-accent"></i>
-                                        </label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-user-3-line input-icon"></i>
-                                            <input id="checkout_inline_receiver_name" type="text"
-                                                class="input-form" name="receiver_name"
-                                                placeholder="Nombre de quien recibirá"
-                                                data-validate="required|min:3|max:255" autocomplete="off" />
+                                    <div class="form-row-fill">
+                                        <div class="input-group">
+                                            <label class="label-form" for="checkout_inline_receiver_name">
+                                                Nombre destinatario <i class="ri-asterisk text-accent"></i>
+                                            </label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-user-3-line input-icon"></i>
+                                                <input id="checkout_inline_receiver_name" type="text"
+                                                    class="input-form" name="receiver_name"
+                                                    placeholder="Nombre de quien recibirá"
+                                                    data-validate="required|min:3|max:255" autocomplete="off" />
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label class="label-form" for="checkout_inline_receiver_last_name">
+                                                Apellido destinatario
+                                            </label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-user-3-line input-icon"></i>
+                                                <input id="checkout_inline_receiver_last_name" type="text"
+                                                    class="input-form" name="receiver_last_name"
+                                                    placeholder="Apellido de quien recibirá"
+                                                    data-validate="min:2|max:255" autocomplete="off" />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="input-group">
-                                        <label class="label-form" for="checkout_inline_receiver_last_name">
-                                            Apellido destinatario
-                                        </label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-user-3-line input-icon"></i>
-                                            <input id="checkout_inline_receiver_last_name" type="text"
-                                                class="input-form" name="receiver_last_name"
-                                                placeholder="Apellido de quien recibirá" data-validate="min:2|max:255"
-                                                autocomplete="off" />
+                                    <div class="form-row-fill">
+                                        <div class="input-group">
+                                            <label class="label-form" for="checkout_inline_receiver_phone">
+                                                Teléfono <i class="ri-asterisk text-accent"></i>
+                                            </label>
+                                            <div class="input-icon-container">
+                                                <i class="ri-phone-line input-icon"></i>
+                                                <input id="checkout_inline_receiver_phone" type="text"
+                                                    class="input-form" name="receiver_phone"
+                                                    placeholder="Celular o teléfono de contacto"
+                                                    data-validate="required|phone|max:20" autocomplete="off" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="form-row-fill">
-                                    <div class="input-group">
-                                        <label class="label-form" for="checkout_inline_receiver_phone">
-                                            Teléfono <i class="ri-asterisk text-accent"></i>
-                                        </label>
-                                        <div class="input-icon-container">
-                                            <i class="ri-phone-line input-icon"></i>
-                                            <input id="checkout_inline_receiver_phone" type="text"
-                                                class="input-form" name="receiver_phone"
-                                                placeholder="Celular o teléfono de contacto"
-                                                data-validate="required|phone|max:20" autocomplete="off" />
-                                        </div>
+                                    <div class="checkout-inline-actions">
+                                        <button type="button" class="site-btn site-btn-outline"
+                                            data-address-form-cancel>
+                                            Cancelar
+                                        </button>
+                                        <button type="submit" class="site-btn site-btn-primary"
+                                            data-inline-address-submit>
+                                            Guardar dirección
+                                        </button>
                                     </div>
-                                </div>
-
-                                <div class="checkout-inline-actions">
-                                    <button type="button" class="site-btn site-btn-outline" data-address-form-cancel>
-                                        Cancelar
-                                    </button>
-                                    <button type="submit" class="site-btn site-btn-primary"
-                                        data-inline-address-submit>
-                                        Guardar dirección
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                                </form>
+                            </div>
+                        </article>
                     </section>
 
                     {{-- PASO 2B: Recojo en tienda (solo pickup) --}}
                     <section class="checkout-section" id="checkoutStepPickup" data-step-dependent="pickup">
-                        <div class="card-header">
-                            <span class="card-title">2. Punto de recojo</span>
-                            <p class="card-description">Selecciona la tienda donde recogerás tu pedido.</p>
-                        </div>
+                        <article class="checkout-progress-step" data-step="2">
+                            <span class="checkout-progress-index">2</span>
+                            <span class="checkout-progress-label">Dirección o tienda</span>
+                            <div class="checkout-progress-separator"></div>
+                        </article>
+                        <article class="w-full">
+                            <div class="card-header-container">
+                                <div class="card-header">
+                                    <span class="card-title">Punto de recojo</span>
+                                    <p class="card-description">Selecciona la tienda donde recogerás tu pedido.</p>
+                                </div>
+                            </div>
+                            <div class="checkout-cards-grid" data-store-list>
+                                {{-- Por ahora, locales estáticos; se puede migrar a tabla stores luego --}}
+                                <label class="checkout-card">
+                                    <input type="radio" name="store_id" value="store_central" class="sr-only">
+                                    <div class="checkout-card-icon">
+                                        <i class="ri-store-2-line"></i>
+                                        <span class="store-name">Tienda Central</span>
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">
+                                            <i class="ri-map-pin-2-line"></i>
+                                            Dirección:
+                                        </span>
+                                        <p class="checkout-card-helper">Av. Principal 123, Miraflores</p>
+                                        <span class="checkout-card-title">
+                                            <i class="ri-time-line"></i>
+                                            Horario de atención:
+                                        </span>
+                                        <p class="checkout-card-helper">Lun - Sáb: 9:00 am - 8:00 pm</p>
+                                    </div>
+                                </label>
 
-                        <div class="checkout-cards-grid" data-store-list>
-                            {{-- Por ahora, locales estáticos; se puede migrar a tabla stores luego --}}
-                            <label class="checkout-card">
-                                <input type="radio" name="store_id" value="store_central" class="sr-only">
-                                <div class="checkout-card-icon">
-                                    <i class="ri-store-2-line"></i>
-                                    <span class="store-name">Tienda Central</span>
-                                </div>
-                                <div class="checkout-card-body">
-                                    <span class="checkout-card-title">
-                                        <i class="ri-map-pin-2-line"></i>
-                                        Dirección:
-                                    </span>
-                                    <p class="checkout-card-helper">Av. Principal 123, Miraflores</p>
-                                    <span class="checkout-card-title">
-                                        <i class="ri-time-line"></i>
-                                        Horario de atención:
-                                    </span>
-                                    <p class="checkout-card-helper">Lun - Sáb: 9:00 am - 8:00 pm</p>
-                                </div>
-                            </label>
-
-                            <label class="checkout-card">
-                                <input type="radio" name="store_id" value="store_sucursal_1" class="sr-only">
-                                <div class="checkout-card-icon">
-                                    <i class="ri-store-2-line"></i>
-                                    <span class="store-name">Sucursal Norte</span>
-                                </div>
-                                <div class="checkout-card-body">
-                                    <span class="checkout-card-title">
-                                        <i class="ri-map-pin-2-line"></i>
-                                        Dirección:
-                                    </span>
-                                    <p class="checkout-card-helper">Av. Las Flores 456, Los Olivos</p>
-                                    <span class="checkout-card-title">
-                                        <i class="ri-time-line"></i>
-                                        Horario de atención:
-                                    </span>
-                                    <p class="checkout-card-helper">Lun - Sáb: 10:00 am - 7:00 pm</p>
-                                </div>
-                            </label>
-                        </div>
+                                <label class="checkout-card">
+                                    <input type="radio" name="store_id" value="store_sucursal_1" class="sr-only">
+                                    <div class="checkout-card-icon">
+                                        <i class="ri-store-2-line"></i>
+                                        <span class="store-name">Sucursal Norte</span>
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">
+                                            <i class="ri-map-pin-2-line"></i>
+                                            Dirección:
+                                        </span>
+                                        <p class="checkout-card-helper">Av. Las Flores 456, Los Olivos</p>
+                                        <span class="checkout-card-title">
+                                            <i class="ri-time-line"></i>
+                                            Horario de atención:
+                                        </span>
+                                        <p class="checkout-card-helper">Lun - Sáb: 10:00 am - 7:00 pm</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </article>
                     </section>
 
                     {{-- PASOS 4 y 5: Método de pago + Resumen (contenido existente) --}}
                     <section class="checkout-section" id="checkoutStepPayment">
-                        <div class="card-header">
-                            <span class="card-title">3. Método de pago</span>
-                            <p class="card-description">Selecciona cómo deseas pagar tu pedido.</p>
-                        </div>
-
-                        <form class="payment-methods-form" id="paymentMethodsForm">
-                            <div class="payment-method-option">
-                                <input type="radio" value="card" name="payment_method" id="payment_method_card"
-                                    class="payment-method-radio" checked>
-                                <label for="payment_method_card" class="payment-method-card">
-                                    <div class="payment-method-header">
-                                        <div class="payment-method-icon">
-                                            <i class="ri-bank-card-line"></i>
-                                        </div>
-                                        <div class="payment-method-text">
-                                            <span class="card-title">Tarjeta de crédito/débito</span>
-                                            <span class="payment-method-helper">Paga con Visa, Mastercard u otras
-                                                tarjetas.</span>
-                                        </div>
-                                    </div>
-                                    <img class="payment-method-img"
-                                        src="{{ asset('images/checkout/cards_pay.png') }}"
-                                        alt="Formas de pago con tarjeta">
-                                </label>
-
-
-                                <div class="payment-method-body">
-                                    <p class="input-help-text mb-2">
-                                        Luego de hacer click en "Pagar ahora" se abrira el checkout de Niubiz para
-                                        que
-                                        completes los datos de tu tarjeta y finalices tu compra de forma segura.
-                                    </p>
-                                    <ul class="payment-method-info">
-                                        <li>Aceptamos Visa, Mastercard, American Express y otras tarjetas.</li>
-                                        <li>El pago se procesa de forma segura a través de Niubiz.</li>
-                                        <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
-                                    </ul>
-                                </div>
+                        <article class="checkout-progress-step" data-step="3">
+                            <span class="checkout-progress-index">3</span>
+                            <span class="checkout-progress-label">Pago y resumen</span>
+                        </article>
+                        <article class="w-full">
+                            <div class="card-header">
+                                <span class="card-title">Método de pago</span>
+                                <p class="card-description">Selecciona cómo deseas pagar tu pedido.</p>
                             </div>
+                            <form class="payment-methods-form" id="paymentMethodsForm">
+                                <div class="payment-method-option">
+                                    <input type="radio" value="card" name="payment_method"
+                                        id="payment_method_card" class="payment-method-radio" checked>
+                                    <label for="payment_method_card" class="payment-method-card">
+                                        <div class="payment-method-header">
+                                            <div class="payment-method-icon">
+                                                <i class="ri-bank-card-line"></i>
+                                            </div>
+                                            <div class="payment-method-text">
+                                                <span class="card-title">Tarjeta de crédito/débito</span>
+                                                <span class="payment-method-helper">Paga con Visa, Mastercard u otras
+                                                    tarjetas.</span>
+                                            </div>
+                                        </div>
+                                        <img class="payment-method-img"
+                                            src="{{ asset('images/checkout/cards_pay.png') }}"
+                                            alt="Formas de pago con tarjeta">
+                                    </label>
 
-                            <div class="payment-method-option">
-                                <input type="radio" value="bank" name="payment_method" id="payment_method_bank"
-                                    class="payment-method-radio">
-                                <label for="payment_method_bank" class="payment-method-card">
-                                    <div class="payment-method-header">
-                                        <div class="payment-method-icon">
-                                            <i class="ri-exchange-dollar-line"></i>
-                                        </div>
-                                        <div class="payment-method-text">
-                                            <span class="card-title">Depósito bancario o Yape</span>
-                                            <span class="payment-method-helper">Transfiere desde tu banco o paga
-                                                con
-                                                Yape.</span>
-                                        </div>
+
+                                    <div class="payment-method-body">
+                                        <p class="input-help-text mb-2">
+                                            Luego de hacer click en "Pagar ahora" se abrira el checkout de Niubiz para
+                                            que
+                                            completes los datos de tu tarjeta y finalices tu compra de forma segura.
+                                        </p>
+                                        <ul class="payment-method-info">
+                                            <li>Aceptamos Visa, Mastercard, American Express y otras tarjetas.</li>
+                                            <li>El pago se procesa de forma segura a través de Niubiz.</li>
+                                            <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
+                                        </ul>
                                     </div>
-                                    <img class="payment-method-img" src="{{ asset('images/checkout/yape-pay.png') }}"
-                                        alt="Depósito bancario o Yape">
-                                </label>
-
-                                <div class="payment-method-body">
-                                    <p class="input-help-text mb-2">
-                                        Al confirmar tu pedido, te mostraremos los datos de la cuenta bancaria o el
-                                        número
-                                        de
-                                        Yape para completar el pago.
-                                    </p>
-                                    <ul class="payment-method-info">
-                                        <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
-                                        <li>Envía el comprobante para acelerar la confirmación.</li>
-                                    </ul>
                                 </div>
-                            </div>
-                        </form>
+
+                                <div class="payment-method-option">
+                                    <input type="radio" value="bank" name="payment_method"
+                                        id="payment_method_bank" class="payment-method-radio">
+                                    <label for="payment_method_bank" class="payment-method-card">
+                                        <div class="payment-method-header">
+                                            <div class="payment-method-icon">
+                                                <i class="ri-exchange-dollar-line"></i>
+                                            </div>
+                                            <div class="payment-method-text">
+                                                <span class="card-title">Depósito bancario o Yape</span>
+                                                <span class="payment-method-helper">Transfiere desde tu banco o paga
+                                                    con
+                                                    Yape.</span>
+                                            </div>
+                                        </div>
+                                        <img class="payment-method-img"
+                                            src="{{ asset('images/checkout/yape-pay.png') }}"
+                                            alt="Depósito bancario o Yape">
+                                    </label>
+
+                                    <div class="payment-method-body">
+                                        <p class="input-help-text mb-2">
+                                            Al confirmar tu pedido, te mostraremos los datos de la cuenta bancaria o el
+                                            número
+                                            de
+                                            Yape para completar el pago.
+                                        </p>
+                                        <ul class="payment-method-info">
+                                            <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
+                                            <li>Envía el comprobante para acelerar la confirmación.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </article>
                     </section>
                 </div>
 
@@ -631,8 +661,6 @@
 
                 const addressesRoot = document.querySelector('[data-checkout-addresses-root]');
                 const addressList = addressesRoot ? addressesRoot.querySelector('[data-address-list]') : null;
-                const addressEmptyState = addressesRoot ? addressesRoot.querySelector('[data-address-empty-state]') :
-                    null;
                 const addressFormPanel = addressesRoot ? addressesRoot.querySelector('[data-address-form-panel]') :
                     null;
                 const addressFeedback = addressesRoot ? addressesRoot.querySelector('[data-address-feedback]') : null;
@@ -773,13 +801,6 @@
                                 `label[for="${input.id}"]`);
                             if (!label) return;
 
-                            // Mantener badge "Recomendado" existente en tiendas sin tocarlo.
-                            const recommendedBadge = label.querySelector(
-                                ':scope > .store-badge > .store-badge');
-                            if (recommendedBadge) {
-                                return;
-                            }
-
                             if (input.checked) {
                                 ensureSelectedBadge(label);
                             } else {
@@ -872,7 +893,10 @@
                     }
 
                     addressFormPanel.classList.remove('is-hidden');
-                    addressFormPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    addressFormPanel.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
 
                 function closeAddressForm() {
@@ -910,9 +934,6 @@
 
                     const hasAddresses = checkoutAddresses.length > 0;
                     addressList.classList.toggle('is-hidden', !hasAddresses);
-                    if (addressEmptyState) {
-                        addressEmptyState.classList.toggle('is-hidden', hasAddresses);
-                    }
 
                     if (!hasAddresses) {
                         addressList.innerHTML = '';
@@ -1062,7 +1083,9 @@
                         }
 
                         if (data.status !== 'success' || !Array.isArray(data.addresses)) {
-                            setAddressFeedback('No se pudo actualizar la lista de direcciones. Recarga la página e intenta nuevamente.', 'error');
+                            setAddressFeedback(
+                                'No se pudo actualizar la lista de direcciones. Recarga la página e intenta nuevamente.',
+                                'error');
                             return false;
                         }
 
