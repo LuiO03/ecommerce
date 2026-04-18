@@ -19,6 +19,12 @@
         $hasItems = $items->isNotEmpty();
         $itemsCount = $items->count();
         $itemsQuantity = $items->sum('quantity');
+        $checkoutTimeoutFallback = request()->boolean('niubiz_timeout');
+        $checkoutFallbackPaymentMethod = mb_strtolower((string) request()->query('payment_method', 'niubiz'));
+        $showNiubizFallback = $checkoutTimeoutFallback && $checkoutFallbackPaymentMethod === 'niubiz';
+        $checkoutFallbackMessage = $showNiubizFallback
+            ? 'La sesión de pago expiró o Niubiz no respondió a tiempo. Revisa el pedido y vuelve a intentarlo.'
+            : null;
     @endphp
 
     <section class="site-container checkout-page">
@@ -76,7 +82,7 @@
                             <span class="checkout-progress-label">Tipo de entrega</span>
                             <div class="checkout-progress-separator"></div>
                         </article>
-                        <article class="w-full">
+                        <article class="w-full flex gap-1 flex-col">
                             <div class="card-header-container">
                                 <div class="card-header">
                                     <span class="card-title">¿Cómo quieres recibir tu pedido?</span>
@@ -124,7 +130,7 @@
                             <span class="checkout-progress-label">Dirección</span>
                             <div class="checkout-progress-separator"></div>
                         </article>
-                        <article class="w-full flex gap-1 flex-col">
+                        <article class="w-full flex gap-2 flex-col">
                             <div class="card-header-container">
                                 <div class="card-header">
                                     <span class="card-title">Dirección de envío</span>
@@ -211,7 +217,7 @@
 
                             <div class="checkout-address-form-panel {{ $hasAddresses ? 'is-hidden' : '' }}"
                                 data-address-form-panel>
-                                <div class="card-header mb-2">
+                                <div class="card-header">
                                     <span class="card-title"
                                         data-address-form-title>{{ $hasAddresses ? 'Agregar dirección' : 'Nueva dirección' }}</span>
                                     <p class="card-description" data-address-form-description>Completa los datos de
@@ -331,12 +337,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="alert-info-note">
-                                <i class="ri-information-fill"></i>
-                                <span>
-                                    No te molestaremos con llamadas. Solo lo usaremos para informarte de tu pedido.
-                                </span>
-                            </div>
+                            <x-note-alert type="info" :message="'Recuerda que el costo de envío se calcula al finalizar tu compra, dependiendo de la dirección que elijas.'" :dismissible="true" />
                         </article>
                     </section>
 
@@ -347,7 +348,7 @@
                             <span class="checkout-progress-label">Tienda</span>
                             <div class="checkout-progress-separator"></div>
                         </article>
-                        <article class="w-full">
+                        <article class="w-full flex gap-2 flex-col">
                             <div class="card-header-container">
                                 <div class="card-header">
                                     <span class="card-title">Punto de recojo</span>
@@ -396,6 +397,7 @@
                                     </div>
                                 </label>
                             </div>
+                            <x-note-alert type="info" :message="'Este pedido será recogido en tienda. El pago se realiza online.'" :dismissible="true" />
                         </article>
                     </section>
 
@@ -408,77 +410,51 @@
                         <article class="w-full">
                             <div class="card-header">
                                 <span class="card-title">Método de pago</span>
-                                <p class="card-description">Selecciona cómo deseas pagar tu pedido.</p>
+                                <p class="card-description">Selecciona una opción para continuar con tu compra.</p>
                             </div>
-                            <form class="payment-methods-form" id="paymentMethodsForm">
-                                <div class="payment-method-option">
-                                    <input type="radio" value="card" name="payment_method"
-                                        id="payment_method_card" class="payment-method-radio" checked>
-                                    <label for="payment_method_card" class="payment-method-card">
-                                        <div class="payment-method-header">
-                                            <div class="payment-method-icon">
-                                                <i class="ri-bank-card-line"></i>
-                                            </div>
-                                            <div class="payment-method-text">
-                                                <span class="card-title">Tarjeta de crédito/débito</span>
-                                                <span class="payment-method-helper">Paga con Visa, Mastercard u otras
-                                                    tarjetas.</span>
-                                            </div>
+                            <div class="checkout-cards-grid checkout-payment-grid" data-payment-method-root>
+                                <div class="w-full flex flex-col gap-2">
+                                    <label class="checkout-card" data-payment-option="niubiz">
+                                        <input type="radio" value="niubiz" name="payment_method"
+                                            id="payment_method_niubiz" class="sr-only" checked>
+                                        <div class="checkout-card-icon">
+                                            <i class="ri-bank-card-line"></i>
                                         </div>
-                                        <img class="payment-method-img"
-                                            src="{{ asset('images/checkout/cards_pay.png') }}"
-                                            alt="Formas de pago con tarjeta">
+                                        <div class="checkout-card-body">
+                                            <span class="checkout-card-title">Niubiz</span>
+                                            <span class="checkout-card-helper">Paga con tarjeta de crédito o
+                                                débito.</span>
+                                        </div>
                                     </label>
-
-
-                                    <div class="payment-method-body">
-                                        <p class="input-help-text mb-2">
-                                            Luego de hacer click en "Pagar ahora" se abrira el checkout de Niubiz para
-                                            que
-                                            completes los datos de tu tarjeta y finalices tu compra de forma segura.
-                                        </p>
-                                        <ul class="payment-method-info">
-                                            <li>Aceptamos Visa, Mastercard, American Express y otras tarjetas.</li>
-                                            <li>El pago se procesa de forma segura a través de Niubiz.</li>
-                                            <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
-                                        </ul>
+                                    <div class="{{ $checkoutFallbackMessage ? '' : 'is-hidden' }}" data-niubiz-fallback>
+                                        <x-note-alert type="warning" :message="$checkoutFallbackMessage" :dismissible="true" />
                                     </div>
                                 </div>
 
-                                <div class="payment-method-option">
-                                    <input type="radio" value="bank" name="payment_method"
-                                        id="payment_method_bank" class="payment-method-radio">
-                                    <label for="payment_method_bank" class="payment-method-card">
-                                        <div class="payment-method-header">
-                                            <div class="payment-method-icon">
-                                                <i class="ri-exchange-dollar-line"></i>
-                                            </div>
-                                            <div class="payment-method-text">
-                                                <span class="card-title">Depósito bancario o Yape</span>
-                                                <span class="payment-method-helper">Transfiere desde tu banco o paga
-                                                    con
-                                                    Yape.</span>
-                                            </div>
-                                        </div>
-                                        <img class="payment-method-img"
-                                            src="{{ asset('images/checkout/yape-pay.png') }}"
-                                            alt="Depósito bancario o Yape">
-                                    </label>
-
-                                    <div class="payment-method-body">
-                                        <p class="input-help-text mb-2">
-                                            Al confirmar tu pedido, te mostraremos los datos de la cuenta bancaria o el
-                                            número
-                                            de
-                                            Yape para completar el pago.
-                                        </p>
-                                        <ul class="payment-method-info">
-                                            <li>Tiempo de validación del pago: 5-15 minutos hábiles.</li>
-                                            <li>Envía el comprobante para acelerar la confirmación.</li>
-                                        </ul>
+                                <label class="checkout-card" data-payment-option="pagoefectivo">
+                                    <input type="radio" value="pagoefectivo" name="payment_method"
+                                        id="payment_method_pagoefectivo" class="sr-only">
+                                    <div class="checkout-card-icon">
+                                        <i class="ri-bank-line"></i>
                                     </div>
-                                </div>
-                            </form>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">PagoEfectivo</span>
+                                        <span class="checkout-card-helper">Paga mediante CIP o efectivo.</span>
+                                    </div>
+                                </label>
+
+                                <label class="checkout-card" data-payment-option="yape">
+                                    <input type="radio" value="yape" name="payment_method"
+                                        id="payment_method_yape" class="sr-only">
+                                    <div class="checkout-card-icon">
+                                        <i class="ri-smartphone-line"></i>
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">Yape</span>
+                                        <span class="checkout-card-helper">Paga con la billetera digital.</span>
+                                    </div>
+                                </label>
+                            </div>
                         </article>
                     </section>
                 </div>
@@ -697,10 +673,17 @@
                 const addressFormOpenButtons = addressesRoot ? addressesRoot.querySelectorAll(
                     '[data-address-form-open]') : [];
                 const progressSteps = document.querySelectorAll('.checkout-progress-step');
+                const niubizFallback = document.querySelector('[data-niubiz-fallback]');
+                const niubizFallbackTitle = niubizFallback ? niubizFallback.querySelector('.alert-title') : null;
+                const niubizFallbackMessage = niubizFallback ? niubizFallback.querySelector('.alert-message') : null;
+                const niubizFallbackDismiss = niubizFallback ? niubizFallback.querySelector('[data-alert-close]') :
+                    null;
 
                 const amount = '{{ number_format($amount, 2, '.', '') }}';
                 const merchantId = '{{ config('services.niubiz.merchant_id') }}';
-                const sessionToken = '{{ $session_token }}';
+                let sessionToken = '{{ $session_token }}';
+                const checkoutChannel = 'web';
+                const refreshSessionTokenUrl = '{{ route('checkout.session-token') }}';
 
                 const storeAddressUrl = addressesRoot ? addressesRoot.getAttribute('data-store-url') : '';
                 const initialAddressesRaw = addressesRoot ? addressesRoot.getAttribute('data-initial-addresses') : '[]';
@@ -853,7 +836,7 @@
                         },
                         {
                             name: 'payment_method',
-                            selector: '.payment-method-card'
+                            selector: '.checkout-card'
                         },
                     ];
 
@@ -886,6 +869,10 @@
                     updateProgressSteps();
                     updatePayButtonState();
                     updateSelectedCardsBadges();
+
+                    if (getSelectedPaymentMethod() !== 'niubiz') {
+                        hideNiubizFallback();
+                    }
                 }
 
                 function escapeHtml(value) {
@@ -895,6 +882,86 @@
                         .replaceAll('>', '&gt;')
                         .replaceAll('"', '&quot;')
                         .replaceAll("'", '&#039;');
+                }
+
+                function showNiubizFallback(message, title = 'No pudimos iniciar el pago') {
+                    if (!niubizFallback || !niubizFallbackMessage || !niubizFallbackTitle) return;
+
+                    niubizFallbackTitle.textContent = title;
+                    niubizFallbackMessage.textContent = message;
+                    niubizFallback.classList.remove('is-hidden');
+                    niubizFallback.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+
+                function hideNiubizFallback() {
+                    if (!niubizFallback) return;
+                    niubizFallback.classList.add('is-hidden');
+                }
+
+                function getSelectedPaymentMethod() {
+                    const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+                    return selectedPayment ? selectedPayment.value : 'niubiz';
+                }
+
+                function getMissingRequiredOptions(config) {
+                    return Object.entries(config)
+                        .filter(([, value]) => value === null || value === undefined || String(value).trim() === '')
+                        .map(([key]) => key);
+                }
+
+                async function ensureSessionToken(paymentMethod = 'niubiz') {
+                    if (String(sessionToken || '').trim() !== '') {
+                        return {
+                            token: sessionToken,
+                            error: null,
+                        };
+                    }
+
+                    if (!refreshSessionTokenUrl || !csrfToken) {
+                        return {
+                            token: null,
+                            error: 'No se encontró la configuración para renovar el token de pago.',
+                        };
+                    }
+
+                    try {
+                        const response = await fetch(refreshSessionTokenUrl, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json, text/plain, */*',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                amount,
+                                payment_method: paymentMethod,
+                            }),
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+
+                        if (!response.ok || data.status !== 'success' || !data.session_token) {
+                            return {
+                                token: null,
+                                error: data.message || 'No se pudo renovar el token de sesión de Niubiz.',
+                            };
+                        }
+
+                        sessionToken = String(data.session_token);
+                        return {
+                            token: sessionToken,
+                            error: null,
+                        };
+                    } catch (error) {
+                        return {
+                            token: null,
+                            error: 'Error de red al renovar el token de sesión de Niubiz.',
+                        };
+                    }
                 }
 
                 function fillAddressForm(address = null) {
@@ -1282,6 +1349,12 @@
                     }
                 }
 
+                if (niubizFallbackDismiss) {
+                    niubizFallbackDismiss.addEventListener('click', () => {
+                        hideNiubizFallback();
+                    });
+                }
+
                 // Eventos de cambio en tipo de entrega
                 deliveryRadios.forEach((input) => {
                     input.addEventListener('change', () => {
@@ -1318,7 +1391,7 @@
 
                 // Click en pagar ahora: configurar Niubiz con los parámetros de entrega seleccionados
                 if (payButton) {
-                    payButton.addEventListener('click', function() {
+                    payButton.addEventListener('click', async function() {
                         if (payButton.disabled) return;
 
                         const type = getCurrentDeliveryType();
@@ -1333,25 +1406,76 @@
                             storeId = checked ? checked.value : null;
                         }
 
-                        const purchaseNumber = Math.floor(Math.random() * 1000000000);
-                        let action = '{{ route('checkout.paid') }}' +
+                        const purchaseNumber = String(Math.floor(Math.random() * 1000000000));
+                        const paymentMethod = getSelectedPaymentMethod();
+                        const isNiubizSelected = paymentMethod === 'niubiz';
+                        const action = '{{ route('checkout.paid') }}' +
                             '?amount=' + amount +
                             '&purchaseNumber=' + purchaseNumber +
                             '&delivery_type=' + encodeURIComponent(type || '') +
                             '&address_id=' + encodeURIComponent(addressId || '') +
-                            '&store_id=' + encodeURIComponent(storeId || '');
+                            '&store_id=' + encodeURIComponent(storeId || '') +
+                            '&payment_method=' + encodeURIComponent(paymentMethod || 'niubiz');
+
+                        if (!isNiubizSelected) {
+                            showNiubizFallback(
+                                'El método de pago seleccionado aún no está integrado en checkout. Por ahora, usa Niubiz.',
+                                'Método en implementación'
+                            );
+                            return;
+                        }
+
+                        const ensuredSession = await ensureSessionToken(paymentMethod);
+
+                        if (!ensuredSession.token) {
+                            if (isNiubizSelected) {
+                                showNiubizFallback(
+                                    ensuredSession.error ||
+                                    'No se pudo generar sessiontoken. Intenta nuevamente en unos minutos.',
+                                    'Pago temporalmente no disponible'
+                                );
+                            }
+                            return;
+                        }
+
+                        const requiredConfig = {
+                            action,
+                            channel: checkoutChannel,
+                            merchantid: merchantId,
+                            sessiontoken: ensuredSession.token,
+                            amount,
+                            purchasenumber: purchaseNumber,
+                        };
+
+                        const missingRequiredOptions = getMissingRequiredOptions(requiredConfig);
+
+                        if (missingRequiredOptions.length > 0) {
+                            if (isNiubizSelected) {
+                                showNiubizFallback(
+                                    'Faltan campos requeridos de Niubiz: ' + missingRequiredOptions
+                                    .join(', '),
+                                    'Configuración incompleta'
+                                );
+                            }
+                            return;
+                        }
+
+                        const timeoutUrl = new URL('{{ route('checkout.index') }}', window.location
+                            .origin);
+                        timeoutUrl.searchParams.set('niubiz_timeout', '1');
+                        timeoutUrl.searchParams.set('payment_method', paymentMethod || 'niubiz');
 
                         VisanetCheckout.configure({
-                            sessiontoken: sessionToken,
-                            channel: 'web',
-                            merchantid: merchantId,
-                            purchasenumber: purchaseNumber,
-                            amount: amount,
+                            action: requiredConfig.action,
+                            channel: requiredConfig.channel,
+                            merchantid: requiredConfig.merchantid,
+                            sessiontoken: requiredConfig.sessiontoken,
+                            amount: requiredConfig.amount,
+                            purchasenumber: requiredConfig.purchasenumber,
                             expirationminutes: '20',
-                            timeouturl: 'about:blank',
-                            merchantlogo: 'img/comercio.png',
+                            timeouturl: timeoutUrl.toString(),
+                            merchantlogo: '{{ asset('images/logos/logo-geckommerce.png') }}',
                             formbuttoncolor: '#000000',
-                            action: action,
                             complete: function(params) {
                                 alert(JSON.stringify(params));
                             }

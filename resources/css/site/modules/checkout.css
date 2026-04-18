@@ -116,7 +116,7 @@
     display: flex;
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
-    padding: 1rem;
+    padding: 1.2rem 1rem;
     gap: 1rem;
     height: fit-content;
     position: relative;
@@ -133,7 +133,6 @@
     border-color: var(--color-success);
     background-color: var(--color-success-pastel);
     box-shadow: var(--shadow-material);
-    padding: 1.2rem 1rem 1rem 1rem;
 }
 
 .checkout-section .checkout-card:hover {
@@ -228,6 +227,7 @@
 }
 
 .checkout-address-form-panel.is-hidden {
+    display: none;
     max-height: 0;
     opacity: 0;
     transform: translateY(-8px);
@@ -254,106 +254,8 @@
 /* Paso 2B: tiendas para recojo */
 
 
-/* Paso 3: métodos de pago (se reutiliza estructura existente) */
-.payment-methods-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
+/* Paso 3: métodos de pago */
 
-.payment-method-option {
-    border-radius: var(--radius-card);
-    border: 1px solid var(--color-border);
-    background: var(--color-card-bg);
-    padding: 0.75rem 1rem;
-    transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease,
-        background-color 0.15s ease;
-}
-
-.payment-method-option:hover {
-    border-color: var(--color-primary);
-}
-
-.payment-method-option:has(.payment-method-radio:checked) {
-    border-color: var(--color-purple);
-    border: 2px solid var(--color-purple);
-    background: var(--color-purple-pastel);
-}
-
-.payment-method-radio {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.payment-method-card {
-    display: flex;
-    cursor: pointer;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.payment-method-header {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-}
-
-.payment-method-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.payment-method-icon i {
-    font-size: 1.8rem;
-}
-
-.payment-method-img {
-    height: 50px;
-    aspect-ratio: auto;
-}
-
-.payment-method-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-}
-
-.payment-method-helper {
-    font-size: var(--font-size-xs);
-    color: var(--color-muted);
-}
-
-.payment-method-body {
-    margin-top: 0.75rem;
-    border-radius: var(--radius-card);
-    border: 1px dashed var(--color-border);
-    padding: 0.75rem 1rem 1rem;
-    background: rgba(148, 163, 184, 0.05);
-    display: none;
-}
-
-.payment-method-radio:checked + .payment-method-card + .payment-method-body {
-    display: block;
-}
-
-.payment-method-info {
-    margin: 0;
-    padding-left: 1.1rem;
-    font-size: var(--font-size-xs);
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-}
-
-.payment-method-info li {
-    list-style: disc;
-}
 
 .checkout-summary {
     border-radius: var(--radius-card);

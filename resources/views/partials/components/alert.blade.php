@@ -1,4 +1,9 @@
-<div class="alert alert-{{ $type }} {{ $dismissible ? 'alert-dismissible' : '' }}" data-alert>
+<div
+    class="alert alert-{{ $type }} {{ $dismissible ? 'alert-dismissible' : '' }}"
+    data-alert
+    @if(!is_null($autoDismiss) && $autoDismiss > 0) data-auto-dismiss="{{ $autoDismiss }}" @endif
+    @if(!empty($persistKey)) data-persist-key="{{ $persistKey }}" @endif
+>
     <i class="{{ $icon }} alert-icon"></i>
 
     <div class="alert-content">

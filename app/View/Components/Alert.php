@@ -11,6 +11,8 @@ class Alert extends Component
     public ?array $items;
     public bool $dismissible;
     public string $icon;
+    public ?int $autoDismiss;
+    public ?string $persistKey;
 
     /**
      * Create a new component instance.
@@ -20,19 +22,25 @@ class Alert extends Component
      * @param array|null $items Lista de items a mostrar (opcional)
      * @param bool $dismissible Si el banner puede cerrarse
      * @param string|null $icon Ícono personalizado (opcional)
+     * @param int|null $autoDismiss Auto-cierre en milisegundos
+     * @param string|null $persistKey Clave de persistencia en localStorage
      */
     public function __construct(
         string $type = 'info',
         string $title = '',
         ?array $items = null,
         bool $dismissible = false,
-        ?string $icon = null
+        ?string $icon = null,
+        ?int $autoDismiss = null,
+        ?string $persistKey = null
     ) {
         $this->type = $type;
         $this->title = $title;
         $this->items = $items;
         $this->dismissible = $dismissible;
         $this->icon = $icon ?? $this->getDefaultIcon($type);
+        $this->autoDismiss = $autoDismiss;
+        $this->persistKey = $persistKey;
     }
 
     /**

@@ -31,8 +31,11 @@ class DriverController extends Controller
 
     public function create()
     {
-        // Solo usuarios que aún no tienen perfil de conductor
+        // Solo usuarios que aún no tienen perfil de conductor ni cliente
         $users = User::whereDoesntHave('driver')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Cliente');
+            })
             ->orderBy('name')
             ->get(['id', 'name', 'last_name', 'email', 'phone']);
 
@@ -85,6 +88,9 @@ class DriverController extends Controller
     {
         // Permitir mantener el usuario actual en el listado
         $users = User::whereDoesntHave('driver')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Cliente');
+            })
             ->orWhere('id', $driver->user_id)
             ->orderBy('name')
             ->get(['id', 'name', 'last_name', 'email', 'phone']);

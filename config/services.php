@@ -47,6 +47,14 @@ return [
         'password' => env('NIUBIZ_PASSWORD'),
         'url_api' => env('NIUBIZ_URL_API'),
         'url_js' => env('NIUBIZ_URL_JS'),
-    ]
+        'countable' => env('NIUBIZ_COUNTABLE', true),
+    ],
+
+    'culqi' => [
+        'public_key' => env('CULQI_PUBLIC_KEY'),
+        'secret_key' => env('CULQI_SECRET_KEY'),
+        'base_url' => env('CULQI_BASE_URL'),
+    ],
+
 
 ];

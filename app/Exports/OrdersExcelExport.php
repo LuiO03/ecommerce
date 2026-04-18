@@ -26,8 +26,8 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
 
     public function array(): array
     {
-        $query = Order::with('user')
-            ->select('id', 'order_number', 'user_id', 'total', 'status', 'payment_status', 'payment_id', 'created_at');
+        $query = Order::with(['user', 'latestPayment'])
+            ->select('id', 'order_number', 'user_id', 'total', 'status', 'created_at');
 
         if (!empty($this->ids)) {
             $query->whereIn('id', $this->ids);

@@ -24,8 +24,8 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::with('user')
-            ->select(['id', 'user_id', 'order_number', 'total', 'status', 'payment_method', 'payment_status', 'payment_id', 'pdf_path', 'created_at'])
+        $orders = Order::with(['user', 'latestPayment'])
+            ->select(['id', 'user_id', 'order_number', 'total', 'status', 'pdf_path', 'created_at'])
             ->orderByDesc('id')
             ->get();
 
@@ -34,14 +34,14 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load(['user', 'items.product', 'items.variant']);
+        $order->load(['user', 'items.product', 'items.variant', 'latestPayment']);
 
         return view('admin.orders.show', compact('order'));
     }
 
     public function invoicePreview(Order $order)
     {
-        $order->load(['user', 'items.product', 'items.variant.features.option']);
+        $order->load(['user', 'items.product', 'items.variant.features.option', 'latestPayment']);
 
         $companyInfo = \App\Models\CompanySetting::first();
 
@@ -137,9 +137,9 @@ class OrderController extends Controller
     public function exportPdf(Request $request)
     {
         if ($request->has('ids')) {
-            $orders = Order::with('user')->whereIn('id', $request->ids)->get();
+            $orders = Order::with(['user', 'latestPayment'])->whereIn('id', $request->ids)->get();
         } elseif ($request->has('export_all')) {
-            $orders = Order::with('user')->get();
+            $orders = Order::with(['user', 'latestPayment'])->get();
         } else {
             Session::flash('info', [
                 'type' => 'danger',

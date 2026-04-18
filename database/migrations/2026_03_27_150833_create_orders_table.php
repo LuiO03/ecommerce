@@ -42,16 +42,6 @@ return new class extends Migration
             $table->string('shipping_city')->nullable();
             $table->string('shipping_phone')->nullable();
 
-            $table->string('payment_method')->nullable()->default(1); // niubiz, yape, etc.
-            // pending, authorized, captured, failed, refunded, etc.
-            $table->string('payment_id')->nullable(); // id de transacción del gateway
-            $table->enum('payment_status', [
-                'pending',
-                'paid',
-                'failed',
-                'refunded'
-            ])->default('pending');
-
             $table->timestamps();
             $table->softDeletes();
         });
