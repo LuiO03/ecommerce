@@ -52,6 +52,7 @@
                         <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden
                             data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                     </div>
+                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
 
                     <div id="previewContainer" class="preview-container">
                         @foreach ($post->images as $img)
@@ -60,7 +61,7 @@
                                 $exists = file_exists($fullPath);
                             @endphp
 
-                            <div class="preview-item existing-image" data-type="existing" data-id="{{ $img->id }}"
+                            <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}" data-type="existing" data-id="{{ $img->id }}"
                                 data-key="existing-{{ $img->id }}" data-main="{{ $img->is_main ? 'true' : 'false' }}">
                                 <button type="button" class="drag-handle" title="Reordenar imagen">
                                     <i class="ri-draggable"></i>

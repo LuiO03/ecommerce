@@ -44,6 +44,7 @@
                         <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden
                             data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                     </div>
+                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
                     <div id="previewContainer" class="preview-container"></div>
                     <input type="hidden" name="primary_image" id="primaryImageInput" value="">
                 </div>

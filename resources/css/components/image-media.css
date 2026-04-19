@@ -3,7 +3,14 @@
 .image-upload-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+}
+
+.gallery-hint {
+    margin-top: -4px;
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+    color: var(--color-input-placeholder);
 }
 
 .image-preview-zone {
@@ -537,14 +544,24 @@
 
 .custom-dropzone {
     border: 3px dashed var(--color-input-border);
-    padding: 35px;
+    padding: 28px 24px;
     text-align: center;
     cursor: pointer;
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     transition:
-        transform 0.3s ease,
-        border-color 0.3s ease;
-    background: var(--color-bg);
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background-color 0.25s ease,
+        box-shadow 0.25s ease;
+    background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.5), transparent 48%),
+        var(--color-bg);
+    min-height: 190px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .custom-dropzone.dragover {
@@ -556,11 +573,12 @@
 .custom-dropzone:hover {
     border-color: var(--color-accent);
     background-color: var(--color-sidebar);
+    box-shadow: var(--shadow-material);
 }
 
 .custom-dropzone i {
     font-size: 3rem;
-    color: var(--color-input-border);
+    color: var(--color-accent);
 }
 
 .custom-dropzone p {
@@ -573,14 +591,15 @@
 
 .preview-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    align-items: stretch;
 }
 
 /* grid para moviles */
 @media (max-width: 600px) {
     .preview-container {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
 
     .position-cell {
@@ -594,22 +613,23 @@
     aspect-ratio: 1 / 1;
     width: 100%;
     height: 100%;
-    cursor: pointer;
+    cursor: default;
     overflow: hidden;
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-material);
-    border: 2px solid rgb(175, 174, 174);
+    border: 2px solid rgba(148, 163, 184, 0.35);
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        filter 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
     align-items: center;
-    color: var(--color-danger);
-    background: var(--color-danger-pastel);
+    color: var(--color-text);
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.04));
 }
 
 .preview-item i {
@@ -626,6 +646,13 @@
 .preview-item.primary-main {
     grid-column: span 2;
     grid-row: span 2;
+}
+
+@media (max-width: 600px) {
+    .preview-item.primary-main {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
 }
 
 .preview-item.dragging {
@@ -655,6 +682,7 @@
         transform 0.2s ease;
     z-index: 20;
     outline: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
 .drag-handle:hover {
@@ -688,29 +716,32 @@
 }
 
 /* Blur al hacer hover */
-.preview-item:hover img {
+.preview-item.has-image:hover img {
     filter: blur(2px) brightness(0.7);
 }
 
-/* Overlay semi-transparente */
 .preview-item .overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.45);
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    align-items: stretch;
+    justify-content: space-between;
+    opacity: 1;
+    transition: opacity 0.25s ease, background-color 0.25s ease;
+    background: transparent;
 }
 
-/* Mostrar overlay */
-.preview-item:hover .overlay {
-    opacity: 1;
+.preview-item.has-image .overlay {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.18), rgba(15, 23, 42, 0.48));
+}
+
+.preview-item.has-image:hover .overlay {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.22), rgba(15, 23, 42, 0.52));
 }
 
 .preview-item .overlay i {
@@ -719,16 +750,35 @@
 
 /* Peso */
 .overlay .file-size {
+    align-self: flex-start;
     color: white;
     font-size: var(--font-size-xs);
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(4px);
+    padding: 4px 8px;
+    border-radius: 999px;
+}
+
+.preview-item:not(.has-image) .overlay .file-size {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.72);
 }
 
 .overlay-actions {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    gap: 8px;
     align-items: center;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+.overlay-actions .boton-form {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 10px;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
 }
 
 .overlay .mark-main-btn:hover:not(:disabled) {
@@ -738,6 +788,15 @@
 .overlay .mark-main-btn:disabled {
     opacity: 0.6;
     cursor: default;
+}
+
+.overlay .delete-btn {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+.overlay .delete-btn:hover {
+    filter: brightness(1.05);
 }
 
 /* Botón eliminar */
@@ -766,7 +825,7 @@
 .index-badge {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    left: 10px;
     background: rgba(0, 0, 0, 0.7);
     color: #fff;
     padding: 5px 10px;

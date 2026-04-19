@@ -152,6 +152,7 @@
                         <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
                             data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                     </div>
+                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
                     <div id="galleryPreviewContainer" class="preview-container"></div>
                     <input type="hidden" name="primary_image" id="primaryImageInput">
                     <div id="galleryAltContainer"></div>

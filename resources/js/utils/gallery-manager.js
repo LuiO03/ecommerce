@@ -277,6 +277,7 @@ export function initGalleryCreateWithConfig(config) {
     const buildPreviewItem = (dataUrl, file, key) => {
         const item = document.createElement('div');
         item.classList.add('preview-item');
+        item.classList.add('has-image');
         item.dataset.type = 'new';
         item.dataset.key = key;
         item.innerHTML = `
@@ -809,6 +810,7 @@ export function initGalleryEditWithConfig(config) {
     const buildNewPreviewItem = (dataUrl, file, key) => {
         const item = document.createElement('div');
         item.classList.add('preview-item');
+        item.classList.add('has-image');
         item.dataset.type = 'new';
         item.dataset.key = key;
         item.innerHTML = `

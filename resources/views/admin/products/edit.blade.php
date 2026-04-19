@@ -172,6 +172,7 @@
                         <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
                             data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                     </div>
+                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
                     <div id="galleryPreviewContainer" class="preview-container">
                         @foreach ($sortedImages as $image)
                             @php
@@ -180,7 +181,7 @@
                                 $imageUrl = $exists ? asset('storage/' . $image->path) : asset('storage/default.png');
                                 $altText = $image->alt ?? $product->name;
                             @endphp
-                            <div class="preview-item existing-image" data-type="existing"
+                            <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}" data-type="existing"
                                 data-id="{{ $image->id }}" data-key="existing-{{ $image->id }}" data-main="{{ $image->is_main ? 'true' : 'false' }}">
                                 <button type="button" class="drag-handle" title="Reordenar imagen">
                                     <i class="ri-draggable"></i>
