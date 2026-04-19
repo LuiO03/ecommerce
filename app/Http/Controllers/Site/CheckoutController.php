@@ -29,13 +29,22 @@ class CheckoutController extends Controller
     {
     }
 
+    private function resolveShippingCost(string $deliveryType): float
+    {
+        if ($deliveryType === 'pickup') {
+            return 0.0;
+        }
+
+        return (float) company_setting('shipping_cost_delivery', config('products.shipping_cost_delivery', 5));
+    }
+
     public function index()
     {
         $userId = Auth::id();
         $cart = null;
         $session_token = null;
         $subtotal = 0.0;
-        $shipping = 5.0;
+        $shipping = $this->resolveShippingCost('delivery');
         $amount = 0.0;
         $addresses = collect();
 
@@ -65,7 +74,10 @@ class CheckoutController extends Controller
 
     public function paid(CheckoutPaidRequest $request)
     {
-        $deliveryType = $request->query('delivery_type', 'delivery');
+        $requestedDeliveryType = mb_strtolower((string) $request->query('delivery_type', 'delivery'));
+        $deliveryType = in_array($requestedDeliveryType, ['delivery', 'pickup'], true)
+            ? $requestedDeliveryType
+            : 'delivery';
         $selectedAddressId = $request->query('address_id');
         $selectedStoreId = $request->query('store_id');
         $requestedPaymentMethod = mb_strtolower((string) $request->query('payment_method', 'niubiz'));
@@ -88,7 +100,7 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.index');
         }
 
-        $shipping = 5.0;
+        $shipping = $this->resolveShippingCost($deliveryType);
         $subtotal = (float) $cart->total_price;
         $calculatedAmount = $subtotal + $shipping;
 
@@ -544,7 +556,12 @@ class CheckoutController extends Controller
             ], 422);
         }
 
-        $shipping = 5.0;
+        $requestedDeliveryType = mb_strtolower((string) $request->input('delivery_type', 'delivery'));
+        $deliveryType = in_array($requestedDeliveryType, ['delivery', 'pickup'], true)
+            ? $requestedDeliveryType
+            : 'delivery';
+
+        $shipping = $this->resolveShippingCost($deliveryType);
         $subtotal = (float) $cart->total_price;
         $amount = $subtotal + $shipping;
 
@@ -590,6 +607,8 @@ class CheckoutController extends Controller
         return response()->json([
             'status' => 'success',
             'session_token' => $sessionToken,
+            'amount' => $amount,
+            'delivery_type' => $deliveryType,
         ]);
     }
 

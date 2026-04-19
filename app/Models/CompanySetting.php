@@ -29,6 +29,7 @@ class CompanySetting extends Model
         'about',
         'support_email',
         'support_phone',
+        'shipping_cost_delivery',
         'facebook_url',
         'instagram_url',
         'twitter_url',
@@ -59,6 +60,7 @@ class CompanySetting extends Model
         'youtube_enabled' => 'boolean',
         'tiktok_enabled' => 'boolean',
         'linkedin_enabled' => 'boolean',
+        'shipping_cost_delivery' => 'float',
     ];
 
     protected static function booted(): void

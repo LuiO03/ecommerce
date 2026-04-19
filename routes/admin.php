@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OptionFeatureController;
@@ -29,6 +31,7 @@ Route::controller(CompanySettingController::class)->group(function () {
     Route::post('/company-settings/general', 'updateGeneral')->name('admin.company-settings.update-general');
     Route::post('/company-settings/identity', 'updateIdentity')->name('admin.company-settings.update-identity');
     Route::post('/company-settings/contact', 'updateContact')->name('admin.company-settings.update-contact');
+    Route::post('/company-settings/shipping', 'updateShipping')->name('admin.company-settings.update-shipping');
     Route::post('/company-settings/social', 'updateSocial')->name('admin.company-settings.update-social');
     Route::post('/company-settings/legal', 'updateLegal')->name('admin.company-settings.update-legal');
 });
@@ -146,6 +149,18 @@ Route::controller(OrderController::class)->group(function () {
     Route::post('/orders/export/excel', 'exportExcel')->name('admin.orders.export.excel');
     Route::post('/orders/export/pdf', 'exportPdf')->name('admin.orders.export.pdf');
     Route::post('/orders/export/csv', 'exportCsv')->name('admin.orders.export.csv');
+});
+
+// PAYMENTS
+Route::controller(PaymentController::class)->group(function () {
+    Route::get('/payments', 'index')->name('admin.payments.index');
+    Route::get('/payments/{payment}', 'show')->name('admin.payments.show');
+});
+
+// TRANSACTIONS
+Route::controller(TransactionController::class)->group(function () {
+    Route::get('/transactions', 'index')->name('admin.transactions.index');
+    Route::get('/transactions/{transaction}', 'show')->name('admin.transactions.show');
 });
 
 // COVERS

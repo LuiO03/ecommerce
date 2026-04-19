@@ -17,20 +17,29 @@
                         <th>Proveedor</th>
                         <th class="text-right">Monto</th>
                         <th class="text-right">Comisión</th>
+                        <th class="text-right">% Comisión</th>
                         <th class="text-right">Neto</th>
                         <th class="text-center">Estado</th>
                         <th>Transacción Gateway</th>
                         <th>Fecha</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($order->payments->sortByDesc('id') as $payment)
+                        @php
+                            $gross = (float) $payment->amount;
+                            $fee = (float) ($payment->fee ?? 0);
+                            $net = (float) ($payment->net_amount ?? ($gross - $fee));
+                            $feeRate = $gross > 0 ? ($fee / $gross) * 100 : 0;
+                        @endphp
                         <tr>
                             <td class="text-center">{{ $payment->id }}</td>
                             <td>{{ strtoupper($payment->provider) }}</td>
-                            <td class="text-right">S/. {{ number_format((float) $payment->amount, 2) }}</td>
-                            <td class="text-right">S/. {{ number_format((float) $payment->fee, 2) }}</td>
-                            <td class="text-right">S/. {{ number_format((float) ($payment->net_amount ?? 0), 2) }}</td>
+                            <td class="text-right">S/. {{ number_format($gross, 2) }}</td>
+                            <td class="text-right">S/. {{ number_format($fee, 2) }}</td>
+                            <td class="text-right">{{ number_format($feeRate, 2) }}%</td>
+                            <td class="text-right">S/. {{ number_format($net, 2) }}</td>
                             <td class="text-center">
                                 @switch($payment->status)
                                     @case('pending')
@@ -67,11 +76,16 @@
                             </td>
                             <td>{{ $payment->transaction_id ?? '—' }}</td>
                             <td>{{ $payment->paid_at ? $payment->paid_at->format('d/m/Y H:i') : '—' }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('admin.payments.show', $payment) }}" class="boton-table boton-editar" title="Ver pago">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </td>
                         </tr>
 
                         @if ($payment->transactions->isNotEmpty())
                             <tr>
-                                <td colspan="8" class="p-0">
+                                <td colspan="10" class="p-0">
                                     <div class="tabla-wrapper">
                                         <table class="tabla-general w-full tabla-normal">
                                             <thead>
@@ -81,6 +95,7 @@
                                                     <th class="text-right">Monto</th>
                                                     <th>Descripción</th>
                                                     <th>Registrado</th>
+                                                    <th class="text-center">Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -93,6 +108,11 @@
                                                         <td class="text-right">S/. {{ number_format((float) $transaction->amount, 2) }}</td>
                                                         <td>{{ $transaction->description ?? '—' }}</td>
                                                         <td>{{ $transaction->created_at ? $transaction->created_at->format('d/m/Y H:i') : '—' }}</td>
+                                                        <td class="text-center">
+                                                            <a href="{{ route('admin.transactions.show', $transaction) }}" class="boton-table boton-editar" title="Ver transacción">
+                                                                <i class="ri-eye-line"></i>
+                                                            </a>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

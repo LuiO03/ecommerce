@@ -14,12 +14,13 @@ use App\Http\Requests\Admin\UpdateCompanyIdentityRequest;
 use App\Http\Requests\Admin\UpdateCompanyLegalRequest;
 use App\Http\Requests\Admin\UpdateCompanyGeneralRequest;
 use App\Http\Requests\Admin\UpdateCompanySocialRequest;
+use App\Http\Requests\Admin\UpdateCompanyShippingRequest;
 
 class CompanySettingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:configuracion.edit')->only(['updateGeneral', 'updateIdentity', 'updateContact', 'updateSocial', 'updateLegal']);
+        $this->middleware('can:configuracion.edit')->only(['updateGeneral', 'updateIdentity', 'updateContact', 'updateShipping', 'updateSocial', 'updateLegal']);
         $this->middleware('can:configuracion.index')->only(['index']);
     }
 
@@ -172,6 +173,37 @@ class CompanySettingController extends Controller
                 'type' => 'success',
                 'title' => 'Contacto actualizado',
                 'message' => 'Los datos de contacto se guardaron correctamente.',
+            ]);
+    }
+
+    /**
+     * Actualiza los costos de envío por tipo de entrega.
+     */
+    public function updateShipping(UpdateCompanyShippingRequest $request)
+    {
+        $setting = CompanySetting::first() ?? new CompanySetting;
+
+        $original = $setting->exists ? [
+            'shipping_cost_delivery' => $setting->shipping_cost_delivery,
+        ] : null;
+
+        $data = $request->validated();
+
+        $setting->shipping_cost_delivery = (float) ($data['shipping_cost_delivery'] ?? config('products.shipping_cost_delivery', 5));
+        $setting->save();
+
+        Cache::forget('company_settings');
+
+        $this->recordCompanyAudit($request, $setting, 'company_shipping_updated', $original, [
+            'shipping_cost_delivery' => $setting->shipping_cost_delivery,
+        ]);
+
+        return redirect()
+            ->route('admin.company-settings.index')
+            ->with('toast', [
+                'type' => 'success',
+                'title' => 'Costos de envío actualizados',
+                'message' => 'La configuración de envío se guardó correctamente.',
             ]);
     }
 

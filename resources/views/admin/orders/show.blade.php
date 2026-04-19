@@ -20,6 +20,14 @@
                 <span class="boton-form-text">Obtener PDF</span>
             </a>
         @endif
+        <a href="{{ route('admin.payments.index') }}" class="boton-form boton-action">
+            <span class="boton-form-icon"><i class="ri-bank-card-line"></i></span>
+            <span class="boton-form-text">Pagos</span>
+        </a>
+        <a href="{{ route('admin.transactions.index') }}" class="boton-form boton-action">
+            <span class="boton-form-icon"><i class="ri-exchange-dollar-line"></i></span>
+            <span class="boton-form-text">Transacciones</span>
+        </a>
         <a href="{{ route('admin.orders.index') }}" class="boton-form boton-accent">
             <span class="boton-form-icon"><i class="ri-arrow-go-back-line"></i></span>
             <span class="boton-form-text">Volver</span>

@@ -25,7 +25,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::with(['user', 'latestPayment'])
-            ->select(['id', 'user_id', 'order_number', 'total', 'status', 'pdf_path', 'created_at'])
+            ->select(['id', 'user_id', 'order_number', 'delivery_type', 'pickup_store_code', 'total', 'status', 'pdf_path', 'created_at'])
             ->orderByDesc('id')
             ->get();
 

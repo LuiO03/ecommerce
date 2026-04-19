@@ -27,6 +27,11 @@
                     <i class="ri-contacts-fill"></i>
                     <span>Contacto</span>
                 </button>
+                <button type="button" class="settings-tab-button" data-target="shipping" id="tab-shipping" role="tab"
+                    aria-controls="companySettingsSectionShipping">
+                    <i class="ri-truck-fill"></i>
+                    <span>Envío</span>
+                </button>
                 <button type="button" class="settings-tab-button" data-target="social" id="tab-social" role="tab"
                     aria-controls="companySettingsSectionSocial">
                     <i class="ri-share-forward-fill"></i>
@@ -51,6 +56,9 @@
                 </div>
                 <div id="tab-contact">
                     @include('admin.company-settings.partials.contact')
+                </div>
+                <div id="tab-shipping">
+                    @include('admin.company-settings.partials.shipping')
                 </div>
                 <div id="tab-social">
                     @include('admin.company-settings.partials.social')

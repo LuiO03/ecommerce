@@ -559,7 +559,8 @@ input[type="checkbox"]:focus {
 }
 
 .binary-switch:hover {
-    box-shadow: var(--shadow-material);
+    border-color: var(--color-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow) !important;
 }
 
 .binary-switch .switch-label {

@@ -1,9 +1,9 @@
-
 <!-- SIDEBAR IZQUIERDO -->
 <aside id="logo-sidebar" class="sidebar-principal z-40 w-64 -translate-x-full sm:translate-x-0" aria-label="Sidebar">
 
     <div class="sidebar-header">
-        <a href="{{ request()->routeIs('admin.dashboard') ? '#' : route('admin.dashboard') }}" class="flex items-center gap-2">
+        <a href="{{ request()->routeIs('admin.dashboard') ? '#' : route('admin.dashboard') }}"
+            class="flex items-center gap-2">
             @include('partials.admin.company-brand')
         </a>
     </div>
@@ -30,6 +30,34 @@
                     </a>
                 </li>
             @endcan
+            <!-- Submenú Finanzas -->
+            <li class="submenu-container">
+                <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
+                    data-tooltip="Finanzas">
+                    <i class="ri-money-dollar-circle-line sidebar-icon"></i>
+                    <span class="flex-1 text-left">Finanzas</span>
+                    <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
+                </button>
+
+                <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
+                    <li>
+                        <a href="{{ request()->routeIs('admin.payments.*') ? '#' : route('admin.payments.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}"
+                            data-tooltip="Pagos">
+                            <i class="ri-bank-card-line sidebar-icon"></i>
+                            <span>Pagos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ request()->routeIs('admin.transactions.*') ? '#' : route('admin.transactions.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}"
+                            data-tooltip="Transacciones">
+                            <i class="ri-exchange-dollar-line sidebar-icon"></i>
+                            <span>Transacciones</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
             <!-- Pedidos -->
             @can('ordenes.index')

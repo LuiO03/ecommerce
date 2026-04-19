@@ -26,6 +26,7 @@ return new class extends Migration
             $table->text('about')->nullable();
             $table->string('support_email')->nullable();
             $table->string('support_phone')->nullable();
+            $table->decimal('shipping_cost_delivery', 10, 2)->default(5);
             $table->string('facebook_url')->nullable();
             $table->string('instagram_url')->nullable();
             $table->string('twitter_url')->nullable();

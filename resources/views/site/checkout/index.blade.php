@@ -577,11 +577,11 @@
                         </div>
                         <div class="checkout-summary-row">
                             <span>Precio de envío</span>
-                            <span>S/. {{ number_format($shipping, 2) }}</span>
+                            <span id="checkoutShippingText">S/. {{ number_format($shipping, 2) }}</span>
                         </div>
                         <div class="checkout-summary-row checkout-summary-row--total">
                             <span>Total a pagar</span>
-                            <span>S/. {{ number_format($amount, 2) }}</span>
+                            <span id="checkoutTotalText">S/. {{ number_format($amount, 2) }}</span>
                         </div>
                     </div>
 
@@ -708,8 +708,11 @@
                     niubizFallback.querySelector('.note-alert span')) : null;
                 const niubizFallbackDismiss = niubizFallback ? niubizFallback.querySelector('[data-alert-close]') :
                     null;
+                const checkoutShippingText = document.getElementById('checkoutShippingText');
+                const checkoutTotalText = document.getElementById('checkoutTotalText');
 
-                const amount = '{{ number_format($amount, 2, '.', '') }}';
+                const baseSubtotal = {{ number_format((float) $subtotal, 2, '.', '') }};
+                const defaultShippingCost = {{ number_format((float) $shipping, 2, '.', '') }};
                 const merchantId = '{{ config('services.niubiz.merchant_id') }}';
                 const isNiubizDevSimulation = {{ config('services.niubiz.dev_simulation') ? 'true' : 'false' }};
                 const culqiPublicKey = @json((string) config('services.culqi.public_key', ''));
@@ -734,6 +737,7 @@
                 let inlineAddressValidator = null;
                 let sessionTokenPreloading = false;
                 let lastSessionTokenError = null;
+                let sessionTokenAmount = {{ number_format((float) $amount, 2, '.', '') }};
                 let pendingCulqiSubmission = null;
                 let pendingMercadoPagoSubmission = null;
 
@@ -756,6 +760,39 @@
                         }
                     });
                     return value;
+                }
+
+                function calculateCheckoutAmounts(deliveryType) {
+                    const shippingCost = deliveryType === 'pickup' ? 0 : defaultShippingCost;
+                    const totalAmount = baseSubtotal + shippingCost;
+
+                    return {
+                        shippingCost,
+                        totalAmount,
+                    };
+                }
+
+                function getCurrentCheckoutAmounts() {
+                    return calculateCheckoutAmounts(getCurrentDeliveryType());
+                }
+
+                function formatPen(value) {
+                    return `S/. ${Number(value || 0).toFixed(2)}`;
+                }
+
+                function updateCheckoutSummaryTotals() {
+                    const {
+                        shippingCost,
+                        totalAmount,
+                    } = getCurrentCheckoutAmounts();
+
+                    if (checkoutShippingText) {
+                        checkoutShippingText.textContent = formatPen(shippingCost);
+                    }
+
+                    if (checkoutTotalText) {
+                        checkoutTotalText.textContent = formatPen(totalAmount);
+                    }
                 }
 
                 function updateSectionVisibility() {
@@ -938,6 +975,7 @@
                     updateSectionVisibility();
                     updateProgressSteps();
                     updatePayButtonState();
+                    updateCheckoutSummaryTotals();
                     updateSelectedCardsBadges();
 
                     if (getSelectedPaymentMethod() !== 'niubiz') {
@@ -993,7 +1031,12 @@
                 }
 
                 async function ensureSessionToken(paymentMethod = 'niubiz') {
-                    if (String(sessionToken || '').trim() !== '') {
+                    const {
+                        totalAmount,
+                    } = getCurrentCheckoutAmounts();
+                    const roundedAmount = Number(totalAmount.toFixed(2));
+
+                    if (String(sessionToken || '').trim() !== '' && Number(sessionTokenAmount.toFixed(2)) === roundedAmount) {
                         lastSessionTokenError = null;
                         return {
                             token: sessionToken,
@@ -1019,7 +1062,8 @@
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                amount,
+                                amount: roundedAmount,
+                                delivery_type: getCurrentDeliveryType() || 'delivery',
                                 payment_method: paymentMethod,
                             }),
                         });
@@ -1065,6 +1109,7 @@
                         }
 
                         sessionToken = String(data.session_token);
+                        sessionTokenAmount = roundedAmount;
                         lastSessionTokenError = null;
                         return {
                             token: sessionToken,
@@ -1083,7 +1128,11 @@
                     if (sessionTokenPreloading) return;
                     if (getSelectedPaymentMethod() !== 'niubiz') return;
                     if (isNiubizDevSimulation) return;
-                    if (String(sessionToken || '').trim() !== '') return;
+                    const {
+                        totalAmount,
+                    } = getCurrentCheckoutAmounts();
+                    const roundedAmount = Number(totalAmount.toFixed(2));
+                    if (String(sessionToken || '').trim() !== '' && Number(sessionTokenAmount.toFixed(2)) === roundedAmount) return;
 
                     sessionTokenPreloading = true;
                     try {
@@ -1145,6 +1194,10 @@
                 }
 
                 function openCulqiCheckout(actionUrl, purchaseNumber) {
+                    const {
+                        totalAmount,
+                    } = getCurrentCheckoutAmounts();
+
                     if (isCulqiDevSimulation) {
                         showNiubizFallback(
                             'Modo simulación activo: se procesará un pago aprobado localmente para desarrollo.',
@@ -1171,7 +1224,7 @@
                         return;
                     }
 
-                    const amountInCents = Math.round(parseFloat(String(amount)) * 100);
+                    const amountInCents = Math.round(parseFloat(String(totalAmount)) * 100);
                     if (!Number.isFinite(amountInCents) || amountInCents <= 0) {
                         showNiubizFallback('El monto para Culqi no es válido.', 'Monto inválido');
                         return;
@@ -1238,6 +1291,10 @@
                 }
 
                 function openMercadoPagoCheckout(actionUrl, purchaseNumber) {
+                    const {
+                        totalAmount,
+                    } = getCurrentCheckoutAmounts();
+
                     if (isMercadoPagoDevSimulation) {
                         showNiubizFallback(
                             'Modo simulación activo: se procesará un pago aprobado localmente para desarrollo.',
@@ -1264,7 +1321,7 @@
                         return;
                     }
 
-                    const amountInCents = parseFloat(String(amount)) * 1;
+                    const amountInCents = parseFloat(String(totalAmount)) * 1;
                     if (!Number.isFinite(amountInCents) || amountInCents <= 0) {
                         showNiubizFallback('El monto para Mercado Pago no es válido.', 'Monto inválido');
                         return;
@@ -1727,6 +1784,7 @@
                             clearRadioSelectionByName('address_id');
                         }
                         refreshCheckoutUI();
+                        preloadSessionTokenForNiubiz();
                     });
                 });
 
@@ -1780,11 +1838,15 @@
                             window.crypto.randomUUID() :
                             ('idem-' + purchaseNumber + '-' + Date.now());
                         const paymentMethod = getSelectedPaymentMethod();
+                        const {
+                            totalAmount,
+                        } = getCurrentCheckoutAmounts();
+                        const currentAmount = Number(totalAmount.toFixed(2));
                         const isNiubizSelected = paymentMethod === 'niubiz';
                         const isCulqiSelected = paymentMethod === 'culqi';
                         const isMercadoPagoSelected = paymentMethod === 'mercadopago';
                         const action = '{{ route('checkout.paid') }}' +
-                            '?amount=' + amount +
+                            '?amount=' + encodeURIComponent(currentAmount.toFixed(2)) +
                             '&purchaseNumber=' + purchaseNumber +
                             '&idempotency_key=' + encodeURIComponent(idempotencyKey) +
                             '&delivery_type=' + encodeURIComponent(type || '') +
@@ -1819,7 +1881,17 @@
                             return;
                         }
 
-                        const resolvedSessionToken = String(sessionToken || '').trim();
+                        const tokenResult = await ensureSessionToken('niubiz');
+                        if (!tokenResult.token) {
+                            showNiubizFallback(
+                                tokenResult.error ||
+                                'No se pudo inicializar la sesión de pago para el monto actual.',
+                                'Pago temporalmente no disponible'
+                            );
+                            return;
+                        }
+
+                        const resolvedSessionToken = String(tokenResult.token || '').trim();
                         if (!resolvedSessionToken) {
                             preloadSessionTokenForNiubiz();
                             showNiubizFallback(
@@ -1835,7 +1907,7 @@
                             channel: checkoutChannel,
                             merchantid: merchantId,
                             sessiontoken: resolvedSessionToken,
-                            amount,
+                            amount: currentAmount.toFixed(2),
                             purchasenumber: purchaseNumber,
                         };
 
