@@ -46,53 +46,61 @@
                 <div class="image-upload-section">
                     <label class="label-form">Imágenes del post</label>
 
-                    <div class="custom-dropzone" id="customDropzone">
-                        <i class="ri-multi-image-line"></i>
-                        <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden
-                            data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
-                    </div>
-                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
+                    <div class="gallery-media-layout">
+                        <div class="custom-dropzone" id="customDropzone">
+                            <i class="ri-multi-image-line"></i>
+                            <p>Arrastra una imagen aquí</p>
+                            <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
+                            <input type="file" id="imageInput" name="images[]" accept="image/*" multiple hidden
+                                data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                        </div>
 
-                    <div id="previewContainer" class="preview-container">
-                        @foreach ($post->images as $img)
-                            @php
-                                $fullPath = public_path('storage/' . $img->path);
-                                $exists = file_exists($fullPath);
-                            @endphp
+                        <div id="previewContainer" class="preview-container">
+                            @foreach ($post->images as $img)
+                                @php
+                                    $fullPath = public_path('storage/' . $img->path);
+                                    $exists = file_exists($fullPath);
+                                @endphp
 
-                            <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}" data-type="existing" data-id="{{ $img->id }}"
-                                data-key="existing-{{ $img->id }}" data-main="{{ $img->is_main ? 'true' : 'false' }}">
-                                <button type="button" class="drag-handle" title="Reordenar imagen">
-                                    <i class="ri-draggable"></i>
-                                </button>
-                                @if ($exists)
-                                    {{-- Imagen encontrada --}}
-                                    <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
-                                @else
-                                    {{-- Imagen no encontrada --}}
-                                    <i class="ri-file-close-line"></i>
-                                    <p>Imagen no encontrada</p>
-                                @endif
-                                <div class="overlay">
-                                    <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
-                                    <div class="overlay-actions">
-                                        <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como portada del post">
-                                            <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
-                                        </button>
-                                        <button type="button" class="delete-btn boton-form boton-danger delete-existing-image" title="Eliminar imagen"
-                                            data-id="{{ $img->id }}">
-                                            <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                        </button>
+                                <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}"
+                                    data-type="existing" data-id="{{ $img->id }}"
+                                    data-key="existing-{{ $img->id }}"
+                                    data-main="{{ $img->is_main ? 'true' : 'false' }}">
+                                    <button type="button" class="drag-handle" title="Reordenar imagen">
+                                        <i class="ri-draggable"></i>
+                                    </button>
+                                    @if ($exists)
+                                        {{-- Imagen encontrada --}}
+                                        <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
+                                    @else
+                                        {{-- Imagen no encontrada --}}
+                                        <i class="ri-file-close-line"></i>
+                                        <p>Imagen no encontrada</p>
+                                    @endif
+                                    <div class="overlay">
+                                        <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
+                                        <div class="overlay-actions">
+                                            <button type="button" class="mark-main-btn boton-form boton-success"
+                                                title="Marcar como portada del post">
+                                                <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
+                                            </button>
+                                            <button type="button"
+                                                class="delete-btn boton-form boton-danger delete-existing-image"
+                                                title="Eliminar imagen" data-id="{{ $img->id }}">
+                                                <span class="boton-form-icon"><i
+                                                        class="ri-delete-bin-6-fill"></i></span>
+                                            </button>
+                                        </div>
                                     </div>
+                                    <span class="primary-badge"
+                                        style="{{ $img->is_main ? 'display:flex;' : 'display:none;' }}">
+                                        <span class="boton-form-icon"><i class="ri-gallery-fill"></i></span>
+                                        Portada
+                                    </span>
                                 </div>
-                                <span class="primary-badge"
-                                    style="{{ $img->is_main ? 'display:flex;' : 'display:none;' }}">
-                                    <span class="boton-form-icon"><i class="ri-gallery-fill"></i></span>
-                                    Portada
-                                </span>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
 
                     <input type="hidden" name="deletedImages" id="deletedImages">
@@ -136,8 +144,9 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-text input-icon"></i>
-                        <input type="text" name="title" id="title" class="input-form" placeholder="Ingrese el título del post"
-                            value="{{ old('title', $post->title) }}" data-validate="required|min:3|max:255">
+                        <input type="text" name="title" id="title" class="input-form"
+                            placeholder="Ingrese el título del post" value="{{ old('title', $post->title) }}"
+                            data-validate="required|min:3|max:255">
                     </div>
                 </div>
 
@@ -151,10 +160,12 @@
                             <select name="status" class="select-form" data-validate="required|selected">
                                 <option value="" disabled>Seleccione un estado</option>
                                 <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>Borrador</option>
-                                <option value="pending" {{ $post->status == 'pending' ? 'selected' : '' }}>Pendiente</option>
+                                <option value="pending" {{ $post->status == 'pending' ? 'selected' : '' }}>Pendiente
+                                </option>
                                 <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>Publicado
                                 </option>
-                                <option value="rejected" {{ $post->status == 'rejected' ? 'selected' : '' }}>Rechazado</option>
+                                <option value="rejected" {{ $post->status == 'rejected' ? 'selected' : '' }}>Rechazado
+                                </option>
                             </select>
                             <i class="ri-arrow-down-s-line select-arrow"></i>
                         </div>
@@ -171,7 +182,8 @@
                                     class="ri-checkbox-circle-line"></i>
                                 Pendiente
                             </label>
-                            <label for="statusDraft" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
+                            <label for="statusDraft" class="switch-label switch-label-off"><i
+                                    class="ri-close-circle-line"></i>
                                 Borrador
                             </label>
                         </div>
@@ -186,7 +198,8 @@
 
                         <select name="visibility" class="select-form" data-validate="required|selected">
                             <option value="" disabled>Seleccione visibilidad</option>
-                            <option value="public" {{ $post->visibility == 'public' ? 'selected' : '' }}>Público</option>
+                            <option value="public" {{ $post->visibility == 'public' ? 'selected' : '' }}>Público
+                            </option>
                             <option value="private" {{ $post->visibility == 'private' ? 'selected' : '' }}>Privado
                             </option>
                             <option value="registered" {{ $post->visibility == 'registered' ? 'selected' : '' }}>
@@ -210,7 +223,8 @@
                         <div class="switch-slider"></div>
                         <label for="allowYes" class="switch-label switch-label-on"><i
                                 class="ri-checkbox-circle-line"></i> Sí</label>
-                        <label for="allowNo" class="switch-label switch-label-off"><i class="ri-close-circle-line"></i>
+                        <label for="allowNo" class="switch-label switch-label-off"><i
+                                class="ri-close-circle-line"></i>
                             No</label>
                     </div>
                 </div>

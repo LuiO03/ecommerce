@@ -6,11 +6,11 @@
     gap: 12px;
 }
 
-.gallery-hint {
-    margin-top: -4px;
-    font-size: var(--font-size-xs);
-    line-height: 1.4;
-    color: var(--color-input-placeholder);
+.gallery-media-layout {
+    display: grid;
+    grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
 }
 
 .image-preview-zone {
@@ -562,6 +562,26 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    height: 100%;
+    line-height: 1;
+}
+
+.custom-dropzone i {
+    font-size: 5rem;
+    color: var(--color-input-border);
+}
+
+.custom-dropzone p {
+    font-size: var(--font-size-h5);
+    font-weight: bolder;
+    margin: 0;
+    font-family: var(--font-secondary);
+    color: var(--color-text);
+}
+
+.custom-dropzone span {
+    font-size: var(--font-size-xs);
+    color: var(--color-input-placeholder);
 }
 
 .custom-dropzone.dragover {
@@ -573,27 +593,21 @@
 .custom-dropzone:hover {
     border-color: var(--color-accent);
     background-color: var(--color-sidebar);
-    box-shadow: var(--shadow-material);
-}
-
-.custom-dropzone i {
-    font-size: 3rem;
-    color: var(--color-accent);
-}
-
-.custom-dropzone p {
-    font-size: var(--font-size-h5);
-    font-weight: bolder;
-    margin: 0;
-    font-family: var(--font-secondary);
-    color: var(--color-text);
+    border-color: var(--color-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow) !important;
 }
 
 .preview-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 16px;
     align-items: stretch;
+}
+
+@media (max-width: 992px) {
+    .gallery-media-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* grid para moviles */
@@ -755,6 +769,7 @@
     font-size: var(--font-size-xs);
     margin-bottom: 0;
     background: rgba(0, 0, 0, 0.28);
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     padding: 4px 8px;
     border-radius: 999px;
@@ -768,7 +783,7 @@
 .overlay-actions {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 5px;
     align-items: center;
     justify-content: flex-end;
     margin-top: auto;

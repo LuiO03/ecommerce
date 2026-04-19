@@ -38,14 +38,17 @@
                 <!-- === Imágenes múltiples === -->
                 <div class="image-upload-section">
                     <label class="label-form">Imágenes del post</label>
-                    <div class="custom-dropzone" id="customDropzone">
-                        <i class="ri-multi-image-line"></i>
-                        <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden
-                            data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                    <div class="gallery-media-layout">
+                        <div class="custom-dropzone" id="customDropzone">
+                            <i class="ri-multi-image-line"></i>
+                            <p>Arrastra una imagen aquí</p>
+                            <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
+                            <input type="file" name="images[]" id="imageInput" accept="image/*" multiple hidden
+                                data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                        </div>
+                        <div id="previewContainer" class="preview-container"></div>
                     </div>
-                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
-                    <div id="previewContainer" class="preview-container"></div>
                     <input type="hidden" name="primary_image" id="primaryImageInput" value="">
                 </div>
                 <script>
@@ -113,7 +116,8 @@
                     @else
                         <div class="binary-switch">
                             <input type="radio" name="status" id="statusPending" value="pending"
-                                class="switch-input switch-input-on" {{ old('status', 'pending') === 'pending' ? 'checked' : '' }}>
+                                class="switch-input switch-input-on"
+                                {{ old('status', 'pending') === 'pending' ? 'checked' : '' }}>
                             <input type="radio" name="status" id="statusDraft" value="draft"
                                 class="switch-input switch-input-off" {{ old('status') === 'draft' ? 'checked' : '' }}>
 

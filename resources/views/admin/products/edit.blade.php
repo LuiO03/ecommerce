@@ -166,53 +166,56 @@
             <div class="form-row-fit">
                 <div class="image-upload-section w-full">
                     <label class="label-form">Galería de imágenes</label>
-                    <div class="custom-dropzone" id="galleryDropzone">
-                        <i class="ri-multi-image-line"></i>
-                        <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
-                            data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
-                    </div>
-                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
-                    <div id="galleryPreviewContainer" class="preview-container">
-                        @foreach ($sortedImages as $image)
-                            @php
-                                $fullPath = $image->path ? public_path('storage/' . $image->path) : null;
-                                $exists = $fullPath && file_exists($fullPath);
-                                $imageUrl = $exists ? asset('storage/' . $image->path) : asset('storage/default.png');
-                                $altText = $image->alt ?? $product->name;
-                            @endphp
-                            <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}" data-type="existing"
-                                data-id="{{ $image->id }}" data-key="existing-{{ $image->id }}" data-main="{{ $image->is_main ? 'true' : 'false' }}">
-                                <button type="button" class="drag-handle" title="Reordenar imagen">
-                                    <i class="ri-draggable"></i>
-                                </button>
-                                @if ($exists)
-                                    <img src="{{ $imageUrl }}" alt="{{ $altText }}">
-                                @else
-                                    <div class="image-not-found-block">
-                                        <i class="ri-file-close-line"></i>
-                                        <p>Imagen no encontrada</p>
+                    <div class="gallery-media-layout">
+                        <div class="custom-dropzone" id="galleryDropzone">
+                            <i class="ri-multi-image-line"></i>
+                            <p>Arrastra una imagen aquí</p>
+                            <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
+                            <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
+                                data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                        </div>
+                        <div id="galleryPreviewContainer" class="preview-container">
+                            @foreach ($sortedImages as $image)
+                                @php
+                                    $fullPath = $image->path ? public_path('storage/' . $image->path) : null;
+                                    $exists = $fullPath && file_exists($fullPath);
+                                    $imageUrl = $exists ? asset('storage/' . $image->path) : asset('storage/default.png');
+                                    $altText = $image->alt ?? $product->name;
+                                @endphp
+                                <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}" data-type="existing"
+                                    data-id="{{ $image->id }}" data-key="existing-{{ $image->id }}" data-main="{{ $image->is_main ? 'true' : 'false' }}">
+                                    <button type="button" class="drag-handle" title="Reordenar imagen">
+                                        <i class="ri-draggable"></i>
+                                    </button>
+                                    @if ($exists)
+                                        <img src="{{ $imageUrl }}" alt="{{ $altText }}">
+                                    @else
+                                        <div class="image-not-found-block">
+                                            <i class="ri-file-close-line"></i>
+                                            <p>Imagen no encontrada</p>
+                                        </div>
+                                    @endif
+                                    <div class="overlay">
+                                        <span class="file-size"></span>
+                                        <div class="overlay-actions">
+                                            <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como principal">
+                                                <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
+                                            </button>
+                                            <button type="button" class="delete-btn boton-form boton-danger delete-existing-gallery"
+                                                data-id="{{ $image->id }}" title="Eliminar imagen">
+                                                <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                            </button>
+                                        </div>
                                     </div>
-                                @endif
-                                <div class="overlay">
-                                    <span class="file-size"></span>
-                                    <div class="overlay-actions">
-                                        <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como principal">
-                                            <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
-                                        </button>
-                                        <button type="button" class="delete-btn boton-form boton-danger delete-existing-gallery"
-                                            data-id="{{ $image->id }}" title="Eliminar imagen">
-                                            <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                        </button>
-                                    </div>
+                                    <span class="primary-badge"
+                                        style="{{ $image->is_main ? 'display:flex;' : 'display:none;' }}">
+                                        <span class="boton-form-icon"><i class="ri-star-fill"></i></span>
+                                        Principal
+                                    </span>
                                 </div>
-                                <span class="primary-badge"
-                                    style="{{ $image->is_main ? 'display:flex;' : 'display:none;' }}">
-                                    <span class="boton-form-icon"><i class="ri-star-fill"></i></span>
-                                    Principal
-                                </span>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                     <div id="removedGalleryContainer"></div>
                     <input type="hidden" name="primary_image" id="primaryImageInput" value="">

@@ -146,14 +146,17 @@
             <div class="form-row-fit">
                 <div class="image-upload-section w-full">
                     <label class="label-form">Galería de imágenes</label>
-                    <div class="custom-dropzone" id="galleryDropzone">
-                        <i class="ri-multi-image-line"></i>
-                        <p>Arrastra imágenes aquí o haz clic</p>
-                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
-                            data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                    <div class="gallery-media-layout">
+                        <div class="custom-dropzone" id="galleryDropzone">
+                            <i class="ri-multi-image-line"></i>
+                            <p>Arrastra una imagen aquí</p>
+                            <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
+                            <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
+                                data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                        </div>
+                        <div id="galleryPreviewContainer" class="preview-container"></div>
                     </div>
-                    <p class="gallery-hint">Arrastra, suelta o haz clic para subir imágenes. Máximo 10 archivos.</p>
-                    <div id="galleryPreviewContainer" class="preview-container"></div>
                     <input type="hidden" name="primary_image" id="primaryImageInput">
                     <div id="galleryAltContainer"></div>
                 </div>
