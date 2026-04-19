@@ -17,7 +17,7 @@
     <section class="site-container product-detail">
         <div class="product-detail-hero" data-product-gallery>
             <div class="product-media">
-                <div class="product-gallery">
+                <div class="@if ($images->isNotEmpty()) product-gallery @else product-gallery-empty @endif">
                     @if ($images->isNotEmpty())
                         <div class="product-gallery-thumbs" role="list">
                             @foreach ($images as $index => $image)
@@ -115,8 +115,9 @@
                         @foreach ($variantOptions as $option)
                             <div class="variant-group" data-option-id="{{ $option->option_id }}"
                                 data-option-slug="{{ $option->slug }}">
-                                <h4 class="Subtitle-product">
-                                    {{ $option->name }}
+                                <h4 class="subtitle-variant-product">
+                                    {{ $option->name }}:
+                                    <span class="subtitle-variant-selected"></span>
                                 </h4>
                                 <div class="variant-values">
                                     @foreach ($option->features as $feature)
@@ -124,7 +125,7 @@
                                             <button type="button"
                                                 class="variant-value {{ $option->is_color ? 'is-color' : 'is-size' }}"
                                                 data-feature-id="{{ $feature->id }}" aria-pressed="false"
-                                                title="{{ $feature->value }}{{ $feature->description ? ' (' . $feature->description . ')' : '' }}"
+                                                title="{{ $feature->value }}"
                                                 aria-label="{{ $feature->value }}{{ $feature->description ? ' (' . $feature->description . ')' : '' }}">
                                                 <span class="variant-swatch"
                                                     style="background-color: {{ $feature->description }}"></span>
@@ -173,7 +174,7 @@
                 <hr class="w-full my-0 border-default">
 
                 <div class="product-description">
-                    <h3 class="Subtitle-product">Descripción</h3>
+                    <h3 class="subtitle-variant-product">Descripción</h3>
                     <p>{{ $product->description ?? 'Este producto no tiene descripcion adicional.' }}</p>
                 </div>
             </div>

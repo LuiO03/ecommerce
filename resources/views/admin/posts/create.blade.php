@@ -300,7 +300,7 @@
                             pill.setAttribute("data-id", id);
 
                             pill.innerHTML = `
-                                ${name}
+                                <span>${name}</span>
                                 <i class="ri-close-line remove-tag"></i>
                             `;
 

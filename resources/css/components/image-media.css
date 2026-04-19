@@ -8,7 +8,7 @@
 
 .gallery-media-layout {
     display: grid;
-    grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+    grid-template-columns: minmax(200px, 250px) minmax(0, 1fr);
     gap: 1rem;
     align-items: start;
 }
@@ -550,12 +550,8 @@
     border-radius: var(--radius-card);
     transition:
         transform 0.25s ease,
-        border-color 0.25s ease,
-        background-color 0.25s ease,
         box-shadow 0.25s ease;
-    background:
-        radial-gradient(circle at top, rgba(255, 255, 255, 0.5), transparent 48%),
-        var(--color-bg);
+    background-color: var(--color-bg);
     min-height: 190px;
     display: flex;
     flex-direction: column;
@@ -599,12 +595,12 @@
 
 .preview-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 16px;
     align-items: stretch;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1000px) {
     .gallery-media-layout {
         grid-template-columns: 1fr;
     }
@@ -613,7 +609,7 @@
 /* grid para moviles */
 @media (max-width: 600px) {
     .preview-container {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     }
 
     .position-cell {
@@ -643,7 +639,6 @@
     text-align: center;
     align-items: center;
     color: var(--color-text);
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.04));
 }
 
 .preview-item i {
@@ -671,7 +666,8 @@
 
 .preview-item.dragging {
     opacity: 0.75;
-    border-color: var(--color-accent);
+    border-color: var(--color-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow) !important;
     cursor: grabbing;
 }
 
@@ -684,7 +680,9 @@
     width: 34px;
     height: 34px;
     border-radius: var(--radius-input);
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.28);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
     color: #fff;
     display: flex;
     align-items: center;
@@ -766,13 +764,13 @@
 .overlay .file-size {
     align-self: flex-start;
     color: white;
-    font-size: var(--font-size-xs);
+    font-size: 10px;
     margin-bottom: 0;
     background: rgba(0, 0, 0, 0.28);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     padding: 4px 8px;
-    border-radius: 999px;
+    border-radius: 30px;
 }
 
 .preview-item:not(.has-image) .overlay .file-size {
@@ -803,15 +801,6 @@
 .overlay .mark-main-btn:disabled {
     opacity: 0.6;
     cursor: default;
-}
-
-.overlay .delete-btn {
-    background: var(--color-danger);
-    color: #fff;
-}
-
-.overlay .delete-btn:hover {
-    filter: brightness(1.05);
 }
 
 /* Botón eliminar */

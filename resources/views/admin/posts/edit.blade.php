@@ -61,6 +61,14 @@
                                 @php
                                     $fullPath = public_path('storage/' . $img->path);
                                     $exists = file_exists($fullPath);
+                                    $fileSizeLabel = 'No encontrada';
+                                    if ($exists) {
+                                        $bytes = filesize($fullPath) ?: 0;
+                                        $fileSizeLabel =
+                                            $bytes >= 1048576
+                                                ? number_format($bytes / 1048576, 2) . ' MB'
+                                                : number_format($bytes / 1024, 1) . ' KB';
+                                    }
                                 @endphp
 
                                 <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}"
@@ -79,7 +87,7 @@
                                         <p>Imagen no encontrada</p>
                                     @endif
                                     <div class="overlay">
-                                        <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
+                                        <span class="file-size">{{ $fileSizeLabel }}</span>
                                         <div class="overlay-actions">
                                             <button type="button" class="mark-main-btn boton-form boton-success"
                                                 title="Marcar como portada del post">
@@ -300,7 +308,7 @@
                     <div id="tagContainer" class="tag-container">
                         @foreach ($post->tags as $tag)
                             <div class="tag-pill" data-id="{{ $tag->id }}">
-                                {{ $tag->name }}
+                                <span>{{ $tag->name }}</span>
                                 <i class="ri-close-line remove-tag"></i>
                             </div>
                         @endforeach
@@ -334,7 +342,7 @@
                             const pill = document.createElement("div");
                             pill.classList.add("tag-pill");
                             pill.dataset.id = id;
-                            pill.innerHTML = `${name} <i class="ri-close-line remove-tag"></i>`;
+                            pill.innerHTML = `<span>${name}</span><i class="ri-close-line remove-tag"></i>`;
                             tagContainer.appendChild(pill);
 
                             const input = document.createElement("input");

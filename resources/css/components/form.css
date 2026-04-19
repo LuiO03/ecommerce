@@ -397,8 +397,8 @@ input[type="checkbox"]:focus {
     padding: 8px 12px 8px 40px; /* espacio para el icono */
     display: block;
     transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 #content {
@@ -730,18 +730,34 @@ body.sidebar-collapsed .form-footer {
 }
 
 .tag-pill {
-    background-color: var(--color-info-pastel);
-    color: var(--color-info);
-    padding: 5px 12px;
-    border-radius: 20px;
-    display: flex;
+    color: white;
+
+    display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 13px;
-    border: 1px solid var(--color-info);
+    height: 30px;
+}
+
+.tag-pill span {
+    padding: 0px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    background-color: var(--color-info);
+    height: 100%;
+    border-radius: 20px 0px 0px 20px;
 }
 
 .tag-pill i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     font-size: 16px;
+    border: 1px solid var(--color-info);
+    color: var(--color-info);
+    border-radius: 0px 20px 20px 0px;
+    background-color: var(--color-info-pastel);
+    width: 30px;
+    height: 100%;
 }

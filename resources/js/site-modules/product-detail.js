@@ -220,6 +220,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const optionCount = optionGroups.length;
         const selection = new Map();
 
+        const getFeatureLabelFromButton = (button) => {
+            if (!button) {
+                return '';
+            }
+
+            const sizeEl = button.querySelector('.variant-size');
+            if (sizeEl && sizeEl.textContent) {
+                return sizeEl.textContent.trim();
+            }
+
+            const title = button.getAttribute('title');
+            if (title) {
+                return title.trim();
+            }
+
+            const ariaLabel = button.getAttribute('aria-label');
+            return ariaLabel ? ariaLabel.trim() : '';
+        };
+
+        const updateGroupSelectedLabel = (group, selectedButton) => {
+            const selectedLabelEl = group.querySelector('.subtitle-variant-selected');
+            if (!selectedLabelEl) {
+                return;
+            }
+
+            if (!selectedButton) {
+                selectedLabelEl.textContent = '';
+                return;
+            }
+
+            const selectedLabel = getFeatureLabelFromButton(selectedButton);
+            selectedLabelEl.textContent = selectedLabel || '';
+        };
+
         const hasFeature = (variant, featureId) => {
             return variant.features.some((feature) => String(feature.id) === String(featureId));
         };
@@ -463,15 +497,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (isSelected) {
                         selection.delete(optionId);
+                        updateGroupSelectedLabel(group, null);
                     } else {
                         selection.set(optionId, featureId);
                         button.classList.add('is-selected');
                         button.setAttribute('aria-pressed', 'true');
+                        updateGroupSelectedLabel(group, button);
                     }
 
                     updateVariant();
                 });
             });
+
+            const preselectedButton = buttons.find((btn) => btn.classList.contains('is-selected'));
+            updateGroupSelectedLabel(group, preselectedButton || null);
         });
 
         updateVariant();

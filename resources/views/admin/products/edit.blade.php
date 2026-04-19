@@ -180,6 +180,14 @@
                                 @php
                                     $fullPath = $image->path ? public_path('storage/' . $image->path) : null;
                                     $exists = $fullPath && file_exists($fullPath);
+                                    $fileSizeLabel = 'No encontrada';
+                                    if ($exists) {
+                                        $bytes = filesize($fullPath) ?: 0;
+                                        $fileSizeLabel =
+                                            $bytes >= 1048576
+                                                ? number_format($bytes / 1048576, 2) . ' MB'
+                                                : number_format($bytes / 1024, 1) . ' KB';
+                                    }
                                     $imageUrl = $exists ? asset('storage/' . $image->path) : asset('storage/default.png');
                                     $altText = $image->alt ?? $product->name;
                                 @endphp
@@ -197,7 +205,7 @@
                                         </div>
                                     @endif
                                     <div class="overlay">
-                                        <span class="file-size"></span>
+                                        <span class="file-size">{{ $fileSizeLabel }}</span>
                                         <div class="overlay-actions">
                                             <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como principal">
                                                 <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>

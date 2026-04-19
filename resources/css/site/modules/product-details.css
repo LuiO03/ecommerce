@@ -15,7 +15,6 @@
     align-items: start;
     position: relative;
     overflow: hidden;
-    padding: 1rem;
 }
 
 .product-detail-hero::after {
@@ -47,6 +46,15 @@
 .product-gallery {
     display: grid;
     grid-template-columns: minmax(76px, 90px) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    height: 100%;
+    width: 100%;
+}
+
+.product-gallery-empty{
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 1rem;
     align-items: start;
     height: 100%;
@@ -137,9 +145,13 @@
     padding-right: 0.25rem;
 }
 
-.Subtitle-product {
+.subtitle-variant-product {
     font-family: var(--font-secondary);
     font-weight: bold;
+}
+
+.subtitle-variant-selected{
+    color: var(--color-site-nav);
 }
 
 .product-thumb {
@@ -438,9 +450,9 @@
 }
 
 .variant-values {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 0.5rem;
 }
 
 .variant-value {
@@ -449,11 +461,14 @@
     border-radius: var(--radius-element);
     padding: 0.5rem 0.85rem;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--color-text);
     display: inline-flex;
     align-items: center;
+    text-align: center;
+    justify-content: center;
     gap: 0.5rem;
     cursor: pointer;
+    overflow: hidden;
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
@@ -468,10 +483,9 @@
 }
 
 .variant-value.is-color {
-    width: 38px;
-    height: 38px;
+    width: 70px;
+    height: 35px;
     padding: 0;
-    border-radius: 50px;
     justify-content: center;
 }
 
@@ -482,14 +496,14 @@
 
 .variant-value.is-disabled,
 .variant-value:disabled {
-    opacity: 0.4;
+    opacity: 0.2;
+    cursor: not-allowed;
     transform: none;
 }
 
 .variant-swatch {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
 }
 
 .variant-size {
@@ -541,9 +555,5 @@
         flex-direction: row;
         flex-wrap: wrap;
         max-height: none;
-    }
-
-    .product-detail-hero {
-        padding: 1.5rem;
     }
 }
