@@ -413,23 +413,46 @@
                                 <p class="card-description">Selecciona una opción para continuar con tu compra.</p>
                             </div>
                             <div class="checkout-cards-grid checkout-payment-grid" data-payment-method-root>
-                                <div class="w-full flex flex-col gap-2">
-                                    <label class="checkout-card" data-payment-option="niubiz">
-                                        <input type="radio" value="niubiz" name="payment_method"
-                                            id="payment_method_niubiz" class="sr-only" checked>
-                                        <div class="checkout-card-icon">
-                                            <i class="ri-bank-card-line"></i>
-                                        </div>
-                                        <div class="checkout-card-body">
-                                            <span class="checkout-card-title">Niubiz</span>
-                                            <span class="checkout-card-helper">Paga con tarjeta de crédito o
-                                                débito.</span>
-                                        </div>
-                                    </label>
-                                    <div class="{{ $checkoutFallbackMessage ? '' : 'is-hidden' }}" data-niubiz-fallback>
-                                        <x-note-alert type="warning" :message="$checkoutFallbackMessage" :dismissible="true" />
+                                <label class="checkout-card" data-payment-option="niubiz">
+                                    <input type="radio" value="niubiz" name="payment_method"
+                                        id="payment_method_niubiz" class="sr-only" checked>
+                                    <div class="checkout-card-icon">
+                                        <i class="ri-bank-card-line"></i>
                                     </div>
-                                </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">Niubiz</span>
+                                        <span class="checkout-card-helper">Paga con tarjeta de crédito o
+                                            débito.</span>
+                                    </div>
+                                </label>
+
+                                <label class="checkout-card" data-payment-option="culqi">
+                                    <input type="radio" value="culqi" name="payment_method"
+                                        id="payment_method_culqi" class="sr-only">
+                                    <div class="checkout-card-img">
+                                        <img class="payment-method-img"
+                                            src="{{ asset('images/checkout/logoculqi.png') }}"
+                                            alt="Depósito bancario o Yape">
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">Culqi</span>
+                                        <span class="checkout-card-helper">Paga con tarjeta vía checkout Culqi.</span>
+                                    </div>
+                                </label>
+
+                                <label class="checkout-card" data-payment-option="mercadopago">
+                                    <input type="radio" value="mercadopago" name="payment_method"
+                                        id="payment_method_mercadopago" class="sr-only">
+                                    <div class="checkout-card-img">
+                                        <img class="payment-method-img"
+                                            src="{{ asset('images/checkout/logomercadopago.webp') }}"
+                                            alt="Mercado Pago">
+                                    </div>
+                                    <div class="checkout-card-body">
+                                        <span class="checkout-card-title">Mercado Pago</span>
+                                        <span class="checkout-card-helper">Paga con tarjeta vía Mercado Pago.</span>
+                                    </div>
+                                </label>
 
                                 <label class="checkout-card" data-payment-option="pagoefectivo">
                                     <input type="radio" value="pagoefectivo" name="payment_method"
@@ -568,78 +591,84 @@
                             </span>
                             <span class="boton-form-text">Pagar ahora</span>
                         </button>
+                        <div class="{{ $checkoutFallbackMessage ? '' : 'is-hidden' }}" data-niubiz-fallback>
+                            <x-note-alert type="warning" :message="$checkoutFallbackMessage" :dismissible="true" />
+                        </div>
                     </div>
+            </div>
 
-                    @if (session('niubiz'))
-                        @php
-                            $niubiz = session('niubiz');
-                            $response = $niubiz['response'] ?? null;
-                            $purchaseNumber = $niubiz['purchaseNumber'] ?? null;
-                            $actionCode = $niubiz['actionCode'] ?? null;
-                            $friendlyMessage = $niubiz['friendlyMessage'] ?? null;
-                            $transactionDateFormatted = $niubiz['transactionDate'] ?? null;
-                            $brand = $niubiz['brand'] ?? null;
-                            $cardLast4 = $niubiz['cardLast4'] ?? null;
-                        @endphp
+            @if (session('niubiz'))
+                @php
+                    $niubiz = session('niubiz');
+                    $response = $niubiz['response'] ?? null;
+                    $purchaseNumber = $niubiz['purchaseNumber'] ?? null;
+                    $actionCode = $niubiz['actionCode'] ?? null;
+                    $friendlyMessage = $niubiz['friendlyMessage'] ?? null;
+                    $transactionDateFormatted = $niubiz['transactionDate'] ?? null;
+                    $brand = $niubiz['brand'] ?? null;
+                    $cardLast4 = $niubiz['cardLast4'] ?? null;
+                @endphp
 
-                        @isset($response['data'])
-                            <x-alert type="danger" title="No pudimos procesar tu pago">
-                                @if ($friendlyMessage)
-                                    <p class="mb-2"></p>
-                                @endif
+                @isset($response['data'])
+                    <x-alert type="danger" title="No pudimos procesar tu pago">
+                        @if ($friendlyMessage)
+                            <p class="mb-2"></p>
+                        @endif
 
-                                <li>
-                                    <strong>Detalle del banco:</strong>
-                                    <span>
-                                        {{ $friendlyMessage ?? $response['data']['ACTION_DESCRIPTION'] }}
-                                    </span>
-                                </li>
-                                @if ($actionCode)
-                                    <li>
-                                        <strong>Código de respuesta:</strong>
-                                        <span>{{ $actionCode }}</span>
-                                    </li>
-                                @endif
-                                @if ($brand || $cardLast4)
-                                    <li>
-                                        <strong>Tarjeta:</strong>
-                                        <span>
-                                            @if ($brand)
-                                                {{ ucfirst($brand) }}
-                                            @endif
-                                            @if ($brand && $cardLast4)
-                                            @endif
-                                            @if ($cardLast4)
-                                                terminada en {{ $cardLast4 }}
-                                            @endif
-                                        </span>
-                                    </li>
-                                @endif
-                                <li>
-                                    <strong>Número del pedido:</strong>
-                                    <span>{{ $purchaseNumber }}</span>
-                                </li>
-                                @if ($transactionDateFormatted)
-                                    <li>
-                                        <strong>Fecha y hora:</strong>
-                                        <span>{{ $transactionDateFormatted }}</span>
-                                    </li>
-                                @endif
+                        <li>
+                            <strong>Detalle del banco:</strong>
+                            <span>
+                                {{ $friendlyMessage ?? $response['data']['ACTION_DESCRIPTION'] }}
+                            </span>
+                        </li>
+                        @if ($actionCode)
+                            <li>
+                                <strong>Código de respuesta:</strong>
+                                <span>{{ $actionCode }}</span>
+                            </li>
+                        @endif
+                        @if ($brand || $cardLast4)
+                            <li>
+                                <strong>Tarjeta:</strong>
+                                <span>
+                                    @if ($brand)
+                                        {{ ucfirst($brand) }}
+                                    @endif
+                                    @if ($brand && $cardLast4)
+                                    @endif
+                                    @if ($cardLast4)
+                                        terminada en {{ $cardLast4 }}
+                                    @endif
+                                </span>
+                            </li>
+                        @endif
+                        <li>
+                            <strong>Número del pedido:</strong>
+                            <span>{{ $purchaseNumber }}</span>
+                        </li>
+                        @if ($transactionDateFormatted)
+                            <li>
+                                <strong>Fecha y hora:</strong>
+                                <span>{{ $transactionDateFormatted }}</span>
+                            </li>
+                        @endif
 
-                                <p class="mt-2 text-xs text-muted">
-                                    Puedes intentar nuevamente con otra tarjeta o seleccionar otro método de pago
-                                    como depósito bancario o Yape.
-                                </p>
-                            </x-alert>
-                        @endisset
-                    @endif
+                        <p class="mt-2 text-xs text-muted">
+                            Puedes intentar nuevamente con otra tarjeta o seleccionar otro método de pago
+                            como depósito bancario o Yape.
+                        </p>
+                    </x-alert>
+                @endisset
+            @endif
 
-                </aside>
+            </aside>
             </div>
         @endif
     </section>
     @push('js')
         <script type="text/javascript" src="{{ config('services.niubiz.url_js') }}"></script>
+        <script type="text/javascript" src="{{ config('services.culqi.checkout_url') }}"></script>
+        <script type="text/javascript" src="{{ config('services.mercadopago.checkout_url') }}"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 const rootDelivery = document.querySelector('[data-delivery-type-root]');
@@ -675,12 +704,19 @@
                 const progressSteps = document.querySelectorAll('.checkout-progress-step');
                 const niubizFallback = document.querySelector('[data-niubiz-fallback]');
                 const niubizFallbackTitle = niubizFallback ? niubizFallback.querySelector('.alert-title') : null;
-                const niubizFallbackMessage = niubizFallback ? niubizFallback.querySelector('.alert-message') : null;
+                const niubizFallbackMessage = niubizFallback ? (niubizFallback.querySelector('.alert-message') ||
+                    niubizFallback.querySelector('.note-alert span')) : null;
                 const niubizFallbackDismiss = niubizFallback ? niubizFallback.querySelector('[data-alert-close]') :
                     null;
 
                 const amount = '{{ number_format($amount, 2, '.', '') }}';
                 const merchantId = '{{ config('services.niubiz.merchant_id') }}';
+                const isNiubizDevSimulation = {{ config('services.niubiz.dev_simulation') ? 'true' : 'false' }};
+                const culqiPublicKey = @json((string) config('services.culqi.public_key', ''));
+                const isCulqiDevSimulation = {{ config('services.culqi.dev_simulation') ? 'true' : 'false' }};
+                const mercadoPagoPublicKey = @json((string) config('services.mercadopago.public_key', ''));
+                const isMercadoPagoDevSimulation = {{ config('services.mercadopago.dev_simulation') ? 'true' : 'false' }};
+                const checkoutCustomerEmail = @json((string) (Auth::user()?->email ?? 'cliente@example.com'));
                 let sessionToken = '{{ $session_token }}';
                 const checkoutChannel = 'web';
                 const refreshSessionTokenUrl = '{{ route('checkout.session-token') }}';
@@ -696,6 +732,10 @@
                 let addressUpdateUrl = null;
                 let isAddressSubmitting = false;
                 let inlineAddressValidator = null;
+                let sessionTokenPreloading = false;
+                let lastSessionTokenError = null;
+                let pendingCulqiSubmission = null;
+                let pendingMercadoPagoSubmission = null;
 
                 try {
                     const parsed = JSON.parse(initialAddressesRaw || '[]');
@@ -749,6 +789,30 @@
                     return false;
                 }
 
+                function getFlowIncompleteMessage() {
+                    const type = getCurrentDeliveryType();
+
+                    if (!type) {
+                        return 'Selecciona un tipo de entrega para continuar.';
+                    }
+
+                    if (type === 'delivery') {
+                        const addressChecked = document.querySelector('input[name="address_id"]:checked');
+                        if (!addressChecked) {
+                            return 'Selecciona una dirección de envío para habilitar el pago.';
+                        }
+                    }
+
+                    if (type === 'pickup') {
+                        const storeChecked = document.querySelector('input[name="store_id"]:checked');
+                        if (!storeChecked) {
+                            return 'Selecciona una tienda de recojo para habilitar el pago.';
+                        }
+                    }
+
+                    return '';
+                }
+
                 function updateProgressSteps() {
                     const deliveryType = getCurrentDeliveryType();
                     const addressChecked = document.querySelector('input[name="address_id"]:checked');
@@ -798,6 +862,12 @@
                     if (!payButton) return;
                     const ready = isFlowComplete();
                     payButton.disabled = !ready;
+
+                    if (ready) {
+                        payButton.removeAttribute('title');
+                    } else {
+                        payButton.setAttribute('title', getFlowIncompleteMessage());
+                    }
                 }
 
                 function ensureSelectedBadge(label) {
@@ -885,10 +955,20 @@
                 }
 
                 function showNiubizFallback(message, title = 'No pudimos iniciar el pago') {
-                    if (!niubizFallback || !niubizFallbackMessage || !niubizFallbackTitle) return;
+                    if (!niubizFallback) return;
 
-                    niubizFallbackTitle.textContent = title;
-                    niubizFallbackMessage.textContent = message;
+                    if (niubizFallbackTitle) {
+                        niubizFallbackTitle.textContent = title;
+                    }
+
+                    if (niubizFallbackMessage) {
+                        // En note-alert no hay título separado, así que concatenamos si aplica.
+                        niubizFallbackMessage.textContent = niubizFallbackTitle ? message : `${title}: ${message}`;
+                    } else {
+                        niubizFallback.innerHTML =
+                            `<div class="note-alert note-alert-warning note-alert-dismissible" data-alert><i class="ri-alert-line"></i><span>${title}: ${message}</span></div>`;
+                    }
+
                     niubizFallback.classList.remove('is-hidden');
                     niubizFallback.scrollIntoView({
                         behavior: 'smooth',
@@ -914,6 +994,7 @@
 
                 async function ensureSessionToken(paymentMethod = 'niubiz') {
                     if (String(sessionToken || '').trim() !== '') {
+                        lastSessionTokenError = null;
                         return {
                             token: sessionToken,
                             error: null,
@@ -921,9 +1002,10 @@
                     }
 
                     if (!refreshSessionTokenUrl || !csrfToken) {
+                        lastSessionTokenError = 'No se encontró la configuración para renovar el token de pago.';
                         return {
                             token: null,
-                            error: 'No se encontró la configuración para renovar el token de pago.',
+                            error: lastSessionTokenError,
                         };
                     }
 
@@ -945,23 +1027,303 @@
                         const data = await response.json().catch(() => ({}));
 
                         if (!response.ok || data.status !== 'success' || !data.session_token) {
+                            const detail = data && data.message ? String(data.message) : '';
+
+                            if (response.status === 401) {
+                                lastSessionTokenError = detail ||
+                                    'Tu sesión expiró. Inicia sesión nuevamente para continuar con el pago.';
+                                return {
+                                    token: null,
+                                    error: lastSessionTokenError,
+                                };
+                            }
+
+                            if (response.status === 419) {
+                                lastSessionTokenError =
+                                    'La sesión CSRF expiró. Recarga la página e inténtalo otra vez.';
+                                return {
+                                    token: null,
+                                    error: lastSessionTokenError,
+                                };
+                            }
+
+                            if (response.redirected) {
+                                lastSessionTokenError =
+                                    'Tu sesión ya no es válida para pagar. Inicia sesión nuevamente.';
+                                return {
+                                    token: null,
+                                    error: lastSessionTokenError,
+                                };
+                            }
+
+                            lastSessionTokenError = detail ||
+                                `No se pudo renovar el token de sesión de Niubiz (HTTP ${response.status}).`;
                             return {
                                 token: null,
-                                error: data.message || 'No se pudo renovar el token de sesión de Niubiz.',
+                                error: lastSessionTokenError,
                             };
                         }
 
                         sessionToken = String(data.session_token);
+                        lastSessionTokenError = null;
                         return {
                             token: sessionToken,
                             error: null,
                         };
                     } catch (error) {
+                        lastSessionTokenError = 'Error de red al renovar el token de sesión de Niubiz.';
                         return {
                             token: null,
-                            error: 'Error de red al renovar el token de sesión de Niubiz.',
+                            error: lastSessionTokenError,
                         };
                     }
+                }
+
+                async function preloadSessionTokenForNiubiz() {
+                    if (sessionTokenPreloading) return;
+                    if (getSelectedPaymentMethod() !== 'niubiz') return;
+                    if (isNiubizDevSimulation) return;
+                    if (String(sessionToken || '').trim() !== '') return;
+
+                    sessionTokenPreloading = true;
+                    try {
+                        await ensureSessionToken('niubiz');
+                    } finally {
+                        sessionTokenPreloading = false;
+                    }
+                }
+
+                function submitGatewayPayment(actionUrl, transactionToken, purchaseNumber) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = actionUrl;
+                    form.style.display = 'none';
+
+                    const fields = {
+                        _token: csrfToken || '',
+                        transactionToken: String(transactionToken || ''),
+                        purchaseNumber: String(purchaseNumber || ''),
+                    };
+
+                    Object.entries(fields).forEach(([name, value]) => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = name;
+                        input.value = value;
+                        form.appendChild(input);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+
+                function submitSimulatedPayment(actionUrl, purchaseNumber) {
+                    submitGatewayPayment(actionUrl, 'dev-token-' + purchaseNumber, purchaseNumber);
+                }
+
+                function bindCulqiCallbackOnce() {
+                    if (window.__culqiHandlerBound) return;
+
+                    window.__culqiHandlerBound = true;
+                    window.culqi = function() {
+                        const context = pendingCulqiSubmission;
+                        if (!context) return;
+
+                        const culqi = window.Culqi;
+                        if (culqi && culqi.token && culqi.token.id) {
+                            pendingCulqiSubmission = null;
+                            submitGatewayPayment(context.actionUrl, culqi.token.id, context.purchaseNumber);
+                            return;
+                        }
+
+                        const message = (culqi && culqi.error && (culqi.error.user_message || culqi.error
+                                .merchant_message)) ||
+                            'Culqi no pudo tokenizar la tarjeta. Verifica los datos e inténtalo nuevamente.';
+                        pendingCulqiSubmission = null;
+                        showNiubizFallback(message, 'No se pudo iniciar Culqi');
+                    };
+                }
+
+                function openCulqiCheckout(actionUrl, purchaseNumber) {
+                    if (isCulqiDevSimulation) {
+                        showNiubizFallback(
+                            'Modo simulación activo: se procesará un pago aprobado localmente para desarrollo.',
+                            'Simulación local Culqi'
+                        );
+                        submitSimulatedPayment(actionUrl, purchaseNumber);
+                        return;
+                    }
+
+                    if (!culqiPublicKey || culqiPublicKey.trim() === '' || culqiPublicKey.includes('...')) {
+                        showNiubizFallback(
+                            'Configura CULQI_PUBLIC_KEY con una llave válida para continuar.',
+                            'Configuración Culqi incompleta'
+                        );
+                        return;
+                    }
+
+                    const culqi = window.Culqi;
+                    if (!culqi || typeof culqi.open !== 'function' || typeof culqi.settings !== 'function') {
+                        showNiubizFallback(
+                            'No se pudo cargar el checkout de Culqi. Verifica conectividad e intenta nuevamente.',
+                            'SDK de Culqi no disponible'
+                        );
+                        return;
+                    }
+
+                    const amountInCents = Math.round(parseFloat(String(amount)) * 100);
+                    if (!Number.isFinite(amountInCents) || amountInCents <= 0) {
+                        showNiubizFallback('El monto para Culqi no es válido.', 'Monto inválido');
+                        return;
+                    }
+
+                    bindCulqiCallbackOnce();
+                    pendingCulqiSubmission = {
+                        actionUrl,
+                        purchaseNumber,
+                    };
+
+                    culqi.publicKey = culqiPublicKey;
+                    culqi.settings({
+                        title: 'Geckommerce',
+                        currency: 'PEN',
+                        amount: amountInCents,
+                    });
+                    culqi.options({
+                        lang: 'es',
+                        installments: false,
+                        style: {
+                            logo: '{{ asset('images/logos/logo-geckommerce.png') }}',
+                            maincolor: '#111111',
+                        },
+                    });
+
+                    if (checkoutCustomerEmail && typeof culqi.setCustomParameters === 'function') {
+                        culqi.setCustomParameters({
+                            cardholderEmail: checkoutCustomerEmail,
+                        });
+                    }
+
+                    try {
+                        culqi.open();
+                    } catch (error) {
+                        pendingCulqiSubmission = null;
+                        console.error('Culqi open error', error);
+                        showNiubizFallback(
+                            'Ocurrió un error al abrir el formulario de Culqi. Revisa la consola para más detalle.',
+                            'No se pudo abrir Culqi'
+                        );
+                    }
+                }
+
+                function bindMercadoPagoCallbackOnce() {
+                    if (window.__mercadopagoHandlerBound) return;
+
+                    window.__mercadopagoHandlerBound = true;
+                    window.mp = window.mp || {};
+                    window.mp.checkout = window.mp.checkout || {};
+
+                    const originalCheckout = window.mp.checkout;
+                    window.mp.checkout = function(options) {
+                        const context = pendingMercadoPagoSubmission;
+                        if (!context || !options || !options.token) {
+                            return originalCheckout(options);
+                        }
+
+                        pendingMercadoPagoSubmission = null;
+                        submitGatewayPayment(context.actionUrl, options.token, context.purchaseNumber);
+                    };
+
+                    Object.assign(window.mp.checkout, originalCheckout);
+                }
+
+                function openMercadoPagoCheckout(actionUrl, purchaseNumber) {
+                    if (isMercadoPagoDevSimulation) {
+                        showNiubizFallback(
+                            'Modo simulación activo: se procesará un pago aprobado localmente para desarrollo.',
+                            'Simulación local Mercado Pago'
+                        );
+                        submitSimulatedPayment(actionUrl, purchaseNumber);
+                        return;
+                    }
+
+                    if (!mercadoPagoPublicKey || mercadoPagoPublicKey.trim() === '' || mercadoPagoPublicKey.includes('...')) {
+                        showNiubizFallback(
+                            'Configura MERCADO_PAGO_PUBLIC_KEY con una llave válida para continuar.',
+                            'Configuración Mercado Pago incompleta'
+                        );
+                        return;
+                    }
+
+                    const mp = window.mp;
+                    if (!mp || typeof mp.bricks !== 'function') {
+                        showNiubizFallback(
+                            'No se pudo cargar el SDK de Mercado Pago. Verifica conectividad e intenta nuevamente.',
+                            'SDK de Mercado Pago no disponible'
+                        );
+                        return;
+                    }
+
+                    const amountInCents = parseFloat(String(amount)) * 1;
+                    if (!Number.isFinite(amountInCents) || amountInCents <= 0) {
+                        showNiubizFallback('El monto para Mercado Pago no es válido.', 'Monto inválido');
+                        return;
+                    }
+
+                    bindMercadoPagoCallbackOnce();
+                    pendingMercadoPagoSubmission = {
+                        actionUrl,
+                        purchaseNumber,
+                    };
+
+                    mp.bricks().create('payment', {
+                        initialization: {
+                            amount: amountInCents,
+                            payer: {
+                                email: checkoutCustomerEmail || 'cliente@example.com',
+                            },
+                        },
+                        customization: {
+                            visual: {
+                                style: {
+                                    theme: 'default',
+                                },
+                            },
+                        },
+                        callbacks: {
+                            onSubmit: async (formData) => {
+                                const context = pendingMercadoPagoSubmission;
+                                if (!context || !formData || !formData.token) {
+                                    showNiubizFallback(
+                                        'No se pudo obtener el token de la tarjeta. Intenta nuevamente.',
+                                        'Error de tokenización'
+                                    );
+                                    return;
+                                }
+
+                                pendingMercadoPagoSubmission = null;
+                                submitGatewayPayment(context.actionUrl, formData.token, context.purchaseNumber);
+                            },
+                            onError: (error) => {
+                                pendingMercadoPagoSubmission = null;
+                                const message = error?.message || 'Mercado Pago no pudo tokenizar la tarjeta. Verifica los datos e inténtalo nuevamente.';
+                                showNiubizFallback(message, 'No se pudo iniciar Mercado Pago');
+                            },
+                        },
+                    }).then(() => {
+                        try {
+                            mp.hiddenMotionModal();
+                        } catch (e) {
+                            // Motion modal may not exist
+                        }
+                    }).catch((error) => {
+                        pendingMercadoPagoSubmission = null;
+                        console.error('Mercado Pago bricks error', error);
+                        showNiubizFallback(
+                            'Ocurrió un error al cargar el formulario de Mercado Pago. Revisa la consola para más detalle.',
+                            'No se pudo abrir Mercado Pago'
+                        );
+                    });
                 }
 
                 function fillAddressForm(address = null) {
@@ -1371,6 +1733,7 @@
                 paymentRadios.forEach((input) => {
                     input.addEventListener('change', () => {
                         refreshCheckoutUI();
+                        preloadSessionTokenForNiubiz();
                     });
                 });
 
@@ -1388,9 +1751,14 @@
 
                 // Estado inicial
                 refreshCheckoutUI();
+                preloadSessionTokenForNiubiz();
 
                 // Click en pagar ahora: configurar Niubiz con los parámetros de entrega seleccionados
                 if (payButton) {
+                    payButton.addEventListener('pointerdown', () => {
+                        preloadSessionTokenForNiubiz();
+                    });
+
                     payButton.addEventListener('click', async function() {
                         if (payButton.disabled) return;
 
@@ -1407,15 +1775,32 @@
                         }
 
                         const purchaseNumber = String(Math.floor(Math.random() * 1000000000));
+                        const idempotencyKey = (window.crypto && typeof window.crypto.randomUUID ===
+                                'function') ?
+                            window.crypto.randomUUID() :
+                            ('idem-' + purchaseNumber + '-' + Date.now());
                         const paymentMethod = getSelectedPaymentMethod();
                         const isNiubizSelected = paymentMethod === 'niubiz';
+                        const isCulqiSelected = paymentMethod === 'culqi';
+                        const isMercadoPagoSelected = paymentMethod === 'mercadopago';
                         const action = '{{ route('checkout.paid') }}' +
                             '?amount=' + amount +
                             '&purchaseNumber=' + purchaseNumber +
+                            '&idempotency_key=' + encodeURIComponent(idempotencyKey) +
                             '&delivery_type=' + encodeURIComponent(type || '') +
                             '&address_id=' + encodeURIComponent(addressId || '') +
                             '&store_id=' + encodeURIComponent(storeId || '') +
                             '&payment_method=' + encodeURIComponent(paymentMethod || 'niubiz');
+
+                        if (isCulqiSelected) {
+                            openCulqiCheckout(action, purchaseNumber);
+                            return;
+                        }
+
+                        if (isMercadoPagoSelected) {
+                            openMercadoPagoCheckout(action, purchaseNumber);
+                            return;
+                        }
 
                         if (!isNiubizSelected) {
                             showNiubizFallback(
@@ -1425,16 +1810,23 @@
                             return;
                         }
 
-                        const ensuredSession = await ensureSessionToken(paymentMethod);
+                        if (isNiubizDevSimulation) {
+                            showNiubizFallback(
+                                'Modo simulación activo: se procesará un pago aprobado localmente para desarrollo.',
+                                'Simulación local Niubiz'
+                            );
+                            submitSimulatedPayment(action, purchaseNumber);
+                            return;
+                        }
 
-                        if (!ensuredSession.token) {
-                            if (isNiubizSelected) {
-                                showNiubizFallback(
-                                    ensuredSession.error ||
-                                    'No se pudo generar sessiontoken. Intenta nuevamente en unos minutos.',
-                                    'Pago temporalmente no disponible'
-                                );
-                            }
+                        const resolvedSessionToken = String(sessionToken || '').trim();
+                        if (!resolvedSessionToken) {
+                            preloadSessionTokenForNiubiz();
+                            showNiubizFallback(
+                                lastSessionTokenError ||
+                                'Aún estamos inicializando la sesión de pago. Intenta nuevamente en 1 segundo.',
+                                'Pago temporalmente no disponible'
+                            );
                             return;
                         }
 
@@ -1442,7 +1834,7 @@
                             action,
                             channel: checkoutChannel,
                             merchantid: merchantId,
-                            sessiontoken: ensuredSession.token,
+                            sessiontoken: resolvedSessionToken,
                             amount,
                             purchasenumber: purchaseNumber,
                         };
@@ -1465,23 +1857,42 @@
                         timeoutUrl.searchParams.set('niubiz_timeout', '1');
                         timeoutUrl.searchParams.set('payment_method', paymentMethod || 'niubiz');
 
-                        VisanetCheckout.configure({
-                            action: requiredConfig.action,
-                            channel: requiredConfig.channel,
-                            merchantid: requiredConfig.merchantid,
-                            sessiontoken: requiredConfig.sessiontoken,
-                            amount: requiredConfig.amount,
-                            purchasenumber: requiredConfig.purchasenumber,
-                            expirationminutes: '20',
-                            timeouturl: timeoutUrl.toString(),
-                            merchantlogo: '{{ asset('images/logos/logo-geckommerce.png') }}',
-                            formbuttoncolor: '#000000',
-                            complete: function(params) {
-                                alert(JSON.stringify(params));
-                            }
-                        });
+                        const checkoutSdk = window.VisanetCheckout;
+                        if (!checkoutSdk || typeof checkoutSdk.configure !== 'function' ||
+                            typeof checkoutSdk.open !==
+                            'function') {
+                            showNiubizFallback(
+                                'No se pudo cargar el SDK de Niubiz. Verifica NIUBIZ_URL_JS, conectividad y vuelve a intentar.',
+                                'SDK de pago no disponible'
+                            );
+                            return;
+                        }
 
-                        VisanetCheckout.open();
+                        try {
+                            checkoutSdk.configure({
+                                action: requiredConfig.action,
+                                channel: requiredConfig.channel,
+                                merchantid: requiredConfig.merchantid,
+                                sessiontoken: requiredConfig.sessiontoken,
+                                amount: requiredConfig.amount,
+                                purchasenumber: requiredConfig.purchasenumber,
+                                expirationminutes: '20',
+                                timeouturl: timeoutUrl.toString(),
+                                merchantlogo: '{{ asset('images/logos/logo-geckommerce.png') }}',
+                                formbuttoncolor: '#000000',
+                                complete: function(params) {
+                                    alert(JSON.stringify(params));
+                                }
+                            });
+
+                            checkoutSdk.open();
+                        } catch (error) {
+                            console.error('Niubiz open error', error);
+                            showNiubizFallback(
+                                'Ocurrió un error al abrir la pasarela de Niubiz. Revisa la consola del navegador para más detalle.',
+                                'No se pudo abrir el formulario de pago'
+                            );
+                        }
                     });
                 }
             });

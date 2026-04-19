@@ -3,6 +3,8 @@
 namespace App\Services\Checkout;
 
 use App\Services\Checkout\Gateways\Contracts\CheckoutPaymentGatewayInterface;
+use App\Services\Checkout\Gateways\CulqiGatewayService;
+use App\Services\Checkout\Gateways\MercadoPagoGatewayService;
 use App\Services\Checkout\Gateways\NiubizGatewayService;
 
 class PaymentGatewayManager
@@ -12,10 +14,16 @@ class PaymentGatewayManager
      */
     private array $gateways;
 
-    public function __construct(NiubizGatewayService $niubizGatewayService)
+    public function __construct(
+        NiubizGatewayService $niubizGatewayService,
+        CulqiGatewayService $culqiGatewayService,
+        MercadoPagoGatewayService $mercadoPagoGatewayService,
+    )
     {
         $this->gateways = [
             $niubizGatewayService->code() => $niubizGatewayService,
+            $culqiGatewayService->code() => $culqiGatewayService,
+            $mercadoPagoGatewayService->code() => $mercadoPagoGatewayService,
         ];
     }
 

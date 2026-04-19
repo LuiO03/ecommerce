@@ -223,7 +223,7 @@
 .note-alert.note-alert-warning {
     border-color: var(--color-warning);
     background-color: var(--color-warning-pastel);
-    color: var(--color-warning);
+    color: var(--color-text);
 }
 
 .note-alert.note-alert-danger {

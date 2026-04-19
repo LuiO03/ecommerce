@@ -15,6 +15,21 @@ class OrderPlacementService
     public function placePaidOrder(User $user, Cart $cart, array $data): Order
     {
         return DB::transaction(function () use ($user, $cart, $data) {
+            $lockedCart = Cart::whereKey($cart->id)
+                ->where('user_id', $user->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $lockedCart || ! $lockedCart->is_active) {
+                throw new \RuntimeException('El carrito ya fue procesado por otra operación.');
+            }
+
+            $lockedCart->load(['items.product', 'items.variant']);
+
+            if ($lockedCart->items->isEmpty()) {
+                throw new \RuntimeException('No se encontraron ítems activos en el carrito para procesar.');
+            }
+
             $order = Order::create([
                 'user_id' => $user->id,
                 'order_number' => (string) ($data['purchase_number'] ?? ''),
@@ -51,7 +66,7 @@ class OrderPlacementService
                 ]);
             }
 
-            foreach ($cart->items as $item) {
+            foreach ($lockedCart->items as $item) {
                 $product = $item->product;
 
                 if (! $product) {
@@ -98,7 +113,7 @@ class OrderPlacementService
                 }
             }
 
-            $cart->update(['is_active' => false]);
+            $lockedCart->update(['is_active' => false]);
 
             return $order;
         });

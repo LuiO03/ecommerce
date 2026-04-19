@@ -26,8 +26,10 @@
 
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout/paid', [CheckoutController::class, 'paid'])->name('checkout.paid');
-    Route::post('/checkout/session-token', [CheckoutController::class, 'refreshSessionToken'])->name('checkout.session-token');
+    Route::middleware('auth')->group(function () {
+        Route::post('/checkout/paid', [CheckoutController::class, 'paid'])->name('checkout.paid');
+        Route::post('/checkout/session-token', [CheckoutController::class, 'refreshSessionToken'])->name('checkout.session-token');
+    });
     // Ruta para la vista de compra exitosa y detalles del pedido
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/failure', [CheckoutController::class, 'failure'])->name('checkout.failure');

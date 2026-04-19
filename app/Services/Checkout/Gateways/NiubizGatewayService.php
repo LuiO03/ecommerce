@@ -5,6 +5,8 @@ namespace App\Services\Checkout\Gateways;
 use App\Models\Addresses;
 use App\Models\Cart;
 use App\Services\Checkout\Gateways\Contracts\CheckoutPaymentGatewayInterface;
+use App\Services\Checkout\Gateways\DTO\GatewayAuthorizationResult;
+use App\Services\Checkout\Gateways\DTO\GatewaySessionResult;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -17,19 +19,28 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
         return 'niubiz';
     }
 
-    public function createSessionToken(float $amount, ?Cart $cart = null): array
+    public function createSessionToken(float $amount, ?Cart $cart = null): GatewaySessionResult
     {
-        $accessTokenResult = $this->requestAccessToken();
+        if ($this->shouldSimulate()) {
+            return new GatewaySessionResult(
+                token: 'dev-session-' . uniqid(),
+                status: 200,
+                message: null,
+            );
+        }
+
+        $correlationId = $this->resolveCorrelationId();
+        $accessTokenResult = $this->requestAccessToken($correlationId);
 
         if (! $accessTokenResult['token']) {
             $accessStatus = (int) ($accessTokenResult['status'] ?? 0);
             $httpStatus = $accessStatus >= 400 && $accessStatus < 600 ? $accessStatus : 503;
 
-            return [
-                'token' => null,
-                'status' => $httpStatus,
-                'message' => $accessTokenResult['message'] ?? 'No se pudo obtener credenciales de Niubiz.',
-            ];
+            return new GatewaySessionResult(
+                token: null,
+                status: $httpStatus,
+                message: $accessTokenResult['message'] ?? 'No se pudo obtener credenciales de Niubiz.',
+            );
         }
 
         $cart = $cart ?: Cart::with(['items.product', 'items.variant'])
@@ -38,41 +49,75 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
             ->first();
 
         if (! $cart) {
-            return [
-                'token' => null,
-                'status' => 422,
-                'message' => 'No encontramos un carrito activo para generar la sesión de pago.',
-            ];
+            return new GatewaySessionResult(
+                token: null,
+                status: 422,
+                message: 'No encontramos un carrito activo para generar la sesión de pago.',
+            );
         }
 
-        $sessionToken = $this->generateSessionToken($accessTokenResult['token'], $amount, $cart);
+        $sessionToken = $this->generateSessionToken($accessTokenResult['token'], $amount, $cart, $correlationId);
 
         if (! $sessionToken) {
-            return [
-                'token' => null,
-                'status' => 502,
-                'message' => 'Niubiz no devolvió session token. Revisa credenciales, merchant id y conectividad.',
-            ];
+            return new GatewaySessionResult(
+                token: null,
+                status: 502,
+                message: 'Niubiz no devolvió session token. Revisa credenciales, merchant id y conectividad.',
+            );
         }
 
-        return [
-            'token' => $sessionToken,
-            'status' => 200,
-            'message' => null,
-        ];
+        return new GatewaySessionResult(
+            token: $sessionToken,
+            status: 200,
+            message: null,
+        );
     }
 
-    public function authorize(array $payload): array
+    public function authorize(array $payload): GatewayAuthorizationResult
     {
-        $accessTokenResult = $this->requestAccessToken();
+        if ($this->shouldSimulate()) {
+            $purchaseNumber = (string) ($payload['purchase_number'] ?? now()->timestamp);
+            $transactionId = 'DEV-TXN-' . $purchaseNumber . '-' . substr(md5((string) microtime(true)), 0, 8);
+            $transactionDate = now()->format('dmyHis');
+
+            return new GatewayAuthorizationResult(
+                ok: true,
+                response: [
+                    'dataMap' => [
+                        'ACTION_CODE' => '000',
+                        'ACTION_DESCRIPTION' => 'APROBADO (SIMULACION LOCAL)',
+                        'STATUS' => 'AUTHORIZED',
+                        'TRANSACTION_ID' => $transactionId,
+                        'BRAND' => 'VISA',
+                        'CARD' => '411111******1111',
+                        'TRANSACTION_DATE' => $transactionDate,
+                    ],
+                    'data' => [
+                        'ACTION_CODE' => '000',
+                        'STATUS' => 'AUTHORIZED',
+                        'TRANSACTION_ID' => $transactionId,
+                        'TRANSACTION_DATE' => $transactionDate,
+                    ],
+                    'order' => [
+                        'purchaseNumber' => $purchaseNumber,
+                        'transactionId' => $transactionId,
+                    ],
+                ],
+                status: 200,
+                message: null,
+            );
+        }
+
+        $correlationId = (string) ($payload['correlation_id'] ?? $this->resolveCorrelationId());
+        $accessTokenResult = $this->requestAccessToken($correlationId);
 
         if (! $accessTokenResult['token']) {
-            return [
-                'ok' => false,
-                'response' => [],
-                'status' => (int) ($accessTokenResult['status'] ?? 503),
-                'message' => $accessTokenResult['message'] ?? 'No se pudo autenticar con Niubiz.',
-            ];
+            return new GatewayAuthorizationResult(
+                ok: false,
+                response: [],
+                status: (int) ($accessTokenResult['status'] ?? 503),
+                message: $accessTokenResult['message'] ?? 'No se pudo autenticar con Niubiz.',
+            );
         }
 
         $merchantId = config('services.niubiz.merchant_id');
@@ -85,8 +130,8 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
                 'Authorization' => $accessTokenResult['token'],
                 'Content-Type' => 'application/json',
             ])->connectTimeout(10)
-                ->timeout(60)
-                ->retry(2, 500)
+                ->timeout(12)
+                ->retry(1, 300)
                 ->post($urlApi, [
                     'channel' => 'web',
                     'captureType' => 'manual',
@@ -108,40 +153,42 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
 
             if (! $httpResponse->successful()) {
                 Log::warning('Niubiz authorization failed', [
+                    'correlation_id' => $correlationId,
                     'status' => $httpResponse->status(),
                     'response' => $httpResponse->body(),
                 ]);
 
-                return [
-                    'ok' => false,
-                    'response' => $httpResponse->json() ?? [],
-                    'status' => $httpResponse->status(),
-                    'message' => 'Niubiz no autorizó la operación.',
-                ];
+                return new GatewayAuthorizationResult(
+                    ok: false,
+                    response: $httpResponse->json() ?? [],
+                    status: $httpResponse->status(),
+                    message: 'Niubiz no autorizó la operación.',
+                );
             }
 
-            return [
-                'ok' => true,
-                'response' => $httpResponse->json() ?? [],
-                'status' => $httpResponse->status(),
-                'message' => null,
-            ];
+            return new GatewayAuthorizationResult(
+                ok: true,
+                response: $httpResponse->json() ?? [],
+                status: $httpResponse->status(),
+                message: null,
+            );
         } catch (ConnectionException $e) {
             Log::warning('Niubiz authorization connection failed', [
+                'correlation_id' => $correlationId,
                 'error' => $e->getMessage(),
                 'url' => $urlApi,
             ]);
 
-            return [
-                'ok' => false,
-                'response' => [],
-                'status' => 503,
-                'message' => 'No se pudo conectar con Niubiz para autorizar el pago.',
-            ];
+            return new GatewayAuthorizationResult(
+                ok: false,
+                response: [],
+                status: 503,
+                message: 'No se pudo conectar con Niubiz para autorizar el pago.',
+            );
         }
     }
 
-    private function requestAccessToken(): array
+    private function requestAccessToken(?string $correlationId = null): array
     {
         $urlApi = config('services.niubiz.url_api') . '/api.security/v1/security';
         $password = config('services.niubiz.password');
@@ -153,12 +200,13 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
             $response = Http::withHeaders([
                 'Authorization' => 'Basic ' . $auth,
             ])->connectTimeout(10)
-                ->timeout(60)
-                ->retry(2, 500)
+                ->timeout(12)
+                ->retry(1, 300)
                 ->get($urlApi);
 
             if (! $response->successful()) {
                 Log::warning('Niubiz security auth failed', [
+                    'correlation_id' => $correlationId,
                     'status' => $response->status(),
                     'response' => $response->body(),
                 ]);
@@ -177,6 +225,7 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
             ];
         } catch (ConnectionException $e) {
             Log::warning('Niubiz security connection failed', [
+                'correlation_id' => $correlationId,
                 'error' => $e->getMessage(),
                 'url' => $urlApi,
             ]);
@@ -189,7 +238,7 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
         }
     }
 
-    private function generateSessionToken(string $accessToken, float $amount, Cart $cart): ?string
+    private function generateSessionToken(string $accessToken, float $amount, Cart $cart, ?string $correlationId = null): ?string
     {
         $user = Auth::user();
         $merchantId = config('services.niubiz.merchant_id');
@@ -223,8 +272,8 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
             ])->connectTimeout(10)
-                ->timeout(60)
-                ->retry(2, 500)
+                ->timeout(12)
+                ->retry(1, 300)
                 ->post($urlApi, [
                     'channel' => 'web',
                     'amount' => (float) $amountFormatted,
@@ -248,6 +297,7 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
                 ]);
         } catch (ConnectionException $e) {
             Log::warning('Niubiz session token connection failed', [
+                'correlation_id' => $correlationId,
                 'error' => $e->getMessage(),
                 'url' => $urlApi,
                 'merchant_id' => $merchantId,
@@ -258,6 +308,7 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
 
         if (! $response->successful()) {
             Log::warning('Niubiz session token request failed', [
+                'correlation_id' => $correlationId,
                 'status' => $response->status(),
                 'response' => $response->body(),
                 'merchant_id' => $merchantId,
@@ -276,5 +327,19 @@ class NiubizGatewayService implements CheckoutPaymentGatewayInterface
         $data = $response->json();
 
         return $data['sessionKey'] ?? $data['token'] ?? null;
+    }
+
+    private function resolveCorrelationId(): string
+    {
+        return (string) (request()?->header('X-Correlation-Id')
+            ?? request()?->input('idempotency_key')
+            ?? request()?->input('purchaseNumber')
+            ?? uniqid('pay_', true));
+    }
+
+    private function shouldSimulate(): bool
+    {
+        return app()->environment('local')
+            && filter_var((string) config('services.niubiz.dev_simulation', false), FILTER_VALIDATE_BOOLEAN);
     }
 }

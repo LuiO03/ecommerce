@@ -48,12 +48,26 @@ return [
         'url_api' => env('NIUBIZ_URL_API'),
         'url_js' => env('NIUBIZ_URL_JS'),
         'countable' => env('NIUBIZ_COUNTABLE', true),
+        'webhook_secret' => env('NIUBIZ_WEBHOOK_SECRET'),
+        'dev_simulation' => env('NIUBIZ_DEV_SIMULATION', false),
     ],
 
     'culqi' => [
         'public_key' => env('CULQI_PUBLIC_KEY'),
         'secret_key' => env('CULQI_SECRET_KEY'),
         'base_url' => env('CULQI_BASE_URL'),
+        'checkout_url' => env('CULQI_CHECKOUT_URL', 'https://checkout.culqi.com/js/v4'),
+        'webhook_secret' => env('CULQI_WEBHOOK_SECRET'),
+        'dev_simulation' => env('CULQI_DEV_SIMULATION', false),
+    ],
+
+    'mercadopago' => [
+        'public_key' => env('MERCADO_PAGO_PUBLIC_KEY'),
+        'secret_key' => env('MERCADO_PAGO_SECRET_KEY'),
+        'base_url' => env('MERCADO_PAGO_BASE_URL', 'https://api.mercadopago.com'),
+        'checkout_url' => env('MERCADO_PAGO_CHECKOUT_URL', 'https://sdk.mercadopago.com/js/v2'),
+        'webhook_secret' => env('MERCADO_PAGO_WEBHOOK_SECRET'),
+        'dev_simulation' => env('MERCADO_PAGO_DEV_SIMULATION', false),
     ],
 
 
