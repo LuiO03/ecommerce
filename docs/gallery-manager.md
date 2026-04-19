@@ -4,6 +4,8 @@
 
 El módulo **gallery-manager.js** centraliza la gestión de galerías de imágenes tanto para **posts** como para **productos**.
 
+Los inicializadores especificos por modulo (`initPostGallery*`, `initProductGallery*`) se mantienen por compatibilidad, pero ahora delegan en el nucleo generico (`initGalleryCreateWithConfig` / `initGalleryEditWithConfig`).
+
 Incluye:
 - Dropzone personalizada (click, drag & drop, pegado desde portapapeles).
 - Reordenamiento por drag & drop con animaciones.

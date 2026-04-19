@@ -720,7 +720,7 @@
 /* Peso */
 .overlay .file-size {
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
     margin-bottom: 10px;
 }
 

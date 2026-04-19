@@ -620,7 +620,12 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
     border-bottom: none;
 }
 
-.column-actions-td .boton-show-actions {
+.column-actions-td .boton-show-actions,
+.dtr-data .boton-show-actions {
+    display: none !important;
+}
+
+.tabla-botones .boton-sm-text {
     display: none;
 }
 
@@ -785,8 +790,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         align-items: center;
         justify-content: center;
         color: var(--color-text);
-        transition:
-            transform 0.2s ease;
+        transition: transform 0.2s ease;
     }
 
     .column-actions-td .boton-show-actions i {
@@ -881,8 +885,8 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         outline: none;
     }
 
-    .tabla-botones .boton-text {
-        display: none !important;
+    .tabla-botones .boton-sm-text {
+        display: block;
     }
 }
 
