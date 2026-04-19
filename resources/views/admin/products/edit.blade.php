@@ -196,20 +196,18 @@
                                 <div class="overlay">
                                     <span class="file-size"></span>
                                     <div class="overlay-actions">
-                                        <button type="button" class="mark-main-btn" title="Marcar como principal">
-                                            <i class="ri-star-smile-fill"></i>
-                                            <span>Principal</span>
+                                        <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como principal">
+                                            <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
                                         </button>
-                                        <button type="button" class="delete-btn delete-existing-gallery"
+                                        <button type="button" class="delete-btn boton-form boton-danger delete-existing-gallery"
                                             data-id="{{ $image->id }}" title="Eliminar imagen">
-                                            <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                            <span class="boton-text">Eliminar</span>
+                                            <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                         </button>
                                     </div>
                                 </div>
                                 <span class="primary-badge"
                                     style="{{ $image->is_main ? 'display:flex;' : 'display:none;' }}">
-                                    <i class="ri-star-fill"></i>
+                                    <span class="boton-form-icon"><i class="ri-star-fill"></i></span>
                                     Principal
                                 </span>
                             </div>

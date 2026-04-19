@@ -106,6 +106,14 @@ Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseña
 * ✅ Redes sociales: Facebook, Instagram, Twitter, LinkedIn
 * ✅ Contenido legal: privacidad, términos, sobre nosotros
 
+### 💳 **Pagos y Conciliación Financiera**
+* ✅ Módulos admin dedicados de **Pagos** y **Transacciones**
+* ✅ Relación completa: Orden → Pago → Movimientos (transactions)
+* ✅ Resumen financiero: bruto, comisión, neto y % de comisión
+* ✅ Ranking de comisiones por pasarela en admin
+* ✅ Integración de pasarelas: **Niubiz, Culqi y Mercado Pago**
+* ✅ Control de idempotencia con `payment_attempts` para evitar reprocesos
+
 ---
 
 ## 📋 Requisitos Previos
@@ -204,6 +212,7 @@ El proyecto incluye documentación detallada en [docs/](docs/):
 
 ### Módulos Principales:
 - **[admin-modules-overview.md](docs/admin-modules-overview.md)** - Visión general de todos los módulos admin
+- **[payments-transactions-gateways.md](docs/payments-transactions-gateways.md)** - Arquitectura de pagos/transacciones, pasarelas y flujo de checkout
 - **[auditoria.md](docs/auditoria.md)** - Sistema de auditoría automática
 - **[notifications-module.md](docs/notifications-module.md)** - Notificaciones en BD
 - **[category-hierarchy-manager.md](docs/category-hierarchy-manager.md)** - Selector jerárquico de categorías
@@ -213,6 +222,7 @@ El proyecto incluye documentación detallada en [docs/](docs/):
  - **[google-authentication.md](docs/google-authentication.md)** - Autenticación y registro con Google (Socialite)
  - **[mail-system.md](docs/mail-system.md)** - Sistema de correos (registro, verificación, reset)
  - **[profile-addresses.md](docs/profile-addresses.md)** - Direcciones de envío desde el perfil del cliente (Mi cuenta)
+ - **[niubiz-sandbox-checklist.md](docs/niubiz-sandbox-checklist.md)** - Checklist rápido de diagnóstico para sandbox Niubiz
 
 ### Frontend y UI:
 - **[datatable-manager-usage.md](docs/datatable-manager-usage.md)** - Sistema modular de tablas DataTables

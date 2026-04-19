@@ -76,20 +76,18 @@
                                 <div class="overlay">
                                     <span class="file-size">{{ $exists ? 'Existente' : 'No encontrada' }}</span>
                                     <div class="overlay-actions">
-                                        <button type="button" class="mark-main-btn" title="Marcar como portada del post">
-                                            <i class="ri-gallery-line"></i>
-                                            <span>Portada</span>
+                                        <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como portada del post">
+                                            <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
                                         </button>
-                                        <button type="button" class="delete-btn delete-existing-image" title="Eliminar imagen"
+                                        <button type="button" class="delete-btn boton-form boton-danger delete-existing-image" title="Eliminar imagen"
                                             data-id="{{ $img->id }}">
-                                            <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                                            <span class="boton-text">Eliminar</span>
+                                            <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
                                         </button>
                                     </div>
                                 </div>
                                 <span class="primary-badge"
                                     style="{{ $img->is_main ? 'display:flex;' : 'display:none;' }}">
-                                    <i class="ri-gallery-fill"></i>
+                                    <span class="boton-form-icon"><i class="ri-gallery-fill"></i></span>
                                     Portada
                                 </span>
                             </div>
@@ -114,7 +112,7 @@
                                 labelsNew: {
                                     markTitle: 'Marcar como portada del post',
                                     markText: 'Portada',
-                                    markIconClass: 'ri-gallery-line',
+                                    markIconClass: 'ri-star-smile-fill',
                                     badgeIconClass: 'ri-gallery-fill',
                                     badgeText: 'Portada',
                                     deleteTitle: 'Eliminar imagen',

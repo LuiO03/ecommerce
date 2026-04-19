@@ -573,7 +573,7 @@
 
 .preview-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
     gap: 15px;
 }
 
@@ -598,7 +598,7 @@
     overflow: hidden;
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-material);
-    border: 4px solid rgb(175, 174, 174);
+    border: 2px solid rgb(175, 174, 174);
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
@@ -731,17 +731,6 @@
     align-items: center;
 }
 
-.overlay .mark-main-btn {
-    background: var(--color-orange);
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    border-radius: var(--radius-element);
-    cursor: pointer;
-    font-size: var(--font-size-xs);
-    font-family: var(--font-secondary);
-}
-
 .overlay .mark-main-btn:hover:not(:disabled) {
     transform: translateY(-1px);
 }
@@ -752,20 +741,7 @@
 }
 
 /* Botón eliminar */
-.overlay .delete-btn {
-    background: var(--color-danger);
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    border-radius: var(--radius-element);
-    cursor: pointer;
-    font-size: var(--font-size-xs);
-    font-family: var(--font-secondary);
-}
 
-.overlay .delete-btn:hover {
-    background: rgba(255, 0, 0, 0.9);
-}
 
 .primary-badge {
     position: absolute;
@@ -778,8 +754,7 @@
     color: #fff;
     padding: 4px 12px;
     border-radius: var(--radius-input);
-    font-size: 12px;
-    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
     box-shadow: var(--shadow-material);
     z-index: 12;
 }

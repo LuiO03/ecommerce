@@ -64,7 +64,7 @@
                                     badgeText: 'Portada',
                                     deleteTitle: 'Eliminar imagen',
                                     deleteIconClass: 'ri-delete-bin-6-fill',
-                                    deleteText: 'Eliminar'
+                                    deleteText: ''
                                 }
                             });
                         }

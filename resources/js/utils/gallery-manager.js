@@ -193,13 +193,11 @@ export function initPostGalleryCreate() {
             <div class="overlay">
                 <span class="file-size">${formatFileSize(file.size)}</span>
                 <div class="overlay-actions">
-                    <button type="button" class="mark-main-btn" title="Marcar como portada del post">
-                        <i class="ri-gallery-line"></i>
-                        <span>Portada</span>
+                    <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como portada del post">
+                        <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
                     </button>
-                    <button type="button" class="delete-btn" title="Eliminar imagen">
-                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                        <span class="boton-text">Eliminar</span>
+                    <button type="button" class="delete-btn boton-form boton-danger" title="Eliminar imagen">
+                        <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
                     </button>
                 </div>
             </div>
@@ -702,18 +700,16 @@ export function initPostGalleryEdit() {
             <div class="overlay">
                 <span class="file-size">${formatFileSize(file.size)}</span>
                 <div class="overlay-actions">
-                    <button type="button" class="mark-main-btn" title="Marcar como portada del post">
-                        <i class="ri-gallery-line"></i>
-                        <span>Portada</span>
+                    <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como portada del post">
+                        <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
                     </button>
-                    <button type="button" class="delete-btn" title="Eliminar imagen">
-                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                        <span class="boton-text">Eliminar</span>
+                    <button type="button" class="delete-btn boton-form boton-danger" title="Eliminar imagen">
+                        <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
                     </button>
                 </div>
             </div>
             <span class="primary-badge">
-                <i class="ri-gallery-fill"></i>
+                <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
                 Portada
             </span>
         `;
@@ -1172,13 +1168,11 @@ export function initGalleryCreateWithConfig(config) {
             <div class="overlay">
                 <span class="file-size">${galleryFormatFileSize(file.size)}</span>
                 <div class="overlay-actions">
-                    <button type="button" class="mark-main-btn" title="${labels.markTitle}">
-                        <i class="${labels.markIconClass}"></i>
-                        <span>${labels.markText}</span>
+                    <button type="button" class="mark-main-btn boton-form boton-success" title="${labels.markTitle}">
+                        <span class="boton-form-icon"><i class="${labels.markIconClass}"></i></span>
                     </button>
-                    <button type="button" class="delete-btn" title="${labels.deleteTitle}">
-                        <span class="boton-icon"><i class="${labels.deleteIconClass}"></i></span>
-                        <span class="boton-text">${labels.deleteText}</span>
+                    <button type="button" class="delete-btn boton-form boton-danger" title="${labels.deleteTitle}">
+                        <span class="boton-form-icon"><i class="${labels.deleteIconClass}"></i></span>
                     </button>
                 </div>
             </div>
@@ -1706,13 +1700,11 @@ export function initGalleryEditWithConfig(config) {
             <div class="overlay">
                 <span class="file-size">${galleryFormatFileSize(file.size)}</span>
                 <div class="overlay-actions">
-                    <button type="button" class="mark-main-btn" title="${labelsNew.markTitle}">
-                        <i class="${labelsNew.markIconClass}"></i>
-                        <span>${labelsNew.markText}</span>
+                    <button type="button" class="mark-main-btn boton-form boton-success" title="${labelsNew.markTitle}">
+                        <span class="boton-form-icon"><i class="${labelsNew.markIconClass}"></i></span>
                     </button>
-                    <button type="button" class="delete-btn" title="${labelsNew.deleteTitle}">
-                        <span class="boton-icon"><i class="${labelsNew.deleteIconClass}"></i></span>
-                        <span class="boton-text">${labelsNew.deleteText}</span>
+                    <button type="button" class="delete-btn boton-form boton-danger" title="${labelsNew.deleteTitle}">
+                        <span class="boton-form-icon"><i class="${labelsNew.deleteIconClass}"></i></span>
                     </button>
                 </div>
             </div>
@@ -2149,13 +2141,11 @@ export function initProductGalleryCreate() {
             <div class="overlay">
                 <span class="file-size">${formatFileSize(file.size)}</span>
                 <div class="overlay-actions">
-                    <button type="button" class="mark-main-btn" title="Marcar como principal">
-                        <i class="ri-star-line"></i>
-                        <span>Principal</span>
+                    <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como principal">
+                        <span class="boton-form-icon"><i class="ri-star-line"></i></span>
                     </button>
-                    <button type="button" class="delete-btn" title="Eliminar imagen">
-                        <span class="boton-icon"><i class="ri-delete-bin-6-line"></i></span>
-                        <span class="boton-text">Eliminar</span>
+                    <button type="button" class="delete-btn boton-form boton-danger" title="Eliminar imagen">
+                        <span class="boton-form-icon"><i class="ri-delete-bin-6-line"></i></span>
                     </button>
                 </div>
             </div>
@@ -2637,13 +2627,11 @@ export function initProductGalleryEdit() {
             <div class="overlay">
                 <span class="file-size">${formatFileSize(file.size)}</span>
                 <div class="overlay-actions">
-                    <button type="button" class="mark-main-btn" title="Marcar como principal">
-                        <i class="ri-star-smile-fill"></i>
-                        <span>Principal</span>
+                    <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como principal">
+                        <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
                     </button>
-                    <button type="button" class="delete-btn" title="Eliminar imagen">
-                        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                        <span class="boton-text">Eliminar</span>
+                    <button type="button" class="delete-btn boton-form boton-danger" title="Eliminar imagen">
+                        <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
                     </button>
                 </div>
             </div>

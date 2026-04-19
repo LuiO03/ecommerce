@@ -269,6 +269,52 @@ El sistema reutiliza varios componentes front y patrones JS comunes (ver carpeta
 - **Colores de badges y estados**: ver `docs/badge-colors.md`.
 - **Gestión visual de jerarquía de categorías**: ver `docs/category-hierarchy-manager.md` y `docs/category-drag-drop.md`.
 
+## 12. Finanzas: Pagos y Transacciones
+
+Se incorporo un bloque financiero administrativo que separa la vista comercial de pedidos del detalle de cobros y movimientos.
+
+### 12.1 Pagos
+
+**Controlador**: `app/Http/Controllers/Admin/PaymentController.php`
+
+- Listado en `admin.payments.index` con DataTableManager.
+- Incluye filtros client-side por pasarela, estado y rango de fechas.
+- Incluye resumen financiero:
+  - bruto
+  - comisiones
+  - neto
+  - porcentaje global de comision
+- Incluye ranking de comisiones por pasarela.
+
+### 12.2 Transacciones
+
+**Controlador**: `app/Http/Controllers/Admin/TransactionController.php`
+
+- Listado en `admin.transactions.index` con relacion a pago, orden y cliente.
+- Detalle en `admin.transactions.show` con contexto financiero del pago asociado.
+
+### 12.3 Integracion con Ordenes
+
+- El detalle de orden incluye bloque `payments-transactions`.
+- Desde orden se puede navegar a detalle de pago y transaccion.
+- Se muestra fee y porcentaje de comision por pago.
+
+## 13. Checkout y Pasarelas de Pago
+
+Se implemento un orquestador de pasarelas para checkout:
+
+- `app/Services/Checkout/PaymentGatewayManager.php`
+- Gateways actuales:
+  - Niubiz
+  - Culqi
+  - Mercado Pago
+
+Adicionalmente se agrego control de idempotencia con `payment_attempts` para evitar doble procesamiento de pagos.
+
+Para el detalle completo del flujo (modelo de datos, endpoints, criterios de aprobacion y cambios recientes) ver:
+
+- `docs/payments-transactions-gateways.md`
+
 ---
 
 Este overview sirve como mapa de funcionalidades del sistema. Para extender un módulo existente, se recomienda:
