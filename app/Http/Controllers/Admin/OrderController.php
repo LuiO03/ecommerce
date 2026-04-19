@@ -34,14 +34,28 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load(['user', 'items.product', 'items.variant', 'latestPayment']);
+        $order->load([
+            'user',
+            'address',
+            'items.product',
+            'items.variant.features.option',
+            'payments.transactions',
+            'latestPayment',
+        ]);
 
         return view('admin.orders.show', compact('order'));
     }
 
     public function invoicePreview(Order $order)
     {
-        $order->load(['user', 'items.product', 'items.variant.features.option', 'latestPayment']);
+        $order->load([
+            'user',
+            'address',
+            'items.product',
+            'items.variant.features.option',
+            'payments.transactions',
+            'latestPayment',
+        ]);
 
         $companyInfo = \App\Models\CompanySetting::first();
 

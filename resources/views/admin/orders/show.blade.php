@@ -27,6 +27,11 @@
     </x-slot>
 
     <div class="options-wrapper order-detail-page">
+        @php
+            $latestPayment = $order->latestPayment;
+            $deliveryType = $order->delivery_type ?? 'delivery';
+        @endphp
+
         <div class="form-row-fit">
             <div class="meta-group">
                 <h2 class="card-title">Información de la orden</h2>
@@ -81,10 +86,64 @@
                     </div>
                     <div>
                         <strong>Estado de pago:</strong>
-                        <span class="badge badge-secondary">{{ ucfirst($order->payment_status) }}</span>
+                        @switch($order->payment_status)
+                            @case('pending')
+                                <span class="badge badge-warning">
+                                    <i class="ri-time-line"></i>
+                                    Pendiente
+                                </span>
+                            @break
+
+                            @case('paid')
+                                <span class="badge badge-success">
+                                    <i class="ri-checkbox-circle-line"></i>
+                                    Pagado
+                                </span>
+                            @break
+
+                            @case('failed')
+                                <span class="badge badge-danger">
+                                    <i class="ri-error-warning-line"></i>
+                                    Fallido
+                                </span>
+                            @break
+
+                            @case('refunded')
+                                <span class="badge badge-info">
+                                    <i class="ri-refund-2-line"></i>
+                                    Reembolsado
+                                </span>
+                            @break
+
+                            @default
+                                <span class="badge badge-secondary">
+                                    {{ $order->payment_status ? ucfirst($order->payment_status) : 'Sin registro' }}
+                                </span>
+                        @endswitch
+                    </div>
+                    <div>
+                        <strong>Proveedor:</strong> {{ $latestPayment?->provider ? strtoupper($latestPayment->provider) : '—' }}
                     </div>
                     <div>
                         <strong>ID de pago:</strong> {{ $order->payment_id ?? '—' }}
+                    </div>
+                    <div>
+                        <strong>Entrega:</strong>
+                        @if ($deliveryType === 'pickup')
+                            <span class="badge badge-secondary">
+                                <i class="ri-store-2-line"></i>
+                                Recojo en tienda
+                            </span>
+                        @else
+                            <span class="badge badge-secondary">
+                                <i class="ri-truck-line"></i>
+                                Delivery
+                            </span>
+                        @endif
+                    </div>
+                    <div>
+                        <strong>Pagado en:</strong>
+                        {{ $latestPayment?->paid_at ? $latestPayment->paid_at->format('d/m/Y H:i') : '—' }}
                     </div>
                     <div>
                         <strong>Creado:</strong>
@@ -112,11 +171,20 @@
             </div>
 
             <div class="meta-group">
-                <h2 class="card-title">Datos de envío</h2>
+                <h2 class="card-title">Datos de entrega</h2>
                 <div class="meta-row-fit">
-                    <div><strong>Dirección:</strong> {{ $order->shipping_address }}</div>
-                    <div><strong>Ciudad:</strong> {{ $order->shipping_city ?? '—' }}</div>
-                    <div><strong>Teléfono:</strong> {{ $order->shipping_phone ?? '—' }}</div>
+                    @if ($deliveryType === 'pickup')
+                        <div><strong>Modo:</strong> Recojo en tienda</div>
+                        <div><strong>Código de tienda:</strong> {{ $order->pickup_store_code ?? '—' }}</div>
+                        <div><strong>Dirección registrada:</strong> {{ $order->shipping_address ?? '—' }}</div>
+                    @else
+                        <div><strong>Dirección:</strong> {{ $order->shipping_address ?? '—' }}</div>
+                        <div><strong>Ciudad:</strong> {{ $order->shipping_city ?? '—' }}</div>
+                        <div><strong>Teléfono:</strong> {{ $order->shipping_phone ?? '—' }}</div>
+                        <div><strong>Dirección guardada:</strong> {{ $order->address?->address_line ?? '—' }}</div>
+                        <div><strong>Distrito:</strong> {{ $order->address?->district ?? '—' }}</div>
+                        <div><strong>Referencia:</strong> {{ $order->address?->reference ?? '—' }}</div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -200,6 +268,9 @@
                 </div>
             </div>
         </div>
+
+        @include('admin.orders.partials.payments-transactions', ['order' => $order])
+
         <div class="form-footer">
             <a href="{{ url()->previous() }}" class="boton-form boton-volver">
                 <span class="boton-form-icon">

@@ -97,6 +97,16 @@
             color: #991b1b;
         }
 
+        .badge-delivery {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-pickup {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
         .footer {
             margin-top: 30px;
             padding-top: 15px;
@@ -132,6 +142,8 @@
                     <th class="text-center">ID</th>
                     <th>N° Orden</th>
                     <th>Cliente</th>
+                    <th class="text-center">Entrega</th>
+                    <th class="text-center">Tienda</th>
                     <th class="text-center">Total</th>
                     <th class="text-center">Estado</th>
                     <th class="text-center">Pago</th>
@@ -145,6 +157,12 @@
                         <td class="text-center">{{ $order->id }}</td>
                         <td>{{ $order->order_number }}</td>
                         <td>{{ $order->user->name ?? '—' }}</td>
+                        <td class="text-center">
+                            <span class="badge {{ ($order->delivery_type ?? 'delivery') === 'pickup' ? 'badge-pickup' : 'badge-delivery' }}">
+                                {{ ($order->delivery_type ?? 'delivery') === 'pickup' ? 'Recojo' : 'Delivery' }}
+                            </span>
+                        </td>
+                        <td class="text-center">{{ $order->pickup_store_code ?? '—' }}</td>
                         <td class="text-center">S/. {{ number_format((float) $order->total, 2) }}</td>
                         <td class="text-center">
                             <span class="badge badge-status">{{ ucfirst($order->status) }}</span>

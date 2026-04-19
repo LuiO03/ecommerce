@@ -1880,8 +1880,33 @@
                                 timeouturl: timeoutUrl.toString(),
                                 merchantlogo: '{{ asset('images/logos/logo-geckommerce.png') }}',
                                 formbuttoncolor: '#000000',
+                                buttonsize: 'DEFAULT',
+                                cardholdername: @json((string) (Auth::user()?->name ?? '')),
+                                cardholderlastname: @json((string) (Auth::user()?->last_name ?? '')),
+                                cardholderemail: checkoutCustomerEmail,
                                 complete: function(params) {
-                                    alert(JSON.stringify(params));
+                                    // Procesar respuesta de Niubiz según documentación oficial
+                                    if (!params) {
+                                        showNiubizFallback(
+                                            'Niubiz no retornó parámetros. El pago pudo no completarse.',
+                                            'Respuesta vacía de Niubiz'
+                                        );
+                                        return;
+                                    }
+
+                                    const transactionToken = params.transactionToken || params.token;
+                                    const customerEmail = params.customerEmail;
+
+                                    if (!transactionToken) {
+                                        showNiubizFallback(
+                                            'No se pudo obtener el token de transacción de Niubiz. Intenta nuevamente.',
+                                            'Error de tokenización'
+                                        );
+                                        return;
+                                    }
+
+                                    // Procesar el pago enviando token al backend
+                                    submitGatewayPayment(requiredConfig.action, transactionToken, purchaseNumber);
                                 }
                             });
 

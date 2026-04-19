@@ -163,6 +163,16 @@
             border-top: 1px solid #e5e7eb;
             padding-top: 10px;
         }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            background: #f3f4f6;
+            color: #374151;
+        }
     </style>
 </head>
 
@@ -223,6 +233,13 @@
                 <strong>Tipo de Documento:</strong>
                 {{ $order->user->document_type ?? '-' }}<br>
                 <strong>Documento:</strong> {{ $order->user->document_number ?? '-' }}<br>
+                <strong>Entrega:</strong>
+                @if (($order->delivery_type ?? 'delivery') === 'pickup')
+                    <span class="badge">Recojo en tienda</span><br>
+                    <strong>Código de tienda:</strong> {{ $order->pickup_store_code ?? '-' }}<br>
+                @else
+                    <span class="badge">Delivery</span><br>
+                @endif
                 <strong>Dirección:</strong> {{ $order->shipping_address }}
             </div>
 

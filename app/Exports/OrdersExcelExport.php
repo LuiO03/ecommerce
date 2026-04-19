@@ -27,7 +27,7 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
     public function array(): array
     {
         $query = Order::with(['user', 'latestPayment'])
-            ->select('id', 'order_number', 'user_id', 'total', 'status', 'created_at');
+            ->select('id', 'order_number', 'user_id', 'total', 'status', 'delivery_type', 'pickup_store_code', 'created_at');
 
         if (!empty($this->ids)) {
             $query->whereIn('id', $this->ids);
@@ -38,6 +38,8 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
                 $order->id,
                 $order->order_number,
                 optional($order->user)->name ?? '—',
+                $order->delivery_type === 'pickup' ? 'Recojo en tienda' : 'Delivery',
+                $order->pickup_store_code ?? '—',
                 number_format((float) $order->total, 2),
                 $order->status,
                 $order->payment_status,
@@ -55,8 +57,8 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
             : 'ORDENES SELECCIONADAS';
 
         $result = [
-            [$title, '', '', '', '', '', '', ''],
-            ['ID', 'N° Orden', 'Cliente', 'Total', 'Estado', 'Pago', 'ID Pago', 'Fecha de creación'],
+            [$title, '', '', '', '', '', '', '', ''],
+            ['ID', 'N° Orden', 'Cliente', 'Entrega', 'Código tienda', 'Total', 'Estado', 'Pago', 'ID Pago', 'Fecha de creación'],
         ];
 
         foreach ($orders as $order) {
@@ -68,7 +70,7 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:H1');
+        $sheet->mergeCells('A1:J1');
         $sheet->getStyle('A1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 16, 'color' => ['argb' => 'FF2563EB']],
             'alignment' => [
@@ -78,7 +80,7 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
         ]);
         $sheet->getRowDimension(1)->setRowHeight(30);
 
-        $sheet->getStyle('A2:H2')->applyFromArray([
+        $sheet->getStyle('A2:J2')->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -99,10 +101,12 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
             'B' => 18,
             'C' => 30,
             'D' => 15,
-            'E' => 15,
-            'F' => 18,
-            'G' => 22,
-            'H' => 22,
+            'E' => 18,
+            'F' => 15,
+            'G' => 15,
+            'H' => 18,
+            'I' => 22,
+            'J' => 22,
         ];
     }
 
@@ -117,21 +121,21 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
                 $summaryRow = $dataEndRow + 1;
 
                 $sheet->setCellValue("A{$summaryRow}", "Total de registros: {$this->dataCount}");
-                $sheet->mergeCells("A{$summaryRow}:H{$summaryRow}");
+                $sheet->mergeCells("A{$summaryRow}:J{$summaryRow}");
                 $sheet->getStyle("A{$summaryRow}")->applyFromArray([
                     'font' => ['italic' => true, 'bold' => true, 'color' => ['argb' => 'FF374151']],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_RIGHT],
                 ]);
 
                 if ($dataEndRow >= $dataStartRow) {
-                    $sheet->getStyle("A2:H{$dataEndRow}")
+                    $sheet->getStyle("A2:J{$dataEndRow}")
                         ->getBorders()
                         ->getAllBorders()
                         ->setBorderStyle(Border::BORDER_THIN)
                         ->setColor(new Color('FFCBD5E1'));
                 }
 
-                foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] as $col) {
+                foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'] as $col) {
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                     $width = $sheet->getColumnDimension($col)->getWidth();
                     if ($width > 50) {
@@ -141,7 +145,7 @@ class OrdersExcelExport implements FromArray, WithStyles, WithColumnWidths, With
 
                 for ($row = $dataStartRow; $row <= $dataEndRow; $row++) {
                     if (($row - $dataStartRow) % 2 == 1) {
-                        $sheet->getStyle("A{$row}:H{$row}")->applyFromArray([
+                        $sheet->getStyle("A{$row}:J{$row}")->applyFromArray([
                             'fill' => [
                                 'fillType' => Fill::FILL_SOLID,
                                 'startColor' => ['argb' => 'FFF9FAFB'],

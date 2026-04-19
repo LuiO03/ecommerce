@@ -192,6 +192,7 @@
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Cliente</th>
                         <th class="column-order-th">N° Orden</th>
+                        <th class="column-status-th">Entrega</th>
                         <th class="column-total-th">Total</th>
                         <th class="column-status-th">Estado</th>
                         <th class="column-status-th">Tipo de Pago</th>
@@ -220,6 +221,22 @@
                             <td class="column-order-td">
                                 {{ $order->order_number }}
                             </td>
+                            <td class="column-status-td" data-status="{{ $order->delivery_type ?? 'delivery' }}">
+                                @if (($order->delivery_type ?? 'delivery') === 'pickup')
+                                    <span class="badge badge-secondary">
+                                        <i class="ri-store-2-line"></i>
+                                        Recojo
+                                    </span>
+                                    @if ($order->pickup_store_code)
+                                        <div class="text-xs text-muted mt-1">{{ $order->pickup_store_code }}</div>
+                                    @endif
+                                @else
+                                    <span class="badge badge-primary">
+                                        <i class="ri-truck-line"></i>
+                                        Delivery
+                                    </span>
+                                @endif
+                            </td>
                             <td class="column-total-td">
                                 S/. {{ number_format((float) $order->total, 2) }}
                             </td>
@@ -242,6 +259,7 @@
                                             <i class="ri-truck-line"></i>
                                             Enviada
                                         </span>
+                                    @break
                                     @case('delivered')
                                         <span class="badge badge-secondary">
                                             <i class="ri-checkbox-multiple-line"></i>
@@ -270,7 +288,7 @@
                             </td>
                             <td class="column-status-td" data-status="{{ $order->payment_status }}">
                                 <span class="badge badge-secondary">
-                                    {{ $order->payment_method ? ucfirst($order->payment_method) : '—' }}
+                                    {{ $order->payment_method ? strtoupper($order->payment_method) : '—' }}
                                 </span>
                             </td>
                             <td class="column-status-td" data-status="{{ $order->payment_status }}">
@@ -287,12 +305,29 @@
                                             Pagado
                                         </span>
                                     @break
+                                    @case('failed')
+                                        <span class="badge badge-danger">
+                                            <i class="ri-error-warning-line"></i>
+                                            Fallido
+                                        </span>
+                                    @break
+                                    @case('refunded')
+                                        <span class="badge badge-info">
+                                            <i class="ri-refund-2-line"></i>
+                                            Reembolsado
+                                        </span>
+                                    @break
                                     @case('cancelled')
                                         <span class="badge badge-danger">
                                             <i class="ri-close-circle-line"></i>
                                             Cancelado
                                         </span>
                                     @break
+                                    @default
+                                        <span class="badge badge-secondary">
+                                            <i class="ri-question-line"></i>
+                                            {{ $order->payment_status ? ucfirst($order->payment_status) : '—' }}
+                                        </span>
                                 @endswitch
                             </td>
                             <td>

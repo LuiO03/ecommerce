@@ -14,6 +14,7 @@ class Order extends Model
         'user_id',
         'address_id',
         'pickup_store_code',
+        'delivery_type',
         'pdf_path',
         'order_number',
         'total',
