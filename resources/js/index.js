@@ -22,6 +22,7 @@ import { initConnectionStatusBar } from './utils/connection-status.js';
 import { initOptionFeatureForm } from './modules/options-form-feature-manager.js';
 import { initOptionInlineManager } from './modules/options-index-inline-manager.js';
 import { initProductVariantsManager } from './modules/product-variants-manager.js';
+import { initTabsManager } from './modules/tabs-manager.js';
 import {
   initPostGalleryCreate,
   initPostGalleryEdit,
@@ -40,6 +41,7 @@ window.initCategoryHierarchy = initCategoryHierarchy;
 window.initFormValidator = initFormValidator;
 window.initOptionFeatureForm = initOptionFeatureForm;
 window.initOptionInlineManager = initOptionInlineManager;
+window.initTabsManager = initTabsManager;
 window.initPostGalleryCreate = initPostGalleryCreate;
 window.initPostGalleryEdit = initPostGalleryEdit;
 window.initProductGalleryCreate = initProductGalleryCreate;
@@ -53,6 +55,7 @@ window.initProductVariantsManager = initProductVariantsManager;
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Dashboard JS inicializado ✅');
   initTextareaAutosize();
+  initTabsManager();
   initConnectionStatusBar();
   initMobileFiltersPanel();
   initMobileActionsMenu();
