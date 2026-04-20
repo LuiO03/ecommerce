@@ -9,8 +9,8 @@
                     ->map(
                         fn($feature) => [
                             'id' => $feature->id,
-                            'value' => $feature->value, // normalmente el HEX
-                            'description' => $feature->description, // nombre legible del color
+                            'value' => $feature->value, // nombre legible del color
+                            'description' => $feature->description, // dato adicional del color
                         ],
                     )
                     ->values(),
@@ -42,47 +42,24 @@
 @endphp
 
 <div class="form-body">
-    <div class="form-row-fit">
-        <div class="input-group">
-
-            <div class="card-header">
-                <span class="card-title">Opciones</span>
-                <p class="card-description">
-                    Define las opciones y características que tendrán las variantes de este producto.
-                </p>
-            </div>
-
-            <div id="productOptionsContainer" class="product-options-container"></div>
-
-            <div class="variants-toolbar">
-                <button type="button" class="boton boton-secondary" id="generateVariantsBtn">
-                    <span class="boton-icon"><i class="ri-magic-fill"></i></span>
-                    <span class="boton-text">Generar variantes</span>
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="form-body">
     <div class="card-header flex items-center justify-between gap-4">
         <div>
             <span class="card-title">Variantes</span>
             <p class="card-description">
-                Administra las variantes de este producto. Puedes editar el SKU, precio, stock y estado de cada variante.
+                Administra las variantes de este producto.
             </p>
         </div>
 
-        <button type="button" class="boton boton-primary" id="addVariantBtn">
-            <span class="boton-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-text">Agregar variante</span>
+        <button type="button" class="boton-form boton-accent" id="addVariantBtn" data-action="open-variant-modal">
+            <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+            <span class="boton-form-text">Agregar variante</span>
         </button>
     </div>
     <div class="form-row-fit">
-        <div id="variantsContainer" class="variants-container" data-options='@json($optionsPayload)' data-initial-variants='@json($initialVariants)'>
-            <div class="variants-table-wrapper">
-                <table class="tabla tabla-variants">
+        <div id="variantsContainer" class="variants-container" data-options='@json($optionsPayload)'
+            data-initial-variants='@json($initialVariants)'>
+            <div class="tabla-wrapper">
+                <table class="tabla-general w-full tabla-normal" id="table">
                     <thead>
                         <tr>
                             <th class="column-variant-options-th">Variante</th>
@@ -99,7 +76,7 @@
                                 <div class="tabla-no-data">
                                     <i class="ri-folder-warning-line"></i>
                                     <span>
-                                        No hay variantes configuradas. Usa "Generar variantes" o agrega la variante manualmente.
+                                        No hay variantes registradas para este producto.
                                     </span>
                                 </div>
                             </td>
@@ -111,60 +88,86 @@
     </div>
 </div>
 
+<div id="variantCrudModal" class="variant-crud-modal" hidden aria-hidden="true" role="dialog" aria-modal="true"
+    aria-labelledby="variantModalTitle">
+    <div class="variant-crud-modal-backdrop" data-action="close-variant-modal"></div>
 
-<script type="text/template" id="variantRowTemplate">
-    <tr class="variant-row" data-index="__INDEX__">
-        <td class="column-variant-options">
-            <input type="hidden" name="variants[__INDEX__][id]" value="__ID__">
-            __OPTIONS_LABEL__
-            <div class="variant-hidden-features" data-role="features-container"></div>
-        </td>
-        <td class="column-variant-sku">
-            <div class="input-group">
-                <div class="input-icon-container">
-                    <i class="ri-hashtag input-icon"></i>
-                    <input type="text" class="input-form" name="variants[__INDEX__][sku]" value="__SKU__"
-                        placeholder="Ej. PROD-001-RED-M" data-role="variant-sku">
-                </div>
-            </div>
-        </td>
-        <td class="column-variant-price">
-            <div class="input-group">
-                <div class="input-icon-container">
-                    <i class="ri-currency-line input-icon"></i>
-                    <input type="number" class="input-form" name="variants[__INDEX__][price]" min="0"
-                        step="0.01" value="__PRICE__" placeholder="Precio Opcional" data-role="variant-price">
-                </div>
-            </div>
-        </td>
-        <td class="column-variant-stock">
-            <div class="input-group">
-                <div class="input-icon-container">
-                    <i class="ri-stack-line input-icon"></i>
-                    <input type="number" class="input-form" name="variants[__INDEX__][stock]" min="0"
-                        step="1" value="__STOCK__" placeholder="0" data-role="variant-stock">
-                </div>
-            </div>
-        </td>
-        <td class="column-variant-status">
-            <div class="input-group">
-                <div class="switch-tabla-wrapper">
-                    <input type="hidden" name="variants[__INDEX__][status]" value="0">
-                    <label class="switch-tabla" title="Activar o desactivar variante">
-                        <input type="checkbox" name="variants[__INDEX__][status]" value="1"
-                            __STATUS_CHECKED__ data-role="variant-status">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-        </td>
-        <td class="column-variant-actions">
-            <div class="input-group">
-            <button type="button" class="boton boton-danger" data-action="remove-variant" title="Eliminar variante">
-                <span class="boton-text">Eliminar</span>
-                <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+    <div class="variant-crud-modal-dialog">
+        <div class="variant-crud-modal-header" id="variantModalHeader">
+            <h6 id="variantModalTitle" class="variant-crud-modal-title">Agregar variante</h6>
+            <button type="button" class="confirm-close ripple-btn" title="Cerrar" data-action="close-variant-modal">
+                <i class="ri-close-line"></i>
             </button>
+        </div>
+
+
+        <div class="variant-crud-modal-body ripple-card">
+            <div class="card-header">
+                <span class="card-title">Detalles de la variante</span>
+                <p class="card-description">
+                    Completa los campos para agregar una nueva variante o editar una existente.
+                </p>
             </div>
-        </td>
-    </tr>
-</script>
+
+            <div id="variantModalOptions" class="form-row-fill"></div>
+            <div class="form-row-fill">
+                <div class="input-group">
+                    <label for="variantModalSku" class="label-form">SKU variante</label>
+                    <div class="input-icon-container">
+                        <i class="ri-hashtag input-icon"></i>
+                        <input type="text" id="variantModalSku" class="input-form"
+                            placeholder="Ej. PROD-001-NEGRO-M" data-validate="required|min:3|max:100">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="variantModalPrice" class="label-form">Precio (S/)</label>
+                    <div class="input-icon-container">
+                        <i class="ri-price-tag-3-line input-icon"></i>
+                        <input type="number" id="variantModalPrice" class="input-form" min="0" step="0.01"
+                            placeholder="Precio opcional" data-validate="minValue:0">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row-fill">
+                <div class="input-group">
+                    <label for="variantModalStock" class="label-form">Stock</label>
+                    <div class="input-icon-container">
+                        <i class="ri-stack-line input-icon"></i>
+                        <input type="number" id="variantModalStock" class="input-form" min="0" step="1"
+                            placeholder="0" data-validate="required|minValue:0">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="label-form">Estado</label>
+                    <div class="binary-switch binary-switch-inline">
+                        <input type="radio" name="variantModalStatus" id="variantModalStatusActive" value="1"
+                            class="switch-input switch-input-on" checked>
+                        <input type="radio" name="variantModalStatus" id="variantModalStatusInactive" value="0"
+                            class="switch-input switch-input-off">
+                        <div class="switch-slider"></div>
+                        <label for="variantModalStatusActive" class="switch-label switch-label-on">
+                            <i class="ri-checkbox-circle-line"></i> Activo
+                        </label>
+                        <label for="variantModalStatusInactive" class="switch-label switch-label-off">
+                            <i class="ri-close-circle-line"></i> Inactivo
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <p id="variantModalError" class="variant-modal-error" hidden></p>
+        </div>
+
+        <div class="variant-crud-modal-footer confirm-actions">
+            <button type="button" class="boton boton-modal-close" data-action="close-variant-modal">
+                <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
+                <span class="boton-text">Cancelar</span>
+            </button>
+            <button type="button" class="boton bg-success" id="saveVariantBtn">
+                <span class="boton-icon"><i class="ri-check-double-line"></i></span>
+                <span class="boton-text">Guardar variante</span>
+            </button>
+        </div>
+    </div>
+</div>

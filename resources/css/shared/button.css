@@ -111,7 +111,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     font-family: var(--font-secondary);
     font-weight: 600;
     line-height: 1;

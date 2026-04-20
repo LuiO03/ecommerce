@@ -37,21 +37,7 @@
             $hasVariantErrors = collect($errors->keys())->contains(fn($key) => str_starts_with($key, 'variants'));
         @endphp
 
-        @if ($errors->any())
-            <div class="form-error-banner">
-                <i class="ri-error-warning-line form-error-icon"></i>
-                <div>
-                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
 
         <div id="productFormTabs" class="tabs-container" data-tabs
             data-tabs-initial="{{ $hasVariantErrors ? 'variants' : 'general' }}"
@@ -60,18 +46,33 @@
             <div class="tabs-nav" role="tablist" aria-label="Secciones del producto">
                 <button type="button" class="tab-button" data-tab-target="general" role="tab"
                     aria-controls="productTabPanelGeneral" aria-selected="true">
-                    <i class="ri-information-line"></i>
                     <span>Información</span>
                 </button>
                 <button type="button" class="tab-button" data-tab-target="variants" role="tab"
                     aria-controls="productTabPanelVariants" aria-selected="false">
-                    <i class="ri-shapes-line"></i>
                     <span>Variantes</span>
                 </button>
             </div>
 
             <div class="tab-panels">
                 <section id="productTabPanelGeneral" class="tab-panel" data-tab-panel="general">
+                    @if ($errors->any())
+                        <div class="form-error-banner">
+                            <i class="ri-error-warning-line form-error-icon"></i>
+                            <div>
+                                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+
+                    <x-note-alert type="info" :dismissible="true">
+                        Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+                    </x-note-alert>
                     <div class="form-body">
                         <div class="form-row-fill">
                             <div class="input-group">
@@ -147,17 +148,18 @@
                                 </label>
                                 <div class="input-icon-container">
                                     <i class="ri-price-tag-3-line input-icon"></i>
-                                    <input type="number" name="price" id="price" class="input-form" required min="0"
-                                        step="0.01" value="{{ old('price', $product->price) }}" placeholder="0.00"
-                                        data-validate="required|minValue:0">
+                                    <input type="number" name="price" id="price" class="input-form" required
+                                        min="0" step="0.01" value="{{ old('price', $product->price) }}"
+                                        placeholder="0.00" data-validate="required|minValue:0">
                                 </div>
                             </div>
                             <div class="input-group">
                                 <label for="discount" class="label-form">Descuento (%)</label>
                                 <div class="input-icon-container">
                                     <i class="ri-discount-percent-line input-icon"></i>
-                                    <input type="number" name="discount" id="discount" class="input-form" min="0"
-                                        step="1" value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
+                                    <input type="number" name="discount" id="discount" class="input-form"
+                                        min="0" step="1"
+                                        value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
                                         data-validate="minValue:0">
                                 </div>
                             </div>
@@ -167,8 +169,10 @@
                                 </label>
                                 <div class="input-icon-container">
                                     <i class="ri-stack-line input-icon"></i>
-                                    <input type="number" name="min_stock" id="min_stock" class="input-form" min="0"
-                                        step="1" value="{{ old('min_stock', $product->min_stock) }}" placeholder="Ej. 10" data-validate="minValue:0">
+                                    <input type="number" name="min_stock" id="min_stock" class="input-form"
+                                        min="0" step="1"
+                                        value="{{ old('min_stock', $product->min_stock) }}" placeholder="Ej. 10"
+                                        data-validate="minValue:0">
                                 </div>
                             </div>
                         </div>
@@ -194,13 +198,16 @@
                                         <p>Arrastra una imagen aquí</p>
                                         <span>o haz clic para seleccionar</span>
                                         <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
+                                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*"
+                                            multiple hidden
                                             data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                                     </div>
                                     <div id="galleryPreviewContainer" class="preview-container">
                                         @foreach ($sortedImages as $image)
                                             @php
-                                                $fullPath = $image->path ? public_path('storage/' . $image->path) : null;
+                                                $fullPath = $image->path
+                                                    ? public_path('storage/' . $image->path)
+                                                    : null;
                                                 $exists = $fullPath && file_exists($fullPath);
                                                 $fileSizeLabel = 'No encontrada';
                                                 if ($exists) {
@@ -210,11 +217,15 @@
                                                             ? number_format($bytes / 1048576, 2) . ' MB'
                                                             : number_format($bytes / 1024, 1) . ' KB';
                                                 }
-                                                $imageUrl = $exists ? asset('storage/' . $image->path) : asset('storage/default.png');
+                                                $imageUrl = $exists
+                                                    ? asset('storage/' . $image->path)
+                                                    : asset('storage/default.png');
                                                 $altText = $image->alt ?? $product->name;
                                             @endphp
-                                            <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}" data-type="existing"
-                                                data-id="{{ $image->id }}" data-key="existing-{{ $image->id }}" data-main="{{ $image->is_main ? 'true' : 'false' }}">
+                                            <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}"
+                                                data-type="existing" data-id="{{ $image->id }}"
+                                                data-key="existing-{{ $image->id }}"
+                                                data-main="{{ $image->is_main ? 'true' : 'false' }}">
                                                 <button type="button" class="drag-handle" title="Reordenar imagen">
                                                     <i class="ri-draggable"></i>
                                                 </button>
@@ -229,12 +240,17 @@
                                                 <div class="overlay">
                                                     <span class="file-size">{{ $fileSizeLabel }}</span>
                                                     <div class="overlay-actions">
-                                                        <button type="button" class="mark-main-btn boton-form boton-success" title="Marcar como principal">
-                                                            <span class="boton-form-icon"><i class="ri-star-smile-fill"></i></span>
+                                                        <button type="button"
+                                                            class="mark-main-btn boton-form boton-success"
+                                                            title="Marcar como principal">
+                                                            <span class="boton-form-icon"><i
+                                                                    class="ri-star-smile-fill"></i></span>
                                                         </button>
-                                                        <button type="button" class="delete-btn boton-form boton-danger delete-existing-gallery"
+                                                        <button type="button"
+                                                            class="delete-btn boton-form boton-danger delete-existing-gallery"
                                                             data-id="{{ $image->id }}" title="Eliminar imagen">
-                                                            <span class="boton-form-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                                                            <span class="boton-form-icon"><i
+                                                                    class="ri-delete-bin-6-fill"></i></span>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -293,7 +309,9 @@
                 });
 
                 if (window.initTabsManager) {
-                    window.initTabsManager({ selector: '#productFormTabs' });
+                    window.initTabsManager({
+                        selector: '#productFormTabs'
+                    });
                 }
 
                 if (window.initGalleryEditWithConfig) {
@@ -325,9 +343,6 @@
                         containerId: 'variantsContainer',
                         emptyStateId: 'variantsEmpty',
                         addButtonId: 'addVariantBtn',
-                        templateId: 'variantRowTemplate',
-                        optionsContainerId: 'productOptionsContainer',
-                        generateButtonId: 'generateVariantsBtn',
                         baseSkuInputId: 'sku',
                     });
                 }

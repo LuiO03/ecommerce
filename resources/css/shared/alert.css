@@ -203,7 +203,7 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.note-alert i{
+.note-alert .note-alert-icon{
     line-height: 1;
     font-size: var(--font-size-h4);
 }
@@ -213,6 +213,9 @@
     transform: translateX(20px);
 }
 
+.note-alert span{
+    color: var(--color-text);
+}
 
 .note-alert.note-alert-info {
     border-color: var(--color-info);

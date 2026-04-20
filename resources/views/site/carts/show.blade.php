@@ -43,7 +43,7 @@
 
         @if (!Auth::check())
             <div class="card-empty">
-                <div class="cart-empty-icon">
+                <div class="card-empty-icon card-purple">
                     <i class="ri-user-3-line"></i>
                 </div>
                 <h2 class="card-title">Inicia sesión para ver tu carrito</h2>
@@ -57,7 +57,7 @@
             </div>
         @elseif (!$hasItems)
             <div class="card-empty">
-                <div class="cart-empty-icon">
+                <div class="card-empty-icon card-purple">
                     <i class="ri-shopping-cart-line"></i>
                 </div>
                 <h2 class="card-title">Tu carrito está vacío</h2>

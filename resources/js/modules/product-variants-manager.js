@@ -1,928 +1,655 @@
 function safeParseJson(raw, fallback) {
-  if (!raw) return fallback;
-  try {
-    return JSON.parse(raw);
-  } catch (e) {
-    console.warn('[product-variants-manager] JSON inválido', e);
-    return fallback;
-  }
+    if (!raw) return fallback;
+    try {
+        return JSON.parse(raw);
+    } catch (error) {
+        console.warn('[product-variants-manager] JSON invalido', error);
+        return fallback;
+    }
 }
 
 function slugifySegment(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toUpperCase()
-    .trim()
-    .replace(/[^A-Z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+        .trim()
+        .replace(/[^A-Z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 }
 
-function normalizeHexColor(value) {
-  const raw = String(value || '').trim().replace(/^#/, '');
-  if (!raw) return null;
-
-  if (!/^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(raw)) {
-    return null;
-  }
-
-  const expanded = raw.length === 3
-    ? raw.split('').map((ch) => ch + ch).join('')
-    : raw;
-
-  return `#${expanded.toUpperCase()}`;
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
-function buildOptionsIndex(options) {
-  const byId = new Map();
-  const featureToOption = new Map();
+function buildSkuSuggestion(baseSku, labels) {
+    const cleanBase = String(baseSku || '').trim();
+    const basePart = cleanBase || 'VAR';
 
-  options.forEach((opt) => {
-    const isColor = !!opt.is_color;
-    const option = {
-      id: opt.id,
-      name: opt.name,
-      isColor,
-      features: Array.isArray(opt.features) ? opt.features : [],
-    };
-    byId.set(option.id, option);
-    option.features.forEach((feat) => {
-      // Para color: feat.value = nombre, feat.description = HEX
-      const normalizedColor = isColor ? normalizeHexColor(feat.description) : null;
-      const rawValue = String(feat.value ?? '').trim();
+    if (!labels.length) {
+        return basePart;
+    }
 
-      // Para todas las opciones, label visible es el value (nombre, talla, etc.)
-      const label = rawValue;
+    const segments = labels.map((label) => slugifySegment(label)).filter(Boolean);
+    if (!segments.length) {
+        return basePart;
+    }
 
-      featureToOption.set(feat.id, {
-        optionId: option.id,
-        optionName: option.name,
-        featureId: feat.id,
-        rawValue: feat.value,
-        label,
-        isColor,
-        color: normalizedColor,
-      });
-    });
-  });
-
-  return { byId, featureToOption };
+    return `${basePart}-${segments.join('-')}`;
 }
 
-function getSelectedFeaturesFromInitialVariants(initialVariants) {
-  const map = new Map();
+function buildOptionsIndex(optionsData) {
+    const options = [];
+    const featureMap = new Map();
 
-  (initialVariants || []).forEach((variant) => {
-    (variant.features || []).forEach((feat) => {
-      const optionId = feat.option_id;
-      const featureId = feat.id;
-      if (!optionId || !featureId) return;
+    optionsData.forEach((option, optionIndex) => {
+        const normalizedOption = {
+            id: Number(option.id),
+            name: String(option.name || ''),
+            isColor: Boolean(option.is_color),
+            order: optionIndex,
+            features: Array.isArray(option.features)
+                ? option.features.map((feature) => ({
+                    id: Number(feature.id),
+                    value: String(feature.value ?? '').trim(),
+                    description: String(feature.description ?? '').trim(),
+                }))
+                : [],
+        };
 
-      if (!map.has(optionId)) {
-        map.set(optionId, new Set());
-      }
-      map.get(optionId).add(featureId);
-    });
-  });
+        normalizedOption.features.forEach((feature) => {
+            const label = normalizedOption.isColor
+                ? (feature.value || feature.description)
+                : feature.value;
 
-  return map;
-}
-
-function buildCartesianProduct(optionFeatureSets, optionsIndex) {
-  const entries = Object.entries(optionFeatureSets).filter(([, ids]) => Array.isArray(ids) && ids.length);
-  if (!entries.length) return [];
-
-  let combos = [{ features: [] }];
-
-  entries.forEach(([optionIdStr, featureIds]) => {
-    const optionId = Number(optionIdStr);
-    const option = optionsIndex.byId.get(optionId);
-    if (!option) return;
-
-    const next = [];
-    combos.forEach((combo) => {
-      featureIds.forEach((featureId) => {
-        const meta = optionsIndex.featureToOption.get(featureId);
-        if (!meta) return;
-        next.push({
-          features: [...combo.features, meta],
+            featureMap.set(feature.id, {
+                featureId: feature.id,
+                optionId: normalizedOption.id,
+                optionName: normalizedOption.name,
+                optionOrder: normalizedOption.order,
+                value: feature.value,
+                description: feature.description,
+                label,
+                isColor: normalizedOption.isColor,
+            });
         });
-      });
+
+        options.push(normalizedOption);
     });
-    combos = next;
-  });
 
-  return combos;
+    return { options, featureMap };
 }
 
-function buildVariantLabel(featuresMeta) {
-  if (!featuresMeta || !featuresMeta.length) return 'Variante sin opciones';
-
-  // Mostrar solo los valores en orden, sin el nombre de la opción.
-  // Para color y el resto, meta.label lleva el value (nombre).
-  const parts = featuresMeta
-    .map((meta) => (meta.label || String(meta.rawValue ?? '').trim()))
-    .filter((text) => !!text);
-
-  return parts.length ? parts.join(' / ') : 'Variante sin opciones';
+function buildCombinationKey(featureIds) {
+    return featureIds
+        .map((id) => Number(id))
+        .filter((id) => Number.isFinite(id) && id > 0)
+        .sort((a, b) => a - b)
+        .join('-');
 }
 
-function buildSkuSuggestion(baseSku, featuresMeta) {
-  const cleanBase = String(baseSku || '').trim();
-  const basePart = cleanBase || 'VAR';
-
-  if (!featuresMeta || !featuresMeta.length) {
-    return basePart;
-  }
-
-  // Usar la etiqueta visible (label) como base del segmento; si no,
-  // caer al valor bruto y finalmente a featureValue para compatibilidad.
-  const segments = featuresMeta
-    .map((meta) => {
-      const raw = meta && (meta.label || meta.rawValue || meta.featureValue || '');
-      return slugifySegment(raw);
-    })
-    .filter(Boolean);
-  if (!segments.length) return basePart;
-
-  return `${basePart}-${segments.join('-')}`;
-}
-
-function reindexVariantRows(container, emptyState) {
-  const rows = Array.from(container.querySelectorAll('.variant-row'));
-
-  if (!rows.length) {
-    if (emptyState) emptyState.classList.remove('is-hidden');
-    return;
-  }
-
-  if (emptyState) emptyState.classList.add('is-hidden');
-
-  rows.forEach((row, index) => {
-    row.dataset.index = String(index);
-    const inputs = row.querySelectorAll('input, select, textarea');
-    inputs.forEach((input) => {
-      if (!input.name) return;
-      input.name = input.name.replace(/variants\[[0-9]+\]/, `variants[${index}]`);
+function sortByOptionOrder(featuresMeta) {
+    return [...featuresMeta].sort((a, b) => {
+        if (a.optionOrder === b.optionOrder) {
+            return a.featureId - b.featureId;
+        }
+        return a.optionOrder - b.optionOrder;
     });
-  });
 }
 
-function buildVariantRowDom({ index, variant }) {
-  const tr = document.createElement('tr');
-  tr.className = 'variant-row';
-  tr.dataset.index = String(index);
+function createVariantLabel(featuresMeta) {
+    if (!featuresMeta.length) {
+        return 'Sin opciones';
+    }
 
-  const tdOptions = document.createElement('td');
-  tdOptions.className = 'column-variant-options';
+    const labels = sortByOptionOrder(featuresMeta)
+        .map((meta) => meta.label || meta.value)
+        .filter(Boolean);
 
-  const hiddenId = document.createElement('input');
-  hiddenId.type = 'hidden';
-  hiddenId.name = `variants[${index}][id]`;
-  hiddenId.value = String(variant.id || '');
-  tdOptions.appendChild(hiddenId);
-
-  const labelText = document.createTextNode(buildVariantLabel(variant.featuresMeta || []));
-  tdOptions.appendChild(labelText);
-
-  const featuresDiv = document.createElement('div');
-  featuresDiv.className = 'variant-hidden-features';
-  featuresDiv.dataset.role = 'features-container';
-  tdOptions.appendChild(featuresDiv);
-
-  const tdSku = document.createElement('td');
-  tdSku.className = 'column-variant-sku';
-  tdSku.innerHTML = `
-    <div class="input-group">
-      <div class="input-icon-container">
-        <i class="ri-hashtag input-icon"></i>
-        <input type="text" class="input-form" name="variants[${index}][sku]" value="${variant.sku || ''}"
-          placeholder="Ej. PROD-001-RED-M" data-role="variant-sku">
-      </div>
-    </div>`;
-
-  const tdPrice = document.createElement('td');
-  tdPrice.className = 'column-variant-price';
-  tdPrice.innerHTML = `
-    <div class="input-group">
-      <div class="input-icon-container">
-        <i class="ri-price-tag-3-line input-icon"></i>
-        <input type="number" class="input-form" name="variants[${index}][price]" min="0" step="0.01"
-          value="${variant.price != null ? String(variant.price) : ''}" placeholder="Precio Opcional" data-role="variant-price">
-      </div>
-    </div>`;
-
-  const tdStock = document.createElement('td');
-  tdStock.className = 'column-variant-stock';
-  tdStock.innerHTML = `
-    <div class="input-group">
-      <div class="input-icon-container">
-        <i class="ri-stack-line input-icon"></i>
-        <input type="number" class="input-form" name="variants[${index}][stock]" min="0" step="1"
-          value="${variant.stock != null ? String(variant.stock) : '0'}" placeholder="0" data-role="variant-stock">
-      </div>
-    </div>`;
-
-  const tdStatus = document.createElement('td');
-  tdStatus.className = 'column-variant-status';
-  tdStatus.innerHTML = `
-    <div class="input-group">
-      <div class="switch-tabla-wrapper">
-        <input type="hidden" name="variants[${index}][status]" value="0">
-        <label class="switch-tabla" title="Activar o desactivar variante">
-          <input type="checkbox" name="variants[${index}][status]" value="1" ${variant.status ? 'checked' : ''}
-            data-role="variant-status">
-          <span class="slider"></span>
-        </label>
-      </div>
-    </div>`;
-
-  const tdActions = document.createElement('td');
-  tdActions.className = 'column-variant-actions';
-  tdActions.innerHTML = `
-    <button type="button" class="boton boton-danger" data-action="remove-variant" title="Eliminar variante">
-        <span class="boton-text">Eliminar</span>
-        <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-    </button>`;
-
-  tr.appendChild(tdOptions);
-  tr.appendChild(tdSku);
-  tr.appendChild(tdPrice);
-  tr.appendChild(tdStock);
-  tr.appendChild(tdStatus);
-  tr.appendChild(tdActions);
-
-  return tr;
+    return labels.length ? labels.join(' / ') : 'Sin opciones';
 }
 
-function buildVariantRowFromTemplate({
-  index,
-  variant,
-  container,
-  emptyState,
-}) {
-  const row = buildVariantRowDom({ index, variant });
+function formatPrice(value) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) {
+        return '-';
+    }
 
-  // Marcar si la variante está ligada a una combinación de opciones
-  const isAuto = Array.isArray(variant.featuresMeta) && variant.featuresMeta.length > 0;
-  row.dataset.auto = isAuto ? '1' : '0';
+    return `S/. ${num.toFixed(2)}`;
+}
 
-  const featuresContainer = row.querySelector('[data-role="features-container"]');
-  if (featuresContainer) {
-    (variant.featuresMeta || []).forEach((meta) => {
-      const hidden = document.createElement('input');
-      hidden.type = 'hidden';
-      hidden.name = `variants[${index}][features][]`;
-      hidden.value = String(meta.featureId);
-      featuresContainer.appendChild(hidden);
-    });
-  }
+function normalizeVariant(rawVariant, featureMap) {
+    const rawFeatures = Array.isArray(rawVariant.features) ? rawVariant.features : [];
+    const featuresMeta = rawFeatures
+        .map((feature) => featureMap.get(Number(feature.id)))
+        .filter(Boolean);
 
-  const body = container.querySelector('[data-role="variants-body"]') || container;
-  body.appendChild(row);
-  reindexVariantRows(container, emptyState);
-  return row;
+    const featureIds = sortByOptionOrder(featuresMeta).map((meta) => meta.featureId);
+
+    return {
+        id: rawVariant.id ?? null,
+        sku: String(rawVariant.sku ?? '').trim(),
+        price: rawVariant.price === null || rawVariant.price === '' ? '' : String(rawVariant.price),
+        stock: rawVariant.stock === null || rawVariant.stock === '' ? '0' : String(rawVariant.stock),
+        status: Boolean(rawVariant.status),
+        featureIds,
+    };
+}
+
+function showWarning(title, message) {
+    if (typeof window.showInfoModal === 'function') {
+        window.showInfoModal({
+            type: 'warning',
+            header: title,
+            title,
+            message,
+        });
+        return;
+    }
+
+    alert(message);
 }
 
 export function initProductVariantsManager({
-  containerId,
-  emptyStateId,
-  addButtonId,
-  templateId,
-  optionsContainerId,
-  generateButtonId,
-  baseSkuInputId,
+    containerId,
+    emptyStateId,
+    addButtonId,
+    baseSkuInputId,
 } = {}) {
-  const container = document.getElementById(containerId);
-  if (!container) return null;
+    const container = containerId ? document.getElementById(containerId) : null;
+    if (!container) return null;
 
-  // Evitar inicializar dos veces sobre el mismo contenedor
-  if (container.dataset.variantsManagerInitialized === '1') {
-    return null;
-  }
-  container.dataset.variantsManagerInitialized = '1';
+    if (container.dataset.variantsManagerInitialized === '1') {
+        return null;
+    }
+    container.dataset.variantsManagerInitialized = '1';
 
-  const emptyState = emptyStateId ? document.getElementById(emptyStateId) : null;
-  const addButton = addButtonId ? document.getElementById(addButtonId) : null;
-  const optionsContainer = optionsContainerId ? document.getElementById(optionsContainerId) : null;
-  const generateButton = generateButtonId ? document.getElementById(generateButtonId) : null;
-  const baseSkuInput = baseSkuInputId ? document.getElementById(baseSkuInputId) : null;
-  const templateNode = templateId ? document.getElementById(templateId) : null;
+    const emptyState = emptyStateId ? document.getElementById(emptyStateId) : null;
+    const addButton = addButtonId ? document.getElementById(addButtonId) : null;
+    const baseSkuInput = baseSkuInputId ? document.getElementById(baseSkuInputId) : null;
+    const form = container.closest('form');
+    const validator = form && form.__validator ? form.__validator : null;
 
-  // Mantener templateHtml definido para compatibilidad, aunque
-  // la construcción de filas se hace vía buildVariantRowDom.
-  const templateHtml = templateNode ? (templateNode.textContent || '').trim() : '';
+    const modal = document.getElementById('variantCrudModal');
+    const modalOptions = document.getElementById('variantModalOptions');
+    const modalTitle = document.getElementById('variantModalTitle');
+    const modalError = document.getElementById('variantModalError');
+    const saveVariantBtn = document.getElementById('saveVariantBtn');
+    const skuInput = document.getElementById('variantModalSku');
+    const priceInput = document.getElementById('variantModalPrice');
+    const stockInput = document.getElementById('variantModalStock');
+    const statusActiveInput = document.getElementById('variantModalStatusActive');
+    const statusInactiveInput = document.getElementById('variantModalStatusInactive');
 
-  const optionsData = safeParseJson(container.dataset.options, []);
-  const initialVariants = safeParseJson(container.dataset.initialVariants, []);
-  const index = buildOptionsIndex(optionsData);
-
-  const selectedOptionFeatures = getSelectedFeaturesFromInitialVariants(initialVariants);
-
-  function renderOptionsUi() {
-    if (!optionsContainer) return;
-
-    optionsContainer.innerHTML = '';
-
-    if (!optionsData.length) {
-      const msg = document.createElement('p');
-      msg.className = 'text-muted-td';
-      msg.textContent = 'No hay opciones configuradas. Crea opciones desde el módulo "Opciones".';
-      optionsContainer.appendChild(msg);
-      return;
+    if (!modal || !modalOptions || !modalTitle || !modalError || !saveVariantBtn || !skuInput || !priceInput || !stockInput || !statusActiveInput || !statusInactiveInput) {
+        console.warn('[product-variants-manager] No se encontro la modal de variantes.');
+        return null;
     }
 
-    const MANY_THRESHOLD = 10;
+    const optionsData = safeParseJson(container.dataset.options, []);
+    const initialVariantsData = safeParseJson(container.dataset.initialVariants, []);
+    const { options, featureMap } = buildOptionsIndex(optionsData);
 
-    optionsData.forEach((opt) => {
-      const card = document.createElement('div');
-      card.className = 'product-option-card';
-      card.dataset.optionId = String(opt.id);
+    const tbody = container.querySelector('[data-role="variants-body"]');
+    if (!tbody) return null;
 
-      const header = document.createElement('div');
-      header.className = 'product-option-header';
+    let variants = initialVariantsData.map((item) => normalizeVariant(item, featureMap));
+    let editingIndex = null;
+    let isModalClosing = false;
 
-      const label = document.createElement('label');
-      label.className = 'checkbox-inline';
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
 
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.className = 'option-toggle';
-      checkbox.value = String(opt.id);
+    function getFeaturesMeta(featureIds) {
+        return featureIds
+            .map((featureId) => featureMap.get(Number(featureId)))
+            .filter(Boolean);
+    }
 
-      const hasAnyFeature = selectedOptionFeatures.has(opt.id) && selectedOptionFeatures.get(opt.id).size > 0;
-      checkbox.checked = hasAnyFeature;
+    function getModalValidationFields() {
+        const optionFields = Array.from(modalOptions.querySelectorAll('[data-option-select]'));
+        return [...optionFields, skuInput, priceInput, stockInput];
+    }
 
-      const text = document.createElement('span');
-      text.textContent = opt.name;
+    function clearModalFieldFeedback() {
+        if (!validator) return;
 
-      label.appendChild(checkbox);
-      label.appendChild(text);
-      header.appendChild(label);
-      card.appendChild(header);
+        getModalValidationFields().forEach((field) => {
+            validator.clearError(field);
+            validator.clearSuccess(field);
+        });
+    }
 
-      const featuresWrapper = document.createElement('div');
-      featuresWrapper.className = 'product-option-features';
+    function validateModalFields() {
+        if (!validator) return true;
 
-      const usedSet = selectedOptionFeatures.get(opt.id) || new Set();
-
-      const totalFeatures = opt.features.length;
-      const showCompact = totalFeatures > MANY_THRESHOLD;
-
-      opt.features.forEach((feat, idx) => {
-        const pill = document.createElement('label');
-        pill.className = 'product-option-feature-pill';
-
-        if (showCompact && idx >= MANY_THRESHOLD) {
-          pill.classList.add('is-extra');
-        }
-
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.className = 'feature-toggle';
-        cb.value = String(feat.id);
-        cb.checked = hasAnyFeature ? usedSet.has(feat.id) : false;
-
-        const span = document.createElement('span');
-        const meta = index.featureToOption.get(feat.id);
-
-        if (meta && meta.isColor && meta.color) {
-          const dot = document.createElement('span');
-          dot.className = 'product-option-color-dot';
-          dot.style.setProperty('--variant-color', meta.color);
-          pill.appendChild(dot);
-        }
-
-        span.textContent = (meta && meta.label) ? meta.label : feat.value;
-
-        pill.appendChild(cb);
-        pill.appendChild(span);
-
-        if (cb.checked) {
-          pill.classList.add('is-selected');
-        }
-        featuresWrapper.appendChild(pill);
-      });
-
-      card.appendChild(featuresWrapper);
-
-      if (showCompact) {
-        const footer = document.createElement('div');
-        footer.className = 'product-option-footer';
-
-        const summary = document.createElement('span');
-        summary.className = 'product-option-summary';
-        const updateSummary = () => {
-          const selectedCount = Array.from(featuresWrapper.querySelectorAll('.feature-toggle'))
-            .filter((n) => n.checked).length;
-          summary.textContent = `${selectedCount} seleccionados de ${totalFeatures}`;
-        };
-
-        const toggleBtn = document.createElement('button');
-        toggleBtn.type = 'button';
-        toggleBtn.className = 'boton-sm boton-link product-option-toggle';
-        toggleBtn.textContent = 'Ver todos';
-
-        toggleBtn.addEventListener('click', () => {
-          const collapsed = featuresWrapper.classList.toggle('is-collapsed');
-          toggleBtn.textContent = collapsed ? 'Ver todos' : 'Mostrar menos';
+        let isValid = true;
+        getModalValidationFields().forEach((field) => {
+            const fieldValid = validator.validateField(field);
+            if (!fieldValid) {
+                isValid = false;
+            }
         });
 
-        featuresWrapper.classList.add('is-collapsed');
-
-        footer.appendChild(summary);
-        footer.appendChild(toggleBtn);
-        card.appendChild(footer);
-
-        // inicializar resumen con el estado actual
-        setTimeout(updateSummary, 0);
-
-        featuresWrapper.addEventListener('change', updateSummary);
-      }
-
-      optionsContainer.appendChild(card);
-
-      const syncVisibility = () => {
-        const anyChecked = Array.from(featuresWrapper.querySelectorAll('.feature-toggle')).some((n) => n.checked);
-        checkbox.checked = anyChecked;
-        featuresWrapper.classList.toggle('is-disabled', !checkbox.checked);
-      };
-
-      syncVisibility();
-
-      checkbox.addEventListener('change', () => {
-        const checked = checkbox.checked;
-
-        // Bloqueo duro: no permitir desactivar una opción completa si
-        // alguno de sus valores sigue siendo usado por variantes existentes.
-        if (!checked) {
-          const body = container.querySelector('[data-role="variants-body"]') || container;
-          const isUsed = (opt.features || []).some((feat) =>
-            body.querySelector(`input[name$="[features][]"][value="${feat.id}"]`),
-          );
-
-          if (isUsed) {
-            checkbox.checked = true;
-            featuresWrapper.classList.remove('is-disabled');
-
-            if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal({
-                type: 'warning',
-                header: 'Opción en uso',
-                title: 'No puedes desactivar esta opción todavía',
-                message:
-                  'Alguno de los valores de esta opción está siendo usado por variantes existentes. ' +
-                  'Elimina primero las variantes que usan esos valores y luego intenta desactivar la opción de nuevo.',
-              });
-            } else {
-              // Fallback mínimo
-              alert(
-                'Alguno de los valores de esta opción está siendo usado por variantes existentes. ' +
-                  'Elimina primero las variantes que usan esos valores y luego intenta desactivar la opción de nuevo.',
-              );
-            }
-
-            return;
-          }
-        }
-
-        featuresWrapper.classList.toggle('is-disabled', !checked);
-        const featureCbs = featuresWrapper.querySelectorAll('.feature-toggle');
-        if (!checked) {
-          featureCbs.forEach((n) => {
-            n.checked = false;
-          });
-
-          // Limpiar también el estado interno cuando se deshabilita la opción
-          const optionId = Number(opt.id);
-          selectedOptionFeatures.delete(optionId);
-
-          // Quitar estilos visuales de selección
-          const pills = featuresWrapper.querySelectorAll('.product-option-feature-pill');
-          pills.forEach((pill) => pill.classList.remove('is-selected'));
-        }
-      });
-
-      featuresWrapper.addEventListener('change', (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLInputElement) || !target.classList.contains('feature-toggle')) return;
-
-        const featureId = Number(target.value);
-
-        // Bloqueo duro: si el valor está siendo usado por alguna variante,
-        // no permitir desactivarlo hasta que se elimine la(s) variante(s).
-        if (!target.checked) {
-          const body = container.querySelector('[data-role="variants-body"]') || container;
-          const usedSomewhere = body.querySelector(
-            `input[name$="[features][]"][value="${featureId}"]`,
-          );
-
-          if (usedSomewhere) {
-            target.checked = true;
-            const pillLocked = target.closest('.product-option-feature-pill');
-            if (pillLocked) {
-              pillLocked.classList.add('is-selected');
-            }
-
-            if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal({
-                type: 'warning',
-                header: 'Valor en uso',
-                title: 'No puedes desactivar este valor todavía',
-                message:
-                  'Este valor de opción está siendo usado por al menos una variante. ' +
-                  'Elimina primero las variantes que lo usan y luego intenta desactivarlo de nuevo.',
-              });
-            } else {
-              alert(
-                'Este valor de opción está siendo usado por al menos una variante. ' +
-                  'Elimina primero las variantes que lo usan y luego intenta desactivarlo de nuevo.',
-              );
-            }
-
-            return;
-          }
-        }
-
-        const pill = target.closest('.product-option-feature-pill');
-        if (pill) {
-          pill.classList.toggle('is-selected', target.checked);
-        }
-
-        const optionId = Number(opt.id);
-        if (!selectedOptionFeatures.has(optionId)) {
-          selectedOptionFeatures.set(optionId, new Set());
-        }
-        const set = selectedOptionFeatures.get(optionId);
-
-        if (target.checked) {
-          set.add(featureId);
-        } else {
-          set.delete(featureId);
-        }
-
-        const cleaned = new Set(Array.from(set).filter((id) => index.featureToOption.has(id)));
-        selectedOptionFeatures.set(optionId, cleaned);
-
-        const anyChecked = cleaned.size > 0;
-        checkbox.checked = anyChecked;
-        featuresWrapper.classList.toggle('is-disabled', !anyChecked);
-      });
-    });
-  }
-
-  function collectOptionFeatureSets() {
-    const result = {};
-    selectedOptionFeatures.forEach((set, optionId) => {
-      const ids = Array.from(set).filter((id) => index.featureToOption.has(id));
-      if (ids.length) {
-        result[optionId] = ids;
-      }
-    });
-    return result;
-  }
-
-  function clearVariants() {
-    const body = container.querySelector('[data-role="variants-body"]');
-    if (body) {
-      const rows = body.querySelectorAll('.variant-row');
-      rows.forEach((row) => row.remove());
-    }
-    reindexVariantRows(container, emptyState);
-  }
-
-  function generateVariants() {
-    const sets = collectOptionFeatureSets();
-    const combos = buildCartesianProduct(sets, index);
-    const body = container.querySelector('[data-role="variants-body"]') || container;
-
-    // Indexar variantes automáticas existentes por combinación de features
-    const existingByKey = new Map();
-    const autoRows = body.querySelectorAll('.variant-row[data-auto="1"]');
-    autoRows.forEach((row) => {
-      const featureInputs = row.querySelectorAll('input[name$="[features][]"]');
-      const ids = Array.from(featureInputs)
-        .map((inp) => Number(inp.value))
-        .filter((id) => Number.isFinite(id))
-        .sort((a, b) => a - b);
-      if (!ids.length) return;
-      const key = ids.join('-');
-      if (!key) return;
-      existingByKey.set(key, row);
-    });
-
-    if (!combos.length) {
-      // Si ya no hay combinaciones, eliminar solo las variantes automáticas
-      existingByKey.forEach((row) => row.remove());
-      reindexVariantRows(container, emptyState);
-      return;
+        return isValid;
     }
 
-    const baseSku = baseSkuInput ? baseSkuInput.value : '';
+    function collectFormVariantDraft() {
+        const selectedFeatureIds = [];
+        const hasValidator = Boolean(validator);
 
-    combos.forEach((combo, idx) => {
-      const featuresMeta = combo.features;
-      const featureIds = featuresMeta
-        .map((meta) => Number(meta.featureId))
-        .filter((id) => Number.isFinite(id))
-        .sort((a, b) => a - b);
-      const key = featureIds.join('-');
+        if (options.length) {
+            for (const option of options) {
+                const select = modalOptions.querySelector(`[data-option-select="${option.id}"]`);
+                const selected = select ? Number(select.value) : 0;
 
-      let reusedRow = key ? existingByKey.get(key) : null;
-      if (reusedRow) {
-        // Reutilizar la fila existente para conservar SKU, precio, stock, estado
-        existingByKey.delete(key);
-        body.appendChild(reusedRow);
-        return;
-      }
+                if (!selected && !hasValidator) {
+                    return {
+                        valid: false,
+                        message: `Selecciona un valor para ${option.name}.`,
+                    };
+                }
 
-      const suggestionSku = buildSkuSuggestion(baseSku, featuresMeta);
+                selectedFeatureIds.push(selected);
+            }
+        }
 
-      const variant = {
-        id: null,
-        sku: suggestionSku,
-        price: null,
-        stock: 0,
-        status: true,
-        featuresMeta,
-      };
+        const sku = String(skuInput.value || '').trim();
+        if (!sku && !hasValidator) {
+            return {
+                valid: false,
+                message: 'Ingresa el SKU de la variante.',
+            };
+        }
 
-      buildVariantRowFromTemplate({
-        index: idx,
-        variant,
-        container,
-        emptyState,
-      });
-    });
+        const stockRaw = String(stockInput.value || '').trim();
+        const stockNum = stockRaw === '' ? 0 : Number(stockRaw);
+        if ((!Number.isFinite(stockNum) || stockNum < 0) && !hasValidator) {
+            return {
+                valid: false,
+                message: 'El stock debe ser un numero valido mayor o igual a 0.',
+            };
+        }
 
-    // Eliminar variantes automáticas que ya no corresponden a ninguna combinación
-    existingByKey.forEach((row) => row.remove());
+        const priceRaw = String(priceInput.value || '').trim();
+        if (priceRaw !== '') {
+            const priceNum = Number(priceRaw);
+            if ((!Number.isFinite(priceNum) || priceNum < 0) && !hasValidator) {
+                return {
+                    valid: false,
+                    message: 'El precio debe ser un numero valido mayor o igual a 0.',
+                };
+            }
+        }
 
-    reindexVariantRows(container, emptyState);
-  }
+        const normalizedFeatureIds = buildCombinationKey(selectedFeatureIds)
+            .split('-')
+            .filter(Boolean)
+            .map((id) => Number(id));
 
-  function addManualVariant() {
-    const rows = container.querySelectorAll('.variant-row');
-    const nextIndex = rows.length;
-
-    const baseSku = baseSkuInput ? baseSkuInput.value : '';
-
-    // Intentar asignar automáticamente una combinación de opciones disponible
-    const sets = collectOptionFeatureSets();
-    const combos = buildCartesianProduct(sets, index);
-    let featuresMeta = [];
-
-    if (combos.length) {
-      const body = container.querySelector('[data-role="variants-body"]') || container;
-      const existingKeys = new Set();
-
-      const existingRows = body.querySelectorAll('.variant-row');
-      existingRows.forEach((row) => {
-        const featureInputs = row.querySelectorAll('input[name$="[features][]"]');
-        const ids = Array.from(featureInputs)
-          .map((inp) => Number(inp.value))
-          .filter((id) => Number.isFinite(id))
-          .sort((a, b) => a - b);
-        if (!ids.length) return;
-        const key = ids.join('-');
-        if (!key) return;
-        existingKeys.add(key);
-      });
-
-      let chosen = null;
-      combos.forEach((combo) => {
-        if (chosen) return;
-        const ids = combo.features
-          .map((meta) => Number(meta.featureId))
-          .filter((id) => Number.isFinite(id))
-          .sort((a, b) => a - b);
-        const key = ids.join('-');
-        if (!key || existingKeys.has(key)) return;
-        chosen = combo;
-      });
-
-      if (chosen) {
-        featuresMeta = chosen.features;
-      }
-    }
-    const createVariant = (meta) => {
-      const variant = {
-        id: null,
-        sku: buildSkuSuggestion(baseSku, meta),
-        price: null,
-        stock: 0,
-        status: true,
-        featuresMeta: meta,
-      };
-
-      buildVariantRowFromTemplate({
-        index: nextIndex,
-        variant,
-        container,
-        emptyState,
-      });
-    };
-
-    // Si hay opciones activas y ya se usaron todas las combinaciones posibles,
-    // dar al usuario la opción explícita de crear una variante especial sin opciones.
-    if (combos.length && !featuresMeta.length) {
-      if (typeof window.showConfirm === 'function') {
-        window.showConfirm({
-          type: 'info',
-          header: 'Crear variante especial',
-          title: 'Todas las combinaciones ya están usadas',
-          message:
-            'Ya has configurado todas las combinaciones posibles con las opciones seleccionadas. ' +
-            'Si continúas, se creará una variante especial sin valores de opción (no ligada a talla/color, etc.).',
-          confirmText: 'Sí, crear variante especial',
-          cancelText: 'No, cancelar',
-          onConfirm: () => {
-            createVariant([]);
-          },
+        const key = buildCombinationKey(normalizedFeatureIds);
+        const duplicated = variants.some((variant, index) => {
+            if (editingIndex !== null && index === editingIndex) {
+                return false;
+            }
+            return buildCombinationKey(variant.featureIds) === key;
         });
-      } else if (
-        window.confirm(
-          'Ya has configurado todas las combinaciones posibles con las opciones seleccionadas. ' +
-            '¿Quieres crear una variante especial sin valores de opción?',
-        )
-      ) {
-        createVariant([]);
-      }
 
-      return;
-    }
+        if (duplicated) {
+            if (validator) {
+                const duplicateField = modalOptions.querySelector('[data-option-select]') || skuInput;
+                validator.showError(duplicateField, 'Esta combinacion de opciones ya fue agregada. Selecciona otra.');
+            }
+            return {
+                valid: false,
+                message: 'Esta combinacion de opciones ya fue agregada. Selecciona otra.',
+            };
+        }
 
-    // Caso normal: crear variante usando la combinación asignada (si la hay)
-    createVariant(featuresMeta);
-  }
-
-  function hydrateInitialVariants() {
-    if (!initialVariants.length) return;
-
-    initialVariants.forEach((row, idx) => {
-      const featuresMeta = (row.features || []).map((feat) => {
-        const meta = index.featureToOption.get(feat.id);
-        if (meta) return meta;
         return {
-          optionId: feat.option_id,
-          optionName: '',
-          featureId: feat.id,
-          featureValue: feat.value,
+            valid: true,
+            data: {
+                id: editingIndex !== null ? variants[editingIndex].id : null,
+                sku,
+                price: priceRaw,
+                stock: String(Math.floor(stockNum)),
+                status: statusActiveInput.checked,
+                featureIds: normalizedFeatureIds,
+            },
         };
-      }).filter(Boolean);
-
-      const variant = {
-        id: row.id,
-        sku: row.sku,
-        price: row.price,
-        stock: row.stock,
-        status: !!row.status,
-        featuresMeta,
-      };
-
-      buildVariantRowFromTemplate({
-        templateHtml,
-        index: idx,
-        variant,
-        container,
-        emptyState,
-      });
-    });
-  }
-
-  function handleContainerClick(event) {
-    const button = event.target.closest('[data-action="remove-variant"]');
-    if (!button) return;
-
-    const row = button.closest('.variant-row');
-    if (!row) return;
-    const labelCell = row.querySelector('.column-variant-options');
-    const rawLabel = labelCell ? labelCell.textContent || '' : '';
-    const variantLabel = rawLabel.trim() || 'esta variante';
-
-    const doRemove = () => {
-      row.remove();
-      reindexVariantRows(container, emptyState);
-    };
-
-    if (typeof window.showConfirm === 'function') {
-      window.showConfirm({
-        type: 'danger',
-        header: 'Eliminar variante',
-        title: '¿Deseas eliminar esta variante?',
-        message:
-          'Vas a eliminar la variante <strong>' +
-          variantLabel +
-          '</strong>. Esta acción no se puede deshacer y afectará el stock disponible para esta combinación.',
-        confirmText: 'Sí, eliminar variante',
-        cancelText: 'No, conservar',
-        onConfirm: doRemove,
-      });
-    } else if (window.confirm('¿Seguro que deseas eliminar ' + variantLabel + '?')) {
-      doRemove();
     }
-  }
 
-  container.addEventListener('click', handleContainerClick);
+    function renderRows() {
+        const rows = variants
+            .map((variant, index) => {
+                const featuresMeta = getFeaturesMeta(variant.featureIds);
+                const label = createVariantLabel(featuresMeta);
+                const statusText = variant.status ? 'Activo' : 'Inactivo';
+                const statusClass = variant.status ? 'success' : 'danger';
+                const statusicon = variant.status ? 'ri-checkbox-circle-fill' : 'ri-close-circle-fill';
 
-  if (addButton) {
-    addButton.addEventListener('click', (event) => {
-      event.preventDefault();
-      addManualVariant();
-    });
-  }
+                const hiddenId = `<input type="hidden" name="variants[${index}][id]" value="${escapeHtml(variant.id ?? '')}">`;
+                const hiddenSku = `<input type="hidden" name="variants[${index}][sku]" value="${escapeHtml(variant.sku)}">`;
+                const hiddenPrice = `<input type="hidden" name="variants[${index}][price]" value="${escapeHtml(variant.price)}">`;
+                const hiddenStock = `<input type="hidden" name="variants[${index}][stock]" value="${escapeHtml(variant.stock)}">`;
+                const hiddenStatus = `<input type="hidden" name="variants[${index}][status]" value="${variant.status ? '1' : '0'}">`;
+                const hiddenFeatures = variant.featureIds
+                    .map((featureId) => `<input type="hidden" name="variants[${index}][features][]" value="${featureId}">`)
+                    .join('');
 
-  if (generateButton) {
-    generateButton.addEventListener('click', (event) => {
-      event.preventDefault();
-      // Antes de regenerar, comprobar si se eliminarán variantes automáticas
-      // y, de ser así, solicitar confirmación explícita.
+                return `
+          <tr class="" data-index="${index}">
+            <td class="column-name-td">
+              <div class="variant-label">${escapeHtml(label)}</div>
+              ${hiddenId}${hiddenFeatures}
+            </td>
+            <td class="column-variant-sku">
+              ${escapeHtml(variant.sku)}
+              ${hiddenSku}
+            </td>
+            <td class="column-variant-price">
+              ${escapeHtml(formatPrice(variant.price))}
+              ${hiddenPrice}
+            </td>
+            <td class="column-variant-stock">
+              ${escapeHtml(variant.stock)}
+              ${hiddenStock}
+            </td>
+            <td class="column-variant-status">
+              <span class="badge badge-${statusClass}">
+                <i class="${statusicon}"></i>
+                ${statusText}
+              </span>
+              ${hiddenStatus}
+            </td>
+            <td class="column-actions-td">
+                <button class="boton-show-actions">
+                    <i class="ri-more-fill"></i>
+                </button>
+                <div class="tabla-botones">
+                    <button type="button" class="boton-sm boton-warning" data-action="edit-variant" data-index="${index}" title="Editar variante">
+                    <i class="ri-edit-circle-fill"></i>
+                    <span class="boton-sm-text">Editar Variante</span>
+                    </button>
 
-      const sets = collectOptionFeatureSets();
-      const combos = buildCartesianProduct(sets, index);
-      const body = container.querySelector('[data-role="variants-body"]') || container;
+                    <button type="button" class="boton-sm boton-danger" data-action="remove-variant" data-index="${index}" title="Eliminar variante">
+                    <i class="ri-delete-bin-2-fill"></i>
+                        <span class="boton-sm-text">Eliminar Variante</span>
+                    </button>
+                </div>
+            </td>
+          </tr>`;
+            })
+            .join('');
 
-      const existingByKey = new Map();
-      const autoRows = body.querySelectorAll('.variant-row[data-auto="1"]');
-      autoRows.forEach((row) => {
-        const featureInputs = row.querySelectorAll('input[name$="[features][]"]');
-        const ids = Array.from(featureInputs)
-          .map((inp) => Number(inp.value))
-          .filter((id) => Number.isFinite(id))
-          .sort((a, b) => a - b);
-        if (!ids.length) return;
-        const key = ids.join('-');
-        if (!key) return;
-        existingByKey.set(key, row);
-      });
+        if (rows) {
+            tbody.innerHTML = rows;
+            if (emptyState) {
+                emptyState.classList.add('is-hidden');
+            }
+        } else {
+            tbody.innerHTML = emptyState ? emptyState.outerHTML : '';
+        }
+    }
 
-      let keysToRemove = [];
-      if (!combos.length) {
-        keysToRemove = Array.from(existingByKey.keys());
-      } else {
-        const mapCopy = new Map(existingByKey);
-        combos.forEach((combo) => {
-          const featureIds = combo.features
-            .map((meta) => Number(meta.featureId))
-            .filter((id) => Number.isFinite(id))
-            .sort((a, b) => a - b);
-          const key = featureIds.join('-');
-          if (key && mapCopy.has(key)) {
-            mapCopy.delete(key);
-          }
+    function resetModalError() {
+        modalError.hidden = true;
+        modalError.textContent = '';
+    }
+
+    function setModalError(message) {
+        modalError.hidden = false;
+        modalError.textContent = message;
+    }
+
+    function buildModalOptions(selectedFeatureIds = []) {
+        if (!options.length) {
+            modalOptions.innerHTML = '<p class="variant-modal-no-options">No hay opciones disponibles. Crea opciones y valores para generar variantes.</p>';
+            return;
+        }
+
+        const selectedSet = new Set(selectedFeatureIds.map((id) => Number(id)));
+
+        modalOptions.innerHTML = options
+            .map((option) => {
+                const optionChoices = option.features
+                    .map((feature) => {
+                        const label = option.isColor
+                            ? (feature.value || feature.description)
+                            : feature.value;
+                        const selected = selectedSet.has(feature.id) ? 'selected' : '';
+                        return `<option value="${feature.id}" ${selected}>${escapeHtml(label)}</option>`;
+                    })
+                    .join('');
+
+                return `
+          <div class="input-group">
+            <label class="label-form">${escapeHtml(option.name)}</label>
+            <div class="input-icon-container">
+              <i class="ri-shapes-line input-icon"></i>
+                            <select class="select-form" data-option-select="${option.id}" data-validate="required|selected">
+                <option value="">Seleccione un valor</option>
+                ${optionChoices}
+              </select>
+              <i class="ri-arrow-down-s-line select-arrow"></i>
+            </div>
+          </div>`;
+            })
+            .join('');
+    }
+
+    function openModal(mode, index = null) {
+        if (isModalClosing) {
+            return;
+        }
+
+        editingIndex = mode === 'edit' ? index : null;
+        resetModalError();
+        const bgheader = modal.querySelector('#variantModalHeader');
+
+        if (mode === 'edit' && editingIndex !== null && variants[editingIndex]) {
+            bgheader.classList.add('bg-warning');
+            const current = variants[editingIndex];
+            modalTitle.textContent = 'Editar variante';
+            buildModalOptions(current.featureIds);
+            skuInput.value = current.sku;
+            priceInput.value = current.price;
+            stockInput.value = current.stock;
+            statusActiveInput.checked = Boolean(current.status);
+            statusInactiveInput.checked = !Boolean(current.status);
+        } else {
+            modalTitle.textContent = 'Agregar variante';
+            bgheader.classList.remove('bg-warning');
+            bgheader.classList.add('bg-success');
+            buildModalOptions([]);
+            const labels = [];
+            skuInput.value = buildSkuSuggestion(baseSkuInput ? baseSkuInput.value : '', labels);
+            priceInput.value = '';
+            stockInput.value = '0';
+            statusActiveInput.checked = true;
+            statusInactiveInput.checked = false;
+        }
+
+        clearModalFieldFeedback();
+
+        const sidebar = document.getElementById('logo-sidebar');
+        if (sidebar) {
+            sidebar.style.zIndex = '1';
+        }
+
+        modal.hidden = false;
+        modal.classList.remove('is-open');
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+
+        const dialog = modal.querySelector('.variant-crud-modal-dialog');
+        if (dialog) {
+            dialog.classList.remove('animate-out');
+            dialog.classList.add('animate-in');
+        }
+    }
+
+    function closeModal() {
+        if (isModalClosing || modal.hidden) {
+            return;
+        }
+
+        isModalClosing = true;
+
+        const dialog = modal.querySelector('.variant-crud-modal-dialog');
+        if (dialog) {
+            dialog.classList.remove('animate-in');
+            dialog.classList.add('animate-out');
+        }
+
+        window.setTimeout(() => {
+            const sidebar = document.getElementById('logo-sidebar');
+            if (sidebar) {
+                sidebar.style.zIndex = '';
+            }
+
+            modal.classList.remove('is-open');
+            modal.hidden = true;
+            modal.setAttribute('aria-hidden', 'true');
+            if (dialog) {
+                dialog.classList.remove('animate-out');
+            }
+
+            editingIndex = null;
+            resetModalError();
+            clearModalFieldFeedback();
+            isModalClosing = false;
+        }, 260);
+    }
+
+    function saveModalVariant() {
+        if (!validateModalFields()) {
+            return;
+        }
+
+        const result = collectFormVariantDraft();
+        if (!result.valid) {
+            if (!validator) {
+                setModalError(result.message);
+            }
+            return;
+        }
+
+        if (editingIndex !== null && variants[editingIndex]) {
+            variants[editingIndex] = result.data;
+        } else {
+            variants.push(result.data);
+        }
+
+        renderRows();
+        closeModal();
+    }
+
+    function removeVariant(index) {
+        if (!Number.isInteger(index) || index < 0 || index >= variants.length) {
+            return;
+        }
+
+        const doDelete = () => {
+            variants.splice(index, 1);
+            renderRows();
+        };
+
+        if (typeof window.showConfirm === 'function') {
+            window.showConfirm({
+                type: 'danger',
+                header: 'Eliminar variante',
+                title: 'Deseas eliminar esta variante?',
+                message: 'Esta accion no se puede deshacer.',
+                confirmText: 'Si, eliminar',
+                cancelText: 'Cancelar',
+                onConfirm: doDelete,
+            });
+            return;
+        }
+
+        if (window.confirm('Deseas eliminar esta variante?')) {
+            doDelete();
+        }
+    }
+
+    if (!options.length) {
+        showWarning(
+            'Variantes sin opciones',
+            'No hay opciones configuradas. Primero crea opciones y valores para poder registrar variantes.'
+        );
+    }
+
+    if (addButton) {
+        addButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            openModal('create');
         });
-        keysToRemove = Array.from(mapCopy.keys());
-      }
+    }
 
-      const willRemoveAutos = keysToRemove.length > 0;
+    saveVariantBtn.addEventListener('click', saveModalVariant);
 
-      if (willRemoveAutos && typeof window.showConfirm === 'function') {
-        window.showConfirm({
-          type: 'warning',
-          header: 'Actualizar variantes',
-          title: '¿Actualizar variantes según las opciones?',
-          message:
-            'Al actualizar variantes según las opciones actuales se eliminarán algunas combinaciones automáticas que ' +
-            'ya no serán válidas. Esta acción no afecta variantes manuales, pero no se puede deshacer.',
-          confirmText: 'Sí, actualizar variantes',
-          cancelText: 'No, mantener como está',
-          onConfirm: () => {
-            generateVariants();
-          },
-        });
-      } else {
-        generateVariants();
-      }
+    modal.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+
+        if (target.closest('[data-action="close-variant-modal"]')) {
+            closeModal();
+            return;
+        }
     });
-  }
 
-  renderOptionsUi();
-  hydrateInitialVariants();
-  reindexVariantRows(container, emptyState);
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.hidden) {
+            closeModal();
+        }
+    });
 
-  return {
-    regenerate: generateVariants,
-    addVariant: addManualVariant,
-  };
+    container.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-action]');
+        if (!button) return;
+
+        const rowIndex = Number(button.dataset.index);
+        if (!Number.isInteger(rowIndex)) return;
+
+        if (button.dataset.action === 'edit-variant') {
+            openModal('edit', rowIndex);
+            return;
+        }
+
+        if (button.dataset.action === 'remove-variant') {
+            removeVariant(rowIndex);
+        }
+    });
+
+    renderRows();
+
+    return {
+        openCreateModal: () => openModal('create'),
+        openEditModal: (index) => openModal('edit', index),
+        getVariants: () => [...variants],
+    };
 }
 
-// Inicialización automática de respaldo por si no se llama
-// explícitamente a window.initProductVariantsManager desde Blade.
+// Inicializacion automatica de respaldo por si no se llama explicitamente.
 document.addEventListener('DOMContentLoaded', () => {
-  const autoContainer = document.getElementById('variantsContainer');
-  if (!autoContainer) return;
+    const autoContainer = document.getElementById('variantsContainer');
+    if (!autoContainer || autoContainer.dataset.variantsManagerInitialized === '1') {
+        return;
+    }
 
-  if (autoContainer.dataset.variantsManagerInitialized === '1') {
-    return;
-  }
-
-  initProductVariantsManager({
-    containerId: 'variantsContainer',
-    emptyStateId: 'variantsEmpty',
-    addButtonId: 'addVariantBtn',
-    templateId: 'variantRowTemplate',
-    optionsContainerId: 'productOptionsContainer',
-    generateButtonId: 'generateVariantsBtn',
-    baseSkuInputId: 'sku',
-  });
+    initProductVariantsManager({
+        containerId: 'variantsContainer',
+        emptyStateId: 'variantsEmpty',
+        addButtonId: 'addVariantBtn',
+        baseSkuInputId: 'sku',
+    });
 });

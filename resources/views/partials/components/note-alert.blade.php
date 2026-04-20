@@ -4,7 +4,7 @@
     @if(!is_null($autoDismiss) && $autoDismiss > 0) data-auto-dismiss="{{ $autoDismiss }}" @endif
     @if(!empty($persistKey)) data-persist-key="{{ $persistKey }}" @endif
 >
-    <i class="{{ $icon }}"></i>
+    <i class="note-alert-icon {{ $icon }}"></i>
     <span>
         {{ trim($slot) !== '' ? $slot : $message }}
     </span>

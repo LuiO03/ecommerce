@@ -302,12 +302,16 @@
                     @endif
                 </div>
             @else
-                <div class="filters-empty">
-                    <i class="ri-box-3-line"></i>
+                <div class="card-empty">
+                    <div class="card-empty-icon card-danger">
+                        <i class="ri-close-large-fill"></i>
+                    </div>
                     @if (!empty($search))
-                        <span>No se encontraron productos para "{{ $search }}".</span>
+                        <h2 class="card-title">No se encontraron productos</h2>
+                        <p>No se encontraron resultados para "{{ $search }}".</p>
                     @else
-                        <span>No hay productos para esta categoría o estos filtros.</span>
+                        <h2 class="card-title">No hay productos disponibles</h2>
+                        <p>No hay productos para esta categoría o estos filtros.</p>
                     @endif
                 </div>
             @endif

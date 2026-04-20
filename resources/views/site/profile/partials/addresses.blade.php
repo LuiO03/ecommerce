@@ -14,15 +14,11 @@
     </div>
     @if (!isset($addresses) || $addresses->isEmpty())
         <div class="card-empty">
-            <div class="wishlist-empty-icon">
-                <i class="ri-map-pin-line"></i>
+            <div class="card-empty-icon card-success">
+                <i class="ri-map-pin-fill"></i>
             </div>
             <h3 class="card-title">Aún no tienes direcciones guardadas</h3>
             <p>Registra una dirección para agilizar tus próximas compras.</p>
-            <button type="button" class="boton-form boton-success" data-address-modal-open="create">
-                <span class="boton-form-icon"><i class="ri-truck-fill"></i></span>
-                <span class="boton-form-text">Agregar dirección</span>
-            </button>
         </div>
     @else
         <div class="addresses-grid">

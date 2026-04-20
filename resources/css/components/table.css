@@ -122,9 +122,14 @@
 }
 /* cabecera y filas pares de otro color */
 .tabla-normal thead th {
-    background-color: var(--color-table-striped-bg);
+    background-color: var(--color-table-header-bg);
+    text-align: start;
 }
+/*
 .tabla-normal tbody tr:nth-child(even) {
+}*/
+ /* para fila impares */
+.tabla-normal tbody tr:nth-child(odd) {
     background-color: var(--color-table-striped-bg);
 }
 
@@ -621,6 +626,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 }
 
 .column-actions-td .boton-show-actions,
+.tabla-normal .column-actions-td .boton-show-actions,
 .dtr-data .boton-show-actions {
     display: none !important;
 }
@@ -781,6 +787,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         z-index: 140;
     }
 
+    .tabla-normal .column-actions-td .boton-show-actions,
     .column-actions-td .boton-show-actions {
         width: 38px;
         height: max-content;

@@ -20,39 +20,39 @@
             $hasVariantErrors = collect($errors->keys())->contains(fn($key) => str_starts_with($key, 'variants'));
         @endphp
 
-        @if ($errors->any())
-            <div class="form-error-banner">
-                <i class="ri-error-warning-line form-error-icon"></i>
-                <div>
-                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
+
 
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
         <div id="productFormTabs" class="tabs-container" data-tabs
             data-tabs-initial="{{ $hasVariantErrors ? 'variants' : 'general' }}"
             data-tabs-storage-key="productCreateActiveTab">
+
             <div class="tabs-nav" role="tablist" aria-label="Secciones del producto">
                 <button type="button" class="tab-button" data-tab-target="general" role="tab"
                     aria-controls="productTabPanelGeneral" aria-selected="true">
-                    <i class="ri-information-line"></i>
                     <span>Información</span>
                 </button>
                 <button type="button" class="tab-button" data-tab-target="variants" role="tab"
                     aria-controls="productTabPanelVariants" aria-selected="false">
-                    <i class="ri-shapes-line"></i>
                     <span>Variantes</span>
                 </button>
             </div>
 
             <div class="tab-panels">
                 <section id="productTabPanelGeneral" class="tab-panel" data-tab-panel="general">
+                    @if ($errors->any())
+                        <div class="form-error-banner">
+                            <i class="ri-error-warning-line form-error-icon"></i>
+                            <div>
+                                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
                     <div class="form-body">
                         <div class="form-row-fill">
                             <div class="input-group">
@@ -64,7 +64,8 @@
                                     <i class="ri-archive-stack-line input-icon"></i>
                                     <select name="category_id" id="category_id" class="select-form" required
                                         data-validate="required|selected">
-                                        <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Seleccione una
+                                        <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>
+                                            Seleccione una
                                             categoría</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
@@ -84,7 +85,8 @@
                                 <div class="input-icon-container">
                                     <i class="ri-hashtag input-icon"></i>
                                     <input type="text" name="sku" id="sku" class="input-form" required
-                                        value="{{ old('sku') }}" placeholder="Ej. PROD-001" data-validate="required|min:3|max:100">
+                                        value="{{ old('sku') }}" placeholder="Ej. PROD-001"
+                                        data-validate="required|min:3|max:100">
                                 </div>
                             </div>
                             <div class="input-group">
@@ -106,9 +108,11 @@
                                 </label>
                                 <div class="binary-switch">
                                     <input type="radio" name="status" id="statusActive" value="1"
-                                        class="switch-input switch-input-on" {{ old('status', 1) == 1 ? 'checked' : '' }}>
+                                        class="switch-input switch-input-on"
+                                        {{ old('status', 1) == 1 ? 'checked' : '' }}>
                                     <input type="radio" name="status" id="statusInactive" value="0"
-                                        class="switch-input switch-input-off" {{ old('status') == 0 ? 'checked' : '' }}>
+                                        class="switch-input switch-input-off"
+                                        {{ old('status') == 0 ? 'checked' : '' }}>
                                     <div class="switch-slider"></div>
                                     <label for="statusActive" class="switch-label switch-label-on"><i
                                             class="ri-checkbox-circle-line"></i> Activo</label>
@@ -126,18 +130,18 @@
                                 </label>
                                 <div class="input-icon-container">
                                     <i class="ri-price-tag-3-line input-icon"></i>
-                                    <input type="number" name="price" id="price" class="input-form" required min="0"
-                                        step="0.01" value="{{ old('price') }}" placeholder="0.00"
-                                        data-validate="required|minValue:0">
+                                    <input type="number" name="price" id="price" class="input-form" required
+                                        min="0" step="0.01" value="{{ old('price') }}"
+                                        placeholder="0.00" data-validate="required|minValue:0">
                                 </div>
                             </div>
                             <div class="input-group">
                                 <label for="discount" class="label-form">Descuento (%)</label>
                                 <div class="input-icon-container">
                                     <i class="ri-discount-percent-line input-icon"></i>
-                                    <input type="number" name="discount" id="discount" class="input-form" min="0"
-                                        step="1" value="{{ old('discount') }}" placeholder="Opcional"
-                                        data-validate="minValue:0">
+                                    <input type="number" name="discount" id="discount" class="input-form"
+                                        min="0" step="1" value="{{ old('discount') }}"
+                                        placeholder="Opcional" data-validate="minValue:0">
                                 </div>
                             </div>
                             <div class="input-group">
@@ -146,8 +150,9 @@
                                 </label>
                                 <div class="input-icon-container">
                                     <i class="ri-stack-line input-icon"></i>
-                                    <input type="number" name="min_stock" id="min_stock" class="input-form" min="0"
-                                        step="1" value="{{ old('min_stock') }}" placeholder="Ej. 10" data-validate="minValue:0">
+                                    <input type="number" name="min_stock" id="min_stock" class="input-form"
+                                        min="0" step="1" value="{{ old('min_stock') }}"
+                                        placeholder="Ej. 10" data-validate="minValue:0">
                                 </div>
                             </div>
                         </div>
@@ -173,7 +178,8 @@
                                         <p>Arrastra una imagen aquí</p>
                                         <span>o haz clic para seleccionar</span>
                                         <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple hidden
+                                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*"
+                                            multiple hidden
                                             data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
                                     </div>
                                     <div id="galleryPreviewContainer" class="preview-container"></div>
@@ -228,7 +234,9 @@
                 });
 
                 if (window.initTabsManager) {
-                    window.initTabsManager({ selector: '#productFormTabs' });
+                    window.initTabsManager({
+                        selector: '#productFormTabs'
+                    });
                 }
 
                 if (window.initGalleryCreateWithConfig) {
@@ -257,9 +265,6 @@
                         containerId: 'variantsContainer',
                         emptyStateId: 'variantsEmpty',
                         addButtonId: 'addVariantBtn',
-                        templateId: 'variantRowTemplate',
-                        optionsContainerId: 'productOptionsContainer',
-                        generateButtonId: 'generateVariantsBtn',
                         baseSkuInputId: 'sku',
                     });
                 }

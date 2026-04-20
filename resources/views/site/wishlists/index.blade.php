@@ -35,7 +35,7 @@
 
         @if (!Auth::check())
             <div class="card-empty">
-                <div class="wishlist-empty-icon">
+                <div class="card-empty-icon card-pink">
                     <i class="ri-user-3-line"></i>
                 </div>
                 <h2 class="card-title">Inicia sesión para ver tu lista de deseos</h2>
@@ -49,7 +49,7 @@
             </div>
         @elseif($wishlists->isEmpty())
             <div class="card-empty">
-                <div class="wishlist-empty-icon">
+                <div class="card-empty-icon card-pink">
                     <i class="ri-heart-fill "></i>
                 </div>
                 <h2 class="card-title">No tienes productos en tu lista de deseos</h2>
