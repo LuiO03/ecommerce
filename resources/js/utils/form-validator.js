@@ -1123,12 +1123,12 @@ class FormValidator {
 
             // Caso especial: inputs de archivo de galería
             if (gallerySection) {
-                const previewContainer = gallerySection.querySelector('.preview-container');
-                if (previewContainer && previewContainer.parentNode) {
-                    // Insertar el mensaje inmediatamente ANTES del contenedor de previews
-                    previewContainer.parentNode.insertBefore(errorElement, previewContainer);
+                const mediaLayout = gallerySection.querySelector('.gallery-media-layout');
+                if (mediaLayout && mediaLayout.parentNode) {
+                    // Insertar el mensaje debajo del layout para no romper el grid interno
+                    mediaLayout.after(errorElement);
                 } else {
-                    // Fallback si por alguna razón no existe el contenedor
+                    // Fallback si por alguna razón no existe el layout
                     field.after(errorElement);
                 }
             } else {

@@ -28,8 +28,6 @@
                                 </button>
                             @endforeach
                         </div>
-                    @else
-                        <div></div>
                     @endif
 
                     <div class="product-gallery-main">
@@ -52,15 +50,27 @@
                             @endforelse
                         </div>
 
-                        @if ($images->count() > 1)
-                            <button class="gallery-nav gallery-prev" type="button" aria-label="Anterior">
-                                <i class="ri-arrow-left-s-line"></i>
-                            </button>
-                            <button class="gallery-nav gallery-next" type="button" aria-label="Siguiente">
-                                <i class="ri-arrow-right-s-line"></i>
-                            </button>
-                        @endif
                     </div>
+
+                    @if ($images->isNotEmpty())
+                        <div class="product-gallery-controls" aria-label="Controles de galeria">
+                            <button class="gallery-action gallery-expand" type="button" aria-label="Agrandar imagen"
+                                title="Agrandar imagen" data-gallery-expand>
+                                <i class="ri-fullscreen-line"></i>
+                            </button>
+
+                            @if ($images->count() > 1)
+                                <div class="gallery-nav-stack">
+                                    <button class="gallery-nav gallery-prev" type="button" aria-label="Anterior">
+                                        <i class="ri-arrow-left-s-line"></i>
+                                    </button>
+                                    <button class="gallery-nav gallery-next" type="button" aria-label="Siguiente">
+                                        <i class="ri-arrow-right-s-line"></i>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -75,20 +85,19 @@
                     <p class="product-sku">SKU: {{ $product->sku }}</p>
                 </div>
                 <div class="product-price">
-                    <div class="flex w-full gap-2 items-center">
-                        <span class="product-price-current" data-price-current>
-                            S/.{{ number_format($discounted, 2) }}
-                        </span>
-                        @if ($hasDiscount)
-                            <span class="product-discount-badge">-{{ number_format($discountPercent, 0) }}% OFF</span>
-                        @endif
-                    </div>
                     @if ($hasDiscount)
                         <span class="product-price-original" data-price-original>
                             S/.{{ number_format($product->price, 2) }}
                         </span>
                     @endif
+                    <span class="product-price-current" data-price-current>
+                        S/.{{ number_format($discounted, 2) }}
+                    </span>
+                    @if ($hasDiscount)
+                        <span class="product-discount-badge">-{{ number_format($discountPercent, 0) }}% OFF</span>
+                    @endif
                 </div>
+                <hr class="w-full my-0 border-default">
                 <div class="product-status-stock">
                     <div class="product-meta">
                         <span class="product-status {{ $product->status ? 'is-active' : 'is-inactive' }}">
@@ -109,7 +118,6 @@
                         @endif
                     </span>
                 </div>
-                <hr class="w-full my-0 border-default">
                 @if ($variantOptions->isNotEmpty())
                     <div class="product-variants">
                         @foreach ($variantOptions as $option)
@@ -144,7 +152,6 @@
                             </div>
                         @endforeach
                     </div>
-                    <hr class="w-full my-0 border-default">
                 @endif
 
 
@@ -171,7 +178,7 @@
                     </div>
                 </div>
 
-                <hr class="w-full my-0 border-default">
+
 
                 <div class="product-description">
                     <h3 class="subtitle-variant-product">Descripción</h3>
