@@ -12,8 +12,8 @@
         </a>
     </x-slot>
 
-    <form action="{{ route('admin.families.store') }}" method="POST" enctype="multipart/form-data" class="form-container"
-        autocomplete="off" id="familyForm">
+    <form action="{{ route('admin.families.store') }}" method="POST" enctype="multipart/form-data"
+        class="form-container" autocomplete="off" id="familyForm">
         @csrf
 
         {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
@@ -31,8 +31,9 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
-
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
         <div class="form-columns-row">
             <div class="form-column">
                 <!-- === Nombre === -->
@@ -94,7 +95,8 @@
                         <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
                             alt="Vista previa">
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="boton-form boton-info" id="changeImageBtn" title="Cambiar imagen">
+                            <button type="button" class="boton-form boton-info" id="changeImageBtn"
+                                title="Cambiar imagen">
                                 <i class="ri-upload-2-line"></i>
                                 <span class="boton-form-text">Cambiar</span>
                             </button>

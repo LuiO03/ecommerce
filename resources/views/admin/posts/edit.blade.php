@@ -38,7 +38,9 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
 
         <div class="form-body">
             <div class="form-row-fit">

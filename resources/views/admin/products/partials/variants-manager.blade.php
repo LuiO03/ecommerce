@@ -116,7 +116,7 @@
                     <div class="input-icon-container">
                         <i class="ri-hashtag input-icon"></i>
                         <input type="text" id="variantModalSku" class="input-form"
-                            placeholder="Ej. PROD-001-NEGRO-M" data-validate="required|min:3|max:100">
+                            placeholder="Ej. PROD-001-NEGRO-M" data-validate="min:3|max:100">
                     </div>
                 </div>
 
@@ -135,7 +135,7 @@
                     <div class="input-icon-container">
                         <i class="ri-stack-line input-icon"></i>
                         <input type="number" id="variantModalStock" class="input-form" min="0" step="1"
-                            placeholder="0" data-validate="required|minValue:0">
+                            placeholder="0" data-validate="minValue:0">
                     </div>
                 </div>
 

@@ -45,14 +45,9 @@
             </div>
         @endif
 
-        <x-alert
-            type="info"
-            title="Información:"
-            :dismissible="true"
-            :items="[
-                'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.'
-            ]"
-        />
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
 
         <div class="form-columns-row">
             <div class="form-column">
@@ -151,7 +146,8 @@
 
                         <!-- Overlay único para todas las imágenes -->
                         <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="boton-form boton-info" id="changeImageBtn" title="Cambiar imagen">
+                            <button type="button" class="boton-form boton-info" id="changeImageBtn"
+                                title="Cambiar imagen">
                                 <i class="ri-upload-2-line"></i>
                                 <span class="boton-form-text">Cambiar</span>
                             </button>

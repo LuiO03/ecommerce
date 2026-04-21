@@ -51,24 +51,24 @@
                             @if ($purchaseNumber)
                                 <div class="checkout-payment-pill checkout-payment-pill--neutral">
                                     <i class="ri-hashtag"></i>
-                                    <span>Nro. de pedido:</span>
-                                    <strong>{{ $purchaseNumber }}</strong>
+                                    <strong>Nro. de pedido:</strong>
+                                    <span>{{ $purchaseNumber }}</span>
                                 </div>
                             @endif
 
                             @if ($transactionDate)
                                 <div class="checkout-payment-pill checkout-payment-pill--neutral">
                                     <i class="ri-calendar-event-line"></i>
-                                    <span>Fecha y hora:</span>
-                                    <strong>{{ $transactionDate->format('d/m/Y H:i:s') }}</strong>
+                                    <strong>Fecha y hora:</strong>
+                                    <span>{{ $transactionDate->format('d/m/Y H:i:s') }}</span>
                                 </div>
                             @endif
 
                             @if ($brand || $cardLast4)
                                 <div class="checkout-payment-pill checkout-payment-pill--neutral">
                                     <i class="ri-bank-card-2-line"></i>
-                                    <span>Tarjeta:</span>
-                                    <strong>
+                                    <strong>Tarjeta:</strong>
+                                    <span>
                                         @if ($brand)
                                             {{ ucfirst($brand) }}
                                         @endif
@@ -78,7 +78,7 @@
                                         @if ($cardLast4)
                                             terminada en {{ $cardLast4 }}
                                         @endif
-                                    </strong>
+                                    </span>
                                 </div>
                             @endif
                         </div>

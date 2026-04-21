@@ -37,8 +37,6 @@
             $hasVariantErrors = collect($errors->keys())->contains(fn($key) => str_starts_with($key, 'variants'));
         @endphp
 
-
-
         <div id="productFormTabs" class="tabs-container" data-tabs
             data-tabs-initial="{{ $hasVariantErrors ? 'variants' : 'general' }}"
             data-tabs-storage-key="productEditActiveTab">

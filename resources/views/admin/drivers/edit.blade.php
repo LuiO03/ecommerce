@@ -14,18 +14,20 @@
             <span class="boton-form-text">Volver</span>
         </a>
         @can('conductores.delete')
-        <form action="{{ route('admin.drivers.destroy', $driver) }}" method="POST" class="delete-form" data-entity="conductor" style="margin: 0;">
-            @csrf
-            @method('DELETE')
-            <button class="boton boton-danger" type="submit">
-                <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
-                <span class="boton-text">Eliminar</span>
-            </button>
-        </form>
+            <form action="{{ route('admin.drivers.destroy', $driver) }}" method="POST" class="delete-form"
+                data-entity="conductor" style="margin: 0;">
+                @csrf
+                @method('DELETE')
+                <button class="boton boton-danger" type="submit">
+                    <span class="boton-icon"><i class="ri-delete-bin-6-fill"></i></span>
+                    <span class="boton-text">Eliminar</span>
+                </button>
+            </form>
         @endcan
     </x-slot>
 
-    <form action="{{ route('admin.drivers.update', $driver) }}" method="POST" class="form-container" autocomplete="off" id="driverForm">
+    <form action="{{ route('admin.drivers.update', $driver) }}" method="POST" class="form-container" autocomplete="off"
+        id="driverForm">
         @csrf
         @method('PUT')
 
@@ -43,8 +45,9 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
-
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
         <div class="form-body">
             <div class="form-row-fill">
                 <div class="input-group">
@@ -54,7 +57,8 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-user-line input-icon"></i>
-                        <select name="user_id" id="user_id" class="select-form" required data-validate="required|selected">
+                        <select name="user_id" id="user_id" class="select-form" required
+                            data-validate="required|selected">
                             <option value="" disabled>Seleccione un usuario</option>
                             @foreach ($users as $user)
                                 <option value="{{ $user->id }}" @selected(old('user_id', $driver->user_id) == $user->id)>
@@ -73,7 +77,8 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-steering-2-line input-icon"></i>
-                        <select name="vehicle_type" id="vehicle_type" class="select-form" required data-validate="required|selected">
+                        <select name="vehicle_type" id="vehicle_type" class="select-form" required
+                            data-validate="required|selected">
                             <option value="" disabled>Seleccione un tipo</option>
                             <option value="motorcycle" @selected(old('vehicle_type', $driver->vehicle_type) === 'motorcycle')>Motocicleta</option>
                             <option value="car" @selected(old('vehicle_type', $driver->vehicle_type) === 'car')>Auto</option>
@@ -86,7 +91,9 @@
                     <label for="vehicle_plate" class="label-form">Placa</label>
                     <div class="input-icon-container">
                         <i class="ri-hashtag input-icon"></i>
-                        <input type="text" name="vehicle_plate" id="vehicle_plate" class="input-form" value="{{ old('vehicle_plate', $driver->vehicle_plate) }}" placeholder="ABC-123" data-validate="max:20">
+                        <input type="text" name="vehicle_plate" id="vehicle_plate" class="input-form"
+                            value="{{ old('vehicle_plate', $driver->vehicle_plate) }}" placeholder="ABC-123"
+                            data-validate="max:20">
                     </div>
                 </div>
 
@@ -94,7 +101,9 @@
                     <label for="phone" class="label-form">Teléfono de contacto</label>
                     <div class="input-icon-container">
                         <i class="ri-phone-line input-icon"></i>
-                        <input type="text" name="phone" id="phone" class="input-form" value="{{ old('phone', $driver->phone ?? $driver->user?->phone) }}" placeholder="Teléfono del conductor" data-validate="max:20">
+                        <input type="text" name="phone" id="phone" class="input-form"
+                            value="{{ old('phone', $driver->phone ?? $driver->user?->phone) }}"
+                            placeholder="Teléfono del conductor" data-validate="max:20">
                     </div>
                 </div>
 
@@ -105,7 +114,8 @@
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-focus-2-line input-icon"></i>
-                        <select name="status" id="status" class="select-form" required data-validate="required|selected">
+                        <select name="status" id="status" class="select-form" required
+                            data-validate="required|selected">
                             <option value="" disabled>Seleccione un estado</option>
                             <option value="available" @selected(old('status', $driver->status) === 'available')>Disponible</option>
                             <option value="busy" @selected(old('status', $driver->status) === 'busy')>Ocupado</option>

@@ -43,7 +43,9 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
 
         <div class="form-body">
             <div class="form-row-fit">
@@ -156,7 +158,8 @@
                         <div class="input-group">
                             <label for="overlay_bg_opacity" class="label-form">
                                 Opacidad del fondo
-                                <span id="overlayBgOpacityValue">{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}</span>
+                                <span
+                                    id="overlayBgOpacityValue">{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}</span>
                             </label>
                             <input type="range" name="overlay_bg_opacity" id="overlay_bg_opacity"
                                 class="range-form" min="0" max="1" step="0.05"
@@ -169,7 +172,8 @@
                                 <i class="ri-radio-button-line input-icon"></i>
                                 <input type="text" name="button_text" id="button_text" class="input-form"
                                     value="{{ old('button_text', $cover->button_text) }}"
-                                    placeholder="Ej: Comprar ahora" data-validate="max:100|requiredWith:button_link,button_style">
+                                    placeholder="Ej: Comprar ahora"
+                                    data-validate="max:100|requiredWith:button_link,button_style">
                             </div>
                         </div>
                         <div class="input-group">
@@ -230,7 +234,8 @@
                                 <i class="ri-links-line input-icon"></i>
                                 <input type="url" name="button_link" id="button_link" class="input-form"
                                     value="{{ old('button_link', $cover->button_link) }}"
-                                    placeholder="https://example.com" data-validate="url|requiredWith:button_text,button_style">
+                                    placeholder="https://example.com"
+                                    data-validate="url|requiredWith:button_text,button_style|max:255">
                             </div>
                         </div>
                     </div>
@@ -312,9 +317,9 @@
                 <span class="boton-form-icon"><i class="ri-paint-brush-fill"></i></span>
                 <span class="boton-form-text">Restablecer</span>
             </button>
-            <button class="boton-form boton-primary" type="submit" id="submitBtn">
+            <button class="boton-form boton-accent" type="submit" id="submitBtn">
                 <span class="boton-form-icon"><i class="ri-save-3-fill"></i></span>
-                <span class="boton-form-text">Guardar Cambios</span>
+                <span class="boton-form-text">Actualizar Portada</span>
             </button>
         </div>
     </form>
@@ -408,11 +413,12 @@
                         const buttonText = buttonTextInput?.value?.trim() || '';
                         const position = positionInput?.value || 'center-center';
                         const color = colorInput?.value || '#FFFFFF';
-                        const bgEnabled = document.querySelector('input[name="overlay_bg_enabled"]:checked')?.value === '1';
+                        const bgEnabled = document.querySelector('input[name="overlay_bg_enabled"]:checked')
+                            ?.value === '1';
                         const bgOpacityRaw = parseFloat(bgOpacityInput?.value);
-                        const bgOpacity = Number.isFinite(bgOpacityRaw)
-                            ? Math.min(1, Math.max(0, bgOpacityRaw))
-                            : 0.35;
+                        const bgOpacity = Number.isFinite(bgOpacityRaw) ?
+                            Math.min(1, Math.max(0, bgOpacityRaw)) :
+                            0.35;
 
                         titleEl.textContent = title;
                         subtextEl.textContent = subtext;

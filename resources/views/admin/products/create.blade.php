@@ -20,8 +20,6 @@
             $hasVariantErrors = collect($errors->keys())->contains(fn($key) => str_starts_with($key, 'variants'));
         @endphp
 
-
-
         <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
         <div id="productFormTabs" class="tabs-container" data-tabs
             data-tabs-initial="{{ $hasVariantErrors ? 'variants' : 'general' }}"
@@ -53,6 +51,9 @@
                             </div>
                         </div>
                     @endif
+                    <x-note-alert type="info" :dismissible="true">
+                        Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+                    </x-note-alert>
                     <div class="form-body">
                         <div class="form-row-fill">
                             <div class="input-group">

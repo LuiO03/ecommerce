@@ -30,7 +30,9 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
 
         <div class="form-body">
             <div class="form-row-fit">
@@ -216,7 +218,7 @@
                                 <i class="ri-links-line input-icon"></i>
                                 <input type="url" name="button_link" id="button_link" class="input-form"
                                     value="{{ old('button_link') }}" placeholder="https://example.com"
-                                    data-validate="url|requiredWith:button_text,button_style">
+                                    data-validate="url|requiredWith:button_text,button_style|max:255">
                             </div>
                         </div>
                     </div>

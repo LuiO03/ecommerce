@@ -13,7 +13,8 @@
             <span class="boton-form-icon"><i class="ri-arrow-go-back-line"></i></span>
             <span class="boton-form-text">Volver</span>
         </a>
-        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="delete-form" data-entity="rol" style="margin: 0;">
+        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="delete-form" data-entity="rol"
+            style="margin: 0;">
             @csrf
             @method('DELETE')
             <button class="boton-form boton-danger" type="submit">
@@ -23,7 +24,8 @@
         </form>
     </x-slot>
 
-    <form action="{{ route('admin.roles.update', $role) }}" method="POST" class="form-container" autocomplete="off" id="roleForm">
+    <form action="{{ route('admin.roles.update', $role) }}" method="POST" class="form-container" autocomplete="off"
+        id="roleForm">
         @csrf
         @method('PATCH')
 
@@ -42,8 +44,9 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
-
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
         <div class="form-columns-row">
             <div class="form-column">
                 <!-- === Nombre === -->
@@ -55,8 +58,8 @@
                     <div class="input-icon-container">
                         <i class="ri-shield-user-line input-icon"></i>
                         <input type="text" name="name" id="name" class="input-form" required
-                            value="{{ old('name', $role->name) }}" placeholder="Ingrese el nombre"
-                            maxlength="100" data-validate="required|min:3|max:100|alphanumeric">
+                            value="{{ old('name', $role->name) }}" placeholder="Ingrese el nombre" maxlength="100"
+                            data-validate="required|min:3|max:100|alphanumeric">
                     </div>
                 </div>
 

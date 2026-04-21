@@ -433,7 +433,7 @@ export function initProductVariantsManager({
             <label class="label-form">${escapeHtml(option.name)}</label>
             <div class="input-icon-container">
               <i class="ri-shapes-line input-icon"></i>
-                            <select class="select-form" data-option-select="${option.id}" data-validate="required|selected">
+                            <select class="select-form" data-option-select="${option.id}" data-validate="selected">
                 <option value="">Seleccione un valor</option>
                 ${optionChoices}
               </select>

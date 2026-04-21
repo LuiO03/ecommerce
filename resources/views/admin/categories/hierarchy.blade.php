@@ -22,7 +22,7 @@
 
     <div class="hierarchy-container">
         <!-- Panel de Estadísticas -->
-        <div class="hierarchy-stats">
+        <div class="module-stats">
             <div class="stat-card ripple-card">
                 <div class="stat-icon card-info">
                     <i class="ri-stack-line"></i>

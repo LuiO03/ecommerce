@@ -8,6 +8,14 @@
         Galería de Portadas
     </x-slot>
     <x-slot name="action">
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
         @can('portadas.create')
             <a href="{{ route('admin.covers.create') }}" class="boton-form boton-accent">
                 <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
@@ -17,7 +25,10 @@
     </x-slot>
 
     <div class="options-wrapper">
-        <div class="tabla-filtros">
+        <aside class="tabla-filtros">
+            <span class="tabla-filtros-title">
+                Buscar
+            </span>
             <div class="tabla-buscador">
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar portadas por nombre" autocomplete="off" />
@@ -25,6 +36,9 @@
                     <i class="ri-close-circle-fill"></i>
                 </button>
             </div>
+            <span class="tabla-filtros-title">
+                Aplicar filtros
+            </span>
             <div class="tabla-select-wrapper">
                 <div class="selector">
                     <select id="sortFilter">
@@ -53,7 +67,15 @@
                 <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
                 <span class="boton-text">Limpiar filtros</span>
             </button>
-        </div>
+            <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-filter-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Mostrar resultados
+                </span>
+            </button>
+        </aside>
 
         <!-- Galería de tarjetas -->
         <div class="covers-gallery" id="coversGallery">

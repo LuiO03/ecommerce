@@ -12,7 +12,8 @@
         </a>
     </x-slot>
 
-    <form action="{{ route('admin.roles.store') }}" method="POST" class="form-container" autocomplete="off" id="roleForm">
+    <form action="{{ route('admin.roles.store') }}" method="POST" class="form-container" autocomplete="off"
+        id="roleForm">
         @csrf
         {{-- Banner de errores de backend (solo si JS fue omitido o falló) --}}
         @if ($errors->any())
@@ -29,8 +30,9 @@
             </div>
         @endif
 
-        <x-alert type="info" title="Información:" :dismissible="true" :items="['Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios.']" />
-
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
         <div class="form-row">
             <div class="form-column">
                 <!-- === Nombre === -->
@@ -42,8 +44,8 @@
                     <div class="input-icon-container">
                         <i class="ri-shield-user-line input-icon"></i>
                         <input type="text" name="name" id="name" class="input-form" required
-                            value="{{ old('name') }}" placeholder="Ingrese el nombre"
-                            maxlength="100" data-validate="required|min:3|max:100|alphanumeric">
+                            value="{{ old('name') }}" placeholder="Ingrese el nombre" maxlength="100"
+                            data-validate="required|min:3|max:100|alphanumeric">
                     </div>
                 </div>
 
