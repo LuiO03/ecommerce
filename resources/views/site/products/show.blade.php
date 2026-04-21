@@ -193,11 +193,17 @@
                 <span>Volver a la categoria</span>
             </a>
         </div>
-    </section>
 
-    @if ($variantsPayload->isNotEmpty())
-        <script type="application/json" id="product-variants-data">
+        @if ($variantsPayload->isNotEmpty())
+            <script type="application/json" id="product-variants-data">
             @json($variantsPayload)
         </script>
-    @endif
+        @endif
+    </section>
+    {{-- Similares (en show.blade.php, por ejemplo) --}}
+    <livewire:site.product-list :category-id="$product->category_id" :exclude-id="$product->id" :limit="8" title="Productos similares" :scope="'category_with_children'" :strict="true"
+        subtitle="Te pueden interesar estos productos de la misma categoría {{ $product->category->name }}" />
+
+    <livewire:site.product-list :limit="8" order-by="cheap" title="¡Los más baratos!"
+        subtitle="Aprovecha los mejores precios" />
 </x-app-layout>

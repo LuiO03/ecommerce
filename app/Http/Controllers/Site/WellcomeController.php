@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Cover;
 use App\Models\Product;
+use App\Models\Category;
 
 class WellcomeController extends Controller
 {
@@ -39,6 +40,12 @@ class WellcomeController extends Controller
                 return $product;
             });
 
-        return view('site.home', compact('covers', 'lastProducts'));
+        $categories = Category::where('status', true)
+            ->whereNull('parent_id')
+            ->orderBy('name')
+            ->take(12)
+            ->get();
+
+        return view('site.home', compact('covers', 'lastProducts', 'categories'));
     }
 }

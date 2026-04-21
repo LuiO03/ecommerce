@@ -59,113 +59,6 @@
             </div>
         </section>
     @endif
-
-    <!-- Sección de Últimos Productos -->
-    <section class="latest-products-section">
-        <div class="latest-products-container">
-            <div class="latest-products-header">
-                <h1>Últimos Productos</h1>
-                <p>Descubre nuestras incorporaciones más recientes</p>
-            </div>
-
-            @if ($lastProducts->isNotEmpty())
-                <div class="swiper products-slider">
-                    <div class="swiper-wrapper">
-                        @foreach ($lastProducts as $product)
-                            <div class="swiper-slide products-slide">
-                                <div class="product-card">
-                                    <!-- Imagen Principal -->
-                                    <a  href="{{ route('products.show', $product) }}" class="product-image">
-                                        @if ($product->mainImage)
-                                            <img src="{{ asset('storage/' . $product->mainImage->path) }}"
-                                                alt="{{ $product->mainImage->alt ?? $product->name }}"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                            <div class="product-image-fallback" style="display: none;">
-                                                <i class="ri-image-line"></i>
-                                                <span>Imagen no disponible</span>
-                                            </div>
-                                        @elseif ($product->image_path)
-                                            <img src="{{ asset('storage/' . $product->image_path) }}"
-                                                alt="{{ $product->name }}"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                            <div class="product-image-fallback" style="display: none;">
-                                                <i class="ri-image-line"></i>
-                                                <span>Imagen no disponible</span>
-                                            </div>
-                                        @else
-                                            <div class="product-image-fallback">
-                                                <i class="ri-image-line"></i>
-                                                <span>Imagen no disponible</span>
-                                            </div>
-                                        @endif
-
-                                        @if ($product->discount)
-                                            <span class="product-badge">-{{ number_format($product->discount, 0) }}% OFF</span>
-                                        @endif
-                                    </a>
-
-                                    <div class="product-details">
-                                        <!-- Contenido -->
-                                        <div class="product-content">
-                                            <div class="flex justify-between">
-                                                <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
-                                                <!-- Rating -->
-                                                <p class="product-rating">
-                                                    <i class="ri-star-fill"></i>
-                                                    <span>4.5 (128)</span>
-                                                </p>
-                                            </div>
-                                            <h3 class="product-name">{{ $product->name }}</h3>
-
-                                            <div class="flex w-full flex-col">
-                                                <!-- Precio -->
-                                                <div class="product-pricing">
-                                                    @if (!is_null($product->discount) && (float) $product->discount > 0)
-                                                        @php
-                                                            $discountPercent = min(max((float) $product->discount, 0), 100);
-                                                            $discounted = max((float) $product->price * (1 - ($discountPercent / 100)), 0);
-                                                        @endphp
-                                                        <span class="product-price">S/.{{ number_format($discounted, 2) }}</span>
-                                                        <span class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
-                                                    @else
-                                                        <span class="product-price">S/.{{ number_format($product->price, 2) }}</span>
-                                                    @endif
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <!-- Botones -->
-                                        <div class="product-footer">
-                                            <livewire:site.add-to-wishlist-card
-											:product-id="$product->id"
-											:key="'wishlist-card-' . $product->id" />
-
-                                            <button class="product-btn" aria-label="Agregar al carrito"title="Agregar al carrito">
-                                                <i class="ri-shopping-bag-line"></i>
-                                                Agregar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <!-- Navegación -->
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
-                    <!-- Paginación -->
-                    <div class="swiper-pagination"></div>
-                </div>
-            @else
-                <div class="no-products">
-                    <i class="ri-box-3-line"></i>
-                    <p>No hay productos disponibles en este momento</p>
-                </div>
-            @endif
-        </div>
-    </section>
-
     @push('js')
         <script>
             document.addEventListener('DOMContentLoaded', () => {
@@ -206,61 +99,40 @@
                         },
                     });
                 }
-
-                // Slider de productos
-                const productsSliderEl = document.querySelector('.products-slider');
-                if (productsSliderEl) {
-                    new Swiper('.products-slider', {
-                        modules: [
-                            window.SwiperModules.Navigation,
-                            window.SwiperModules.Pagination,
-                            window.SwiperModules.Autoplay,
-                        ],
-                        loop: true,
-                        autoplay: {
-                            delay: 6000,
-                            disableOnInteraction: true,
-                            pauseOnMouseEnter: true,
-                        },
-                        speed: 200,
-                        navigation: {
-                            nextEl: '.products-slider .swiper-button-next',
-                            prevEl: '.products-slider .swiper-button-prev',
-                        },
-                        pagination: {
-                            el: '.products-slider .swiper-pagination',
-                            clickable: true,
-                            dynamicBullets: false,
-                            dynamicMainBullets: 3,
-                        },
-                        breakpoints: {
-                            320: {
-                                slidesPerView: 2,
-                                spaceBetween: 15,
-                            },
-                            640: {
-                                slidesPerView: 2,
-                                spaceBetween: 15,
-                            },
-                            1024: {
-                                slidesPerView: 3,
-                                spaceBetween: 20,
-                            },
-                            1280: {
-                                slidesPerView: 5,
-                                spaceBetween: 20,
-                            },
-                        },
-                        keyboard: {
-                            enabled: true,
-                        },
-                        a11y: {
-                            prevSlideMessage: 'Producto anterior',
-                            nextSlideMessage: 'Siguiente producto',
-                        },
-                    });
-                }
             });
         </script>
     @endpush
+
+    <!-- Sección de Categorías -->
+    <section class="section-container bg-section">
+        <div class="section-header">
+            <h2 class="section-title">Categorías populares</h2>
+            <p class="section-subtitle">
+                Explora nuestras categorías más populares y encuentra lo que buscas
+            </p>
+        </div>
+        <div class="categories-list">
+            @foreach($categories as $category)
+                <!-- colocalr imagen css url a la etiqueta "a" y eliminar la etiqueta "img" -->
+                <a href="{{ route('categories.show', $category) }}" class="category-card">
+                    <div class="category-image">
+                        <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}" alt="{{ $category->name }} imagen">
+                    </div>
+                    <div class="category-name">{{ $category->name }}</div>
+                </a>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Sección de Últimos Productos con Livewire -->
+    <livewire:site.product-list :limit="8" title="Últimos Productos"
+        subtitle="Descubre nuestras incorporaciones más recientes" />
+    <!-- Sección de Últimos productos de la categoria vestidos -->
+    <livewire:site.product-list :limit="8" title="Últimos Vestidos"
+        subtitle="Explora los vestidos más recientes en nuestra colección" scope="strict_category" :categoryId="3" />
+    <livewire:site.product-list :limit="8" order-by="cheap" title="¡Los más baratos!"
+        subtitle="Aprovecha los mejores precios" />
+
+    @include('partials.site.why-us')
+
 </x-app-layout>

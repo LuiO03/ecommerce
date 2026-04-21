@@ -15,6 +15,7 @@
             'El logotipo debe ser una imagen en formato PNG con máximo 2MB.',
         ]" />
 
+
         <div id="companySettingsTabs" class="settings-tabs-layout">
             <div class="settings-tabs-nav" role="tablist" aria-label="Secciones de configuración">
                 <button type="button" class="settings-tab-button" data-target="general" id="tab-general"

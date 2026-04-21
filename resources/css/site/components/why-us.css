@@ -1,0 +1,47 @@
+/* Sección ¿Por qué comprar con nosotros? */
+.why-us-title {
+    text-align: center;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+.why-us-features {
+    max-width: var(--site-max-width);
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+}
+
+.why-us-feature {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: box-shadow 0.25s, transform 0.25s;
+}
+.why-us-feature:hover {
+    box-shadow: var(--box-shadow-site-hover);
+    transform: translateY(-2px) scale(1.03);
+}
+.why-us-feature i {
+    font-size: var(--font-size-h1);
+    color: var(--color-site-nav);
+}
+.why-us-feature h4 {
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.why-us-feature p {
+    color: #555;
+}
+@media (max-width: 900px) {
+    .why-us-feature {
+        width: 100%;
+        max-width: 350px;
+    }
+}

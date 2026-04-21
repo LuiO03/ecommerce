@@ -8,12 +8,15 @@
 @import "./components/search-autocomplete.css";
 @import "./components/search-modal.css";
 @import "./components/footer.css";
+@import "./components/why-us.css";
 @import "./components/latest-products.css";
 @import "./components/profile-address-modal.css";
 @import "./components/layout-site.css";
 @import "./components/product-card.css";
 @import "./components/quantity-counter.css";
 @import "./components/auth-wishlist-modal.css";
+@import "./components/categories-home.css";
+
 
 
 @import "./modules/cart.css";

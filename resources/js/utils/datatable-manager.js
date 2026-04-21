@@ -754,7 +754,6 @@ class DataTableManager {
     }
 
     // ⚙️ TOGGLE DE ESTADO
-
     initStatusToggle() {
         this.$table.on('change', '.switch-status', (e) => {
             const $switch = $(e.currentTarget);
@@ -827,7 +826,6 @@ class DataTableManager {
     }
 
     // 🗑️ ELIMINACIÓN
-
     handleMultipleDelete() {
         if (typeof window.handleMultipleDelete !== 'function') {
             console.error('❌ Función handleMultipleDelete no encontrada');
@@ -853,7 +851,6 @@ class DataTableManager {
     }
 
     // 🎨 PAGINACIÓN Y VISUALIZACIÓN
-
     updateInfoAndPagination() {
         const info = this.table.page.info();
         const pagination = $('#tablePagination');
@@ -973,7 +970,6 @@ class DataTableManager {
     }
 
     // 🎨 RESALTADO DE FILAS
-
     initHighlight() {
         // Se ejecutará desde el blade con data-highlight-row
         const highlightId = this.$table.data('highlight-row');
@@ -998,7 +994,6 @@ class DataTableManager {
     }
 
     // 🔄 EVENTOS DE REDIBUJADO
-
     onTableDraw() {
         // Reinsertar íconos control
         this.initResponsiveControls();
