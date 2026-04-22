@@ -19,7 +19,7 @@ class BlogController extends Controller
             ->visibleTo('public')
             ->with('mainImage')
             ->orderByDesc('views')
-            ->limit(3)
+            ->limit(1)
             ->get();
 
         return view('site.blog.index', [

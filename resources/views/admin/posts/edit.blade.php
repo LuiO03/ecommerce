@@ -260,10 +260,15 @@
                                     'bulletedList', 'numberedList',
                                     'link',
                                     'insertTable',
+                                    'horizontalLine',
                                 ],
                                 table: {
                                     contentToolbar: [
-                                        'tableColumn', 'tableRow', 'mergeTableCells'
+                                        'tableColumn',
+                                        'tableRow',
+                                        'mergeTableCells',
+                                        'tableProperties',
+                                        'tableCellProperties'
                                     ]
                                 }
                             })
