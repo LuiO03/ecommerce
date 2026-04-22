@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Models\CompanySetting;
@@ -28,5 +29,31 @@ if (!function_exists('company_setting')) {
         }
 
         return data_get($settings, $key, $default);
+    }
+}
+
+if (!function_exists('company_settings_incomplete')) {
+    /**
+     * Retorna true si faltan datos críticos de la empresa.
+     * Campos críticos: name, ruc, email, address
+     */
+    function company_settings_incomplete(): bool
+    {
+        $settings = company_setting();
+        if (!$settings) {
+            return true;
+        }
+        $required = [
+            'name',
+            'ruc',
+            'email',
+            'address',
+        ];
+        foreach ($required as $field) {
+            if (empty($settings->$field)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

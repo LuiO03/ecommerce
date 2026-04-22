@@ -158,7 +158,11 @@
                         class="sidebar-link {{ request()->routeIs('admin.company-settings.*') ? 'active' : '' }}"
                         data-tooltip="Configuración">
                         <i class="ri-building-4-line sidebar-icon"></i>
-                        <span>Empresa</span>
+                        <span>Empresa
+                            @if(function_exists('company_settings_incomplete') && company_settings_incomplete())
+                                <span title="Faltan datos de empresa" class="inline-block align-middle ml-1 w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                            @endif
+                        </span>
                     </a>
                 </li>
             @endcan

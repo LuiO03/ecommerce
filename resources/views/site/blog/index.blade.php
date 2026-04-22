@@ -8,17 +8,16 @@
     <section class="site-container blog-page">
         <div class="blog-main-layout">
             <div class="blog-main-content">
-                <header class="blog-hero">
-                    <div class="blog-hero-content">
-                        <p class="blog-kicker">Blog</p>
-                        <h1 class="blog-title">Ideas, guías y tendencias para comprar mejor</h1>
-                        <p class="blog-subtitle">Descubre recomendaciones, novedades de productos y consejos para sacarle
-                            el
-                            máximo provecho a tu experiencia de compra.</p>
-                    </div>
-                </header>
-
-                @if ($featured->isNotEmpty())
+                @if (!request('tag') && !request('search'))
+                    <header class="blog-hero">
+                        <div class="blog-hero-content">
+                            <p class="blog-kicker">Blog</p>
+                            <h1 class="blog-title">Ideas, guías y tendencias para comprar mejor</h1>
+                            <p class="blog-subtitle">Descubre recomendaciones, novedades de productos y consejos para
+                                sacarle
+                                el máximo provecho a tu experiencia de compra.</p>
+                        </div>
+                    </header>
                     <section class="blog-featured">
                         <div class="section-header">
                             <h2 class="section-title">Destacados</h2>
@@ -46,28 +45,27 @@
                                         @endif
                                     </a>
                                     <div class="blog-card-body">
-                                        @if ($post->tags && $post->tags->isNotEmpty())
+                                        @if ($post->tags->isNotEmpty())
                                             <div class="blog-card-tags">
                                                 @foreach ($post->tags as $tag)
                                                     <a href="{{ route('site.blog.index', ['tag' => $tag->slug]) }}"
                                                         class="blog-tag">#{{ $tag->name }}</a>
                                                 @endforeach
                                             </div>
-
-                                            <a href="{{ route('site.blog.show', $post) }}" class="blog-card-title">
-                                                {{ $post->title }}
-                                            </a>
                                         @endif
+                                        <a href="{{ route('site.blog.show', $post) }}" class="blog-card-title">
+                                            {{ $post->title }}
+                                        </a>
                                         <p class="blog-card-excerpt">
                                             {{ Str::limit(strip_tags($post->content), 300) }}
                                         </p>
                                         <div class="blog-card-meta">
-                                            @if ($post->views)
-                                                <div class="blog-card-data">
-                                                    <i class="ri-eye-line"></i>
-                                                    <span> {{ $post->views }}</span>
-                                                </div>
-                                            @endif
+                                            <div class="blog-card-data">
+                                                <i class="ri-user-line"></i>
+                                                <span>
+                                                    {{ $post->creator?->name ?? 'Autor desconocido' }}
+                                                </span>
+                                            </div>
                                             @if ($post->published_at)
                                                 <div class="blog-card-data">
                                                     <i class="ri-calendar-line"></i>
@@ -89,15 +87,49 @@
                 @endif
 
                 <section class="blog-list">
-                    <div class="section-header">
-                        <h2 class="section-title">Últimos artículos</h2>
-                        <p class="section-subtitle">
-                            Descubre las últimas noticias y actualizaciones en nuestro blog.
-                        </p>
-                    </div>
+                    @if (request('search'))
+                        <div class="section-conteiner">
+                            <div class="section-header">
+                                <h2 class="section-title">Resultados de búsqueda</h2>
+                                <p class="section-subtitle">
+                                    Artículos que coinciden con tu búsqueda.
+                                </p>
+                            </div>
+                            <a href="{{ route('site.blog.index') }}" class="boton-single">
+                                <span class="boton-single-icon">
+                                    <i class="ri-close-large-fill"></i>
+                                </span>
+                                <span class="boton-single-text">Quitar búsqueda</span>
+                            </a>
+                        </div>
+                    @elseif (request('tag'))
+                        <div class="section-conteiner">
+                            <div class="section-header">
+                                <h2 class="section-title">
+                                    Artículos con el tag #{{ $currentTag->name ?? request('tag') }}
+                                </h2>
+                                <p class="section-subtitle">
+                                    Explora artículos relacionados con el tema que te interesa.
+                                </p>
+                            </div>
+                            <a href="{{ route('site.blog.index') }}" class="boton-single">
+                                <span class="boton-single-icon">
+                                    <i class="ri-close-large-fill"></i>
+                                </span>
+                                <span class="boton-single-text">Quitar filtro</span>
+                            </a>
+                        </div>
+                    @else
+                        <div class="section-header">
+                            <h2 class="section-title">Últimos artículos</h2>
+                            <p class="section-subtitle">
+                                Descubre las últimas noticias y actualizaciones en nuestro blog.
+                            </p>
+                        </div>
+                    @endif
 
                     @if ($posts->isEmpty())
-                        <div class="blog-empty">
+                        <div class="card-empty">
                             <div class="card-empty-icon card-warning">
                                 <i class="ri-article-line"></i>
                             </div>
@@ -125,7 +157,7 @@
                                         @endif
                                     </a>
                                     <div class="blog-card-body">
-                                        @if ($post->tags && $post->tags->isNotEmpty())
+                                        @if ($post->tags->isNotEmpty())
                                             <div class="blog-card-tags">
                                                 @foreach ($post->tags as $tag)
                                                     <a href="{{ route('site.blog.index', ['tag' => $tag->slug]) }}"
@@ -141,12 +173,12 @@
                                             {{ Str::limit(strip_tags($post->content), 100) }}
                                         </p>
                                         <div class="blog-card-meta">
-                                            @if ($post->views)
-                                                <div class="blog-card-data">
-                                                    <i class="ri-eye-line"></i>
-                                                    <span> {{ $post->views }}</span>
-                                                </div>
-                                            @endif
+                                            <div class="blog-card-data">
+                                                <i class="ri-user-line"></i>
+                                                <span>
+                                                    {{ $post->creator?->name ?? 'Autor desconocido' }}
+                                                </span>
+                                            </div>
                                             @if ($post->published_at)
                                                 <div class="blog-card-data">
                                                     <i class="ri-calendar-line"></i>
@@ -178,8 +210,8 @@
                     <form action="{{ route('site.blog.index') }}" method="get" class="blog-search-form">
                         <article class="tabla-buscador">
                             <i class="ri-search-eye-line buscador-icon"></i>
-                            <input type="text" id="customSearch" placeholder="Buscar artículos..." name="search" value="{{ request('search') }}"
-                                autocomplete="off" />
+                            <input type="text" id="customSearch" placeholder="Buscar artículos..." name="search"
+                                value="{{ request('search') }}" autocomplete="off" />
                             <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
                                 <i class="ri-close-circle-fill"></i>
                             </button>
@@ -194,13 +226,6 @@
                 <section class="blog-sidebar-section blog-sidebar-tags">
                     <span class="card-title">Tags populares</span>
                     <div class="blog-sidebar-tags-list">
-                        @php
-                            $allTags = \App\Models\Tag::has('posts')
-                                ->orderByDesc('posts_count')
-                                ->limit(12)
-                                ->withCount('posts')
-                                ->get();
-                        @endphp
                         @foreach ($allTags as $tag)
                             <a href="{{ route('site.blog.index', ['tag' => $tag->slug]) }}"
                                 class="blog-tag">#{{ $tag->name }}</a>
@@ -210,13 +235,6 @@
                 <section class="blog-sidebar-section blog-sidebar-latest">
                     <span class="card-title">Últimos artículos</span>
                     <ul class="blog-sidebar-latest-list">
-                        @php
-                            $latestPosts = \App\Models\Post::published()
-                                ->visibleTo('public')
-                                ->latest('published_at')
-                                ->limit(5)
-                                ->get();
-                        @endphp
                         @foreach ($latestPosts as $item)
                             <li>
                                 <a href="{{ route('site.blog.show', $item) }}">{{ $item->title }}</a>
