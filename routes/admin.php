@@ -29,6 +29,7 @@ Route::controller(CompanySettingController::class)->group(function () {
 
     // Updates independientes por partial
     Route::post('/company-settings/general', 'updateGeneral')->name('admin.company-settings.update-general');
+    Route::get('/company-settings/invoice-preview', 'invoicePreview')->name('admin.company-settings.invoice-preview');
     Route::post('/company-settings/identity', 'updateIdentity')->name('admin.company-settings.update-identity');
     Route::post('/company-settings/contact', 'updateContact')->name('admin.company-settings.update-contact');
     Route::post('/company-settings/shipping', 'updateShipping')->name('admin.company-settings.update-shipping');

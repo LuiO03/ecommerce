@@ -10,16 +10,23 @@
 
     <div class="form-container" autocomplete="off" id="companySettingsForm">
 
-        <x-alert type="info" title="Consejo" :dismissible="true" :items="[
-            'Actualiza los datos de tu empresa para mostrar información consistente en todo el sistema.',
-            'El logotipo debe ser una imagen en formato PNG con máximo 2MB.',
-        ]" />
-
+        @if (function_exists('company_settings_incomplete') && company_settings_incomplete())
+            <x-alert type="danger" title="Tu configuración de negocio está incompleta" :dismissible="true"
+                :items="[
+                    'Por favor, completa los campos obligatorios para evitar problemas en la generación de documentos y la visualización en el sitio web.',
+                    'El logotipo debe ser una imagen en formato PNG con máximo 2MB.',
+                ]" />
+        @else
+            <x-alert type="info" title="Consejo" :dismissible="true" :items="[
+                'Actualiza los datos de tu empresa para mostrar información consistente en todo el sistema.',
+                'El logotipo debe ser una imagen en formato PNG con máximo 2MB.',
+            ]" />
+        @endif
 
         <div id="companySettingsTabs" class="settings-tabs-layout">
             <div class="settings-tabs-nav" role="tablist" aria-label="Secciones de configuración">
-                <button type="button" class="settings-tab-button" data-target="general" id="tab-general"
-                    role="tab" aria-controls="companySettingsSectionGeneral">
+                <button type="button" class="settings-tab-button" data-target="general" id="tab-general" role="tab"
+                    aria-controls="companySettingsSectionGeneral">
                     <i class="ri-information-fill"></i>
                     <span>Información general</span>
                 </button>
@@ -28,8 +35,8 @@
                     <i class="ri-contacts-fill"></i>
                     <span>Contacto</span>
                 </button>
-                <button type="button" class="settings-tab-button" data-target="shipping" id="tab-shipping" role="tab"
-                    aria-controls="companySettingsSectionShipping">
+                <button type="button" class="settings-tab-button" data-target="shipping" id="tab-shipping"
+                    role="tab" aria-controls="companySettingsSectionShipping">
                     <i class="ri-truck-fill"></i>
                     <span>Envío</span>
                 </button>
@@ -79,11 +86,11 @@
             // Animación y persistencia de tab activo igual que profile
             function showTab(tabKey) {
                 document.querySelectorAll('.settings-tabs-sections > div').forEach(tab => {
-                    if(tab.id === 'tab-' + tabKey) {
+                    if (tab.id === 'tab-' + tabKey) {
                         tab.classList.remove('hidden');
                         setTimeout(() => tab.classList.add('fade-in'), 10);
                     } else {
-                        if(!tab.classList.contains('hidden')) tab.classList.add('hidden');
+                        if (!tab.classList.contains('hidden')) tab.classList.add('hidden');
                         tab.classList.remove('fade-in');
                     }
                 });
@@ -94,9 +101,10 @@
 
             // Inicializar tab activo
             let initialTab = localStorage.getItem('companySettingsActiveTab') || 'general';
-            if(window.location.hash === '#legal') initialTab = 'legal';
+            if (window.location.hash === '#legal') initialTab = 'legal';
             // Si el tab guardado no existe, fallback a general
-            const validTabs = Array.from(document.querySelectorAll('.settings-tab-button')).map(b => b.dataset.target);
+            const validTabs = Array.from(document.querySelectorAll('.settings-tab-button')).map(b => b.dataset
+                .target);
             if (!validTabs.includes(initialTab)) initialTab = 'general';
             showTab(initialTab);
 

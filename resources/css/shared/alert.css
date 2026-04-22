@@ -27,7 +27,6 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
 }
 
 .alert-title {
@@ -45,7 +44,7 @@
 }
 
 .alert-list {
-    margin: 4px 0 0 16px;
+    margin-left: 16px;
     padding: 0;
     list-style-type: disc;
 }

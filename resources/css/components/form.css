@@ -186,7 +186,7 @@ input[type="checkbox"]:focus {
     }
 }
 
-.card-header-container{
+.card-header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -194,7 +194,7 @@ input[type="checkbox"]:focus {
     flex-wrap: wrap;
 }
 
-.card-header{
+.card-header {
     margin-bottom: 5px;
 }
 
@@ -210,7 +210,20 @@ input[type="checkbox"]:focus {
     font-size: var(--font-size-xs);
 }
 
-.card-column{
+.pdf-preview-container {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background-color: var(--color-sidebar-bg);
+}
+.pdf-preview-container iframe {
+    width: 100%;
+    min-height: 600px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+}
+
+.card-column {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -581,8 +594,7 @@ input[type="checkbox"]:focus {
     left: 0;
     width: 50%;
     height: 100%;
-    transition:
-        left 0.3s ease,;
+    transition: left 0.3s ease;
     z-index: 1;
     background-color: var(--color-accent);
 }
@@ -648,7 +660,7 @@ body.sidebar-collapsed .form-footer {
     left: calc(50% + var(--sidebar-collapsed-width) / 2);
 }
 
-@media (max-width: 450px){
+@media (max-width: 450px) {
     /* Todos los hijos menos el ultimo de form footer su boton-form-text se oculta para ganar espacio */
     .form-footer .boton-form:not(:last-child) .boton-form-text {
         display: none;

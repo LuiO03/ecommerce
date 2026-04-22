@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Spatie\LaravelPdf\Facades\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
 use App\Models\CompanySetting;
@@ -78,6 +79,50 @@ class CompanySettingController extends Controller
                     'message' => 'Los datos generales de la empresa se guardaron correctamente.',
                 ]);
 
+    }
+
+        /**
+     * Muestra una vista previa PDF de la boleta de venta con datos de ejemplo.
+     */
+    public function invoicePreview()
+    {
+        // Datos de ejemplo para la boleta
+        $companyInfo = CompanySetting::first();
+        $order = (object) [
+            'order_number' => 'BOL-000001',
+            'created_at' => now(),
+            'subtotal' => 100.00,
+            'shipping_cost' => 5.00,
+            'total' => 105.00,
+            'payment_method' => 'NIUBIZ',
+            'payment_status' => 'Pagado',
+            'delivery_type' => 'delivery',
+            'shipping_address' => $companyInfo->address ?? 'Av. Ejemplo 123',
+            'pickup_store_code' => null,
+            'user' => (object) [
+                'name' => 'Cliente Demo',
+                'last_name' => 'Prueba',
+                'email' => 'cliente@demo.com',
+                'document_type' => 'DNI',
+                'document_number' => '12345678',
+            ],
+            'items' => [
+                (object) [
+                    'product' => (object) ['name' => 'Producto de ejemplo'],
+                    'variant' => null,
+                    'unit_price' => 50.00,
+                    'quantity' => 2,
+                    'line_total' => 100.00,
+                ],
+            ],
+        ];
+
+        $pdf = Pdf::view('admin.export.order-invoice', [
+            'order' => $order,
+            'companyInfo' => $companyInfo,
+        ])->format('a4');
+
+        return $pdf->inline('boleta-ejemplo.pdf');
     }
 
     /**
@@ -226,15 +271,18 @@ class CompanySettingController extends Controller
         $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
         $socialLinks = [];
         foreach ($platforms as $platform) {
-            $socialLinks[$platform] = $data->get("{$platform}_url");
+            $url = $data->get("{$platform}_url");
+            $socialLinks[$platform] = $url;
+            // Guardar el campo *_url en el modelo
+            $setting->setAttribute("{$platform}_url", $url);
+            // Si la URL está vacía, forzar el enabled a false
+            if (empty($url)) {
+                $setting->setAttribute("{$platform}_enabled", false);
+            } else {
+                $setting->setAttribute("{$platform}_enabled", $request->boolean("{$platform}_enabled"));
+            }
         }
         $setting->social_links = $socialLinks;
-        $setting->facebook_enabled = $request->boolean('facebook_enabled');
-        $setting->instagram_enabled = $request->boolean('instagram_enabled');
-        $setting->twitter_enabled = $request->boolean('twitter_enabled');
-        $setting->youtube_enabled = $request->boolean('youtube_enabled');
-        $setting->tiktok_enabled = $request->boolean('tiktok_enabled');
-        $setting->linkedin_enabled = $request->boolean('linkedin_enabled');
         $setting->save();
         Cache::forget('company_settings');
 

@@ -15,7 +15,6 @@
     @endif
     <section id="companySettingsSectionGeneral" data-section="general" role="tabpanel" aria-labelledby="tab-general"
         class="container-section">
-
         <div class="form-body">
             <div class="card-header">
                 <span class="card-title">Información general</span>
@@ -107,3 +106,14 @@
         });
     </script>
 @endpush
+<div class="form-body">
+    <div class="card-header">
+        <span class="card-title">Vista previa de boleta PDF</span>
+        <p class="card-description">Así se verá la boleta de venta generada para tus clientes.</p>
+    </div>
+    <div class="pdf-preview-container">
+        <iframe src="{{ route('admin.company-settings.invoice-preview') }}"
+            title="Vista previa boleta PDF" allowfullscreen>
+        </iframe>
+    </div>
+</div>

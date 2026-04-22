@@ -145,3 +145,69 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 150);
     }
 });
+
+// --- SUBMENÚS FLOTANTES EN SIDEBAR COLAPSADO ---
+/*
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('.sidebar-principal');
+    const submenuButtons = document.querySelectorAll('.submenu-btn');
+    let floatingMenu = null;
+    let floatingMenuTimeout = null;
+
+    submenuButtons.forEach((btn) => {
+        btn.addEventListener('mouseenter', (e) => {
+            if (!sidebar.classList.contains('collapsed')) return;
+            // Cerrar otros flotantes
+            removeFloatingMenu();
+            const submenu = btn.nextElementSibling;
+            if (!submenu || !submenu.classList.contains('sidebar-submenu')) return;
+
+            // Clonar el submenú
+            floatingMenu = submenu.cloneNode(true);
+            floatingMenu.classList.add('floating-submenu');
+            floatingMenu.classList.add('open');
+            floatingMenu.style.position = 'fixed';
+            floatingMenu.style.zIndex = 9999;
+            floatingMenu.style.minWidth = '180px';
+            floatingMenu.style.boxShadow = '0 8px 24px rgba(0,0,0,0.18)';
+            floatingMenu.style.background = 'var(--color-sidebar-bg, #fff)';
+            floatingMenu.style.borderRadius = '0.5rem';
+            floatingMenu.style.padding = '8px 0';
+            floatingMenu.style.left = `${sidebar.offsetWidth + 4}px`;
+
+            // Posicionar verticalmente alineado al botón
+            const btnRect = btn.getBoundingClientRect();
+            floatingMenu.style.top = `${btnRect.top}px`;
+
+            document.body.appendChild(floatingMenu);
+
+            // Ocultar al salir del área
+            floatingMenu.addEventListener('mouseleave', removeFloatingMenu);
+            floatingMenu.addEventListener('mouseenter', () => {
+                clearTimeout(floatingMenuTimeout);
+            });
+        });
+        btn.addEventListener('mouseleave', () => {
+            if (!sidebar.classList.contains('collapsed')) return;
+            // Espera breve para permitir pasar al menú flotante
+            floatingMenuTimeout = setTimeout(removeFloatingMenu, 180);
+        });
+    });
+
+    function removeFloatingMenu() {
+        if (floatingMenu) {
+            floatingMenu.remove();
+            floatingMenu = null;
+        }
+    }
+
+    // Cerrar flotante al hacer scroll o clic fuera
+    document.addEventListener('scroll', removeFloatingMenu, true);
+    document.addEventListener('click', (e) => {
+        if (floatingMenu && !floatingMenu.contains(e.target)) {
+            removeFloatingMenu();
+        }
+    });
+});
+*/
+// --- FIN SUBMENÚS FLOTANTES ---
