@@ -25,30 +25,25 @@
 
         <div id="companySettingsTabs" class="settings-tabs-layout">
             <div class="settings-tabs-nav" role="tablist" aria-label="Secciones de configuración">
-                <button type="button" class="settings-tab-button" data-target="general" id="tab-general" role="tab"
-                    aria-controls="companySettingsSectionGeneral">
-                    <i class="ri-information-fill"></i>
-                    <span>Información general</span>
-                </button>
-                <button type="button" class="settings-tab-button" data-target="contact" id="tab-contact" role="tab"
-                    aria-controls="companySettingsSectionContact">
-                    <i class="ri-contacts-fill"></i>
-                    <span>Contacto</span>
+                <button type="button" class="settings-tab-button" data-target="main" id="tab-main" role="tab"
+                    aria-controls="companySettingsSectionMain">
+                    <i class="ri-building-4-line"></i>
+                    <span>Datos generales</span>
                 </button>
                 <button type="button" class="settings-tab-button" data-target="shipping" id="tab-shipping"
                     role="tab" aria-controls="companySettingsSectionShipping">
                     <i class="ri-truck-fill"></i>
                     <span>Envío</span>
                 </button>
+                <button type="button" class="settings-tab-button" data-target="boleta" id="tab-boleta"
+                    role="tab" aria-controls="companySettingsSectionBoleta">
+                    <i class="ri-file-pdf-2-line"></i>
+                    <span>Boleta PDF</span>
+                </button>
                 <button type="button" class="settings-tab-button" data-target="social" id="tab-social" role="tab"
                     aria-controls="companySettingsSectionSocial">
                     <i class="ri-share-forward-fill"></i>
                     <span>Redes sociales</span>
-                </button>
-                <button type="button" class="settings-tab-button" data-target="identity" id="tab-identity"
-                    role="tab" aria-controls="companySettingsSectionIdentity">
-                    <i class="ri-palette-fill"></i>
-                    <span>Identidad visual</span>
                 </button>
                 <button type="button" class="settings-tab-button" data-target="legal" id="tab-legal" role="tab"
                     aria-controls="companySettingsSectionLegal">
@@ -59,11 +54,8 @@
 
             <div class="settings-tabs-sections" id="companySettingsSections">
 
-                <div id="tab-general">
-                    @include('admin.company-settings.partials.general')
-                </div>
-                <div id="tab-contact">
-                    @include('admin.company-settings.partials.contact')
+                <div id="tab-main">
+                    @include('admin.company-settings.partials.main')
                 </div>
                 <div id="tab-shipping">
                     @include('admin.company-settings.partials.shipping')
@@ -71,9 +63,20 @@
                 <div id="tab-social">
                     @include('admin.company-settings.partials.social')
                 </div>
-                <div id="tab-identity">
-                    @include('admin.company-settings.partials.identity')
+                <div id="tab-boleta">
+                    <div class="form-body">
+                        <div class="card-header">
+                            <span class="card-title">Vista previa de boleta PDF</span>
+                            <p class="card-description">Así se verá la boleta de venta generada para tus clientes.</p>
+                        </div>
+                        <div class="pdf-preview-container">
+                            <iframe src="{{ route('admin.company-settings.invoice-preview') }}"
+                                title="Vista previa boleta PDF" allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
                 </div>
+                <!-- Sección de identidad visual fusionada en main -->
                 <div id="tab-legal">
                     @include('admin.company-settings.partials.legal')
                 </div>
@@ -100,12 +103,11 @@
             }
 
             // Inicializar tab activo
-            let initialTab = localStorage.getItem('companySettingsActiveTab') || 'general';
+            let initialTab = localStorage.getItem('companySettingsActiveTab') || 'main';
             if (window.location.hash === '#legal') initialTab = 'legal';
-            // Si el tab guardado no existe, fallback a general
-            const validTabs = Array.from(document.querySelectorAll('.settings-tab-button')).map(b => b.dataset
-                .target);
-            if (!validTabs.includes(initialTab)) initialTab = 'general';
+            // Si el tab guardado no existe, fallback a main
+            const validTabs = Array.from(document.querySelectorAll('.settings-tab-button')).map(b => b.dataset.target);
+            if (!validTabs.includes(initialTab)) initialTab = 'main';
             showTab(initialTab);
 
             // Listener de tabs

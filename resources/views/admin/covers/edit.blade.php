@@ -166,40 +166,6 @@
                                 value="{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}"
                                 data-validate="minValue:0|maxValue:1">
                         </div>
-                        <div class="input-group">
-                            <label for="button_text" class="label-form">Texto del botón</label>
-                            <div class="input-icon-container">
-                                <i class="ri-radio-button-line input-icon"></i>
-                                <input type="text" name="button_text" id="button_text" class="input-form"
-                                    value="{{ old('button_text', $cover->button_text) }}"
-                                    placeholder="Ej: Comprar ahora"
-                                    data-validate="max:100|requiredWith:button_link,button_style">
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label for="button_style" class="label-form">Estilo del botón</label>
-                            <div class="input-icon-container">
-                                <i class="ri-palette-line input-icon"></i>
-                                <select name="button_style" id="button_style" class="select-form"
-                                    data-validate="requiredWith:button_text,button_link">
-                                    <option value="primary"
-                                        {{ old('button_style', $cover->button_style) == 'primary' ? 'selected' : '' }}>
-                                        Principal</option>
-                                    <option value="secondary"
-                                        {{ old('button_style', $cover->button_style) == 'secondary' ? 'selected' : '' }}>
-                                        Secundario</option>
-                                    <option value="outline"
-                                        {{ old('button_style', $cover->button_style) == 'outline' ? 'selected' : '' }}>
-                                        Contorno
-                                    </option>
-                                    <option value="white"
-                                        {{ old('button_style', $cover->button_style) == 'white' ? 'selected' : '' }}>
-                                        Blanco
-                                    </option>
-                                </select>
-                                <i class="ri-arrow-down-s-line select-arrow"></i>
-                            </div>
-                        </div>
 
                     </div>
                     <div class="form-column-fit">
@@ -228,16 +194,7 @@
                                     aria-label="Inferior derecha"></button>
                             </div>
                         </div>
-                        <div class="input-group">
-                            <label for="button_link" class="label-form">URL del botón</label>
-                            <div class="input-icon-container">
-                                <i class="ri-links-line input-icon"></i>
-                                <input type="url" name="button_link" id="button_link" class="input-form"
-                                    value="{{ old('button_link', $cover->button_link) }}"
-                                    placeholder="https://example.com"
-                                    data-validate="url|requiredWith:button_text,button_style|max:255">
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -303,6 +260,53 @@
                     <div class="image-filename" id="imageFilename" style="display: none;">
                         <i class="ri-file-image-line"></i>
                         <span id="filenameText"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-body">
+            <div class="form-row-fit">
+                <div class="input-group">
+                    <label for="button_style" class="label-form">Estilo del botón</label>
+                    <div class="input-icon-container">
+                        <i class="ri-palette-line input-icon"></i>
+                        <select name="button_style" id="button_style" class="select-form"
+                            data-validate="requiredWith:button_text,button_link">
+                            <option value="primary"
+                                {{ old('button_style', $cover->button_style) == 'primary' ? 'selected' : '' }}>
+                                Principal</option>
+                            <option value="secondary"
+                                {{ old('button_style', $cover->button_style) == 'secondary' ? 'selected' : '' }}>
+                                Secundario</option>
+                            <option value="outline"
+                                {{ old('button_style', $cover->button_style) == 'outline' ? 'selected' : '' }}>
+                                Contorno
+                            </option>
+                            <option value="white"
+                                {{ old('button_style', $cover->button_style) == 'white' ? 'selected' : '' }}>
+                                Blanco
+                            </option>
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="button_text" class="label-form">Texto del botón</label>
+                    <div class="input-icon-container">
+                        <i class="ri-radio-button-line input-icon"></i>
+                        <input type="text" name="button_text" id="button_text" class="input-form"
+                            value="{{ old('button_text', $cover->button_text) }}" placeholder="Ej: Comprar ahora"
+                            data-validate="max:100|requiredWith:button_style">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="button_link" class="label-form">URL del botón</label>
+                    <div class="input-icon-container">
+                        <i class="ri-links-line input-icon"></i>
+                        <input type="url" name="button_link" id="button_link" class="input-form"
+                            value="{{ old('button_link', $cover->button_link) }}" placeholder="https://example.com"
+                            data-validate="url|requiredWith:button_text,button_style|max:255">
                     </div>
                 </div>
             </div>

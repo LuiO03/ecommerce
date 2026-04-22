@@ -134,7 +134,6 @@
             max-width: 280px;
             margin-left: auto;
             margin-top: 12px;
-            border-top: 1px solid #6b7280;
             padding-top: 8px;
         }
 

@@ -16,6 +16,7 @@ use App\Http\Requests\Admin\UpdateCompanyLegalRequest;
 use App\Http\Requests\Admin\UpdateCompanyGeneralRequest;
 use App\Http\Requests\Admin\UpdateCompanySocialRequest;
 use App\Http\Requests\Admin\UpdateCompanyShippingRequest;
+use \App\Http\Requests\Admin\UpdateCompanyMainRequest;
 
 class CompanySettingController extends Controller
 {
@@ -45,6 +46,87 @@ class CompanySettingController extends Controller
         } catch (\Throwable $e) {
             report($e);
         }
+    }
+
+        /**
+     * Actualiza datos generales, contacto e identidad visual en un solo request.
+     */
+    public function updateMain(UpdateCompanyMainRequest $request)
+    {
+        $setting = CompanySetting::first() ?? new CompanySetting;
+        $original = $setting->exists ? $setting->only([
+            'name', 'legal_name', 'ruc', 'slogan', 'about',
+            'email', 'support_email', 'phone', 'support_phone', 'address', 'website',
+            'primary_color', 'secondary_color', 'logo_path',
+        ]) : null;
+
+        $data = collect($request->validated());
+
+        // General
+        $setting->name = $data->get('name');
+        $setting->legal_name = $data->get('legal_name');
+        $setting->ruc = $data->get('ruc');
+        $setting->slogan = $data->get('slogan');
+        $setting->about = $data->get('about');
+
+        // Contacto
+        $setting->email = $data->get('email');
+        $setting->support_email = $data->get('support_email');
+        $setting->phone = $data->get('phone');
+        $setting->support_phone = $data->get('support_phone');
+        $setting->address = $data->get('address');
+        $setting->website = $data->get('website');
+
+        // Identidad visual
+        $removeLogo = $request->boolean('remove_logo');
+        $logoPath = $setting->logo_path;
+        if ($removeLogo && $logoPath) {
+            Storage::disk('public')->delete($logoPath);
+            $logoPath = null;
+        }
+        if ($request->hasFile('logo')) {
+            if ($logoPath) {
+                Storage::disk('public')->delete($logoPath);
+            }
+            $companyName = $data->get('name') ?? $setting->name ?? 'company-logo';
+            $slug = Str::slug($companyName, '-');
+            if ($slug === '') {
+                $slug = 'company-logo';
+            }
+            $fileName = $slug.'.png';
+            $logoPath = $request->file('logo')->storeAs('company', $fileName, 'public');
+        }
+        $setting->primary_color = $data->get('primary_color');
+        $setting->secondary_color = $data->get('secondary_color');
+        $setting->logo_path = $logoPath;
+
+        $setting->save();
+        Cache::forget('company_settings');
+
+        $this->recordCompanyAudit($request, $setting, 'company_main_updated', $original, [
+            'name' => $setting->name,
+            'legal_name' => $setting->legal_name,
+            'ruc' => $setting->ruc,
+            'slogan' => $setting->slogan,
+            'about' => $setting->about,
+            'email' => $setting->email,
+            'support_email' => $setting->support_email,
+            'phone' => $setting->phone,
+            'support_phone' => $setting->support_phone,
+            'address' => $setting->address,
+            'website' => $setting->website,
+            'primary_color' => $setting->primary_color,
+            'secondary_color' => $setting->secondary_color,
+            'logo_path' => $setting->logo_path,
+        ]);
+
+        return redirect()
+            ->route('admin.company-settings.index')
+            ->with('toast', [
+                'type' => 'success',
+                'title' => 'Datos de empresa actualizados',
+                'message' => 'La información general, contacto e identidad visual se guardaron correctamente.',
+            ]);
     }
     /**
      * Actualiza la información general de la empresa.
