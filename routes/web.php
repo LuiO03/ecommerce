@@ -123,7 +123,10 @@
     ->name('google.one-tap');
 
     // Rutas públicas del sitio
-    Route::get('/', [WellcomeController::class, 'index'])->name('site.home');
+    // Route::get('/', [WellcomeController::class, 'index'])->name('site.home');
+    Route::get('/', function () {
+    return "DEPLOY OK";
+});
 
     // Blog público
     Route::get('/blog', [BlogController::class, 'index'])->name('site.blog.index');
