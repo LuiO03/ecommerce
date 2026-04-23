@@ -87,69 +87,46 @@
                     <div class="card-image-wrapper">
                         <img src="{{ asset('storage/' . $cover->image_path) }}" alt="{{ $cover->title }}"
                             class="card-image" data-image-path="{{ $cover->image_path }}">
-
-                        <!-- Overlay de texto/CTA de la portada -->
-                        @if ($cover->overlay_text || $cover->overlay_subtext || $cover->button_text)
-                            <div class="cover-overlay-preview pos-{{ $cover->text_position ?? 'center-center' }} {{ $cover->overlay_bg_enabled ? 'has-overlay-bg' : '' }}"
-                                style="--overlay-text-color: {{ $cover->text_color ?? '#FFFFFF' }}; --overlay-bg-opacity: {{ $cover->overlay_bg_opacity ?? 0.35 }};">
-                                <div class="cover-overlay-content">
-                                    @if ($cover->overlay_text)
-                                        <span class="cover-index-overlay-title">{{ $cover->overlay_text }}</span>
-                                    @endif
-                                    @if ($cover->overlay_subtext)
-                                        <span class="cover-index-overlay-subtext">{{ $cover->overlay_subtext }}</span>
-                                    @endif
-                                    @if ($cover->button_text)
-                                        <span
-                                            class="cover-index-overlay-button is-{{ $cover->button_style ?? 'primary' }}">{{ $cover->button_text }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="card-overlay">
-                            <div class="overlay-actions">
-                                @can('portadas.edit')
-                                    <a href="{{ route('admin.covers.edit', $cover->slug) }}"
-                                        class="boton-form boton-warning" title="Editar">
-                                        <i class="ri-pencil-fill"></i>
-                                    </a>
-                                @endcan
-                                @can('portadas.delete')
-                                    <button type="button" class="boton-form boton-danger" title="Eliminar"
-                                        data-url="{{ route('admin.covers.destroy', $cover->slug) }}"
-                                        data-id="{{ $cover->id }}" data-name="{{ $cover->title }}">
-                                        <i class="ri-delete-bin-fill"></i>
-                                    </button>
-                                @endcan
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Información de la tarjeta -->
-                    <div class="card-content">
+                    <div class="card-cover-meta">
                         <h3 class="card-title">{{ $cover->title }}</h3>
 
-                        <div class="card-meta">
-                            <div class="meta-info">
-                                <span class="meta-item">
-                                    <i class="ri-hashtag"></i>{{ $cover->order }}
-                                </span>
-                                <span class="meta-item meta-date">
-                                    <i class="ri-calendar-fill"></i>
-                                    {{ $cover->created_at ? $cover->created_at->format('d/m/Y') : '—' }}
-                                </span>
-                            </div>
-                            @can('portadas.update-status')
-                                <label class="switch-tabla">
-                                    <input type="checkbox" class="switch-status" data-id="{{ $cover->id }}"
-                                        data-key="{{ $cover->slug }}" {{ $cover->status ? 'checked' : '' }}>
-                                    <span class="slider"></span>
-                                </label>
-                            @else
-                                <span class="status-badge {{ $cover->status ? 'status-active' : 'status-inactive' }}">
-                                    {{ $cover->status ? 'Activo' : 'Inactivo' }}
-                                </span>
+                        <span class="meta-item">
+                            <i class="ri-hashtag"></i>
+                            <span>{{ $cover->order }}</span>
+                        </span>
+                        <span class="meta-item">
+                            <i class="ri-calendar-fill"></i>
+                            <span>{{ $cover->created_at ? $cover->created_at->format('d/m/Y') : '—' }}</span>
+                        </span>
+                        @can('portadas.update-status')
+                            <label class="switch-tabla">
+                                <input type="checkbox" class="switch-status" data-id="{{ $cover->id }}"
+                                    data-key="{{ $cover->slug }}" {{ $cover->status ? 'checked' : '' }}>
+                                <span class="slider"></span>
+                            </label>
+                        @else
+                            <span class="status-badge {{ $cover->status ? 'status-active' : 'status-inactive' }}">
+                                {{ $cover->status ? 'Activo' : 'Inactivo' }}
+                            </span>
+                        @endcan
+                        <div class="cover-actions">
+                            @can('portadas.edit')
+                                <a href="{{ route('admin.covers.edit', $cover->slug) }}" class="boton-form boton-warning"
+                                    title="Editar portada">
+                                    <i class="ri-pencil-fill"></i>
+                                    <span class="boton-form-text">Editar</span>
+                                </a>
+                            @endcan
+                            @can('portadas.delete')
+                                <button type="button" class="boton-form boton-danger" title="Eliminar portada"
+                                    data-url="{{ route('admin.covers.destroy', $cover->slug) }}"
+                                    data-id="{{ $cover->id }}" data-name="{{ $cover->title }}">
+                                    <i class="ri-delete-bin-fill"></i>
+                                    <span class="boton-form-text">Eliminar</span>
+                                </button>
                             @endcan
                         </div>
                     </div>

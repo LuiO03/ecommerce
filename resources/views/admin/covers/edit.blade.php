@@ -98,107 +98,6 @@
         </div>
         <div class="form-columns-row">
             <div class="form-column">
-                <div class="card-header">
-                    <span class="card-title">Configuración opcional de la portada</span>
-                    <p class="card-description">
-                        Define los detalles y la apariencia de la portada que se mostrará en el sitio web.
-                    </p>
-                </div>
-                <hr class="w-full my-0 border-default">
-                <div class="input-group">
-                    <label for="overlay_text" class="label-form">Texto en la imagen</label>
-                    <div class="input-icon-container">
-                        <i class="ri-landscape-line input-icon"></i>
-                        <input type="text" name="overlay_text" id="overlay_text" class="input-form"
-                            placeholder="Texto principal a mostrar sobre la imagen"
-                            value="{{ old('overlay_text', $cover->overlay_text) }}" data-validate="max:150">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="overlay_subtext" class="label-form">Subtexto</label>
-                    <div class="input-icon-container">
-                        <i class="ri-landscape-line input-icon"></i>
-                        <input type="text" name="overlay_subtext" id="overlay_subtext" class="input-form"
-                            placeholder="Texto secundario opcional"
-                            value="{{ old('overlay_subtext', $cover->overlay_subtext) }}" data-validate="max:250">
-                    </div>
-                </div>
-                <div class="form-row-fit">
-                    <div class="form-column-fit">
-                        <div class="input-group">
-                            <label for="text_color" class="label-form">Color del texto</label>
-                            <div class="input-icon-container">
-                                <i class="ri-palette-line input-icon"></i>
-                                <input type="text" id="text_color" data-role="text-color" placeholder="#RRGGBB"
-                                    style="cursor: pointer" autocomplete="off" data-validate="required|colorCss"
-                                    value="{{ old('text_color', $cover->text_color ?? '#FFFFFF') }}" data-coloris>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label class="label-form">Fondo oscuro del texto</label>
-                            <div class="binary-switch">
-                                <input type="radio" name="overlay_bg_enabled" id="overlayBgOn" value="1"
-                                    class="switch-input switch-input-on"
-                                    {{ old('overlay_bg_enabled', $cover->overlay_bg_enabled ? 1 : 0) == 1 ? 'checked' : '' }}>
-                                <input type="radio" name="overlay_bg_enabled" id="overlayBgOff" value="0"
-                                    class="switch-input switch-input-off"
-                                    {{ old('overlay_bg_enabled', $cover->overlay_bg_enabled ? 1 : 0) == 0 ? 'checked' : '' }}>
-
-                                <div class="switch-slider"></div>
-
-                                <label for="overlayBgOn" class="switch-label switch-label-on">
-                                    <i class="ri-checkbox-circle-line"></i> Sí
-                                </label>
-                                <label for="overlayBgOff" class="switch-label switch-label-off">
-                                    <i class="ri-close-circle-line"></i> No
-                                </label>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label for="overlay_bg_opacity" class="label-form">
-                                Opacidad del fondo
-                                <span
-                                    id="overlayBgOpacityValue">{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}</span>
-                            </label>
-                            <input type="range" name="overlay_bg_opacity" id="overlay_bg_opacity"
-                                class="range-form" min="0" max="1" step="0.05"
-                                value="{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}"
-                                data-validate="minValue:0|maxValue:1">
-                        </div>
-
-                    </div>
-                    <div class="form-column-fit">
-                        <div class="input-group">
-                            <label for="text_position" class="label-form">Posición del texto</label>
-                            <input type="hidden" name="text_position" id="text_position"
-                                value="{{ old('text_position', $cover->text_position ?? 'center-center') }}">
-                            <div class="position-picker" data-target="text_position">
-                                <button type="button" class="position-cell" data-position="top-left"
-                                    aria-label="Superior izquierda"></button>
-                                <button type="button" class="position-cell" data-position="top-center"
-                                    aria-label="Superior centro"></button>
-                                <button type="button" class="position-cell" data-position="top-right"
-                                    aria-label="Superior derecha"></button>
-                                <button type="button" class="position-cell" data-position="center-left"
-                                    aria-label="Centro izquierda"></button>
-                                <button type="button" class="position-cell" data-position="center-center"
-                                    aria-label="Centro"></button>
-                                <button type="button" class="position-cell" data-position="center-right"
-                                    aria-label="Centro derecha"></button>
-                                <button type="button" class="position-cell" data-position="bottom-left"
-                                    aria-label="Inferior izquierda"></button>
-                                <button type="button" class="position-cell" data-position="bottom-center"
-                                    aria-label="Inferior centro"></button>
-                                <button type="button" class="position-cell" data-position="bottom-right"
-                                    aria-label="Inferior derecha"></button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="form-column">
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la portada</label>
                     <input type="file" name="image" id="image" class="file-input" accept="image/*"
@@ -262,54 +161,149 @@
                         <span id="filenameText"></span>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="form-body">
-            <div class="form-row-fit">
-                <div class="input-group">
-                    <label for="button_style" class="label-form">Estilo del botón</label>
-                    <div class="input-icon-container">
-                        <i class="ri-palette-line input-icon"></i>
-                        <select name="button_style" id="button_style" class="select-form"
-                            data-validate="requiredWith:button_text,button_link">
-                            <option value="primary"
-                                {{ old('button_style', $cover->button_style) == 'primary' ? 'selected' : '' }}>
-                                Principal</option>
-                            <option value="secondary"
-                                {{ old('button_style', $cover->button_style) == 'secondary' ? 'selected' : '' }}>
-                                Secundario</option>
-                            <option value="outline"
-                                {{ old('button_style', $cover->button_style) == 'outline' ? 'selected' : '' }}>
-                                Contorno
-                            </option>
-                            <option value="white"
-                                {{ old('button_style', $cover->button_style) == 'white' ? 'selected' : '' }}>
-                                Blanco
-                            </option>
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    <div class="form-row-fit">
+                        <div class="input-group">
+                            <label for="button_style" class="label-form">Estilo del botón</label>
+                            <div class="input-icon-container">
+                                <i class="ri-palette-line input-icon"></i>
+                                <select name="button_style" id="button_style" class="select-form">
+                                    <option value="primary"
+                                        {{ old('button_style', $cover->button_style) == 'primary' ? 'selected' : '' }}>
+                                        Principal</option>
+                                    <option value="secondary"
+                                        {{ old('button_style', $cover->button_style) == 'secondary' ? 'selected' : '' }}>
+                                        Secundario</option>
+                                    <option value="outline"
+                                        {{ old('button_style', $cover->button_style) == 'outline' ? 'selected' : '' }}>
+                                        Contorno
+                                    </option>
+                                    <option value="white"
+                                        {{ old('button_style', $cover->button_style) == 'white' ? 'selected' : '' }}>
+                                        Blanco
+                                    </option>
+                                </select>
+                                <i class="ri-arrow-down-s-line select-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="button_text" class="label-form">Texto del botón</label>
+                            <div class="input-icon-container">
+                                <i class="ri-radio-button-line input-icon"></i>
+                                <input type="text" name="button_text" id="button_text" class="input-form"
+                                    value="{{ old('button_text', $cover->button_text) }}"
+                                    placeholder="Ej: Comprar ahora" data-validate="max:100|requiredWith:button_style">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="button_link" class="label-form">URL del botón</label>
+                            <div class="input-icon-container">
+                                <i class="ri-links-line input-icon"></i>
+                                <input type="url" name="button_link" id="button_link" class="input-form"
+                                    value="{{ old('button_link', $cover->button_link) }}"
+                                    placeholder="https://example.com"
+                                    data-validate="url|requiredWith:button_text,button_style|max:255">
+                            </div>
+                        </div>
                     </div>
+            </div>
+            <div class="form-column">
+                <div class="card-header">
+                    <span class="card-title">Configuración opcional de la portada</span>
+                    <p class="card-description">
+                        Define los detalles y la apariencia de la portada que se mostrará en el sitio web.
+                    </p>
                 </div>
                 <div class="input-group">
-                    <label for="button_text" class="label-form">Texto del botón</label>
+                    <label for="overlay_text" class="label-form">Texto en la imagen</label>
                     <div class="input-icon-container">
-                        <i class="ri-radio-button-line input-icon"></i>
-                        <input type="text" name="button_text" id="button_text" class="input-form"
-                            value="{{ old('button_text', $cover->button_text) }}" placeholder="Ej: Comprar ahora"
-                            data-validate="max:100|requiredWith:button_style">
+                        <i class="ri-landscape-line input-icon"></i>
+                        <input type="text" name="overlay_text" id="overlay_text" class="input-form"
+                            placeholder="Texto principal a mostrar sobre la imagen"
+                            value="{{ old('overlay_text', $cover->overlay_text) }}" data-validate="max:150">
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="button_link" class="label-form">URL del botón</label>
+                    <label for="overlay_subtext" class="label-form">Subtexto</label>
                     <div class="input-icon-container">
-                        <i class="ri-links-line input-icon"></i>
-                        <input type="url" name="button_link" id="button_link" class="input-form"
-                            value="{{ old('button_link', $cover->button_link) }}" placeholder="https://example.com"
-                            data-validate="url|requiredWith:button_text,button_style|max:255">
+                        <i class="ri-landscape-line input-icon"></i>
+                        <input type="text" name="overlay_subtext" id="overlay_subtext" class="input-form"
+                            placeholder="Texto secundario opcional"
+                            value="{{ old('overlay_subtext', $cover->overlay_subtext) }}" data-validate="max:250">
                     </div>
                 </div>
+                <div class="form-row-fit">
+                    <div class="input-group">
+                        <label for="text_color" class="label-form">Color del texto</label>
+                        <div class="input-icon-container">
+                            <i class="ri-palette-line input-icon"></i>
+                            <input type="text" id="text_color" data-role="text-color" placeholder="#RRGGBB"
+                                style="cursor: pointer" autocomplete="off" data-validate="required|colorCss"
+                                value="{{ old('text_color', $cover->text_color ?? '#FFFFFF') }}" data-coloris>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="label-form">Fondo oscuro del texto</label>
+                        <div class="binary-switch">
+                            <input type="radio" name="overlay_bg_enabled" id="overlayBgOn" value="1"
+                                class="switch-input switch-input-on"
+                                {{ old('overlay_bg_enabled', $cover->overlay_bg_enabled ? 1 : 0) == 1 ? 'checked' : '' }}>
+                            <input type="radio" name="overlay_bg_enabled" id="overlayBgOff" value="0"
+                                class="switch-input switch-input-off"
+                                {{ old('overlay_bg_enabled', $cover->overlay_bg_enabled ? 1 : 0) == 0 ? 'checked' : '' }}>
+
+                            <div class="switch-slider"></div>
+
+                            <label for="overlayBgOn" class="switch-label switch-label-on">
+                                <i class="ri-checkbox-circle-line"></i> Sí
+                            </label>
+                            <label for="overlayBgOff" class="switch-label switch-label-off">
+                                <i class="ri-close-circle-line"></i> No
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="overlay_bg_opacity" class="label-form">
+                            Opacidad del fondo
+                            <span
+                                id="overlayBgOpacityValue">{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}</span>
+                        </label>
+                        <input type="range" name="overlay_bg_opacity" id="overlay_bg_opacity" class="range-form"
+                            min="0" max="1" step="0.05"
+                            value="{{ old('overlay_bg_opacity', $cover->overlay_bg_opacity ?? '0.35') }}"
+                            data-validate="minValue:0|maxValue:1">
+                    </div>
+                    <div class="input-group">
+                        <label for="text_position" class="label-form">Posición del texto</label>
+                        <input type="hidden" name="text_position" id="text_position"
+                            value="{{ old('text_position', $cover->text_position ?? 'center-center') }}">
+                        <div class="position-picker" data-target="text_position">
+                            <button type="button" class="position-cell" data-position="top-left"
+                                aria-label="Superior izquierda"></button>
+                            <button type="button" class="position-cell" data-position="top-center"
+                                aria-label="Superior centro"></button>
+                            <button type="button" class="position-cell" data-position="top-right"
+                                aria-label="Superior derecha"></button>
+                            <button type="button" class="position-cell" data-position="center-left"
+                                aria-label="Centro izquierda"></button>
+                            <button type="button" class="position-cell" data-position="center-center"
+                                aria-label="Centro"></button>
+                            <button type="button" class="position-cell" data-position="center-right"
+                                aria-label="Centro derecha"></button>
+                            <button type="button" class="position-cell" data-position="bottom-left"
+                                aria-label="Inferior izquierda"></button>
+                            <button type="button" class="position-cell" data-position="bottom-center"
+                                aria-label="Inferior centro"></button>
+                            <button type="button" class="position-cell" data-position="bottom-right"
+                                aria-label="Inferior derecha"></button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
+
+
         </div>
 
         <div class="form-footer">
@@ -350,6 +344,59 @@
                     validateOnInput: false,
                     scrollToFirstError: true
                 });
+
+                // Deshabilitar button_text y button_link hasta que se seleccione button_style
+                (function setupButtonFields() {
+                    const form = document.getElementById('coverForm');
+                    if (!form) return;
+                    const styleField = form.querySelector('#button_style');
+                    const textField = form.querySelector('#button_text');
+                    const linkField = form.querySelector('#button_link');
+                    if (!styleField || !textField || !linkField) return;
+
+                    let lastStyle = String(styleField.value || '').trim();
+
+                    const updateState = () => {
+                        const currentStyle = String(styleField.value || '').trim();
+                        const hasStyle = currentStyle !== '';
+
+                        // Si cambia de un estilo a otro distinto, limpiar los campos
+                        if (hasStyle && lastStyle && currentStyle !== lastStyle) {
+                            textField.value = '';
+                            linkField.value = '';
+                            if (form.__validator) {
+                                form.__validator.clearError(textField);
+                                form.__validator.clearSuccess(textField);
+                                form.__validator.clearError(linkField);
+                                form.__validator.clearSuccess(linkField);
+                            }
+                        }
+
+                        if (!hasStyle) {
+                            textField.value = '';
+                            linkField.value = '';
+                            textField.disabled = true;
+                            linkField.disabled = true;
+                            if (form.__validator) {
+                                form.__validator.clearError(textField);
+                                form.__validator.clearSuccess(textField);
+                                form.__validator.clearError(linkField);
+                                form.__validator.clearSuccess(linkField);
+                            }
+                        } else {
+                            textField.disabled = false;
+                            linkField.disabled = false;
+                        }
+
+                        lastStyle = currentStyle;
+                    };
+
+                    // Estado inicial
+                    updateState();
+
+                    // Actualizar al cambiar el estilo
+                    styleField.addEventListener('change', updateState);
+                })();
 
                 const initCoverOverlayPreview = () => {
                     const preview = document.getElementById('coverOverlayPreview');
