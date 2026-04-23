@@ -15,6 +15,9 @@
         return strtoupper($color);
     };
 
+    $mapsUrl = old('google_maps_url', $setting->google_maps_url ?? null);
+    $isValidMapsUrl = $mapsUrl && Str::startsWith($mapsUrl, ['https://www.google.com/maps', 'https://maps.google.com']);
+
 @endphp
 <form method="POST" action="{{ route('admin.company-settings.update-main') }}" id="companySettingsMainForm"
     enctype="multipart/form-data">
@@ -206,6 +209,36 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="form-body">
+
+            <div class="card-header">
+                <span class="card-title">Vista previa de Google Maps</span>
+                <p class="card-description">
+                    Si has ingresado una URL válida de Google Maps, aquí podrás ver una vista previa de cómo se
+                    mostrará el mapa en tu sitio web. Asegúrate de que la URL comience con
+                    "https://www.google.com/maps" o "https://maps.google.com" para que la vista previa funcione
+                    correctamente.
+                </p>
+            </div>
+
+            <div class="input-group">
+                <label for="google_maps_url" class="label-form">URL de Google Maps</label>
+                <div class="input-icon-container">
+                    <i class="ri-map-pin-2-line input-icon"></i>
+                    <input type="url" name="google_maps_url" id="google_maps_url" class="input-form"
+                        value="{{ old('google_maps_url', $setting->google_maps_url) }}"
+                        placeholder="https://maps.google.com/..." data-validate="url|max:500">
+                </div>
+            </div>
+            @if ($isValidMapsUrl)
+                <div class="input-group">
+                    <div class="map-preview-container">
+                        <iframe src="{{ $mapsUrl }}" width="100%" height="220" allowfullscreen loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="form-footer-static">
             <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">

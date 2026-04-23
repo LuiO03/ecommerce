@@ -27,6 +27,7 @@ class UpdateCompanyMainRequest extends FormRequest
             'support_phone' => ['nullable', 'string', 'max:25'],
             'address' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
+            'google_maps_url' => ['nullable', 'url', 'max:255'],
             // Identidad visual
             'logo' => ['nullable', 'image', 'mimes:png', 'max:2048'],
             'remove_logo' => ['nullable', 'boolean'],

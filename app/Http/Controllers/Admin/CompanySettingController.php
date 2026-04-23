@@ -57,6 +57,7 @@ class CompanySettingController extends Controller
         $original = $setting->exists ? $setting->only([
             'name', 'legal_name', 'ruc', 'slogan', 'about',
             'email', 'support_email', 'phone', 'support_phone', 'address', 'website',
+            'google_maps_url',
             'logo_path',
         ]) : null;
 
@@ -76,6 +77,7 @@ class CompanySettingController extends Controller
         $setting->support_phone = $data->get('support_phone');
         $setting->address = $data->get('address');
         $setting->website = $data->get('website');
+        $setting->google_maps_url = $data->get('google_maps_url');
 
         // Identidad visual
         $removeLogo = $request->boolean('remove_logo');
@@ -114,6 +116,7 @@ class CompanySettingController extends Controller
             'support_phone' => $setting->support_phone,
             'address' => $setting->address,
             'website' => $setting->website,
+            'google_maps_url' => $setting->google_maps_url,
             'logo_path' => $setting->logo_path,
         ]);
 

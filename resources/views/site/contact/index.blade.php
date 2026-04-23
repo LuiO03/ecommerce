@@ -108,6 +108,18 @@
                         <li><i class="ri-time-line"></i> Horario de atención: Lunes a Viernes, 9:00 a 18:00</li>
                     </ul>
                 </div>
+                @php
+                    $mapsUrl = $companySettings?->google_maps_url ?? null;
+                    $isEmbedUrl = $mapsUrl && (Str::startsWith($mapsUrl, 'https://www.google.com/maps/embed?pb=') || Str::startsWith($mapsUrl, 'https://maps.google.com/maps/embed?pb='));
+                @endphp
+                @if ($isEmbedUrl)
+                    <div class="contact-info__card mt-4">
+                        <h3>Ubicación en el mapa</h3>
+                        <div class="rounded overflow-hidden border border-gray-200 shadow-sm" style="min-height:220px;max-width:100%;">
+                            <iframe src="{{ $mapsUrl }}" width="100%" height="220" style="border:0;min-width:200px;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                @endif
                 <div class="contact-info__hint">
                     <p><i class="ri-lightbulb-flash-line"></i> Consejo: mientras más contexto nos des (capturas, enlaces, número de pedido), más rápido podremos ayudarte.</p>
                 </div>

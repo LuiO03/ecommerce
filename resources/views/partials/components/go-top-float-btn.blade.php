@@ -1,5 +1,5 @@
 <button type="button" class="go-top-float-btn" id="goTopFloatBtn" title="Ir arriba" aria-label="Ir arriba">
-    <i class="ri-arrow-up-line"></i>
+    <i class="ri-arrow-up-s-line"></i>
     <span>ir arriba</span>
 </button>
 <script>

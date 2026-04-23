@@ -1,7 +1,7 @@
 /* boton flotante para ir arriba */
 .go-top-float-btn {
     position: fixed;
-    bottom: 100px;
+    bottom: 28px;
     right: 28px;
     gap: 5px;
     z-index: 90;
@@ -13,6 +13,8 @@
     justify-content: center;
     box-shadow: var(--box-shadow-card);
     padding: 8px 12px;
+    font-weight: bold;
+    font-family: var(--font-secondary);
     opacity: 0;
     color: white;
     pointer-events: none;
@@ -26,7 +28,8 @@
 }
 
 .go-top-float-btn i {
-    font-size: var(--font-size-p);
+    font-size: var(--font-size-h2);
+    line-height: 1;
 }
 
 .go-top-float-btn.visible {
@@ -41,9 +44,10 @@
 /* boton flotante para whatsapp */
 .whatsapp-float-btn {
     position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 9999;
+    right: 28px;          /* o left */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
     background: #25d366;
     color: #fff;
     border-radius: 50%;
@@ -56,6 +60,7 @@
     font-size: 2.2rem;
     transition: box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
+
 .whatsapp-float-btn:hover {
     box-shadow: var(--box-shadow-card-hover);
     background: var(--color-success);
