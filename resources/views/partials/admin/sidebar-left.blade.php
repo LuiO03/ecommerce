@@ -162,7 +162,7 @@
                             Negocio
                         </span>
                         @if (function_exists('company_settings_incomplete') && company_settings_incomplete())
-                            <i class="ri-error-warning-fill sidebar-link-alert" title="Faltan datos de empresa"></i>
+                            <i class="ri-info-i sidebar-link-alert" title="Faltan datos de empresa"></i>
                         @endif
                     </a>
                 </li>

@@ -59,6 +59,10 @@
     /* === Ripple === */
     --ripple-color-btn: rgba(0, 0, 0, 0.15);
     --ripple-color-card: rgba(255, 150, 255, 0.15);
+
+    /* === Sombra de tarjetas y elementos === */
+    --box-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --box-shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .dark {

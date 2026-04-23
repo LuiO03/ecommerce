@@ -64,23 +64,6 @@
     <!-- Page Content -->
     <main class="site-main">
         {{ $slot }}
-
-        <div class="site-button-go-top" data-go-top>
-            <i class="ri-arrow-up-s-line"></i>
-            Volver arriba
-        </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const btn = document.querySelector('[data-go-top]');
-
-                btn.addEventListener('click', () => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                });
-            });
-        </script>
     </main>
 
 
@@ -123,6 +106,10 @@
         </script>
     @endif
     @livewireScripts
+
+
+    @include('partials.components.whatsapp-float-btn', ['waMsg' => '¡Hola! Quiero más información.'])
+    @include('partials.components.go-top-float-btn')
 
     @stack('js')
 </body>

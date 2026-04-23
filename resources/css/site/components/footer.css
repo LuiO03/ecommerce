@@ -29,9 +29,9 @@
 }
 
 .footer-description {
-	color: rgba(255, 255, 255, 0.75);
+	color: var(--color-muted);
 	line-height: 1.6;
-	font-size: 0.95rem;
+	font-size: var(--font-size-p);
 }
 
 .footer-social {
@@ -65,8 +65,9 @@
 }
 
 .footer-links a {
-	color: rgba(255, 255, 255, 0.75);
+	color: var(--color-muted);
 	transition: color 0.2s ease;
+    font-size: var(--font-size-h6)
 }
 
 .footer-links a:hover {
@@ -74,8 +75,9 @@
 }
 
 .footer-title {
-	font-size: 1rem;
-	font-weight: 700;
+	font-size: var(--font-size-h5);
+	font-weight: bold;
+    font-family: var(--font-secondary);
 	margin-bottom: 0.75rem;
 	color: #ffffff;
 }

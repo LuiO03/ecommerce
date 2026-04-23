@@ -62,14 +62,20 @@
                                 @foreach ($allImages as $img)
                                     <div class="swiper-slide">
                                         <div class="blog-hero-img">
-                                            <img src="{{ asset('storage/' . $img->path) }}"
-                                                alt="{{ $img->alt ?? $post->title }}" loading="lazy"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-
-                                            <div class="blog-card-media-fallback" style="display:none;">
-                                                <i class="ri-image-line"></i>
-                                                <span>Imagen no disponible</span>
-                                            </div>
+                                            @if ($img->path)
+                                                <img src="{{ asset('storage/' . $img->path) }}"
+                                                    alt="{{ $img->alt ?? $post->title }}" loading="lazy"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="blog-card-media-fallback" style="display: none;">
+                                                    <i class="ri-image-line"></i>
+                                                    <span>Imagen no disponible</span>
+                                                </div>
+                                            @else
+                                                <div class="blog-card-media-fallback">
+                                                    <i class="ri-image-line"></i>
+                                                    <span>Imagen no disponible</span>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -86,7 +92,19 @@
                             <div class="swiper-wrapper">
                                 @foreach ($allImages as $img)
                                     <div class="swiper-slide">
-                                        <img src="{{ asset('storage/' . $img->path) }}" loading="lazy">
+                                        @if ($img->path)
+                                            <img src="{{ asset('storage/' . $img->path) }}" loading="lazy"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="blog-card-thumb-fallback" style="display: none;">
+                                                <i class="ri-image-line"></i>
+                                                <span>Imagen no disponible</span>
+                                            </div>
+                                        @else
+                                            <div class="blog-card-thumb-fallback">
+                                                <i class="ri-image-line"></i>
+                                                <span>Imagen no disponible</span>
+                                            </div>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>

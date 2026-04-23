@@ -1,5 +1,8 @@
+@php
+    $companySettings = function_exists('company_setting') ? company_setting() : null;
+    $brandName = $companySettings->name ?? null;
+@endphp
 <footer class="site-footer">
-
     <div class="site-footer-container">
         <div class="site-footer-top">
             <div class="footer-brand">
@@ -7,7 +10,8 @@
                     @include('partials.admin.company-brand')
                 </a>
                 <p class="footer-description">
-                    Tu tienda online con productos seleccionados, envíos rápidos y una experiencia de compra sin fricciones.
+                    Tu tienda online con productos seleccionados, envíos rápidos y una experiencia de compra sin
+                    fricciones.
                 </p>
                 <div class="footer-social">
                     @php
@@ -26,7 +30,8 @@
                             $url = $companySettings?->socialLink($key);
                         @endphp
                         @if (!empty($url))
-                            <a href="{{ $url }}" class="footer-social-link" aria-label="{{ $platform['label'] }}" target="_blank" rel="noopener noreferrer">
+                            <a href="{{ $url }}" class="footer-social-link"
+                                aria-label="{{ $platform['label'] }}" target="_blank" rel="noopener noreferrer">
                                 <i class="{{ $platform['icon'] }}"></i>
                             </a>
                         @endif
@@ -79,7 +84,7 @@
         </div>
 
         <div class="site-footer-bottom">
-            <p>© {{ date('Y') }} GeckoMerce. Todos los derechos reservados.</p>
+            <p>© {{ date('Y') }} {{ $brandName }}. Todos los derechos reservados.</p>
             <div class="footer-bottom-links">
                 <a href="{{ route('site.legal.privacy') }}">Privacidad</a>
                 <a href="{{ route('site.legal.terms') }}">Términos</a>

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('tiktok_enabled')->default(true)->after('tiktok_url');
             $table->boolean('linkedin_enabled')->default(true)->after('linkedin_url');
 
-            $table->longText('terms_conditions')->nullable()->after('secondary_color');
+            $table->longText('terms_conditions')->nullable()->after('linkedin_enabled');
             $table->longText('privacy_policy')->nullable()->after('terms_conditions');
             $table->longText('claims_book_information')->nullable()->after('privacy_policy');
         });

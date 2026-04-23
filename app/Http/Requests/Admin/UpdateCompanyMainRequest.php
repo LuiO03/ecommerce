@@ -28,8 +28,6 @@ class UpdateCompanyMainRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
             // Identidad visual
-            'primary_color' => ['nullable', 'regex:/^#(?:[0-9a-fA-F]{3}){1,2}$/'],
-            'secondary_color' => ['nullable', 'regex:/^#(?:[0-9a-fA-F]{3}){1,2}$/'],
             'logo' => ['nullable', 'image', 'mimes:png', 'max:2048'],
             'remove_logo' => ['nullable', 'boolean'],
         ];

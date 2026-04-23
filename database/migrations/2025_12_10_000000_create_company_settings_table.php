@@ -33,8 +33,6 @@ return new class extends Migration
             $table->string('youtube_url')->nullable();
             $table->string('tiktok_url')->nullable();
             $table->string('linkedin_url')->nullable();
-            $table->string('primary_color')->nullable();
-            $table->string('secondary_color')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('deleted_by')->nullable()->constrained('users')->nullOnDelete();

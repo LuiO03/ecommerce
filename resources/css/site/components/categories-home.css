@@ -21,6 +21,7 @@
     line-height: 1;
     width: 100%;
     align-items: center;
+    gap: 5px;
     max-width: var(--site-max-width);
     margin: 0 auto;
     justify-content: start;
@@ -56,6 +57,7 @@
     max-width: none;
     flex-direction: column;
     line-height: 1;
+    gap: 5px;
     width: fit-content;
     margin: 0px;
     padding: 0px;
@@ -88,7 +90,7 @@
 }
 
 .category-card:hover {
-    box-shadow: var(--box-shadow-site-hover);
+    box-shadow: var(--box-shadow-card-hover);
     transform: translateY(-2px) scale(1.03);
 }
 

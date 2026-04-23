@@ -1,0 +1,63 @@
+/* boton flotante para ir arriba */
+.go-top-float-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 28px;
+    gap: 5px;
+    z-index: 90;
+    background: var(--color-site-nav);
+    border-radius: var(--radius-card);
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--box-shadow-card);
+    padding: 8px 12px;
+    opacity: 0;
+    color: white;
+    pointer-events: none;
+    transition:
+        opacity 0.25s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+.go-top-float-btn span{
+    font-size: var(--font-size-p);
+}
+
+.go-top-float-btn i {
+    font-size: var(--font-size-p);
+}
+
+.go-top-float-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.go-top-float-btn:hover {
+    box-shadow: var(--box-shadow-card-hover);
+}
+
+
+/* boton flotante para whatsapp */
+.whatsapp-float-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    background: #25d366;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--box-shadow-card);
+    font-size: 2.2rem;
+    transition: box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.whatsapp-float-btn:hover {
+    box-shadow: var(--box-shadow-card-hover);
+    background: var(--color-success);
+    color: #fff;
+}

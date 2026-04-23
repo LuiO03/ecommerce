@@ -57,7 +57,7 @@ class CompanySettingController extends Controller
         $original = $setting->exists ? $setting->only([
             'name', 'legal_name', 'ruc', 'slogan', 'about',
             'email', 'support_email', 'phone', 'support_phone', 'address', 'website',
-            'primary_color', 'secondary_color', 'logo_path',
+            'logo_path',
         ]) : null;
 
         $data = collect($request->validated());
@@ -96,9 +96,8 @@ class CompanySettingController extends Controller
             $fileName = $slug.'.png';
             $logoPath = $request->file('logo')->storeAs('company', $fileName, 'public');
         }
-        $setting->primary_color = $data->get('primary_color');
-        $setting->secondary_color = $data->get('secondary_color');
         $setting->logo_path = $logoPath;
+
 
         $setting->save();
         Cache::forget('company_settings');
@@ -115,8 +114,6 @@ class CompanySettingController extends Controller
             'support_phone' => $setting->support_phone,
             'address' => $setting->address,
             'website' => $setting->website,
-            'primary_color' => $setting->primary_color,
-            'secondary_color' => $setting->secondary_color,
             'logo_path' => $setting->logo_path,
         ]);
 

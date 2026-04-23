@@ -15,8 +15,6 @@
         return strtoupper($color);
     };
 
-    $primaryColor = $normalizeColor(old('primary_color', $setting->primary_color), '#10B981');
-    $secondaryColor = $normalizeColor(old('secondary_color', $setting->secondary_color), '#0EA5E9');
 @endphp
 <form method="POST" action="{{ route('admin.company-settings.update-main') }}" id="companySettingsMainForm"
     enctype="multipart/form-data">
@@ -90,69 +88,14 @@
                         placeholder="Describe brevemente la empresa" data-validate="max:1500">{{ old('about', $setting->about) }}</textarea>
                 </div>
             </div>
-            <div class="form-row-fit">
-                <div class="inputs-column">
-                    <div class="input-group">
-                        <label for="email" class="label-form">Correo principal</label>
-                        <div class="input-icon-container">
-                            <i class="ri-mail-line input-icon"></i>
-                            <input type="email" name="email" id="email" class="input-form"
-                                value="{{ old('email', $setting->email) }}" placeholder="contacto@empresa.com"
-                                data-validate="email|max:255">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="support_email" class="label-form">Correo de soporte</label>
-                        <div class="input-icon-container">
-                            <i class="ri-customer-service-2-line input-icon"></i>
-                            <input type="email" name="support_email" id="support_email" class="input-form"
-                                value="{{ old('support_email', $setting->support_email) }}"
-                                placeholder="soporte@empresa.com" data-validate="email|max:255">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="phone" class="label-form">Teléfono principal</label>
-                        <div class="input-icon-container">
-                            <i class="ri-phone-line input-icon"></i>
-                            <input type="text" name="phone" id="phone" class="input-form"
-                                value="{{ old('phone', $setting->phone) }}" placeholder="+51 999 888 777"
-                                data-validate="max:25|phone|min:9">
-                        </div>
-                    </div>
-                </div>
-                <div class="inputs-column">
-                    <div class="input-group">
-                        <label for="support_phone" class="label-form">Teléfono de soporte</label>
-                        <div class="input-icon-container">
-                            <i class="ri-headphone-line input-icon"></i>
-                            <input type="text" name="support_phone" id="support_phone" class="input-form"
-                                value="{{ old('support_phone', $setting->support_phone) }}"
-                                placeholder="+51 977 888 111" data-validate="max:25|phone|min:7">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="address" class="label-form">Dirección</label>
-                        <div class="input-icon-container">
-                            <i class="ri-map-pin-line input-icon"></i>
-                            <input type="text" name="address" id="address" class="input-form"
-                                value="{{ old('address', $setting->address) }}" placeholder="Av. Principal 123"
-                                data-validate="max:255">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="website" class="label-form">Sitio web</label>
-                        <div class="input-icon-container">
-                            <i class="ri-global-line input-icon"></i>
-                            <input type="url" name="website" id="website" class="input-form"
-                                value="{{ old('website', $setting->website) }}" placeholder="https://empresa.com"
-                                data-validate="url|max:255">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row-fit">
+        </div>
+        <div class="form-user">
+            <div class="form-body">
                 <div class="image-upload-section">
-                    <label class="label-form">Logotipo</label>
+                    <div class="card-header">
+                        <span class="card-title">Logotipo</span>
+                        <p class="card-description">Sube el logotipo de tu negocio</p>
+                    </div>
                     <input type="file" name="logo" id="companyLogo" class="file-input" accept="image/png"
                         data-validate="imageSingle|maxSizeSingleKB:2048|fileTypes:png">
                     <input type="hidden" name="remove_logo" id="removeLogoFlag" value="0">
@@ -197,57 +140,68 @@
                         <span id="companyLogoFilenameText">{{ $logoFilename }}</span>
                     </div>
                 </div>
-                <div class="form-column">
-                    <div class="form-row-fit">
-                        <div class="input-group">
-                            <label for="primary_color" class="label-form">Color primario</label>
-                            <div class="color-input-wrapper" data-color-picker
-                                data-default-color="{{ $setting->primary_color }}">
-                                <span class="color-preview" data-color-preview
-                                    style="background-color: {{ $setting->primary_color }}">
-                                    <input type="color" class="color-picker-input"
-                                        value="{{ $setting->primary_color }}" data-color-input="picker"
-                                        aria-label="Seleccionar color primario">
-                                </span>
-                                <div class="input-icon-container">
-                                    <i class="ri-palette-line input-icon"></i>
-                                    <input type="text" name="primary_color" id="primary_color"
-                                        class="input-form color-text-input" value="{{ $setting->primary_color }}"
-                                        placeholder="#10B981" data-validate="pattern:^#(?:[0-9a-fA-F]{3}){1,2}$"
-                                        data-color-input="text" autocomplete="off">
-                                </div>
-                                <button type="button" class="color-copy-btn" data-color-copy
-                                    data-copy-label="Copiar" data-copied-label="Copiado"
-                                    title="Copiar valor de color">
-                                    <i class="ri-file-copy-line"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
+            </div>
+            <div class="form-body">
+                <div class="card-header">
+                    <span class="card-title">Información de contacto</span>
+                    <p class="card-description">
+                        Proporciona los datos de contacto que deseas mostrar a tus clientes en el sitio web y en los
+                        documentos oficiales.
+                    </p>
+                </div>
+                <div class="form-row-fit">
+                    <div class="input-group">
+                        <label for="email" class="label-form">Correo principal</label>
+                        <div class="input-icon-container">
+                            <i class="ri-mail-line input-icon"></i>
+                            <input type="email" name="email" id="email" class="input-form"
+                                value="{{ old('email', $setting->email) }}" placeholder="contacto@empresa.com"
+                                data-validate="email|max:255">
                         </div>
-                        <div class="input-group">
-                            <label for="secondary_color" class="label-form">Color secundario</label>
-                            <div class="color-input-wrapper" data-color-picker
-                                data-default-color="{{ $setting->secondary_color }}">
-                                <span class="color-preview" data-color-preview
-                                    style="background-color: {{ $setting->secondary_color }}">
-                                    <input type="color" class="color-picker-input"
-                                        value="{{ $setting->secondary_color }}" data-color-input="picker"
-                                        aria-label="Seleccionar color secundario">
-                                </span>
-                                <div class="input-icon-container">
-                                    <i class="ri-palette-line input-icon"></i>
-                                    <input type="text" name="secondary_color" id="secondary_color"
-                                        class="input-form color-text-input" value="{{ $setting->secondary_color }}"
-                                        placeholder="#6366F1" data-validate="pattern:^#(?:[0-9a-fA-F]{3}){1,2}$"
-                                        data-color-input="text" autocomplete="off">
-                                </div>
-                                <button type="button" class="color-copy-btn" data-color-copy
-                                    data-copy-label="Copiar" data-copied-label="Copiado"
-                                    title="Copiar valor de color">
-                                    <i class="ri-file-copy-line"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="support_email" class="label-form">Correo de soporte</label>
+                        <div class="input-icon-container">
+                            <i class="ri-customer-service-2-line input-icon"></i>
+                            <input type="email" name="support_email" id="support_email" class="input-form"
+                                value="{{ old('support_email', $setting->support_email) }}"
+                                placeholder="soporte@empresa.com" data-validate="email|max:255">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="phone" class="label-form">Teléfono principal</label>
+                        <div class="input-icon-container">
+                            <i class="ri-phone-line input-icon"></i>
+                            <input type="text" name="phone" id="phone" class="input-form"
+                                value="{{ old('phone', $setting->phone) }}" placeholder="+51 999 888 777"
+                                data-validate="max:25|phone|min:9">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="support_phone" class="label-form">Teléfono de soporte</label>
+                        <div class="input-icon-container">
+                            <i class="ri-headphone-line input-icon"></i>
+                            <input type="text" name="support_phone" id="support_phone" class="input-form"
+                                value="{{ old('support_phone', $setting->support_phone) }}"
+                                placeholder="+51 977 888 111" data-validate="max:25|phone|min:7">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="address" class="label-form">Dirección</label>
+                        <div class="input-icon-container">
+                            <i class="ri-map-pin-line input-icon"></i>
+                            <input type="text" name="address" id="address" class="input-form"
+                                value="{{ old('address', $setting->address) }}" placeholder="Av. Principal 123"
+                                data-validate="max:255">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="website" class="label-form">Sitio web</label>
+                        <div class="input-icon-container">
+                            <i class="ri-global-line input-icon"></i>
+                            <input type="url" name="website" id="website" class="input-form"
+                                value="{{ old('website', $setting->website) }}" placeholder="https://empresa.com"
+                                data-validate="url|max:255">
                         </div>
                     </div>
                 </div>

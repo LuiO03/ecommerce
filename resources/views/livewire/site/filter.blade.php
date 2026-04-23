@@ -238,10 +238,6 @@
 
                                     <div class="product-footer">
                                         <livewire:site.add-to-wishlist-card :product-id="$product->id" :key="'wishlist-card-' . $product->id" />
-                                        <button class="product-btn" aria-label="Agregar al carrito" title="Agregar al carrito">
-                                            <i class="ri-shopping-bag-line"></i>
-                                            Agregar
-                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -36,8 +36,7 @@
     --color-site-text: #343434;
 
     --color-section-bg: #f8fafc;
-    --box-shadow-site: 0 4px 12px rgba(0, 0, 0, 0.06);
-    --box-shadow-site-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+
 
     --btn-primary: var(--color-site-nav);
     --btn-accent: var(--color-site-accent);
