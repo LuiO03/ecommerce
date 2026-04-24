@@ -14,10 +14,12 @@ export default defineConfig({
             credentials: false,
         },
     },
+
     plugins: [
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/css/site/layout.css', // ← AGREGAR ESTE
                 'resources/js/app.js',
                 'resources/js/admin.js',
                 'resources/js/site.js',
