@@ -1,9 +1,4 @@
 @section('title', 'Perfil de usuario')
-
-@push('styles')
-    @vite('resources/css/modules/profile.css')
-@endpush
-
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-danger">

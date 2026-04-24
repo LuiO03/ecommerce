@@ -238,11 +238,11 @@
    🔹 CONTENIDO PRINCIPAL (Main content)
    ============================================================ */
 .main-container {
-    height: calc(100vh - var(--navbar-height));
+    height: calc(100dvh - var(--navbar-height));
     overflow-y: auto;
     background-color: var(--color-main-bg);
     border-radius: 15px 0 0 0;
-    padding: 25px 15px 50px 15px;
+    padding: 25px 1rem 50px 1rem;
     position: fixed;
     right: 0;
     bottom: 0;

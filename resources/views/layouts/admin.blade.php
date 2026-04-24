@@ -82,7 +82,7 @@
     })();
 </script>
 
-<body>
+<body class="">
     <!-- OVERLAY -->
     <div id="overlay"
         class="fixed inset-0 bg-black/50 hidden opacity-0 transition-opacity duration-300 ease-in-out z-50">
