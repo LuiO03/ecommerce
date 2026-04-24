@@ -38,14 +38,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 5px;
     padding: 6px 8px;
-    font-size: 0.85rem;
-    font-family: var(--font-secondary);
-    border-radius: 999px;
+    border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     background: transparent;
-    color: var(--color-text);
     cursor: pointer;
     transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
 }
@@ -55,14 +52,20 @@
 }
 
 .sidebar-tab.active {
+    font-weight: bold;
+    font-family: var(--font-secondary);
     background-color: var(--color-accent);
-    color: #fff;
     border-color: var(--color-accent);
     box-shadow: 0 4px 12px var(--shadow-accent);
 }
 
 .sidebar-tab i {
-    font-size: 18px;
+    font-size: var(--font-size-h5);
+    line-height: 1;
+}
+
+.sidebar-tab span{
+    font-size: var(--font-size-xs);
 }
 
 .sidebar-tab-pill {

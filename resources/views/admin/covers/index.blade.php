@@ -85,8 +85,13 @@
                     data-created="{{ $cover->created_at ? $cover->created_at->timestamp : 0 }}">
                     <!-- Imagen principal -->
                     <div class="card-image-wrapper">
-                        <img src="{{ asset('storage/' . $cover->image_path) }}" alt="{{ $cover->title }}"
-                            class="card-image" data-image-path="{{ $cover->image_path }}">
+                        @if ($cover->image_path && file_exists(storage_path('app/public/' . $cover->image_path)))
+                            <img src="{{ asset('storage/' . $cover->image_path) }}" alt="{{ $cover->title }}"
+                                class="card-image" data-image-path="{{ $cover->image_path }}">
+                        @else
+                            <i class="ri-folder-close-line"></i>
+                            <p>Imagen no encontrada</p>
+                        @endif
                     </div>
 
                     <!-- Información de la tarjeta -->

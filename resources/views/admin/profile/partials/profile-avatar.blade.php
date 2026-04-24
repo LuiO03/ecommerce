@@ -72,10 +72,6 @@
     </div>
 </div>
 
-@push('scripts')
-    @vite('resources/js/utils/submit-button-loader.js')
-@endpush
-
 <script type="module">
     import { initSubmitLoader } from '/resources/js/utils/submit-button-loader.js';
     initSubmitLoader({

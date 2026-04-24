@@ -177,11 +177,6 @@
     grid-column: span 2;
 }
 
-.selector-label {
-    display: none;
-    font-size: var(--font-size-sm);
-}
-
 .selector {
     width: 100%;
     display: flex;
@@ -289,6 +284,10 @@
 
     #toggleFiltersBtn{
         grid-column: 1;
+    }
+
+    #applyFiltersBtn .boton-form-text{
+        display: none;
     }
 
     #applyFiltersBtn{
@@ -405,11 +404,6 @@
         width: 28px;
         height: 28px;
         font-size: var(--font-size-p);
-    }
-
-    .tabla-select-wrapper select {
-        font-size: var(--font-size-sm);
-        padding: 8px;
     }
 
     .tabla-select-wrapper i,

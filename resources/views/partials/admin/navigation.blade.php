@@ -1,3 +1,7 @@
+@php
+    $companySettings = function_exists('company_setting') ? company_setting() : null;
+    $brandName = $companySettings->name ?? null;
+@endphp
 <nav class="navbar">
     <button id="toggleSidebarWidth" class="navbar-boton-desktop ripple-btn">
         <i class="ri-arrow-left-double-fill"></i>
@@ -9,9 +13,15 @@
     </button>
     <div class="topbar-center">
         <!-- Logo visible solo en tablet/móvil -->
-        <a href="#" class="navbar-logo sm:hidden flex items-center gap-2">
-            <div class="navbar-logo-texto"><strong>Gecko</strong><span>merce</span></div>
-        </a>
+        <div class="sidebar-header">
+        <div class="flex items-center gap-2">
+            @if ($brandName)
+                <div class="sidebar-logo-texto tracking-wide">{{ $brandName }}</div>
+            @else
+                <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
+            @endif
+        </div>
+        </div>
 
         <!-- Fecha visible solo en escritorio -->
         <span class="current-date hidden sm:inline">

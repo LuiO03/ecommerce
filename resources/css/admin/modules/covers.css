@@ -57,8 +57,23 @@
 /* === Imagen de tarjeta === */
 .card-image-wrapper {
     width: 60%;
-    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--color-danger);
 }
+
+.card-image-wrapper i {
+    font-size: var(--font-size-h1);
+}
+
+.card-image-wrapper p {
+    text-align: center;
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
 
 .card-image-wrapper img {
     width: 100%;

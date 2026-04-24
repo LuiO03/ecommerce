@@ -628,7 +628,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 .column-actions-td .boton-show-actions,
 .tabla-normal .column-actions-td .boton-show-actions,
 .dtr-data .boton-show-actions {
-    display: none !important;
+    display: none;
 }
 
 .tabla-botones .boton-sm-text {
@@ -716,6 +716,12 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         height: fit-content;
     }
 
+    .tabla-general tbody tr:has(.dt-empty) {
+        max-width: 100%;
+        width: 100%;
+        background-color: red;
+    }
+
     .tabla-general tbody tr.row-selected,
     table.dataTable tbody tr.row-selected {
         background-color: var(--color-inverse) !important;
@@ -789,6 +795,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 
     .tabla-normal .column-actions-td .boton-show-actions,
     .column-actions-td .boton-show-actions {
+        display: block;
         width: 38px;
         height: max-content;
         border: 1px solid var(--color-border);
