@@ -19,7 +19,8 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/css/site/layout.css', // ← AGREGAR ESTE
+                'resources/css/site/layout.css',
+                'resources/css/admin/layout.css',
                 'resources/js/app.js',
                 'resources/js/admin.js',
                 'resources/js/site.js',

@@ -109,7 +109,8 @@
     border-color: var(--color-accent);
 }
 
-.navbar-boton {
+.navbar-boton-desktop,
+.navbar-boton-mobile {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,6 +120,25 @@
     font-size: 25px;
     transition: background-color 0.3s ease;
 }
+
+.navbar-boton-mobile {
+    display: none;
+}
+
+.navbar-boton-desktop {
+    display: block;
+}
+
+@media (max-width: 639px) {
+    .navbar-boton-mobile {
+        display: flex;
+    }
+    .navbar-boton-desktop {
+        display: none;
+    }
+}
+
+
 
 /*
 .navbar-boton:hover {

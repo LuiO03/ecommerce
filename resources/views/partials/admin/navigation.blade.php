@@ -1,13 +1,12 @@
 <nav class="navbar">
-    <button id="toggleSidebarWidth" class="hidden sm:flex navbar-boton ripple-btn">
+    <button id="toggleSidebarWidth" class="navbar-boton-desktop ripple-btn">
         <i class="ri-arrow-left-double-fill"></i>
     </button>
-    <div class="sm:hidden">
-        <button id="openLeftSidebarBtn" aria-controls="logo-sidebar" type="button" class="navbar-boton">
-            <span class="sr-only">Open sidebar tablet</span>
-            <i class="ri-menu-2-line"></i>
-        </button>
-    </div>
+    <button id="openLeftSidebarBtn" aria-controls="logo-sidebar" type="button" class="navbar-boton-mobile ripple-btn"
+        title="Abrir menú lateral">
+        <span class="sr-only">Open sidebar tablet</span>
+        <i class="ri-menu-2-line"></i>
+    </button>
     <div class="topbar-center">
         <!-- Logo visible solo en tablet/móvil -->
         <a href="#" class="navbar-logo sm:hidden flex items-center gap-2">
@@ -46,7 +45,8 @@
                     @endphp
 
                     @if ($hasAvatarImage)
-                        <img class="topbar-avatar" src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}">
+                        <img class="topbar-avatar" src="{{ asset('storage/' . $user->image) }}"
+                            alt="{{ $user->name }}">
                     @else
                         <div class="topbar-avatar"
                             style="background-color: {{ $user->avatar_colors['background'] }};

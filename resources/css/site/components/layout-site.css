@@ -153,10 +153,6 @@
         display: block;
     }
 
-    .header-actions{
-        gap: 3px;
-    }
-
     .nav-icon{
         font-size: 1.45rem;
         padding: 0.25rem;
