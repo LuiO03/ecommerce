@@ -25,13 +25,13 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $firstName = fake()->firstName();
-        $lastName = fake()->lastName();
+        $firstName = $this->faker->firstName;
+        $lastName = $this->faker->lastName;
 
         return [
             'name' => $firstName,
             'last_name' => $lastName,
-            'email' => fake()->unique()->safeEmail(),
+            'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
             'password' => bcrypt('password'),
             'slug' => Str::slug($firstName . ' ' . $lastName . '-' . uniqid()),
