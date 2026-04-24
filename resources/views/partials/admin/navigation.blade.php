@@ -14,13 +14,13 @@
     <div class="topbar-center">
         <!-- Logo visible solo en tablet/móvil -->
         <div class="sidebar-header">
-        <div class="flex items-center gap-2">
-            @if ($brandName)
-                <div class="sidebar-logo-texto tracking-wide">{{ $brandName }}</div>
-            @else
-                <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
-            @endif
-        </div>
+            <div class="sidebar-logo-container">
+                @if ($brandName)
+                    <div class="sidebar-logo-texto tracking-wide">{{ $brandName }}</div>
+                @else
+                    <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
+                @endif
+            </div>
         </div>
 
         <!-- Fecha visible solo en escritorio -->

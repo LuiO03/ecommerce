@@ -59,6 +59,13 @@
                                 <span>Ver perfil</span>
                             </a>
                         </li>
+                        <!-- ver sitio web -->
+                        <li>
+                            <a href="{{ route('site.home') }}" target="_blank" class="menu-item">
+                                <i class="ri-global-line sidebar-icon"></i>
+                                <span>Ver sitio web</span>
+                            </a>
+                        </li>
                         <li>
                             <a href="#" class="menu-item">
                                 <i class="ri-settings-3-line sidebar-icon"></i>
