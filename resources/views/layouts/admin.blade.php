@@ -51,8 +51,7 @@
     <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
 
     <!-- CSS base del dashboard -->
-    @vite(['resources/css/admin/layout.css'])
-    <!-- CSS de Tailwind y JS del admin -->
+
     @vite(['resources/css/app.css', 'resources/js/admin.js'])
     @stack('styles')
     @livewireStyles
