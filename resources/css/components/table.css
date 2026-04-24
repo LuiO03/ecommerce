@@ -719,7 +719,6 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
     .tabla-general tbody tr:has(.dt-empty) {
         max-width: 100%;
         width: 100%;
-        background-color: red;
     }
 
     .tabla-general tbody tr.row-selected,
@@ -730,7 +729,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
 
     .tabla-general tbody tr:hover,
     table.dataTable tbody tr:hover {
-        background-color: var(--color-hover);
+        background-color: none;
     }
 
     .tabla-general tbody tr:nth-child(odd),

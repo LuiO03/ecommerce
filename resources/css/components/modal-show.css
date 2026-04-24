@@ -58,16 +58,6 @@
     font-style: italic;
 }
 
-.modal-show {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0);
-}
-
-
 /* === TEXTO Y TIPOGRAFÍA === */
 .slug-mono {
     font-family: "Monaco", "Courier New", monospace;
@@ -83,7 +73,7 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0);
     z-index: 100;
     display: none;

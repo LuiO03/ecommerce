@@ -12,6 +12,7 @@
     backdrop-filter: blur(0px);
     isolation: isolate;
     font-family: var(--font-secondary);
+    height: 100dvh;
 }
 
 .info-modal.flex {
