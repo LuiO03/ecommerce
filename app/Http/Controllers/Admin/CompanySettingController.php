@@ -124,7 +124,7 @@ class CompanySettingController extends Controller
             ->route('admin.company-settings.index')
             ->with('toast', [
                 'type' => 'success',
-                'title' => 'Datos de empresa actualizados',
+                'title' => 'Datos del negocio actualizados',
                 'message' => 'La información general, contacto e identidad visual se guardaron correctamente.',
             ]);
     }

@@ -40,8 +40,11 @@
     <!-- Script de Google -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <!-- Scripts -->
-    @vite(['resources/css/site/layout.css'])
-    @vite(['resources/css/app.css', 'resources/js/site.js'])
+    @vite([
+        'resources/css/site/layout.css',
+        'resources/css/app.css',
+        'resources/js/site.js'
+    ])
     <!-- Styles -->
     @livewireStyles
 </head>

@@ -9,9 +9,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-    @import "flowbite";
-}
+@import "flowbite";
 
 [x-cloak]{
     display: none;
