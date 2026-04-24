@@ -1,16 +1,14 @@
-/* === Variables globales y estilos base === */
-@import "./base.css";
+@import "flowbite";
 
-/* === Librerías y componentes personalizados === */
-@import "./main.css";
-
-/* === Tailwind === */
+/* Tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "flowbite";
+/* Tus estilos */
+@import "./base.css";
+@import "./main.css";
 
-[x-cloak]{
+[x-cloak] {
     display: none;
 }
