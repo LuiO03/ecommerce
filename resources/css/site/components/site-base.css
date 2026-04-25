@@ -72,34 +72,12 @@
 .site-body {
     background-color: white;
     position: relative;
-    padding-top: var(--site-nav-height);
-    font-family: var(--font-primary);
+    margin-top: var(--site-nav-height);
+    height: 100dvh;
 }
+
 .site-main{
     position: relative;
-}
-
-.site-button-go-top {
-    position: sticky;
-    width: fit-content;
-    margin: 0px 20px 10px auto;
-    background-color: var(--color-site-accent);
-    color: white;
-    border-radius: var(--radius-card);
-    padding: 10px 15px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    font-size: var(--font-size-sm);
-    z-index: 48;
-}
-
-.site-button-go-top i{
-    font-size: var(--font-size-h2);
-    font-weight: bolder;
-    line-height: 0;
 }
 /* === Scrollbars === */
 .site-body::-webkit-scrollbar {

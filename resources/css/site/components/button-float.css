@@ -1,7 +1,7 @@
 /* boton flotante para ir arriba */
 .go-top-float-btn {
     position: fixed;
-    bottom: 28px;
+    bottom: 100px;
     right: 28px;
     gap: 5px;
     z-index: 90;
@@ -45,8 +45,7 @@
 .whatsapp-float-btn {
     position: fixed;
     right: 28px;          /* o left */
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 28px;
     z-index: 100;
     background: #25d366;
     color: #fff;

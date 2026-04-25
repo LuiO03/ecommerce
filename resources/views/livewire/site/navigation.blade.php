@@ -1,114 +1,112 @@
 <div>
     <header class="site-header" id="siteHeader">
         <div class="site-header-container">
-            <div class="site-header-top">
-                <div class="header-actions">
-                    <!-- Menú hamburguesa -->
-                    <button id="siteMenuToggle" class="menu-toggle nav-icon" aria-label="Abrir menú">
-                        <i class="ri-menu-fill"></i>
-                    </button>
+            <div class="header-actions">
+                <!-- Menú hamburguesa -->
+                <button id="siteMenuToggle" class="menu-toggle nav-icon" aria-label="Abrir menú">
+                    <i class="ri-menu-fill"></i>
+                </button>
 
-                    <!-- Logo -->
-                    <a class="site-logo" href="{{ route('site.home') }}" aria-label="Ir a la página principal">
-                        @include('partials.admin.company-brand')
-                    </a>
-                </div>
-                <div class="header-actions">
-                    <!-- Navegación principal (solo desktop) -->
-                    <nav class="site-nav-desktop">
-                        <a href="{{ route('about.index') }}" class="site-nav-link">Nosotros</a>
-                        <a href="{{ route('site.blog.index') }}" class="site-nav-link">Blog</a>
-                        <a href="{{ route('contact.index') }}" class="site-nav-link">Contacto</a>
-                    </nav>
+                <!-- Logo -->
+                <a class="site-logo" href="{{ route('site.home') }}" aria-label="Ir a la página principal">
+                    @include('partials.admin.company-brand')
+                </a>
+            </div>
+            <div class="header-actions">
+                <!-- Navegación principal (solo desktop) -->
+                <nav class="site-nav-desktop">
+                    <a href="{{ route('about.index') }}" class="site-nav-link">Nosotros</a>
+                    <a href="{{ route('site.blog.index') }}" class="site-nav-link">Blog</a>
+                    <a href="{{ route('contact.index') }}" class="site-nav-link">Contacto</a>
+                </nav>
 
-                </div>
+            </div>
 
-                <!-- Acciones del header -->
-                <div class="header-actions">
-                    <!-- Buscador desktop como icono -->
+            <!-- Acciones del header -->
+            <div class="header-actions">
+                <!-- Buscador desktop como icono -->
 
-                    <button type="button" class="nav-icon" data-site-search-open aria-label="Buscar productos"
-                        title="Buscar productos">
-                        <i class="ri-search-2-line"></i>
-                    </button>
+                <button type="button" class="nav-icon" data-site-search-open aria-label="Buscar productos"
+                    title="Buscar productos">
+                    <i class="ri-search-2-line"></i>
+                </button>
 
-                    <!-- Icono carrito de compras -->
-                    <a href="{{ route('carts.show') }}" class="nav-icon" aria-label="Carrito de compras"
-                        title="Ver carrito de compras">
-                        <i class="ri-shopping-cart-2-line"></i>
-                        @if ($cartCount > 0)
-                            <span class="nav-icon-badge">{{ $cartCount }}</span>
+                <!-- Icono carrito de compras -->
+                <a href="{{ route('carts.show') }}" class="nav-icon" aria-label="Carrito de compras"
+                    title="Ver carrito de compras">
+                    <i class="ri-shopping-cart-2-line"></i>
+                    @if ($cartCount > 0)
+                        <span class="nav-icon-badge">{{ $cartCount }}</span>
+                    @endif
+                </a>
+                <!-- Icono whishlist (solo desktop) -->
+                <div class="button-desktop">
+                    <a href="{{ route('wishlists.index') }}" class="nav-icon" aria-label="Lista de deseos"
+                        title="Ver lista de deseos">
+                        <i class="ri-heart-3-line"></i>
+                        @if ($wishlistCount > 0)
+                            <span class="nav-icon-badge">{{ $wishlistCount }}</span>
                         @endif
                     </a>
-                    <!-- Icono whishlist (solo desktop) -->
-                    <div class="button-desktop">
-                        <a href="{{ route('wishlists.index') }}" class="nav-icon" aria-label="Lista de deseos"
-                            title="Ver lista de deseos">
-                            <i class="ri-heart-3-line"></i>
-                            @if ($wishlistCount > 0)
-                                <span class="nav-icon-badge">{{ $wishlistCount }}</span>
-                            @endif
-                        </a>
-                    </div>
-                    <!-- Botón de inicio de sesión / usuario -->
-                    @guest
-                        <a href="{{ route('login') }}" class="nav-login-button" title="Iniciar sesión">
-                            <span class="boton-icon">
-                                <i class="ri-user-line"></i>
-                            </span>
+                </div>
+                <!-- Botón de inicio de sesión / usuario -->
+                @guest
+                    <a href="{{ route('login') }}" class="nav-login-button" title="Iniciar sesión">
+                        <span class="boton-icon">
+                            <i class="ri-user-line"></i>
+                        </span>
 
-                            <span class="boton-text">Iniciar Sesión</span>
-                        </a>
-                    @else
-                        <div class="nav-user-dropdown">
-                            <button class="nav-user-button" id="userMenuBtn" aria-label="Mi cuenta" aria-haspopup="true">
-                                @if ($hasAvatarImage)
-                                    <img class="nav-avatar" src="{{ asset('storage/' . $user->image) }}"
-                                        alt="{{ $user->name }}">
-                                @else
-                                    <div class="nav-avatar"
-                                        style="background-color: {{ $user->avatar_colors['background'] }};
+                        <span class="boton-text">Iniciar Sesión</span>
+                    </a>
+                @else
+                    <div class="nav-user-dropdown">
+                        <button class="nav-user-button" id="userMenuBtn" aria-label="Mi cuenta" aria-haspopup="true">
+                            @if ($hasAvatarImage)
+                                <img class="nav-avatar" src="{{ asset('storage/' . $user->image) }}"
+                                    alt="{{ $user->name }}">
+                            @else
+                                <div class="nav-avatar"
+                                    style="background-color: {{ $user->avatar_colors['background'] }};
                                         color: {{ $user->avatar_colors['color'] }};">
-                                        {{ $user->initials }}
-                                    </div>
-                                @endif
-                                <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-                            </button>
-                            <div class="nav-user-menu" id="userMenu">
-                                <a href="{{ route('site.profile.index') }}" class="nav-user-menu-item">
-                                    <i class="ri-user-line"></i>
-                                    <span>Mi Cuenta</span>
-                                </a>
-                                <div class="button-mobile">
-                                    <a href="{{ route('wishlists.index') }}" class="nav-user-menu-item">
-                                        <i class="ri-heart-3-line"></i>
-                                        <span>Mi Lista de Deseos</span>
-                                    </a>
+                                    {{ $user->initials }}
                                 </div>
-                                <a href="{{ route('site.profile.orders') }}" class="nav-user-menu-item">
-                                    <i class="ri-shopping-bag-line"></i>
-                                    <span>Mis Pedidos</span>
-                                </a>
-                                <a href="{{ route('site.profile.addresses') }}" class="nav-user-menu-item">
-                                    <i class="ri-map-pin-line"></i>
-                                    <span>Mis Direcciones</span>
-                                </a>
-                                <a href="{{ route('site.profile.security') }}" class="nav-user-menu-item">
-                                    <i class="ri-settings-3-line"></i>
-                                    <span>Configuración</span>
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}" style="display: none;" id="logoutForm">
-                                    @csrf
-                                </form>
-                                <a href="{{ route('logout') }}" class="nav-user-menu-item logout"
-                                    onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
-                                    <i class="ri-logout-box-line"></i>
-                                    <span>Cerrar Sesión</span>
+                            @endif
+                            <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                        </button>
+                        <div class="nav-user-menu" id="userMenu">
+                            <a href="{{ route('site.profile.index') }}" class="nav-user-menu-item">
+                                <i class="ri-user-line"></i>
+                                <span>Mi Cuenta</span>
+                            </a>
+                            <div class="button-mobile">
+                                <a href="{{ route('wishlists.index') }}" class="nav-user-menu-item">
+                                    <i class="ri-heart-3-line"></i>
+                                    <span>Mi Lista de Deseos</span>
                                 </a>
                             </div>
+                            <a href="{{ route('site.profile.orders') }}" class="nav-user-menu-item">
+                                <i class="ri-shopping-bag-line"></i>
+                                <span>Mis Pedidos</span>
+                            </a>
+                            <a href="{{ route('site.profile.addresses') }}" class="nav-user-menu-item">
+                                <i class="ri-map-pin-line"></i>
+                                <span>Mis Direcciones</span>
+                            </a>
+                            <a href="{{ route('site.profile.security') }}" class="nav-user-menu-item">
+                                <i class="ri-settings-3-line"></i>
+                                <span>Configuración</span>
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" style="display: none;" id="logoutForm">
+                                @csrf
+                            </form>
+                            <a href="{{ route('logout') }}" class="nav-user-menu-item logout"
+                                onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                <i class="ri-logout-box-line"></i>
+                                <span>Cerrar Sesión</span>
+                            </a>
                         </div>
-                    @endguest
-                </div>
+                    </div>
+                @endguest
             </div>
         </div>
     </header>

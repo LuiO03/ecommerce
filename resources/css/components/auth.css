@@ -4,7 +4,6 @@
 ==================================== */
 
 .auth-wrapper {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -44,6 +43,7 @@
 
 .auth-logo img{
     width: 45px;
+    display: flex;
     aspect-ratio: 1/1;
     object-fit: contain;
 }
@@ -55,6 +55,12 @@
 
 .auth-logo .sidebar-logo-texto span {
     font-weight: 300;
+}
+
+@media (max-width: 640px) {
+    .auth-logo {
+
+    }
 }
 
 .auth-title {
@@ -173,24 +179,13 @@
 
 /* === Responsive === */
 @media (max-width: 640px) {
-    .auth-wrapper {
-        padding: 0;
-        background-color: var(--color-bg);
-    }
 
     .auth-card {
         box-shadow: none;
-        padding: 1.5rem;
     }
 
     .auth-header {
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
-    }
-
-    .auth-logo {
-        width: 60px;
-        height: 60px;
-        margin-bottom: 1rem;
+        padding: 0rem 1.5rem;
     }
 
     .auth-logo i {

@@ -112,11 +112,18 @@
             </p>
         </div>
         <div class="categories-list">
-            @foreach($categories as $category)
+            @foreach ($categories as $category)
                 <!-- colocalr imagen css url a la etiqueta "a" y eliminar la etiqueta "img" -->
                 <a href="{{ route('categories.show', $category) }}" class="category-card">
                     <div class="category-image">
-                        <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}" alt="{{ $category->name }} imagen">
+                        @if ($category->image)
+                            <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}"
+                                alt="{{ $category->name }} imagen"onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="product-image-fallback" style="display: none;">
+                                <i class="ri-image-line"></i>
+                                <span>Imagen no disponible</span>
+                            </div>
+                        @endif
                     </div>
                     <div class="category-name">{{ $category->name }}</div>
                 </a>

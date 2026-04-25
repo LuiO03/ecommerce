@@ -53,7 +53,7 @@
     <!-- CSS base del dashboard -->
     @vite(['resources/css/admin/layout.css'])
 
-    @vite(['resources/css/admin/layout.css', 'resources/css/app.css', 'resources/js/admin.js'])
+    @vite(['resources/css/app.css', 'resources/js/admin.js'])
     @stack('styles')
     @livewireStyles
 

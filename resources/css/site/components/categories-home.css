@@ -81,7 +81,7 @@
     /* acomodar bien la imagen de fondo */
     background-size: cover;
     background-position: center;
-    border-radius: var(--radius-card);
+    border-radius: 250px;
     box-shadow: 0 2px 8px 0 rgba(34,34,59,0.07);
     text-decoration: none;
     transition: box-shadow 0.2s, transform 0.2s;
@@ -113,8 +113,12 @@
     color: white;
     font-family: var(--font-secondary);
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     padding: 10px 0px;
+    height: 100%;
     position: absolute;
     bottom: 0;
 }
