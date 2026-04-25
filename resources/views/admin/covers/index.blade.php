@@ -96,27 +96,32 @@
 
                     <!-- Información de la tarjeta -->
                     <div class="card-cover-meta">
-                        <h3 class="card-title">{{ $cover->title }}</h3>
-
-                        <span class="meta-item">
-                            <i class="ri-hashtag"></i>
-                            <span>{{ $cover->order }}</span>
-                        </span>
-                        <span class="meta-item">
-                            <i class="ri-calendar-fill"></i>
-                            <span>{{ $cover->created_at ? $cover->created_at->format('d/m/Y') : '—' }}</span>
-                        </span>
-                        @can('portadas.update-status')
-                            <label class="switch-tabla">
-                                <input type="checkbox" class="switch-status" data-id="{{ $cover->id }}"
-                                    data-key="{{ $cover->slug }}" {{ $cover->status ? 'checked' : '' }}>
-                                <span class="slider"></span>
-                            </label>
-                        @else
-                            <span class="status-badge {{ $cover->status ? 'status-active' : 'status-inactive' }}">
-                                {{ $cover->status ? 'Activo' : 'Inactivo' }}
+                        <div class="cover-meta-group">
+                            <span class="card-title">{{ $cover->title }}</span>
+                            <span class="card-meta-item">
+                                <span class="badge badge-warning">
+                                    <i class="ri-hashtag"></i>
+                                    <span>{{ $cover->order }}</span>
+                                </span>
                             </span>
-                        @endcan
+                        </div>
+                        <div class="cover-meta-group">
+                            <span class="card-meta-item">
+                                <i class="ri-calendar-fill"></i>
+                                <span>{{ $cover->created_at ? $cover->created_at->format('d/m/Y') : '—' }}</span>
+                            </span>
+                            @can('portadas.update-status')
+                                <label class="switch-tabla">
+                                    <input type="checkbox" class="switch-status" data-id="{{ $cover->id }}"
+                                        data-key="{{ $cover->slug }}" {{ $cover->status ? 'checked' : '' }}>
+                                    <span class="slider"></span>
+                                </label>
+                            @else
+                                <span class="status-badge {{ $cover->status ? 'status-active' : 'status-inactive' }}">
+                                    {{ $cover->status ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            @endcan
+                        </div>
                         <div class="cover-actions">
                             @can('portadas.edit')
                                 <a href="{{ route('admin.covers.edit', $cover->slug) }}" class="boton-form boton-warning"
@@ -146,9 +151,8 @@
 
         <!-- Mensaje cuando no hay resultados de búsqueda -->
         <div class="covers-no-results" id="noResultsMessage" style="display: none;">
-            <i class="ri-search-line"></i>
-            <h3>Sin resultados</h3>
-            <p>No se encontraron portadas que coincidan con tu búsqueda</p>
+            <i class="ri-folder-warning-line"></i>
+            <span>Sin resultados que coincidan con tu búsqueda</span>
         </div>
     </div>
 

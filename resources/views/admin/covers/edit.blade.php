@@ -121,14 +121,6 @@
                                     <span class="boton-form-text">Eliminar</span>
                                 </button>
                             </div>
-                        @elseif($cover->image_path)
-                            <!-- Imagen no encontrada -->
-                            <div class="image-error" id="imageError">
-                                <i class="ri-folder-close-line"></i>
-                                <p>Imagen no encontrada</p>
-                                <span>Haz clic para subir una nueva</span>
-                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                            </div>
                         @else
                             <div class="image-placeholder" id="imagePlaceholder">
                                 <i class="ri-image-add-line"></i>

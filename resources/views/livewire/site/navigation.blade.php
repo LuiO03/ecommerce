@@ -51,7 +51,7 @@
                 </div>
                 <!-- Botón de inicio de sesión / usuario -->
                 @guest
-                    <a href="{{ route('login') }}" class="nav-login-button" title="Iniciar sesión">
+                    <a href="{{ route('login') }}" class="nav-icon nav-login-button" title="Iniciar sesión">
                         <span class="boton-icon">
                             <i class="ri-user-line"></i>
                         </span>
@@ -60,7 +60,7 @@
                     </a>
                 @else
                     <div class="nav-user-dropdown">
-                        <button class="nav-user-button" id="userMenuBtn" aria-label="Mi cuenta" aria-haspopup="true">
+                        <button class="nav-icon" id="userMenuBtn" aria-label="Mi cuenta" aria-haspopup="true">
                             @if ($hasAvatarImage)
                                 <img class="nav-avatar" src="{{ asset('storage/' . $user->image) }}"
                                     alt="{{ $user->name }}">

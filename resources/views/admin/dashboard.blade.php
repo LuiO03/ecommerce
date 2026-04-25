@@ -36,8 +36,7 @@
 
             </form>
             <button class="boton-cerrar-sesion ripple-btn">
-                <i class="ri-logout-box-line mr-2"></i>
-                <span>Cerrar Sesión</span>
+                <span>Proximamente</span>
             </button>
         </div>
     </div>
