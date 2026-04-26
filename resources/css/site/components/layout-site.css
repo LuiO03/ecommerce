@@ -52,7 +52,9 @@
 }
 
 @media (max-width: 640px) {
-    .site-logo img,
+    .site-logo img{
+        display: none;
+    }
     .footer-logo img {
         display: block;
     }
