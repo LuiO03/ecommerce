@@ -13,6 +13,10 @@
     flex-wrap: wrap;
     gap: 0.35rem;
     background: var(--breadcrumb-bg);
+    max-width: var(--site-max-width);
+    padding: 0 var(--site-spacing);
+    margin: 5rem auto 0 auto;
+    width: 100%;
 }
 
 .site-breadcrumb-item {
