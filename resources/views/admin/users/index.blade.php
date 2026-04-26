@@ -272,24 +272,23 @@
                                     </span>
                                 @endif
                             </td>
-                            @if (Auth::id() !== $user->id)
-                                @can('usuarios.update-status')
-                                    <td class="column-status-td">
+                            @can('usuarios.update-status')
+                                <td class="column-status-td">
+
+                                    @if (Auth::id() !== $user->id)
                                         <label class="switch-tabla">
                                             <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
                                                 {{ $user->status ? 'checked' : '' }}>
                                             <span class="slider"></span>
                                         </label>
-                                    </td>
-                                @endcan
-                            @else
-                                <td class="column-status-td">
-                                    <span class="badge badge-danger py-1.5 px-5"
-                                        title="No puedes cambiar el estado de tu propia cuenta">
-                                        <i class="ri-lock-fill"></i>
-                                    </span>
+                                    @else
+                                        <span class="badge badge-danger py-1.5 px-5"
+                                            title="No puedes cambiar el estado de tu propia cuenta">
+                                            <i class="ri-lock-fill"></i>
+                                        </span>
+                                    @endif
                                 </td>
-                            @endif
+                            @endcan
                             <td>
                                 <span class="{{ $user->created_at ? '' : 'text-muted-td' }}">
                                     {{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}

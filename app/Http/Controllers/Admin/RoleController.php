@@ -213,9 +213,6 @@ class RoleController extends Controller
             'updated_by'  => Auth::id(),
         ]);
 
-        // Sincronizar permisos
-        $role->syncPermissions($request->permissions ?? []);
-
         Session::flash('toast', [
             'type' => 'success',
             'title' => 'Rol actualizado',

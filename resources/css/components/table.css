@@ -404,6 +404,10 @@ table.dataTable.dtr-inline.collapsed td.control::before {
 /* =======================================================
    🚫 SIN DATOS
 ======================================================= */
+.tabla-general td:has(.tabla-no-data) {
+    padding: 0px !important;
+}
+
 .tabla-no-data {
     display: flex;
     flex-direction: column;
@@ -412,6 +416,8 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     padding: 20px 0;
     gap: 5px;
     color: var(--color-muted);
+    border-radius: var(--radius-card);
+    background: radial-gradient(circle, var(--color-bg), var(--color-card-bg));
 }
 
 .tabla-no-data i {
@@ -427,6 +433,7 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     font-weight: bold;
 }
 
+
 /* === Estado vacío === */
 .data-empty {
     grid-column: 1 / -1;
@@ -437,7 +444,7 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     padding: 4rem 2rem;
     gap: 5px;
     text-align: center;
-    background: var(--color-sidebar-bg);
+    background: radial-gradient(circle, var(--color-bg), var(--color-card-bg));
     border: 1px solid var(--color-border);
     border-radius: 12px;
     color: var(--color-muted);
