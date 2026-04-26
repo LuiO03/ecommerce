@@ -193,6 +193,8 @@ class PostController extends Controller
             ? 'in:draft,pending,published,rejected'
             : 'in:draft,pending';
 
+        $isGlobalPostsManager = $user->hasAnyRole(['Administrador', 'Superadministrador']);
+
         $request->validate([
             'title' => 'required|string|max:255|unique:posts,title,'.$post->id,
             'content' => 'required|string|min:10',
