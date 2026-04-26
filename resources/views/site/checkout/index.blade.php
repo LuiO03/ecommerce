@@ -30,10 +30,9 @@
     <section class="site-container checkout-page">
         <div class="section-header">
             <h1 class="section-title">Checkout</h1>
-            <p>
+            <p class="section-subtitle">
                 Completa los pasos para confirmar tu pedido: entrega, dirección o tienda, pago y resumen final.
             </p>
-
         </div>
 
         @if (!Auth::check() || !$hasItems)
@@ -416,8 +415,10 @@
                                 <label class="checkout-card" data-payment-option="niubiz">
                                     <input type="radio" value="niubiz" name="payment_method"
                                         id="payment_method_niubiz" class="sr-only" checked>
-                                    <div class="checkout-card-icon">
-                                        <i class="ri-bank-card-line"></i>
+                                    <div class="checkout-card-img">
+                                        <img class="payment-method-img"
+                                            src="{{ asset('images/checkout/logoniubiz.png') }}"
+                                            alt="Niubiz">
                                     </div>
                                     <div class="checkout-card-body">
                                         <span class="checkout-card-title">Niubiz</span>
@@ -469,8 +470,10 @@
                                 <label class="checkout-card" data-payment-option="yape">
                                     <input type="radio" value="yape" name="payment_method"
                                         id="payment_method_yape" class="sr-only">
-                                    <div class="checkout-card-icon">
-                                        <i class="ri-smartphone-line"></i>
+                                    <div class="checkout-card-img">
+                                        <img class="payment-method-img"
+                                            src="{{ asset('images/checkout/logoyape.png') }}"
+                                            alt="Yape">
                                     </div>
                                     <div class="checkout-card-body">
                                         <span class="checkout-card-title">Yape</span>

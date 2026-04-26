@@ -83,7 +83,7 @@
                 <!-- === Título === -->
                 <div class="input-group">
                     <label for="title" class="label-form">
-                        Título
+                        Título del post
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
@@ -94,48 +94,68 @@
                     </div>
                 </div>
                 <!-- === Estado === -->
+                <!-- === Estado === -->
                 <div class="input-group">
-                    <label for="status" class="label-form">
+                    <label class="label-form">
                         Estado
                         <i class="ri-asterisk text-accent"></i>
                     </label>
+
                     @can('posts.review')
+                        {{-- Usuario revisor/admin --}}
                         <div class="input-icon-container">
                             <i class="ri-focus-2-line input-icon"></i>
+
                             <select name="status" id="status" class="select-form" required
                                 data-validate="required|selected">
-                                <option value="" disabled selected>Seleccione un estado</option>
-                                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Borrador</option>
-                                <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pendiente
+                                <option value="" disabled selected>
+                                    Seleccione un estado
                                 </option>
-                                <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Publicado
+
+                                <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>
+                                    Borrador
                                 </option>
-                                <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rechazado
+
+                                <option value="pending" {{ old('status') === 'pending' ? 'selected' : '' }}>
+                                    Pendiente de revisión
+                                </option>
+
+                                <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>
+                                    Publicado
                                 </option>
                             </select>
+
                             <i class="ri-arrow-down-s-line select-arrow"></i>
                         </div>
                     @else
+                        {{-- Autor normal --}}
                         <div class="binary-switch">
-                            <input type="radio" name="status" id="statusPending" value="pending"
+
+                            <input type="radio" name="status" id="statusReview" value="pending"
                                 class="switch-input switch-input-on"
                                 {{ old('status', 'pending') === 'pending' ? 'checked' : '' }}>
+
                             <input type="radio" name="status" id="statusDraft" value="draft"
                                 class="switch-input switch-input-off" {{ old('status') === 'draft' ? 'checked' : '' }}>
 
                             <div class="switch-slider"></div>
 
-                            <label for="statusPending" class="switch-label switch-label-on">
-                                <i class="ri-checkbox-circle-line"></i>
-                                Pendiente
+                            <label for="statusReview" class="switch-label switch-label-on">
+                                <i class="ri-send-plane-line"></i>
+                                Revisión
                             </label>
+
                             <label for="statusDraft" class="switch-label switch-label-off">
-                                <i class="ri-close-circle-line"></i>
+                                <i class="ri-draft-line"></i>
                                 Borrador
                             </label>
-                        </div>
-                    @endcan
 
+                        </div>
+
+                        <small class="text-muted">
+                            El contenido será revisado antes de publicarse.
+                        </small>
+                    @endcan
                 </div>
 
                 <!-- === Visibilidad === -->

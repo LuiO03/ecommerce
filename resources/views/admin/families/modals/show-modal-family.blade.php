@@ -107,7 +107,7 @@
                     $('#fam-id').text(data.id ?? '-');
                     // Slug tipografía especial
                     $('#fam-slug').html(
-                        `<span class='badge badge-primary slug-mono'>${data.slug ?? '-'}</span>`);
+                        `<span class='slug-mono'>${data.slug ?? '-'}</span>`);
                     $('#fam-name').text(data.name ?? '-');
                     // Descripción
                     if (!data.description) {

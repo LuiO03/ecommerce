@@ -104,7 +104,7 @@
                             </div>
                             <div class="input-group">
                                 <label class="label-form">
-                                    Estado
+                                    Estado del producto
                                     <i class="ri-asterisk text-accent"></i>
                                 </label>
                                 <div class="binary-switch">

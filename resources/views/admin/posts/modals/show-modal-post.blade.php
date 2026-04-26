@@ -81,7 +81,9 @@
                     </tr>
                     <tr>
                         <th>Tags</th>
-                        <td id="post-tags">—</td>
+                        <td>
+                            <div id="post-tags" class="flex flex-wrap gap-2">—</div>
+                        </td>
                     </tr>
                     <tr>
                         <th>Creado por</th>
@@ -462,7 +464,7 @@
             const safeTitle = data.title ?? 'Sin título';
 
             $('#post-id').text(data.id ?? '—');
-            $('#post-slug').html(`<span class="badge badge-primary slug-mono">${safeSlug}</span>`);
+            $('#post-slug').html(`<span class="slug-mono">${safeSlug}</span>`);
             $('#post-title').text(safeTitle);
             $('#post-title-cell').text(safeTitle);
             $('#post-content').html(data.content ?? 'Sin contenido');
@@ -491,7 +493,7 @@
 
             const tags = Array.isArray(data.tags) ? data.tags : [];
             $('#post-tags').html(tags.length
-                ? tags.map(tag => `<span class="badge badge-warning">${escapeHtml(tag)}</span>`).join(' ')
+                ? tags.map(tag => `<span class="badge badge-info">${escapeHtml(tag)}</span>`).join(' ')
                 : '—'
             );
 

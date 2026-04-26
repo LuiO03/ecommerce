@@ -152,7 +152,7 @@
 
                     $('#user-id').text(data.id ?? '-');
                     $('#user-slug').html(
-                        `<span class='badge badge-primary slug-mono'>${data.slug}</span>`);
+                        `<span class='slug-mono'>${data.slug}</span>`);
 
                     $('#user-name-title').text(data.name);
                     $('#user-fullname').text(`${data.name ?? ''} ${data.last_name ?? ''}`);

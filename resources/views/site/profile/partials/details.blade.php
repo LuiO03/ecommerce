@@ -1,17 +1,15 @@
 <div class="profile-section">
-    <div class="alert-info-note">
-        <i class="ri-information-fill"></i>
-        <span>
-            Los campos con asterisco <i class="ri-asterisk text-accent"></i> son obligatorios.
-        </span>
-    </div>
+    <x-note-alert type="info" :dismissible="true">
+        Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+    </x-note-alert>
 
     <form method="POST" action="{{ route('site.profile.details.update') }}" class="form-container" autocomplete="off"
         id="profileDetailsForm" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="form-user">
-            <div class="form-body" style="border-radius: var(--radius-card);background-color: var(--color-card-bg);border: none;">
+            <div class="form-body"
+                style="border-radius: var(--radius-card);background-color: var(--color-card-bg);border: none;">
                 <div class="card-header">
                     <span class="card-title">Foto de perfil</span>
                     <p class="card-description">Agrega una foto para personalizar tu cuenta.</p>
@@ -73,7 +71,8 @@
                     </div>
                 </div>
             </div>
-            <div class="form-body" style="border-radius: var(--radius-card);background-color: var(--color-card-bg);border: none;">
+            <div class="form-body"
+                style="border-radius: var(--radius-card);background-color: var(--color-card-bg);border: none;">
                 <div class="card-header">
                     <span class="card-title">Datos personales</span>
                     <p class="card-description">Mantén tu información actualizada para facilitar tus compras y
@@ -157,7 +156,8 @@
                             <i class="ri-hashtag input-icon"></i>
                             <input type="text" name="document_number" id="document_number" class="input-form"
                                 placeholder="Ingresa tu número de documento"
-                                value="{{ old('document_number', $user->document_number) }}" data-validate="document_number|max:30|requiredWith:document_type">
+                                value="{{ old('document_number', $user->document_number) }}"
+                                data-validate="document_number|max:30|requiredWith:document_type">
                         </div>
                     </div>
                 </div>

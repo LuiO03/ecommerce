@@ -82,7 +82,7 @@
 }
 
 /* Error de imagen */
-.image-error {
+.image-error, .image-error-gallery {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -93,9 +93,20 @@
     padding: 20px;
 }
 
+.image-error i, .image-error-gallery i{
+    background-color: var(--color-pink-pastel);
+    padding: 1rem;
+    border-radius: 150px;
+    line-height: 1;
+    color: var(--color-danger);
+}
+
 .image-error i {
     font-size: 5rem;
-    color: var(--color-danger);
+}
+
+.image-error-gallery i{
+    font-size: 3rem;
 }
 
 .image-error p {
@@ -814,18 +825,20 @@
     left: 10px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    font-weight: bold;
+    font-family: var(--font-secondary);
     background: var(--color-orange);
     color: #fff;
     padding: 4px 12px;
     border-radius: var(--radius-input);
     font-size: var(--font-size-xs);
-    box-shadow: var(--shadow-material);
     z-index: 12;
 }
 
 .primary-badge i {
     font-size: 14px;
+    line-height: 1;
 }
 
 .index-badge {

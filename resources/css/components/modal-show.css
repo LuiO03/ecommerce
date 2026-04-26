@@ -128,7 +128,7 @@
     display: flex;
     justify-content: center;
     font-family: var(--font-secondary);
-    padding: 1rem 0px;
+    padding: 5px 0px;
 }
 
 .modal-show-body {
@@ -172,7 +172,7 @@
 }
 
 .modal-show-table:hover {
-    box-shadow: var(--shadow-material);
+    box-shadow: var(--box-shadow-card-hover);
 }
 
 .modal-show-table th,
@@ -231,17 +231,9 @@
     box-shadow: var(--shadow-material);
 }
 
-.modal-img-placeholder{
+.modal-img-placeholder, .modal-foto-placeholder {
     min-height: 220px;
     border-radius: var(--radius-card);
-}
-
-.modal-foto-placeholder{
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-}
-
-.modal-img-placeholder, .modal-foto-placeholder {
     width: 100%;
     background: var(--color-card-bg);
     font-family: var(--font-secondary);
@@ -256,6 +248,7 @@
     border: 5px dashed var(--color-border);
     gap: 5px;
     padding: 0px;
+
 }
 
 .modal-img-placeholder i, .modal-foto-placeholder i {

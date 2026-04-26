@@ -410,11 +410,16 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     align-items: center;
     justify-content: center;
     padding: 20px 0;
+    gap: 5px;
     color: var(--color-muted);
 }
 
 .tabla-no-data i {
     font-size: 40px;
+    line-height: 1;
+    background-color: var(--color-secondary-pastel);
+    padding: 1rem;
+    border-radius: 50%;
 }
 
 .tabla-no-data span {
@@ -430,8 +435,9 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     align-items: center;
     justify-content: center;
     padding: 4rem 2rem;
+    gap: 5px;
     text-align: center;
-    background: var(--color-card-bg);
+    background: var(--color-sidebar-bg);
     border: 1px solid var(--color-border);
     border-radius: 12px;
     color: var(--color-muted);
@@ -439,6 +445,9 @@ table.dataTable.dtr-inline.collapsed td.control::before {
 
 .data-empty i {
     font-size: 58px;
+    background-color: var(--color-secondary-pastel);
+    padding: 2rem;
+    border-radius: 50%;
     line-height: 1;
 }
 

@@ -66,27 +66,23 @@
                 </div>
 
                 <!-- === Estado === -->
-                <div class="input-group select-group">
-                    <label for="status" class="label-form">
+                <div class="input-group">
+                    <label class="label-form">
                         Estado de la familia
                         <i class="ri-asterisk text-accent"></i>
                     </label>
-                    <div class="input-icon-container">
-                        <i class="ri-focus-2-line input-icon"></i>
-                        <select name="status" id="status" class="select-form" required
-                            data-validate="required|selected">
-                            <option value="" disabled>Seleccione un estado</option>
-
-                            <option value="1" @selected(old('status', $family->status) == 1)>
-                                Activo
-                            </option>
-
-                            <option value="0" @selected(old('status', $family->status) == 0)>
-                                Inactivo
-                            </option>
-                        </select>
-
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    <div class="binary-switch">
+                        <input type="radio" name="status" id="statusActive" value="1"
+                            class="switch-input switch-input-on"
+                            {{ old('status', (int) $family->status) == 1 ? 'checked' : '' }}>
+                        <input type="radio" name="status" id="statusInactive" value="0"
+                            class="switch-input switch-input-off"
+                            {{ old('status', (int) $family->status) == 0 ? 'checked' : '' }}>
+                        <div class="switch-slider"></div>
+                        <label for="statusActive" class="switch-label switch-label-on"><i
+                                class="ri-checkbox-circle-line"></i> Activo</label>
+                        <label for="statusInactive" class="switch-label switch-label-off"><i
+                                class="ri-close-circle-line"></i> Inactivo</label>
                     </div>
                 </div>
 

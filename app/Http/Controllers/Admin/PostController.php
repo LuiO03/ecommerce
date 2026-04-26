@@ -135,20 +135,21 @@ class PostController extends Controller
     {
         $user = Auth::user();
 
-        $isGlobalPostsManager = $user->hasAnyRole(['Administrador', 'Superadministrador'])
+        $canManageAll = $user->hasAnyRole(['Administrador', 'Superadministrador'])
             || $user->can('posts.review');
 
         $query = Post::select([
-            'id', 'title', 'slug', 'status', 'visibility', 'views', 'allow_comments', 'created_by', 'created_at',
+            'id','title','slug','status','visibility',
+            'views','allow_comments','created_by','created_at'
         ])
-            ->withCount('images')
-            ->with([
-                'mainImage:id,post_id,path',
-                'creator:id,name,last_name',
-            ])
-            ->orderBy('id', 'desc');
+        ->withCount('images')
+        ->with([
+            'mainImage:id,post_id,path',
+            'creator:id,name,last_name'
+        ])
+        ->orderByDesc('id');
 
-        if (! $isGlobalPostsManager) {
+        if (!$canManageAll) {
             $query->where('created_by', $user->id);
         }
 
@@ -161,35 +162,34 @@ class PostController extends Controller
     {
         $user = Auth::user();
 
-        $isGlobalPostsManager = $user->hasAnyRole(['Administrador', 'Superadministrador'])
+        $canManageAll = $user->hasAnyRole(['Administrador','Superadministrador'])
             || $user->can('posts.review');
 
-        if (! $isGlobalPostsManager) {
-            if ($post->created_by !== $user->id || ! in_array($post->status, ['draft', 'rejected'])) {
-                abort(403);
-            }
+        if (!$canManageAll && $post->created_by !== $user->id) {
+            abort(403);
         }
 
         $tags = Tag::orderBy('name')->get();
-        $post->load(['images' => fn ($query) => $query->orderByDesc('is_main')->orderBy('order')]);
 
-        return view('admin.posts.edit', compact('post', 'tags'));
+        $post->load([
+            'images' => fn($q) => $q->orderByDesc('is_main')->orderBy('order')
+        ]);
+
+        return view('admin.posts.edit', compact('post','tags'));
     }
 
     public function update(Request $request, Post $post)
     {
         $user = Auth::user();
 
-        $isGlobalPostsManager = $user->hasAnyRole(['Administrador', 'Superadministrador'])
-            || $user->can('posts.review');
+        $canManageAll = $user->hasAnyRole(['Administrador','Superadministrador'])
+        || $user->can('posts.review');
 
-        if (! $isGlobalPostsManager) {
-            if ($post->created_by !== $user->id || ! in_array($post->status, ['draft', 'rejected'])) {
-                abort(403);
-            }
+        if (!$canManageAll && $post->created_by !== $user->id) {
+            abort(403);
         }
 
-        $statusRule = $isGlobalPostsManager
+        $statusRule = $canManageAll
             ? 'in:draft,pending,published,rejected'
             : 'in:draft,pending';
 

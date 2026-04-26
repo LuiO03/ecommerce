@@ -2,7 +2,7 @@
 
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
-        <div class="page-icon card-info">
+        <div class="page-icon card-pink">
             <i class="ri-image-2-line"></i>
         </div>
         Galería de Portadas
@@ -98,11 +98,9 @@
                     <div class="card-cover-meta">
                         <div class="cover-meta-group">
                             <span class="card-title">{{ $cover->title }}</span>
-                            <span class="card-meta-item">
-                                <span class="badge badge-warning">
-                                    <i class="ri-hashtag"></i>
-                                    <span>{{ $cover->order }}</span>
-                                </span>
+                            <span class="badge badge-warning" title="Orden de aparición en el sitio">
+                                <i class="ri-hashtag"></i>
+                                {{ $cover->order }}
                             </span>
                         </div>
                         <div class="cover-meta-group">
@@ -111,13 +109,13 @@
                                 <span>{{ $cover->created_at ? $cover->created_at->format('d/m/Y') : '—' }}</span>
                             </span>
                             @can('portadas.update-status')
-                                <label class="switch-tabla">
+                                <label class="switch-tabla" title="Cambiar estado de la portada" aria-label="Cambiar estado de la portada">
                                     <input type="checkbox" class="switch-status" data-id="{{ $cover->id }}"
                                         data-key="{{ $cover->slug }}" {{ $cover->status ? 'checked' : '' }}>
                                     <span class="slider"></span>
                                 </label>
                             @else
-                                <span class="status-badge {{ $cover->status ? 'status-active' : 'status-inactive' }}">
+                                <span class="status-badge {{ $cover->status ? 'status-active' : 'status-inactive' }}" title="Estado de la portada" aria-label="Estado de la portada">
                                     {{ $cover->status ? 'Activo' : 'Inactivo' }}
                                 </span>
                             @endcan
@@ -144,7 +142,7 @@
             @empty
                 <div class="data-empty">
                     <i class="ri-image-add-line"></i>
-                    <span>Aún no hay portadas registradas</span>
+                    <span>Aún no hay portadas registradas, comienza creando la primera.</span>
                 </div>
             @endforelse
         </div>

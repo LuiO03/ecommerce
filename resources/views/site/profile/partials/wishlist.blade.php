@@ -6,8 +6,8 @@
 
     @if (!isset($wishlistItems) || $wishlistItems->isEmpty())
         <div class="card-empty">
-            <div class="wishlist-empty-icon">
-                <i class="ri-heart-3-line"></i>
+            <div class="card-empty-icon card-pink">
+                <i class="ri-heart-3-fill"></i>
             </div>
             <h3 class="card-title">No tienes productos en favoritos</h3>
             <p>Agrega productos a tu lista de deseos para verlos aquí.</p>

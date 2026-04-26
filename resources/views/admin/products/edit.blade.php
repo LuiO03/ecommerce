@@ -119,7 +119,7 @@
                             </div>
                             <div class="input-group">
                                 <label class="label-form">
-                                    Estado
+                                    Estado del producto
                                     <i class="ri-asterisk text-accent"></i>
                                 </label>
                                 <div class="binary-switch">
@@ -230,7 +230,7 @@
                                                 @if ($exists)
                                                     <img src="{{ $imageUrl }}" alt="{{ $altText }}">
                                                 @else
-                                                    <div class="image-not-found-block">
+                                                    <div class="image-error-gallery">
                                                         <i class="ri-file-close-line"></i>
                                                         <p>Imagen no encontrada</p>
                                                     </div>

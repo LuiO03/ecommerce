@@ -3,7 +3,10 @@
 <x-admin-layout>
     <x-slot name="title">
         <div class="page-icon card-warning"><i class="ri-edit-circle-line"></i></div>
-        Editar Post
+        <div class="page-edit-title">
+            <span class="page-subtitle">Editar Post</span>
+            {{ $post->title }}
+        </div>
     </x-slot>
 
     <x-slot name="action">
@@ -41,6 +44,20 @@
         <x-note-alert type="info" :dismissible="true">
             Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
         </x-note-alert>
+
+        @if ($post->status == 'rejected')
+            <x-note-alert type="danger" :dismissible="true">
+                Este post ha sido rechazado. Por favor, corrige los errores y vuelve a enviarlo para su revisión.
+            </x-note-alert>
+        @elseif ($post->status == 'pending')
+            <x-note-alert type="warning" :dismissible="true">
+                Este post está pendiente de revisión. Si deseas corregirlo, haz los cambios necesarios y vuelve a enviarlo para su revisión.
+            </x-note-alert>
+        @elseif ($post->status == 'published')
+            <x-note-alert type="success" :dismissible="true">
+                Este post está publicado. Puedes editarlo, pero ten en cuenta que los cambios no se reflejarán hasta que vuelvas a enviarlo para su revisión.
+            </x-note-alert>z
+        @endif
 
         <div class="form-body">
             <div class="form-row-fit">
@@ -85,8 +102,10 @@
                                         <img src="{{ asset('storage/' . $img->path) }}" alt="Imagen adicional">
                                     @else
                                         {{-- Imagen no encontrada --}}
-                                        <i class="ri-file-close-line"></i>
-                                        <p>Imagen no encontrada</p>
+                                        <div class="image-error-gallery">
+                                            <i class="ri-file-close-line"></i>
+                                            <p>Imagen no encontrada</p>
+                                        </div>
                                     @endif
                                     <div class="overlay">
                                         <span class="file-size">{{ $fileSizeLabel }}</span>
@@ -150,7 +169,8 @@
                 <!-- Título -->
                 <div class="input-group">
                     <label for="title" class="label-form">
-                        Título <i class="ri-asterisk text-accent"></i>
+                        Título del post
+                        <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="input-icon-container">
                         <i class="ri-text input-icon"></i>
@@ -162,7 +182,7 @@
 
                 <!-- Estado -->
                 <div class="input-group">
-                    <label class="label-form">Estado <i class="ri-asterisk text-accent"></i></label>
+                    <label class="label-form">Estado del post <i class="ri-asterisk text-accent"></i></label>
 
                     @can('posts.review')
                         <div class="input-icon-container">
@@ -188,12 +208,12 @@
 
                             <div class="switch-slider"></div>
 
-                            <label for="statusPending" class="switch-label switch-label-on"><i
-                                    class="ri-checkbox-circle-line"></i>
-                                Pendiente
+                            <label for="statusPending" class="switch-label switch-label-on">
+                                <i class="ri-send-plane-line"></i>
+                                Revisión
                             </label>
-                            <label for="statusDraft" class="switch-label switch-label-off"><i
-                                    class="ri-close-circle-line"></i>
+                            <label for="statusDraft" class="switch-label switch-label-off">
+                                <i class="ri-draft-line"></i>
                                 Borrador
                             </label>
                         </div>

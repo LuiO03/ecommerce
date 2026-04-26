@@ -1,35 +1,54 @@
-<button type="button" class="go-top-float-btn" id="goTopFloatBtn" title="Ir arriba" aria-label="Ir arriba">
+<button
+    type="button"
+    class="go-top-float-btn"
+    id="goTopFloatBtn"
+    title="Ir arriba"
+    aria-label="Ir arriba">
+
     <i class="ri-arrow-up-s-line"></i>
-    <span>ir arriba</span>
+    <span class="btn-label">Ir arriba</span>
 </button>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const btn = document.getElementById('goTopFloatBtn');
-        let lastScroll = 0;
-        let ticking = false;
-        function onScroll() {
-            const y = window.scrollY || window.pageYOffset;
-            // Mostrar si bajó más de 400px y no está cerca del top
-            if (y > 400) {
-                btn.classList.add('visible');
-            } else {
-                btn.classList.remove('visible');
-            }
-            lastScroll = y;
+document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('goTopFloatBtn');
+
+    if (!btn) return;
+
+    let lastScroll = 0;
+    let ticking = false;
+
+    function updateButton() {
+        const y = window.scrollY || window.pageYOffset;
+
+        if (y < 250) {
+            btn.classList.remove('visible');
+        } else if (y > lastScroll + 8) {
+            btn.classList.add('visible');
+        } else if (y < lastScroll - 8) {
+            btn.classList.remove('visible');
         }
-        window.addEventListener('scroll', function() {
-            if (!ticking) {
-                window.requestAnimationFrame(function() {
-                    onScroll();
-                    ticking = false;
-                });
-                ticking = true;
-            }
+
+        lastScroll = y;
+    }
+
+    window.addEventListener('scroll', function () {
+        if (!ticking) {
+            requestAnimationFrame(function () {
+                updateButton();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    btn.addEventListener('click', function () {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
         });
-        btn.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        // Estado inicial
-        onScroll();
     });
+
+    updateButton();
+});
 </script>

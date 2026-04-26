@@ -1,9 +1,5 @@
 /* Sección ¿Por qué comprar con nosotros? */
-.why-us-title {
-    text-align: center;
-    font-size: 1.7rem;
-    font-weight: 700;
-}
+
 .why-us-features {
     max-width: var(--site-max-width);
     width: 100%;

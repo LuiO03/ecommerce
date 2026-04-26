@@ -66,12 +66,6 @@
                         </select>
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
-                    @error('family_id')
-                        <span class="input-error-message">
-                            <i class="ri-error-warning-fill"></i>
-                            {{ $message }}
-                        </span>
-                    @enderror
                 </div>
 
                 {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
@@ -123,46 +117,25 @@
                             placeholder="Ingrese el nombre" data-validate="required|alphanumeric|min:3|max:100"
                             data-validate-messages='{"required":"El nombre es obligatorio","alphanumeric":"El nombre debe contener al menos una letra","min":"El nombre debe tener al menos 3 caracteres","max":"El nombre no puede exceder 100 caracteres"}'>
                     </div>
-                    @error('name')
-                        <span class="input-error-message">
-                            <i class="ri-error-warning-fill"></i>
-                            {{ $message }}
-                        </span>
-                    @enderror
                 </div>
 
                 {{-- STATUS --}}
                 <div class="input-group">
-                    <label for="status" class="label-form">
-                        Estado
+                    <label class="label-form">
+                        Estado de la categoría
                         <i class="ri-asterisk text-accent"></i>
                     </label>
-
-                    <div class="input-icon-container">
-                        <i class="ri-focus-2-line input-icon"></i>
-
-                        <select name="status" id="status" class="select-form @error('status') input-error @enderror"
-                            data-validate="required|selected"
-                            data-validate-messages='{"required":"Debe seleccionar un estado","selected":"Debe seleccionar un estado válido"}'>
-                            <option value="" disabled selected>Seleccione un estado</option>
-
-                            <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>
-                                Activo
-                            </option>
-
-                            <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>
-                                Inactivo
-                            </option>
-                        </select>
-
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                    <div class="binary-switch">
+                        <input type="radio" name="status" id="statusActive" value="1"
+                            class="switch-input switch-input-on" {{ old('status', 1) == 1 ? 'checked' : '' }}>
+                        <input type="radio" name="status" id="statusInactive" value="0"
+                            class="switch-input switch-input-off" {{ old('status') == 0 ? 'checked' : '' }}>
+                        <div class="switch-slider"></div>
+                        <label for="statusActive" class="switch-label switch-label-on"><i
+                                class="ri-checkbox-circle-line"></i> Activo</label>
+                        <label for="statusInactive" class="switch-label switch-label-off"><i
+                                class="ri-close-circle-line"></i> Inactivo</label>
                     </div>
-                    @error('status')
-                        <span class="input-error-message">
-                            <i class="ri-error-warning-fill"></i>
-                            {{ $message }}
-                        </span>
-                    @enderror
                 </div>
 
                 {{-- DESCRIPTION --}}
@@ -172,8 +145,8 @@
                     </label>
 
                     <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
-                            data-validate="min:10|max:250">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción"
+                            rows="4" data-validate="min:10|max:250">{{ old('description') }}</textarea>
 
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
@@ -225,7 +198,29 @@
 
             </div>
         </div>
+        <!-- ============================
+             FOOTER
+        ============================= -->
+        <div class="form-footer">
+            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <span class="boton-form-icon">
+                    <i class="ri-arrow-left-circle-fill"></i>
+                </span>
+                <span class="boton-form-text">Cancelar</span>
+            </a>
 
+            <button type="reset" class="boton-form boton-warning">
+                <span class="boton-form-icon"> <i class="ri-paint-brush-fill"></i> </span>
+                <span class="boton-form-text">Limpiar</span>
+            </button>
+
+            <button class="boton-form boton-success" type="submit" id="submitBtn">
+                <span class="boton-form-icon"> <i class="ri-save-3-fill"></i> </span>
+                <span class="boton-form-text">Crear Categoría</span>
+            </button>
+        </div>
+    </form>
+    @push('scripts')
         <script>
             // SISTEMA DE JERARQUÍA DE CATEGORÍAS PROGRESIVA
             document.addEventListener('DOMContentLoaded', function() {
@@ -257,26 +252,5 @@
                 });
             });
         </script>
-        <!-- ============================
-             FOOTER
-        ============================= -->
-        <div class="form-footer">
-            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
-                <span class="boton-form-icon">
-                    <i class="ri-arrow-left-circle-fill"></i>
-                </span>
-                <span class="boton-form-text">Cancelar</span>
-            </a>
-
-            <button type="reset" class="boton-form boton-warning">
-                <span class="boton-form-icon"> <i class="ri-paint-brush-fill"></i> </span>
-                <span class="boton-form-text">Limpiar</span>
-            </button>
-
-            <button class="boton-form boton-success" type="submit" id="submitBtn">
-                <span class="boton-form-icon"> <i class="ri-save-3-fill"></i> </span>
-                <span class="boton-form-text">Crear Categoría</span>
-            </button>
-        </div>
-    </form>
+    @endpush
 </x-admin-layout>

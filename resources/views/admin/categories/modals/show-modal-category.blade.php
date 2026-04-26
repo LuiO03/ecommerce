@@ -119,7 +119,7 @@
 
         function renderCategoryModal(data) {
             $('#category-id').text(data.id ?? '-');
-            $('#category-slug').html(`<span class='badge badge-primary slug-mono'>${data.slug}</span>`);
+            $('#category-slug').html(`<span class='slug-mono'>${data.slug}</span>`);
             $('#category-name-title').text(data.name);
             $('#category-name').text(data.name);
             $('#category-description').text(data.description ?? 'Sin descripción');

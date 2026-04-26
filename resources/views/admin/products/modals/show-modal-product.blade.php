@@ -482,7 +482,7 @@
             const safeUpdatedAt = escapeHtml(data.updated_at_human ?? data.updated_at ?? '—');
 
             $('#product-id').text(data.id ?? '—');
-            $('#product-slug').html(`<span class="badge badge-primary slug-mono">${safeSlug}</span>`);
+            $('#product-slug').html(`<span class="slug-mono">${safeSlug}</span>`);
             $('#product-sku').html(`<span class="badge badge-gray">${safeSku}</span>`);
             $('#product-name-title').text(safeName);
             $('#product-name').text(safeName);
@@ -499,9 +499,7 @@
             }
 
             $('#product-price').html(`
-				<span class="badge badge-success">
-					S/. ${Number(data.price ?? 0).toFixed(2)}
-				</span>
+                S/. ${Number(data.price ?? 0).toFixed(2)}
 			`);
 
             if (data.discount && Number(data.discount) > 0) {

@@ -8,8 +8,8 @@
             ? $orders->isEmpty()
             : $orders->isEmpty())
         <div class="card-empty">
-            <div class="wishlist-empty-icon">
-                <i class="ri-shopping-bag-3-line"></i>
+            <div class="card-empty-icon card-orange">
+                <i class="ri-shopping-bag-3-fill"></i>
             </div>
             <h3 class="card-title">Aún no tienes pedidos</h3>
             <p>Explora la tienda y realiza tu primera compra.</p>

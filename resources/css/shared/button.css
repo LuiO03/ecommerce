@@ -43,6 +43,7 @@
 }
 
 .boton .boton-icon i {
+    line-height: 1;
     transition: transform 0.2s ease;
 }
 
@@ -259,6 +260,7 @@
 
 .boton-sm i {
     font-size: 16px;
+    line-height: 1;
     transition: transform 0.2s ease;
 }
 

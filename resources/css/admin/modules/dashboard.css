@@ -95,7 +95,7 @@
 }
 
 .dashboard-card-orders:hover {
-    background-color: var(--color-hover) !important;
+    background-color: var(--color-card-bg) !important;
     color: var(--color-text) !important;
 }
 
