@@ -56,7 +56,7 @@
         @elseif ($post->status == 'published')
             <x-note-alert type="success" :dismissible="true">
                 Este post está publicado. Puedes editarlo, pero ten en cuenta que los cambios no se reflejarán hasta que vuelvas a enviarlo para su revisión.
-            </x-note-alert>z
+            </x-note-alert>
         @endif
 
         <div class="form-body">
