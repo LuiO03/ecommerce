@@ -105,7 +105,7 @@ class FamilyController extends Controller
         return Pdf::view('admin.export.families-pdf', compact('families'))
             ->withBrowsershot(function ($browser) {
                 $browser->noSandbox();
-    $browser->setChromePath(base_path('chrome/chrome/linux-147.0.7727.57/chrome-linux64/chrome'));
+                $browser->setChromePath(base_path('chrome/chrome/linux-147.0.7727.57/chrome-linux64/chrome'));
             })
             ->format('a4')
             ->name($filename)
