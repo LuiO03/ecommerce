@@ -103,6 +103,10 @@ class FamilyController extends Controller
 
         // Generar y descargar PDF
         return Pdf::view('admin.export.families-pdf', compact('families'))
+            ->withBrowsershot(function ($browser) {
+                $browser->setChromePath(env('CHROME_PATH'));
+                $browser->noSandbox();
+            })
             ->format('a4')
             ->name($filename)
             ->download();
