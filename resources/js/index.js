@@ -3,7 +3,7 @@ import './sidebar-left/icon-hover-fill.js';
 import './sidebar-left/sidebar-submenus.js';
 import './sidebar-left/sidebar-toggle.js';
 import './sidebar-left/sidebar-tooltips.js';
-import './sidebar-left/sidebar-touch-gestures.js';
+// import './sidebar-left/sidebar-touch-gestures.js';
 import './sidebar-left/sidebars-control.js';
 import './sidebar-left/theme-toggle.js';
 

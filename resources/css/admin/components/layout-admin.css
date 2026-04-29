@@ -274,13 +274,13 @@
     width: 100%;
     padding: 0px;
     margin: 0px;
-    gap: 10px;
+    gap: 1rem;
 }
 
 .page-action{
     display: inline-flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 10px;
 }
 
 .page-icon{

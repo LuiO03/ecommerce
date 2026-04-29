@@ -760,6 +760,12 @@ input[type="checkbox"]:focus {
     background-color: var(--color-card-bg);
 }
 
+@media (max-width: 500px) {
+    .card-list-item {
+        padding: 10px;
+    }
+}
+
 .card-list-tabla-info{
     display: flex;
     width: 100%;

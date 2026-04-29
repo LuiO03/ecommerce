@@ -76,7 +76,7 @@
                                         {{ $user->initials }}
                                     </div>
                                 @endif
-                                <strong>{{ $user->name }} {{ $user->last_name }}</strong>
+                                <strong class="column-name-td">{{ $user->name }} {{ $user->last_name }}</strong>
                             </div>
                             <small>{{ $user->email }}</small>
 
@@ -107,7 +107,9 @@
                     </div>
                 @empty
                     <div class="data-empty">
-                        <i class="ri-user-3-line"></i>
+                        <div class="data-empty-icon card-secondary">
+                            <i class="ri-user-3-line"></i>
+                        </div>
                         <span>No hay usuarios asignados a este rol.</span>
                     </div>
                 @endforelse
