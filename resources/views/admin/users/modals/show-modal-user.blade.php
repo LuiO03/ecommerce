@@ -185,9 +185,6 @@
                         $('#user-email').text(data.email);
                     }
 
-                    // Última sesión
-                    $('#user-last-login-at').text(data.last_login_at ?? '—');
-
                     // Descripción
                     if (!data.address) {
                         $('#user-address').html(
@@ -250,6 +247,11 @@
                         </div>
                     `);
                     }
+
+                    // Última sesión
+                    $('#user-last-login-at').html(`
+                        <span class="show-date"><i class="ri-time-fill"></i> ${data.last_login_at_human ?? '—'}</span>
+                    `);
 
                     // Creado por
                     $('#user-created-by-fecha').html(`

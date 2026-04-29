@@ -1,6 +1,6 @@
 @section('title', 'Dashboard')
 <x-admin-layout :useSlotContainer="false">
-    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="dashboard-cards">
         <div class="targeta ripple-card">
             <div class="targeta-usuario">
                 @php
@@ -20,9 +20,14 @@
 
                 <div class="dashboard-user-info">
                     <h2 class="dashboard-name">Buen día, {{ $dashboardUser->name }}</h2>
+                    @php
+                        $role = $dashboardUser->roles->first();
+                    @endphp
+
                     <p>
-                        Eres <strong>{{ $dashboardUser->roles->pluck('name')->join(', ') }}(a).</strong> <br>
-                        Puedes gestionar el sitio desde este panel de administración.
+                        Eres <strong>{{ $role->name ?? 'Sin rol' }}.</strong>
+                        <br>
+                        {{ $role->description ?? 'No tienes permisos asignados.' }}
                     </p>
                 </div>
             </div>
@@ -42,102 +47,106 @@
     </div>
     <div class="dashboard-cards">
         <!-- 5 pedidos recientes -->
-        <div class="dashboard-card ripple-card dashboard-card-orders">
-            <div class="dashboard-graphic-container">
-                <div class="flex items-center justify-between">
-                    <span class="card-title">Últimos pedidos</span>
-                    <a href="{{ route('admin.orders.index') }}" class="boton-single" title="Ver todos los pedidos">
-                        <span class="boton-single-text">Ver todos</span>
-                        <span class="boton-single-icon">
-                            <i class="ri-arrow-right-line"></i>
-                        </span>
-                    </a>
-                </div>
-                <table class="tabla-normal" id="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Cliente</th>
-                            <th>Estado</th>
-                            <th>Monto</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($orders as $order)
-                            <tr data-id="{{ $order->id }}" data-name="{{ $order->order_number }}">
-                                <td class="text-center">
-                                    <span class="id-text">{{ $order->id }}</span>
-                                </td>
-                                <td>
-                                    {{ $order->user->name . ' ' . $order->user->last_name ?? '—' }}
-                                </td>
-                                <td class="text-center" data-status="{{ $order->status }}">
-                                    @switch($order->status)
-                                        @case('pending')
-                                            <span class="badge badge-warning">
-                                                <i class="ri-time-line"></i>
-                                                Pendiente
-                                            </span>
-                                        @break
-
-                                        @case('processing')
-                                            <span class="badge badge-orange">
-                                                <i class="ri-loader-4-line"></i>
-                                                En proceso
-                                            </span>
-                                        @break
-
-                                        @case('shipped')
-                                            <span class="badge badge-secondary">
-                                                <i class="ri-truck-line"></i>
-                                                Enviada
-                                            </span>
-                                        @case('delivered')
-                                            <span class="badge badge-secondary">
-                                                <i class="ri-checkbox-multiple-line"></i>
-                                                Entregada
-                                            </span>
-                                        @break
-
-                                        @case('refunded')
-                                            <span class="badge badge-info">
-                                                <i class="ri-refund-2-line"></i>
-                                                Reembolsada
-                                            </span>
-                                        @break
-
-                                        @case('cancelled')
-                                            <span class="badge badge-danger">
-                                                <i class="ri-close-circle-line"></i>
-                                                Cancelada
-                                            </span>
-                                        @break
-
-                                        @default
-                                            <span class="badge badge-secondary">
-                                                <i class="ri-question-line"></i>
-                                                {{ ucfirst($order->status) }}
-                                            </span>
-                                    @endswitch
-                                </td>
-                                <td>
-                                    S/. {{ number_format((float) $order->total, 2) }}
-                                </td>
+        @can('ordenes.index')
+            <div class="dashboard-card dashboard-card-orders">
+                <div class="dashboard-graphic-container">
+                    <div class="flex items-center justify-between">
+                        <span class="card-title">Últimos pedidos</span>
+                        <a href="{{ route('admin.orders.index') }}" class="boton-single" title="Ver todos los pedidos">
+                            <span class="boton-single-text">Ver todos</span>
+                            <span class="boton-single-icon">
+                                <i class="ri-arrow-right-line"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <table class="tabla-normal" id="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cliente</th>
+                                <th>Estado</th>
+                                <th>Monto</th>
                             </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted">
-                                        <div class="tabla-no-data">
-                                            <i class="ri-survey-line"></i>
-                                            <span>No hay pedidos disponibles</span>
-                                        </div>
+                        </thead>
+                        <tbody>
+                            @forelse ($orders as $order)
+                                <tr data-id="{{ $order->id }}" data-name="{{ $order->order_number }}">
+                                    <td class="text-center">
+                                        <span class="id-text">{{ $order->id }}</span>
+                                    </td>
+                                    <td>
+                                        {{ trim(($order->user->name ?? '') . ' ' . ($order->user->last_name ?? '')) ?: '—' }}
+                                    </td>
+                                    <td class="text-center" data-status="{{ $order->status }}">
+                                        @switch($order->status)
+                                            @case('pending')
+                                                <span class="badge badge-warning">
+                                                    <i class="ri-time-line"></i>
+                                                    Pendiente
+                                                </span>
+                                            @break
+
+                                            @case('processing')
+                                                <span class="badge badge-orange">
+                                                    <i class="ri-loader-4-line"></i>
+                                                    En proceso
+                                                </span>
+                                            @break
+
+                                            @case('shipped')
+                                                <span class="badge badge-secondary">
+                                                    <i class="ri-truck-line"></i>
+                                                    Enviada
+                                                </span>
+                                            @break
+
+                                            @case('delivered')
+                                                <span class="badge badge-secondary">
+                                                    <i class="ri-checkbox-multiple-line"></i>
+                                                    Entregada
+                                                </span>
+                                            @break
+
+                                            @case('refunded')
+                                                <span class="badge badge-info">
+                                                    <i class="ri-refund-2-line"></i>
+                                                    Reembolsada
+                                                </span>
+                                            @break
+
+                                            @case('cancelled')
+                                                <span class="badge badge-danger">
+                                                    <i class="ri-close-circle-line"></i>
+                                                    Cancelada
+                                                </span>
+                                            @break
+
+                                            @default
+                                                <span class="badge badge-secondary">
+                                                    <i class="ri-question-line"></i>
+                                                    {{ ucfirst($order->status) }}
+                                                </span>
+                                        @endswitch
+                                    </td>
+                                    <td>
+                                        S/. {{ number_format((float) $order->total, 2) }}
                                     </td>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">
+                                            <div class="tabla-no-data">
+                                                <i class="ri-survey-line"></i>
+                                                <span>No hay pedidos disponibles</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            @endcan
             <!-- Tarjeta: Productos -->
             @can('productos.index')
                 <a href="{{ route('admin.products.index') }}" class="dashboard-card ripple-card">
@@ -190,15 +199,17 @@
             @endcan
 
             <!-- Tarjeta: Marcas -->
-            <a href="" class="dashboard-card ripple-card">
-                <div class="card-icon card-warning">
-                    <i class="ri-award-line"></i>
-                </div>
-                <div class="card-content">
-                    <h1 class="card-count">15</h1>
-                    <p class="card-label">Marcas</p>
-                </div>
-            </a>
+            @can('marcas.index')
+                <a href="" class="dashboard-card ripple-card">
+                    <div class="card-icon card-warning">
+                        <i class="ri-award-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalBrands }}</h1>
+                        <p class="card-label">Marcas</p>
+                    </div>
+                </a>
+            @endcan
 
             <!-- Tarjeta: Roles -->
             @can('roles.index')
@@ -277,6 +288,5 @@
                     </div>
                 </a>
             @endcan
-
         </div>
     </x-admin-layout>

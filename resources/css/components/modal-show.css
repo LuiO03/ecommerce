@@ -200,8 +200,13 @@
     color: var(--color-accent);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
 }
+
+.show-date i{
+    line-height: 1;
+}
+
 .modal-show-actions {
     width: 100%;
     display: flex;

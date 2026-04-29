@@ -112,9 +112,13 @@
             <div class="hierarchy-info-panel">
 
                 <!-- Panel vacío (cuando no hay selección) -->
-                <div id="emptyPanel" class="info-panel-empty ripple-card">
-                    <i class="ri-information-line"></i>
-                    <p>Selecciona una categoría para ver detalles</p>
+                <div id="emptyPanel" class="data-empty ripple-card">
+                    <div class="data-empty-icon card-secondary">
+                        <i class="ri-information-fill"></i>
+                    </div>
+                    <span>
+                        Selecciona una categoría para ver los detalles.
+                    </span>
                 </div>
 
                 <!-- Panel de información (cuando hay 1 seleccionado) -->
@@ -182,18 +186,18 @@
                     </div>
                     <div class="panel-actions">
                         <!-- Botón principal (más grande, ocupa toda la fila) -->
-                        <a href="#" id="editCategory" class="boton-form boton-warning">
+                        <a href="#" id="editCategory" class="boton-form boton-warning" title="Editar categoría">
                             <span class="boton-form-icon"><i class="ri-edit-circle-fill"></i></span>
-                            <span class="boton-form-text">Editar Categoría</span>
+                            <span class="boton-form-text">Editar</span>
                         </a>
 
                         <!-- Botones secundarios (grid 2 columnas) -->
-                        <button type="button" id="createChild" class="boton-form boton-success">
+                        <button type="button" id="createChild" class="boton-form boton-success" title="Crear subcategoría">
                             <span class="boton-form-icon"><i class="ri-add-circle-fill"></i></span>
                             <span class="boton-form-text">Crear Hijo</span>
                         </button>
 
-                        <button type="button" id="deleteCategory" class="boton-form boton-danger">
+                        <button type="button" id="deleteCategory" class="boton-form boton-danger" title="Eliminar categoría">
                             <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
                             <span class="boton-form-text">Eliminar</span>
                         </button>
@@ -216,12 +220,10 @@
                     <div class="panel-content">
                         <div class="bulk-move-section">
                             <label class="bulk-label">
-                                <i class="ri-arrow-left-right-line"></i>
                                 Mover Categorías
                             </label>
 
                             <div class="bulk-move-controls">
-
                                 <div class="input-group">
                                     <label for="family_select" class="label-form">
                                         Familia de destino:
@@ -256,7 +258,7 @@
 
                                 <div class="panel-actions">
                                     <button type="button" id="previewMove" class="boton-form boton-info">
-                                        <span class="boton-form-icon"><i class="ri-eye-line"></i></span>
+                                        <span class="boton-form-icon"><i class="ri-eye-fill"></i></span>
                                         <span class="boton-form-text">Preview</span>
                                     </button>
 
@@ -268,15 +270,13 @@
                             </div>
                         </div>
 
-                        <div class="bulk-actions-section">
+                        <div class="bulk-move-section">
                             <label class="bulk-label">
-                                <i class="ri-tools-line"></i>
                                 Operaciones Masivas
                             </label>
 
                             <div class="panel-actions">
-                                <button type="button" id="bulkDuplicate"
-                                    class="boton-form boton-orange">
+                                <button type="button" id="bulkDuplicate" class="boton-form boton-orange">
                                     <span class="boton-form-icon"><i class="ri-file-copy-fill"></i></span>
                                     <span class="boton-form-text">Duplicar Seleccionados</span>
                                 </button>

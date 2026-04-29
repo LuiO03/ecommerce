@@ -489,22 +489,6 @@
     max-height: calc(100vh - 90px);
 }
 
-.info-panel-empty {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
-    text-align: center;
-}
-
-.info-panel-empty i {
-    font-size: 6rem;
-    opacity: 0.3;
-    color: var(--color-text);
-}
-
 .info-panel-single,
 .info-panel-bulk {
     display: flex;
@@ -635,7 +619,7 @@
    📦 OPERACIONES MASIVAS
    ======================================== */
 
-.bulk-move-section, .bulk-actions-section {
+.bulk-move-section{
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -652,7 +636,7 @@
 .bulk-move-controls {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 
 

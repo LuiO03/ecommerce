@@ -449,11 +449,13 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     color: var(--color-muted);
 }
 
-.data-empty i {
-    font-size: 58px;
-    background-color: var(--color-secondary-pastel);
+.data-empty-icon{
     padding: 2rem;
     border-radius: 50%;
+}
+
+.data-empty i {
+    font-size: 58px;
     line-height: 1;
 }
 

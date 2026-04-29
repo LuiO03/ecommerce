@@ -162,7 +162,7 @@ class RolePermissionSeeder extends Seeder
             [
                 'slug' => 'superadministrador',
                 'guard_name' => 'web',
-                'description' => 'Control total del sistema.',
+                'description' => 'Acceso total a todas las funcionalidades del sistema sin restricciones.',
             ]
         );
 

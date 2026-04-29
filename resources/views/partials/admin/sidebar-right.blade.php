@@ -98,7 +98,9 @@
 
                     @if ($notifications->isEmpty())
                         <div class="data-empty">
-                            <i class="ri-notification-off-line"></i>
+                            <div class="data-empty-icon card-info">
+                                <i class="ri-notification-off-fill"></i>
+                            </div>
                             <span>
                                 No tienes notificaciones por
                                 ahora.

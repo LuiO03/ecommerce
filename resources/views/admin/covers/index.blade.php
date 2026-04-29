@@ -109,7 +109,8 @@
                                 <span>{{ $cover->created_at ? $cover->created_at->format('d/m/Y') : '—' }}</span>
                             </span>
                             @can('portadas.update-status')
-                                <label class="switch-tabla" title="Cambiar estado de la portada" aria-label="Cambiar estado de la portada">
+                                <label class="switch-tabla" title="Cambiar estado de la portada"
+                                    aria-label="Cambiar estado de la portada">
                                     <input type="checkbox" class="switch-status" data-id="{{ $cover->id }}"
                                         data-key="{{ $cover->slug }}" {{ $cover->status ? 'checked' : '' }}>
                                     <span class="slider"></span>
@@ -151,7 +152,9 @@
                 </div>
             @empty
                 <div class="data-empty">
-                    <i class="ri-image-add-line"></i>
+                    <div class="data-empty-icon card-secondary">
+                        <i class="ri-image-add-line"></i>
+                    </div>
                     <span>Aún no hay portadas registradas, comienza creando la primera.</span>
                 </div>
             @endforelse
