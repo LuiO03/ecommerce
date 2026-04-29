@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Session;
 
 class ClientController extends Controller
 {
@@ -78,10 +79,22 @@ class ClientController extends Controller
         } elseif ($request->has('export_all')) {
             $users = User::role('Cliente')->get();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron clientes para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron clientes para exportar.');
         }
 
         if ($users->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay clientes disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay clientes disponibles.');
         }
 
@@ -103,10 +116,10 @@ class ClientController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.clients-pdf', compact('users'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.clients-pdf', compact('users'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     // ======================

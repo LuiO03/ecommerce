@@ -83,10 +83,22 @@ class UserController extends Controller
         } elseif ($request->has('export_all')) {
             $users = User::all();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron usuarios para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron usuarios para exportar.');
         }
 
         if ($users->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay usuarios disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay usuarios disponibles.');
         }
 
@@ -108,10 +120,10 @@ class UserController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.users-pdf', compact('users'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.users-pdf', compact('users'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     // ======================

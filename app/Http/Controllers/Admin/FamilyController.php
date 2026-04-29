@@ -79,6 +79,12 @@ class FamilyController extends Controller
         }
 
         if ($families->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay familias disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay familias disponibles para exportar.');
         }
 

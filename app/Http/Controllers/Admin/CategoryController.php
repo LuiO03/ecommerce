@@ -125,10 +125,22 @@ class CategoryController extends Controller
         } elseif ($request->has('export_all')) {
             $categories = Category::with('family:id,name')->get();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron categorías para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron categorías para exportar.');
         }
 
         if ($categories->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay categorías disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay categorías disponibles para exportar.');
         }
 
@@ -150,10 +162,10 @@ class CategoryController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.categories-pdf', compact('categories'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.categories-pdf', compact('categories'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     /* ======================================================

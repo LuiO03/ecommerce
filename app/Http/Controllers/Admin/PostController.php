@@ -595,10 +595,22 @@ class PostController extends Controller
         } elseif ($request->has('export_all')) {
             $posts = Post::all();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron posts para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron posts para exportar.');
         }
 
         if ($posts->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay posts disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay posts disponibles para exportar.');
         }
 
@@ -620,10 +632,10 @@ class PostController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.posts-pdf', compact('posts'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.posts-pdf', compact('posts'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     public function approve(Request $request, Post $post)

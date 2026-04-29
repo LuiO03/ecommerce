@@ -405,10 +405,22 @@ class ProductController extends Controller
         } elseif ($request->has('export_all')) {
             $products = Product::with(['category:id,name'])->get();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron productos para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron productos para exportar.');
         }
 
         if ($products->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay productos disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay productos disponibles para exportar.');
         }
 
@@ -430,10 +442,10 @@ class ProductController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.products-pdf', compact('products'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.products-pdf', compact('products'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     public function updateStatus(Request $request, Product $product)

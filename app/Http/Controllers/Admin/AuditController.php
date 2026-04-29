@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class AuditController extends Controller
 {
@@ -90,10 +91,22 @@ class AuditController extends Controller
         } elseif ($request->has('export_all')) {
             $audits = Audit::with('user')->get();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron auditorías para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron auditorías para exportar.');
         }
 
         if ($audits->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay auditorías disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay auditorías disponibles para exportar.');
         }
 
@@ -114,10 +127,10 @@ class AuditController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.audits-pdf', compact('audits'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.audits-pdf', compact('audits'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     public function exportCsv(Request $request)

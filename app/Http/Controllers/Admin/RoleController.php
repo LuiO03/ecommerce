@@ -72,10 +72,22 @@ class RoleController extends Controller
         } elseif ($request->has('export_all')) {
             $roles = Role::all();
         } else {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin selección',
+                'message' => 'No se seleccionaron roles para exportar.',
+            ]);
             return back()->with('error', 'No se seleccionaron roles para exportar.');
         }
 
         if ($roles->isEmpty()) {
+            Session::flash('info', [
+                'type' => 'danger',
+                'header' => 'Error',
+                'title' => 'Sin datos',
+                'message' => 'No hay roles disponibles para exportar.',
+            ]);
             return back()->with('error', 'No hay roles disponibles para exportar.');
         }
 
@@ -97,10 +109,10 @@ class RoleController extends Controller
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.roles-pdf', compact('roles'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.roles-pdf', compact('roles'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     public function exportCsv(Request $request)
