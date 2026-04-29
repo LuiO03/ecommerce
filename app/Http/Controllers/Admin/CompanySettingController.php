@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
 use App\Models\CompanySetting;
@@ -199,12 +199,12 @@ class CompanySettingController extends Controller
             ],
         ];
 
-        $pdf = Pdf::view('admin.export.order-invoice', [
+        $pdf = Pdf::loadView('admin.export.order-invoice', [
             'order' => $order,
             'companyInfo' => $companyInfo,
-        ])->format('a4');
+        ])->setPaper('a4');
 
-        return $pdf->inline('boleta-ejemplo.pdf');
+        return $pdf->stream('boleta-ejemplo.pdf');
     }
 
     /**

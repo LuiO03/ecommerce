@@ -140,6 +140,7 @@ Route::controller(FamilyController::class)->group(function () {
 Route::controller(OrderController::class)->group(function () {
     Route::get('/orders', 'index')->name('admin.orders.index');
     Route::get('/orders/{order}', 'show')->name('admin.orders.show');
+    Route::get('/orders/{order}/invoice/pdf', 'invoicePdf')->name('admin.orders.invoice.pdf');
     Route::get('/orders/{order}/invoice-preview', 'invoicePreview')->name('admin.orders.invoice-preview');
 
     // Actualizar estado de la orden (ej. pendiente -> en proceso)

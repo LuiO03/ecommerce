@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 
 class FamilyController extends Controller
@@ -102,14 +102,10 @@ class FamilyController extends Controller
         ]);
 
         // Generar y descargar PDF
-        return Pdf::view('admin.export.families-pdf', compact('families'))
-            ->withBrowsershot(function ($browser) {
-                $browser->noSandbox();
-                $browser->setChromePath(base_path('chrome/chrome/linux-147.0.7727.57/chrome-linux64/chrome'));
-            })
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.families-pdf', compact('families'));
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 
     public function exportCsv(Request $request)

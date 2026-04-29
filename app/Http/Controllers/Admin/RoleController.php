@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RolesExcelExport;
 use App\Exports\RolesCsvExport;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Audit;
 use App\Models\Role;
 

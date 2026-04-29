@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -44,30 +44,30 @@ class ProfileController extends Controller
     public function index()
     {
         $fondos = [
-    'fondo-estilo-1',
-    'fondo-estilo-2',
-    'fondo-estilo-4',
-    'fondo-estilo-5',
-    'fondo-estilo-6',
-    'fondo-estilo-7',
-    'fondo-estilo-8',
-    'fondo-estilo-9',
-    'fondo-estilo-10',
-    'fondo-estilo-11',
-    'fondo-estilo-12',
-    'fondo-estilo-13',
-    'fondo-estilo-14',
-    'fondo-estilo-15',
-    'fondo-estilo-17',
-    'fondo-estilo-18',
-    'fondo-estilo-19',
-    'fondo-estilo-20',
-    'fondo-estilo-21',
-    'fondo-estilo-22',
-    'fondo-estilo-23',
-    'fondo-estilo-24',
-    'fondo-estilo-25',
-];
+            'fondo-estilo-1',
+            'fondo-estilo-2',
+            'fondo-estilo-4',
+            'fondo-estilo-5',
+            'fondo-estilo-6',
+            'fondo-estilo-7',
+            'fondo-estilo-8',
+            'fondo-estilo-9',
+            'fondo-estilo-10',
+            'fondo-estilo-11',
+            'fondo-estilo-12',
+            'fondo-estilo-13',
+            'fondo-estilo-14',
+            'fondo-estilo-15',
+            'fondo-estilo-17',
+            'fondo-estilo-18',
+            'fondo-estilo-19',
+            'fondo-estilo-20',
+            'fondo-estilo-21',
+            'fondo-estilo-22',
+            'fondo-estilo-23',
+            'fondo-estilo-24',
+            'fondo-estilo-25',
+        ];
         $user = Auth::user();
         // Obtener sesiones activas desde la tabla sessions
         $sessions = DB::table('sessions')

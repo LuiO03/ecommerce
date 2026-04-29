@@ -7,11 +7,12 @@ use App\Exports\OrdersExcelExport;
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
 use App\Models\Order;
+use App\Models\CompanySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -46,6 +47,42 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
+    public function invoicePdf(Order $order)
+    {
+        $order->load([
+            'user',
+            'address',
+            'items.product',
+            'items.variant.features.option',
+            'payments.transactions',
+            'latestPayment',
+        ]);
+
+        $companyInfo = CompanySetting::first();
+
+        $filename = 'factura_' . $order->order_number . '.pdf';
+
+        Audit::create([
+            'user_id' => Auth::id(),
+            'event' => 'invoice_exported',
+            'auditable_type' => Order::class,
+            'auditable_id' => $order->id,
+            'new_values' => [
+                'filename' => $filename,
+                'order_id' => $order->id,
+            ],
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        $pdf = Pdf::loadView('admin.export.order-invoice', [
+            'order' => $order,
+            'companyInfo' => $companyInfo,
+        ])->setPaper('a4');
+
+        return $pdf->download('boleta-ejemplo.pdf');
+    }
+
     public function invoicePreview(Order $order)
     {
         $order->load([
@@ -57,7 +94,7 @@ class OrderController extends Controller
             'latestPayment',
         ]);
 
-        $companyInfo = \App\Models\CompanySetting::first();
+        $companyInfo = CompanySetting::first();
 
         return view('admin.export.order-invoice', [
             'order' => $order,
