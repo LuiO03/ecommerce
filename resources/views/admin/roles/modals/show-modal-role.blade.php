@@ -32,7 +32,7 @@
                 <tr>
                     <th>Usuarios con este rol</th>
                     <td>
-                        <span id="role-users-list">-</span>
+                        <div id="role-users-list" class="role-users-list">-</div>
                     </td>
                 </tr>
 

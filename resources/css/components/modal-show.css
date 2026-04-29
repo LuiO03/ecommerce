@@ -216,6 +216,12 @@
     padding: 0px;
 }
 
+.role-users-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
 /* === IMAGEN === */
 .modal-img {
     width: 100%;

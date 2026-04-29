@@ -742,7 +742,7 @@
     }
 
     .blog-hero-thumbs{
-        height:60px;
+        height:65px;
     }
 }
 
@@ -750,9 +750,5 @@
 @media (max-width: 480px) {
     .blog-hero-img {
         height: 220px;
-    }
-
-    .blog-hero-thumbs{
-        height:52px;
     }
 }

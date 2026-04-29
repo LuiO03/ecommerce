@@ -57,7 +57,7 @@ class PostController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:3072',
             'primary_image' => 'nullable|string',
         ]);
 
@@ -205,7 +205,7 @@ class PostController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:3072',
             'remove_image' => 'sometimes|boolean',
             'primary_image' => 'nullable|string',
         ]);
