@@ -49,7 +49,7 @@
         <x-alert type="info" title="Guía rápida:" :dismissible="true" :items="[
             'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
             'Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría',
-            'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)',
+            'Si es una subcategoría, selecciona su <strong>categoría padre</strong> (opcional)',
         ]" />
 
         <div class="form-columns-row">
@@ -58,60 +58,49 @@
             ============================= -->
             <div class="form-column">
                 {{-- FAMILIA (OBLIGATORIO) --}}
-                <div class="input-group">
-                    <label for="family_select" class="label-form">
-                        Familia
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-stack-line input-icon"></i>
-                        <select name="family_id" id="family_select" class="select-form" required
-                            data-validate="required|selected"
-                            data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
-                            <option value="" disabled>Seleccione una familia</option>
-                            @foreach ($families as $family)
-                                <option value="{{ $family->id }}" @selected(old('family_id', $category->family_id) == $family->id)>
-                                    {{ $family->name }}
+                <div class="form-row-fit">
+                    <div class="input-group">
+                        <label for="family_select" class="label-form">
+                            Familia
+                            <i class="ri-asterisk text-accent"></i>
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-stack-line input-icon"></i>
+                            <select name="family_id" id="family_select" class="select-form" required
+                                data-validate="required|selected">
+                                <option value="" disabled>Seleccione una familia</option>
+                                @foreach ($selectFamilies as $family)
+                                    <option value="{{ $family->id }}" @selected(old('family_id', $category->family_id) == $family->id)>
+                                        {{ $family->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="category_select" class="label-form">
+                            Categoría padre
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-node-tree input-icon"></i>
+                            <select name="parent_id" id="category_select" class="select-form">
+
+                                {{-- Categoría principal --}}
+                                <option value="" @selected(is_null(old('parent_id', $category->parent_id)))>
+                                    Categoría principal
                                 </option>
-                            @endforeach
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
-                </div>
 
-                {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
-                <div class="input-group">
-                    <label class="label-form">
-                        Ubicación en la jerarquía
-                        <span class="label-italic">(opcional)</span>
-                    </label>
+                                {{-- Subcategorías --}}
+                                @foreach ($selectCategories as $scat)
+                                    <option value="{{ $scat->id }}" @selected(old('parent_id', $category->parent_id) == $scat->id)>
+                                        {{ $scat->name }}
+                                    </option>
+                                @endforeach
 
-                    <div class="label-hint">
-                        <i class="ri-information-line"></i>
-                        <span>Solo se permite 1 nivel de subcategoría.</span>
-                    </div>
-
-                    {{-- Hidden input solo para parent_id --}}
-                    <input type="hidden" name="parent_id" id="parent_id"
-                        value="{{ old('parent_id', $category->parent_id) }}">
-
-                    {{-- Contenedor dinámico de selects --}}
-                    <div id="categoryHierarchySelects" style="display: none;">
-                        {{-- Los selects se generarán dinámicamente según la familia --}}
-                    </div>
-
-                    <div id="noFamilyMessage" class="label-hint">
-                        <i class="ri-information-line"></i>
-                        <span>Primero selecciona una familia para ver las categorías disponibles</span>
-                    </div>
-
-                    {{-- Breadcrumb visual de la ruta seleccionada --}}
-                    <div id="hierarchyBreadcrumb"
-                        style="display: none; margin-top: 0rem; padding: 0.75rem; background: var(--color-info-pastel); border-radius: 8px; font-size: 0.875rem;">
-                        <i class="ri-route-line" style="margin-right: 0.5rem; color: var(--color-info);"></i>
-                        <strong>Ruta seleccionada:</strong>
-                        <span id="breadcrumbPath"
-                            style="margin-left: 0.5rem; font-family: 'Courier New', monospace;"></span>
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
                     </div>
                 </div>
 
@@ -127,8 +116,28 @@
 
                         <input type="text" name="name" id="name" class="input-form" required
                             value="{{ old('name', $category->name) }}" placeholder="Ingrese el nombre"
-                            data-validate="required|alphanumeric|min:3|max:100"
-                            data-validate-messages='{"required":"El nombre es obligatorio","alphanumeric":"El nombre debe contener al menos una letra","min":"El nombre debe tener al menos 3 caracteres","max":"El nombre no puede exceder 100 caracteres"}'>
+                            data-validate="required|alphanumeric|min:3|max:100">
+                    </div>
+                </div>
+
+                {{-- STATUS --}}
+                <div class="input-group">
+                    <label class="label-form">
+                        Estado de la categoría
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="binary-switch">
+                        <input type="radio" name="status" id="statusActive" value="1"
+                            class="switch-input switch-input-on"
+                            {{ old('status', (int) $category->status) == 1 ? 'checked' : '' }}>
+                        <input type="radio" name="status" id="statusInactive" value="0"
+                            class="switch-input switch-input-off"
+                            {{ old('status', (int) $category->status) == 0 ? 'checked' : '' }}>
+                        <div class="switch-slider"></div>
+                        <label for="statusActive" class="switch-label switch-label-on"><i
+                                class="ri-checkbox-circle-line"></i> Activo</label>
+                        <label for="statusInactive" class="switch-label switch-label-off"><i
+                                class="ri-close-circle-line"></i> Inactivo</label>
                     </div>
                 </div>
 
@@ -150,26 +159,7 @@
                  COLUMNA DERECHA
             ============================= -->
             <div class="form-column">
-                {{-- STATUS --}}
-                <div class="input-group">
-                    <label class="label-form">
-                        Estado de la categoría
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="binary-switch">
-                        <input type="radio" name="status" id="statusActive" value="1"
-                            class="switch-input switch-input-on"
-                            {{ old('status', (int) $category->status) == 1 ? 'checked' : '' }}>
-                        <input type="radio" name="status" id="statusInactive" value="0"
-                            class="switch-input switch-input-off"
-                            {{ old('status', (int) $category->status) == 0 ? 'checked' : '' }}>
-                        <div class="switch-slider"></div>
-                        <label for="statusActive" class="switch-label switch-label-on"><i
-                                class="ri-checkbox-circle-line"></i> Activo</label>
-                        <label for="statusInactive" class="switch-label switch-label-off"><i
-                                class="ri-close-circle-line"></i> Inactivo</label>
-                    </div>
-                </div>
+
                 {{-- IMAGE UPLOAD --}}
                 <div class="image-upload-section">
                     <label class="label-form">Imagen de la categoría</label>
@@ -254,24 +244,6 @@
                     scrollToFirstError: true
                 });
 
-                // 3. Inicializar jerarquía de categorías
-                const hierarchyManager = initCategoryHierarchy({
-                    categoriesData: {!! json_encode(
-                        $parents->map(function ($cat) {
-                            return [
-                                'id' => $cat->id,
-                                'name' => $cat->name,
-                                'family_id' => $cat->family_id,
-                                'parent_id' => $cat->parent_id,
-                            ];
-                        }),
-                    ) !!},
-                    maxDepth: 1,
-                    currentCategoryId: {{ $category->id }},
-                    initialFamilyId: parseInt('{{ old('family_id', $category->family_id) }}'),
-                    initialParentId: parseInt('{{ old('parent_id', $category->parent_id ?? 0) }}') || null
-                });
-
                 // 4. Inicializar manejador de imagen
                 const imageHandler = initImageUpload({
                     mode: 'edit',
@@ -285,11 +257,11 @@
              FOOTER
         ============================= -->
         <div class="form-footer">
-            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+            <a href="{{ route('admin.categories.index') }}" class="boton-form boton-volver">
                 <span class="boton-form-icon">
                     <i class="ri-arrow-left-circle-fill"></i>
                 </span>
-                <span class="boton-form-text">Cancelar</span>
+                <span class="boton-form-text">Atrás</span>
             </a>
             <button class="boton-form boton-accent" type="submit" id="submitBtn">
                 <span class="boton-form-icon"> <i class="ri-loop-left-line"></i> </span>
@@ -299,6 +271,10 @@
     </form>
     {{-- SUBCATEGORÍAS --}}
     @if (count($subcategories) > 0)
+        <x-note-alert type="warning" title="Importante:" :dismissible="true">
+            Esta categoría tiene <strong>{{ count($subcategories) }} subcategoría(s)</strong>.
+            Si cambias su familia o ubicación, todas sus subcategorías se verán afectadas.
+        </x-note-alert>
         <div class="form-body">
             <div class="card-header">
                 <span class="card-title">Subcategorías</span>
@@ -308,76 +284,145 @@
                     de ellas.
                 </p>
             </div>
-
-            <div class="variants-table-wrapper">
-                <table class="tabla tabla-variants" id="table">
+            @canany(['categorias.export', 'categorias.delete'])
+                <!-- Barra contextual -->
+                <div class="selection-bar" id="selectionBar">
+                    @can('categorias.export')
+                        <div class="selection-actions">
+                            <button id="exportSelectedExcel" class="boton-selection boton-success">
+                                <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
+                                <span class="boton-selection-text">Excel</span>
+                                <span class="boton-selection-dot">•</span>
+                                <span class="selection-badge" id="excelBadge">0</span>
+                            </button>
+                            <button id="exportSelectedCsv" class="boton-selection boton-orange">
+                                <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
+                                <span class="boton-selection-text">CSV</span>
+                                <span class="boton-selection-dot">•</span>
+                                <span class="selection-badge" id="csvBadge">0</span>
+                            </button>
+                            <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                                <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
+                                <span class="boton-selection-text">PDF</span>
+                                <span class="boton-selection-dot">•</span>
+                                <span class="selection-badge" id="pdfBadge">0</span>
+                            </button>
+                        </div>
+                    @endcan
+                    @can('categorias.delete')
+                        <button id="deleteSelected" class="boton-selection boton-danger">
+                            <span class="boton-selection-icon"><i class="ri-delete-bin-fill"></i></span>
+                            <span class="boton-selection-text">Eliminar</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="deleteBadge">0</span>
+                        </button>
+                    @endcan
+                    <div class="selection-info">
+                        <span id="selectionCount">0 seleccionados</span>
+                        <button class="selection-close" id="clearSelection">
+                            <i class="ri-close-large-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            @endcanany
+            <!-- Tabla -->
+            <div class="table-wrapper">
+                <table class="tabla-general" id="tabla">
                     <thead>
                         <tr>
-                            <th class="column-variant-options-th">Id</th>
-                            <th class="column-variant-sku-th">Nombre</th>
-                            <th class="column-variant-price-th">Descripción</th>
-                            <th class="column-variant-stock-th text-center">Estado</th>
-                            <th class="column-variant-status-th text-center">Productos</th>
-                            <th class="column-variant-actions-th text-center">Acciones</th>
+                            <th class="control"></th>
+                            @canany(['categorias.export', 'categorias.delete'])
+                                <th class="column-check-th column-not-order">
+                                    <div><input type="checkbox" id="checkAll"></div>
+                                </th>
+                            @endcanany
+                            <th class="column-id-th">Id</th>
+                            <th class="column-name-th">Nombre</th>
+                            <th class="column-description-th">Descripción</th>
+                            <th class="column-status-th">Estado</th>
+                            <th class="column-products-th text-center">Productos</th>
+                            <th class="column-actions-th text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($subcategories as $subcat)
+                        @foreach ($subcategories as $cat)
                             <tr>
-                                <td>{{ $subcat['id'] }}</td>
-                                <td>
-                                    <div class="subcategory-name">
-                                        <span class="level-indent"
-                                            style="margin-left: {{ $subcat['level'] * 1.5 }}rem;">
-                                            @for ($i = 0; $i < $subcat['level']; $i++)
-                                                @if ($i == $subcat['level'] - 1)
-                                                    <i class="ri-corner-down-right-line"></i>
-                                                @endif
-                                            @endfor
-                                        </span>
-                                        <i class="ri-folder-line folder-icon"></i>
-                                        <span class="name-text">{{ $subcat['name'] }}</span>
-                                    </div>
+                                <td class="control"></td>
+
+                                @canany(['categorias.export', 'categorias.delete'])
+                                    <td class="column-check-td">
+                                        <div>
+                                            <input type="checkbox" class="check-row" value="{{ $cat->id }}">
+                                        </div>
+                                    </td>
+                                @endcanany
+                                <td class="column-id-td">{{ $cat->id }}</td>
+                                <td class="column-name-td">
+                                    {{ $cat->name }}
                                 </td>
-                                <td>{{ $subcat['description'] }}</td>
-                                <td class="text-center">
-                                    @if ($subcat['status'])
-                                        <span class="badge boton-success">
-                                            <i class="ri-checkbox-circle-fill"></i>
-                                            Activo
-                                        </span>
+                                <td class="column-description-td">{{ $cat->description }}</td>
+                                <!-- ESTADO -->
+                                <td class="column-status-td" data-status="{{ $cat->status ? 1 : 0 }}">
+                                    @can('categorias.update-status')
+                                        <label class="switch-tabla">
+                                            <input type="checkbox" class="switch-status" data-id="{{ $cat->id }}"
+                                                {{ $cat->status ? 'checked' : '' }}>
+                                            <span class="slider"></span>
+                                        </label>
                                     @else
-                                        <span class="badge boton-danger">
-                                            <i class="ri-close-circle-fill"></i>
-                                            Inactivo
-                                        </span>
-                                    @endif
+                                        @if ($cat->status)
+                                            <span class="badge badge-success">
+                                                <i class="ri-checkbox-circle-fill"></i>
+                                                Activo
+                                            </span>
+                                        @else
+                                            <span class="badge badge-danger">
+                                                <i class="ri-close-circle-fill"></i>
+                                                Inactivo
+                                            </span>
+                                        @endif
+                                    @endcan
                                 </td>
-                                <td class="text-center">
-                                    <span class="badge badge-gray">
-                                        <i class="ri-archive-line"></i>
-                                        {{ $subcat['products_count'] }}
+                                <td class="column-products-td">
+                                    <span class="badge badge-primary"
+                                        title="{{ $cat->products_count }} {{ Str::plural('producto', $cat->products_count) }}">
+                                        <i class="ri-box-3-fill"></i>
+                                        {{ $cat->products_count }}
                                     </span>
                                 </td>
-                                <td class="text-center">
+                                <td class="column-actions-td">
+                                    <button class="boton-show-actions">
+                                        <i class="ri-more-fill"></i>
+                                    </button>
+
                                     <div class="tabla-botones">
-                                        <button class="boton-sm boton-info">
-                                            <span class="boton-sm-icon"><i class="ri-eye-2-fill"></i></span>
+                                        <button type="button" class="boton-sm boton-info btn-ver-categoria"
+                                            data-slug="{{ $cat->slug }}">
+                                            <i class="ri-eye-2-fill"></i>
+                                            <span class="boton-sm-text">Ver</span>
                                         </button>
-                                        <a href="{{ route('admin.categories.edit', $subcat['slug']) }}"
-                                            class="boton-sm boton-warning btn-ver-categoria"
-                                            data-slug="{{ $subcat['slug'] }}">
-                                            <span class="boton-sm-icon"><i class="ri-quill-pen-fill"></i></span>
-                                        </a>
-                                        <form action="{{ route('admin.categories.destroy', $subcat['slug']) }}"
-                                            method="POST" class="delete-form" data-entity="categoría">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="boton-sm boton-danger">
-                                                <span class="boton-sm-icon"><i
-                                                        class="ri-delete-bin-2-fill"></i></span>
-                                            </button>
-                                        </form>
+
+                                        @can('categorias.edit')
+                                            <a href="{{ route('admin.categories.edit', $cat) }}"
+                                                class="boton-sm boton-warning">
+                                                <i class="ri-edit-circle-fill"></i>
+                                                <span class="boton-sm-text">Editar</span>
+                                            </a>
+                                        @endcan
+
+                                        @can('categorias.delete')
+                                            <form action="{{ route('admin.categories.destroy', $cat) }}" method="POST"
+                                                class="delete-form" data-entity="categoría">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit" class="boton-sm boton-danger">
+                                                    <i class="ri-delete-bin-2-fill"></i>
+                                                    <span class="boton-sm-text">Eliminar</span>
+                                                </button>
+                                            </form>
+                                        @endcan
+
                                     </div>
                                 </td>
                             </tr>
@@ -385,14 +430,175 @@
                     </tbody>
                 </table>
             </div>
-
-        </div>
-        <x-alert type="warning" title="Importante:" :dismissible="true">
-            Esta categoría tiene <strong>{{ count($subcategories) }} subcategoría(s)</strong>.
-            Si cambias su familia o ubicación, todas sus subcategorías se verán afectadas.
-        </x-alert>
         </div>
     @endif
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                // ========================================
+                // 📊 INICIALIZACIÓN CON DATATABLEMANAGER
+                // ========================================
+                const tableManager = new DataTableManager('#tabla', {
+
+                    moduleName: 'categories',
+                    entityNameSingular: 'categoría',
+                    entityNamePlural: 'categorías',
+                    deleteRoute: '/admin/categories',
+                    statusRoute: '/admin/categories/{id}/status',
+                    exportRoutes: {
+                        excel: '/admin/categories/export/excel',
+                        csv: '/admin/categories/export/csv',
+                        pdf: '/admin/categories/export/pdf'
+                    },
+                    csrfToken: '{{ csrf_token() }}',
+
+                    // Configuración de DataTable
+                    pageLength: 10,
+                    lengthMenu: [5, 10, 25, 50],
+
+                    // Características (todas activadas por defecto)
+                    features: {
+                        selection: true,
+                        export: true,
+                        filters: true,
+                        statusToggle: true,
+                        responsive: true,
+                        customPagination: true
+                    },
+
+                    // Callbacks personalizados (opcional)
+                    callbacks: {
+                        onDraw: () => {
+                            console.log('🔄 Tabla redibujada');
+                        },
+                        onStatusChange: (id, status, response) => {
+                            console.log(
+                                `✅ Estado actualizado: ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
+                        },
+                        onDelete: () => {
+                            console.log('🗑️ Registros eliminados');
+                        },
+                        onExport: (type, format, count) => {
+                            console.log(
+                                `📤 Exportación: ${type} (${format}) - ${count || 'todos'} registros`);
+                        }
+                    }
+                });
+
+                // ========================================
+                // 🔍 FILTROS PERSONALIZADOS
+                // ========================================
+
+                // Variables globales para los filtros
+                let currentFamilyFilter = '';
+                let currentLevelFilter = '';
+
+                // Función de filtrado personalizado para DataTables
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+
+                    if (settings.nTable.id !== 'tabla') return true;
+
+                    const row = settings.aoData[dataIndex].nTr;
+
+                    // Filtro Familia
+                    if (currentFamilyFilter !== '') {
+                        const rowFamilyId = $(row).find('.column-family-td').data('family-id').toString();
+
+                        if (rowFamilyId !== currentFamilyFilter) {
+                            return false;
+                        }
+                    }
+
+                    // Filtro Nivel
+                    if (currentLevelFilter !== '') {
+
+                        const hasParent = $(row).find('.column-parent-td').find('.badge-warning').length > 0;
+
+                        if (currentLevelFilter === 'root' && hasParent) {
+                            return false;
+                        }
+
+                        if (currentLevelFilter === 'subcategory' && !hasParent) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                // Filtro por Familia
+                $('#familyFilter').on('change', function() {
+                    currentFamilyFilter = this.value;
+                    tableManager.table.draw();
+
+                    // Actualizar estado de filtros activos
+                    tableManager.checkFiltersActive();
+
+                    console.log(`🔍 Filtro Familia: ${currentFamilyFilter || 'Todas'}`);
+                });
+
+                // Filtro por Nivel (Raíz/Subcategoría)
+                $('#levelFilter').on('change', function() {
+                    currentLevelFilter = this.value;
+                    tableManager.table.draw();
+
+                    // Actualizar estado de filtros activos
+                    tableManager.checkFiltersActive();
+
+                    console.log(`🔍 Filtro Nivel: ${currentLevelFilter || 'Todos'}`);
+                });
+
+                // ========================================
+                // 🎨 RESALTAR FILA CREADA/EDITADA
+                // ========================================
+                @if (Session::has('highlightRow'))
+                    (function() {
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') : [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
+                        const navType = navEntries.length ? navEntries[0].type : legacyNav;
+                        const isBackNavigation = navType === 'back_forward' || navType === 2;
+
+                        if (isBackNavigation) {
+                            return;
+                        }
+
+                        const highlightId = {{ Session::get('highlightRow') }};
+                        setTimeout(() => {
+                            const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
+                            if (row.length) {
+                                row.addClass('row-highlight');
+
+                                row[0].scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
+
+                                setTimeout(() => {
+                                    row.removeClass('row-highlight');
+                                }, 3000);
+                            }
+                        }, 100);
+                    })();
+                @endif
+
+                // ========================================
+                // 🛠️ API DISPONIBLES (Ejemplos de uso)
+                // ========================================
+                // tableManager.getTable() - Obtiene instancia DataTable
+                // tableManager.getSelectedItems() - Obtiene Map de items seleccionados
+                // tableManager.refresh() - Refresca la tabla
+                // tableManager.clearSelection() - Limpia selección
+                // tableManager.destroy() - Destruye la instancia
+
+
+            });
+        </script>
+    @endpush
 
     @include('admin.categories.modals.show-modal-category')
 </x-admin-layout>

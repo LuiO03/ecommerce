@@ -14,6 +14,15 @@
             <span class="boton-form-text">Vista Tabla</span>
         </a>
 
+        <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
+            <span class="boton-form-icon">
+                <i class="ri-search-eye-fill"></i>
+            </span>
+            <span class="boton-form-text">
+                Buscar o filtrar
+            </span>
+        </button>
+
         <a href="{{ route('admin.categories.create') }}" class="boton-form boton-primary">
             <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
             <span class="boton-form-text">Crear Categoría</span>
@@ -65,28 +74,34 @@
         </div>
         <div class="hierarchy-layout">
             <!-- Panel Izquierdo: Árbol -->
-            <div class="hierarchy-tree-panel">
-                <div class="tree-controls">
-                    <div class="tree-search">
-                        <i class="ri-search-eye-line"></i>
+            <div class="actions-container">
+                <aside class="tabla-filtros">
+                    <span class="tabla-filtros-title">
+                        Buscar
+                    </span>
+                    <article class="tabla-buscador">
+                        <i class="ri-search-eye-line buscador-icon"></i>
                         <input type="text" id="treeSearch" placeholder="Buscar categorías..." autocomplete="off">
-                        <i class="ri-close-circle-fill" id="clearTreeSearch" class="search-clear"></i>
-                    </div>
-                    <div class="tree-buttons">
+                        <button type="button" id="clearSearch" id="clearTreeSearch" class="buscador-clear"
+                            title="Limpiar búsqueda">
+                            <i class="ri-close-circle-fill"></i>
+                        </button>
+                    </article>
+                    <article class="tree-buttons">
                         <button type="button" id="expandAll" class="boton-single" title="Expandir todo">
                             <i class="ri-expand-diagonal-line"></i>
-
                         </button>
 
                         <button type="button" id="collapseAll" class="boton-single" title="Colapsar todo">
                             <i class="ri-collapse-diagonal-line"></i>
                         </button>
 
-                        <button type="button" id="deselectAll" class="boton-single" title="Deseleccionar todos" style="display: none;">
+                        <button type="button" id="deselectAll" class="boton-single" title="Deseleccionar todos"
+                            style="display: none;">
                             <i class="ri-checkbox-multiple-blank-line"></i>
                         </button>
-                    </div>
-                </div>
+                    </article>
+                </aside>
 
                 <div class="tree-wrapper" id="categoryTree">
                     <!-- El árbol se generará dinámicamente con JavaScript -->
@@ -104,18 +119,23 @@
 
                 <!-- Panel de información (cuando hay 1 seleccionado) -->
                 <div id="infoPanel" class="info-panel-single ripple-card" style="display: none;">
-                    <div class="panel-header">
-                        <h3 class="panel-title" id="infoName">Nombre de categoría</h3>
-                        <button type="button" id="closeInfo" class="panel-close">
-                            <i class="ri-close-line"></i>
-                        </button>
+                    <div class="card-header-container">
+                        <div class="card-header">
+                            <span class="card-title" id="infoName">Nombre de categoría</span>
+                        </div>
+                        <div class="card-header-actions">
+                            <button type="button" id="closeInfo" class="panel-close">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="info-details">
                         <div class="info-row">
                             <span class="info-label">
                                 <i class="ri-hashtag"></i> ID:
                             </span>
-                            <span id="infoId" style="font-family: 'Monaco', 'Courier New', monospace; font-weight: bold;">-</span>
+                            <span id="infoId"
+                                style="font-family: 'Monaco', 'Courier New', monospace; font-weight: bold;">-</span>
                         </div>
 
                         <div class="info-row">
@@ -162,18 +182,18 @@
                     </div>
                     <div class="panel-actions">
                         <!-- Botón principal (más grande, ocupa toda la fila) -->
-                        <a href="#" id="editCategory" class="boton-form boton-warning btn-block">
+                        <a href="#" id="editCategory" class="boton-form boton-warning">
                             <span class="boton-form-icon"><i class="ri-edit-circle-fill"></i></span>
                             <span class="boton-form-text">Editar Categoría</span>
                         </a>
 
                         <!-- Botones secundarios (grid 2 columnas) -->
-                        <button type="button" id="createChild" class="boton-form boton-success btn-block">
+                        <button type="button" id="createChild" class="boton-form boton-success">
                             <span class="boton-form-icon"><i class="ri-add-circle-fill"></i></span>
                             <span class="boton-form-text">Crear Hijo</span>
                         </button>
 
-                        <button type="button" id="deleteCategory" class="boton-form boton-danger btn-block">
+                        <button type="button" id="deleteCategory" class="boton-form boton-danger">
                             <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
                             <span class="boton-form-text">Eliminar</span>
                         </button>
@@ -182,14 +202,15 @@
 
                 <!-- Panel de operaciones masivas (cuando hay múltiples seleccionados) -->
                 <div id="bulkPanel" class="info-panel-bulk" style="display: none;">
-                    <div class="panel-header">
-                        <h3 class="panel-title">
-                            <i class="ri-checkbox-multiple-line"></i>
+                    <div class="card-header-container">
+                        <div class="card-title">
                             <span id="bulkCount">0</span> seleccionados
-                        </h3>
-                        <button type="button" id="closeBulk" class="panel-close">
-                            <i class="ri-close-line"></i>
-                        </button>
+                        </div>
+                        <div class="card-header-actions">
+                            <button type="button" id="closeBulk" class="panel-close">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="panel-content">
@@ -200,34 +221,46 @@
                             </label>
 
                             <div class="bulk-move-controls">
-                                <div class="select-group">
-                                    <label>Familia destino:</label>
-                                    <select id="bulkFamilyTarget" class="form-select">
-                                        <option value="">Seleccionar familia...</option>
-                                        <option value="root">Sin familia (Raíz)</option>
-                                        @foreach ($families as $family)
-                                            <option value="family_{{ $family->id }}">
-                                                {{ $family->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+
+                                <div class="input-group">
+                                    <label for="family_select" class="label-form">
+                                        Familia de destino:
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-stack-line input-icon"></i>
+                                        <select name="family_id" id="bulkFamilyTarget" class="select-form" required
+                                            data-validate="required|selected">
+                                            <option value="" disabled>Seleccione una familia</option>
+                                            @foreach ($families as $family)
+                                                <option value="family_{{ $family->id }}">
+                                                    {{ $family->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                                    </div>
                                 </div>
 
-                                <div class="select-group">
-                                    <label>Categoría padre (opcional):</label>
-                                    <select id="bulkCategoryTarget" class="form-select" disabled>
-                                        <option value="">Primero selecciona una familia</option>
-                                    </select>
+                                <div class="input-group">
+                                    <label for="category_select" class="label-form">
+                                        Categoría de destino:
+                                    </label>
+                                    <div class="input-icon-container">
+                                        <i class="ri-node-tree input-icon"></i>
+                                        <select id="bulkCategoryTarget" class="select-form" disabled>
+                                            <option value="">Primero selecciona una familia</option>
+                                        </select>
+                                        <i class="ri-arrow-down-s-line select-arrow"></i>
+                                    </div>
                                 </div>
 
-                                <div class="bulk-buttons">
+                                <div class="panel-actions">
                                     <button type="button" id="previewMove" class="boton-form boton-info">
                                         <span class="boton-form-icon"><i class="ri-eye-line"></i></span>
                                         <span class="boton-form-text">Preview</span>
                                     </button>
 
-                                    <button type="button" id="executeBulkMove"
-                                        class="boton-form boton-primary">
+                                    <button type="button" id="executeBulkMove" class="boton-form boton-primary">
                                         <span class="boton-form-icon"><i class="ri-arrow-right-line"></i></span>
                                         <span class="boton-form-text">Mover Ahora</span>
                                     </button>
@@ -241,13 +274,14 @@
                                 Operaciones Masivas
                             </label>
 
-                            <div class="bulk-buttons">
-                                <button type="button" id="bulkDuplicate" class="boton-form boton-secondary btn-block">
+                            <div class="panel-actions">
+                                <button type="button" id="bulkDuplicate"
+                                    class="boton-form boton-orange">
                                     <span class="boton-form-icon"><i class="ri-file-copy-fill"></i></span>
                                     <span class="boton-form-text">Duplicar Seleccionados</span>
                                 </button>
 
-                                <button type="button" id="bulkDelete" class="boton-form boton-danger btn-block">
+                                <button type="button" id="bulkDelete" class="boton-form boton-danger">
                                     <span class="boton-form-icon"><i class="ri-delete-bin-fill"></i></span>
                                     <span class="boton-form-text">Eliminar Seleccionados</span>
                                 </button>

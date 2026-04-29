@@ -200,9 +200,7 @@
                         <th class="column-last-name-th">Apellidos</th>
                         <th class="column-email-th">Email</th>
                         <th class="column-verified-th">Verificado</th>
-                        @can('clientes.update-status')
-                            <th class="column-status-th">Estado</th>
-                        @endcan
+                        <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -262,15 +260,27 @@
                                     </span>
                                 @endif
                             </td>
-                            @can('clientes.update-status')
-                                <td class="column-status-td">
+                            <td class="column-status-td" data-status="{{ $user->status ? 1 : 0 }}"}}">
+                                @can('clientes.update-status')
                                     <label class="switch-tabla">
                                         <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
                                             {{ $user->status ? 'checked' : '' }}>
                                         <span class="slider"></span>
                                     </label>
-                                </td>
-                            @endcan
+                                @else
+                                    @if ($user->status)
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                            Activo
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-fill"></i>
+                                            Inactivo
+                                        </span>
+                                    @endif
+                                @endcan
+                            </td>
                             <td>
                                 <span class="{{ $user->created_at ? '' : 'text-muted-td' }}">
                                     {{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
@@ -360,7 +370,7 @@
                         onStatusChange: (id, status, response) => {
                             console.log(
                                 `✅ Estado actualizado: Cliente ID ${id} -> ${status ? 'Activo' : 'Inactivo'}`
-                                );
+                            );
                         },
                         onDelete: () => {
                             console.log('🗑️ Clientes eliminados');
@@ -368,7 +378,7 @@
                         onExport: (type, format, count) => {
                             console.log(
                                 `📤 Exportación de clientes: ${type} (${format}) - ${count || 'todos'} registros`
-                                );
+                            );
                         }
                     }
                 });
@@ -421,8 +431,7 @@
                     (function() {
                         const navEntries = (typeof performance !== 'undefined' && typeof performance
                                 .getEntriesByType === 'function') ?
-                            performance.getEntriesByType('navigation') :
-                            [];
+                            performance.getEntriesByType('navigation') : [];
                         const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
                             performance.navigation.type :
                             null;

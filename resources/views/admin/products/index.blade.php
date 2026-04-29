@@ -170,7 +170,7 @@
 
 			@can('productos.delete')
 			<button id="deleteSelected" class="boton-selection boton-danger">
-				<span class="boton-selection-icon"><i class="ri-delete-bin-line"></i></span>
+				<span class="boton-selection-icon"><i class="ri-delete-bin-fill"></i></span>
 				<span class="boton-selection-text">Eliminar</span>
                 <span class="boton-selection-dot">•</span>
 				<span class="selection-badge" id="deleteBadge">0</span>
@@ -270,14 +270,26 @@
                                     </span>
                                 @endif
 							</td>
-							@can('productos.update-status')
-							<td class="column-status-td">
-								<label class="switch-tabla">
-									<input type="checkbox" class="switch-status" data-id="{{ $product->id }}" data-key="{{ $product->slug }}" {{ $product->status ? 'checked' : '' }}>
-									<span class="slider"></span>
-								</label>
-							</td>
-							@endcan
+                            <td class="column-status-td" data-status="{{ $product->status ? 1 : 0 }}">
+							    @can('productos.update-status')
+                                    <label class="switch-tabla">
+                                        <input type="checkbox" class="switch-status" data-id="{{ $product->id }}" data-key="{{ $product->slug }}" {{ $product->status ? 'checked' : '' }}>
+                                        <span class="slider"></span>
+                                    </label>
+                                @else
+                                    @if ($product->status)
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                            Activo
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-fill"></i>
+                                            Inactivo
+                                        </span>
+                                    @endif
+                                @endcan
+                            </td>
 							<td class="column-date-td">
 								<span class="{{ $product->created_at ? '' : 'text-muted-td' }}">
 									{{ $product->created_at ? $product->created_at->format('d/m/Y H:i') : 'Sin fecha' }}

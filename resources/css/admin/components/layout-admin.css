@@ -62,7 +62,7 @@
 }
 
 .sidebar-tab i {
-    font-size: var(--font-size-h5);
+    font-size: var(--font-size-h3);
     line-height: 1;
 }
 
@@ -357,12 +357,17 @@
    🔹 BOTÓN HAMBURGUESA ANIMADO
    ============================================================ */
 .topbar-user-menu {
-    padding: 8px 8px;
-    border-radius: var(--radius-element);
+    padding: 7px;
+    border-radius: var(--radius-input);
 }
 
 .topbar-user-menu:hover {
+    color: var(--color-accent);
     background-color: var(--color-hover);
+}
+
+.topbar-user-menu:hover .hamburger-line {
+    background-color: var(--color-accent);
 }
 
 /* === Nuevo estilo para el botón hamburguesa === */
@@ -372,14 +377,17 @@
     flex-direction: column;
     justify-content: center;
     gap: 7px;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     background: none;
     border: none;
     cursor: pointer;
     z-index: 70;
     transition: transform 0.3s ease;
+
 }
+
+
 
 .hamburger-line {
     display: block;

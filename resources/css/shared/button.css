@@ -255,19 +255,18 @@
     position: relative;
     justify-content: center;
     padding: 0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
 .boton-sm i {
     font-size: 16px;
     line-height: 1;
-    transition: transform 0.2s ease;
 }
 
 /* Hover */
 .boton-sm:hover {
     box-shadow: var(--shadow-material);
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
 .boton-sm:active {

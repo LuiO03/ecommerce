@@ -1,6 +1,6 @@
 <div class="{{ $products->isEmpty() ? 'swiper-products-empty' : 'swiper-products-section' }}">
 
-    <section class="section-container">
+    <section class="section-container pb-0">
         @push('js')
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -32,23 +32,23 @@
                             breakpoints: {
                                 320: {
                                     slidesPerView: 2,
-                                    spaceBetween: 15,
+                                    spaceBetween: 3,
                                 },
                                 640: {
                                     slidesPerView: 3,
-                                    spaceBetween: 15,
+                                    spaceBetween: 5,
                                 },
                                 800: {
                                     slidesPerView: 4,
-                                    spaceBetween: 20,
+                                    spaceBetween: 8,
                                 },
                                 1024: {
                                     slidesPerView: 5,
-                                    spaceBetween: 20,
+                                    spaceBetween: 16,
                                 },
                                 1280: {
                                     slidesPerView: 6,
-                                    spaceBetween: 20,
+                                    spaceBetween: 16,
                                 },
                             },
                             keyboard: {
@@ -78,19 +78,15 @@
                         <div class="swiper-slide products-slide">
                             <div class="product-card">
                                 <a href="{{ route('products.show', $product) }}" class="product-image">
-                                    @if ($product->mainImage)
-                                        <img src="{{ asset('storage/' . $product->mainImage->path) }}"
-                                            alt="{{ $product->mainImage->alt ?? $product->name }}"
+                                    @php
+                                        $image = $product->mainImage?->path ?? $product->image_path;
+                                        $alt = $product->mainImage?->alt ?? $product->name;
+                                    @endphp
+                                    @if ($image)
+                                        <img src="{{ asset('storage/' . $image) }}" alt="{{ $alt }}"
                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="product-image-fallback" style="display: none;">
-                                            <i class="ri-image-line"></i>
-                                            <span>Imagen no disponible</span>
-                                        </div>
-                                    @elseif ($product->image_path)
-                                        <img src="{{ asset('storage/' . $product->image_path) }}"
-                                            alt="{{ $product->name }}"
-                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="product-image-fallback" style="display: none;">
+
+                                        <div class="product-image-fallback" style="display:none;">
                                             <i class="ri-image-line"></i>
                                             <span>Imagen no disponible</span>
                                         </div>
@@ -103,35 +99,33 @@
                                 </a>
 
                                 <div class="product-details">
-                                    <div class="product-content">
-                                        <div class="flex justify-between">
-                                            <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}
-                                            </p>
-                                            <p class="product-rating">
-                                                <i class="ri-star-fill"></i>
-                                                <span>4.5 (128)</span>
-                                            </p>
-                                        </div>
-                                        <h3 class="product-name">{{ $product->name }}</h3>
-                                        <div class="flex w-full flex-col">
-                                            <div class="product-pricing">
-                                                @if (!is_null($product->discount) && (float) $product->discount > 0)
-                                                    @php
-                                                        $discountPercent = min(max((float) $product->discount, 0), 100);
-                                                        $discounted = max(
-                                                            (float) $product->price * (1 - $discountPercent / 100),
-                                                            0,
-                                                        );
-                                                    @endphp
-                                                    <span
-                                                        class="product-price">S/.{{ number_format($discounted, 2) }}</span>
-                                                    <span
-                                                        class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
-                                                @else
-                                                    <span
-                                                        class="product-price">S/.{{ number_format($product->price, 2) }}</span>
-                                                @endif
-                                            </div>
+                                    <div class="flex justify-between">
+                                        <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}
+                                        </p>
+                                        <p class="product-rating">
+                                            <i class="ri-star-fill"></i>
+                                            <span>4.5 (128)</span>
+                                        </p>
+                                    </div>
+                                    <h3 class="product-name">{{ $product->name }}</h3>
+                                    <div class="flex w-full flex-col">
+                                        <div class="product-pricing">
+                                            @if (!is_null($product->discount) && (float) $product->discount > 0)
+                                                @php
+                                                    $discountPercent = min(max((float) $product->discount, 0), 100);
+                                                    $discounted = max(
+                                                        (float) $product->price * (1 - $discountPercent / 100),
+                                                        0,
+                                                    );
+                                                @endphp
+                                                <span
+                                                    class="product-price">S/.{{ number_format($discounted, 2) }}</span>
+                                                <span
+                                                    class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
+                                            @else
+                                                <span
+                                                    class="product-price">S/.{{ number_format($product->price, 2) }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -154,5 +148,5 @@
                 <p>No hay productos disponibles en este momento</p>
             </div>
         @endif
-</div>
+    </section>
 </div>

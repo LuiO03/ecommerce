@@ -82,34 +82,6 @@ input[type="checkbox"]:focus {
     flex-direction: column;
     gap: 16px;
     position: relative;
-    padding-bottom: 40px; /* espacio para el footer fijo */
-}
-
-/* === Mensaje de información contextual (usado en jerarquía) === */
-.label-hint {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-style: italic;
-    font-weight: 400;
-    font-size: var(--font-size-xs);
-    color: var(--color-info);
-    padding: 5px 12px;
-    background-color: var(--color-info-pastel);
-    border-left: 3px solid var(--color-info);
-    border-radius: var(--radius-element);
-}
-
-.label-italic {
-    font-style: italic;
-    font-weight: 400;
-    font-size: var(--font-size-xs);
-    color: var(--color-text-soft);
-}
-
-.label-hint i {
-    font-size: 1rem;
-    color: var(--color-info);
 }
 
 /* === Grupo contenedor === */
@@ -135,14 +107,14 @@ input[type="checkbox"]:focus {
     }
 }
 
-/* === Form Rows con llenado automático === */
+/* === Form Rows que respetan el espacio === */
 .form-row-fill {
     gap: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-/* === Form Rows con ajuste automático === */
+/* === Form Rows con llenado automático === */
 .form-row-fit {
     gap: 20px;
     display: grid;
@@ -158,7 +130,7 @@ input[type="checkbox"]:focus {
 .form-user {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 /* primer div hijo de .form-user */
@@ -647,20 +619,23 @@ input[type="checkbox"]:focus {
 }
 
 .form-footer {
+    position: sticky;
+    bottom: -40px;
     display: flex;
     justify-content: center;
     gap: 10px;
-    position: fixed;
-    bottom: 10px;
-    left: calc(50% + var(--sidebar-expanded-width) / 2);
-    transform: translateX(-50%);
+    margin-top: 40px !important;
     padding: 10px 16px;
     background-color: var(--color-bg-transparent);
     z-index: 100;
     border-radius: var(--radius-card);
-    transition: left 0.1s ease;
+
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
+
+    width: fit-content;
+
+    margin: 0 auto; /* <-- CLAVE */
 }
 
 .form-footer-static {
@@ -670,10 +645,6 @@ input[type="checkbox"]:focus {
     gap: 10px;
 }
 
-body.sidebar-collapsed .form-footer {
-    left: calc(50% + var(--sidebar-collapsed-width) / 2);
-}
-
 @media (max-width: 450px) {
     /* Todos los hijos menos el ultimo de form footer su boton-form-text se oculta para ganar espacio */
     .form-footer .boton-form:not(:last-child) .boton-form-text {
@@ -681,14 +652,6 @@ body.sidebar-collapsed .form-footer {
     }
 }
 
-@media (max-width: 768px) {
-    .form-footer,
-    body.sidebar-collapsed .form-footer {
-        left: 50%;
-        width: max-content;
-        padding: 10px;
-    }
-}
 
 .auth-form-footer {
     display: flex;
@@ -786,4 +749,27 @@ body.sidebar-collapsed .form-footer {
     background-color: var(--color-info-pastel);
     width: 30px;
     height: 100%;
+}
+
+
+.card-list-item {
+    display: flex;
+    gap: 4px;
+    padding: 10px 12px;
+    border-radius: var(--radius-card);
+    background-color: var(--color-card-bg);
+}
+
+.card-list-tabla-info{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.card-list-tabla-botones {
+    display: flex;
+    width: min-content;
+    gap: 5px;
+    flex-wrap: wrap;
 }

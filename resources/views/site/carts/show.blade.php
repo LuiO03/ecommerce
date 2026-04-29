@@ -20,22 +20,18 @@
             </div>
             @if ($hasItems)
                 <div class="flex gap-1">
-                    <div class="cart-header-summary">
-                        <span class="cart-pill">
-                            <i class="ri-shopping-cart-line"></i>
-                            {{ $itemsQuantity }} {{ $itemsQuantity === 1 ? 'unidad' : 'unidades' }}
-                        </span>
-                    </div>
-                    <div>
-                        <form id="cart-clear-form" method="POST" action="{{ route('carts.destroy') }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="cart-pill cart-clear-btn" id="cart-clear-btn">
-                                <i class="ri-close-large-line"></i>
-                                Limpiar Carrito
-                            </button>
-                        </form>
-                    </div>
+                    <span class="cart-pill">
+                        <i class="ri-shopping-cart-line"></i>
+                        {{ $itemsQuantity }} {{ $itemsQuantity === 1 ? 'unidad' : 'unidades' }}
+                    </span>
+                    <form id="cart-clear-form" method="POST" action="{{ route('carts.destroy') }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="cart-pill cart-clear-btn" id="cart-clear-btn">
+                            <i class="ri-close-large-line"></i>
+                            Limpiar Carrito
+                        </button>
+                    </form>
                 </div>
             @endif
 
@@ -141,7 +137,7 @@
 
                             <div class="cart-item-main">
                                 <div class="cart-item-header">
-                                    <div>
+                                    <div class="cart-item-info">
                                         <a href="{{ route('products.show', $product) }}" class="cart-item-name">
                                             {{ $product->name }}
                                         </a>
@@ -165,7 +161,8 @@
                                                     @php
                                                         $rawHex = (string) ($feature->description ?? '');
                                                         $normalized = ltrim($rawHex, '#');
-                                                        $displayColor = $normalized !== '' ? '#' . $normalized : '#000000';
+                                                        $displayColor =
+                                                            $normalized !== '' ? '#' . $normalized : '#000000';
                                                         $colorName = trim((string) ($feature->value ?? ''));
                                                     @endphp
                                                     <span class="cart-item-color-pill"
@@ -204,27 +201,23 @@
                                             <i class="ri-refresh-line"></i>
                                             <span>Actualizar</span>
                                         </button>
+                                        <div class="cart-item-line-total">
+                                            <span class="cart-item-line-label">Subtotal</span>
+                                            <span class="cart-item-line-value">
+                                                S/.{{ number_format($lineTotal, 2) }}
+                                            </span>
+                                        </div>
                                     </form>
                                 </div>
-
-                                <div class="cart-item-meta">
-                                    <form method="POST" action="{{ route('carts.items.destroy', $item) }}"
-                                        class="cart-item-remove-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="cart-item-remove-btn"
-                                            title="Eliminar del carrito" aria-label="Eliminar del carrito">
-                                            <i class="ri-close-large-fill"></i>
-                                        </button>
-                                    </form>
-
-                                    <div class="cart-item-line-total">
-                                        <span class="cart-item-line-label">Subtotal</span>
-                                        <span class="cart-item-line-value">
-                                            S/.{{ number_format($lineTotal, 2) }}
-                                        </span>
-                                    </div>
-                                </div>
+                                <form method="POST" action="{{ route('carts.items.destroy', $item) }}"
+                                    class="cart-item-remove-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="cart-item-remove-btn" title="Eliminar del carrito"
+                                        aria-label="Eliminar del carrito">
+                                        <i class="ri-close-large-fill"></i>
+                                    </button>
+                                </form>
                             </div>
                         </article>
                     @endforeach

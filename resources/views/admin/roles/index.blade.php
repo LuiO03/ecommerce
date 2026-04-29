@@ -7,27 +7,27 @@
     </x-slot>
     <x-slot name="action">
         @can('roles.export')
-        <div class="export-menu-container">
-            <button type="button" class="boton-form boton-action" id="exportMenuBtn">
-                <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
-                <span class="boton-form-text">Exportar</span>
-                <i class="ri-arrow-down-s-line boton-form-icon"></i>
-            </button>
-            <div class="export-dropdown" id="exportDropdown">
-                <button type="button" class="export-option" id="exportAllExcel">
-                    <i class="ri-file-excel-2-fill"></i>
-                    <span>Exportar todo a Excel</span>
+            <div class="export-menu-container">
+                <button type="button" class="boton-form boton-action" id="exportMenuBtn">
+                    <span class="boton-form-icon"><i class="ri-download-2-fill"></i></span>
+                    <span class="boton-form-text">Exportar</span>
+                    <i class="ri-arrow-down-s-line boton-form-icon"></i>
                 </button>
-                <button type="button" class="export-option" id="exportAllCsv">
-                    <i class="ri-file-text-fill"></i>
-                    <span>Exportar todo a CSV</span>
-                </button>
-                <button type="button" class="export-option" id="exportAllPdf">
-                    <i class="ri-file-pdf-2-fill"></i>
-                    <span>Exportar todo a PDF</span>
-                </button>
+                <div class="export-dropdown" id="exportDropdown">
+                    <button type="button" class="export-option" id="exportAllExcel">
+                        <i class="ri-file-excel-2-fill"></i>
+                        <span>Exportar todo a Excel</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllCsv">
+                        <i class="ri-file-text-fill"></i>
+                        <span>Exportar todo a CSV</span>
+                    </button>
+                    <button type="button" class="export-option" id="exportAllPdf">
+                        <i class="ri-file-pdf-2-fill"></i>
+                        <span>Exportar todo a PDF</span>
+                    </button>
+                </div>
             </div>
-        </div>
         @endcan
         <button class="boton-form boton-action" title="Buscar o filtrar posts" id="toggleFiltersBtn">
             <span class="boton-form-icon">
@@ -38,10 +38,10 @@
             </span>
         </button>
         @can('roles.create')
-        <a href="{{ route('admin.roles.create') }}" class="boton-form boton-accent">
-            <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
-            <span class="boton-form-text">Crear Rol</span>
-        </a>
+            <a href="{{ route('admin.roles.create') }}" class="boton-form boton-accent">
+                <span class="boton-form-icon"><i class="ri-add-box-fill"></i></span>
+                <span class="boton-form-text">Crear Rol</span>
+            </a>
         @endcan
     </x-slot>
     <div class="actions-container">
@@ -83,19 +83,18 @@
                 </div>
             </article>
             <!-- Botón para limpiar filtros -->
-                <button type="button" id="clearFiltersBtn" class="boton-clear-filters"
-                    title="Limpiar todos los filtros">
-                    <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
-                    <span class="boton-text">Limpiar filtros</span>
-                </button>
-                <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
-                    <span class="boton-form-icon">
-                        <i class="ri-filter-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        Mostrar resultados
-                    </span>
-                </button>
+            <button type="button" id="clearFiltersBtn" class="boton-clear-filters" title="Limpiar todos los filtros">
+                <span class="boton-icon"><i class="ri-filter-off-line"></i></span>
+                <span class="boton-text">Limpiar filtros</span>
+            </button>
+            <button class="boton-form boton-accent" title="Aplicar filtros y búsqueda" id="applyFiltersBtn">
+                <span class="boton-form-icon">
+                    <i class="ri-filter-fill"></i>
+                </span>
+                <span class="boton-form-text">
+                    Mostrar resultados
+                </span>
+            </button>
         </aside>
         <!-- === Tabla === -->
         <div class="tabla-wrapper">
@@ -126,32 +125,34 @@
                                 </span>
                             </td>
                             <td class="column-users-td">
-                                <span class="badge badge-info">
+                                <span class="badge badge-primary"
+                                title="{{ $role->users_count }} {{ Str::plural('usuario', $role->users_count) }}">
+                                    <i class="ri-user-3-fill"></i>
                                     {{ $role->users_count }}
-                                    <i class="ri-user-3-line"></i>
                                 </span>
                             </td>
                             <td class="column-date-td">
-                                {{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
+                                <span class="{{ $role->created_at ? '' : 'text-muted-td' }}">
+                                    {{ $role->created_at ? $role->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                </span>
+                            </td>
                             <td class="column-actions-td">
                                 <button class="boton-show-actions">
                                     <i class="ri-more-fill"></i>
                                 </button>
                                 <div class="tabla-botones">
+                                    <button class="boton-sm boton-info btn-ver-rol" data-id="{{ $role->id }}"
+                                        title="Ver detalles del rol">
+                                        <i class="ri-eye-2-fill"></i>
+                                        <span class="boton-sm-text">Ver Rol</span>
+                                    </button>
                                     {{-- === BOTÓN EDITAR === --}}
-                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']))
-                                        @can('roles.edit')
-                                        <a href="{{ route('admin.roles.edit', $role) }}" class="boton-sm boton-warning"
-                                            title="Editar rol">
+                                    @if (!$role->isProtected() && auth()->user()->can('roles.edit'))
+                                        <a href="{{ route('admin.roles.edit', $role) }}"
+                                            class="boton-sm boton-warning" title="Editar rol">
                                             <i class="ri-edit-circle-fill"></i>
                                             <span class="boton-sm-text">Editar Rol</span>
                                         </a>
-                                        @else
-                                        <button class="boton-sm boton-warning disabled" title="No editable" disabled>
-                                            <i class="ri-lock-fill"></i>
-                                            <span class="boton-sm-text">Editar Rol</span>
-                                        </button>
-                                        @endcan
                                     @else
                                         <button class="boton-sm boton-warning disabled" title="No editable" disabled>
                                             <i class="ri-lock-fill"></i>
@@ -160,24 +161,17 @@
                                     @endif
 
                                     {{-- === BOTÓN ELIMINAR === --}}
-                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']) && $role->users_count == 0)
-                                        @can('roles.delete')
-                                            <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
+                                    @if (!$role->isProtected() && $role->users_count == 0 && auth()->user()->can('roles.delete'))
+                                        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
                                             class="delete-form" data-entity="rol">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="boton-sm boton-danger" title="Eliminar rol">
-                                                    <i class="ri-delete-bin-6-fill"></i>
-                                                    <span class="boton-sm-text">Borrar Rol</span>
-                                                </button>
-                                            </form>
-                                        @else
-                                            <button class="boton-sm boton-danger disabled" title="No se puede eliminar"
-                                                disabled>
-                                                <i class="ri-lock-fill"></i>
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="boton-sm boton-danger"
+                                                title="Eliminar rol">
+                                                <i class="ri-delete-bin-6-fill"></i>
                                                 <span class="boton-sm-text">Borrar Rol</span>
                                             </button>
-                                        @endcan
+                                        </form>
                                     @else
                                         <button class="boton-sm boton-danger disabled" title="No se puede eliminar"
                                             disabled>
@@ -186,23 +180,15 @@
                                         </button>
                                     @endif
                                     {{-- === BOTÓN PERMISOS === --}}
-                                    @if (!in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']))
-                                        @can('roles.edit')
-                                            <a href="{{ route('admin.roles.permissions', $role) }}" class="boton-sm boton-info"
-                                            title="Gestionar permisos">
-                                                <i class="ri-key-2-fill"></i>
-                                                <span class="boton-sm-text">Configurar Permisos</span>
-                                            </a>
-                                        @else
-                                            <button class="boton-sm boton-info disabled" title="No se pueden gestionar permisos"
-                                                disabled>
-                                                <i class="ri-lock-fill"></i>
-                                                <span class="boton-sm-text">Configurar Permisos</span>
-                                            </button>
-                                        @endcan
+                                    @if (!$role->isProtected() && auth()->user()->can('roles.edit'))
+                                        <a href="{{ route('admin.roles.permissions', $role) }}"
+                                            class="boton-sm boton-primary" title="Gestionar permisos">
+                                            <i class="ri-key-2-fill"></i>
+                                            <span class="boton-sm-text">Configurar Permisos</span>
+                                        </a>
                                     @else
-                                        <button class="boton-sm boton-info disabled" title="No se pueden gestionar permisos"
-                                            disabled>
+                                        <button class="boton-sm boton-primary disabled"
+                                            title="No se pueden gestionar permisos" disabled>
                                             <i class="ri-lock-fill"></i>
                                             <span class="boton-sm-text">Configurar Permisos</span>
                                         </button>
@@ -270,12 +256,12 @@
                 // ========================================
                 @if (Session::has('highlightRow'))
                     (function() {
-                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-                            ? performance.getEntriesByType('navigation')
-                            : [];
-                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-                            ? performance.navigation.type
-                            : null;
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') : [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
                         const navType = navEntries.length ? navEntries[0].type : legacyNav;
                         const isBackNavigation = navType === 'back_forward' || navType === 2;
 
@@ -304,4 +290,5 @@
             });
         </script>
     @endpush
+    @include('admin.roles.modals.show-modal-role')
 </x-admin-layout>

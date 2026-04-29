@@ -29,7 +29,6 @@
                         @endif
                     </div>
                     <span>Notificaciones</span>
-
                 </button>
             </div>
 

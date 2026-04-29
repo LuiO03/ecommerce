@@ -44,14 +44,12 @@
     --select-bg: #ffffff;
     --select-border: rgba(81, 0, 157, 0.15);
 
-    --breadcrumb-bg: #ffffff;
     --breadcrumb-border: rgba(81, 0, 157, 0.15);
     --breadcrumb-link: var(--color-site-nav);
     --breadcrumb-current: #111827;
     --breadcrumb-muted: #6b7280;
 
     --filter-bg: #ffffff;
-    --filter-border: rgba(81, 0, 157, 0.15);
     --filter-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
     --filter-title: var(--color-site-nav);
     --filter-accent: var(--color-site-accent);
@@ -72,9 +70,7 @@
 .site-body {
     background-color: white;
     position: relative;
-    margin-top: var(--site-nav-height);
     height: 100dvh;
-
 }
 
 .site-main{

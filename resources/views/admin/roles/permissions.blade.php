@@ -70,6 +70,11 @@
             </button>
         </aside>
     </div>
+    <x-note-alert type="warning" :dismissible="true">
+        Editar un rol puede afectar los permisos de los usuarios asignados a él.
+        Asegúrate de revisar y actualizar los permisos si es necesario después de realizar cambios en el rol.
+    </x-note-alert>
+
     <div class="form-container">
 
         <form method="POST" action="{{ route('admin.roles.update-permissions', $role) }}" autocomplete="off"
@@ -142,11 +147,11 @@
             </div>
 
             <div class="form-footer">
-                <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+                <a href="{{ route('admin.roles.index') }}" class="boton-form boton-volver">
                     <span class="boton-form-icon">
                         <i class="ri-arrow-left-circle-fill"></i>
                     </span>
-                    <span class="boton-form-text">Cancelar</span>
+                    <span class="boton-form-text">Atrás</span>
                 </a>
                 <button class="boton-form boton-accent" type="submit" id="submitBtn">
                     <span class="boton-form-icon"><i class="ri-loop-left-line"></i></span>
@@ -422,7 +427,7 @@
                     document.querySelectorAll('.permissions-card').forEach(card => {
                         const module = card.querySelector('.select-all-btn').dataset.module;
                         const boxes = card.querySelectorAll(
-                        `.perm-row[data-module="${module}"] .perm-checkbox`);
+                            `.perm-row[data-module="${module}"] .perm-checkbox`);
                         const txt = card.querySelector('.select-all-text');
 
                         const allChecked = [...boxes].length > 0 && [...boxes].every(cb => cb.checked);

@@ -47,8 +47,72 @@
         <x-note-alert type="info" :dismissible="true">
             Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
         </x-note-alert>
-        <div class="form-columns-row">
-            <div class="form-column">
+
+        <div class="form-user">
+            <!-- listar usuarios con este rol -->
+            <div class="form-body">
+                <div class="card-header">
+                    <span class="card-title">Usuarios con este rol</span>
+                    <p class="card-description">
+                        Hay {{ $role->users_count }} {{ Str::plural('usuario', $role->users_count) }} asignados a este
+                        rol.
+                    </p>
+                </div>
+                @forelse($users as $user)
+                    <div class="card-list-item">
+                        <div class="card-list-tabla-info">
+                            <div class="user-info">
+                                @if ($user->image)
+                                    <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}"
+                                        class="user-avatar"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="user-avatar-placeholder"
+                                        style="display: none; background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
+                                        {{ $user->initials }}
+                                    </div>
+                                @else
+                                    <div class="user-avatar-placeholder"
+                                        style="background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
+                                        {{ $user->initials }}
+                                    </div>
+                                @endif
+                                <strong>{{ $user->name }} {{ $user->last_name }}</strong>
+                            </div>
+                            <small>{{ $user->email }}</small>
+
+                            @if ($user->status)
+                                <span class="badge badge-success">
+                                    <i class="ri-checkbox-circle-fill"></i>
+                                    Activo
+                                </span>
+                            @else
+                                <span class="badge badge-danger">
+                                    <i class="ri-close-circle-fill"></i>
+                                    Inactivo
+                                </span>
+                            @endif
+                        </div>
+                        <div class="card-list-tabla-botones">
+                            <button type="button" class="boton-sm boton-info btn-ver-usuario"
+                                data-slug="{{ $user->slug }}" title="Ver Usuario">
+                                <i class="ri-eye-2-fill"></i>
+                            </button>
+                            @can('usuarios.edit')
+                                <a href="{{ route('admin.users.edit', $user) }}" class="boton-sm boton-warning"
+                                    title="Editar Usuario">
+                                    <i class="ri-edit-circle-fill"></i>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                @empty
+                    <div class="data-empty">
+                        <i class="ri-user-3-line"></i>
+                        <span>No hay usuarios asignados a este rol.</span>
+                    </div>
+                @endforelse
+            </div>
+            <div class="form-body">
                 <!-- === Nombre === -->
                 <div class="input-group">
                     <label for="name" class="label-form">
@@ -78,11 +142,11 @@
         </div>
 
         <div class="form-footer">
-            <a href="{{ url()->previous() }}" class="boton-form boton-volver">
+            <a href="{{ route('admin.roles.index') }}" class="boton-form boton-volver">
                 <span class="boton-form-icon">
                     <i class="ri-arrow-left-circle-fill"></i>
                 </span>
-                <span class="boton-form-text">Cancelar</span>
+                <span class="boton-form-text">Atrás</span>
             </a>
             <button type="reset" class="boton-form boton-warning">
                 <span class="boton-form-icon"><i class="ri-paint-brush-fill"></i></span>
@@ -114,4 +178,5 @@
             });
         </script>
     @endpush
+    @include('admin.users.modals.show-modal-user')
 </x-admin-layout>

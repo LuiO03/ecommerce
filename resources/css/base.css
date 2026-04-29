@@ -52,8 +52,8 @@
     --color-table-hover-bg: #f1f1f1;
 
     /* === Scrollbar === */
-    --scrollbar-track: #ffffff;
-    --scrollbar-thumb: #cccccc;
+    --scrollbar-track: hsl(228, 8%, 85%);
+    --scrollbar-thumb: hsl(228, 8%, 75%);
     --scrollbar-hover: #5a5a5a;
 
     /* === Ripple === */
@@ -271,6 +271,13 @@
     --font-size-sm: clamp(0.85rem, 1.2vw, 0.86rem);
     /* Ayuda, tooltips */
     --font-size-xs: clamp(0.75rem, 1vw, 0.82rem);
+}
+
+@media (max-width: 480px) {
+  :root {
+    --font-size-h1: 1.6rem;
+    --font-size-h2: 1.35rem;
+  }
 }
 
 /* Tipografías base para escritorio (≥ 992px)
@@ -893,16 +900,18 @@
     justify-content: center;
     gap: 5px;
     width: min-content;
-    padding: 4px 14px;
+    padding: 4px 10px;
     border-radius: 50px;
-    font-size: 11.5px !important;
-    letter-spacing: 0.3px;
+    font-size: 10px !important;
     white-space: nowrap;
     border: 1.5px solid transparent;
     transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
         transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    font-family: var(--font-secondary);
     cursor: default;
+    line-height: 1;
+    align-items: center;
 }
 
 .badge i {

@@ -176,7 +176,7 @@
                 @can('usuarios.delete')
                     <button id="deleteSelected" class="boton-selection boton-danger">
                         <span class="boton-selection-icon">
-                            <i class="ri-delete-bin-line"></i>
+                            <i class="ri-delete-bin-fill"></i>
                         </span>
                         <span class="boton-selection-text">Eliminar</span>
                         <span class="boton-selection-dot">•</span>
@@ -209,9 +209,7 @@
                         <th class="column-last-name-th">Apellidos</th>
                         <th class="column-email-th">Email</th>
                         <th class="column-role-th">Rol</th>
-                        @can('usuarios.update-status')
-                            <th class="column-status-th">Estado</th>
-                        @endcan
+                        <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -262,19 +260,18 @@
                                 data-role="{{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'sin-rol' }}">
                                 @if ($user->roles->isNotEmpty())
                                     <span class="badge badge-primary">
-                                        <i class="ri-shield-user-line"></i>
+                                        <i class="ri-shield-user-fill"></i>
                                         {{ $user->roles->first()->name }}
                                     </span>
                                 @else
                                     <span class="badge badge-gray">
-                                        <i class="ri-file-unknow-line"></i>
+                                        <i class="ri-file-unknow-fill"></i>
                                         Sin rol
                                     </span>
                                 @endif
                             </td>
-                            @can('usuarios.update-status')
-                                <td class="column-status-td">
-
+                            <td class="column-status-td" data-status="{{ $user->status ? 1 : 0 }}">
+                                @can('usuarios.update-status')
                                     @if (Auth::id() !== $user->id)
                                         <label class="switch-tabla">
                                             <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
@@ -287,9 +284,21 @@
                                             <i class="ri-lock-fill"></i>
                                         </span>
                                     @endif
-                                </td>
-                            @endcan
-                            <td>
+                                @else
+                                    @if ($user->status)
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                            Activo
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-fill"></i>
+                                            Inactivo
+                                        </span>
+                                    @endif
+                                @endcan
+                            </td>
+                            <td class="column-date-td">
                                 <span class="{{ $user->created_at ? '' : 'text-muted-td' }}">
                                     {{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
                                 </span>
@@ -312,25 +321,17 @@
                                         </a>
                                     @endcan
 
-                                    @if (Auth::id() !== $user->id)
-                                        @can('usuarios.delete')
-                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                                class="delete-form" data-entity="usuario">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="boton-sm boton-danger"
-                                                    title="Eliminar Usuario">
-                                                    <i class="ri-delete-bin-2-fill"></i>
-                                                    <span class="boton-sm-text">Eliminar Usuario</span>
-                                                </button>
-                                            </form>
-                                        @else
-                                            <button class="boton-sm boton-danger disabled"
-                                                title="Sin permiso para eliminar" disabled>
-                                                <i class="ri-lock-fill"></i>
+                                    @if (Auth::id() !== $user->id && auth()->user()->can('usuarios.delete'))
+                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                                            class="delete-form" data-entity="usuario">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="boton-sm boton-danger"
+                                                title="Eliminar Usuario">
+                                                <i class="ri-delete-bin-2-fill"></i>
                                                 <span class="boton-sm-text">Eliminar Usuario</span>
                                             </button>
-                                        @endcan
+                                        </form>
                                     @else
                                         <button class="boton-sm boton-danger disabled"
                                             title="No puedes eliminar tu propia cuenta" disabled>

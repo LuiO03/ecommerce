@@ -47,6 +47,14 @@
                         <td id="category-description">-</td>
                     </tr>
                     <tr>
+                        <th>Estado</th>
+                        <td id="category-status">-</td>
+                    </tr>
+                    <tr>
+                        <th>Ubicación</th>
+                        <td id="category-location">-</td>
+                    </tr>
+                    <tr>
                         <th>Familia</th>
                         <td id="category-family">-</td>
                     </tr>
@@ -57,10 +65,6 @@
                     <tr>
                         <th>Subcategorías</th>
                         <td id="category-subcategories">-</td>
-                    </tr>
-                    <tr>
-                        <th>Estado</th>
-                        <td id="category-status">-</td>
                     </tr>
                     <tr>
                         <th>Creado por</th>
@@ -108,9 +112,10 @@
             $('#category-name-title').html('<div class="shimmer shimmer-cell shimmer-title" style="width:150px;"></div>');
             $('#category-name').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#category-description').html('<div class="shimmer shimmer-cell" style="width:160px;"></div>');
+            $('#category-status').html('<div class="shimmer shimmer-cell" style="width:80px;"></div>');
+            $('#category-location').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#category-family').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
             $('#category-parent').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
-            $('#category-status').html('<div class="shimmer shimmer-cell" style="width:80px;"></div>');
             $('#category-image').html('<div class="shimmer shimmer-img"></div>');
             $('#category-created-by-fecha').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#category-updated-by-fecha').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
@@ -126,6 +131,14 @@
             $('#category-family').text(data.family ?? 'Sin familia');
 
 
+            if (data.status) {
+                $('#category-status').html('<span class="badge boton-success"><i class="ri-eye-fill"></i> Activa</span>');
+            } else {
+                $('#category-status').html('<span class="badge boton-danger"><i class="ri-eye-off-fill"></i> Inactiva</span>');
+            }
+
+            $('#category-location').html(data.location ?? '—');
+
             // Mostrar/ocultar fila de padre
             const parentRow = $('th:contains("Padre")').closest('tr');
             if (data.parent) {
@@ -134,7 +147,6 @@
                         <span class="inline-block align-middle" style="width:10px;height:10px;border-radius:50%;background:${data.parent.status ? '#22c55e' : '#a3a3a3'};margin-right:6px;"></span>
                         <span>${data.parent.name}</span>
                     </a>
-                    <span class="badge badge-info ml-2">${data.parent.family}</span>
                 `);
                 parentRow.show();
             } else {
@@ -151,7 +163,6 @@
                             <span class="inline-block align-middle" style="width:10px;height:10px;border-radius:50%;background:${subcat.status ? 'var(--color-success)' : 'var(--color-danger)'};margin-right:6px;"></span>
                             <span>${subcat.name}</span>
                         </a>
-                        <span class="badge badge-info ml-1">${subcat.family}</span>
                     </li>`;
                 });
                 html += '</ul>';
@@ -161,11 +172,7 @@
                 subcatRow.hide();
             }
 
-            if (data.status) {
-                $('#category-status').html('<span class="badge boton-success"><i class="ri-eye-fill"></i> Activa</span>');
-            } else {
-                $('#category-status').html('<span class="badge boton-danger"><i class="ri-eye-off-fill"></i> Inactiva</span>');
-            }
+
             if (data.image) {
                 const img = new Image();
                 img.src = `/storage/${data.image}`;

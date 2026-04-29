@@ -63,7 +63,6 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'usuarios.edit', 'description' => 'Puede editar usuarios existentes'],
                 ['name' => 'usuarios.delete', 'description' => 'Puede eliminar usuarios'],
                 ['name' => 'usuarios.reset-password', 'description' => 'Puede resetear contraseñas de usuarios'],
-                ['name' => 'usuarios.assign-roles', 'description' => 'Puede asignar roles a los usuarios'],
                 ['name' => 'usuarios.export', 'description' => 'Puede exportar usuarios en varios formatos'],
                 ['name' => 'usuarios.update-status', 'description' => 'Puede activar o desactivar usuarios'],
             ],
@@ -161,6 +160,7 @@ class RolePermissionSeeder extends Seeder
         $superadmin = Role::firstOrCreate(
             ['name' => 'Superadministrador'],
             [
+                'slug' => 'superadministrador',
                 'guard_name' => 'web',
                 'description' => 'Control total del sistema.',
             ]
@@ -169,6 +169,7 @@ class RolePermissionSeeder extends Seeder
         $admin = Role::firstOrCreate(
             ['name' => 'Administrador'],
             [
+                'slug' => 'administrador',
                 'guard_name' => 'web',
                 'description' => 'Gestión avanzada, excepto configuración crítica.',
             ]
@@ -177,6 +178,7 @@ class RolePermissionSeeder extends Seeder
         $cliente = Role::firstOrCreate(
             ['name' => 'Cliente'],
             [
+                'slug' => 'cliente',
                 'guard_name' => 'web',
                 'description' => 'Usuario que puede comprar productos en la tienda.',
             ]
@@ -186,6 +188,7 @@ class RolePermissionSeeder extends Seeder
         $vendedor = Role::firstOrCreate(
             ['name' => 'Vendedor'],
             [
+                'slug' => 'vendedor',
                 'guard_name' => 'web',
                 'description' => 'Gestión de ventas y productos.',
             ]
@@ -194,6 +197,7 @@ class RolePermissionSeeder extends Seeder
         $supervisor = Role::firstOrCreate(
             ['name' => 'Supervisor'],
             [
+                'slug' => 'supervisor',
                 'guard_name' => 'web',
                 'description' => 'Acceso principalmente de lectura.',
             ]
@@ -202,6 +206,7 @@ class RolePermissionSeeder extends Seeder
         $almacenero = Role::firstOrCreate(
             ['name' => 'Almacenero'],
             [
+                'slug' => 'almacenero',
                 'guard_name' => 'web',
                 'description' => 'Control de inventario y existencias.',
             ]

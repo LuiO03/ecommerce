@@ -171,7 +171,7 @@
             @can('posts.delete')
                 <button id="deleteSelected" class="boton-selection bg-danger">
                     <span class="boton-selection-icon">
-                        <i class="ri-delete-bin-line"></i>
+                        <i class="ri-delete-bin-fill"></i>
                     </span>
                     <span class="boton-selection-text">Eliminar</span>
                     <span class="boton-selection-dot">•</span>

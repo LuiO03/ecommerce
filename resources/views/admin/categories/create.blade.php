@@ -35,7 +35,7 @@
         <x-alert type="info" title="Guía rápida:" :dismissible="true" :items="[
             'Los campos con asterisco (<i class=\'ri-asterisk text-accent\'></i>) son obligatorios',
             'Primero selecciona la <strong>familia</strong> a la que pertenecerá la categoría',
-            'Luego elige su ubicación en la jerarquía (opcional - si no eliges nada, será categoría raíz)',
+            'Si es una subcategoría, selecciona su <strong>categoría padre</strong> (opcional)',
         ]" />
 
         <div class="form-columns-row">
@@ -44,61 +44,48 @@
                  COLUMNA IZQUIERDA
             ============================= -->
             <div class="form-column">
-                {{-- FAMILIA (OBLIGATORIO) --}}
-                <div class="input-group">
-                    <label for="family_select" class="label-form">
-                        Familia
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="input-icon-container">
-                        <i class="ri-stack-line input-icon"></i>
-                        <select name="family_id" id="family_select"
-                            class="select-form @error('family_id') input-error @enderror"
-                            data-validate="required|selected"
-                            data-validate-messages='{"required":"Debe seleccionar una familia","selected":"Debe seleccionar una familia válida"}'>
-                            <option value="" disabled selected>Seleccione una familia</option>
-                            @foreach ($families as $family)
-                                <option value="{{ $family->id }}"
-                                    {{ old('family_id') == $family->id ? 'selected' : '' }}>
-                                    {{ $family->name }}
+                <div class="form-row-fit">
+                    {{-- FAMILIA (OBLIGATORIO) --}}
+                    <div class="input-group">
+                        <label for="family_select" class="label-form">
+                            Familia
+                            <i class="ri-asterisk text-accent"></i>
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-stack-line input-icon"></i>
+                            <select name="family_id" id="family_select" class="select-form"
+                                data-validate="required|selected">
+                                <option value="" disabled selected>Seleccione una familia</option>
+                                @foreach ($families as $family)
+                                    <option value="{{ $family->id }}"
+                                        {{ old('family_id') == $family->id ? 'selected' : '' }}>
+                                        {{ $family->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
+                    </div>
+                    {{-- CATEGORÍA PADRE (OPCIONAL) --}}
+                    <div class="input-group">
+                        <label for="category_select" class="label-form">
+                            Categoría padre
+                        </label>
+                        <div class="input-icon-container">
+                            <i class="ri-node-tree input-icon"></i>
+                            <select name="parent_id" id="category_select" class="select-form">
+                                <option value="">
+                                    Categoría principal
                                 </option>
-                            @endforeach
-                        </select>
-                        <i class="ri-arrow-down-s-line select-arrow"></i>
-                    </div>
-                </div>
-
-                {{-- JERARQUÍA DE CATEGORÍAS PROGRESIVA --}}
-                <div class="input-group">
-                    <label class="label-form">
-                        Ubicación en la jerarquía <span class="label-italic">(opcional)</span>
-                    </label>
-
-                    <div class="label-hint">
-                        <i class="ri-information-line"></i>
-                        <span>Solo se permite 1 nivel de subcategoría.</span>
-                    </div>
-
-                    {{-- Hidden input solo para parent_id --}}
-                    <input type="hidden" name="parent_id" id="parent_id" value="{{ old('parent_id') }}">
-
-                    {{-- Contenedor dinámico de selects --}}
-                    <div id="categoryHierarchySelects" style="display: none;">
-                        {{-- Los selects se generarán dinámicamente según la familia --}}
-                    </div>
-
-                    <div id="noFamilyMessage" class="label-hint">
-                        <i class="ri-information-line"></i>
-                        <span>Primero selecciona una familia para ver las categorías disponibles</span>
-                    </div>
-
-                    {{-- Breadcrumb visual de la ruta seleccionada --}}
-                    <div id="hierarchyBreadcrumb"
-                        style="display: none; margin-top: 0rem; padding: 0.75rem; background: var(--color-info-pastel); border-radius: 8px; font-size: 0.875rem;">
-                        <i class="ri-route-line" style="margin-right: 0.5rem; color: var(--color-info);"></i>
-                        <strong>Ruta seleccionada:</strong>
-                        <span id="breadcrumbPath"
-                            style="margin-left: 0.5rem; font-family: 'Courier New', monospace;"></span>
+                                {{-- Subcategorías --}}
+                                @foreach ($selectCategories as $scat)
+                                    <option value="{{ $scat->id }}">
+                                        {{ $scat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
                     </div>
                 </div>
 
@@ -145,8 +132,8 @@
                     </label>
 
                     <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción"
-                            rows="4" data-validate="min:10|max:250">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                            data-validate="min:10|max:250">{{ old('description') }}</textarea>
 
                         <i class="ri-file-text-line input-icon"></i>
                     </div>
@@ -236,14 +223,6 @@
                     validateOnBlur: true,
                     validateOnInput: false,
                     scrollToFirstError: true
-                });
-
-                // 3. Inicializar jerarquía de categorías
-                const hierarchyManager = initCategoryHierarchy({
-                    categoriesData: {!! json_encode($allCategories) !!},
-                    maxDepth: 1,
-                    initialFamilyId: '{{ old('family_id') }}' ? parseInt('{{ old('family_id') }}') : null,
-                    initialParentId: '{{ old('parent_id') }}' ? parseInt('{{ old('parent_id') }}') : null
                 });
 
                 // 4. Inicializar manejador de imágenes

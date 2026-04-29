@@ -28,6 +28,14 @@ class Category extends Model
         'family_id', 'parent_id', 'created_at')->orderByDesc('id');
     }
 
+    public function getSubcategoriesFlat($categoryId)
+    {
+        return Category::withCount('products')
+            ->where('parent_id', $categoryId)
+            ->orderBy('name')
+            ->get();
+    }
+
     // relacion uno a muchos inversa
     public function family()
     {
@@ -79,6 +87,36 @@ class Category extends Model
         }
 
         return $slug;
+    }
+
+    public function getLevelAttribute(): int
+    {
+        $level = 1;
+        $parent = $this->parent;
+
+        while ($parent) {
+            $level++;
+            $parent = $parent->parent;
+        }
+
+        return $level;
+    }
+
+    public function getLocationAttribute(): string
+    {
+        $familyName = $this->family?->name
+            ?? $this->parent?->family?->name
+            ?? 'Sin familia';
+
+        $parts = [$familyName];
+
+        if ($this->parent) {
+            $parts[] = $this->parent->name;
+        }
+
+        $parts[] = $this->name;
+
+        return implode(' › ', $parts);
     }
 
     public function getRouteKeyName()

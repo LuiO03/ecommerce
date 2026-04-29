@@ -34,7 +34,7 @@
                 </div>
             </div>
         @endcan
-        @can('categorias.manage-tree')
+        @can('categorias.view-tree')
             <a href="{{ route('admin.categories.hierarchy') }}" class="boton-form boton-action">
                 <span class="boton-form-icon"><i class="ri-node-tree"></i></span>
                 <span class="boton-form-text">Gestor Jerárquico</span>
@@ -176,7 +176,7 @@
                 @endcan
                 @can('categorias.delete')
                     <button id="deleteSelected" class="boton-selection boton-danger">
-                        <span class="boton-selection-icon"><i class="ri-delete-bin-line"></i></span>
+                        <span class="boton-selection-icon"><i class="ri-delete-bin-fill"></i></span>
                         <span class="boton-selection-text">Eliminar</span>
                         <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="deleteBadge">0</span>
@@ -197,19 +197,21 @@
                 <thead>
                     <tr>
                         <th class="control"></th>
+
                         @canany(['categorias.export', 'categorias.delete'])
                             <th class="column-check-th column-not-order">
                                 <div><input type="checkbox" id="checkAll"></div>
                             </th>
                         @endcanany
+
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
                         <th class="column-description-th">Descripción</th>
                         <th class="column-family-th">Familia</th>
-                        <th class="column-father-th">Padre</th>
-                        @can('categorias.update-status')
-                            <th class="column-status-th">Estado</th>
-                        @endcan
+                        <th class="column-parent-th">Padre</th>
+                        <th class="column-level-th">Nivel</th>
+                        <th class="column-products-th">Productos</th>
+                        <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -219,87 +221,135 @@
                     @foreach ($categories as $cat)
                         <tr data-id="{{ $cat->id }}" data-name="{{ $cat->name }}">
                             <td class="control"></td>
-                            <td class="column-check-td">
-                                <div>
-                                    <input type="checkbox" class="check-row" value="{{ $cat->id }}">
-                                </div>
-                            </td>
+
+                            @canany(['categorias.export', 'categorias.delete'])
+                                <td class="column-check-td">
+                                    <div>
+                                        <input type="checkbox" class="check-row" value="{{ $cat->id }}">
+                                    </div>
+                                </td>
+                            @endcanany
+
                             <td class="column-id-td">{{ $cat->id }}</td>
-                            <td class="column-name-td">{{ $cat->name }}</td>
+
+                            <td class="column-name-td">
+                                {{ $cat->name }}
+                            </td>
+
                             <td class="column-description-td">
                                 <span class="{{ $cat->description ? '' : 'text-muted-td' }}">
                                     {{ $cat->description ?? 'Sin descripción' }}
                                 </span>
                             </td>
+
                             <td class="column-family-td" data-family-id="{{ $cat->family_id ?? '' }}">
-                                @if ($cat->family)
-                                    <span class="badge badge-info">
-                                        <i class="ri-archive-stack-line"></i>
-                                        {{ $cat->family->name }}
-                                    </span>
-                                @else
-                                    <span class="badge badge-gray">
-                                        <i class="ri-folder-unknow-line"></i>
-                                        Sin Familia
-                                    </span>
-                                @endif
+                                <span class="{{ $cat->family?->name ? '' : 'text-muted-td' }}">
+                                    {{ $cat->family?->name ?? 'Sin familia' }}
+                                </span>
                             </td>
-                            <td class="column-parent-td"
-                                data-search="{{ $cat->parent ? $cat->parent->name : 'Categoría Raíz' }}">
+
+                            <td class="column-parent-td" data-search="{{ $cat->parent?->name ?? 'Sin padre' }}">
                                 @if ($cat->parent)
-                                    <span class="badge badge-secondary">
-                                        <i class="ri-node-tree"></i>
+                                    <span class="badge badge-warning">
+                                        <i class="ri-price-tag-3-fill"></i>
                                         {{ $cat->parent->name }}
                                     </span>
                                 @else
-                                    <span class="badge badge-gray">
-                                        <i class="ri-git-branch-line"></i>
-                                        Categoría Raíz
+                                    <span class="badge badge-info">
+                                        <i class="ri-price-tag-2-fill"></i>
+                                        Raíz
                                     </span>
                                 @endif
                             </td>
-                            @can('categorias.update-status')
-                                <td class="column-status-td">
+
+                            <!-- NIVEL -->
+                            <td class="column-level-td">
+                                <span class="badge badge-secondary" title="{{ $cat->location }}">
+                                    <i class="ri-hashtag"></i>
+                                    {{ $cat->level }}
+                                </span>
+                            </td>
+
+                            <!-- PRODUCTOS -->
+                            <td class="column-products-td">
+                                @if ($cat->products_count > 0)
+                                    <span class="badge badge-primary"
+                                        title="{{ $cat->products_count }} {{ Str::plural('producto', $cat->products_count) }}">
+                                        <i class="ri-box-3-fill"></i>
+                                        {{ $cat->products_count }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-danger" title="No tiene productos">
+                                        <i class="ri-box-3-fill"></i>
+                                        0
+                                    </span>
+                                @endif
+                            </td>
+
+                            <!-- ESTADO -->
+                            <td class="column-status-td" data-status="{{ $cat->status ? 1 : 0 }}">
+                                @can('categorias.update-status')
                                     <label class="switch-tabla">
                                         <input type="checkbox" class="switch-status" data-id="{{ $cat->id }}"
                                             {{ $cat->status ? 'checked' : '' }}>
                                         <span class="slider"></span>
                                     </label>
-                                </td>
-                            @endcan
+                                @else
+                                    @if ($cat->status)
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                            Activo
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-fill"></i>
+                                            Inactivo
+                                        </span>
+                                    @endif
+                                @endcan
+                            </td>
+
+                            <!-- FECHA -->
                             <td class="column-date-td">
                                 <span class="{{ $cat->created_at ? '' : 'text-muted-td' }}">
-                                    {{ $cat->created_at ? $cat->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                    {{ $cat->created_at?->format('d/m/Y H:i') ?? 'Sin fecha' }}
                                 </span>
                             </td>
+
+                            <!-- ACCIONES -->
                             <td class="column-actions-td">
                                 <button class="boton-show-actions">
                                     <i class="ri-more-fill"></i>
                                 </button>
+
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-categoria"
+                                    <button type="button" class="boton-sm boton-info btn-ver-categoria"
                                         data-slug="{{ $cat->slug }}">
                                         <i class="ri-eye-2-fill"></i>
-                                        <span class="boton-sm-text">Ver Categoría</span>
+                                        <span class="boton-sm-text">Ver</span>
                                     </button>
+
                                     @can('categorias.edit')
                                         <a href="{{ route('admin.categories.edit', $cat) }}"
                                             class="boton-sm boton-warning">
                                             <i class="ri-edit-circle-fill"></i>
-                                            <span class="boton-sm-text">Editar Categoría</span>
+                                            <span class="boton-sm-text">Editar</span>
                                         </a>
                                     @endcan
+
                                     @can('categorias.delete')
                                         <form action="{{ route('admin.categories.destroy', $cat) }}" method="POST"
                                             class="delete-form" data-entity="categoría">
                                             @csrf
                                             @method('DELETE')
+
                                             <button type="submit" class="boton-sm boton-danger">
                                                 <i class="ri-delete-bin-2-fill"></i>
-                                                <span class="boton-sm-text">Eliminar Categoría</span>
+                                                <span class="boton-sm-text">Eliminar</span>
                                             </button>
                                         </form>
                                     @endcan
+
                                 </div>
                             </td>
                         </tr>
@@ -377,27 +427,30 @@
 
                 // Función de filtrado personalizado para DataTables
                 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                    // Solo aplicar a esta tabla
+
                     if (settings.nTable.id !== 'tabla') return true;
 
-                    const row = tableManager.table.row(dataIndex).node();
+                    const row = settings.aoData[dataIndex].nTr;
 
-                    // Filtro por Familia
+                    // Filtro Familia
                     if (currentFamilyFilter !== '') {
-                        const rowFamilyId = $(row).find('.column-family-td').attr('data-family-id');
+                        const rowFamilyId = $(row).find('.column-family-td').data('family-id').toString();
+
                         if (rowFamilyId !== currentFamilyFilter) {
                             return false;
                         }
                     }
 
-                    // Filtro por Nivel
+                    // Filtro Nivel
                     if (currentLevelFilter !== '') {
-                        const searchValue = $(row).find('.column-parent-td').attr('data-search');
 
-                        if (currentLevelFilter === 'root' && searchValue !== 'Sin padre') {
+                        const hasParent = $(row).find('.column-parent-td').find('.badge-warning').length > 0;
+
+                        if (currentLevelFilter === 'root' && hasParent) {
                             return false;
                         }
-                        if (currentLevelFilter === 'subcategory' && searchValue === 'Sin padre') {
+
+                        if (currentLevelFilter === 'subcategory' && !hasParent) {
                             return false;
                         }
                     }

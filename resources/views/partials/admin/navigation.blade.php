@@ -36,11 +36,11 @@
         @endphp
 
         <!-- boton para ir al sitio web -->
-        <a class="topbar-icon-btn" href="{{ route('site.home') }}" target="_blank" title="Ir al sitio web">
+        <a class="topbar-icon-btn ripple-btn" href="{{ route('site.home') }}" target="_blank" title="Ir al sitio web">
             <i class="ri-global-line"></i>
         </a>
         <!-- boton para ir a las notificaciones -->
-        <button id="notificationSidebarToggle" class="topbar-icon-btn" title="Ver notificaciones">
+        <button id="notificationSidebarToggle" class="topbar-icon-btn ripple-btn" title="Ver notificaciones">
             <i class="ri-notification-2-line"></i>
             @if ($unreadCount > 0)
                 <span class="notification-badge">{{ $unreadCount }}</span>
@@ -68,8 +68,8 @@
             </div>
         @endif
 
-        <div class="topbar-user-menu">
-            <button id="userSidebarToggle" class="hamburger-btn z-[70]" aria-label="Abrir menú de usuario">
+        <div class="topbar-user-menu ripple-btn z-[70]">
+            <button id="userSidebarToggle" class="hamburger-btn" aria-label="Abrir menú de usuario">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>

@@ -23,16 +23,17 @@ window.initSubmitLoader = initSubmitLoader;
 
 // Swiper Slider
 import Swiper from 'swiper';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, Thumbs } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 window.Swiper = Swiper;
 window.SwiperModules = {
-	Navigation,
-	Pagination,
-	Autoplay,
+    Navigation,
+    Pagination,
+    Autoplay,
+    Thumbs,
 };
 
 // Listener global para toasts disparados desde Livewire

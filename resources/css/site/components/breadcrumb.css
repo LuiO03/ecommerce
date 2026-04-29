@@ -2,20 +2,12 @@
    SITE BREADCRUMB
    ============================================ */
 
-.site-breadcrumb {
-    margin: 1rem 0 1.5rem;
-}
-
 .site-breadcrumb-list {
     list-style: none;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.35rem;
-    background: var(--breadcrumb-bg);
-    max-width: var(--site-max-width);
-    padding: 0 var(--site-spacing);
-    margin: 5rem auto 0 auto;
     width: 100%;
 }
 

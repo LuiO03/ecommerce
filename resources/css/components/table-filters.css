@@ -389,7 +389,6 @@
     .tabla-select-wrapper input,
     .tabla-select-wrapper select {
         background-color: var(--color-card-bg);
-        border-color: transparent;
     }
 }
 

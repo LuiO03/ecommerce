@@ -129,7 +129,7 @@
                                     <td colspan="5" class="text-center text-muted">
                                         <div class="tabla-no-data">
                                             <i class="ri-survey-line"></i>
-                                            <span>No hay órdenes disponibles</span>
+                                            <span>No hay pedidos disponibles</span>
                                         </div>
                                     </td>
                                 </tr>

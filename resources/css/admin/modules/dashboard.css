@@ -21,6 +21,7 @@
 
 .dashboard-user-avatar {
     min-width: 130px;
+    max-width: 130px;
     height: 100%;
     border-radius: var(--radius-card);
     object-fit: cover;
@@ -74,6 +75,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
+    box-shadow: var(--box-shadow-card);
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease;
@@ -103,7 +105,7 @@
     background-color: var(--color-accent);
     color: white;
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--box-shadow-card-hover);
 }
 
 .dashboard-card:hover .card-icon i {

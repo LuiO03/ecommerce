@@ -4,7 +4,7 @@
     $homeLabel = $homeLabel ?? 'Inicio';
 @endphp
 
-<nav aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb" class="site-container site-breadcrumb">
     <ol class="site-breadcrumb-list">
         <li class="site-breadcrumb-item">
             <a class="site-breadcrumb-link" href="{{ $homeUrl }}">

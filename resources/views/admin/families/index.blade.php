@@ -148,7 +148,7 @@
                 @can('familias.delete')
                     <button id="deleteSelected" class="boton-selection boton-danger">
                         <span class="boton-selection-icon">
-                            <i class="ri-delete-bin-line"></i>
+                            <i class="ri-delete-bin-fill"></i>
                         </span>
                         <span class="boton-selection-text">Eliminar</span>
                         <span class="boton-selection-dot">•</span>
@@ -179,9 +179,8 @@
                         <th class="column-id-th">ID</th>
                         <th class="column-name-th">Nombre</th>
                         <th class="column-description-th">Descripción</th>
-                        @can('familias.update-status')
-                            <th class="column-status-th">Estado</th>
-                        @endcan
+                        <th class="column-categories-th">Categorías</th>
+                        <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
@@ -207,23 +206,46 @@
                                     {{ $family->description ?? 'Sin descripción' }}
                                 </span>
                             </td>
-                            @can('familias.update-status')
-                                <td class="column-status-td">
+                            <td class="column-categories-td">
+                                <span class="badge badge-primary"
+                                    title="{{ $family->categories_count }} {{ Str::plural('categoría', $family->categories_count) }} relacionada(s)">
+                                    <i class="ri-price-tag-3-fill"></i>
+                                    {{ $family->categories_count }}
+                                </span>
+                            </td>
+                            <td class="column-status-td" data-status="{{ $family->status ? 1 : 0 }}">
+                                @can('familias.update-status')
                                     <label class="switch-tabla">
                                         <input type="checkbox" class="switch-status" data-id="{{ $family->id }}"
                                             {{ $family->status ? 'checked' : '' }}>
                                         <span class="slider"></span>
                                     </label>
-                                </td>
-                            @endcan
-                            <td>{{ $family->created_at ? $family->created_at->format('d/m/Y H:i') : 'Sin fecha' }}</td>
+                                @else
+                                    @if ($family->status)
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                            Activo
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-fill"></i>
+                                            Inactivo
+                                        </span>
+                                    @endif
+                                @endcan
+                            </td>
+                            <td class="column-date-td">
+                                <span class="{{ $family->created_at ? '' : 'text-muted-td' }}">
+                                    {{ $family->created_at ? $family->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                </span>
+                            </td>
                             <td class="column-actions-td">
                                 <button class="boton-show-actions">
                                     <i class="ri-more-fill"></i>
                                 </button>
                                 <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-familia" data-slug="{{ $family->slug }}"
-                                        title="Ver Familia">
+                                    <button class="boton-sm boton-info btn-ver-familia"
+                                        data-slug="{{ $family->slug }}" title="Ver Familia">
                                         <i class="ri-eye-2-fill"></i>
                                         <span class="boton-sm-text">Ver Familia</span>
                                     </button>
@@ -239,7 +261,8 @@
                                             class="delete-form" data-entity="familia">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" title="Eliminar Familia" class="boton-sm boton-danger">
+                                            <button type="submit" title="Eliminar Familia"
+                                                class="boton-sm boton-danger">
                                                 <i class="ri-delete-bin-2-fill"></i>
                                                 <span class="boton-sm-text">Eliminar Familia</span>
                                             </button>

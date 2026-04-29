@@ -17,6 +17,7 @@ class ProductList extends Component
     public $orderBy = 'latest';
     public $strict = true;
     public $scope = 'strict_category';
+    public $onSale = false;
     // opciones:
     // strict_category
     // category_with_children
@@ -30,7 +31,8 @@ class ProductList extends Component
         $subtitle = null,
         $orderBy = 'latest',
         $strict = true,
-        $scope = 'strict_category'
+        $scope = 'strict_category',
+        $onSale = false
     ) {
         $this->limit = $limit;
         $this->categoryId = $categoryId;
@@ -38,6 +40,7 @@ class ProductList extends Component
         $this->orderBy = $orderBy;
         $this->strict = $strict;
         $this->scope = $this->normalizeScope($scope);
+        $this->onSale = filter_var($onSale, FILTER_VALIDATE_BOOLEAN);
 
         if ($title) $this->title = $title;
         if ($subtitle) $this->subtitle = $subtitle;
@@ -52,13 +55,22 @@ class ProductList extends Component
                 'category',
                 'images' => fn($q) =>
                     $q->orderBy('is_main', 'desc')
-                      ->orderBy('order')
+                    ->orderBy('order')
             ])
             ->where('status', true)
+
+            ->when($this->onSale, fn($q) =>
+                $q->whereNotNull('discount')
+                ->when($this->onSale, fn($q) =>
+                    $q->where('discount', '>', 0)
+                )
+            )
+
             ->whereHas('variants', fn($q) =>
                 $q->where('status', true)
-                  ->where('stock', '>', 0)
+                ->where('stock', '>', 0)
             )
+
             ->when($this->excludeId, fn($q) =>
                 $q->where('id', '!=', $this->excludeId)
             );

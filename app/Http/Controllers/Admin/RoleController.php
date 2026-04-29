@@ -177,13 +177,30 @@ class RoleController extends Controller
                 'title' => 'Rol del sistema',
                 'message' => "El rol <strong>{$role->name}</strong> no puede ser modificado.",
             ]);
+
             return redirect()->route('admin.roles.index');
         }
+        $role->loadCount('users');
 
-        $permissions = Permission::orderBy('module')->get()->groupBy('module');
-        $assigned = $role->permissions->pluck('name')->toArray();
+        $permissions = Permission::orderBy('module')
+            ->get()
+            ->groupBy('module');
 
-        return view('admin.roles.edit', compact('role', 'permissions', 'assigned'));
+        $assigned = $role->permissions
+            ->pluck('name')
+            ->toArray();
+
+        $users = $role->users()
+            ->select('id', 'slug', 'image', 'name', 'last_name', 'email', 'status', 'created_at')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.roles.edit', compact(
+            'role',
+            'permissions',
+            'assigned',
+            'users'
+        ));
     }
 
     public function update(Request $request, Role $role)
@@ -387,5 +404,46 @@ class RoleController extends Controller
         Session::flash('highlightRow', $role->id);
 
         return redirect()->route('admin.roles.permissions', $role->id);
+    }
+
+    public function show($id)
+    {
+        $role = Role::findOrFail($id);
+
+        $createdBy = $role->creator;
+        $updatedBy = $role->updater;
+
+        $usersQuery = $role->users();
+
+        $usersCount = (clone $usersQuery)->count();
+
+        $users = $usersQuery
+            ->select('id', 'name', 'last_name')
+            ->get()
+            ->map(fn ($u) => trim($u->name . ' ' . $u->last_name))
+            ->values();
+
+        return response()->json([
+            'id' => '#' . $role->id,
+            'name' => $role->name,
+            'description' => $role->description,
+
+            'users_count' => $usersCount,
+            'users' => $users,
+
+            'created_by_name' => $createdBy
+                ? trim($createdBy->name . ' ' . $createdBy->last_name)
+                : 'Sistema',
+
+            'updated_by_name' => $updatedBy
+                ? trim($updatedBy->name . ' ' . $updatedBy->last_name)
+                : 'Sistema',
+
+            'created_at' => optional($role->created_at)->format('d/m/Y H:i') ?? '-',
+            'updated_at' => optional($role->updated_at)->format('d/m/Y H:i') ?? '-',
+            'updated_at_human' => $role->updated_at
+                ? $role->updated_at->diffForHumans()
+                : '—',
+        ]);
     }
 }

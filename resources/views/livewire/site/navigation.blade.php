@@ -1,6 +1,6 @@
-<div>
-    <header class="site-header" id="siteHeader">
-        <div class="site-header-container">
+<aside class="site-section-nav">
+    <header class="site-nav-container" id="siteHeader">
+        <div class="site-nav">
             <div class="header-actions">
                 <!-- Menú hamburguesa -->
                 <button id="siteMenuToggle" class="menu-toggle nav-icon" aria-label="Abrir menú">
@@ -126,18 +126,22 @@
         <!-- Contenido del sidebar -->
         <div class="site-sidebar-content">
             <!-- Navegación principal -->
+
             <nav class="site-nav-menu">
-                <a href="" class="site-nav-menu-item">
-                    <i class="ri-home-line"></i>
-                    <span>Inicio</span>
+                <a href="{{ route('about.index') }}" class="site-nav-menu-item">
+                    <i class="ri-information-line"></i>
+                    <span>Nosotros</span>
                 </a>
-                <a href="" class="site-nav-menu-item">
-                    <i class="ri-shopping-bag-line"></i>
-                    <span>Productos</span>
+                <a href="{{ route('site.blog.index') }}" class="site-nav-menu-item">
+                    <i class="ri-newspaper-line"></i>
+                    <span>Blog</span>
+                </a>
+                <a href="{{ route('contact.index') }}" class="site-nav-menu-item">
+                    <i class="ri-mail-line"></i>
+                    <span>Contacto</span>
                 </a>
             </nav>
-            <hr class="site-nav-divider">
-
+            <hr class="w-full my-0 border-default">
             <!-- Familias (sin subniveles en el panel izquierdo) -->
             <nav class="site-nav-menu">
                 <div class="site-nav-section-title">Categorías</div>
@@ -166,6 +170,26 @@
                         </div>
                     </div>
                 @endforeach
+            </nav>
+            <hr class="w-full my-0 border-default">
+            <nav class="site-nav-menu">
+                <div class="site-nav-section-title">Información</div>
+                <a href="{{ route('site.legal.terms') }}" class="site-nav-menu-item">
+                    <i class="ri-file-text-line"></i>
+                    <span>Términos y condiciones</span>
+                </a>
+                <a href="{{ route('site.legal.privacy') }}" class="site-nav-menu-item">
+                    <i class="ri-shield-line"></i>
+                    <span>Política de privacidad</span>
+                </a>
+                <a href="{{ route('site.legal.claims') }}" class="site-nav-menu-item">
+                    <i class="ri-book-line"></i>
+                    <span>Libro de reclamaciones</span>
+                </a>
+                <a href="#" class="site-nav-menu-item">
+                    <i class="ri-question-line"></i>
+                    <span>Preguntas frecuentes</span>
+                </a>
             </nav>
         </div>
 
@@ -198,4 +222,4 @@
     </aside>
 
     @include('partials.site.search-modal')
-</div>
+</aside>

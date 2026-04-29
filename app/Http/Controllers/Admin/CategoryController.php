@@ -31,82 +31,26 @@ class CategoryController extends Controller
         $this->middleware('can:reportes.export')->only(['exportExcel', 'exportCsv', 'exportPdf']);
         $this->middleware('can:categorias.update-status')->only(['updateStatus']);
     }
-    /* ======================================================
-     |  SHOW
-     ====================================================== */
-    public function show($slug)
-    {
-        $category = Category::where('slug', $slug)
-            ->with(['family:id,name', 'parent.family:id,name', 'parent:id,name,slug,status,family_id'])
-            ->firstOrFail();
-
-        $createdBy = $category->created_by ? User::find($category->created_by) : null;
-        $updatedBy = $category->updated_by ? User::find($category->updated_by) : null;
-
-        // Herencia de familia
-        $familyName = $category->family ? $category->family->name : ($category->parent && $category->parent->family ? $category->parent->family->name : 'Sin familia');
-
-        // Función recursiva para obtener subcategorías
-        $getSubcategoriesRecursive = function ($parentCategory) use (&$getSubcategoriesRecursive) {
-            $subs = Category::where('parent_id', $parentCategory->id)
-                ->with('family:id,name')
-                ->get();
-
-            return $subs->map(function ($sub) use ($getSubcategoriesRecursive) {
-                return [
-                    'id' => $sub->id,
-                    'name' => $sub->name,
-                    'slug' => $sub->slug,
-                    'status' => $sub->status,
-                    'family' => $sub->family ? $sub->family->name : 'Sin familia',
-                    'subcategories' => $getSubcategoriesRecursive($sub), // recursivo
-                ];
-            })->toArray();
-        };
-
-        $subcategories = $getSubcategoriesRecursive($category);
-
-        // Padre con enlace y estado
-        $parent = null;
-        if ($category->parent) {
-            $parent = [
-                'name' => $category->parent->name,
-                'slug' => $category->parent->slug,
-                'status' => $category->parent->status,
-                'family' => $category->parent->family ? $category->parent->family->name : 'Sin familia',
-            ];
-        }
-
-        return response()->json([
-            'id' => $category->id,
-            'slug' => $category->slug,
-            'name' => $category->name,
-            'description' => $category->description,
-            'status' => $category->status,
-            'family' => $familyName,
-            'parent' => $parent,
-            'image' => $category->image,
-            'subcategories' => $subcategories, // ahora incluye todas las subcategorías recursivamente
-            'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
-            'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
-            'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
-            'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
-            'updated_at_human' => $category->updated_at ? $category->updated_at->diffForHumans() : '—',
-        ]);
-    }
 
     /* ======================================================
      |  INDEX
      ====================================================== */
     public function index()
     {
+
         $categories = Category::select([
-            'id', 'name', 'slug', 'description', 'status',
-            'family_id', 'parent_id', 'created_at',
+        'id', 'name', 'slug', 'description', 'status',
+        'family_id', 'parent_id', 'created_at',
         ])
-            ->orderBy('id', 'desc')
-            ->with(['family:id,name', 'parent:id,name'])
-            ->get();
+        ->withCount('products')
+        ->with([
+            'family:id,name',
+            'parent:id,name,parent_id',
+            'parent.parent:id,name,parent_id',
+            'parent.parent.parent:id,name,parent_id'
+        ])
+        ->orderBy('id', 'desc')
+        ->get();
 
         $families = Family::select('id', 'name')
             ->where('status', true)
@@ -221,11 +165,15 @@ class CategoryController extends Controller
         $families = Family::where('status', true)
             ->orderBy('name')
             ->get(['id', 'name']);
+        // Necesitamos family_id y parent_id para reconstruir la jerarquía
+        $selectCategories = Category::where('status', true)
+            ->whereNull('parent_id')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
 
-        // Estructura jerárquica completa de categorías
-        $allCategories = $this->buildHierarchicalCategories(null, 0, 1);
 
-        return view('admin.categories.create', compact('families', 'allCategories'));
+        return view('admin.categories.create', compact('families', 'selectCategories'));
     }
 
     /**
@@ -312,58 +260,28 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         // Familias activas para el select
-        $families = Family::where('status', true)
+        $selectFamilies = Family::where('status', true)
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        // Todas las categorías excepto la actual (para evitar bucles)
         // Necesitamos family_id y parent_id para reconstruir la jerarquía
-        $parents = Category::where('id', '!=', $category->id)
+        $selectCategories = Category::where('id', '!=', $category->id)
+            ->where('status', true)
             ->whereNull('parent_id')
-            ->select('id', 'name', 'family_id', 'parent_id')
+            ->select('id', 'name')
             ->orderBy('name')
             ->get();
 
         // Obtener subcategorías de la categoría actual (recursivo)
-        $subcategories = $this->getSubcategoriesFlat($category->id);
+        $subcategories = $category->getSubcategoriesFlat($category->id);
 
-        return view('admin.categories.edit', compact('category', 'families', 'parents', 'subcategories'));
+        return view('admin.categories.edit', compact('category', 'selectFamilies', 'selectCategories', 'subcategories'));
     }
 
     /**
      * Obtiene todas las subcategorías de una categoría de forma plana con nivel
      */
-    private function getSubcategoriesFlat($categoryId, $level = 0)
-    {
-        $subcategories = [];
 
-        if ($level >= 1) {
-            return $subcategories;
-        }
-
-        $children = Category::where('parent_id', $categoryId)
-            ->with('products')
-            ->orderBy('name')
-            ->get();
-
-        foreach ($children as $child) {
-            $subcategories[] = [
-                'id' => $child->id,
-                'name' => $child->name,
-                'description' => $child->description,
-                'slug' => $child->slug,
-                'status' => $child->status,
-                'level' => $level,
-                'products_count' => $child->products->count(),
-            ];
-
-            // Recursivamente obtener hijos
-            $grandchildren = $this->getSubcategoriesFlat($child->id, $level + 1);
-            $subcategories = array_merge($subcategories, $grandchildren);
-        }
-
-        return $subcategories;
-    }
 
     /* ======================================================
      |  UPDATE
@@ -444,7 +362,7 @@ class CategoryController extends Controller
                 'message' => "No se puede eliminar la categoría <strong>{$category->name}</strong> porque tiene subcategorías.",
             ]);
 
-            return redirect()->route('admin.categories.index');
+            return redirect()->back();
         }
 
         if ($category->products()->exists()) {
@@ -455,7 +373,7 @@ class CategoryController extends Controller
                 'message' => "La categoría <strong>{$category->name}</strong> tiene productos asociados.",
             ]);
 
-            return redirect()->route('admin.categories.index');
+            return redirect()->back();
         }
 
         if ($category->image && Storage::disk('public')->exists($category->image)) {
@@ -477,7 +395,7 @@ class CategoryController extends Controller
             'message' => "La categoría <strong>{$name}</strong> ha sido eliminada del sistema.",
         ]);
 
-        return redirect()->route('admin.categories.index');
+        return redirect()->back();
     }
 
     /* ======================================================
@@ -500,7 +418,7 @@ class CategoryController extends Controller
                 'message' => 'Las categorías seleccionadas no existen.',
             ]);
 
-            return redirect()->route('admin.categories.index');
+            return redirect()->back();
         }
 
         $restricted = $categories->filter(fn ($c) => $c->children()->exists() || $c->products()->exists()
@@ -516,7 +434,7 @@ class CategoryController extends Controller
                 'message' => "Estas categorías no se pueden eliminar: <strong>{$blocked}</strong>.",
             ]);
 
-            return redirect()->route('admin.categories.index');
+            return redirect()->back();
         }
 
         $names = [];
@@ -560,7 +478,81 @@ class CategoryController extends Controller
             'list' => $names,
         ]);
 
-        return redirect()->route('admin.categories.index');
+        return redirect()->back();
+    }
+
+    /* ======================================================
+     |  SHOW
+     ====================================================== */
+    public function show($slug)
+    {
+        $category = Category::where('slug', $slug)
+            ->with(['family:id,name', 'parent.family:id,name', 'parent:id,name,slug,status,family_id'])
+            ->firstOrFail();
+
+        $createdBy = $category->created_by ? User::find($category->created_by) : null;
+        $updatedBy = $category->updated_by ? User::find($category->updated_by) : null;
+
+        // Herencia de familia
+        $familyName = $category->family ? $category->family->name : ($category->parent && $category->parent->family ? $category->parent->family->name : 'Sin familia');
+
+        if ($category->parent){
+            $parentName = $category->parent->name;
+        }
+        $categoryName = $category->name;
+        // definir ubicacion de la categoria (familia > categoría padre > categoría)
+        $location = $familyName
+        . ($category->parent ? ' › ' . $category->parent->name : '')
+        . ' › <strong>' . e($categoryName) . '</strong>';
+
+        // Función recursiva para obtener subcategorías
+        $getSubcategoriesRecursive = function ($parentCategory) use (&$getSubcategoriesRecursive) {
+            $subs = Category::where('parent_id', $parentCategory->id)
+                ->with('family:id,name')
+                ->get();
+
+            return $subs->map(function ($sub) use ($getSubcategoriesRecursive) {
+                return [
+                    'id' => $sub->id,
+                    'name' => $sub->name,
+                    'slug' => $sub->slug,
+                    'status' => $sub->status,
+                    'family' => $sub->family ? $sub->family->name : 'Sin familia',
+                    'subcategories' => $getSubcategoriesRecursive($sub), // recursivo
+                ];
+            })->toArray();
+        };
+
+        $subcategories = $getSubcategoriesRecursive($category);
+
+        // Padre con enlace y estado
+        $parent = null;
+        if ($category->parent) {
+            $parent = [
+                'name' => $category->parent->name,
+                'slug' => $category->parent->slug,
+                'status' => $category->parent->status,
+                'family' => $category->parent->family ? $category->parent->family->name : 'Sin familia',
+            ];
+        }
+
+        return response()->json([
+            'id' => $category->id,
+            'slug' => $category->slug,
+            'name' => $category->name,
+            'description' => $category->description,
+            'status' => $category->status,
+            'location' => $location,
+            'family' => $familyName,
+            'parent' => $parent,
+            'image' => $category->image,
+            'subcategories' => $subcategories, // ahora incluye todas las subcategorías recursivamente
+            'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
+            'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
+            'created_at' => $category->created_at ? $category->created_at->format('d/m/Y H:i') : '—',
+            'updated_at' => $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : '—',
+            'updated_at_human' => $category->updated_at ? $category->updated_at->diffForHumans() : '—',
+        ]);
     }
 
     /* ======================================================

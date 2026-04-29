@@ -227,7 +227,6 @@
 
 .checkout-address-form-panel {
     margin-top: 1rem;
-    border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     padding: 1rem;
     background: var(--color-card-bg);

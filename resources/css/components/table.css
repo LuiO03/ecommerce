@@ -417,7 +417,7 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     padding: 20px 0;
     gap: 5px;
     color: var(--color-muted);
-    background: radial-gradient(circle, var(--color-bg), var(--color-card-bg));
+    background: var(--color-card-bg);
 }
 
 .tabla-no-data i {
@@ -444,9 +444,8 @@ table.dataTable.dtr-inline.collapsed td.control::before {
     padding: 4rem 2rem;
     gap: 5px;
     text-align: center;
-    background: radial-gradient(circle, var(--color-bg), var(--color-card-bg));
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
+    background: var(--color-card-bg);
+    border-radius: var(--radius-card);
     color: var(--color-muted);
 }
 
@@ -641,6 +640,17 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
     border-bottom: none;
 }
 
+.ubication-badges{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: var(--font-size-xs);
+    background-color: var(--color-info);
+    padding: 5px;
+    border-radius: var(--radius-input);
+}
+
+
 .column-actions-td .boton-show-actions,
 .tabla-normal .column-actions-td .boton-show-actions,
 .dtr-data .boton-show-actions {
@@ -730,6 +740,7 @@ table.dataTable tbody tr.child ul.dtr-details li:last-child {
         padding: 1rem;
         transition: border 0.3s ease;
         height: fit-content;
+        box-shadow: var(--box-shadow-card) !important;
     }
 
     .tabla-general tbody tr:has(.dt-empty) {

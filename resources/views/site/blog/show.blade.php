@@ -12,7 +12,6 @@
 
             <article class="blog-article">
                 <header class="blog-article-header">
-                    <p class="blog-kicker">Blog</p>
                     <h1 class="blog-title">{{ $post->title }}</h1>
 
                     <div class="blog-card-meta">
@@ -171,18 +170,45 @@
                 if (!window.Swiper) return;
 
                 const thumbs = new Swiper('.blog-hero-thumbs', {
-                    slidesPerView: 5,
+                    modules: [window.SwiperModules.Thumbs],
                     spaceBetween: 8,
                     freeMode: true,
                     watchSlidesProgress: true,
                     slideToClickedSlide: true,
+
+                    breakpoints: {
+                        0: {
+                            slidesPerView: 1,
+                        },
+                        480: {
+                            slidesPerView: 3,
+                        },
+                        768: {
+                            slidesPerView: 3,
+                        },
+                        1024: {
+                            slidesPerView: 4,
+                        },
+                        1400: {
+                            slidesPerView: 5,
+                        }
+                    }
                 });
 
                 const main = new Swiper('.blog-hero-slider', {
+                    modules: [
+                        window.SwiperModules.Navigation,
+                        window.SwiperModules.Pagination,
+                        window.SwiperModules.Autoplay,
+                        window.SwiperModules.Thumbs
+                    ],
                     slidesPerView: 1,
                     spaceBetween: 10,
-                    loop: false,
-
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: true,
+                        pauseOnMouseEnter: true,
+                    },
                     thumbs: {
                         swiper: thumbs,
                     },
@@ -196,6 +222,7 @@
                         el: '.blog-hero-slider .swiper-pagination',
                         clickable: true,
                     },
+
                 });
 
                 // 🔥 FORZAR sincronización manual (clave)

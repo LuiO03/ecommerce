@@ -20,4 +20,13 @@ class Role extends SpatieRole
             'model_id'
         )->where('model_type', User::class);
     }
+
+    public function isProtected(): bool
+    {
+        return in_array($this->name, [
+            'Administrador',
+            'Superadministrador',
+            'Cliente'
+        ]);
+    }
 }

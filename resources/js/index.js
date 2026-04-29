@@ -15,7 +15,6 @@ import './utils/datatable-manager.js';
 import './modules/category-hierarchy.js';
 import { initImageUpload } from './utils/image-upload-handler.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
-import { initCategoryHierarchy } from './modules/category-hierarchy-manager.js';
 import { initFormValidator } from './utils/form-validator.js';
 import { initTextareaAutosize } from './utils/textarea-autosize.js';
 import { initConnectionStatusBar } from './utils/connection-status.js';
@@ -37,7 +36,6 @@ import { initMobileActionsMenu } from './utils/mobile-actions-menu.js';
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
 window.initSubmitLoader = initSubmitLoader;
-window.initCategoryHierarchy = initCategoryHierarchy;
 window.initFormValidator = initFormValidator;
 window.initOptionFeatureForm = initOptionFeatureForm;
 window.initOptionInlineManager = initOptionInlineManager;

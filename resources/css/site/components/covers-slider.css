@@ -35,20 +35,17 @@
     position: absolute;
     inset: 0;
     z-index: 2;
-    max-width: 1200px;
+    max-width: var(--site-max-width);
     margin: 0 auto;
     width: 100%;
-    padding: 0 2rem;
 }
 
 .cover-content {
     position: absolute;
     z-index: 3;
-    padding: 3rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    max-width: 600px;
 }
 
 /* Overlay transparente de fondo (nuevo sistema) */
@@ -75,19 +72,50 @@
 .cover-bg-overlay.position-top-left,
 .cover-bg-overlay.position-center-left,
 .cover-bg-overlay.position-bottom-left {
-    background: linear-gradient(90deg,
+    background: linear-gradient(
+        90deg,
         rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35)) 0%,
-        rgba(0, 0, 0, 0) 50%);
+        rgba(0, 0, 0, 0) 50%
+    );
     opacity: 1;
+
+}
+
+.cover-content.position-top-left,
+.cover-content.position-center-left,
+.cover-content.position-bottom-left,
+.cover-content.position-top-right,
+.cover-content.position-center-right,
+.cover-content.position-bottom-right {
+    width: 50%;
+}
+
+@media (max-width: 768px) {
+    .cover-content.position-top-left,
+    .cover-content.position-center-left,
+    .cover-content.position-bottom-left,
+    .cover-content.position-top-right,
+    .cover-content.position-center-right,
+    .cover-content.position-bottom-right {
+        margin-left: 3rem;
+        margin-right: 3rem;
+    }
+
+    .cover-content.position-top-center,
+    .cover-content.position-center-center,
+    .cover-content.position-bottom-center {
+    }
 }
 
 /* Posiciones derechas: degradado desde derecha al centro (50% del ancho) */
 .cover-bg-overlay.position-top-right,
 .cover-bg-overlay.position-center-right,
 .cover-bg-overlay.position-bottom-right {
-    background: linear-gradient(270deg,
+    background: linear-gradient(
+        270deg,
         rgba(0, 0, 0, var(--overlay-bg-opacity, 0.35)) 0%,
-        rgba(0, 0, 0, 0) 50%);
+        rgba(0, 0, 0, 0) 50%
+    );
     opacity: 1;
 }
 
@@ -168,7 +196,7 @@
 }
 
 .cover-subtitle {
-    font-size: var(--font-size-p);
+    font-size: var(--font-size-h4);
     opacity: 0.95;
     margin: 0;
     text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
@@ -177,8 +205,8 @@
 /* Botones CTA */
 .cover-btn {
     padding: 1rem 2.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
+    border-radius: var(--radius-input);
+    font-weight: bold;
     font-size: 1rem;
     transition: all 0.3s ease;
     display: inline-flex;
@@ -200,7 +228,7 @@
 }
 
 .btn-primary:hover {
-    background: var(--color-primary);
+    background: black;
 }
 
 .btn-secondary {
@@ -319,7 +347,7 @@
 /* Responsive */
 @media (max-width: 768px) {
     .cover-content {
-        padding: 3.5rem;
+        padding: 1rem;
         max-width: 100%;
     }
 

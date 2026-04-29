@@ -11,7 +11,8 @@
                                 <!-- Overlay transparente degradado según posición -->
                                 @if ($cover->overlay_bg_enabled)
                                     <div class="cover-bg-overlay position-{{ $cover->text_position }}"
-                                        style="--overlay-bg-opacity: {{ $cover->overlay_bg_opacity ?? 0.35 }};"></div>
+                                        style="--overlay-bg-opacity: {{ $cover->overlay_bg_opacity ?? 0.35 }};">
+                                    </div>
                                 @endif
 
                                 <!-- Container con límite de ancho -->
@@ -137,6 +138,11 @@
     <!-- Sección de Últimos productos de la categoria vestidos -->
     <livewire:site.product-list :limit="8" title="Últimos Vestidos"
         subtitle="Explora los vestidos más recientes en nuestra colección" scope="strict_category" :categoryId="3" />
+    <!-- Sección de Ofertas -->
+    <livewire:site.product-list title="Ofertas" subtitle="Aprovecha descuentos" :limit="8" :onSale="true"
+        :strict="false" />
+
+    <!-- Sección de Productos más baratos -->
     <livewire:site.product-list :limit="8" order-by="cheap" title="¡Los más baratos!"
         subtitle="Aprovecha los mejores precios" />
 

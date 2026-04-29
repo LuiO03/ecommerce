@@ -141,11 +141,11 @@ class CategoryHierarchyManager {
             <div class="family-toggle">
                 <i class="ri-arrow-down-s-line"></i>
             </div>
-            <div class="family-icon">
+            <div class="family-icon card-orange">
                 <i class="ri-folder-3-fill"></i>
             </div>
             <div class="family-info">
-                <div class="family-name">${family.text}</div>
+                <span class="card-title">${family.text}</span>
                 <div class="family-count">${family.children.length} categorías</div>
             </div>
         `;
@@ -202,25 +202,25 @@ class CategoryHierarchyManager {
                 </div>
             `}
             <input type="checkbox" class="category-checkbox">
-            <div class="category-icon">
-                <i class="${hasChildren ? 'ri-folder-line' : 'ri-file-line'}"></i>
+            <div class="category-icon ${hasChildren ? 'card-warning' : 'card-info'}">
+                <i class="${hasChildren ? 'ri-folder-fill' : 'ri-file-fill'}"></i>
             </div>
             <div class="category-info">
                 <div class="category-name">${category.text.replace(/\(\d+\)/, '').trim()}</div>
                 <div class="category-meta">
-                    <span class="category-badge">
-                        <i class="ri-archive-line"></i>
+                    <span class="badge badge-primary" title="${productsCount} productos asociados">
+                        <i class="ri-box-3-fill"></i>
                         ${productsCount}
                     </span>
                     <div class="category-status ${isActive ? '' : 'inactive'}"></div>
                 </div>
             </div>
             <div class="category-actions">
-                <button class="category-action-btn edit" data-action="edit">
-                    <i class="ri-edit-circle-line"></i>
+                <button class="boton-sm boton-warning" data-action="edit" title="Editar categoría">
+                    <i class="ri-edit-circle-fill"></i>
                 </button>
-                <button class="category-action-btn delete" data-action="delete">
-                    <i class="ri-delete-bin-line"></i>
+                <button class="boton-sm boton-danger" data-action="delete" title="Eliminar categoría">
+                    <i class="ri-delete-bin-fill"></i>
                 </button>
             </div>
         `;

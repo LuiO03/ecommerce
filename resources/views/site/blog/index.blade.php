@@ -206,7 +206,7 @@
 
             <!-- SIDEBAR -->
             <aside class="blog-sidebar">
-                <section class="blog-sidebar-section blog-sidebar-search">
+                <section class="blog-sidebar-search">
                     <form action="{{ route('site.blog.index') }}" method="get" class="blog-search-form">
                         <article class="tabla-buscador">
                             <i class="ri-search-eye-line buscador-icon"></i>

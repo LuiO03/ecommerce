@@ -23,7 +23,6 @@
 /* Slider */
 .products-slider {
     width: 100%;
-    padding: 4px 0px !important;
     max-width: var(--site-max-width);
 }
 

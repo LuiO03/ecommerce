@@ -1,11 +1,12 @@
 /* ===== Header Sitio Público ===== */
-.site-header {
-    background: var(--color-site-nav);
-    position: fixed;
+.site-section-nav{
+    position: sticky;
     top: 0;
-    left: 0;
+    z-index: 200;
+}
+.site-nav-container {
+    background: var(--color-site-nav);
     width: 100%;
-    z-index: 50;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     height: var(--site-nav-height);
     display: flex;
@@ -13,7 +14,7 @@
     justify-content: center;
 }
 
-.site-header-container {
+.site-nav {
     display: flex;
     gap: 0.5rem;
     width: 100%;
@@ -199,6 +200,7 @@
 
 .nav-avatar {
     min-width: 36px;
+    max-width: 36px;
     height: 36px;
     border-radius: 50%;
     font-weight: bolder;
@@ -321,7 +323,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 14px 1rem;
-    background: var(--color-dark);
+    background: var(--color-site-nav);
     color: var(--color-normal);
     font-weight: 600;
     font-size: var(--font-size-h4);
@@ -403,17 +405,12 @@
 
 .site-nav-menu-item i {
     font-size: 1.25rem;
+    color: var(--color-site-nav);
 }
 
 .site-nav-menu-item .arrow-menu {
     margin-left: auto;
     font-size: 20px;
-}
-
-.site-nav-divider {
-    margin: 0.5rem 0;
-    border: none;
-    border-top: 1px solid var(--color-border);
 }
 
 /* Título de sección */
@@ -450,10 +447,7 @@
     color: var(--color-text);
     background: transparent;
     overflow: hidden;
-    margin-bottom: 5px;
     border: none;
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
     cursor: pointer;
     transition:
         background-color 0.2s ease,
@@ -480,7 +474,6 @@
 }
 
 .site-arrow-family-content {
-    background-color: var(--color-site-hover);
     height: 100%;
     width: 40px;
     display: flex;
@@ -674,7 +667,7 @@
 
 /* ===== Responsive ===== */
 @media (max-width: 640px) {
-    .site-header-container {
+    .site-nav {
         margin: 0px 0.6rem;
     }
 

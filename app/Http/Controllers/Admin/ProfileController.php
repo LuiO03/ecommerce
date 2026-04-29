@@ -14,7 +14,7 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -43,13 +43,38 @@ class ProfileController extends Controller
     // ======================
     public function index()
     {
+        $fondos = [
+    'fondo-estilo-1',
+    'fondo-estilo-2',
+    'fondo-estilo-4',
+    'fondo-estilo-5',
+    'fondo-estilo-6',
+    'fondo-estilo-7',
+    'fondo-estilo-8',
+    'fondo-estilo-9',
+    'fondo-estilo-10',
+    'fondo-estilo-11',
+    'fondo-estilo-12',
+    'fondo-estilo-13',
+    'fondo-estilo-14',
+    'fondo-estilo-15',
+    'fondo-estilo-17',
+    'fondo-estilo-18',
+    'fondo-estilo-19',
+    'fondo-estilo-20',
+    'fondo-estilo-21',
+    'fondo-estilo-22',
+    'fondo-estilo-23',
+    'fondo-estilo-24',
+    'fondo-estilo-25',
+];
         $user = Auth::user();
         // Obtener sesiones activas desde la tabla sessions
         $sessions = DB::table('sessions')
             ->where('user_id', $user->id)
             ->orderByDesc('last_activity')
             ->get();
-        return view('admin.profile.index', compact('user', 'sessions'));
+        return view('admin.profile.index', compact('user', 'sessions', 'fondos'));
     }
     // ======================
     //      CERRAR SESIÓN DE OTRO DISPOSITIVO (manual)
@@ -229,10 +254,41 @@ class ProfileController extends Controller
         return redirect()->route('admin.profile.index');
     }
 
-    public function updatePassword()
+    public function updatePassword(Request $request)
     {
         $user = Auth::user();
-        return view('admin.profile.password', compact('user'));
+
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // Verificar contraseña actual
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'La contraseña actual es incorrecta.'
+            ]);
+        }
+
+        // Evitar reutilizar la misma contraseña
+        if (Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'La nueva contraseña no puede ser igual a la actual.'
+            ]);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+            'updated_by' => $user->id,
+        ]);
+
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Contraseña actualizada',
+            'message' => 'Tu contraseña se ha cambiado correctamente.',
+        ]);
+
+        return redirect()->route('admin.profile.index');
     }
 
     // ======================

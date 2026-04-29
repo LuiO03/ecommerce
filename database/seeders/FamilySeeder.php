@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use App\Models\Family;
 
 class FamilySeeder extends Seeder
 {
@@ -18,21 +17,21 @@ class FamilySeeder extends Seeder
         $families = [
             [
                 'name' => 'Ropa para Hombre',
-                'slug' => Str::slug('Ropa para Hombre'),
+                'slug' => Str::slug('Ropa-para-Hombre'),
                 'description' => 'Prendas y accesorios para caballeros.',
                 'image' => 'families/ropa-hombre.jpg',
                 'status' => true,
             ],
             [
                 'name' => 'Ropa para Mujer',
-                'slug' => Str::slug('Ropa para Mujer'),
+                'slug' => Str::slug('Ropa-para-Mujer'),
                 'description' => 'Colección de moda femenina.',
                 'image' => 'families/ropa-mujer.jpg',
                 'status' => true,
             ],
             [
-                'name' => 'Ropa para Niños',
-                'slug' => Str::slug('Ropa para Niños'),
+                'name' => 'Ropa Infantil',
+                'slug' => Str::slug('Ropa-Infantil'),
                 'description' => 'Ropa y accesorios para niños.',
                 'image' => 'families/ropa-ninos.jpg',
                 'status' => true,

@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
 use App\Models\Family;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FamiliesExcelExport;
 use App\Exports\FamiliesCsvExport;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,9 +29,11 @@ class FamilyController extends Controller
 
     public function index()
     {
+        // cantidad de categorias relacionadas a cada familia (evita N+1)
         $families = Family::select(['id', 'name', 'slug', 'description', 'status', 'created_at'])
-            ->orderBy('id', 'desc')
-            ->get();
+        ->withCount('categories')
+        ->orderBy('id', 'desc')
+        ->get();
 
         return view('admin.families.index', compact('families'));
     }

@@ -30,34 +30,6 @@
                     </a>
                 </li>
             @endcan
-            <!-- Submenú Finanzas -->
-            <li class="submenu-container">
-                <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
-                    data-tooltip="Finanzas">
-                    <i class="ri-money-dollar-circle-line sidebar-icon"></i>
-                    <span class="flex-1 text-left">Finanzas</span>
-                    <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
-                </button>
-
-                <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
-                    <li>
-                        <a href="{{ request()->routeIs('admin.payments.*') ? '#' : route('admin.payments.index') }}"
-                            class="sidebar-sublink {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}"
-                            data-tooltip="Pagos">
-                            <i class="ri-bank-card-line sidebar-icon"></i>
-                            <span>Pagos</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ request()->routeIs('admin.transactions.*') ? '#' : route('admin.transactions.index') }}"
-                            class="sidebar-sublink {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}"
-                            data-tooltip="Transacciones">
-                            <i class="ri-exchange-dollar-line sidebar-icon"></i>
-                            <span>Transacciones</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
 
             <!-- Pedidos -->
             @can('ordenes.index')
@@ -152,6 +124,7 @@
                     </a>
                 </li>
             @endcan
+
             @can('configuracion.index')
                 <li>
                     <a href="{{ request()->routeIs('admin.company-settings.*') ? '#' : route('admin.company-settings.index') }}"
@@ -162,11 +135,39 @@
                             Negocio
                         </span>
                         @if (function_exists('company_settings_incomplete') && company_settings_incomplete())
-                            <i class="ri-info-i sidebar-link-alert" title="Faltan datos de empresa"></i>
+                            <span class="sidebar-link-alert" title="Faltan datos de empresa">1</span>
                         @endif
                     </a>
                 </li>
             @endcan
+            <!-- Submenú Finanzas -->
+            <li class="submenu-container">
+                <button type="button" class="sidebar-link w-full submenu-btn flex items-center"
+                    data-tooltip="Finanzas">
+                    <i class="ri-money-dollar-circle-line sidebar-icon"></i>
+                    <span class="flex-1 text-left">Finanzas</span>
+                    <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
+                </button>
+
+                <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
+                    <li>
+                        <a href="{{ request()->routeIs('admin.payments.*') ? '#' : route('admin.payments.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}"
+                            data-tooltip="Pagos">
+                            <i class="ri-bank-card-line sidebar-icon"></i>
+                            <span>Pagos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ request()->routeIs('admin.transactions.*') ? '#' : route('admin.transactions.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}"
+                            data-tooltip="Transacciones">
+                            <i class="ri-exchange-dollar-line sidebar-icon"></i>
+                            <span>Transacciones</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <!-- Submenú Gestion de Acceso -->
             @canany(['usuarios.index', 'clientes.index', 'roles.index', 'accesos.index', 'auditorias.index'])
                 <li class="submenu-container">

@@ -115,9 +115,19 @@
                                     <span class="slider"></span>
                                 </label>
                             @else
-                                <span class="status-badge {{ $cover->status ? 'status-active' : 'status-inactive' }}" title="Estado de la portada" aria-label="Estado de la portada">
-                                    {{ $cover->status ? 'Activo' : 'Inactivo' }}
-                                </span>
+                                <td class="column-status-td">
+                                    @if ($cover->status)
+                                        <span class="badge badge-success">
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                            Activo
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger">
+                                            <i class="ri-close-circle-fill"></i>
+                                            Inactivo
+                                        </span>
+                                    @endif
+                                </td>
                             @endcan
                         </div>
                         <div class="cover-actions">

@@ -49,22 +49,14 @@
     border-radius: var(--radius-card);
     margin: 10px 0px;
 }
-.slug-mono {
-    font-family: "Monaco", "Courier New", monospace;
-}
-
-.text-muted-null {
-    color: var(--color-text-soft);
-    font-style: italic;
-}
 
 /* === TEXTO Y TIPOGRAFÍA === */
 .slug-mono {
     font-family: "Monaco", "Courier New", monospace;
 }
+
 .text-muted-null {
     color: var(--color-text-soft);
-    font-style: italic;
 }
 
 /* === MODAL LAYOUT === */

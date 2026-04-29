@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OptionFeatureController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\AccessLogController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 // COMPANY SETTINGS
@@ -107,7 +109,6 @@ Route::controller(ProfileController::class)->group(function () {
 
     // Quitar foto de perfil
     Route::delete('/profile/remove-image', 'removeImage')->name('admin.profile.removeImage');
-
     // Exportaciones
     Route::post('/profile/export/excel', 'exportExcel')->name('admin.profile.export.excel');
     Route::post('/profile/export/pdf', 'exportPdf')->name('admin.profile.export.pdf');
@@ -259,8 +260,9 @@ Route::controller(DriverController::class)->group(function () {
 });
 
 // ROLES
-Route::controller(App\Http\Controllers\Admin\RoleController::class)->group(function () {
+Route::controller(RoleController::class)->group(function () {
     Route::get('/roles', 'index')->name('admin.roles.index');
+    Route::get('/roles/{id}/show', 'show')->name('admin.roles.show');
     Route::get('/roles/create', 'create')->name('admin.roles.create');
     Route::post('/roles', 'store')->name('admin.roles.store');
     Route::get('/roles/{role}/permissions', 'permissions')->name('admin.roles.permissions');
@@ -276,7 +278,7 @@ Route::controller(App\Http\Controllers\Admin\RoleController::class)->group(funct
 });
 
 // PERMISSIONS
-Route::controller(App\Http\Controllers\Admin\PermissionController::class)->group(function () {
+Route::controller(PermissionController::class)->group(function () {
     Route::get('/permissions', 'index')->name('admin.permissions.index');
     Route::get('/permissions/create', 'create')->name('admin.permissions.create');
     Route::post('/permissions', 'store')->name('admin.permissions.store');

@@ -28,8 +28,8 @@ class CategorySeeder extends Seeder
                 'parent_id' => null,
             ],
             [
-                'name' => 'Pantalones Hombre',
-                'slug' => Str::slug('Pantalones Hombre'),
+                'name' => 'Pantalones',
+                'slug' => Str::slug('Pantalones-hombre'),
                 'description' => 'Jeans, joggers y pantalones de vestir.',
                 'family_id' => $families['ropa-hombre'] ?? 1,
                 'image' => 'categories/pantalones-hombre.jpg',
@@ -59,14 +59,33 @@ class CategorySeeder extends Seeder
 
             // Niños
             [
-                'name' => 'Ropa Infantil',
-                'slug' => Str::slug('Ropa Infantil'),
+                'name' => 'Baberos',
+                'slug' => Str::slug('Baberos'),
                 'description' => 'Prendas cómodas para niños y niñas.',
                 'family_id' => $families['ropa-ninos'] ?? 3,
-                'image' => 'categories/ropa-infantil.jpg',
+                'image' => 'categories/baberos.jpg',
                 'status' => true,
                 'parent_id' => null,
             ],
+            [
+                'name' => 'Pijamas',
+                'slug' => Str::slug('Pijamas'),
+                'description' => 'Pijamas suaves y divertidos para niños.',
+                'family_id' => $families['ropa-ninos'] ?? 3,
+                'image' => 'categories/baberos.jpg',
+                'status' => true,
+                'parent_id' => null,
+            ],
+            [
+                'name' => 'chandales',
+                'slug' => Str::slug('Chandales'),
+                'description' => 'Ropa deportiva cómoda para niños.',
+                'family_id' => $families['ropa-ninos'] ?? 3,
+                'image' => 'categories/baberos.jpg',
+                'status' => true,
+                'parent_id' => null,
+            ],
+
 
             // Accesorios
             [

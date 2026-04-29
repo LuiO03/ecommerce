@@ -20,57 +20,57 @@
  * });
  */
 class DataTableManager {
-        // Resalta coincidencias en celdas de texto sin perder HTML original
-        highlightMatches(search) {
-            if (!search || search.length < 2) {
-                // Limpiar resaltado
-                this.$table.find('tbody tr').each((i, tr) => {
-                    $(tr).find('td').each((j, td) => {
-                        this.restoreOriginalCell(td);
-                    });
-                });
-                return;
-            }
-            const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
-            this.$table.find('tbody tr:visible').each((i, tr) => {
+    // Resalta coincidencias en celdas de texto sin perder HTML original
+    highlightMatches(search) {
+        if (!search || search.length < 2) {
+            // Limpiar resaltado
+            this.$table.find('tbody tr').each((i, tr) => {
                 $(tr).find('td').each((j, td) => {
                     this.restoreOriginalCell(td);
-                    this.highlightTextNodes(td, regex);
                 });
             });
+            return;
         }
+        const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
+        this.$table.find('tbody tr:visible').each((i, tr) => {
+            $(tr).find('td').each((j, td) => {
+                this.restoreOriginalCell(td);
+                this.highlightTextNodes(td, regex);
+            });
+        });
+    }
 
-        // Guarda el HTML original de la celda si no está guardado
-        storeOriginalCell(td) {
-            if (!td.hasAttribute('data-original-html')) {
-                td.setAttribute('data-original-html', td.innerHTML);
-            }
+    // Guarda el HTML original de la celda si no está guardado
+    storeOriginalCell(td) {
+        if (!td.hasAttribute('data-original-html')) {
+            td.setAttribute('data-original-html', td.innerHTML);
         }
+    }
 
-        // Restaura el HTML original de la celda
-        restoreOriginalCell(td) {
-            if (td.hasAttribute('data-original-html')) {
-                td.innerHTML = td.getAttribute('data-original-html');
-            }
+    // Restaura el HTML original de la celda
+    restoreOriginalCell(td) {
+        if (td.hasAttribute('data-original-html')) {
+            td.innerHTML = td.getAttribute('data-original-html');
         }
+    }
 
-        // Resalta solo los nodos de texto dentro de la celda
-        highlightTextNodes(td, regex) {
-            this.storeOriginalCell(td);
-            const walk = (node) => {
-                if (node.nodeType === 3) { // Text node
-                    const val = node.nodeValue;
-                    if (val && regex.test(val)) {
-                        const span = document.createElement('span');
-                        span.innerHTML = val.replace(regex, '<span class="datatable-highlight">$1</span>');
-                        node.replaceWith(...span.childNodes);
-                    }
-                } else if (node.nodeType === 1 && node.childNodes && node.childNodes.length) {
-                    Array.from(node.childNodes).forEach(walk);
+    // Resalta solo los nodos de texto dentro de la celda
+    highlightTextNodes(td, regex) {
+        this.storeOriginalCell(td);
+        const walk = (node) => {
+            if (node.nodeType === 3) { // Text node
+                const val = node.nodeValue;
+                if (val && regex.test(val)) {
+                    const span = document.createElement('span');
+                    span.innerHTML = val.replace(regex, '<span class="datatable-highlight">$1</span>');
+                    node.replaceWith(...span.childNodes);
                 }
-            };
-            walk(td);
-        }
+            } else if (node.nodeType === 1 && node.childNodes && node.childNodes.length) {
+                Array.from(node.childNodes).forEach(walk);
+            }
+        };
+        walk(td);
+    }
     constructor(tableSelector, options = {}) {
         this.tableSelector = tableSelector;
         this.$table = $(tableSelector);
@@ -233,7 +233,7 @@ class DataTableManager {
             if (savedPage !== null && !isNaN(Number(savedPage))) {
                 initialPage = Number(savedPage);
             }
-        } catch (e) {}
+        } catch (e) { }
 
         this.table = new DataTable(this.tableSelector, {
             paging: true,
@@ -282,7 +282,7 @@ class DataTableManager {
             try {
                 const page = this.table.page();
                 localStorage.setItem(storageKey, page);
-            } catch (e) {}
+            } catch (e) { }
         });
 
         // Eventos de redibujado
@@ -604,7 +604,7 @@ class DataTableManager {
                 } else {
                     wrapper.addClass('filter-active');
 
-                    switch(sortValue) {
+                    switch (sortValue) {
                         case 'name-asc':
                             this.table.order([[nameColumn, 'asc']]).draw();
                             break;
@@ -636,11 +636,12 @@ class DataTableManager {
                 const selectedStatus = $statusFilter.val();
                 if (selectedStatus === "") return true;
 
-                const statusCell = $(this.table.row(dataIndex).node())
-                    .find('.switch-status')
-                    .is(':checked')
-                    ? "1"
-                    : "0";
+                const row = this.table.row(dataIndex).node();
+
+                const statusCell = $(row)
+                    .find('.column-status-td')
+                    .data('status')
+                    .toString();
 
                 return statusCell === selectedStatus;
             });
@@ -656,7 +657,7 @@ class DataTableManager {
         3. Activar wrapper si un filtro YA tiene valor
         (genérico: detecta TODOS los selects dentro de .tabla-filtros)
         ------------------------------------------- */
-        $('.tabla-filtros .selector select').each(function() {
+        $('.tabla-filtros .selector select').each(function () {
             const $select = $(this);
             // no aplicar estilo al selector de paginación
             if ($select.attr('id') === 'entriesSelect') return;
@@ -680,11 +681,11 @@ class DataTableManager {
         5. Verificación genérica de filtros activos
         (escucha cambios en búsqueda y TODOS los selects de .tabla-filtros)
         ------------------------------------------- */
-        const $genericSelects = $('.tabla-filtros .selector select').filter(function(){
+        const $genericSelects = $('.tabla-filtros .selector select').filter(function () {
             return $(this).attr('id') !== 'entriesSelect';
         });
         const filterSelectors = ['#customSearch'];
-        $genericSelects.each(function() {
+        $genericSelects.each(function () {
             filterSelectors.push('#' + $(this).attr('id'));
         });
 
@@ -788,6 +789,12 @@ class DataTableManager {
                     if (response.success) {
                         // Deshabilitar animación temporalmente
                         this.$table.addClass('no-animate');
+
+                        const row = $switch.closest('tr');
+
+                        // 🔥 sincronizar fuente de verdad
+                        row.find('.column-status-td')
+                            .data('status', isChecked ? 1 : 0);
 
                         this.$table.find('tbody tr').each((i, row) => {
                             row.style.animation = 'none';
