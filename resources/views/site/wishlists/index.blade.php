@@ -85,7 +85,7 @@
                                         alt="{{ $image->alt ?? $product->name }}" loading="lazy">
                                 @else
                                     <div class="wishlist-thumb-fallback">
-                                        <i class="ri-image-line"></i>
+                                        <i class="ri-image-fill"></i>
                                         <span>Imagen no disponible</span>
                                     </div>
                                 @endif

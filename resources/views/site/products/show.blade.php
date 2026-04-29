@@ -38,13 +38,13 @@
                                         alt="{{ $image->alt ?? $product->name }}"
                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     <div class="product-media-fallback" style="display: none;">
-                                        <i class="ri-image-line"></i>
+                                        <i class="ri-image-fill"></i>
                                         <span>Imagen no disponible</span>
                                     </div>
                                 </div>
                             @empty
                                 <div class="product-gallery-slide product-media-fallback">
-                                    <i class="ri-image-line"></i>
+                                    <i class="ri-image-fill"></i>
                                     <span>Imagen no disponible</span>
                                 </div>
                             @endforelse

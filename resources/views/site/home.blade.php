@@ -121,7 +121,7 @@
                             <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}"
                                 alt="{{ $category->name }} imagen"onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="product-image-fallback" style="display: none;">
-                                <i class="ri-image-line"></i>
+                                <i class="ri-image-fill"></i>
                                 <span>Imagen no disponible</span>
                             </div>
                         @endif

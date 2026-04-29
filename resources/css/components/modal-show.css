@@ -177,8 +177,8 @@
     background-color: var(--color-table-header-bg);
     font-weight: bolder;
     font-family: var(--font-secondary);
-    width: 160px;
-    max-width: 160px;
+    width: 140px;
+    max-width: 140px;
     min-width: 120px;
     white-space: normal;
 }
@@ -332,76 +332,141 @@
     text-align: start;
 }
 
+.modal-content-title{
+    font-family: var(--font-secondary);
+    font-weight: bolder;
+    display: block;
+    margin-bottom: 8px;
+}
+
 /* Estilos seguros y bonitos para contenido HTML */
 .post-content {
-    font-size: var(--font-size-xs);
-    line-height: 1.55;
-    padding-right: 8px;
+    background-color: var(--color-card-bg);
+    padding: 0.5rem;
+    border-radius: var(--radius-card);
 }
 
 /* Márgenes limpios para elementos del editor */
-.post-content p {
-    margin-bottom: 12px;
+/* Espaciado vertical consistente */
+.post-content > * + * {
+    margin-top: 1rem;
 }
 
-.post-content strong {
-    font-weight: 600;
+/* Tipografía base */
+.post-content p {
+    color: var(--color-text-soft);
+}
+
+/* Headings */
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4 {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-text);
+}
+
+.post-content h1 {
+    font-size: 2rem;
+}
+
+.post-content h2 {
+    font-size: 1.6rem;
+    margin-top: 2rem;
+}
+
+.post-content h3 {
+    font-size: 1.3rem;
+    margin-top: 1.5rem;
+}
+
+.post-content h4 {
+    font-size: 1.1rem;
+    margin-top: 1.25rem;
+}
+
+/* Imágenes */
+.post-content img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card);
 }
 
 /* Listas */
 .post-content ul,
 .post-content ol {
-    padding-left: 20px;
-    margin-bottom: 12px;
+    padding-left: 1.5rem;
 }
 
-/* Enlaces */
+.post-content li {
+    margin-bottom: 0.4rem;
+    list-style: disc;
+}
+
+/* Links */
 .post-content a {
-    color: var(--color-primary);
+    color: var(--color-site-accent);
     text-decoration: underline;
 }
 
-/* Imágenes redimensionables */
-.post-content img {
-    max-width: 100%;
-    border-radius: 6px;
-    margin: 10px 0;
+/* Tablas */
+.post-content table {
+    width: 100%;
+    table-layout: auto; /* o fixed si quieres columnas iguales */
+    border-collapse: collapse;
+    margin: 1.25rem 0;
 }
 
-/* Titulares */
-.post-content h1,
-.post-content h2,
-.post-content h3,
-.post-content h4 {
-    margin-top: 18px;
-    margin-bottom: 10px;
-    line-height: 1.3;
-    font-weight: 600;
+.post-content th,
+.post-content td {
+    padding: 0.6rem;
+    border: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
 }
 
-/* Citas */
+/* Evita que se rompa en móviles */
+.post-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Blockquote */
 .post-content blockquote {
-    border-left: 4px solid #ccc;
-    padding-left: 12px;
-    color: #555;
-    margin: 15px 0;
+    border-left: 4px solid var(--color-site-accent);
+    padding-left: 1rem;
+    color: var(--color-text-soft);
     font-style: italic;
 }
 
-/*  Tabla dentro del contenido */
-.post-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
+/* Código */
+.post-content pre {
+    background: var(--color-secondary-pastel);
+    padding: 1rem;
+    border-radius: var(--radius-card);
+    overflow-x: auto;
 }
-.post-content table th,
-.post-content table td {
-    border: 1px solid var(--color-cell-border);
-    padding: 8px;
-    text-align: left;
+
+.post-content code {
+    background: var(--color-secondary-pastel);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
 }
-.post-content table th {
-    background-color: var(--color-table-header-bg);
+
+/* Separadores */
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 2rem 0;
+}
+
+/* Evitar basura del editor */
+.post-content p:empty {
+    display: none;
 }
 
 /* === ANIMACIONES === */

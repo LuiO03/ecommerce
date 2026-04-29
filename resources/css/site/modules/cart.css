@@ -89,12 +89,15 @@
     font-size: var(--font-size-sm);
     padding: 10px;
     border-radius: var(--radius-input);
-    border: 1px solid var(--color-muted);
 }
 
 .cart-thumb-fallback i {
     font-size: 3rem;
     line-height: 1;
+}
+
+.cart-thumb-fallback span{
+    font-weight: bold;
 }
 
 .cart-thumb-fallback span {

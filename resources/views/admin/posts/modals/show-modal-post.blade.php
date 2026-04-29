@@ -101,7 +101,7 @@
             </div>
 
             <div class="modal-content-section">
-                <h3 class="card-title">Contenido</h3>
+                <span class="modal-content-title">Contenido:</span>
                 <div id="post-content" class="post-content">Sin contenido</div>
             </div>
         </div>
