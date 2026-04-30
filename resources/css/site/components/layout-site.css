@@ -54,7 +54,7 @@
 
 @media (max-width: 640px) {
     .site-logo img{
-        display: none;
+        display: block;
     }
     .footer-logo img {
         display: block;

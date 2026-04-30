@@ -18,7 +18,7 @@
                                 disableOnInteraction: true,
                                 pauseOnMouseEnter: true,
                             },
-                            speed: 200,
+                            speed: 400,
                             navigation: {
                                 nextEl: '.products-slider .swiper-button-next',
                                 prevEl: '.products-slider .swiper-button-prev',
@@ -32,22 +32,27 @@
                             breakpoints: {
                                 320: {
                                     slidesPerView: 2,
+                                    slidesPerGroup: 2,
                                     spaceBetween: 3,
                                 },
                                 640: {
                                     slidesPerView: 3,
+                                    slidesPerGroup: 3,
                                     spaceBetween: 5,
                                 },
                                 800: {
                                     slidesPerView: 4,
+                                    slidesPerGroup: 4,
                                     spaceBetween: 8,
                                 },
                                 1024: {
                                     slidesPerView: 5,
+                                    slidesPerGroup: 5,
                                     spaceBetween: 16,
                                 },
                                 1280: {
                                     slidesPerView: 6,
+                                    slidesPerGroup: 6,
                                     spaceBetween: 16,
                                 },
                             },

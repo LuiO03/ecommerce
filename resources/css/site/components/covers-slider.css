@@ -294,11 +294,10 @@
 
 .covers-slider .swiper-pagination-bullet-active {
     opacity: 1 !important;
-    width: 30px !important;
+    width: 50px !important;
     border-radius: 6px !important;
     background: white !important;
     border-radius: 6px !important;
-    width: 70px !important;
 }
 
 /* Estado sin portadas */

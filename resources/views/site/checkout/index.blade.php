@@ -37,8 +37,8 @@
 
         @if (!Auth::check() || !$hasItems)
             <div class="card-empty">
-                <div class="cart-empty-icon">
-                    <i class="ri-shopping-cart-line"></i>
+                <div class="card-empty-icon card-purple">
+                    <i class="ri-shopping-cart-fill"></i>
                 </div>
                 <h2 class="card-title">Tu carrito está vacío</h2>
                 <p>

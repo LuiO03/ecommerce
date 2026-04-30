@@ -133,17 +133,17 @@
     </section>
 
     <!-- Sección de Últimos Productos con Livewire -->
-    <livewire:site.product-list :limit="8" title="Últimos Productos"
+    <livewire:site.product-list :limit="12" title="Últimos Productos"
         subtitle="Descubre nuestras incorporaciones más recientes" />
     <!-- Sección de Últimos productos de la categoria vestidos -->
-    <livewire:site.product-list :limit="8" title="Últimos Vestidos"
+    <livewire:site.product-list :limit="12" title="Últimos Vestidos"
         subtitle="Explora los vestidos más recientes en nuestra colección" scope="strict_category" :categoryId="3" />
     <!-- Sección de Ofertas -->
-    <livewire:site.product-list title="Ofertas" subtitle="Aprovecha descuentos" :limit="8" :onSale="true"
+    <livewire:site.product-list title="Ofertas" subtitle="Aprovecha descuentos" :limit="12" :onSale="true"
         :strict="false" />
 
     <!-- Sección de Productos más baratos -->
-    <livewire:site.product-list :limit="8" order-by="cheap" title="¡Los más baratos!"
+    <livewire:site.product-list :limit="12" order-by="cheap" title="¡Los más baratos!"
         subtitle="Aprovecha los mejores precios" />
 
     @include('partials.site.why-us')

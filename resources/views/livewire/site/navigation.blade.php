@@ -71,7 +71,6 @@
                                     {{ $user->initials }}
                                 </div>
                             @endif
-                            <i class="ri-arrow-down-s-line dropdown-arrow"></i>
                         </button>
                         <div class="nav-user-menu" id="userMenu">
                             <a href="{{ route('site.profile.index') }}" class="nav-user-menu-item">
