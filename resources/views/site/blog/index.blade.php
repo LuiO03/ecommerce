@@ -86,7 +86,7 @@
                     </section>
                 @endif
 
-                <section class="blog-list">
+                <section class="blog-list" id="blog-list">
                     @if (request('search'))
                         <div class="section-conteiner">
                             <div class="section-header">
@@ -198,7 +198,7 @@
                         </div>
 
                         <div class="blog-pagination">
-                            {{ $posts->links() }}
+                            {{ $posts->links('vendor.pagination.site-blog-pagination') }}
                         </div>
                     @endif
                 </section>
