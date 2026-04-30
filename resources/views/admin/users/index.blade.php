@@ -59,7 +59,7 @@
                 <input type="text" id="customSearch" placeholder="Buscar usuarios por nombre o email"
                     autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
-                    <i class="ri-close-circle-fill"></i>
+                    <i class="ri-close-large-fill"></i>
                 </button>
             </article>
             <span class="tabla-filtros-title">

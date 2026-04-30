@@ -140,18 +140,24 @@
     height: 32px;
     border: none;
     background: transparent;
-    color: var(--color-danger);
     cursor: pointer;
-    border-radius: var(--radius-element);
     display: none;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-h3);
     transition: color 0.2s ease;
+}
+
+.buscador-clear i{
+    font-size: var(--font-size-h3);
+    font-weight: 300 !important;
 }
 
 .buscador-clear:active {
     transform: translateY(-50%) scale(0.95);
+}
+
+.buscador-clear:hover {
+    color: var(--color-danger) !important;
 }
 
 /* Mostrar el botón cuando hay texto */

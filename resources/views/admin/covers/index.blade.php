@@ -33,7 +33,7 @@
                 <i class="ri-search-eye-line buscador-icon"></i>
                 <input type="text" id="customSearch" placeholder="Buscar portadas por nombre" autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear" title="Limpiar búsqueda">
-                    <i class="ri-close-circle-fill"></i>
+                    <i class="ri-close-large-fill"></i>
                 </button>
             </div>
             <span class="tabla-filtros-title">
