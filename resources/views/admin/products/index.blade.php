@@ -113,6 +113,18 @@
                 </div>
             </article>
 
+			<article class="tabla-select-wrapper">
+				<div class="selector">
+					<select id="brandFilter">
+						<option value="">Todas las marcas</option>
+						@foreach($brands as $brand)
+							<option value="{{ $brand->id }}">{{ $brand->name }}</option>
+						@endforeach
+					</select>
+					<i class="ri-bookmark-3-line selector-icon"></i>
+				</div>
+			</article>
+
             <article class="tabla-select-wrapper" id="minStockFilterWrapper">
                 <button type="button" id="minStockFilterBtn" class="" title="Mostrar solo productos con stock bajo el mínimo">
                     <i class="ri-alert-line" style="font-size:18px;"></i>
@@ -199,6 +211,7 @@
 						<th class="column-id-th">ID</th>
 						<th class="column-name-th">Nombre</th>
 						<th class="column-sku-th">SKU</th>
+						<th class="column-brand-th">Marca</th>
 						<th class="column-category-th">Categoría</th>
 						<th class="column-price-th">Precio</th>
 						<th class="column-discount-th">Desc.</th>
@@ -229,6 +242,16 @@
 							</td>
 							<td class="column-sku-td">
 								<span>{{ $product->sku }}</span>
+							</td>
+							<td class="column-brand-td" data-brand-id="{{ $product->brand_id ?? '' }}">
+								@if($product->brand)
+									{{ $product->brand->name }}
+								@else
+									<span class="badge badge-gray">
+										<i class="ri-bookmark-2-line"></i>
+										Sin marca
+									</span>
+								@endif
 							</td>
 							<td class="column-category-td" data-category-id="{{ $product->category_id ?? '' }}">
 								@if($product->category)
@@ -367,7 +390,8 @@
 					}
 				});
 
-				let currentCategoryFilter = '';
+								let currentCategoryFilter = '';
+								let currentBrandFilter = '';
 
 
 				let minStockFilterActive = false;
@@ -383,6 +407,15 @@
 							return false;
 						}
 					}
+
+									// Filtro por marca
+									if (currentBrandFilter) {
+										const row = tableManager.table.row(dataIndex).node();
+										const rowBrandId = $(row).find('.column-brand-td').attr('data-brand-id') || '';
+										if (rowBrandId !== currentBrandFilter) {
+											return false;
+										}
+									}
 
 					// Filtro por stock bajo mínimo
 					if (minStockFilterActive) {
@@ -403,6 +436,13 @@
 					tableManager.checkFiltersActive();
 					console.log(`🔍 Filtro categoría: ${currentCategoryFilter || 'Todas'}`);
 				});
+
+								$('#brandFilter').on('change', function() {
+									currentBrandFilter = this.value;
+									tableManager.table.draw();
+									tableManager.checkFiltersActive();
+									console.log(`🔍 Filtro marca: ${currentBrandFilter || 'Todas'}`);
+								});
 
 				// Botón visual para stock bajo mínimo
 				$('#minStockFilterBtn').on('click', function() {

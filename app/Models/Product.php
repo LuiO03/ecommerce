@@ -20,6 +20,7 @@ class Product extends Model
         'min_stock',
         'status',
         'category_id',
+        'brand_id',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -36,6 +37,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     // 🔹 Relación con variantes

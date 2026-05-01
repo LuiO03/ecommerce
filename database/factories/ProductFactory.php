@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Feature;
+use App\Models\Brand;
 use App\Models\Option;
 use App\Models\Product;
 use App\Models\Variant;
@@ -23,6 +24,8 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $brandId = Brand::query()->inRandomOrder()->value('id');
+
         return [
             'sku' => $this->faker->unique()->bothify('SKU-#####'),
             'name' => $this->faker->words(3, true),
@@ -32,6 +35,7 @@ class ProductFactory extends Factory
             'discount' => $this->faker->optional()->numberBetween(1, 100),
             'status' => $this->faker->boolean(80), // 80% de probabilidad de ser true
             'category_id' => $this->faker->numberBetween(1, 10), // Asumiendo que hay al menos 10 categorías
+            'brand_id' => $brandId,
         ];
     }
 

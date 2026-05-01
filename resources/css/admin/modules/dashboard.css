@@ -101,11 +101,13 @@
     color: var(--color-text) ;
 }
 
+@media (hover: hover) and (pointer: fine) {
 .dashboard-card:hover {
     background-color: var(--color-accent);
     color: white;
     transform: translateY(-4px);
     box-shadow: var(--box-shadow-card-hover);
+}
 }
 
 .dashboard-card:hover .card-icon i {

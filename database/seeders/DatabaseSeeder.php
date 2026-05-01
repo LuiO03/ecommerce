@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             FamilySeeder::class,
             OptionSeeder::class,
             CategorySeeder::class,
+            BrandSeeder::class,
             TagSeeder::class,
             PostSeeder::class,
             CompanySettingSeeder::class,

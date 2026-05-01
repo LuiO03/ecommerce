@@ -6,6 +6,7 @@ use App\Exports\ProductsCsvExport;
 use App\Exports\ProductsExcelExport;
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Option;
 use App\Models\Product;
@@ -46,10 +47,11 @@ class ProductController extends Controller
             'status',
             'min_stock',
             'category_id',
+            'brand_id',
             'created_by',
             'created_at',
         ])
-            ->with(['category:id,name', 'creator:id,name,last_name'])
+            ->with(['category:id,name', 'brand:id,name', 'creator:id,name,last_name'])
             ->withCount(['variants', 'images'])
             ->withSum('variants as variants_stock_sum', 'stock')
             ->orderByDesc('id')
@@ -59,7 +61,11 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        return view('admin.products.index', compact('products', 'categories'));
+        $brands = Brand::where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
 
     public function create()
@@ -68,17 +74,22 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $brands = Brand::where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         $options = Option::with(['features' => fn ($query) => $query->orderBy('id')])
             ->orderBy('name')
             ->get();
 
-        return view('admin.products.create', compact('categories', 'options'));
+        return view('admin.products.create', compact('categories', 'brands', 'options'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
             'sku' => 'required|string|max:100|unique:products,sku',
             'name' => 'required|string|max:255|min:3',
             'description' => 'nullable|string',
@@ -95,6 +106,7 @@ class ProductController extends Controller
 
         $product = Product::create([
             'category_id' => $validated['category_id'],
+            'brand_id' => $validated['brand_id'],
             'sku' => $validated['sku'],
             'name' => $validated['name'],
             'slug' => $slug,
@@ -128,6 +140,7 @@ class ProductController extends Controller
         $product = Product::where('slug', $slug)
             ->with([
                 'category:id,name,slug',
+                'brand:id,name,slug',
                 'variants:id,product_id,sku,price,stock,status',
                 'images' => fn ($query) => $query->orderBy('order'),
                 'creator:id,name,last_name',
@@ -154,6 +167,10 @@ class ProductController extends Controller
             'category' => $product->category ? [
                 'name' => $product->category->name,
                 'slug' => $product->category->slug,
+            ] : null,
+            'brand' => $product->brand ? [
+                'name' => $product->brand->name,
+                'slug' => $product->brand->slug,
             ] : null,
             'price' => $product->price,
             'discount' => $product->discount,
@@ -207,6 +224,10 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $brands = Brand::where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         $product->load([
             'images' => fn ($query) => $query->orderBy('order'),
             'variants' => fn ($query) => $query->orderBy('id')->with(['features.option']),
@@ -216,13 +237,14 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.products.edit', compact('product', 'categories', 'options'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'options'));
     }
 
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
             'sku' => 'required|string|max:100|unique:products,sku,' . $product->id,
             'name' => 'required|string|max:255|min:3',
             'description' => 'nullable|string',
@@ -241,6 +263,7 @@ class ProductController extends Controller
 
         $product->update([
             'category_id' => $validated['category_id'],
+            'brand_id' => $validated['brand_id'],
             'sku' => $validated['sku'],
             'name' => $validated['name'],
             'slug' => $slug,

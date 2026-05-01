@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\CoverController;
 use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\DriverController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ClientController;
@@ -193,6 +194,25 @@ Route::controller(CategoryController::class)->group(function () {
     Route::post('/categories/export/excel', 'exportExcel')->name('admin.categories.export.excel');
     Route::post('/categories/export/pdf', 'exportPdf')->name('admin.categories.export.pdf');
     Route::post('/categories/export/csv', 'exportCsv')->name('admin.categories.export.csv');
+});
+
+// BRANDS
+Route::controller(BrandController::class)->group(function () {
+    // Mostrar datos completos de marca por slug
+    Route::get('/brands/{slug}/show', 'show')->name('admin.brands.show');
+    Route::get('/brands', 'index')->name('admin.brands.index');
+    Route::get('/brands/create', 'create')->name('admin.brands.create');
+    Route::post('/brands', 'store')->name('admin.brands.store');
+    Route::get('/brands/{brand}/edit', 'edit')->name('admin.brands.edit');
+    Route::put('/brands/{brand}', 'update')->name('admin.brands.update');
+    Route::delete('/brands/{brand}', 'destroy')->name('admin.brands.destroy');
+    Route::delete('/brands', 'destroyMultiple')->name('admin.brands.destroy-multiple');
+    Route::patch('/brands/{id}/status', 'updateStatus')->name('admin.brands.update-status');
+
+    // Exports
+    Route::post('/brands/export/excel', 'exportExcel')->name('admin.brands.export.excel');
+    Route::post('/brands/export/pdf', 'exportPdf')->name('admin.brands.export.pdf');
+    Route::post('/brands/export/csv', 'exportCsv')->name('admin.brands.export.csv');
 });
 
 // PRODUCTS

@@ -46,6 +46,16 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'categorias.update-status', 'description' => 'Puede activar o desactivar categorías'],
             ],
 
+            // --- Marcas ---
+            'marcas' => [
+                ['name' => 'marcas.index', 'description' => 'Puede ver la lista de marcas'],
+                ['name' => 'marcas.create', 'description' => 'Puede crear nuevas marcas'],
+                ['name' => 'marcas.edit', 'description' => 'Puede editar marcas existentes'],
+                ['name' => 'marcas.delete', 'description' => 'Puede eliminar marcas del sistema'],
+                ['name' => 'marcas.export', 'description' => 'Puede exportar marcas en varios formatos'],
+                ['name' => 'marcas.update-status', 'description' => 'Puede activar o desactivar marcas'],
+            ],
+
             // --- Roles ---
             'roles' => [
                 ['name' => 'roles.index', 'description' => 'Puede ver la lista de roles'],
@@ -225,6 +235,9 @@ class RolePermissionSeeder extends Seeder
             // Categorías
             'categorias.index', 'categorias.create', 'categorias.edit', 'categorias.delete',
 
+            // Marcas
+            'marcas.index', 'marcas.create', 'marcas.edit', 'marcas.delete',
+
             // Usuarios
             'usuarios.index', 'usuarios.create', 'usuarios.edit', 'usuarios.delete',
             'usuarios.reset-password',
@@ -242,6 +255,7 @@ class RolePermissionSeeder extends Seeder
             'productos.create',
             'productos.edit',
             'categorias.index',
+            'marcas.index',
             'usuarios.index',
         ]);
 
@@ -249,6 +263,7 @@ class RolePermissionSeeder extends Seeder
         $supervisor->syncPermissions([
             'productos.index',
             'categorias.index',
+            'marcas.index',
             'usuarios.index',
             'reportes.index',
         ]);

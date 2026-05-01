@@ -56,7 +56,7 @@
             @endcan
 
             <!-- Submenú Tienda -->
-            @canany(['familias.index', 'categorias.index', 'productos.index'])
+            @canany(['familias.index', 'categorias.index', 'marcas.index', 'productos.index'])
                 <li class="submenu-container">
                     <button type="button" class="sidebar-link w-full submenu-btn flex items-center" data-tooltip="Tienda">
                         <i class="ri-store-line sidebar-icon"></i>
@@ -87,6 +87,18 @@
                                 </a>
                             </li>
                         @endcan
+
+                        @can('marcas.index')
+                            <li>
+                                <a href="{{ request()->routeIs('admin.brands.*') ? '#' : route('admin.brands.index') }}"
+                                    class="sidebar-sublink {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}"
+                                    data-tooltip="Marcas">
+                                    <i class="ri-bookmark-3-line sidebar-icon"></i>
+                                    <span>Marcas</span>
+                                </a>
+                            </li>
+                        @endcan
+
                         @can('productos.index')
                             <li>
                                 <a href="{{ request()->routeIs('admin.products.*') ? '#' : route('admin.products.index') }}"

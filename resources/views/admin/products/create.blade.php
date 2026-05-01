@@ -78,6 +78,29 @@
                                     <i class="ri-arrow-down-s-line select-arrow"></i>
                                 </div>
                             </div>
+
+                            <div class="input-group">
+                                <label for="brand_id" class="label-form">
+                                    Marca
+                                    <i class="ri-asterisk text-accent"></i>
+                                </label>
+                                <div class="input-icon-container">
+                                    <i class="ri-bookmark-3-line input-icon"></i>
+                                    <select name="brand_id" id="brand_id" class="select-form" required
+                                        data-validate="required|selected">
+                                        <option value="" disabled {{ old('brand_id') ? '' : 'selected' }}>
+                                            Seleccione una marca</option>
+                                        @foreach ($brands as $brand)
+                                            <option value="{{ $brand->id }}"
+                                                {{ (int) old('brand_id') === $brand->id ? 'selected' : '' }}>
+                                                {{ $brand->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <i class="ri-arrow-down-s-line select-arrow"></i>
+                                </div>
+                            </div>
+
                             <div class="input-group">
                                 <label for="sku" class="label-form">
                                     SKU

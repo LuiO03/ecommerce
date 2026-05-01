@@ -200,7 +200,7 @@
 
             <!-- Tarjeta: Marcas -->
             @can('marcas.index')
-                <a href="" class="dashboard-card ripple-card">
+                <a href="{{ route('admin.brands.index') }}" class="dashboard-card ripple-card">
                     <div class="card-icon card-warning">
                         <i class="ri-award-line"></i>
                     </div>
