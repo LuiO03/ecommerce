@@ -2,7 +2,7 @@
 
 <x-admin-layout :showMobileFab="true">
     <x-slot name="title">
-        <div class="page-icon card-secondary">
+        <div class="page-icon card-warning">
             <i class="ri-bookmark-3-line"></i>
         </div>
         Lista de Marcas

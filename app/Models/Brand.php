@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Brand extends Model
@@ -16,7 +15,6 @@ class Brand extends Model
         'name',
         'slug',
         'description',
-        'image',
         'status',
         'created_by',
         'updated_by',
@@ -75,10 +73,5 @@ class Brand extends Model
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-    public function getImageUrlAttribute()
-    {
-        return $this->image ? Storage::url($this->image) : asset('images/no-image.png');
     }
 }

@@ -36,6 +36,29 @@
                             </div>
                         @endif
 
+                        @if ($brands && $brands->isNotEmpty())
+                            <section class="filters-brands" aria-label="Marcas">
+                                <span class="filters-name">Marcas</span>
+
+                                <div class="filters-brands-list">
+                                    @foreach ($brands as $brand)
+                                        <label class="filter-item {{ in_array($brand->id, $selectedBrands ?? []) ? 'is-active' : '' }}">
+                                            <input type="checkbox" wire:model.defer="selectedBrands"
+                                                value="{{ $brand->id }}">
+
+                                            <span class="filter-item-label">
+                                                {{ $brand->name }}
+                                            </span>
+
+                                            <span class="filters-count">
+                                                {{ $brand->products_count }}
+                                            </span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </section>
+                        @endif
+
                         @forelse ($options as $option)
                             @php
                                 $selectedCount = $selectedFeaturesByOption[$option->id] ?? 0;
@@ -60,7 +83,7 @@
                                             $displayColor =
                                                 $normalized !== null && $normalized !== '' ? '#' . $normalized : null;
                                         @endphp
-                                        <label class="filter-item {{ $isColorOption ? 'filter-item--color' : '' }}">
+                                        <label class="filter-item {{ in_array($feature->id, $selectedFeatures ?? []) ? 'is-active' : '' }}">
                                             <input type="checkbox" wire:model.defer="selectedFeatures"
                                                 value="{{ $feature->id }}">
                                             @if ($isColorOption && $displayColor)
@@ -85,7 +108,9 @@
                             </div>
                         @endforelse
 
-                        @if (count($options) > 0)
+
+
+                        @if (count($options) > 0 || ($brands && $brands->isNotEmpty()))
                             <div class="filters-footer">
                                 <button type="button" class="filters-apply" wire:click="applyFilters">
                                     <i class="ri-check-line"></i>
@@ -106,6 +131,8 @@
                             Resultados de búsqueda
                         @elseif ($category)
                             {{ $category->name }}
+                        @elseif ($brand)
+                            {{ $brand->name }}
                         @elseif ($family)
                             {{ $family->name }}
                         @else
@@ -220,7 +247,7 @@
 
                                 <div class="product-details">
                                     <div class="flex justify-between flex-wrap">
-                                        <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}</p>
+                                        <p class="product-brand">{{ $product->brand?->name ?? 'Sin marca' }}</p>
                                         <p class="product-rating">
                                             <i class="ri-star-fill"></i>
                                             <span>4.5 (128)</span>

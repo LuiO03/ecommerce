@@ -9,6 +9,7 @@
     use App\Http\Controllers\Site\FamilyController;
     use App\Http\Controllers\Site\SearchController;
     use App\Http\Controllers\Site\CategoryController;
+    use App\Http\Controllers\Site\BrandController;
     use App\Http\Controllers\Site\ProductController;
     use App\Http\Controllers\Site\WishlistController;
     use App\Http\Controllers\Site\CartController;
@@ -143,6 +144,7 @@
 
     Route::get('/families/{family}', [FamilyController::class, 'show'])->name('families.show');
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+    Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');

@@ -18,6 +18,7 @@ class ProductList extends Component
     public $strict = true;
     public $scope = 'strict_category';
     public $onSale = false;
+    public $brandId = null;
     // opciones:
     // strict_category
     // category_with_children
@@ -32,7 +33,8 @@ class ProductList extends Component
         $orderBy = 'latest',
         $strict = true,
         $scope = 'strict_category',
-        $onSale = false
+        $onSale = false,
+        $brandId = null
     ) {
         $this->limit = $limit;
         $this->categoryId = $categoryId;
@@ -41,6 +43,7 @@ class ProductList extends Component
         $this->strict = $strict;
         $this->scope = $this->normalizeScope($scope);
         $this->onSale = filter_var($onSale, FILTER_VALIDATE_BOOLEAN);
+        $this->brandId = $brandId;
 
         if ($title) $this->title = $title;
         if ($subtitle) $this->subtitle = $subtitle;
@@ -52,12 +55,17 @@ class ProductList extends Component
     private function baseQuery()
     {
         return Product::with([
+                'brand',
                 'category',
                 'images' => fn($q) =>
                     $q->orderBy('is_main', 'desc')
                     ->orderBy('order')
             ])
             ->where('status', true)
+
+            ->when($this->brandId, fn($q) =>
+                $q->where('brand_id', $this->brandId)
+            )
 
             ->when($this->onSale, fn($q) =>
                 $q->whereNotNull('discount')

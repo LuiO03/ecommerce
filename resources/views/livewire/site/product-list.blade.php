@@ -105,7 +105,7 @@
 
                                 <div class="product-details">
                                     <div class="flex justify-between">
-                                        <p class="product-brand">{{ $product->category?->name ?? 'Sin categoría' }}
+                                        <p class="product-brand">{{ $product->brand?->name ?? 'Sin marca' }}
                                         </p>
                                         <p class="product-rating">
                                             <i class="ri-star-fill"></i>

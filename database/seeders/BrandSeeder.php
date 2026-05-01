@@ -30,7 +30,6 @@ class BrandSeeder extends Seeder
                     'name' => $brand['name'],
                     'slug' => Str::slug($brand['name']),
                     'description' => $brand['description'],
-                    'image' => null,
                     'status' => true,
                     'created_by' => null,
                     'updated_by' => null,

@@ -159,27 +159,17 @@ class BrandController extends Controller
             'name' => 'required|string|max:255|min:2|unique:brands,name|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
 
         $slug = Brand::generateUniqueSlug($request->name);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $ext = $request->file('image')->getClientOriginalExtension();
-            $filename = $slug.'-'.time().'.'.$ext;
-            $imagePath = 'brands/'.$filename;
-            $request->file('image')->storeAs('brands', $filename, 'public');
-        }
-
         $brand = Brand::create([
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
             'status' => (bool) $request->status,
-            'image' => $imagePath,
             'created_by' => Auth::id(),
             'updated_by' => Auth::id(),
         ]);
@@ -206,37 +196,17 @@ class BrandController extends Controller
             'name' => 'required|string|max:255|min:2|unique:brands,name,'.$brand->id.'|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
 
         $slug = Brand::generateUniqueSlug($request->name, $brand->id);
 
-        $imagePath = $brand->image;
-
-        if ($request->input('remove_image') == '1') {
-            if ($brand->image && Storage::disk('public')->exists($brand->image)) {
-                Storage::disk('public')->delete($brand->image);
-            }
-            $imagePath = null;
-        } elseif ($request->hasFile('image')) {
-            if ($brand->image && Storage::disk('public')->exists($brand->image)) {
-                Storage::disk('public')->delete($brand->image);
-            }
-
-            $ext = $request->file('image')->getClientOriginalExtension();
-            $filename = $slug.'-'.time().'.'.$ext;
-            $imagePath = 'brands/'.$filename;
-            $request->file('image')->storeAs('brands', $filename, 'public');
-        }
-
         $brand->update([
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
             'status' => (bool) $request->status,
-            'image' => $imagePath,
             'updated_by' => Auth::id(),
         ]);
 
@@ -262,10 +232,6 @@ class BrandController extends Controller
             ]);
 
             return redirect()->back();
-        }
-
-        if ($brand->image && Storage::disk('public')->exists($brand->image)) {
-            Storage::disk('public')->delete($brand->image);
         }
 
         $name = $brand->name;
@@ -325,10 +291,6 @@ class BrandController extends Controller
         foreach ($brands as $brand) {
             $names[] = $brand->name;
 
-            if ($brand->image && Storage::disk('public')->exists($brand->image)) {
-                Storage::disk('public')->delete($brand->image);
-            }
-
             $brand->deleted_by = Auth::id();
             $brand->saveQuietly();
             $brand->deleteQuietly();
@@ -377,7 +339,6 @@ class BrandController extends Controller
             'description' => $brand->description,
             'status' => $brand->status,
             'products_count' => $brand->products_count,
-            'image' => $brand->image,
             'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
             'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',
             'created_at' => $brand->created_at ? $brand->created_at->format('d/m/Y H:i') : '—',

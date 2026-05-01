@@ -45,8 +45,8 @@
             </div>
         @endif
 
-        <div class="form-columns-row">
-            <div class="form-column">
+        <div class="form-body">
+            <div class="form-row-fit">
                 <div class="input-group">
                     <label for="name" class="label-form">
                         Nombre
@@ -80,76 +80,15 @@
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label for="description" class="label-form label-textarea">Descripción</label>
-                    <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
-                            data-validate="min:10|max:250">{{ old('description', $brand->description) }}</textarea>
-                        <i class="ri-file-text-line input-icon"></i>
-                    </div>
+            </div>
+            <div class="input-group">
+                <label for="description" class="label-form label-textarea">Descripción</label>
+                <div class="input-icon-container">
+                    <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                        data-validate="min:10|max:250">{{ old('description', $brand->description) }}</textarea>
+                    <i class="ri-file-text-line input-icon"></i>
                 </div>
             </div>
-
-            <div class="form-column">
-                <div class="image-upload-section">
-                    <label class="label-form">Imagen de la marca</label>
-
-                    <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                        data-validate="imageSingle|maxSizeSingleMB:3">
-                    <input type="hidden" name="remove_image" id="removeImageFlag" value="0">
-
-                    <div class="image-preview-zone {{ $brand->image && file_exists(public_path('storage/' . $brand->image)) ? 'has-image' : '' }}"
-                        id="imagePreviewZone">
-                        @if ($brand->image && file_exists(public_path('storage/' . $brand->image)))
-                            <img id="imagePreview" class="image-preview image-pulse"
-                                src="{{ asset('storage/' . $brand->image) }}" alt="{{ $brand->name }}">
-                            <div class="image-placeholder" id="imagePlaceholder" style="display: none;">
-                                <i class="ri-image-add-line"></i>
-                                <p>Arrastra una imagen aquí</p>
-                                <span>o haz clic para seleccionar</span>
-                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                            </div>
-                        @elseif($brand->image)
-                            <div class="image-error" id="imageError">
-                                <i class="ri-folder-close-line"></i>
-                                <p>Imagen no encontrada</p>
-                                <span>Haz clic para subir una nueva</span>
-                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                            </div>
-                        @else
-                            <div class="image-placeholder" id="imagePlaceholder">
-                                <i class="ri-image-add-line"></i>
-                                <p>Arrastra una imagen aquí</p>
-                                <span>o haz clic para seleccionar</span>
-                                <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                            </div>
-                        @endif
-
-                        <img id="imagePreviewNew" class="image-preview image-pulse" style="display: none;"
-                            alt="Vista previa">
-
-                        <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="boton-form boton-info" id="changeImageBtn"
-                                title="Cambiar imagen">
-                                <i class="ri-upload-2-line"></i>
-                                <span class="boton-form-text">Cambiar</span>
-                            </button>
-                            <button type="button" class="boton-form boton-danger" id="removeImageBtn"
-                                title="Eliminar imagen">
-                                <i class="ri-delete-bin-line"></i>
-                                <span class="boton-form-text">Eliminar</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="image-filename" id="imageFilename"
-                        style="{{ $brand->image && file_exists(public_path('storage/' . $brand->image)) ? 'display: flex;' : 'display: none;' }}">
-                        <i class="ri-file-image-line"></i>
-                        <span id="filenameText">{{ $brand->image ? basename($brand->image) : '' }}</span>
-                    </div>
-                </div>
-            </div>
-
         </div>
         <div class="form-footer">
             <a href="{{ route('admin.brands.index') }}" class="boton-form boton-volver">

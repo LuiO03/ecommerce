@@ -40,7 +40,15 @@ class SearchController extends Controller
             ->whereHas('variants', function ($variantQuery) {
                 $variantQuery->where('status', true);
             })
-            ->where('name', 'like', '%' . $query . '%')
+            ->where(function ($q) use ($query) {
+                $term = '%' . $query . '%';
+
+                $q->where('name', 'like', $term)
+                    ->orWhere('sku', 'like', $term)
+                    ->orWhereHas('brand', function ($brandQuery) use ($term) {
+                        $brandQuery->where('name', 'like', $term);
+                    });
+            })
             ->orderBy('name')
             ->limit(8)
             ->get()

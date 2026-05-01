@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Family;
 use App\Models\Feature;
+use App\Models\Brand;
 use Illuminate\Support\Facades\DB;
 
 class Filter extends Component
@@ -20,6 +21,7 @@ class Filter extends Component
     public $subcategories = [];
     public $options = [];
     public $selectedFeatures = [];
+    public $selectedFeaturesByOption = [];
     public $products = [];
     public $perPage = 12;
     public $perPageStep = 12;
@@ -29,6 +31,13 @@ class Filter extends Component
     public $totalProducts = 0;
     public $currentPage = 1;
     public $totalPages = 1;
+
+
+    public $brandCounts = [];
+    public $brand_id;
+    public $brand;
+    public $brands = [];
+    public $selectedBrands = [];
 
     public function mount()
     {
@@ -45,8 +54,12 @@ class Filter extends Component
             $this->family = Family::find($this->family_id);
         }
 
-        $this->loadSubcategories();
+        if ($this->brand_id) {
+            $this->brand = Brand::find($this->brand_id);
+        }
 
+        $this->loadSubcategories();
+        $this->loadBrands();
         $this->loadProducts();
     }
 
@@ -58,7 +71,7 @@ class Filter extends Component
 
     public function clearFilters()
     {
-        $this->reset(['selectedFeatures']);
+        $this->reset(['selectedFeatures', 'selectedBrands']);
         $this->perPage = $this->perPageStep;
         $this->loadProducts();
     }
@@ -101,6 +114,7 @@ class Filter extends Component
         if ($this->search) {
             // Modo búsqueda global: sin filtros por variantes/opciones
             $this->options = [];
+            $this->selectedFeaturesByOption = [];
         } else {
             if (!empty($this->selectedFeatures)) {
                 $featuresByOption = Feature::query()
@@ -109,6 +123,12 @@ class Filter extends Component
                     ->groupBy('option_id')
                     ->map(fn ($items) => $items->pluck('id')->all())
                     ->all();
+
+                $this->selectedFeaturesByOption = collect($featuresByOption)
+                    ->map(fn (array $featureIds) => count($featureIds))
+                    ->all();
+            } else {
+                $this->selectedFeaturesByOption = [];
             }
 
             $categoryIds = $this->resolveCategoryIds();
@@ -117,6 +137,7 @@ class Filter extends Component
 
         $baseProductQuery = DB::table('products')
             ->join('categories', 'categories.id', '=', 'products.category_id')
+            ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
             ->join('variants', 'variants.product_id', '=', 'products.id')
             ->where('products.status', true)
             ->where('variants.status', true)
@@ -131,12 +152,17 @@ class Filter extends Component
             $baseProductQuery->whereIn('products.category_id', $categoryIds);
         }
 
+        if (!empty($this->selectedBrands)) {
+            $baseProductQuery->whereIn('products.brand_id', $this->selectedBrands);
+        }
+
         if ($this->search) {
             $term = '%' . $this->search . '%';
             $baseProductQuery->where(function ($builder) use ($term) {
                 $builder->where('products.name', 'like', $term)
                     ->orWhere('products.sku', 'like', $term)
-                    ->orWhere('products.description', 'like', $term);
+                    ->orWhere('products.description', 'like', $term)
+                    ->orWhere('brands.name', 'like', $term);
             });
         }
 
@@ -147,12 +173,16 @@ class Filter extends Component
             $baseProductQuery->whereIn('products.id', $matchingVariantProductIds);
         }
 
+        if ($this->brand_id) {
+            $baseProductQuery->where('products.brand_id', $this->brand_id);
+        }
+
         $total = (clone $baseProductQuery)->distinct()->count('products.id');
         $this->totalProducts = $total;
         $this->totalPages = max(1, (int) ceil($total / $this->perPageStep));
         $this->currentPage = min($this->totalPages, (int) ceil($this->perPage / $this->perPageStep));
 
-        $query = Product::with(['category', 'images'])
+        $query = Product::with(['category', 'images', 'brand'])
             ->whereIn('products.id', $baseProductQuery);
 
         // Aplicar ordenamiento
@@ -189,6 +219,7 @@ class Filter extends Component
 
         $this->hasMore = $this->products->count() < $total;
         $this->loadFacetCounts($featuresByOption, $categoryIds);
+        $this->loadBrands();
         $this->filterOptionsByCounts();
     }
 
@@ -274,6 +305,14 @@ class Filter extends Component
                 $query->whereIn('products.category_id', $categoryIds);
             }
 
+            if (!empty($this->selectedBrands)) {
+                $query->whereIn('products.brand_id', $this->selectedBrands);
+            }
+
+            if ($this->brand_id) {
+                $query->where('products.brand_id', $this->brand_id);
+            }
+
             if (!empty($otherFilters)) {
                 $matchingVariantIds = $this->buildVariantMatchSubquery($otherFilters)
                     ->select('variants.id');
@@ -357,10 +396,43 @@ class Filter extends Component
             ->get(['id', 'name', 'slug']);
     }
 
+    protected function loadBrands(): void
+    {
+        if ($this->brand_id) {
+            $this->brands = collect();
+            return;
+        }
+        $query = Brand::query()
+            ->where('status', true)
+            ->whereHas('products', function ($q) {
+                $q->where('status', true);
+
+                if ($this->category_id) {
+                    $q->whereIn('category_id', $this->resolveCategoryIds());
+                } elseif ($this->family_id) {
+                    $q->whereHas('category', fn($c) =>
+                        $c->where('family_id', $this->family_id)
+                    );
+                }
+            })
+            ->withCount(['products as products_count' => function ($q) {
+                $q->where('status', true);
+
+                if ($this->category_id) {
+                    $q->whereIn('category_id', $this->resolveCategoryIds());
+                } elseif ($this->family_id) {
+                    $q->whereHas('category', fn($c) =>
+                        $c->where('family_id', $this->family_id)
+                    );
+                }
+            }])
+            ->orderBy('name');
+
+        $this->brands = $query->get();
+    }
+
     public function render()
     {
         return view('livewire.site.filter');
     }
-
-
 }

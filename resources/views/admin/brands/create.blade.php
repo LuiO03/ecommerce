@@ -36,8 +36,8 @@
             'Puedes subir una imagen opcional para la marca',
         ]" />
 
-        <div class="form-columns-row">
-            <div class="form-column">
+        <div class="form-body">
+            <div class="form-row-fit">
                 <div class="input-group">
                     <label for="name" class="label-form">
                         Nombre
@@ -69,53 +69,14 @@
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label for="description" class="label-form label-textarea">Descripción</label>
-                    <div class="input-icon-container">
-                        <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
-                            data-validate="min:10|max:250">{{ old('description') }}</textarea>
-                        <i class="ri-file-text-line input-icon"></i>
-                    </div>
-                </div>
             </div>
-
-            <div class="form-column">
-                <div class="image-upload-section">
-                    <label class="label-form">Imagen de la marca</label>
-
-                    <input type="file" name="image" id="image" class="file-input" accept="image/*"
-                        data-validate="imageSingle|maxSizeSingleMB:3">
-
-                    <div class="image-preview-zone" id="imagePreviewZone">
-                        <div class="image-placeholder" id="imagePlaceholder">
-                            <i class="ri-image-add-line"></i>
-                            <p>Arrastra una imagen aquí</p>
-                            <span>o haz clic para seleccionar</span>
-                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                        </div>
-
-                        <img id="imagePreview" class="image-preview image-pulse" style="display: none;"
-                            alt="Vista previa">
-
-                        <div class="image-overlay" id="imageOverlay" style="display: none;">
-                            <button type="button" class="boton-form boton-info" id="changeImageBtn">
-                                <i class="ri-upload-2-line"></i>
-                                <span class="boton-form-text">Cambiar</span>
-                            </button>
-
-                            <button type="button" class="boton-form boton-danger" id="removeImageBtn">
-                                <i class="ri-delete-bin-line"></i>
-                                <span class="boton-form-text">Eliminar</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="image-filename" id="imageFilename" style="display: none;">
-                        <i class="ri-file-image-line"></i>
-                        <span id="filenameText"></span>
-                    </div>
+            <div class="input-group">
+                <label for="description" class="label-form label-textarea">Descripción</label>
+                <div class="input-icon-container">
+                    <textarea name="description" id="description" class="textarea-form" placeholder="Ingrese la descripción" rows="4"
+                        data-validate="min:10|max:250">{{ old('description') }}</textarea>
+                    <i class="ri-file-text-line input-icon"></i>
                 </div>
-
             </div>
         </div>
 

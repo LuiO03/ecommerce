@@ -122,100 +122,114 @@
                 <i class="ri-close-line"></i>
             </button>
         </div>
-        <!-- Contenido del sidebar -->
-        <div class="site-sidebar-content">
-            <!-- Navegación principal -->
-
-            <nav class="site-nav-menu">
-                <a href="{{ route('about.index') }}" class="site-nav-menu-item">
-                    <i class="ri-information-line"></i>
-                    <span>Nosotros</span>
-                </a>
-                <a href="{{ route('site.blog.index') }}" class="site-nav-menu-item">
-                    <i class="ri-newspaper-line"></i>
-                    <span>Blog</span>
-                </a>
-                <a href="{{ route('contact.index') }}" class="site-nav-menu-item">
-                    <i class="ri-mail-line"></i>
-                    <span>Contacto</span>
-                </a>
-            </nav>
-            <hr class="w-full my-0 border-default">
-            <!-- Familias (sin subniveles en el panel izquierdo) -->
-            <nav class="site-nav-menu">
-                <div class="site-nav-section-title">Categorías</div>
-                @foreach ($families as $family)
-                    <button type="button" class="site-nav-family-link" data-family-id="{{ $family->id }}">
-                        <div class="site-nav-family-content">
-                            <i class="ri-shopping-basket-2-line"></i>
-                            <span>{{ $family->name }}</span>
-                        </div>
-                        <div class="site-arrow-family-content">
-                            <i class="ri-arrow-right-s-line family-arrow"></i>
-                        </div>
-                    </button>
-
-                    <!-- Panel de categorías (acordeón solo en móvil) -->
-                    <div class="site-flyout-panel-mobile" data-family-panel-mobile="{{ $family->id }}">
-                        <div class="site-flyout-content">
-                            @forelse($family->categories as $category)
-                                @include('livewire.site.category-flyout', [
-                                    'category' => $category,
-                                    'level' => 0,
-                                ])
-                            @empty
-                                <div class="site-flyout-empty">Sin categorías disponibles</div>
-                            @endforelse
-                        </div>
-                    </div>
-                @endforeach
-            </nav>
-            <hr class="w-full my-0 border-default">
-            <nav class="site-nav-menu">
-                <div class="site-nav-section-title">Información</div>
-                <a href="{{ route('site.legal.terms') }}" class="site-nav-menu-item">
-                    <i class="ri-file-text-line"></i>
-                    <span>Términos y condiciones</span>
-                </a>
-                <a href="{{ route('site.legal.privacy') }}" class="site-nav-menu-item">
-                    <i class="ri-shield-line"></i>
-                    <span>Política de privacidad</span>
-                </a>
-                <a href="{{ route('site.legal.claims') }}" class="site-nav-menu-item">
-                    <i class="ri-book-line"></i>
-                    <span>Libro de reclamaciones</span>
-                </a>
-                <a href="#" class="site-nav-menu-item">
-                    <i class="ri-question-line"></i>
-                    <span>Preguntas frecuentes</span>
-                </a>
-            </nav>
-        </div>
-
-        <!-- Panel derecho de categorías por familia (solo desktop/tablet) -->
-        <div class="site-sidebar-flyout">
-            @foreach ($families as $family)
-                <div class="site-flyout-panel" data-family-panel="{{ $family->id }}">
-                    <div class="site-flyout-header">
-                        <span class="site-flyout-header-title">{{ $family->name }}</span>
-                        <a href="{{ route('families.show', $family) }}" class="site-btn site-btn-primary">
-                            <span class="boton-form-icon">
-                                <i class="ri-eye-line"></i>
-                            </span>
-                            <span class="boton-form-text">Ver Todo</span>
+        <div class="site-sidebar-pages" data-sidebar-pages>
+            <!-- Página raíz: menú completo -->
+            <section class="site-sidebar-page active" data-sidebar-page="root" aria-hidden="false">
+                <!-- Contenido del sidebar -->
+                <div class="site-sidebar-content">
+                    <!-- Navegación principal -->
+                    <nav class="site-nav-menu" aria-label="Navegación principal">
+                        <a href="{{ route('about.index') }}" class="site-nav-menu-item" data-sidebar-close>
+                            <i class="ri-information-line"></i>
+                            <span>Nosotros</span>
                         </a>
-                    </div>
-                    <div class="site-flyout-content">
-                        @forelse($family->categories as $category)
-                            @include('livewire.site.category-flyout', [
-                                'category' => $category,
-                                'level' => 0,
-                            ])
-                        @empty
-                            <div class="site-flyout-empty">Sin categorías disponibles</div>
-                        @endforelse
-                    </div>
+                        <a href="{{ route('site.blog.index') }}" class="site-nav-menu-item" data-sidebar-close>
+                            <i class="ri-newspaper-line"></i>
+                            <span>Blog</span>
+                        </a>
+                        <a href="{{ route('contact.index') }}" class="site-nav-menu-item" data-sidebar-close>
+                            <i class="ri-mail-line"></i>
+                            <span>Contacto</span>
+                        </a>
+                    </nav>
+
+                    <hr class="w-full my-0 border-default">
+
+                    <!-- Familias → Categorías (navegación por páginas) -->
+                    <nav class="site-nav-menu" aria-label="Categorías">
+                        <div class="site-nav-section-title">Categorías</div>
+                        @foreach ($families as $family)
+                            <button type="button" class="site-sidebar-page-link" data-sidebar-nav-to="family-{{ $family->id }}"
+                                aria-label="Ver categorías de {{ $family->name }}">
+                                <span class="site-sidebar-page-link-leading">
+                                    <i class="ri-shopping-basket-2-line" aria-hidden="true"></i>
+                                    <span class="site-sidebar-page-link-text">{{ $family->name }}</span>
+                                </span>
+                                <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+                            </button>
+                        @endforeach
+                    </nav>
+
+                    <hr class="w-full my-0 border-default">
+
+                    <nav class="site-nav-menu" aria-label="Información">
+                        <div class="site-nav-section-title">Información</div>
+                        <a href="{{ route('site.legal.terms') }}" class="site-nav-menu-item" data-sidebar-close>
+                            <i class="ri-file-text-line"></i>
+                            <span>Términos y condiciones</span>
+                        </a>
+                        <a href="{{ route('site.legal.privacy') }}" class="site-nav-menu-item" data-sidebar-close>
+                            <i class="ri-shield-line"></i>
+                            <span>Política de privacidad</span>
+                        </a>
+                        <a href="{{ route('site.legal.claims') }}" class="site-nav-menu-item" data-sidebar-close>
+                            <i class="ri-book-line"></i>
+                            <span>Libro de reclamaciones</span>
+                        </a>
+                        <a href="#" class="site-nav-menu-item" data-sidebar-close>
+                            <i class="ri-question-line"></i>
+                            <span>Preguntas frecuentes</span>
+                        </a>
+                    </nav>
                 </div>
+            </section>
+
+            <!-- Páginas por familia -->
+            @foreach ($families as $family)
+                <section class="site-sidebar-page" data-sidebar-page="family-{{ $family->id }}" aria-hidden="true">
+                    <div class="site-sidebar-page-nav" aria-label="Navegación de categorías">
+                        <button type="button" class="site-sidebar-nav-btn" data-sidebar-back aria-label="Regresar">
+                            <i class="ri-arrow-left-s-line"></i>
+                            <span>Regresar</span>
+                        </button>
+
+                        <div class="site-sidebar-page-title" title="{{ $family->name }}">{{ $family->name }}</div>
+
+                        <div class="site-sidebar-page-actions">
+                            <a href="{{ route('families.show', $family) }}" class="site-btn site-btn-primary site-sidebar-cta" data-sidebar-close>
+                                <span class="boton-form-text">Ver todo</span>
+                            </a>
+                            <button type="button" class="site-sidebar-nav-btn" data-sidebar-home aria-label="Menú principal">
+                                <i class="ri-home-4-line"></i>
+                                <span>Menú</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="site-sidebar-content">
+                        <nav class="site-nav-menu" aria-label="Categorías de {{ $family->name }}">
+                            @forelse ($family->categories as $category)
+                                @if ($category->children->isNotEmpty())
+                                    <button type="button" class="site-sidebar-page-link" data-sidebar-nav-to="category-{{ $category->id }}"
+                                        aria-label="Ver subcategorías de {{ $category->name }}">
+                                        <span class="site-sidebar-page-link-text">{{ $category->name }}</span>
+                                        <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+                                    </button>
+                                @else
+                                    <a href="{{ route('categories.show', $category) }}" class="site-sidebar-leaf-link" data-sidebar-close>
+                                        <span class="site-sidebar-page-link-text">{{ $category->name }}</span>
+                                    </a>
+                                @endif
+                            @empty
+                                <div class="site-sidebar-empty">Sin categorías disponibles</div>
+                            @endforelse
+                        </nav>
+                    </div>
+                </section>
+
+                @foreach ($family->categories as $category)
+                    @include('livewire.site.sidebar-category-page', ['category' => $category])
+                @endforeach
             @endforeach
         </div>
     </aside>
