@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
             UserSeeder::class,
+            ClientSeeder::class,
             FamilySeeder::class,
             OptionSeeder::class,
             CategorySeeder::class,
@@ -45,7 +46,7 @@ class DatabaseSeeder extends Seeder
             CompanySettingSeeder::class,
         ]);
 
-        Product::factory(20)->create();
+        Product::factory(100)->create();
     }
 
 }

@@ -7,6 +7,7 @@ use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Family extends Model
 {
@@ -38,6 +39,18 @@ class Family extends Model
     public function categories()
     {
         return $this->hasMany(Category::class);
+    }
+
+    public function products(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Product::class,
+            Category::class,
+            'family_id',   // FK en categories
+            'category_id', // FK en products
+            'id',          // PK families
+            'id'           // PK categories
+        );
     }
 
     public function creator()

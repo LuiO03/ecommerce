@@ -1,320 +1,442 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Familias</title>
+    <title>Reporte de Familias</title>
 
     <style>
-        /* Dompdf-friendly: evita layouts modernos complejos */
         @page {
-            margin: 105px 45px 60px 45px;
+            margin: 115px 34px 62px 34px;
         }
 
         body {
             margin: 0;
-            font-family: "DejaVu Sans", sans-serif;
-            font-size: 12px;
-            color: #2b2b2b;
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 10px;
+            color: #111827;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        /* ==========================
-            HEADER / FOOTER (fijos)
-        =========================== */
-        .pdf-header {
+        /* ===============================
+           HEADER
+        =============================== */
+        .header {
             position: fixed;
+            top: -98px;
             left: 0;
             right: 0;
-            top: -85px;
-            height: 85px;
+            height: 88px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 8px;
         }
 
-        .pdf-footer {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: -45px;
-            height: 45px;
-            font-size: 10px;
-            color: #2b2b2b;
-        }
-
-        .brand-bar {
-            border-bottom: 2px solid #4F46E5;
-            padding-bottom: 10px;
-        }
-
+        .header-table,
+        .footer-table,
+        .summary-table,
+        .data,
         .brand-table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
         }
 
-        .brand-left {
-            width: 38%;
-            vertical-align: middle;
+        .left {
+            text-align: left;
         }
 
-        .brand-right {
-            width: 62%;
+        .right {
             text-align: right;
+        }
+
+        .muted {
+            color: #6B7280;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 9px;
+            color: #6B7280;
+        }
+
+        /* ===============================
+           BRAND
+        =============================== */
+        .logo-cell {
+            width: 38px;
+            padding-right: 10px;
             vertical-align: middle;
         }
 
-        .brand-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1a1a1a;
+        .text-cell {
+            vertical-align: middle;
         }
 
-        .brand-sub {
-            font-size: 10px;
+        .company-logo {
+            width: 34px;
+            height: 34px;
+        }
+
+        .company-name, .system-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111827;
+            line-height: 1.1;
+        }
+
+        .system-name{
+            text-transform: uppercase
+        }
+
+        .system-name span {
+            font-size: 18px;
+            font-weight: normal;
+            color: #111827;
+        }
+
+        .company-mini {
+            font-size: 9px;
+            color: #6B7280;
             margin-top: 2px;
         }
 
-        .brand-logo {
-            height: 26px;
-            width: auto;
-            display: inline-block;
+        /* ===============================
+           FOOTER
+        =============================== */
+        .footer {
+            position: fixed;
+            bottom: -48px;
+            left: 0;
+            right: 0;
+            height: 36px;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 6px;
+            font-size: 9px;
+            color: #6B7280;
+        }
+
+        .page-number:before {
+            content: "Página " counter(page) " de " counter(pages);
+        }
+
+        .seal {
+            font-weight: bold;
+            letter-spacing: .6px;
+            color: #111827;
+        }
+
+        /* ===============================
+           SUMMARY
+        =============================== */
+        .summary {
+            margin-bottom: 14px;
+        }
+
+        .summary td {
+            width: 33.33%;
+            padding: 0 4px;
+        }
+
+        .card {
+            border: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        .card-label {
+            font-size: 9px;
+            margin-bottom: 4px;
+            color: #6B7280;
+        }
+
+        .card-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .card-blue {
+            border-top: 2px solid #3B82F6;
+        }
+
+        .card-green {
+            border-top: 2px solid #10B981;
+        }
+
+        .card-orange {
+            border-top: 2px solid #F59E0B;
+        }
+
+        /* ===============================
+           TABLE
+        =============================== */
+        .data {
+            table-layout: fixed;
+        }
+
+        .data th {
+            background: #EEF2FF;
+            border: 1px solid #E5E7EB;
+            padding: 8px 6px;
+            font-size: 9px;
+            text-align: left;
+        }
+
+        .data td {
+            border: 1px solid #E5E7EB;
+            padding: 7px 6px;
             vertical-align: middle;
+            font-size: 9px;
         }
 
-        .report-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #1a1a1a;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
+        .data tbody tr:nth-child(even) td {
+            background: #FAFAFA;
         }
 
-        .report-meta {
-            font-size: 10px;
-            margin-top: 4px;
-        }
-
-        .meta-pill {
-            display: inline-block;
-            padding: 4px 8px;
-            border: 1px solid #d1d1d1;
-            border-radius: 999px;
-            margin-left: 6px;
-            white-space: nowrap;
-        }
-
-        .footer-line {
-            border-top: 1px solid #d1d1d1;
-            padding-top: 8px;
-        }
-
-        .footer-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        .footer-left {
-            width: 70%;
-            text-align: left;
-        }
-
-        .footer-right {
-            width: 30%;
-            text-align: right;
-        }
-
-        /* ==========================
-            CONTENIDO
-        =========================== */
-        .content {
-            width: 100%;
-        }
-
-        /* ==========================
-            TABLA
-        =========================== */
-        table.data-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        thead {
-            display: table-header-group;
-        }
-
-        th {
-            background: #F3F4FF;
-            color: #1a1a1a;
-            font-size: 11px;
-            padding: 9px 8px;
-            border: 1px solid #d1d1d1;
-            text-align: left;
-        }
-
-        th.th-center {
+        th.center, td.center {
             text-align: center;
         }
 
-        td {
-            border: 1px solid #d1d1d1;
-            padding: 9px 8px;
-            font-size: 11px;
-            vertical-align: top;
-            word-wrap: break-word;
+        .bold {
+            font-weight: bold;
         }
 
-        tr:nth-child(even) td {
-            background: #F3F4FF;
-        }
-
-        .col-id {
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .col-name {
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-
-        .status {
-            text-align: center;
-            font-weight: 800;
-            letter-spacing: 0.2px;
+        .small {
+            font-size: 8.5px;
         }
 
         .active {
-            color: #15803d;
+            color: #15803D;
+            font-weight: bold;
         }
 
         .inactive {
-            color: #b91c1c;
+            color: #B91C1C;
+            font-weight: bold;
         }
 
-        .date {
-            text-align: center;
-            white-space: nowrap;
+        /* ===============================
+           NOTICE
+        =============================== */
+        .notice {
+            border: 1px solid #DBEAFE;
+            background: #EFF6FF;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            font-size: 9px;
         }
+
+
     </style>
 </head>
+
 <body>
 
-    @php
-        $familiesCollection = collect($families);
-        $total = $familiesCollection->count();
-        $totalActive = $familiesCollection->where('status', true)->count();
-        $totalInactive = $total - $totalActive;
-        $generatedAt = now()->format('d/m/Y H:i');
+@php
+    use Illuminate\Support\Facades\Auth;
 
-        $company = function_exists('company_setting') ? company_setting() : null;
-        $companyName = $company->name ?? 'Ecommerce';
+    $items = collect($families);
 
-        $logoSrc = null;
-        if ($company && !empty($company->logo_path)) {
-            $raw = ltrim((string) $company->logo_path, '/');
-            if (preg_match('/^https?:\/\//', $raw)) {
-                $logoSrc = $raw;
-            } else {
-                $local = public_path($raw);
-                if (is_file($local)) {
-                    $logoSrc = $local;
-                } else {
-                    $localStorage = public_path('storage/' . $raw);
-                    if (is_file($localStorage)) {
-                        $logoSrc = $localStorage;
-                    }
-                }
-            }
-        }
-    @endphp
+    $totalFamilies   = $items->count();
+    $totalCategories = $items->sum('categories_count');
+    $totalProducts   = $items->sum('products_count');
 
-    <!-- Header fijo -->
-    <div class="pdf-header">
-        <div class="brand-bar">
-            <table class="brand-table">
-                <tr>
-                    <td class="brand-left">
-                        @if ($logoSrc)
-                            <img src="{{ $logoSrc }}" class="brand-logo" alt="{{ $companyName }}">
-                        @endif
-                        <div class="brand-name">{{ $companyName }}</div>
-                        <div class="brand-sub">Reporte administrativo</div>
-                    </td>
-                    <td class="brand-right">
-                        <div class="report-title">Listado de Familias</div>
-                        <div class="report-meta">
-                            <span class="meta-pill">Generado: {{ $generatedAt }}</span>
-                            <span class="meta-pill">Total: {{ $total }}</span>
-                            <span class="meta-pill">Activas: {{ $totalActive }}</span>
-                            <span class="meta-pill">Inactivas: {{ $totalInactive }}</span>
+    $generatedAt = now()->format('d/m/Y H:i');
+
+    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+
+    $companySettings = function_exists('company_setting') ? company_setting() : null;
+
+    if ($companySettings && $companySettings->logo_path) {
+        $fullPath = public_path('storage/' . $companySettings->logo_path);
+        $pdfLogoUrl = file_exists($fullPath)
+            ? $fullPath
+            : public_path('images/logos/logo-geckommerce.png');
+    } else {
+        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+    }
+
+    $companyName = !empty($companySettings?->name)
+        ? $companySettings->name
+        : config('app.name');
+
+    $exportType = $isSelectedExport
+        ? 'Exportación seleccionada'
+        : 'Exportación total';
+@endphp
+
+<!-- =======================================
+HEADER
+======================================= -->
+<div class="header">
+    <table class="header-table">
+        <tr>
+            <td width="52%" class="left">
+
+                <table class="brand-table">
+                    <tr>
+                        <td class="logo-cell">
+                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
+                        </td>
+
+                        <td class="text-cell">
+                            @if (!empty($companySettings?->name))
+                                <div class="company-name">{{ $companyName }}</div>
+                            @else
+                                <div class="system-name">Gecko<span>Mmerce</span></div>
+                            @endif
+                            <div class="company-mini">Panel administrativo</div>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+
+            <td width="48%" class="right">
+                <div class="title">Reporte de Familias</div>
+                <div class="subtitle">{{ $exportType }}</div>
+                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                <div class="subtitle">Usuario: {{ $userName }}</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- =======================================
+FOOTER
+======================================= -->
+<div class="footer">
+    <table class="footer-table">
+        <tr>
+            <td width="33%" class="left">
+                {{ $companyName }}
+            </td>
+
+            <td width="34%" class="center seal">
+                DOCUMENTO INTERNO
+            </td>
+
+            <td width="33%" class="right">
+                <span class="page-number"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- =======================================
+CONTENT
+======================================= -->
+<div>
+
+    <!-- NOTICE -->
+    <div class="notice">
+        {{ $isSelectedExport
+            ? 'Este archivo contiene únicamente familias seleccionadas por el usuario.'
+            : 'Este archivo contiene el listado completo de familias registradas.' }}
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary">
+        <table class="summary-table">
+            <tr>
+                <td>
+                    <div class="card card-blue">
+                        <div class="card-label">
+                            {{ $isSelectedExport ? 'Seleccionadas' : 'Total familias' }}
                         </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                        <div class="card-value">{{ $totalFamilies }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-green">
+                        <div class="card-label">Categorías</div>
+                        <div class="card-value">{{ $totalCategories }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-orange">
+                        <div class="card-label">Productos</div>
+                        <div class="card-value">{{ $totalProducts }}</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <!-- Footer fijo -->
-    <div class="pdf-footer">
-        <div class="footer-line">
-            <table class="footer-table">
-                <tr>
-                    <td class="footer-left">
-                        {{ $companyName }} · Exportación PDF
-                    </td>
-                    <td class="footer-right">
-                        {{ $generatedAt }}
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div class="content">
-        <table class="data-table">
+    <!-- TABLE -->
+    <table class="data">
         <colgroup>
-            <col style="width: 8%">
-            <col style="width: 20%">
-            <col style="width: 45%">
-            <col style="width: 12%">
-            <col style="width: 15%">
+            <col style="width:34px">
+            <col style="width:30%">
+            <col style="width:24%">
+            <col style="width:12%">
+            <col style="width:12%">
+            <col style="width:12%">
         </colgroup>
 
         <thead>
             <tr>
-                <th class="th-center">ID</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th class="th-center">Estado</th>
-                <th class="th-center">Fecha</th>
+                <th class="center">ID</th>
+                <th>Familia</th>
+                <th>Slug</th>
+                <th class="center">Categorías</th>
+                <th class="center">Productos</th>
+                <th class="center">Estado</th>
             </tr>
         </thead>
 
         <tbody>
-            @foreach($families as $family)
+            @forelse($families as $family)
                 <tr>
-                    <td class="col-id">{{ $family->id }}</td>
+                    <td class="center">{{ $family->id }}</td>
 
-                    <td class="col-name">{{ $family->name }}</td>
-
-                    <td style="white-space: pre-line;">{{ $family->description ?? '—' }}</td>
-
-                    <td class="status {{ $family->status ? 'active' : 'inactive' }}">
-                        {{ $family->status ? 'Activo' : 'Inactivo' }}
+                    <td class="bold">
+                        {{ $family->name }}
                     </td>
 
-                    <td class="date">
-                        {{ $family->created_at?->format('d/m/Y H:i') ?? 'Sin fecha' }}
+                    <td class="small">
+                        {{ $family->slug ?: '—' }}
+                    </td>
+
+                    <td class="center">
+                        {{ $family->categories_count }}
+                    </td>
+
+                    <td class="center">
+                        {{ $family->products_count }}
+                    </td>
+
+                    <td class="center">
+                        @if($family->status)
+                            <span class="active">Activo</span>
+                        @else
+                            <span class="inactive">Inactivo</span>
+                        @endif
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="6" class="center muted">
+                        No existen familias registradas.
+                    </td>
+                </tr>
+            @endforelse
         </tbody>
 
-        </table>
-    </div>
+    </table>
+
+</div>
 
 </body>
 </html>

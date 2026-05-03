@@ -76,35 +76,59 @@ class UserController extends Controller
     // ======================
     //       EXPORT PDF
     // ======================
+
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $users = User::whereIn('id', $request->ids)->get();
-        } elseif ($request->has('export_all')) {
-            $users = User::all();
+        // Mantener consistencia con el index: excluir usuarios con rol "Cliente".
+        $query = User::query()
+            ->whereDoesntHave('roles', function ($q) {
+                $q->where('name', 'Cliente');
+            })
+            ->select([
+                'id',
+                'name',
+                'last_name',
+                'email',
+                'status',
+                'last_login_at',
+                'created_at',
+                'updated_at',
+            ])
+            ->with('roles');
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron usuarios para exportar.',
             ]);
-            return back()->with('error', 'No se seleccionaron usuarios para exportar.');
+
+            return back();
         }
+
+        $users = $query->orderByDesc('id')->get();
 
         if ($users->isEmpty()) {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin datos',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
                 'message' => 'No hay usuarios disponibles para exportar.',
             ]);
-            return back()->with('error', 'No hay usuarios disponibles.');
+
+            return back();
         }
 
-        $filename = 'usuarios_'.now()->format('Y-m-d_H-i-s').'.pdf';
+        $filename = 'usuarios_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
-        // Auditoría de exportación PDF
         Audit::create([
             'user_id'        => Auth::id(),
             'event'          => 'pdf_exported',
@@ -112,16 +136,21 @@ class UserController extends Controller
             'auditable_id'   => null,
             'old_values'     => null,
             'new_values'     => [
-                'ids'        => $request->ids ?? null,
-                'export_all' => $request->boolean('export_all', false),
                 'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $users->count(),
             ],
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
 
-        $pdf = Pdf::loadView('admin.export.users-pdf', compact('users'));
-        $pdf->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('admin.export.users-pdf', [
+            'users'         => $users,
+            'isSelectedExport' => $isSelectedExport,
+            'exportedBy'       => Auth::user()?->name . ' ' . Auth::user()?->last_name,
+        ])->setPaper('a4', 'portrait');
 
         return $pdf->download($filename);
     }

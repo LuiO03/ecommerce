@@ -117,24 +117,26 @@
             <div class="selection-bar" id="selectionBar">
                 <div class="selection-actions">
 
-                    <button id="exportSelectedExcel" class="boton-selection boton-success">
+                    <button id="exportSelectedExcel" class="boton-selection boton-success" title="Exportar registros seleccionados a Excel">
                         <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
                         <span class="boton-selection-text">Excel</span>
+                        <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="excelBadge">0</span>
                     </button>
 
-                    <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                        <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
-                        <span class="boton-selection-text">CSV</span>
-                        <span class="selection-badge" id="csvBadge">0</span>
-                    </button>
-
-                    <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                    <button id="exportSelectedPdf" class="boton-selection boton-danger" title="Exportar registros seleccionados a PDF">
                         <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
                         <span class="boton-selection-text">PDF</span>
+                        <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="pdfBadge">0</span>
                     </button>
 
+                    <button id="exportSelectedCsv" class="boton-selection boton-orange" title="Exportar registros seleccionados a CSV">
+                        <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
+                        <span class="boton-selection-text">CSV</span>
+                        <span class="boton-selection-dot">•</span>
+                        <span class="selection-badge" id="csvBadge">0</span>
+                    </button>
                 </div>
 
                 <div class="selection-info">
@@ -181,12 +183,12 @@
                             <td class="column-name-td">
                                 @if ($log->user)
                                     <span class="badge badge-primary">
-                                        <i class="ri-user-3-line"></i>
+                                        <i class="ri-user-3-fill"></i>
                                         {{ $log->user->name }}
                                     </span>
                                 @else
                                     <span class="badge badge-gray">
-                                        <i class="ri-user-unfollow-line"></i>
+                                        <i class="ri-user-unfollow-fill"></i>
                                         Invitado
                                     </span>
                                 @endif
@@ -197,22 +199,22 @@
                             <td data-action="{{ $log->action }}">
                                 @if ($log->action === 'login')
                                     <span class="badge badge-info">
-                                        <i class="ri-login-box-line"></i>
+                                        <i class="ri-login-box-fill"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @elseif($log->action === 'logout')
                                     <span class="badge badge-warning">
-                                        <i class="ri-logout-box-line"></i>
+                                        <i class="ri-logout-box-fill"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @elseif($log->action === 'failed')
                                     <span class="badge badge-danger">
-                                        <i class="ri-error-warning-line"></i>
+                                        <i class="ri-error-warning-fill"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @else
                                     <span class="badge badge-gray">
-                                        <i class="ri-question-line"></i>
+                                        <i class="ri-question-fill"></i>
                                         {{ $log->action_label }}
                                     </span>
                                 @endif
@@ -221,12 +223,12 @@
                             <td class="column-status-td" data-status="{{ $log->status }}">
                                 @if ($log->status === 'success')
                                     <span class="badge boton-success">
-                                        <i class="ri-checkbox-circle-line"></i>
+                                        <i class="ri-checkbox-circle-fill"></i>
                                         {{ $log->status_label }}
                                     </span>
                                 @elseif($log->status === 'failed')
                                     <span class="badge boton-danger">
-                                        <i class="ri-close-circle-line"></i>
+                                        <i class="ri-close-circle-fill"></i>
                                         {{ $log->status_label }}
                                     </span>
                                 @endif

@@ -138,7 +138,7 @@
             <div class="selection-bar" id="selectionBar">
                 @can('clientes.export')
                     <div class="selection-actions">
-                        <button id="exportSelectedExcel" class="boton-selection boton-success">
+                        <button id="exportSelectedExcel" class="boton-selection boton-success" title="Exportar registros seleccionados a Excel">
                             <span class="boton-selection-icon">
                                 <i class="ri-file-excel-2-fill"></i>
                             </span>
@@ -146,15 +146,7 @@
                             <span class="boton-selection-dot">•</span>
                             <span class="selection-badge" id="excelBadge">0</span>
                         </button>
-                        <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                            <span class="boton-selection-icon">
-                                <i class="ri-file-text-fill"></i>
-                            </span>
-                            <span class="boton-selection-text">CSV</span>
-                            <span class="boton-selection-dot">•</span>
-                            <span class="selection-badge" id="csvBadge">0</span>
-                        </button>
-                        <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                        <button id="exportSelectedPdf" class="boton-selection boton-danger" title="Exportar registros seleccionados a PDF">
                             <span class="boton-selection-icon">
                                 <i class="ri-file-pdf-2-fill"></i>
                             </span>
@@ -162,10 +154,20 @@
                             <span class="boton-selection-dot">•</span>
                             <span class="selection-badge" id="pdfBadge">0</span>
                         </button>
+                        <button id="exportSelectedCsv" class="boton-selection boton-orange" title="Exportar registros seleccionados a CSV">
+                             <span class="boton-selection-icon">
+                                <i class="ri-file-text-fill"></i>
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-text-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">CSV</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="csvBadge">0</span>
+                        </button>
                     </div>
                 @endcan
                 @can('clientes.delete')
-                    <button id="deleteSelected" class="boton-selection boton-danger">
+                    <button id="deleteSelected" class="boton-selection boton-danger" title="Eliminar registros seleccionados">
                         <span class="boton-selection-icon">
                             <i class="ri-delete-bin-line"></i>
                         </span>
@@ -200,55 +202,57 @@
                         <th class="column-last-name-th">Apellidos</th>
                         <th class="column-email-th">Email</th>
                         <th class="column-verified-th">Verificado</th>
+                        <th class="column-addresses-th">Direcciones</th>
+                        <th class="column-orders-th">Pedidos</th>
                         <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
-                        <tr data-id="{{ $user->id }}" data-name="{{ $user->name }}">
+                    @foreach ($clients as $client)
+                        <tr data-id="{{ $client->id }}" data-name="{{ $client->name }}">
 
                             <td class="control" title="Expandir detalles">
                             </td>
                             @canany(['clientes.export', 'clientes.delete'])
                                 <td class="column-check-td">
                                     <div>
-                                        <input type="checkbox" class="check-row" id="check-row-{{ $user->id }}"
-                                            name="users[]" value="{{ $user->id }}">
+                                        <input type="checkbox" class="check-row" id="check-row-{{ $client->id }}"
+                                            name="users[]" value="{{ $client->id }}">
                                     </div>
                                 </td>
                             @endcanany
                             <td class="column-id-td">
-                                <span class="id-text">{{ $user->id }}</span>
+                                <span class="id-text">{{ $client->id }}</span>
                             </td>
                             <td class="column-name-td">
                                 <div class="user-info">
-                                    @if ($user->image)
-                                        <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}"
+                                    @if ($client->image)
+                                        <img src="{{ asset('storage/' . $client->image) }}" alt="{{ $client->name }}"
                                             class="user-avatar"
                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                         <div class="user-avatar-placeholder"
-                                            style="display: none; background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
-                                            {{ $user->initials }}
+                                            style="display: none; background: {{ $client->avatar_colors['background'] }}; color: {{ $client->avatar_colors['color'] }}">
+                                            {{ $client->initials }}
                                         </div>
                                     @else
                                         <div class="user-avatar-placeholder"
-                                            style="background: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}">
-                                            {{ $user->initials }}
+                                            style="background: {{ $client->avatar_colors['background'] }}; color: {{ $client->avatar_colors['color'] }}">
+                                            {{ $client->initials }}
                                         </div>
                                     @endif
-                                    <span>{{ $user->name }}</span>
+                                    <span>{{ $client->name }}</span>
                                 </div>
                             </td>
                             <td class="column-last-name-td">
-                                <span class="{{ $user->last_name ? '' : 'text-muted-td' }}">
-                                    {{ $user->last_name ?? 'Sin apellidos' }}
+                                <span class="{{ $client->last_name ? '' : 'text-muted-td' }}">
+                                    {{ $client->last_name ?? 'Sin apellidos' }}
                                 </span>
                             </td>
-                            <td class="column-email-td">{{ $user->email }}</td>
+                            <td class="column-email-td">{{ $client->email }}</td>
                             <td class="column-verified-td">
-                                @if ($user->email_verified_at)
+                                @if ($client->email_verified_at)
                                     <span class="badge badge-success" title="Email verificado">
                                         <i class="ri-checkbox-circle-fill"></i>
                                         Verificado
@@ -260,15 +264,17 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="column-status-td" data-status="{{ $user->status ? 1 : 0 }}"}}">
+                            <td class="column-addresses-td">{{ $client->addresses()->count() }}</td>
+                            <td class="column-orders-td">{{ $client->orders()->count() }}</td>
+                            <td class="column-status-td" data-status="{{ $client->status ? 1 : 0 }}">
                                 @can('clientes.update-status')
                                     <label class="switch-tabla">
-                                        <input type="checkbox" class="switch-status" data-id="{{ $user->id }}"
-                                            {{ $user->status ? 'checked' : '' }}>
+                                        <input type="checkbox" class="switch-status" data-id="{{ $client->id }}"
+                                            {{ $client->status ? 'checked' : '' }}>
                                         <span class="slider"></span>
                                     </label>
                                 @else
-                                    @if ($user->status)
+                                    @if ($client->status)
                                         <span class="badge badge-success">
                                             <i class="ri-checkbox-circle-fill"></i>
                                             Activo
@@ -282,8 +288,8 @@
                                 @endcan
                             </td>
                             <td>
-                                <span class="{{ $user->created_at ? '' : 'text-muted-td' }}">
-                                    {{ $user->created_at ? $user->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
+                                <span class="{{ $client->created_at ? '' : 'text-muted-td' }}">
+                                    {{ $client->created_at ? $client->created_at->format('d/m/Y H:i') : 'Sin fecha' }}
                                 </span>
                             </td>
                             <td class="column-actions-td">
@@ -292,13 +298,13 @@
                                 </button>
                                 <div class="tabla-botones">
                                     <button class="boton-sm boton-info btn-ver-usuario"
-                                        data-slug="{{ $user->slug }}" title="Ver Cliente">
+                                        data-slug="{{ $client->slug }}" title="Ver Cliente">
                                         <i class="ri-eye-2-fill"></i>
                                         <span class="boton-sm-text">Ver Cliente</span>
                                     </button>
-                                    @if (Auth::id() !== $user->id)
+                                    @if (Auth::id() !== $client->id)
                                         @can('clientes.delete')
-                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
+                                            <form action="{{ route('admin.clients.destroy', $client) }}" method="POST"
                                                 class="delete-form" data-entity="cliente">
                                                 @csrf
                                                 @method('DELETE')
@@ -342,7 +348,7 @@
                     moduleName: 'clients',
                     entityNameSingular: 'cliente',
                     entityNamePlural: 'clientes',
-                    deleteRoute: '/admin/users',
+                    deleteRoute: '/admin/clients',
                     statusRoute: '/admin/users/{id}/status',
                     exportRoutes: {
                         excel: '/admin/clients/export/excel',
@@ -464,5 +470,5 @@
         </script>
     @endpush
 
-    @include('admin.users.modals.show-modal-user')
+    @include('admin.clients.modals.show-modal-client')
 </x-admin-layout>

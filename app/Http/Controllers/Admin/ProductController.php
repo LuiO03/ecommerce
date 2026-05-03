@@ -421,35 +421,65 @@ class ProductController extends Controller
 
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $products = Product::whereIn('id', $request->ids)
-                ->with(['category:id,name'])
-                ->get();
-        } elseif ($request->has('export_all')) {
-            $products = Product::with(['category:id,name'])->get();
+        $query = Product::query()
+            ->select([
+                'id',
+                'sku',
+                'name',
+                'slug',
+                'price',
+                'discount',
+                'status',
+                'min_stock',
+                'category_id',
+                'brand_id',
+                'created_by',
+                'created_at',
+                'updated_at',
+            ])
+            ->with([
+                'category:id,name',
+                'brand:id,name',
+                'creator:id,name,last_name',
+            ])
+            ->withCount(['variants', 'images'])
+            ->withSum('variants as variants_stock_sum', 'stock');
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron productos para exportar.',
             ]);
-            return back()->with('error', 'No se seleccionaron productos para exportar.');
+
+            return back();
         }
+
+        $products = $query
+            ->orderBy('name', 'asc')
+            ->get();
 
         if ($products->isEmpty()) {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin datos',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
                 'message' => 'No hay productos disponibles para exportar.',
             ]);
-            return back()->with('error', 'No hay productos disponibles para exportar.');
+
+            return back();
         }
 
         $filename = 'productos_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
-        // Auditoría de exportación PDF
         Audit::create([
             'user_id'        => Auth::id(),
             'event'          => 'pdf_exported',
@@ -457,16 +487,21 @@ class ProductController extends Controller
             'auditable_id'   => null,
             'old_values'     => null,
             'new_values'     => [
-                'ids'        => $request->ids ?? null,
-                'export_all' => $request->boolean('export_all', false),
                 'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $products->count(),
             ],
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
 
-        $pdf = Pdf::loadView('admin.export.products-pdf', compact('products'));
-        $pdf->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('admin.export.products-pdf', [
+            'products'         => $products,
+            'isSelectedExport' => $isSelectedExport,
+            'exportedBy'       => Auth::user()?->name . ' ' . Auth::user()?->last_name,
+        ])->setPaper('a4', 'landscape');
 
         return $pdf->download($filename);
     }

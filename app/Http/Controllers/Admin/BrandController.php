@@ -12,7 +12,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BrandController extends Controller
@@ -99,51 +98,72 @@ class BrandController extends Controller
 
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $brands = Brand::whereIn('id', $request->ids)->withCount('products')->get();
-        } elseif ($request->has('export_all')) {
-            $brands = Brand::withCount('products')->get();
+        $query = Brand::query()
+            ->select([
+                'id',
+                'name',
+                'slug',
+                'status',
+                'created_at',
+                'updated_at',
+            ])
+            ->withCount('products');
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron marcas para exportar.',
             ]);
 
-            return back()->with('error', 'No se seleccionaron marcas para exportar.');
+            return back();
         }
+
+        $brands = $query->orderBy('name')->get();
 
         if ($brands->isEmpty()) {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin datos',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
                 'message' => 'No hay marcas disponibles para exportar.',
             ]);
 
-            return back()->with('error', 'No hay marcas disponibles para exportar.');
+            return back();
         }
 
-        $filename = 'marcas_'.now()->format('Y-m-d_H-i-s').'.pdf';
+        $filename = 'marcas_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
         Audit::create([
-            'user_id' => Auth::id(),
-            'event' => 'pdf_exported',
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
             'auditable_type' => Brand::class,
-            'auditable_id' => null,
-            'old_values' => null,
-            'new_values' => [
-                'ids' => $request->ids ?? null,
-                'export_all' => $request->boolean('export_all', false),
-                'filename' => $filename,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $brands->count(),
             ],
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
         ]);
 
-        $pdf = Pdf::loadView('admin.export.brands-pdf', compact('brands'));
-        $pdf->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('admin.export.brands-pdf', [
+            'brands'         => $brands,
+            'isSelectedExport' => $isSelectedExport,
+            'exportedBy'       => Auth::user()?->name . ' ' . Auth::user()?->last_name,
+        ])->setPaper('a4', 'portrait');
 
         return $pdf->download($filename);
     }

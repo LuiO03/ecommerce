@@ -3,193 +3,459 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Órdenes - {{ now()->format('d/m/Y') }}</title>
+    <title>Reporte de Órdenes</title>
+
     <style>
+        @page {
+            margin: 115px 28px 62px 28px;
+        }
+
+        body {
+            margin: 0;
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 10px;
+            color: #111827;
+        }
+
         * {
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 10pt;
-            color: #1f2937;
-            padding: 20px;
-        }
-
         .header {
-            padding-bottom: 15px;
-            border-bottom: 3px solid #2563eb;
-        }
-
-        .header h1 {
-            font-size: 22pt;
-            color: #2563eb;
-            margin-bottom: 5px;
-        }
-
-        .header .subtitle {
-            font-size: 10pt;
-            color: #6b7280;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        thead {
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            color: white;
-        }
-
-        th {
-            padding: 12px 8px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 10pt;
-            border: 1px solid #1e40af;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f9fafb;
-        }
-
-        tbody tr:hover {
-            background-color: #eff6ff;
-        }
-
-        td {
-            padding: 10px 8px;
-            border: 1px solid #e5e7eb;
-            font-size: 9pt;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 8pt;
-            font-weight: 600;
-        }
-
-        .badge-status {
-            background-color: #e0f2fe;
-            color: #0369a1;
-        }
-
-        .badge-paid {
-            background-color: #bbf7d0;
-            color: #166534;
-        }
-
-        .badge-pending {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-failed {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-delivery {
-            background-color: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .badge-pickup {
-            background-color: #e5e7eb;
-            color: #374151;
+            position: fixed;
+            top: -98px;
+            left: 0;
+            right: 0;
+            height: 88px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 8px;
         }
 
         .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #d1d5db;
-            text-align: center;
-            font-size: 8pt;
-            color: #6b7280;
+            position: fixed;
+            bottom: -48px;
+            left: 0;
+            right: 0;
+            height: 36px;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 6px;
+            font-size: 9px;
+            color: #6B7280;
         }
 
-        .no-data {
+        .header-table,
+        .footer-table,
+        .summary-table,
+        .brand-table,
+        .data {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .left { text-align: left; }
+        .center { text-align: center; }
+        .right { text-align: right; }
+
+        .muted { color: #6B7280; }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 9px;
+            color: #6B7280;
+        }
+
+        .logo-cell {
+            width: 38px;
+            padding-right: 10px;
+            vertical-align: middle;
+        }
+
+        .text-cell {
+            vertical-align: middle;
+        }
+
+        .company-logo {
+            width: 34px;
+            height: 34px;
+        }
+
+        .company-name,
+        .system-name {
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .system-name {
+            text-transform: uppercase;
+        }
+
+        .system-name span {
+            font-weight: normal;
+        }
+
+        .company-mini {
+            font-size: 9px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        .page-number:before {
+            content: "Página " counter(page) " de " counter(pages);
+        }
+
+        .seal {
+            font-weight: bold;
+            letter-spacing: .6px;
+            color: #111827;
+        }
+
+        .notice {
+            border: 1px solid #DBEAFE;
+            background: #EFF6FF;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            font-size: 9px;
+        }
+
+        .summary {
+            margin-bottom: 14px;
+        }
+
+        .summary td {
+            width: 25%;
+            padding: 0 4px;
+        }
+
+        .card {
+            border: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            padding: 10px 6px;
             text-align: center;
-            padding: 40px;
-            color: #9ca3af;
-            font-style: italic;
+        }
+
+        .card-label {
+            font-size: 9px;
+            color: #6B7280;
+            margin-bottom: 4px;
+        }
+
+        .card-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .card-blue { border-top: 2px solid #3B82F6; }
+        .card-green { border-top: 2px solid #10B981; }
+        .card-orange { border-top: 2px solid #F59E0B; }
+        .card-red { border-top: 2px solid #EF4444; }
+
+        .data {
+            table-layout: fixed;
+        }
+
+        .data th {
+            background: #EEF2FF;
+            border: 1px solid #E5E7EB;
+            padding: 8px 6px;
+            font-size: 9px;
+            text-align: left;
+        }
+
+        .data td {
+            border: 1px solid #E5E7EB;
+            padding: 7px 6px;
+            font-size: 8.7px;
+            vertical-align: top;
+        }
+
+        .data tbody tr:nth-child(even) td {
+            background: #FAFAFA;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .small {
+            font-size: 8px;
+        }
+
+        .success { color: #15803D; font-weight: bold; }
+        .warning { color: #B45309; font-weight: bold; }
+        .danger  { color: #B91C1C; font-weight: bold; }
+        .info    { color: #1D4ED8; font-weight: bold; }
+
+        .money {
+            font-weight: bold;
+            white-space: nowrap;
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <h1>📦 REPORTE DE ÓRDENES</h1>
-        <p class="subtitle">Generado el {{ now()->format('d/m/Y H:i:s') }}</p>
+
+@php
+    use Illuminate\Support\Facades\Auth;
+
+    $items = collect($orders);
+
+    $totalOrders = $items->count();
+    $totalRevenue = $items->sum('total');
+    $delivered = $items->where('status', 'delivered')->count();
+    $pending = $items->where('status', 'pending')->count();
+
+    $generatedAt = now()->format('d/m/Y H:i');
+
+    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+
+    $companySettings = function_exists('company_setting') ? company_setting() : null;
+
+    if ($companySettings && $companySettings->logo_path) {
+        $fullPath = public_path('storage/' . $companySettings->logo_path);
+
+        $pdfLogoUrl = file_exists($fullPath)
+            ? $fullPath
+            : public_path('images/logos/logo-geckommerce.png');
+    } else {
+        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+    }
+
+    $companyName = !empty($companySettings?->name)
+        ? $companySettings->name
+        : config('app.name');
+
+    $exportType = $isSelectedExport
+        ? 'Exportación seleccionada'
+        : 'Exportación total';
+
+    function orderStatusLabel($status)
+    {
+        return match($status) {
+            'pending'    => 'Pendiente',
+            'paid'       => 'Pagado',
+            'processing' => 'Procesando',
+            'shipped'    => 'Enviado',
+            'delivered'  => 'Entregado',
+            'cancelled'  => 'Cancelado',
+            default      => ucfirst($status),
+        };
+    }
+
+    function orderStatusClass($status)
+    {
+        return match($status) {
+            'pending'    => 'warning',
+            'paid'       => 'info',
+            'processing' => 'info',
+            'shipped'    => 'info',
+            'delivered'  => 'success',
+            'cancelled'  => 'danger',
+            default      => '',
+        };
+    }
+
+    function deliveryLabel($type)
+    {
+        return match($type) {
+            'delivery' => 'Delivery',
+            'pickup'   => 'Recojo',
+            default    => '—',
+        };
+    }
+@endphp
+
+<!-- HEADER -->
+<div class="header">
+    <table class="header-table">
+        <tr>
+            <td width="52%" class="left">
+                <table class="brand-table">
+                    <tr>
+                        <td class="logo-cell">
+                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
+                        </td>
+
+                        <td class="text-cell">
+                            @if (!empty($companySettings?->name))
+                                <div class="company-name">{{ $companyName }}</div>
+                            @else
+                                <div class="system-name">Gecko<span>Mmerce</span></div>
+                            @endif
+
+                            <div class="company-mini">Panel administrativo</div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+
+            <td width="48%" class="right">
+                <div class="title">Reporte de Órdenes</div>
+                <div class="subtitle">{{ $exportType }}</div>
+                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                <div class="subtitle">Usuario: {{ $userName }}</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <table class="footer-table">
+        <tr>
+            <td width="33%" class="left">{{ $companyName }}</td>
+            <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
+            <td width="33%" class="right"><span class="page-number"></span></td>
+        </tr>
+    </table>
+</div>
+
+<!-- CONTENT -->
+<div>
+
+    <div class="notice">
+        {{ $isSelectedExport
+            ? 'Este archivo contiene únicamente órdenes seleccionadas por el usuario.'
+            : 'Este archivo contiene el listado completo de órdenes registradas.' }}
     </div>
 
-    @if ($orders->isEmpty())
-        <div class="no-data">
-            No hay órdenes disponibles para mostrar.
-        </div>
-    @else
-        <table>
-            <thead>
-                <tr>
-                    <th class="text-center">ID</th>
-                    <th>N° Orden</th>
-                    <th>Cliente</th>
-                    <th class="text-center">Entrega</th>
-                    <th class="text-center">Tienda</th>
-                    <th class="text-center">Total</th>
-                    <th class="text-center">Estado</th>
-                    <th class="text-center">Pago</th>
-                    <th class="text-center">ID Pago</th>
-                    <th>Fecha creación</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($orders as $order)
-                    <tr>
-                        <td class="text-center">{{ $order->id }}</td>
-                        <td>{{ $order->order_number }}</td>
-                        <td>{{ $order->user->name ?? '—' }}</td>
-                        <td class="text-center">
-                            <span class="badge {{ ($order->delivery_type ?? 'delivery') === 'pickup' ? 'badge-pickup' : 'badge-delivery' }}">
-                                {{ ($order->delivery_type ?? 'delivery') === 'pickup' ? 'Recojo' : 'Delivery' }}
-                            </span>
-                        </td>
-                        <td class="text-center">{{ $order->pickup_store_code ?? '—' }}</td>
-                        <td class="text-center">S/. {{ number_format((float) $order->total, 2) }}</td>
-                        <td class="text-center">
-                            <span class="badge badge-status">{{ ucfirst($order->status) }}</span>
-                        </td>
-                        <td class="text-center">
-                            @php
-                                $payment = $order->payment_status;
-                                $class = match($payment) {
-                                    'paid' => 'badge-paid',
-                                    'failed' => 'badge-failed',
-                                    default => 'badge-pending',
-                                };
-                            @endphp
-                            <span class="badge {{ $class }}">{{ ucfirst($payment) }}</span>
-                        </td>
-                        <td class="text-center">{{ $order->payment_id ?? '—' }}</td>
-                        <td>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '—' }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
+    <!-- RESUMEN -->
+    <div class="summary">
+        <table class="summary-table">
+            <tr>
+                <td>
+                    <div class="card card-blue">
+                        <div class="card-label">Órdenes</div>
+                        <div class="card-value">{{ $totalOrders }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-green">
+                        <div class="card-label">Ingresos</div>
+                        <div class="card-value">S/ {{ number_format($totalRevenue, 2) }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-orange">
+                        <div class="card-label">Pendientes</div>
+                        <div class="card-value">{{ $pending }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-red">
+                        <div class="card-label">Entregadas</div>
+                        <div class="card-value">{{ $delivered }}</div>
+                    </div>
+                </td>
+            </tr>
         </table>
+    </div>
 
-        <div class="footer">
-            <strong>Total de órdenes:</strong> {{ $orders->count() }} |
-            <strong>Documento generado por:</strong> {{ config('app.name') }}
-        </div>
-    @endif
+    <!-- TABLA -->
+    <table class="data">
+        <colgroup>
+            <col style="width:5%">
+            <col style="width:14%">
+            <col style="width:22%">
+            <col style="width:11%">
+            <col style="width:12%">
+            <col style="width:12%">
+            <col style="width:12%">
+            <col style="width:12%">
+        </colgroup>
+
+        <thead>
+            <tr>
+                <th class="center">ID</th>
+                <th>N° Orden</th>
+                <th>Cliente</th>
+                <th>Entrega</th>
+                <th class="center">Total</th>
+                <th class="center">Estado</th>
+                <th>Pago</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($orders as $order)
+                <tr>
+                    <td class="center">{{ $order->id }}</td>
+
+                    <td class="bold">
+                        {{ $order->order_number }}
+                    </td>
+
+                    <td>
+                        <span class="bold">
+                            {{ $order->user?->name }} {{ $order->user?->last_name }}
+                        </span>
+                        <br>
+                        <span class="small muted">
+                            {{ $order->user?->email ?? 'Cliente no disponible' }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ deliveryLabel($order->delivery_type) }}
+
+                        @if($order->pickup_store_code)
+                            <br>
+                            <span class="small muted">
+                                {{ $order->pickup_store_code }}
+                            </span>
+                        @endif
+                    </td>
+
+                    <td class="center money">
+                        S/ {{ number_format($order->total, 2) }}
+                    </td>
+
+                    <td class="center">
+                        <span class="{{ orderStatusClass($order->status) }}">
+                            {{ orderStatusLabel($order->status) }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ $order->latestPayment?->method ?? '—' }}
+
+                        @if($order->latestPayment?->status)
+                            <br>
+                            <span class="small muted">
+                                {{ ucfirst($order->latestPayment->status) }}
+                            </span>
+                        @endif
+                    </td>
+
+                    <td>
+                        {{ $order->created_at?->format('d/m/Y') }}
+                        <br>
+                        <span class="small muted">
+                            {{ $order->created_at?->format('H:i') }}
+                        </span>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="8" class="center muted">
+                        No existen órdenes registradas.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+
+    </table>
+
+</div>
+
 </body>
-
 </html>

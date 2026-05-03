@@ -197,16 +197,12 @@ class Audit extends Model
         }
 
         if (in_array($event, [
-            'company_general_updated',
-            'company_identity_updated',
-            'company_contact_updated',
+            'company_main_updated',
             'company_social_updated',
             'company_legal_updated',
         ], true)) {
             $sections = [
-                'company_general_updated'  => 'la información general',
-                'company_identity_updated' => 'la identidad visual',
-                'company_contact_updated'  => 'los datos de contacto',
+                'company_main_updated'  => 'la información general',
                 'company_social_updated'   => 'las redes sociales',
                 'company_legal_updated'    => 'los aspectos legales',
             ];
@@ -368,6 +364,12 @@ class Audit extends Model
             'image'             => 'Foto de perfil',
             'background_style'  => 'Fondo de perfil',
 
+            //Cliente (User con rol Cliente)
+            'document_type'      => 'Tipo de documento',
+            'document_number'    => 'Número de documento',
+            'failed_attempts'   => 'Intentos fallidos',
+            'last_login_at'     => 'Último inicio de sesión',
+
             // Producto
             'sku'               => 'SKU',
             'price'             => 'Precio',
@@ -428,6 +430,11 @@ class Audit extends Model
             'terms_conditions'  => 'Términos y condiciones',
             'privacy_policy'    => 'Política de privacidad',
             'claims_book_information' => 'Información del libro de reclamaciones',
+
+            // Covers
+            'button_link'     => 'Enlace del botón',
+            'button_style'    => 'Estilo del botón',
+
         ];
 
         if (isset($map[$field])) {
@@ -455,9 +462,7 @@ class Audit extends Model
             'post_rejected'         => 'Publicación rechazada',
             'permissions_updated'   => 'Permisos actualizados',
             'profile_updated'       => 'Perfil actualizado',
-            'company_general_updated'  => 'Empresa · Información general',
-            'company_identity_updated' => 'Empresa · Identidad visual',
-            'company_contact_updated'  => 'Empresa · Datos de contacto',
+            'company_main_updated'  => 'Empresa · Información general',
             'company_social_updated'   => 'Empresa · Redes sociales',
             'company_legal_updated'    => 'Empresa · Aspectos legales',
         ];
@@ -481,6 +486,12 @@ class Audit extends Model
             'Audit'           => 'Auditoría',
             'Cover'           => 'Portada',
             'Option'          => 'Opción',
+            'Brand'           => 'Marca',
+            'Tag'             => 'Etiqueta',
+            'Driver'          => 'Conductor',
+            'Order'          => 'Pedido',
+            'Payment'        => 'Pago',
+            'Transaction'      => 'Transacción',
         ];
 
         return $map[$shortName] ?? $shortName;

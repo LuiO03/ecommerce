@@ -49,7 +49,9 @@
                 Buscar
             </span>
             <article class="tabla-buscador">
+                <button type="button" id="searchBtn" class="buscador-btn">
                 <i class="ri-search-eye-line buscador-icon"></i>
+                </button>
                 <input type="text" id="customSearch" placeholder="Buscar por usuario, evento o modelo"
                     autocomplete="off" />
                 <button type="button" id="clearSearch" class="buscador-clear">
@@ -102,30 +104,31 @@
         @can('auditorias.export')
             <div class="selection-bar" id="selectionBar">
                 <div class="selection-actions">
-                    <button id="exportSelectedExcel" class="boton-selection boton-success">
+                    <button id="exportSelectedExcel" class="boton-selection boton-success" title="Exportar registros seleccionados a Excel">
                         <span class="boton-selection-icon">
                             <i class="ri-file-excel-2-fill"></i>
                         </span>
                         <span class="boton-selection-text">Excel</span>
-                        l
+                        <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="excelBadge">0</span>
                     </button>
-                    <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                        <span class="boton-selection-icon">
-                            <i class="ri-file-text-fill"></i>
-                        </span>
-                        <span class="boton-selection-text">CSV</span>
-                        l
-                        <span class="selection-badge" id="csvBadge">0</span>
-                    </button>
-                    <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                    <button id="exportSelectedPdf" class="boton-selection boton-secondary" title="Exportar registros seleccionados a PDF">
                         <span class="boton-selection-icon">
                             <i class="ri-file-pdf-2-fill"></i>
                         </span>
                         <span class="boton-selection-text">PDF</span>
-                        l
+                        <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="pdfBadge">0</span>
                     </button>
+                    <button id="exportSelectedCsv" class="boton-selection boton-orange" title="Exportar registros seleccionados a CSV">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-text-fill"></i>
+                        </span>
+                        <span class="boton-selection-text">CSV</span>
+                        <span class="boton-selection-dot">•</span>
+                        <span class="selection-badge" id="csvBadge">0</span>
+                    </button>
+
                 </div>
                 <div class="selection-info">
                     <span id="selectionCount">0 seleccionados</span>
@@ -158,192 +161,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($audits as $audit)
-                        @php
-                            $modelName =
-                                $audit->model_name ??
-                                ($audit->auditable_type ? class_basename($audit->auditable_type) : '—');
-                            $modelId = $audit->auditable_id ?? '—';
-                        @endphp
-                        <tr data-id="{{ $audit->id }}">
-                            <td class="control"></td>
-                            <td class="column-check-td">
-                                <div>
-                                    <input type="checkbox" class="check-row" name="audits[]"
-                                        value="{{ $audit->id }}">
-                                </div>
-                            </td>
-                            <td class="column-id-td">{{ $audit->id }}</td>
-                            <td class="column-name-td">
-                                @if ($audit->user)
-                                    <span class="badge badge-primary">
-                                        <i class="ri-user-3-line"></i>
-                                        {{ $audit->user->name }}
-                                    </span>
-                                @else
-                                    <span class="badge badge-gray">
-                                        <i class="ri-user-unfollow-line"></i>
-                                        Sistema / Invitado
-                                    </span>
-                                @endif
-                            </td>
-                            <td>
-                                {{ $modelName }} &middot; #{{ $modelId }}
-                            </td>
-                            <td data-event="{{ $audit->event }}">
-                                @php($eventLabel = ucfirst($audit->event))
-
-                                @switch($audit->event)
-                                    @case('created')
-                                        <span class="badge badge-success">
-                                            <i class="ri-add-circle-fill"></i>
-                                            Creado
-                                        </span>
-                                    @break
-
-                                    @case('updated')
-                                        <span class="badge badge-warning">
-                                            <i class="ri-pencil-fill"></i>
-                                            Actualizado
-                                        </span>
-                                    @break
-
-                                    @case('deleted')
-                                        <span class="badge badge-danger">
-                                            <i class="ri-delete-bin-fill"></i>
-                                            Eliminado
-                                        </span>
-                                    @break
-
-                                    @case('status_updated')
-                                        <span class="badge badge-primary">
-                                            <i class="ri-refresh-fill"></i>
-                                            Estado Actualizado
-                                        </span>
-                                    @break
-
-                                    @case('bulk_deleted')
-                                        <span class="badge badge-danger">
-                                            <i class="ri-delete-bin-2-fill"></i>
-                                            Eliminación Múltiple
-                                        </span>
-                                    @break
-
-                                    @case('pdf_exported')
-                                        <span class="badge badge-pink">
-                                            <i class="ri-file-download-fill"></i>
-                                            PDF Exportado
-                                        </span>
-                                    @break
-
-                                    @case('excel_exported')
-                                        <span class="badge badge-success">
-                                            <i class="ri-file-download-fill"></i>
-                                            Excel Exportado
-                                        </span>
-                                    @break
-
-                                    @case('csv_exported')
-                                        <span class="badge badge-orange">
-                                            <i class="ri-file-download-fill"></i>
-                                            CSV Exportado
-                                        </span>
-                                    @break
-
-                                    @case('post_approved')
-                                        <span class="badge badge-success">
-                                            <i class="ri-checkbox-circle-fill"></i>
-                                            Post Aprobado
-                                        </span>
-                                    @break
-
-                                    @case('post_rejected')
-                                        <span class="badge badge-danger">
-                                            <i class="ri-close-circle-fill"></i>
-                                            Post Rechazado
-                                        </span>
-                                    @break
-
-                                    @case('permissions_updated')
-                                        <span class="badge badge-primary">
-                                            <i class="ri-shield-check-fill"></i>
-                                            Permisos Actualizados
-                                        </span>
-                                    @break
-
-                                    @case('profile_updated')
-                                        <span class="badge badge-gray">
-                                            <i class="ri-user-settings-fill"></i>
-                                            Perfil Actualizado
-                                        </span>
-                                    @break
-
-                                    @case('company_general_updated')
-                                        <span class="badge badge-gray">
-                                            <i class="ri-building-4-fill"></i>
-                                            Empresa Actualizada
-                                        </span>
-                                    @break
-
-                                    @case('company_identity_updated')
-                                        <span class="badge badge-gray">
-                                            <i class="ri-shield-fill"></i>
-                                            Identidad de Emp.
-                                        </span>
-                                    @break
-
-                                    @case('company_contact_updated')
-                                        <span class="badge badge-gray">
-                                            <i class="ri-contacts-fill"></i>
-                                            Contacto de Emp.
-                                        </span>
-                                    @break
-
-                                    @case('company_social_updated')
-                                        <span class="badge badge-gray">
-                                            <i class="ri-share-fill"></i>
-                                            Redes Sociales de Emp.
-                                        </span>
-                                    @break
-
-                                    @case('company_legal_updated')
-                                        <span class="badge badge-gray">
-                                            <i class="ri-file-law-fill"></i>
-                                            Legal de Emp. Actualizado
-                                        </span>
-                                    @break
-
-                                    @default
-                                        <span class="badge badge-secondary">
-                                            <i class="ri-question-fill"></i>
-                                            {{ $eventLabel }}
-                                        </span>
-                                @endswitch
-                            </td>
-                            <td>
-                                {{ $audit->description }}
-                            </td>
-
-                            <td>
-                                <code>{{ $audit->ip_address ?? '—' }}</code>
-                            </td>
-                            <td class="column-date-td">
-                                {{ optional($audit->created_at)->format('d/m/Y H:i') }}
-                            </td>
-                            <td class="column-actions-td">
-                                <button class="boton-show-actions">
-                                    <i class="ri-more-fill"></i>
-                                </button>
-                                <div class="tabla-botones">
-                                    <button class="boton-sm boton-info btn-ver-audit" data-id="{{ $audit->id }}"
-                                        title="Ver cambios">
-                                        <i class="ri-eye-2-fill"></i>
-                                        <span class="boton-sm-text">Ver cambios</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -374,29 +191,22 @@
                         responsive: true,
                         export: true,
                         filters: true
-                    }
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: '{{ route('admin.audits.data') }}'
                 });
 
-                let eventFilter = '';
+                const dt = tableManager.getTable();
 
-                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                    if (settings.nTable.id !== 'tabla') return true;
-
-                    const row = tableManager.table.row(dataIndex).node();
-
-                    if (eventFilter) {
-                        const rowEvent = ($(row).find('[data-event]').attr('data-event') || '').trim();
-                        if (rowEvent !== eventFilter) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                });
-
+                // En server-side, los filtros se aplican en backend.
+                // DataTableManager envía los filtros como d.filters (ej.: filters[eventFilter]).
                 $('#eventFilter').on('change', function() {
-                    eventFilter = this.value;
-                    tableManager.table.draw();
+                    dt.draw();
+                });
+
+                $('#applyFiltersBtn').on('click', function() {
+                    dt.draw();
                 });
             });
         </script>

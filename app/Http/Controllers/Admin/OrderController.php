@@ -187,22 +187,51 @@ class OrderController extends Controller
 
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $orders = Order::with(['user', 'latestPayment'])->whereIn('id', $request->ids)->get();
-        } elseif ($request->has('export_all')) {
-            $orders = Order::with(['user', 'latestPayment'])->get();
+        $query = Order::query()
+            ->with([
+                'user:id,name,last_name,email',
+                'latestPayment:id,order_id,status,method,amount,created_at',
+            ])
+            ->select([
+                'id',
+                'user_id',
+                'order_number',
+                'delivery_type',
+                'pickup_store_code',
+                'total',
+                'status',
+                'created_at',
+            ]);
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron órdenes para exportar.',
             ]);
-            return back()->with('error', 'No se seleccionaron órdenes para exportar.');
+
+            return back();
         }
 
+        $orders = $query->orderByDesc('id')->get();
+
         if ($orders->isEmpty()) {
-            return back()->with('error', 'No hay órdenes disponibles para exportar.');
+            Session::flash('info', [
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
+                'message' => 'No hay órdenes disponibles para exportar.',
+            ]);
+
+            return back();
         }
 
         $filename = 'ordenes_' . now()->format('Y-m-d_H-i-s') . '.pdf';
@@ -214,17 +243,23 @@ class OrderController extends Controller
             'auditable_id'   => null,
             'old_values'     => null,
             'new_values'     => [
-                'ids'        => $request->ids ?? null,
-                'export_all' => $request->boolean('export_all', false),
                 'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $orders->count(),
+                'module'     => 'orders',
             ],
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
 
-        return Pdf::view('admin.export.orders-pdf', compact('orders'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        $pdf = Pdf::loadView('admin.export.orders-pdf', [
+            'orders'            => $orders,
+            'isSelectedExport'  => $isSelectedExport,
+            'exportedBy'        => Auth::user()?->name . ' ' . Auth::user()?->last_name,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download($filename);
     }
 }

@@ -119,7 +119,7 @@
             <div class="selection-bar" id="selectionBar">
                 @can('familias.export')
                     <div class="selection-actions">
-                        <button id="exportSelectedExcel" class="boton-selection boton-success">
+                        <button id="exportSelectedExcel" class="boton-selection boton-success" title="Exportar registros seleccionados a Excel">
                             <span class="boton-selection-icon">
                                 <i class="ri-file-excel-2-fill"></i>
                             </span>
@@ -127,15 +127,7 @@
                             <span class="boton-selection-dot">•</span>
                             <span class="selection-badge" id="excelBadge">0</span>
                         </button>
-                        <button id="exportSelectedCsv" class="boton-selection boton-orange">
-                            <span class="boton-selection-icon">
-                                <i class="ri-file-text-fill"></i>
-                            </span>
-                            <span class="boton-selection-text">CSV</span>
-                            <span class="boton-selection-dot">•</span>
-                            <span class="selection-badge" id="csvBadge">0</span>
-                        </button>
-                        <button id="exportSelectedPdf" class="boton-selection boton-secondary">
+                        <button id="exportSelectedPdf" class="boton-selection boton-danger" title="Exportar registros seleccionados a PDF">
                             <span class="boton-selection-icon">
                                 <i class="ri-file-pdf-2-fill"></i>
                             </span>
@@ -143,10 +135,18 @@
                             <span class="boton-selection-dot">•</span>
                             <span class="selection-badge" id="pdfBadge">0</span>
                         </button>
+                        <button id="exportSelectedCsv" class="boton-selection boton-orange" title="Exportar registros seleccionados a CSV">
+                            <span class="boton-selection-icon">
+                                <i class="ri-file-text-fill"></i>
+                            </span>
+                            <span class="boton-selection-text">CSV</span>
+                            <span class="boton-selection-dot">•</span>
+                            <span class="selection-badge" id="csvBadge">0</span>
+                        </button>
                     </div>
                 @endcan
                 @can('familias.delete')
-                    <button id="deleteSelected" class="boton-selection boton-danger">
+                    <button id="deleteSelected" class="boton-selection boton-danger" title="Eliminar registros seleccionados">
                         <span class="boton-selection-icon">
                             <i class="ri-delete-bin-fill"></i>
                         </span>

@@ -35,7 +35,7 @@ return new class extends Migration
 
             $table->dateTime('published_at')->nullable();
 
-            $table->enum('visibility', ['public','private','registered'])
+            $table->enum('visibility', ['public','private','authenticated'])
                   ->default('public');
 
             $table->boolean('allow_comments')->default(true);

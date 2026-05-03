@@ -118,30 +118,51 @@ class CategoryController extends Controller
 
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $categories = Category::whereIn('id', $request->ids)
-                ->with('family:id,name')
-                ->get();
-        } elseif ($request->has('export_all')) {
-            $categories = Category::with('family:id,name')->get();
+        $query = Category::query()
+            ->select([
+                'id',
+                'name',
+                'slug',
+                'status',
+                'family_id',
+                'parent_id',
+                'created_at',
+                'updated_at',
+            ])
+            ->withCount('products')
+            ->with([
+                'family:id,name',
+                'parent:id,name,family_id,parent_id',
+                'parent.family:id,name',
+            ]);
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron categorías para exportar.',
             ]);
-            return back()->with('error', 'No se seleccionaron categorías para exportar.');
+            return back();
         }
+
+        $categories = $query->orderByDesc('id')->get();
 
         if ($categories->isEmpty()) {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin datos',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
                 'message' => 'No hay categorías disponibles para exportar.',
             ]);
-            return back()->with('error', 'No hay categorías disponibles para exportar.');
+            return back();
         }
 
         $filename = 'categorias_'.now()->format('Y-m-d_H-i-s').'.pdf';
@@ -154,16 +175,20 @@ class CategoryController extends Controller
             'auditable_id'   => null,
             'old_values'     => null,
             'new_values'     => [
-                'ids'        => $request->ids ?? null,
-                'export_all' => $request->boolean('export_all', false),
                 'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $categories->count(),
             ],
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
 
-        $pdf = Pdf::loadView('admin.export.categories-pdf', compact('categories'));
-        $pdf->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('admin.export.categories-pdf', [
+            'categories'       => $categories,
+            'isSelectedExport' => $isSelectedExport,
+        ])->setPaper('a4', 'portrait');
 
         return $pdf->download($filename);
     }

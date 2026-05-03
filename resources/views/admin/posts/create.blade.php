@@ -173,8 +173,9 @@
                             </option>
                             <option value="private" {{ old('visibility') == 'private' ? 'selected' : '' }}>Privado
                             </option>
-                            <option value="registered" {{ old('visibility') == 'registered' ? 'selected' : '' }}>
-                                Registrado</option>
+                            <option value="authenticated" {{ old('visibility') == 'authenticated' ? 'selected' : '' }}>
+                                Solo Autenticados
+                            </option>
                         </select>
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>

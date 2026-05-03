@@ -7,12 +7,14 @@ use App\Models\Tag;
 use App\Models\Post;
 use App\Models\PostImage;
 use Illuminate\Support\Str;
+use Faker\Factory;
+
 
 class PostSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
         $tagIds = Tag::pluck('id')->toArray();
         $userId = 1; // Ajusta al id de un usuario válido en tu tabla users
 
@@ -23,7 +25,7 @@ class PostSeeder extends Seeder
                 'slug'           => Str::slug($title),
                 'content'        => $faker->paragraphs(5, true),
                 'status'         => $faker->randomElement(['draft','pending','published','rejected']),
-                'visibility'     => $faker->randomElement(['public','private','registered']),
+                'visibility'     => $faker->randomElement(['public','private','authenticated']),
                 'allow_comments' => $faker->boolean(80),
                 'views'          => $faker->numberBetween(0, 500),
                 'published_at'   => $faker->optional()->dateTimeBetween('-1 year', 'now'),

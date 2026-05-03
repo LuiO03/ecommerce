@@ -49,6 +49,7 @@ Route::controller(AccessLogController::class)->name('admin.access-logs.')->group
 // AUDITS
 Route::controller(AuditController::class)->name('admin.audits.')->group(function () {
     Route::get('/audits', 'index')->name('index');
+    Route::get('/audits/data', 'data')->name('data');
     Route::get('/audits/{audit}/show', 'show')->name('show');
     Route::post('/audits/export/excel', 'exportExcel')->name('export.excel');
     Route::post('/audits/export/pdf', 'exportPdf')->name('export.pdf');
@@ -264,6 +265,9 @@ Route::controller(UserController::class)->group(function () {
 // CLIENTS (solo usuarios con rol Cliente)
 Route::controller(ClientController::class)->group(function () {
     Route::get('/clients', 'index')->name('admin.clients.index');
+    Route::get('/clients/{slug}/show', 'show')->name('admin.clients.show');
+    Route::delete('/clients/{client}', 'destroy')->name('admin.clients.destroy');
+    Route::delete('/clients', 'destroyMultiple')->name('admin.clients.destroy-multiple');
     Route::post('/clients/export/excel', 'exportExcel')->name('admin.clients.export.excel');
     Route::post('/clients/export/pdf', 'exportPdf')->name('admin.clients.export.pdf');
     Route::post('/clients/export/csv', 'exportCsv')->name('admin.clients.export.csv');

@@ -51,7 +51,7 @@ class PostController extends Controller
             'title' => 'required|string|max:255|unique:posts,title',
             'content' => 'required|string|min:10',
             'status' => 'required|string|'.$statusRule,
-            'visibility' => 'required|string|in:public,private,registered',
+            'visibility' => 'required|string|in:public,private,authenticated',
             'allow_comments' => 'sometimes|boolean',
             'published_at' => 'nullable|date',
             'tags' => 'nullable|array',
@@ -199,7 +199,7 @@ class PostController extends Controller
             'title' => 'required|string|max:255|unique:posts,title,'.$post->id,
             'content' => 'required|string|min:10',
             'status' => 'required|string|'.$statusRule,
-            'visibility' => 'required|string|in:public,private,registered',
+            'visibility' => 'required|string|in:public,private,authenticated',
             'allow_comments' => 'sometimes|boolean',
             'published_at' => 'nullable|date',
             'tags' => 'nullable|array',
@@ -590,33 +590,68 @@ class PostController extends Controller
 
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $posts = Post::whereIn('id', $request->ids)->get();
-        } elseif ($request->has('export_all')) {
-            $posts = Post::all();
+        $user = Auth::user();
+
+        $canManageAll = $user->hasAnyRole(['Administrador', 'Superadministrador'])
+            || $user->can('posts.review');
+
+        $query = Post::query()
+            ->select([
+                'id',
+                'title',
+                'slug',
+                'status',
+                'visibility',
+                'views',
+                'allow_comments',
+                'created_by',
+                'created_at',
+                'published_at',
+            ])
+            ->withCount('images')
+            ->with([
+                'creator:id,name,last_name',
+            ]);
+
+        if (! $canManageAll) {
+            $query->where('created_by', $user->id);
+        }
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron posts para exportar.',
             ]);
-            return back()->with('error', 'No se seleccionaron posts para exportar.');
+
+            return back();
         }
+
+        $posts = $query
+            ->orderBy('title', 'asc')
+            ->get();
 
         if ($posts->isEmpty()) {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin datos',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
                 'message' => 'No hay posts disponibles para exportar.',
             ]);
-            return back()->with('error', 'No hay posts disponibles para exportar.');
+
+            return back();
         }
 
-        $filename = 'posts_'.now()->format('Y-m-d_H-i-s').'.pdf';
+        $filename = 'posts_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
-        // Auditoría de exportación PDF
         Audit::create([
             'user_id'        => Auth::id(),
             'event'          => 'pdf_exported',
@@ -624,16 +659,21 @@ class PostController extends Controller
             'auditable_id'   => null,
             'old_values'     => null,
             'new_values'     => [
-                'ids'        => $request->ids ?? null,
-                'export_all' => $request->boolean('export_all', false),
                 'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $posts->count(),
             ],
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
 
-        $pdf = Pdf::loadView('admin.export.posts-pdf', compact('posts'));
-        $pdf->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('admin.export.posts-pdf', [
+            'posts'            => $posts,
+            'isSelectedExport' => $isSelectedExport,
+            'exportedBy'       => $user->name . ' ' . $user->last_name,
+        ])->setPaper('a4', 'landscape');
 
         return $pdf->download($filename);
     }

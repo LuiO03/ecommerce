@@ -64,34 +64,51 @@ class FamilyController extends Controller
 
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $families = Family::whereIn('id', $request->ids)->get();
-        } elseif ($request->has('export_all')) {
-            $families = Family::all();
+        $query = Family::query()
+            ->select([
+                'id',
+                'name',
+                'slug',
+                'status',
+                'created_at',
+                'updated_at',
+            ])
+            ->withCount('categories')
+            ->withCount('products');
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron familias para exportar.',
             ]);
-            return back()->with('error', 'No se seleccionaron familias para exportar.');
+
+            return back();
         }
+
+        $families = $query->orderByDesc('id')->get();
 
         if ($families->isEmpty()) {
             Session::flash('info', [
-                'type' => 'danger',
-                'header' => 'Error',
-                'title' => 'Sin datos',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
                 'message' => 'No hay familias disponibles para exportar.',
             ]);
-            return back()->with('error', 'No hay familias disponibles para exportar.');
+
+            return back();
         }
 
-        // 📄 Nombre del archivo dinámico con fecha y hora
         $filename = 'familias_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
-        // Auditoría de exportación PDF
         Audit::create([
             'user_id'        => Auth::id(),
             'event'          => 'pdf_exported',
@@ -99,17 +116,21 @@ class FamilyController extends Controller
             'auditable_id'   => null,
             'old_values'     => null,
             'new_values'     => [
-                'ids'        => $request->ids ?? null,
-                'export_all' => $request->boolean('export_all', false),
                 'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $families->count(),
             ],
             'ip_address'     => $request->ip(),
             'user_agent'     => $request->userAgent(),
         ]);
 
-        // Generar y descargar PDF
-        $pdf = Pdf::loadView('admin.export.families-pdf', compact('families'));
-        $pdf->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('admin.export.families-pdf', [
+            'families'         => $families,
+            'isSelectedExport' => $isSelectedExport,
+            'exportedBy'       => Auth::user()?->name . ' ' . Auth::user()?->last_name,
+        ])->setPaper('a4', 'portrait');
 
         return $pdf->download($filename);
     }

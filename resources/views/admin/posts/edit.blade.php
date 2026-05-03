@@ -232,8 +232,8 @@
                             </option>
                             <option value="private" {{ $post->visibility == 'private' ? 'selected' : '' }}>Privado
                             </option>
-                            <option value="registered" {{ $post->visibility == 'registered' ? 'selected' : '' }}>
-                                Registrado
+                            <option value="authenticated" {{ $post->visibility == 'authenticated' ? 'selected' : '' }}>
+                                Solo Autenticados
                             </option>
                         </select>
 

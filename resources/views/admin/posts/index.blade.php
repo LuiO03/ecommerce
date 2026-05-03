@@ -142,34 +142,34 @@
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
                 @can('posts.export')
-                    <button id="exportSelectedExcel" class="boton-selection bg-success">
+                    <button id="exportSelectedExcel" class="boton-selection bg-success" title="Exportar posts seleccionados a Excel">
                         <span class="boton-selection-icon">
-                            <i class="ri-file-excel-2-line"></i>
+                            <i class="ri-file-excel-2-fill"></i>
                         </span>
                         <span class="boton-selection-text">Excel</span>
                         <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="excelBadge">0</span>
                     </button>
-                    <button id="exportSelectedCsv" class="boton-selection bg-orange">
+                    <button id="exportSelectedPdf" class="boton-selection bg-danger" title="Exportar posts seleccionados a PDF">
                         <span class="boton-selection-icon">
-                            <i class="ri-file-text-line"></i>
-                        </span>
-                        <span class="boton-selection-text">CSV</span>
-                        <span class="boton-selection-dot">•</span>
-                        <span class="selection-badge" id="csvBadge">0</span>
-                    </button>
-                    <button id="exportSelectedPdf" class="boton-selection bg-secondary">
-                        <span class="boton-selection-icon">
-                            <i class="ri-file-pdf-2-line"></i>
+                            <i class="ri-file-pdf-2-fill"></i>
                         </span>
                         <span class="boton-selection-text">PDF</span>
                         <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="pdfBadge">0</span>
                     </button>
+                    <button id="exportSelectedCsv" class="boton-selection bg-orange" title="Exportar posts seleccionados a CSV">
+                        <span class="boton-selection-icon">
+                            <i class="ri-file-text-fill"></i>
+                        </span>
+                        <span class="boton-selection-text">CSV</span>
+                        <span class="boton-selection-dot">•</span>
+                        <span class="selection-badge" id="csvBadge">0</span>
+                    </button>
                 @endcan
             </div>
             @can('posts.delete')
-                <button id="deleteSelected" class="boton-selection bg-danger">
+                <button id="deleteSelected" class="boton-selection bg-danger" title="Eliminar posts seleccionados">
                     <span class="boton-selection-icon">
                         <i class="ri-delete-bin-fill"></i>
                     </span>
@@ -252,10 +252,10 @@
                             <td class="column-status-post-td">
                                 @php
                                     $statusText = match ($post->status) {
-                                        'draft' => '<i class="ri-pencil-line"></i> Borrador',
-                                        'pending' => '<i class="ri-time-line"></i> Pendiente',
-                                        'published' => '<i class="ri-check-line"></i> Publicado',
-                                        'rejected' => '<i class="ri-close-line"></i> Rechazado',
+                                        'draft' => '<i class="ri-draft-fill"></i> Borrador',
+                                        'pending' => '<i class="ri-time-fill"></i> Pendiente',
+                                        'published' => '<i class="ri-checkbox-circle-fill"></i> Publicado',
+                                        'rejected' => '<i class="ri-close-fill"></i> Rechazado',
                                         default => ucfirst($post->status),
                                     };
                                     $statusClass = match ($post->status) {
@@ -265,25 +265,42 @@
                                         'rejected' => 'badge-danger',
                                         default => 'badge-secondary',
                                     };
+                                    $statusTitle = match ($post->status) {
+                                        'draft' => 'No visible para los usuarios',
+                                        'pending' => 'Pendiente de revisión',
+                                        'published' => 'Publicado: visible para los usuarios según su visibilidad',
+                                        'rejected' => 'Rechazado: no visible para los usuarios',
+                                        default => ucfirst($post->status),
+                                    };
                                 @endphp
-                                <span class="badge {{ $statusClass }}">{!! $statusText !!}</span>
+                                <span class="badge {{ $statusClass }}" title="{{ $statusTitle }}">
+                                    {!! $statusText !!}
+                                </span>
                             </td>
                             <td class="column-visibility-td">
                                 @php
                                     $visibilityText = match ($post->visibility) {
-                                        'public' => '<i class="ri-global-line"></i> Público',
-                                        'private' => '<i class="ri-lock-line"></i> Privado',
-                                        'registered' => '<i class="ri-user-line"></i> Registrado',
+                                        'public' => '<i class="ri-global-fill"></i> Público',
+                                        'private' => '<i class="ri-lock-fill"></i> Privado',
+                                        'authenticated' => '<i class="ri-user-fill"></i> Solo Autenticados',
                                         default => ucfirst($post->visibility),
                                     };
                                     $visibilityClass = match ($post->visibility) {
                                         'public' => 'badge-success',
                                         'private' => 'badge-warning',
-                                        'registered' => 'badge-primary',
+                                        'authenticated' => 'badge-primary',
                                         default => 'badge-secondary',
                                     };
+                                    $visibilityTitle = match ($post->visibility) {
+                                        'public' => 'Visible para todos',
+                                        'private' => 'Visible solo para el autor',
+                                        'authenticated' => 'Visible solo para usuarios autenticados',
+                                        default => ucfirst($post->visibility),
+                                    };
                                 @endphp
-                                <span class="badge {{ $visibilityClass }}">{!! $visibilityText !!}</span>
+                                <span class="badge {{ $visibilityClass }}" title="{{ $visibilityTitle }}">
+                                    {!! $visibilityText !!}
+                                </span>
                             </td>
                             <td class="column-created-td">{{ $post->created_at->format('d/m/Y H:i') }}</td>
                             <td class="column-actions-td">

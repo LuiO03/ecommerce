@@ -1,50 +1,402 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Roles</title>
+    <title>Reporte de Roles</title>
+
     <style>
-        @page { margin: 35px 45px; }
-        body { margin: 0; font-family: "Noto Sans", "DejaVu Sans", sans-serif; font-size: 12px; color: #2b2b2b; }
-        .header { text-align: center; margin-bottom: 18px; }
-        .title { font-size: 21px; font-weight: 700; color: #1a1a1a; text-transform: uppercase; letter-spacing: 0.7px; }
-        .divider { width: 100%; height: 2px; background: #4F46E5; margin-top: 8px; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { background: #4F46E5; color: #fff; font-size: 12px; padding: 8px 5px; border: 1px solid #4338CA; text-align: center; }
-        td { border: 1px solid #d1d1d1; padding: 7px 8px; font-size: 11px; word-wrap: break-word; }
-        tr:nth-child(even) td { background: #F3F4FF; }
+        @page {
+            margin: 115px 34px 62px 34px;
+        }
+
+        body {
+            margin: 0;
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 10px;
+            color: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .header {
+            position: fixed;
+            top: -98px;
+            left: 0;
+            right: 0;
+            height: 88px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 8px;
+        }
+
+        .header-table,
+        .footer-table,
+        .summary-table,
+        .data,
+        .brand-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .left { text-align: left; }
+        .right { text-align: right; }
+        .center { text-align: center; }
+
+        .muted { color: #6B7280; }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 9px;
+            color: #6B7280;
+        }
+
+        .logo-cell {
+            width: 38px;
+            padding-right: 10px;
+            vertical-align: middle;
+        }
+
+        .text-cell {
+            vertical-align: middle;
+        }
+
+        .company-logo {
+            width: 34px;
+            height: 34px;
+        }
+
+        .company-name,
+        .system-name {
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .system-name {
+            text-transform: uppercase;
+        }
+
+        .system-name span {
+            font-weight: normal;
+        }
+
+        .company-mini {
+            font-size: 9px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: -48px;
+            left: 0;
+            right: 0;
+            height: 36px;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 6px;
+            font-size: 9px;
+            color: #6B7280;
+        }
+
+        .page-number:before {
+            content: "Página " counter(page) " de " counter(pages);
+        }
+
+        .seal {
+            font-weight: bold;
+            letter-spacing: .6px;
+            color: #111827;
+        }
+
+        .summary {
+            margin-bottom: 14px;
+        }
+
+        .summary td {
+            width: 25%;
+            padding: 0 4px;
+        }
+
+        .card {
+            border: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        .card-label {
+            font-size: 9px;
+            margin-bottom: 4px;
+            color: #6B7280;
+        }
+
+        .card-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .card-blue   { border-top: 2px solid #3B82F6; }
+        .card-green  { border-top: 2px solid #10B981; }
+        .card-orange { border-top: 2px solid #F59E0B; }
+        .card-red    { border-top: 2px solid #EF4444; }
+
+        .data {
+            table-layout: fixed;
+        }
+
+        .data th {
+            background: #EEF2FF;
+            border: 1px solid #E5E7EB;
+            padding: 8px 6px;
+            font-size: 9px;
+            text-align: left;
+        }
+
+        .data td {
+            border: 1px solid #E5E7EB;
+            padding: 7px 6px;
+            vertical-align: middle;
+            font-size: 9px;
+        }
+
+        .data tbody tr:nth-child(even) td {
+            background: #FAFAFA;
+        }
+
+        .bold { font-weight: bold; }
+        .small { font-size: 8.5px; }
+
+        .system-role {
+            color: #1D4ED8;
+            font-weight: bold;
+        }
+
+        .custom-role {
+            color: #15803D;
+            font-weight: bold;
+        }
+
+        .notice {
+            border: 1px solid #DBEAFE;
+            background: #EFF6FF;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            font-size: 9px;
+        }
     </style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="title">Listado de Roles</div>
-        <div class="divider"></div>
+
+@php
+    use Illuminate\Support\Facades\Auth;
+
+    $items = collect($roles);
+
+    $totalRoles       = $items->count();
+    $totalUsers       = $items->sum('users_count');
+    $totalPermissions = $items->sum('permissions_count');
+
+    $systemRoles = $items->filter(function($role){
+        return in_array($role->name, [
+            'Administrador',
+            'Superadministrador',
+            'Cliente'
+        ]);
+    })->count();
+
+    $generatedAt = now()->format('d/m/Y H:i');
+
+    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+
+    $companySettings = function_exists('company_setting') ? company_setting() : null;
+
+    if ($companySettings && $companySettings->logo_path) {
+        $fullPath = public_path('storage/' . $companySettings->logo_path);
+
+        $pdfLogoUrl = file_exists($fullPath)
+            ? $fullPath
+            : public_path('images/logos/logo-geckommerce.png');
+    } else {
+        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+    }
+
+    $companyName = !empty($companySettings?->name)
+        ? $companySettings->name
+        : config('app.name');
+
+    $exportType = $isSelectedExport
+        ? 'Exportación seleccionada'
+        : 'Exportación total';
+@endphp
+
+<!-- HEADER -->
+<div class="header">
+    <table class="header-table">
+        <tr>
+            <td width="52%" class="left">
+                <table class="brand-table">
+                    <tr>
+                        <td class="logo-cell">
+                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
+                        </td>
+
+                        <td class="text-cell">
+                            @if (!empty($companySettings?->name))
+                                <div class="company-name">{{ $companyName }}</div>
+                            @else
+                                <div class="system-name">Gecko<span>Mmerce</span></div>
+                            @endif
+
+                            <div class="company-mini">Panel administrativo</div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+
+            <td width="48%" class="right">
+                <div class="title">Reporte de Roles</div>
+                <div class="subtitle">{{ $exportType }}</div>
+                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                <div class="subtitle">Usuario: {{ $userName }}</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <table class="footer-table">
+        <tr>
+            <td width="33%" class="left">
+                {{ $companyName }}
+            </td>
+
+            <td width="34%" class="center seal">
+                DOCUMENTO INTERNO
+            </td>
+
+            <td width="33%" class="right">
+                <span class="page-number"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- CONTENT -->
+<div>
+
+    <div class="notice">
+        {{ $isSelectedExport
+            ? 'Este archivo contiene únicamente roles seleccionados por el usuario.'
+            : 'Este archivo contiene el listado completo de roles registrados.' }}
     </div>
-    <table>
+
+    <div class="summary">
+        <table class="summary-table">
+            <tr>
+                <td>
+                    <div class="card card-blue">
+                        <div class="card-label">Roles</div>
+                        <div class="card-value">{{ $totalRoles }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-green">
+                        <div class="card-label">Usuarios asignados</div>
+                        <div class="card-value">{{ $totalUsers }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-orange">
+                        <div class="card-label">Permisos</div>
+                        <div class="card-value">{{ $totalPermissions }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="card card-red">
+                        <div class="card-label">Roles sistema</div>
+                        <div class="card-value">{{ $systemRoles }}</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="data">
         <colgroup>
-            <col style="width: 8%">
-            <col style="width: 25%">
-            <col style="width: 45%">
-            <col style="width: 22%">
+            <col style="width:6%">
+            <col style="width:24%">
+            <col style="width:32%">
+            <col style="width:12%">
+            <col style="width:12%">
+            <col style="width:14%">
         </colgroup>
+
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
+                <th class="center">ID</th>
+                <th>Rol</th>
                 <th>Descripción</th>
-                <th>Fecha</th>
+                <th class="center">Usuarios</th>
+                <th class="center">Permisos</th>
+                <th class="center">Tipo</th>
             </tr>
         </thead>
+
         <tbody>
-            @foreach($roles as $role)
+            @forelse($roles as $role)
                 <tr>
-                    <td>{{ $role->id }}</td>
-                    <td>{{ $role->name }}</td>
-                    <td style="white-space: pre-line;">{{ $role->description ?? 'Sin descripción' }}</td>
-                    <td>{{ $role->created_at?->format('d/m/Y H:i') ?? 'Sin fecha' }}</td>
+                    <td class="center">{{ $role->id }}</td>
+
+                    <td class="bold">
+                        {{ $role->name }}
+                    </td>
+
+                    <td class="small">
+                        {{ $role->description ?: '—' }}
+                    </td>
+
+                    <td class="center">
+                        {{ $role->users_count }}
+                    </td>
+
+                    <td class="center">
+                        {{ $role->permissions_count }}
+                    </td>
+
+                    <td class="center">
+                        @if(in_array($role->name, ['Administrador','Superadministrador','Cliente']))
+                            <span class="system-role">Sistema</span>
+                        @else
+                            <span class="custom-role">Personalizado</span>
+                        @endif
+                    </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="6" class="center muted">
+                        No existen roles registrados.
+                    </td>
+                </tr>
+            @endforelse
         </tbody>
+
     </table>
+
+</div>
+
 </body>
 </html>

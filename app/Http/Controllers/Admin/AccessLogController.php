@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\AccessLogsExcelExport;
 use App\Exports\AccessLogsCsvExport;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Audit;
 
 class AccessLogController extends Controller
 {
@@ -82,24 +84,43 @@ class AccessLogController extends Controller
      */
     public function exportPdf(Request $request)
     {
-        if ($request->has('ids')) {
-            $logs = AccessLog::whereIn('id', $request->ids)->get();
-        } elseif ($request->has('export_all')) {
-            $logs = AccessLog::all();
+        $query = AccessLog::query()
+            ->with('user:id,name,last_name,email')
+            ->select([
+                'id',
+                'user_id',
+                'action',
+                'status',
+                'ip_address',
+                'user_agent',
+                'created_at',
+            ]);
+
+        $isSelectedExport = false;
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', (array) $request->ids);
+            $isSelectedExport = true;
+        } elseif ($request->boolean('export_all')) {
+            // exportación total
         } else {
             Session::flash('info', [
-                'type' => 'danger',
-                'title' => 'Sin selección',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin selección',
                 'message' => 'No se seleccionaron accesos para exportar.',
             ]);
 
             return back();
         }
 
+        $logs = $query->orderByDesc('id')->get();
+
         if ($logs->isEmpty()) {
             Session::flash('info', [
-                'type' => 'danger',
-                'title' => 'Sin datos',
+                'type'    => 'danger',
+                'header'  => 'Error',
+                'title'   => 'Sin datos',
                 'message' => 'No hay registros disponibles para exportar.',
             ]);
 
@@ -108,9 +129,30 @@ class AccessLogController extends Controller
 
         $filename = 'access_logs_' . now()->format('Y-m-d_H-i-s') . '.pdf';
 
-        return Pdf::view('admin.export.access-logs-pdf', compact('logs'))
-            ->format('a4')
-            ->name($filename)
-            ->download();
+        Audit::create([
+            'user_id'        => Auth::id(),
+            'event'          => 'pdf_exported',
+            'auditable_type' => AccessLog::class,
+            'auditable_id'   => null,
+            'old_values'     => null,
+            'new_values'     => [
+                'filename'   => $filename,
+                'ids'        => $request->ids ?? null,
+                'export_all' => $request->boolean('export_all'),
+                'selected'   => $isSelectedExport,
+                'total'      => $logs->count(),
+                'module'     => 'access_logs',
+            ],
+            'ip_address'     => $request->ip(),
+            'user_agent'     => $request->userAgent(),
+        ]);
+
+        $pdf = Pdf::loadView('admin.export.access-logs-pdf', [
+            'logs'             => $logs,
+            'isSelectedExport' => $isSelectedExport,
+            'exportedBy'       => Auth::user()?->name . ' ' . Auth::user()?->last_name,
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
     }
 }

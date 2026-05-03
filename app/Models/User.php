@@ -154,7 +154,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function Addresses()
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function addresses()
     {
         return $this->hasMany(Addresses::class);
     }
