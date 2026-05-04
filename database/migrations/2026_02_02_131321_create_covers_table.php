@@ -30,7 +30,7 @@ return new class extends Migration
             // Campos de botón CTA
             $table->string('button_text')->nullable();
             $table->string('button_link')->nullable();
-            $table->enum('button_style', ['primary', 'secondary', 'outline', 'white'])->default('primary');
+            $table->enum('button_style', ['primary', 'secondary', 'outline', 'white'])->nullable();
             // Fechas de vigencia
             $table->datetime('start_at')->nullable();
             $table->datetime('end_at')->nullable();

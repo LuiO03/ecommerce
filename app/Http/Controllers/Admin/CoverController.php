@@ -74,7 +74,7 @@ class CoverController extends Controller
             'overlay_bg_opacity' => $request->overlay_bg_opacity ?? 0.35,
             'button_text'     => $request->button_text,
             'button_link'     => $request->button_link,
-            'button_style'    => $request->button_style ?? 'primary',
+            'button_style'    => $request->button_style,
             'image_path'      => $imagePath,
             'start_at'        => $request->start_at,
             'end_at'          => $request->end_at,

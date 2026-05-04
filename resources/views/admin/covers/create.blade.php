@@ -54,16 +54,24 @@
                         Estado de la portada
                         <i class="ri-asterisk text-accent"></i>
                     </label>
+
                     <div class="binary-switch">
-                        <input type="radio" name="status" id="statusActive" value="1"
-                            class="switch-input switch-input-on" {{ old('status', 1) == 1 ? 'checked' : '' }}>
-                        <input type="radio" name="status" id="statusInactive" value="0"
-                            class="switch-input switch-input-off" {{ old('status') == 0 ? 'checked' : '' }}>
+                        <!-- Checkbox real -->
+                        <input type="hidden" name="status" value="0">
+
+                        <input type="checkbox" name="status" id="status" class="switch-input" value="1"
+                            {{ old('status', 1) == 1 ? 'checked' : '' }} data-validate="required">
+
+                        <!-- Labels visuales -->
+                        <label for="status" class="switch-label switch-label-on">
+                            <i class="ri-checkbox-circle-line"></i> Activo
+                        </label>
+
+                        <label for="status" class="switch-label switch-label-off">
+                            <i class="ri-close-circle-line"></i> Inactivo
+                        </label>
+
                         <div class="switch-slider"></div>
-                        <label for="statusActive" class="switch-label switch-label-on"><i
-                                class="ri-checkbox-circle-line"></i> Activo</label>
-                        <label for="statusInactive" class="switch-label switch-label-off"><i
-                                class="ri-close-circle-line"></i> Inactivo</label>
                     </div>
                 </div>
 
@@ -164,7 +172,7 @@
                             <i class="ri-radio-button-line input-icon"></i>
                             <input type="text" name="button_text" id="button_text" class="input-form"
                                 value="{{ old('button_text') }}" placeholder="Ej: Comprar ahora"
-                                data-validate="button_text|max:100|requiredWith:button_style,button_style">
+                                data-validate="button_text|max:100|requiredWith:button_style">
                         </div>
                     </div>
                     <div class="input-group">
@@ -173,7 +181,7 @@
                             <i class="ri-links-line input-icon"></i>
                             <input type="url" name="button_link" id="button_link" class="input-form"
                                 value="{{ old('button_link') }}" placeholder="https://example.com"
-                                data-validate="url|max:255|requiredWith:button_text,button_style">
+                                data-validate="url|max:255|requiredWith:button_text">
                         </div>
                     </div>
 
@@ -202,7 +210,7 @@
                         <i class="ri-landscape-line input-icon"></i>
                         <input type="text" name="overlay_subtext" id="overlay_subtext" class="input-form"
                             placeholder="Texto secundario opcional" value="{{ old('overlay_subtext') }}"
-                            data-validate="max:250">
+                            data-validate="max:250|requiredWith:overlay_text">
                     </div>
                 </div>
                 <div class="form-row-fit">
@@ -211,28 +219,33 @@
                         <div class="input-icon-container">
                             <i class="ri-palette-line input-icon"></i>
                             <input type="text" id="text_color" data-role="text-color" placeholder="#RRGGBB"
-                                style="cursor: pointer" autocomplete="off" data-validate="required|colorCss"
+                                style="cursor: pointer" autocomplete="off"
+                                data-validate="required|colorCss|requiredWith:overlay_text"
                                 value="{{ old('text_color', '#FFFFFF') }}" data-coloris>
                         </div>
                     </div>
                     <div class="input-group">
                         <label class="label-form">Fondo oscuro del texto</label>
+
                         <div class="binary-switch">
-                            <input type="radio" name="overlay_bg_enabled" id="overlayBgOn" value="1"
-                                class="switch-input switch-input-on"
-                                {{ old('overlay_bg_enabled') == 1 ? 'checked' : '' }}>
-                            <input type="radio" name="overlay_bg_enabled" id="overlayBgOff" value="0"
-                                class="switch-input switch-input-off"
-                                {{ old('overlay_bg_enabled', 0) == 0 ? 'checked' : '' }}>
+                            <!-- Hidden correcto -->
+                            <input type="hidden" name="overlay_bg_enabled" value="0">
 
-                            <div class="switch-slider"></div>
+                            <!-- Checkbox -->
+                            <input type="checkbox" name="overlay_bg_enabled" id="overlayBg" class="switch-input"
+                                value="1" {{ old('overlay_bg_enabled', 0) == 1 ? 'checked' : '' }}
+                                data-validate="requiredWith:overlay_text">
 
-                            <label for="overlayBgOn" class="switch-label switch-label-on">
+                            <!-- Labels -->
+                            <label for="overlayBg" class="switch-label switch-label-on">
                                 <i class="ri-checkbox-circle-line"></i> Sí
                             </label>
-                            <label for="overlayBgOff" class="switch-label switch-label-off">
+
+                            <label for="overlayBg" class="switch-label switch-label-off">
                                 <i class="ri-close-circle-line"></i> No
                             </label>
+
+                            <div class="switch-slider"></div>
                         </div>
                     </div>
                     <div class="input-group">
@@ -242,12 +255,14 @@
                         </label>
                         <input type="range" name="overlay_bg_opacity" id="overlay_bg_opacity" class="range-form"
                             min="0" max="1" step="0.05"
-                            value="{{ old('overlay_bg_opacity', '0.35') }}" data-validate="minValue:0|maxValue:1">
+                            value="{{ old('overlay_bg_opacity', '0.35') }}"
+                            data-validate="minValue:0|maxValue:1|requiredWith:overlay_text">
                     </div>
                     <div class="input-group">
                         <label for="text_position" class="label-form">Posición del texto</label>
                         <input type="hidden" name="text_position" id="text_position"
-                            value="{{ old('text_position', 'center-center') }}">
+                            value="{{ old('text_position', 'center-center') }}"
+                            data-validate="requiredWith:overlay_text">
                         <div class="position-picker" data-target="text_position">
                             <button type="button" class="position-cell" data-position="top-left"
                                 aria-label="Superior izquierda"></button>
@@ -307,59 +322,6 @@
                     validateOnInput: false,
                     scrollToFirstError: true
                 });
-
-                // Deshabilitar button_text y button_link hasta que se seleccione button_style
-                (function setupButtonFields() {
-                    const form = document.getElementById('coverForm');
-                    if (!form) return;
-                    const styleField = form.querySelector('#button_style');
-                    const textField = form.querySelector('#button_text');
-                    const linkField = form.querySelector('#button_link');
-                    if (!styleField || !textField || !linkField) return;
-
-                    let lastStyle = String(styleField.value || '').trim();
-
-                    const updateState = () => {
-                        const currentStyle = String(styleField.value || '').trim();
-                        const hasStyle = currentStyle !== '';
-
-                        // Si cambia de un estilo a otro distinto, limpiar los campos
-                        if (hasStyle && lastStyle && currentStyle !== lastStyle) {
-                            textField.value = '';
-                            linkField.value = '';
-                            if (form.__validator) {
-                                form.__validator.clearError(textField);
-                                form.__validator.clearSuccess(textField);
-                                form.__validator.clearError(linkField);
-                                form.__validator.clearSuccess(linkField);
-                            }
-                        }
-
-                        if (!hasStyle) {
-                            textField.value = '';
-                            linkField.value = '';
-                            textField.disabled = true;
-                            linkField.disabled = true;
-                            if (form.__validator) {
-                                form.__validator.clearError(textField);
-                                form.__validator.clearSuccess(textField);
-                                form.__validator.clearError(linkField);
-                                form.__validator.clearSuccess(linkField);
-                            }
-                        } else {
-                            textField.disabled = false;
-                            linkField.disabled = false;
-                        }
-
-                        lastStyle = currentStyle;
-                    };
-
-                    // Estado inicial
-                    updateState();
-
-                    // Actualizar al cambiar el estilo
-                    styleField.addEventListener('change', updateState);
-                })();
 
                 const initCoverOverlayPreview = () => {
                     const preview = document.getElementById('coverOverlayPreview');

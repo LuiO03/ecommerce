@@ -90,24 +90,7 @@
                             data-validate="required|email">
                     </div>
                 </div>
-                <!-- === Estado === -->
-                <div class="input-group">
-                    <label class="label-form">
-                        Estado del usuario
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="binary-switch">
-                        <input type="radio" name="status" id="statusActive" value="1"
-                            class="switch-input switch-input-on" {{ old('status', 1) == 1 ? 'checked' : '' }}>
-                        <input type="radio" name="status" id="statusInactive" value="0"
-                            class="switch-input switch-input-off" {{ old('status') == 0 ? 'checked' : '' }}>
-                        <div class="switch-slider"></div>
-                        <label for="statusActive" class="switch-label switch-label-on"><i
-                                class="ri-checkbox-circle-line"></i> Activo</label>
-                        <label for="statusInactive" class="switch-label switch-label-off"><i
-                                class="ri-close-circle-line"></i> Inactivo</label>
-                    </div>
-                </div>
+
                 <!-- === Rol === -->
                 <div class="input-group">
                     <label for="role" class="label-form">
@@ -126,6 +109,32 @@
                             @endforeach
                         </select>
                         <i class="ri-arrow-down-s-line select-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- === Estado === -->
+                <div class="input-group">
+                    <label class="label-form">
+                        Estado del usuario
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="binary-switch">
+                        <!-- Checkbox real -->
+                        <input type="hidden" name="status" value="0">
+
+                        <input type="checkbox" name="status" id="status" class="switch-input" value="1"
+                            {{ old('status', 1) == 1 ? 'checked' : '' }} data-validate="required">
+
+                        <!-- Labels visuales -->
+                        <label for="status" class="switch-label switch-label-on">
+                            <i class="ri-checkbox-circle-line"></i> Activo
+                        </label>
+
+                        <label for="status" class="switch-label switch-label-off">
+                            <i class="ri-close-circle-line"></i> Inactivo
+                        </label>
+
+                        <div class="switch-slider"></div>
                     </div>
                 </div>
             </div>
@@ -181,7 +190,17 @@
                                 data-validate="max:255">
                         </div>
                     </div>
-
+                    <!-- === Teléfono === -->
+                    <div class="input-group">
+                        <label for="phone" class="label-form">Teléfono</label>
+                        <div class="input-icon-container">
+                            <i class="ri-phone-line input-icon"></i>
+                            <input type="text" name="phone" id="phone" class="input-form"
+                                value="{{ old('phone') }}" placeholder="9 dígitos" data-validate="phone">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row-fit">
                     <!-- === Tipo de documento (opcional) === -->
                     <div class="input-group">
                         <label for="document_type" class="label-form">Tipo de documento</label>
@@ -201,26 +220,17 @@
                             <i class="ri-arrow-down-s-line select-arrow"></i>
                         </div>
                     </div>
-                </div>
-                <!-- === Número de documento (depende de tipo) === -->
-                <div class="input-group">
-                    <label for="document_number" class="label-form">Número de documento</label>
-                    <div class="input-icon-container">
-                        <i class="ri-hashtag input-icon"></i>
-                        <input type="text" name="document_number" id="document_number" class="input-form"
-                            value="{{ old('document_number') }}" placeholder="Ingresa el número de documento"
-                            data-validate="document_number|max:30|requiredWith:document_type">
+                    <!-- === Número de documento (depende de tipo) === -->
+                    <div class="input-group">
+                        <label for="document_number" class="label-form">Número de documento</label>
+                        <div class="input-icon-container">
+                            <i class="ri-hashtag input-icon"></i>
+                            <input type="text" name="document_number" id="document_number" class="input-form"
+                                value="{{ old('document_number') }}" placeholder="Ingresa el número de documento"
+                                data-validate="document_number|max:30|requiredWith:document_type">
+                        </div>
                     </div>
-                </div>
 
-                <!-- === Teléfono === -->
-                <div class="input-group">
-                    <label for="phone" class="label-form">Teléfono</label>
-                    <div class="input-icon-container">
-                        <i class="ri-phone-line input-icon"></i>
-                        <input type="text" name="phone" id="phone" class="input-form"
-                            value="{{ old('phone') }}" placeholder="9 dígitos" data-validate="phone">
-                    </div>
                 </div>
             </div>
         </div>
@@ -266,52 +276,6 @@
                     validateOnInput: false,
                     scrollToFirstError: true
                 });
-
-                // 3. Deshabilitar número de documento hasta que se elija tipo
-                (function setupDocumentFields() {
-                    const form = document.getElementById('userForm');
-                    if (!form) return;
-
-                    const typeField = form.querySelector('#document_type');
-                    const numberField = form.querySelector('#document_number');
-                    if (!typeField || !numberField) return;
-
-                    let lastType = String(typeField.value || '').trim();
-
-                    const updateState = () => {
-                        const currentType = String(typeField.value || '').trim();
-                        const hasType = currentType !== '';
-
-                        // Si cambia de un tipo a otro distinto, limpiar el número para evitar ambigüedad
-                        if (hasType && lastType && currentType !== lastType) {
-                            numberField.value = '';
-                            if (form.__validator) {
-                                form.__validator.clearError(numberField);
-                                form.__validator.clearSuccess(numberField);
-                            }
-                        }
-
-                        if (!hasType) {
-                            numberField.value = '';
-                            numberField.disabled = true;
-
-                            if (form.__validator) {
-                                form.__validator.clearError(numberField);
-                                form.__validator.clearSuccess(numberField);
-                            }
-                        } else {
-                            numberField.disabled = false;
-                        }
-
-                        lastType = currentType;
-                    };
-
-                    // Estado inicial
-                    updateState();
-
-                    // Actualizar al cambiar el tipo de documento
-                    typeField.addEventListener('change', updateState);
-                })();
 
                 // Toggle password visibility
                 document.querySelectorAll('.toggle-password').forEach(btn => {

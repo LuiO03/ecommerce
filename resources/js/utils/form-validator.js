@@ -60,7 +60,223 @@ class FormValidator {
     init() {
         this.scanFields();
         this.attachEventListeners();
+        this.setupSingleRequiredWithDependencies();
         console.log('✅ FormValidator inicializado:', this.fields.size, 'campos');
+    }
+
+    // ========================================
+    // 🔗 DEPENDENCIAS (requiredWith con 1 disparador)
+    //
+    // Objetivo UX:
+    // - Si un campo tiene `requiredWith:campo_principal` (un solo parámetro),
+    //   empieza deshabilitado mientras el principal esté vacío.
+    // - Se habilita automáticamente al seleccionar/llenar el principal.
+    //
+    // Nota importante:
+    // - `requiredWith` también se usa para grupos interdependientes (CTA). En
+    //   esos casos suele tener múltiples disparadores (A depende de B,C; B de A,C; ...).
+    //   Para no bloquear esos formularios, SOLO aplicamos auto-disable cuando
+    //   el `requiredWith` tiene EXACTAMENTE 1 disparador.
+    // ========================================
+    setupSingleRequiredWithDependencies() {
+        if (!this.form) return;
+
+        const dependencies = [];
+
+        this.fields.forEach((config, dependentField) => {
+            if (!config || !Array.isArray(config.rules)) return;
+
+            const rule = config.rules.find(r => r && r.name === 'requiredWith' && r.param);
+            if (!rule || !rule.param) return;
+
+            const raw = String(rule.param);
+            const triggers = raw.split(',').map(s => s.trim()).filter(Boolean);
+
+            // Solo dependencia 1-a-1
+            if (triggers.length !== 1) return;
+
+            const triggerKey = triggers[0];
+            const triggerTargets = this.resolveTriggerTargets(triggerKey);
+            if (triggerTargets.length === 0) return;
+
+            dependencies.push({
+                dependentField,
+                triggerKey,
+                triggerTargets,
+                clearOnTriggerChange: triggerTargets.some(t => (t && t.tagName) ? String(t.tagName).toUpperCase() === 'SELECT' : false),
+                lastTriggerValue: null,
+            });
+        });
+
+        if (dependencies.length === 0) return;
+
+        dependencies.forEach(dep => {
+            const update = (reason = 'init') => {
+                const triggerValue = this.getTriggerValue(dep.triggerTargets);
+                const hasTrigger = triggerValue !== '';
+
+                // Si el disparador está vacío: deshabilitar y limpiar
+                if (!hasTrigger) {
+                    this.disableDependentField(dep.dependentField);
+                    dep.lastTriggerValue = triggerValue;
+                    return;
+                }
+
+                // Si el disparador tiene valor: habilitar
+                this.enableDependentField(dep.dependentField);
+
+                // Si el disparador cambia (solo en eventos change), limpiar dependiente
+                // para evitar ambigüedad (ej. tipo de documento cambia y el número ya no aplica).
+                if (dep.clearOnTriggerChange && reason === 'change' && dep.lastTriggerValue !== null && triggerValue !== dep.lastTriggerValue) {
+                    this.clearFieldValue(dep.dependentField);
+                    this.clearError(dep.dependentField);
+                    this.clearSuccess(dep.dependentField);
+                }
+
+                dep.lastTriggerValue = triggerValue;
+            };
+
+            // Estado inicial (incluye valores precargados en edición)
+            update('init');
+
+            // Listeners: change + input para cubrir select e inputs
+            dep.triggerTargets.forEach(t => {
+                if (!(t instanceof HTMLElement)) return;
+                t.addEventListener('change', () => update('change'));
+                t.addEventListener('input', () => update('input'));
+            });
+        });
+    }
+
+    resolveTriggerTargets(idOrName) {
+        const key = String(idOrName || '').trim();
+        if (!key) return [];
+
+        // 1) Intentar por id
+        const escapedId = (typeof window !== 'undefined' && window.CSS && typeof window.CSS.escape === 'function')
+            ? window.CSS.escape(key)
+            : key.replace(/[^a-zA-Z0-9_\-]/g, '');
+
+        const byId = this.form.querySelector(`#${escapedId}`);
+        if (byId) return [byId];
+
+        // 2) Intentar por name con elements.namedItem (maneja RadioNodeList)
+        let named = null;
+        try {
+            named = this.form.elements.namedItem(key);
+        } catch (_) {
+            named = null;
+        }
+
+        // 3) Fallback por querySelector name
+        if (!named) {
+            const byName = this.form.querySelector(`[name="${key.replace(/"/g, '\\"')}"]`);
+            return byName ? [byName] : [];
+        }
+
+        // RadioNodeList (radios/checkboxes)
+        if (typeof RadioNodeList !== 'undefined' && named instanceof RadioNodeList) {
+            return Array.from(named).filter(Boolean);
+        }
+
+        // Un solo elemento
+        if (named instanceof HTMLElement) {
+            return [named];
+        }
+
+        // Colecciones/array-like
+        if (typeof named.length === 'number') {
+            return Array.from(named).filter(Boolean);
+        }
+
+        return [];
+    }
+
+    getTriggerValue(triggerTargets) {
+        if (!Array.isArray(triggerTargets) || triggerTargets.length === 0) return '';
+
+        // Si es un grupo (radios/checkboxes con mismo name), considerar el primero que esté checked
+        // o el valor del <select> / input.
+        for (const el of triggerTargets) {
+            if (!(el instanceof HTMLElement)) continue;
+            if (el.disabled) continue;
+
+            const tag = (el.tagName || '').toUpperCase();
+            const type = (el.getAttribute('type') || '').toLowerCase();
+
+            if (type === 'radio' || type === 'checkbox') {
+                if (el.checked) {
+                    return String(el.value || '').trim();
+                }
+                continue;
+            }
+
+            if (type === 'file') {
+                const files = el.files;
+                return files && files.length > 0 ? '__has_file__' : '';
+            }
+
+            if (tag === 'SELECT' || tag === 'TEXTAREA' || tag === 'INPUT') {
+                return String(el.value || '').trim();
+            }
+        }
+
+        return '';
+    }
+
+    disableDependentField(field) {
+        if (!(field instanceof HTMLElement)) return;
+
+        // Ya está deshabilitado: igualmente limpiar estado visual
+        if (field.disabled) {
+            this.clearError(field);
+            this.clearSuccess(field);
+            return;
+        }
+
+        this.clearFieldValue(field);
+        field.disabled = true;
+        this.clearError(field);
+        this.clearSuccess(field);
+    }
+
+    enableDependentField(field) {
+        if (!(field instanceof HTMLElement)) return;
+        if (!field.disabled) return;
+
+        field.disabled = false;
+        this.clearError(field);
+        this.clearSuccess(field);
+    }
+
+    clearFieldValue(field) {
+        if (!(field instanceof HTMLElement)) return;
+
+        const tag = (field.tagName || '').toUpperCase();
+        const type = (field.getAttribute('type') || '').toLowerCase();
+
+        if (type === 'file') {
+            // Reset FileList
+            field.value = '';
+            return;
+        }
+
+        if (type === 'radio' || type === 'checkbox') {
+            field.checked = false;
+            return;
+        }
+
+        if (tag === 'SELECT') {
+            field.value = '';
+            if (String(field.value || '') !== '' && field.options && field.options.length > 0) {
+                field.selectedIndex = 0;
+            }
+            return;
+        }
+
+        if ('value' in field) {
+            field.value = '';
+        }
     }
 
     // ========================================

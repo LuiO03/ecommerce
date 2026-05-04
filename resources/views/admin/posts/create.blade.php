@@ -94,7 +94,6 @@
                     </div>
                 </div>
                 <!-- === Estado === -->
-                <!-- === Estado === -->
                 <div class="input-group">
                     <label class="label-form">
                         Estado
@@ -129,23 +128,23 @@
                         </div>
                     @else
                         {{-- Autor normal --}}
-                        <div class="binary-switch">
+                        <div class="status-selector">
 
                             <input type="radio" name="status" id="statusReview" value="pending"
-                                class="switch-input switch-input-on"
+                                class="switch-input switch-input-first"
                                 {{ old('status', 'pending') === 'pending' ? 'checked' : '' }}>
 
                             <input type="radio" name="status" id="statusDraft" value="draft"
-                                class="switch-input switch-input-off" {{ old('status') === 'draft' ? 'checked' : '' }}>
+                                class="switch-input switch-input-second" {{ old('status') === 'draft' ? 'checked' : '' }}>
 
                             <div class="switch-slider"></div>
 
-                            <label for="statusReview" class="switch-label switch-label-on">
+                            <label for="statusReview" class="switch-label switch-label-first">
                                 <i class="ri-send-plane-line"></i>
                                 Revisión
                             </label>
 
-                            <label for="statusDraft" class="switch-label switch-label-off">
+                            <label for="statusDraft" class="switch-label switch-label-second">
                                 <i class="ri-draft-line"></i>
                                 Borrador
                             </label>
@@ -173,7 +172,8 @@
                             </option>
                             <option value="private" {{ old('visibility') == 'private' ? 'selected' : '' }}>Privado
                             </option>
-                            <option value="authenticated" {{ old('visibility') == 'authenticated' ? 'selected' : '' }}>
+                            <option value="authenticated"
+                                {{ old('visibility') == 'authenticated' ? 'selected' : '' }}>
                                 Solo Autenticados
                             </option>
                         </select>
@@ -184,20 +184,22 @@
                 <div class="input-group">
                     <label class="label-form">Permitir comentarios</label>
                     <div class="binary-switch">
-                        <input type="radio" name="allow_comments" id="allowYes" value="1"
-                            class="switch-input switch-input-on" {{ old('allow_comments', 1) == 1 ? 'checked' : '' }}>
-                        <input type="radio" name="allow_comments" id="allowNo" value="0"
-                            class="switch-input switch-input-off"
-                            {{ old('allow_comments', 1) == 0 ? 'checked' : '' }}>
+                        <!-- Checkbox real -->
+                        <input type="hidden" name="status" value="0">
+
+                        <input type="checkbox" name="allow_comments" id="allow_comments" class="switch-input" value="1"
+                            {{ old('allow_comments', 1) == 1 ? 'checked' : '' }} data-validate="required">
+
+                        <!-- Labels visuales -->
+                        <label for="allow_comments" class="switch-label switch-label-on">
+                            <i class="ri-checkbox-circle-line"></i> Si
+                        </label>
+
+                        <label for="allow_comments" class="switch-label switch-label-off">
+                            <i class="ri-close-circle-line"></i> No
+                        </label>
 
                         <div class="switch-slider"></div>
-
-                        <label for="allowYes" class="switch-label switch-label-on"><i
-                                class="ri-checkbox-circle-line"></i>
-                            Sí</label>
-                        <label for="allowNo" class="switch-label switch-label-off"><i
-                                class="ri-close-circle-line"></i>
-                            No</label>
                     </div>
                 </div>
             </div>

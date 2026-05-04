@@ -110,6 +110,6 @@ class Cover extends Model
         if ($this->image_path && Storage::disk('public')->exists($this->image_path)) {
             return Storage::disk('public')->url($this->image_path);
         }
-        return asset('images/default-cover.jpg');
+        return asset('images/no-image.png');
     }
 }

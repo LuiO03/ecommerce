@@ -118,26 +118,7 @@
                         <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
                 </div>
-                <!-- === Estado === -->
-                <div class="input-group">
-                    <label class="label-form">
-                        Estado del usuario
-                        <i class="ri-asterisk text-accent"></i>
-                    </label>
-                    <div class="binary-switch">
-                        <input type="radio" name="status" id="statusActive" value="1"
-                            class="switch-input switch-input-on"
-                            {{ old('status', (int) $user->status) == 1 ? 'checked' : '' }}>
-                        <input type="radio" name="status" id="statusInactive" value="0"
-                            class="switch-input switch-input-off"
-                            {{ old('status', (int) $user->status) == 0 ? 'checked' : '' }}>
-                        <div class="switch-slider"></div>
-                        <label for="statusActive" class="switch-label switch-label-on"><i
-                                class="ri-checkbox-circle-line"></i> Activo</label>
-                        <label for="statusInactive" class="switch-label switch-label-off"><i
-                                class="ri-close-circle-line"></i> Inactivo</label>
-                    </div>
-                </div>
+
                 <!-- === Dirección === -->
                 <div class="input-group">
                     <label for="address" class="label-form">Dirección</label>
@@ -146,6 +127,31 @@
                         <input type="text" name="address" id="address" class="input-form"
                             value="{{ old('address', $user->address) }}" placeholder="Ingrese la dirección"
                             data-validate="max:255">
+                    </div>
+                </div>
+                <!-- === Estado === -->
+                <div class="input-group">
+                    <label class="label-form">
+                        Estado del usuario
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="binary-switch">
+                        <!-- Checkbox real -->
+                        <input type="hidden" name="status" value="0">
+
+                        <input type="checkbox" name="status" id="status" class="switch-input" value="1"
+                            {{ old('status', $user->status) == 1 ? 'checked' : '' }} data-validate="required">
+
+                        <!-- Labels visuales -->
+                        <label for="status" class="switch-label switch-label-on">
+                            <i class="ri-checkbox-circle-line"></i> Activo
+                        </label>
+
+                        <label for="status" class="switch-label switch-label-off">
+                            <i class="ri-close-circle-line"></i> Inactivo
+                        </label>
+
+                        <div class="switch-slider"></div>
                     </div>
                 </div>
             </div>
@@ -306,52 +312,6 @@
                     validateOnInput: false,
                     scrollToFirstError: true
                 });
-
-                // 3. Deshabilitar número de documento hasta que se elija tipo
-                (function setupDocumentFields() {
-                    const form = document.getElementById('userForm');
-                    if (!form) return;
-
-                    const typeField = form.querySelector('#document_type');
-                    const numberField = form.querySelector('#document_number');
-                    if (!typeField || !numberField) return;
-
-                    let lastType = String(typeField.value || '').trim();
-
-                    const updateState = () => {
-                        const currentType = String(typeField.value || '').trim();
-                        const hasType = currentType !== '';
-
-                        // Si cambia de un tipo a otro distinto, limpiar el número para evitar ambigüedad
-                        if (hasType && lastType && currentType !== lastType) {
-                            numberField.value = '';
-                            if (form.__validator) {
-                                form.__validator.clearError(numberField);
-                                form.__validator.clearSuccess(numberField);
-                            }
-                        }
-
-                        if (!hasType) {
-                            numberField.value = '';
-                            numberField.disabled = true;
-
-                            if (form.__validator) {
-                                form.__validator.clearError(numberField);
-                                form.__validator.clearSuccess(numberField);
-                            }
-                        } else {
-                            numberField.disabled = false;
-                        }
-
-                        lastType = currentType;
-                    };
-
-                    // Estado inicial (considerando valor actual del usuario)
-                    updateState();
-
-                    // Actualizar al cambiar el tipo de documento
-                    typeField.addEventListener('change', updateState);
-                })();
             });
         </script>
     @endpush

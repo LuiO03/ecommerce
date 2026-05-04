@@ -236,50 +236,6 @@
                 });
                 console.log('✅ SubmitLoader (register) inicializado:', submitLoader);
 
-                // Deshabilitar número de documento hasta que se elija tipo en el registro
-                (function setupDocumentFields() {
-                    const form = document.getElementById('registerForm');
-                    if (!form) return;
-
-                    const typeField = form.querySelector('#document_type');
-                    const numberField = form.querySelector('#document_number');
-                    if (!typeField || !numberField) return;
-
-                    let lastType = String(typeField.value || '').trim();
-
-                    const updateState = () => {
-                        const currentType = String(typeField.value || '').trim();
-                        const hasType = currentType !== '';
-
-                        // Si cambia de un tipo a otro distinto, limpiar el número para evitar ambigüedad
-                        if (hasType && lastType && currentType !== lastType) {
-                            numberField.value = '';
-                            if (form.__validator) {
-                                form.__validator.clearError(numberField);
-                                form.__validator.clearSuccess(numberField);
-                            }
-                        }
-
-                        if (!hasType) {
-                            numberField.value = '';
-                            numberField.disabled = true;
-
-                            if (form.__validator) {
-                                form.__validator.clearError(numberField);
-                                form.__validator.clearSuccess(numberField);
-                            }
-                        } else {
-                            numberField.disabled = false;
-                        }
-
-                        lastType = currentType;
-                    };
-
-                    // Estado inicial
-                    updateState();
-                    typeField.addEventListener('change', updateState);
-                })();
-
                 document.querySelectorAll('.toggle-password').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const input = this.parentElement.querySelector('.password-input');

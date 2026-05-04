@@ -102,15 +102,22 @@
                         <i class="ri-asterisk text-accent"></i>
                     </label>
                     <div class="binary-switch">
-                        <input type="radio" name="status" id="statusActive" value="1"
-                            class="switch-input switch-input-on" {{ old('status', 1) == 1 ? 'checked' : '' }}>
-                        <input type="radio" name="status" id="statusInactive" value="0"
-                            class="switch-input switch-input-off" {{ old('status') == 0 ? 'checked' : '' }}>
+                        <!-- Checkbox real -->
+                        <input type="hidden" name="status" value="0">
+
+                        <input type="checkbox" name="status" id="status" class="switch-input" value="1"
+                            {{ old('status', 1) == 1 ? 'checked' : '' }} data-validate="required">
+
+                        <!-- Labels visuales -->
+                        <label for="status" class="switch-label switch-label-on">
+                            <i class="ri-checkbox-circle-line"></i> Activo
+                        </label>
+
+                        <label for="status" class="switch-label switch-label-off">
+                            <i class="ri-close-circle-line"></i> Inactivo
+                        </label>
+
                         <div class="switch-slider"></div>
-                        <label for="statusActive" class="switch-label switch-label-on"><i
-                                class="ri-checkbox-circle-line"></i> Activo</label>
-                        <label for="statusInactive" class="switch-label switch-label-off"><i
-                                class="ri-close-circle-line"></i> Inactivo</label>
                     </div>
                 </div>
 

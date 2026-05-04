@@ -410,7 +410,6 @@ input[type="checkbox"]:focus {
     color: var(--color-text-muted);
     border-color: var(--color-input-border);
     cursor: not-allowed;
-    opacity: 0.7;
 }
 
 /* Icono y flecha cuando el campo está deshabilitado */
@@ -422,13 +421,43 @@ input[type="checkbox"]:focus {
 .input-group:has(input.textarea-form:disabled) i,
 .input-group:has(select.select-form:disabled) .input-icon,
 .input-group:has(select.select-form:disabled) i,
-.input-group:has(select.select-form:disabled) .label-form {
+.input-group:has(select.select-form:disabled) .label-form
+.input-group:has(input:disabled) input::placeholder,
+.input-group:has(input:disabled) .input-icon,
+.input-group:has(input:disabled) .label-form,
+.input-group:has(input:disabled) i,
+.input-group:has(textarea:disabled) .label-form,
+.input-group:has(textarea:disabled) .input-icon,
+.input-group:has(textarea:disabled) i,
+.input-group:has(select:disabled) .input-icon,
+.input-group:has(select:disabled) i,
+.input-group:has(select:disabled) .label-form
+{
     color: var(--color-muted);
+    opacity: 0.4;
 }
 
 .input-group:has(select.select-form:disabled) .select-arrow {
     color: var(--color-muted);
     background-color: var(--color-input-bg-disabled);
+}
+
+/* .binary-switch disabled */
+.binary-switch input:disabled ~ .switch-slider {
+    background-color: var(--color-input-border);
+}
+
+.binary-switch:has(input:disabled) {
+    border-color: transparent;
+    box-shadow: none;
+    pointer-events: none; /* opcional */
+}
+
+.input-group:has(input:disabled) .position-cell,
+.input-group:has(input:disabled) .is-active {
+    pointer-events: none;
+    background-color: var(--color-input-border);
+    border-color: var(--color-input-border);
 }
 
 .input-group input::placeholder,
@@ -561,6 +590,75 @@ input[type="checkbox"]:focus {
 
 .binary-switch .switch-label {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    gap: 5px;
+    font-weight: bolder;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    padding-inline: 15px;
+    transition: color 0.3s ease;
+}
+
+/* slider */
+.binary-switch .switch-slider {
+    position: absolute;
+    top: 0;
+    left: 50%; /* default = NO */
+    width: 50%;
+    height: 100%;
+    transition: left 0.3s ease;
+    z-index: 1;
+    background-color: var(--color-danger);
+    border-left: 1px solid var(--color-input-border);
+}
+
+/* cuando está activo (Sí) */
+.binary-switch .switch-input:checked ~ .switch-slider {
+    left: 0;
+    background-color: var(--color-success);
+    border-right: 1px solid var(--color-input-border);
+}
+
+/* colores de texto */
+.binary-switch .switch-input:checked ~ .switch-label-on {
+    color: white;
+}
+
+.binary-switch .switch-input:not(:checked) ~ .switch-label-off {
+    color: white;
+}
+
+/* === Estatus selector === */
+
+
+.status-selector {
+    position: relative;
+    display: flex;
+    width: min-content;
+    height: 40px;
+    background-color: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
+    border-radius: 50px;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.status-selector input {
+    display: none;
+}
+
+.status-selector:hover {
+    border-color: var(--color-input-focus-border) !important;
+    box-shadow: 0 0 0 3px var(--color-input-focus-shadow) !important;
+}
+
+.status-selector .switch-label {
+    flex: 1;
     text-align: center;
     display: flex;
     align-items: center;
@@ -574,7 +672,7 @@ input[type="checkbox"]:focus {
     padding-inline: 15px;
 }
 
-.binary-switch .switch-slider {
+.status-selector .switch-slider {
     position: absolute;
     top: 0;
     left: 0;
@@ -585,23 +683,23 @@ input[type="checkbox"]:focus {
     background-color: var(--color-accent);
 }
 
-.binary-switch .switch-input-on:checked ~ .switch-slider {
+.status-selector .switch-input-first:checked ~ .switch-slider {
     left: 0;
     background-color: var(--color-success);
     border-right: 1px solid var(--color-input-border);
 }
 
-.binary-switch .switch-input-off:checked ~ .switch-slider {
+.status-selector .switch-input-second:checked ~ .switch-slider {
     left: 50%;
-    background-color: var(--color-danger);
+    background-color: var(--color-orange);
     border-left: 1px solid var(--color-input-border);
 }
 
-.binary-switch .switch-input-on:checked ~ .switch-label-on {
+.status-selector .switch-input-first:checked ~ .switch-label-first {
     color: white;
 }
 
-.binary-switch .switch-input-off:checked ~ .switch-label-off {
+.status-selector .switch-input-second:checked ~ .switch-label-second {
     color: white;
 }
 

@@ -176,6 +176,13 @@ Aplicando la regla de forma simétrica en todos los campos del grupo (como en el
     data-validate="document_number|max:30|requiredWith:document_type">
 ```
 
+**Comportamiento recomendado (UX):**
+- Si no se selecciona tipo de documento → `document_number` empieza deshabilitado y se limpia.
+- Si se selecciona un tipo de documento → `document_number` se habilita automáticamente.
+
+**Nota:** Este auto `disable/enable` se aplica únicamente cuando `requiredWith` tiene **un solo** disparador (ej. `requiredWith:document_type`), para no afectar casos de grupos interdependientes (CTA) donde `requiredWith` suele listar múltiples campos.
+
+**Validación:**
 - Si no se selecciona tipo de documento → `document_number` es opcional.
 - Si se selecciona un tipo de documento → `document_number` no puede ir vacío.
 
