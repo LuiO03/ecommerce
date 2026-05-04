@@ -20,10 +20,6 @@
                         <td id="product-slug">—</td>
                     </tr>
                     <tr>
-                        <th>SKU</th>
-                        <td id="product-sku">—</td>
-                    </tr>
-                    <tr>
                         <th>Nombre</th>
                         <td id="product-name">—</td>
                     </tr>
@@ -104,7 +100,9 @@
                         </tr>
                     </thead>
                     <tbody id="product-variants-table-body">
-                        <tr><td colspan="5" class="text-center text-muted">Cargando variantes...</td></tr>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Cargando variantes...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -315,8 +313,8 @@
                     const imgRect = activeImg.getBoundingClientRect();
                     const mainRect = mainNode.getBoundingClientRect();
 
-                     const renderedHeight = activeImg.offsetHeight || imgRect.height || 0;
-                     if (renderedHeight) {
+                    const renderedHeight = activeImg.offsetHeight || imgRect.height || 0;
+                    if (renderedHeight) {
                         const targetHeight = Math.max(renderedHeight, state.minHeight);
                         state.$main.css('height', `${targetHeight}px`);
                     } else {
@@ -440,11 +438,11 @@
                         .map(f => {
                             // Para color, el backend ya envía "label" como el nombre del color
                             // (description) y cae al HEX si no hay nombre. Para el resto, label es value.
-                            const rawLabel = (typeof f.label === 'string' && f.label.trim().length)
-                                ? f.label.trim()
-                                : (typeof f.description === 'string' && f.description.trim().length
-                                    ? f.description.trim()
-                                    : (f.value || ''));
+                            const rawLabel = (typeof f.label === 'string' && f.label.trim().length) ?
+                                f.label.trim() :
+                                (typeof f.description === 'string' && f.description.trim().length ?
+                                    f.description.trim() :
+                                    (f.value || ''));
                             return escapeHtml(rawLabel || '');
                         })
                         .filter(text => text.length > 0);
@@ -504,10 +502,7 @@
 
             if (data.discount && Number(data.discount) > 0) {
                 $('#product-discount').html(`
-					<span class="badge badge-warning">
-						<i class="ri-discount-percent-line"></i>
-						${Number(data.discount).toFixed(2)}
-					</span>
+                    ${Number(data.discount).toFixed(2)} %
 				`);
             } else {
                 $('#product-discount').html('<span class="text-muted-td">Sin descuento</span>');
@@ -597,7 +592,7 @@
                         '<i class="ri-error-warning-line"></i> Error al cargar la galería');
                     $('#product-gallery').html(
                         '<p class="label-hint"><i class="ri-error-warning-line"></i> Ocurrió un problema al cargar las imágenes.</p>'
-                        );
+                    );
                 }
             });
         }
@@ -646,6 +641,7 @@
                 }
             });
         });
+
         function restoreOutsideClick() {
             document.addEventListener('click', clickOutsidePostListener);
         }

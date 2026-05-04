@@ -45,5 +45,13 @@ class Variant extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($variant) {
+            $variant->sku = $variant->product->sku . '-' . str_pad($variant->id, 5, '0', STR_PAD_LEFT);
+            $variant->save();
+        });
+    }
 }
 

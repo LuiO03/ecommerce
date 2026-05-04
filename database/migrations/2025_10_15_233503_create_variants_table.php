@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('variants', function (Blueprint $table) {
             $table->id();
 
-            $table->string('sku')->unique();
+            $table->string('sku')->unique()->nullable(); // SKU único por variante, nullable para permitir variantes sin SKU
             $table->decimal('price', 10, 2)->nullable(); // precio diferente del producto base
             $table->integer('stock')->default(0);
             $table->boolean('status')->default(true);

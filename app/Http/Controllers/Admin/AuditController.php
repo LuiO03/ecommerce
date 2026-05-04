@@ -147,9 +147,9 @@ class AuditController extends Controller
             'post_rejected' => ['badge-danger', 'ri-close-circle-fill', 'Post Rechazado'],
             'permissions_updated' => ['badge-primary', 'ri-shield-check-fill', 'Permisos Actualizados'],
             'profile_updated' => ['badge-gray', 'ri-user-settings-fill', 'Perfil Actualizado'],
-            'company_main_updated' => ['badge-gray', 'ri-building-4-fill', 'Empresa Actualizada'],
-            'company_social_updated' => ['badge-gray', 'ri-share-fill', 'Redes Sociales de Emp.'],
-            'company_legal_updated' => ['badge-gray', 'ri-file-law-fill', 'Legal de Emp.'],
+            'company_main_updated' => ['badge-gray', 'ri-building-4-fill', 'Negocio Actualizado'],
+            'company_social_updated' => ['badge-gray', 'ri-share-fill', 'Redes del Negocio'],
+            'company_legal_updated' => ['badge-gray', 'ri-file-law-fill', 'Legal del Negocio'],
         ];
 
         $data = $audits->map(function (Audit $audit) use ($eventMeta) {

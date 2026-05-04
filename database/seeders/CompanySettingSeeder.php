@@ -26,8 +26,8 @@ class CompanySettingSeeder extends Seeder
             'slogan' => 'Tu ecommerce inteligente',
             'email' => 'contacto@geckomercce.com',
             'support_email' => 'soporte@geckomercce.com',
-            'phone' => '+51 999 888 777',
-            'support_phone' => '+51 977 888 111',
+            'phone' => '999888777',
+            'support_phone' => '977888111',
             'address' => 'Av. Principal 123, Lima, Perú',
             'website' => 'https://www.geckomercce.com',
             'social_links' => [

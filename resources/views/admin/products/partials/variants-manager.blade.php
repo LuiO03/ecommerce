@@ -18,7 +18,9 @@
         })
         ->values();
 
-    $initialVariants = collect(optional($product)->variants ?? [])
+    $productModel = $product ?? null;
+
+    $initialVariants = collect(optional($productModel)->variants ?? [])
         ->map(function ($variant) {
             return [
                 'id' => $variant->id,
@@ -111,14 +113,6 @@
 
             <div id="variantModalOptions" class="form-row-fill"></div>
             <div class="form-row-fill">
-                <div class="input-group">
-                    <label for="variantModalSku" class="label-form">SKU variante</label>
-                    <div class="input-icon-container">
-                        <i class="ri-hashtag input-icon"></i>
-                        <input type="text" id="variantModalSku" class="input-form"
-                            placeholder="Ej. PROD-001-NEGRO-M" data-validate="min:3|max:100">
-                    </div>
-                </div>
 
                 <div class="input-group">
                     <label for="variantModalPrice" class="label-form">Precio (S/)</label>
@@ -144,8 +138,8 @@
                     <div class="binary-switch binary-switch-inline">
                         <input type="radio" name="variantModalStatus" id="variantModalStatusActive" value="1"
                             class="switch-input switch-input-on" checked>
-                        <input type="radio" name="variantModalStatus" id="variantModalStatusInactive" value="0"
-                            class="switch-input switch-input-off">
+                        <input type="radio" name="variantModalStatus" id="variantModalStatusInactive"
+                            value="0" class="switch-input switch-input-off">
                         <div class="switch-slider"></div>
                         <label for="variantModalStatusActive" class="switch-label switch-label-on">
                             <i class="ri-checkbox-circle-line"></i> Activo

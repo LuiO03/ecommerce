@@ -25,279 +25,231 @@
         </form>
     </x-slot>
 
-    @php
-        $sortedImages = $product->images->sortBy('order');
-    @endphp
-
     <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data"
         class="form-container" autocomplete="off" id="productForm">
         @csrf
         @method('PUT')
-        @php
-            $hasVariantErrors = collect($errors->keys())->contains(fn($key) => str_starts_with($key, 'variants'));
-        @endphp
 
-        <div id="productFormTabs" class="tabs-container" data-tabs
-            data-tabs-initial="{{ $hasVariantErrors ? 'variants' : 'general' }}"
-            data-tabs-storage-key="productEditActiveTab">
-
-            <div class="tabs-nav" role="tablist" aria-label="Secciones del producto">
-                <button type="button" class="tab-button" data-tab-target="general" role="tab"
-                    aria-controls="productTabPanelGeneral" aria-selected="true">
-                    <span>Información</span>
-                </button>
-                <button type="button" class="tab-button" data-tab-target="variants" role="tab"
-                    aria-controls="productTabPanelVariants" aria-selected="false">
-                    <span>Variantes</span>
-                </button>
+        @if ($errors->any())
+            <div class="form-error-banner">
+                <i class="ri-error-warning-line form-error-icon"></i>
+                <div>
+                    <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
+        @endif
 
-            <div class="tab-panels">
-                <section id="productTabPanelGeneral" class="tab-panel" data-tab-panel="general">
-                    @if ($errors->any())
-                        <div class="form-error-banner">
-                            <i class="ri-error-warning-line form-error-icon"></i>
-                            <div>
-                                <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-
-                    <x-note-alert type="info" :dismissible="true">
-                        Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
-                    </x-note-alert>
-                    <div class="form-body">
-                        <div class="form-row-fill">
-                            <div class="input-group">
-                                <label for="category_id" class="label-form">
-                                    Categoría
-                                    <i class="ri-asterisk text-accent"></i>
-                                </label>
-                                <div class="input-icon-container">
-                                    <i class="ri-archive-stack-line input-icon"></i>
-                                    <select name="category_id" id="category_id" class="select-form" required
-                                        data-validate="required|selected">
-                                        <option value="" disabled>Seleccione una categoría</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}"
-                                                {{ (int) old('category_id', $product->category_id) === $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="brand_id" class="label-form">
-                                    Marca
-                                    <i class="ri-asterisk text-accent"></i>
-                                </label>
-                                <div class="input-icon-container">
-                                    <i class="ri-bookmark-3-line input-icon"></i>
-                                    <select name="brand_id" id="brand_id" class="select-form" required
-                                        data-validate="required|selected">
-                                        <option value="" disabled>Seleccione una marca</option>
-                                        @foreach ($brands as $brand)
-                                            <option value="{{ $brand->id }}"
-                                                {{ (int) old('brand_id', $product->brand_id) === $brand->id ? 'selected' : '' }}>
-                                                {{ $brand->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <i class="ri-arrow-down-s-line select-arrow"></i>
-                                </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="sku" class="label-form">
-                                    SKU
-                                    <i class="ri-asterisk text-accent"></i>
-                                </label>
-                                <div class="input-icon-container">
-                                    <i class="ri-hashtag input-icon"></i>
-                                    <input type="text" name="sku" id="sku" class="input-form" required
-                                        value="{{ old('sku', $product->sku) }}" placeholder="Ej. PROD-001"
-                                        data-validate="required|min:3|max:100">
-                                </div>
-                            </div>
-                            <div class="input-group">
-                                <label for="name" class="label-form">
-                                    Nombre
-                                    <i class="ri-asterisk text-accent"></i>
-                                </label>
-                                <div class="input-icon-container">
-                                    <i class="ri-price-tag-2-line input-icon"></i>
-                                    <input type="text" name="name" id="name" class="input-form" required
-                                        value="{{ old('name', $product->name) }}" placeholder="Nombre del producto"
-                                        data-validate="required|min:3|max:255">
-                                </div>
-                            </div>
-                            <div class="input-group">
-                                <label class="label-form">
-                                    Estado del producto
-                                    <i class="ri-asterisk text-accent"></i>
-                                </label>
-                                <div class="binary-switch">
-                                    <input type="radio" name="status" id="statusActive" value="1"
-                                        class="switch-input switch-input-on"
-                                        {{ old('status', (int) $product->status) == 1 ? 'checked' : '' }}>
-                                    <input type="radio" name="status" id="statusInactive" value="0"
-                                        class="switch-input switch-input-off"
-                                        {{ old('status', (int) $product->status) == 0 ? 'checked' : '' }}>
-                                    <div class="switch-slider"></div>
-                                    <label for="statusActive" class="switch-label switch-label-on"><i
-                                            class="ri-checkbox-circle-line"></i> Activo</label>
-                                    <label for="statusInactive" class="switch-label switch-label-off"><i
-                                            class="ri-close-circle-line"></i> Inactivo</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-row-fill">
-                            <div class="input-group">
-                                <label for="price" class="label-form">
-                                    Precio (S/)
-                                    <i class="ri-asterisk text-accent"></i>
-                                </label>
-                                <div class="input-icon-container">
-                                    <i class="ri-price-tag-3-line input-icon"></i>
-                                    <input type="number" name="price" id="price" class="input-form" required
-                                        min="0" step="0.01" value="{{ old('price', $product->price) }}"
-                                        placeholder="0.00" data-validate="required|minValue:0">
-                                </div>
-                            </div>
-                            <div class="input-group">
-                                <label for="discount" class="label-form">Descuento (%)</label>
-                                <div class="input-icon-container">
-                                    <i class="ri-discount-percent-line input-icon"></i>
-                                    <input type="number" name="discount" id="discount" class="input-form"
-                                        min="0" step="1"
-                                        value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
-                                        data-validate="minValue:0">
-                                </div>
-                            </div>
-                            <div class="input-group">
-                                <label for="min_stock" class="label-form">
-                                    Stock mínimo
-                                </label>
-                                <div class="input-icon-container">
-                                    <i class="ri-stack-line input-icon"></i>
-                                    <input type="number" name="min_stock" id="min_stock" class="input-form"
-                                        min="0" step="1"
-                                        value="{{ old('min_stock', $product->min_stock) }}" placeholder="Ej. 10"
-                                        data-validate="minValue:0">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row-fit">
-                            <div class="input-group">
-                                <label for="description" class="label-form">Descripción</label>
-                                <div class="input-icon-container">
-                                    <textarea name="description" id="description" class="textarea-form" rows="4"
-                                        placeholder="Describe el producto" data-validate="max:5000">{{ old('description', $product->description) }}</textarea>
-                                    <i class="ri-file-text-line input-icon textarea-icon"></i>
-                                </div>
-                            </div>
-                        </div>
+        <x-note-alert type="info" :dismissible="true">
+            Los campos con asterisco (<i class="ri-asterisk text-accent"></i>) son obligatorios.
+        </x-note-alert>
+        <div class="form-body">
+            <div class="form-row-fill">
+                <div class="input-group">
+                    <label for="category_id" class="label-form">
+                        Categoría
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-archive-stack-line input-icon"></i>
+                        <select name="category_id" id="category_id" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled>Seleccione una categoría</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ (int) old('category_id', $product->category_id) === $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
+                </div>
 
-                    <div class="form-body">
-                        <div class="form-row-fit">
-                            <div class="image-upload-section w-full">
-                                <label class="label-form">Galería de imágenes</label>
-                                <div class="gallery-media-layout">
-                                    <div class="custom-dropzone" id="galleryDropzone">
-                                        <i class="ri-multi-image-line"></i>
-                                        <p>Arrastra una imagen aquí</p>
-                                        <span>o haz clic para seleccionar</span>
-                                        <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
-                                        <input type="file" name="gallery[]" id="galleryInput" accept="image/*"
-                                            multiple hidden
-                                            data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
-                                    </div>
-                                    <div id="galleryPreviewContainer" class="preview-container">
-                                        @foreach ($sortedImages as $image)
-                                            @php
-                                                $fullPath = $image->path
-                                                    ? public_path('storage/' . $image->path)
-                                                    : null;
-                                                $exists = $fullPath && file_exists($fullPath);
-                                                $fileSizeLabel = 'No encontrada';
-                                                if ($exists) {
-                                                    $bytes = filesize($fullPath) ?: 0;
-                                                    $fileSizeLabel =
-                                                        $bytes >= 1048576
-                                                            ? number_format($bytes / 1048576, 2) . ' MB'
-                                                            : number_format($bytes / 1024, 1) . ' KB';
-                                                }
-                                                $imageUrl = $exists
-                                                    ? asset('storage/' . $image->path)
-                                                    : asset('storage/default.png');
-                                                $altText = $image->alt ?? $product->name;
-                                            @endphp
-                                            <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}"
-                                                data-type="existing" data-id="{{ $image->id }}"
-                                                data-key="existing-{{ $image->id }}"
-                                                data-main="{{ $image->is_main ? 'true' : 'false' }}">
-                                                <button type="button" class="drag-handle" title="Reordenar imagen">
-                                                    <i class="ri-draggable"></i>
-                                                </button>
-                                                @if ($exists)
-                                                    <img src="{{ $imageUrl }}" alt="{{ $altText }}">
-                                                @else
-                                                    <div class="image-error-gallery">
-                                                        <i class="ri-file-close-line"></i>
-                                                        <p>Imagen no encontrada</p>
-                                                    </div>
-                                                @endif
-                                                <div class="overlay">
-                                                    <span class="file-size">{{ $fileSizeLabel }}</span>
-                                                    <div class="overlay-actions">
-                                                        <button type="button"
-                                                            class="mark-main-btn boton-form boton-success"
-                                                            title="Marcar como principal">
-                                                            <span class="boton-form-icon"><i
-                                                                    class="ri-star-smile-fill"></i></span>
-                                                        </button>
-                                                        <button type="button"
-                                                            class="delete-btn boton-form boton-danger delete-existing-gallery"
-                                                            data-id="{{ $image->id }}" title="Eliminar imagen">
-                                                            <span class="boton-form-icon"><i
-                                                                    class="ri-delete-bin-6-fill"></i></span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <span class="primary-badge"
-                                                    style="{{ $image->is_main ? 'display:flex;' : 'display:none;' }}">
-                                                    <span class="boton-form-icon"><i class="ri-star-fill"></i></span>
-                                                    Principal
-                                                </span>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <div id="removedGalleryContainer"></div>
-                                <input type="hidden" name="primary_image" id="primaryImageInput" value="">
-                            </div>
-                        </div>
+                <div class="input-group">
+                    <label for="brand_id" class="label-form">
+                        Marca
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-bookmark-3-line input-icon"></i>
+                        <select name="brand_id" id="brand_id" class="select-form" required
+                            data-validate="required|selected">
+                            <option value="" disabled>Seleccione una marca</option>
+                            @foreach ($brands as $brand)
+                                <option value="{{ $brand->id }}"
+                                    {{ (int) old('brand_id', $product->brand_id) === $brand->id ? 'selected' : '' }}>
+                                    {{ $brand->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
                     </div>
-                </section>
+                </div>
 
-                <section id="productTabPanelVariants" class="tab-panel" data-tab-panel="variants" hidden>
-                    @include('admin.products.partials.variants-manager', [
-                        'product' => $product,
-                        'options' => $options,
-                    ])
-                </section>
+                <div class="input-group">
+                    <label for="name" class="label-form">
+                        Nombre
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-price-tag-2-line input-icon"></i>
+                        <input type="text" name="name" id="name" class="input-form" required
+                            value="{{ old('name', $product->name) }}" placeholder="Nombre del producto"
+                            data-validate="required|min:3|max:255">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="label-form">
+                        Estado del producto
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="binary-switch">
+                        <input type="radio" name="status" id="statusActive" value="1"
+                            class="switch-input switch-input-on"
+                            {{ old('status', (int) $product->status) == 1 ? 'checked' : '' }}>
+                        <input type="radio" name="status" id="statusInactive" value="0"
+                            class="switch-input switch-input-off"
+                            {{ old('status', (int) $product->status) == 0 ? 'checked' : '' }}>
+                        <div class="switch-slider"></div>
+                        <label for="statusActive" class="switch-label switch-label-on"><i
+                                class="ri-checkbox-circle-line"></i> Activo</label>
+                        <label for="statusInactive" class="switch-label switch-label-off"><i
+                                class="ri-close-circle-line"></i> Inactivo</label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="price" class="label-form">
+                        Precio (S/)
+                        <i class="ri-asterisk text-accent"></i>
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-price-tag-3-line input-icon"></i>
+                        <input type="number" name="price" id="price" class="input-form" required
+                            min="0" step="0.01" value="{{ old('price', $product->price) }}"
+                            placeholder="0.00" data-validate="required|minValue:0">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="discount" class="label-form">Descuento (%)</label>
+                    <div class="input-icon-container">
+                        <i class="ri-discount-percent-line input-icon"></i>
+                        <input type="number" name="discount" id="discount" class="input-form" min="0"
+                            step="1" value="{{ old('discount', $product->discount) }}" placeholder="Opcional"
+                            data-validate="minValue:0">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="min_stock" class="label-form">
+                        Stock mínimo
+                    </label>
+                    <div class="input-icon-container">
+                        <i class="ri-stack-line input-icon"></i>
+                        <input type="number" name="min_stock" id="min_stock" class="input-form" min="0"
+                            step="1" value="{{ old('min_stock', $product->min_stock) }}" placeholder="Ej. 10"
+                            data-validate="minValue:0">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row-fit">
+                <div class="input-group">
+                    <label for="description" class="label-form">Descripción</label>
+                    <div class="input-icon-container">
+                        <textarea name="description" id="description" class="textarea-form" rows="4"
+                            placeholder="Describe el producto" data-validate="max:5000">{{ old('description', $product->description) }}</textarea>
+                        <i class="ri-file-text-line input-icon textarea-icon"></i>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <div class="form-body">
+            <div class="form-row-fit">
+                <div class="image-upload-section w-full">
+                    <label class="label-form">Galería de imágenes <i class="ri-asterisk text-accent"></i></label>
+                    <div class="gallery-media-layout">
+                        <div class="custom-dropzone" id="galleryDropzone">
+                            <i class="ri-multi-image-line"></i>
+                            <p>Arrastra una imagen aquí</p>
+                            <span>o haz clic para seleccionar</span>
+                            <span>Formatos: PNG, JPG, JPEG (máx. 3 MB)</span>
+                            <input type="file" name="gallery[]" id="galleryInput" accept="image/*" multiple
+                                hidden
+                                data-validate="fileRequired|image|maxSizeMB:3|fileTypes:jpg,png,gif,webp|maxFiles:10">
+                        </div>
+                        <div id="galleryPreviewContainer" class="preview-container">
+                            @foreach ($sortedImages as $image)
+                                @php
+                                    $fullPath = $image->path ? public_path('storage/' . $image->path) : null;
+                                    $exists = $fullPath && file_exists($fullPath);
+                                    $fileSizeLabel = 'No encontrada';
+                                    if ($exists) {
+                                        $bytes = filesize($fullPath) ?: 0;
+                                        $fileSizeLabel =
+                                            $bytes >= 1048576
+                                                ? number_format($bytes / 1048576, 2) . ' MB'
+                                                : number_format($bytes / 1024, 1) . ' KB';
+                                    }
+                                    $imageUrl = $exists
+                                        ? asset('storage/' . $image->path)
+                                        : asset('storage/default.png');
+                                    $altText = $image->alt ?? $product->name;
+                                @endphp
+                                <div class="preview-item existing-image {{ $exists ? 'has-image' : 'missing-image' }}"
+                                    data-type="existing" data-id="{{ $image->id }}"
+                                    data-key="existing-{{ $image->id }}"
+                                    data-main="{{ $image->is_main ? 'true' : 'false' }}">
+                                    <button type="button" class="drag-handle" title="Reordenar imagen">
+                                        <i class="ri-draggable"></i>
+                                    </button>
+                                    @if ($exists)
+                                        <img src="{{ $imageUrl }}" alt="{{ $altText }}">
+                                    @else
+                                        <div class="image-error-gallery">
+                                            <i class="ri-file-close-line"></i>
+                                            <p>Imagen no encontrada</p>
+                                        </div>
+                                    @endif
+                                    <div class="overlay">
+                                        <span class="file-size">{{ $fileSizeLabel }}</span>
+                                        <div class="overlay-actions">
+                                            <button type="button" class="mark-main-btn boton-form boton-success"
+                                                title="Marcar como principal">
+                                                <span class="boton-form-icon"><i
+                                                        class="ri-star-smile-fill"></i></span>
+                                            </button>
+                                            <button type="button"
+                                                class="delete-btn boton-form boton-danger delete-existing-gallery"
+                                                data-id="{{ $image->id }}" title="Eliminar imagen">
+                                                <span class="boton-form-icon"><i
+                                                        class="ri-delete-bin-6-fill"></i></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span class="primary-badge"
+                                        style="{{ $image->is_main ? 'display:flex;' : 'display:none;' }}">
+                                        <span class="boton-form-icon"><i class="ri-star-fill"></i></span>
+                                        Principal
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div id="removedGalleryContainer"></div>
+                    <input type="hidden" name="primary_image" id="primaryImageInput" value="">
+                </div>
+            </div>
+        </div>
+
+        @include('admin.products.partials.variants-manager')
 
         <div class="form-footer">
             <a href="{{ url()->previous() }}" class="boton-form boton-volver">

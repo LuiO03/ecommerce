@@ -159,7 +159,6 @@ export function initProductVariantsManager({
     containerId,
     emptyStateId,
     addButtonId,
-    baseSkuInputId,
 } = {}) {
     const container = containerId ? document.getElementById(containerId) : null;
     if (!container) return null;
@@ -171,7 +170,6 @@ export function initProductVariantsManager({
 
     const emptyState = emptyStateId ? document.getElementById(emptyStateId) : null;
     const addButton = addButtonId ? document.getElementById(addButtonId) : null;
-    const baseSkuInput = baseSkuInputId ? document.getElementById(baseSkuInputId) : null;
     const form = container.closest('form');
     const validator = form && form.__validator ? form.__validator : null;
 
@@ -180,13 +178,12 @@ export function initProductVariantsManager({
     const modalTitle = document.getElementById('variantModalTitle');
     const modalError = document.getElementById('variantModalError');
     const saveVariantBtn = document.getElementById('saveVariantBtn');
-    const skuInput = document.getElementById('variantModalSku');
     const priceInput = document.getElementById('variantModalPrice');
     const stockInput = document.getElementById('variantModalStock');
     const statusActiveInput = document.getElementById('variantModalStatusActive');
     const statusInactiveInput = document.getElementById('variantModalStatusInactive');
 
-    if (!modal || !modalOptions || !modalTitle || !modalError || !saveVariantBtn || !skuInput || !priceInput || !stockInput || !statusActiveInput || !statusInactiveInput) {
+    if (!modal || !modalOptions || !modalTitle || !modalError || !saveVariantBtn || !priceInput || !stockInput || !statusActiveInput || !statusInactiveInput) {
         console.warn('[product-variants-manager] No se encontro la modal de variantes.');
         return null;
     }
@@ -214,7 +211,7 @@ export function initProductVariantsManager({
 
     function getModalValidationFields() {
         const optionFields = Array.from(modalOptions.querySelectorAll('[data-option-select]'));
-        return [...optionFields, skuInput, priceInput, stockInput];
+        return [...optionFields, priceInput, stockInput];
     }
 
     function clearModalFieldFeedback() {
@@ -260,14 +257,6 @@ export function initProductVariantsManager({
             }
         }
 
-        const sku = String(skuInput.value || '').trim();
-        if (!sku && !hasValidator) {
-            return {
-                valid: false,
-                message: 'Ingresa el SKU de la variante.',
-            };
-        }
-
         const stockRaw = String(stockInput.value || '').trim();
         const stockNum = stockRaw === '' ? 0 : Number(stockRaw);
         if ((!Number.isFinite(stockNum) || stockNum < 0) && !hasValidator) {
@@ -303,7 +292,7 @@ export function initProductVariantsManager({
 
         if (duplicated) {
             if (validator) {
-                const duplicateField = modalOptions.querySelector('[data-option-select]') || skuInput;
+                const duplicateField = modalOptions.querySelector('[data-option-select]');
                 validator.showError(duplicateField, 'Esta combinacion de opciones ya fue agregada. Selecciona otra.');
             }
             return {
@@ -316,7 +305,7 @@ export function initProductVariantsManager({
             valid: true,
             data: {
                 id: editingIndex !== null ? variants[editingIndex].id : null,
-                sku,
+                sku: variants[editingIndex]?.sku || null,
                 price: priceRaw,
                 stock: String(Math.floor(stockNum)),
                 status: statusActiveInput.checked,
@@ -333,6 +322,9 @@ export function initProductVariantsManager({
                 const statusText = variant.status ? 'Activo' : 'Inactivo';
                 const statusClass = variant.status ? 'success' : 'danger';
                 const statusicon = variant.status ? 'ri-checkbox-circle-fill' : 'ri-close-circle-fill';
+                const skuContent = variant.sku
+                ? `${escapeHtml(variant.sku)} ${hiddenSku}`
+                : `<span class="text-muted">SKU por definir</span>`;
 
                 const hiddenId = `<input type="hidden" name="variants[${index}][id]" value="${escapeHtml(variant.id ?? '')}">`;
                 const hiddenSku = `<input type="hidden" name="variants[${index}][sku]" value="${escapeHtml(variant.sku)}">`;
@@ -350,8 +342,7 @@ export function initProductVariantsManager({
               ${hiddenId}${hiddenFeatures}
             </td>
             <td class="column-variant-sku">
-              ${escapeHtml(variant.sku)}
-              ${hiddenSku}
+            ${skuContent}
             </td>
             <td class="column-variant-price">
               ${escapeHtml(formatPrice(variant.price))}
@@ -458,7 +449,6 @@ export function initProductVariantsManager({
             const current = variants[editingIndex];
             modalTitle.textContent = 'Editar variante';
             buildModalOptions(current.featureIds);
-            skuInput.value = current.sku;
             priceInput.value = current.price;
             stockInput.value = current.stock;
             statusActiveInput.checked = Boolean(current.status);
@@ -469,7 +459,6 @@ export function initProductVariantsManager({
             bgheader.classList.add('bg-success');
             buildModalOptions([]);
             const labels = [];
-            skuInput.value = buildSkuSuggestion(baseSkuInput ? baseSkuInput.value : '', labels);
             priceInput.value = '';
             stockInput.value = '0';
             statusActiveInput.checked = true;
@@ -650,6 +639,5 @@ document.addEventListener('DOMContentLoaded', () => {
         containerId: 'variantsContainer',
         emptyStateId: 'variantsEmpty',
         addButtonId: 'addVariantBtn',
-        baseSkuInputId: 'sku',
     });
 });

@@ -124,7 +124,7 @@
         }
 
         .page-number:before {
-            content: "Página " counter(page) " de " counter(pages);
+            content: "Página " counter(page);
         }
 
         .seal {

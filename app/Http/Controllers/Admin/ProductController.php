@@ -90,7 +90,6 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'sku' => 'required|string|max:100|unique:products,sku',
             'name' => 'required|string|max:255|min:3',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
@@ -107,7 +106,6 @@ class ProductController extends Controller
         $product = Product::create([
             'category_id' => $validated['category_id'],
             'brand_id' => $validated['brand_id'],
-            'sku' => $validated['sku'],
             'name' => $validated['name'],
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
@@ -118,6 +116,12 @@ class ProductController extends Controller
             'created_by' => Auth::id(),
             'updated_by' => Auth::id(),
         ]);
+        /* El SKU se genera automáticamente en el evento "created" del modelo Product para garantizar unicidad y consistencia.
+         * El formato es "PRD-" seguido del ID del producto con ceros a la izquierda (ej. PRD-000001).
+         * Esto asegura que el SKU sea único, legible y fácil de rastrear sin necesidad de lógica adicional en el controlador.
+         */
+        $product->sku = 'PRD-' . str_pad($product->id, 6, '0', STR_PAD_LEFT);
+        $product->save();
 
         $this->syncVariants($request, $product);
 
@@ -233,11 +237,20 @@ class ProductController extends Controller
             'variants' => fn ($query) => $query->orderBy('id')->with(['features.option']),
         ]);
 
+        $sortedImages = $product->images
+        ->sortBy([
+            ['is_main', 'desc'],
+            ['order', 'asc'],
+            ['id', 'asc'],
+        ])
+
+        ->values();
+
         $options = Option::with(['features' => fn ($query) => $query->orderBy('id')])
             ->orderBy('name')
             ->get();
 
-        return view('admin.products.edit', compact('product', 'categories', 'brands', 'options'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'options', 'sortedImages'));
     }
 
     public function update(Request $request, Product $product)
@@ -245,7 +258,6 @@ class ProductController extends Controller
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'sku' => 'required|string|max:100|unique:products,sku,' . $product->id,
             'name' => 'required|string|max:255|min:3',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
@@ -264,7 +276,6 @@ class ProductController extends Controller
         $product->update([
             'category_id' => $validated['category_id'],
             'brand_id' => $validated['brand_id'],
-            'sku' => $validated['sku'],
             'name' => $validated['name'],
             'slug' => $slug,
             'description' => $validated['description'] ?? null,
@@ -687,22 +698,9 @@ class ProductController extends Controller
             return;
         }
 
-        // Validación dinámica solo para filas con SKU informado
+        // Validación básica (sin SKU)
         $rules = [];
         foreach ($variantsInput as $key => $row) {
-            $sku = $row['sku'] ?? null;
-            if (!$sku) {
-                continue;
-            }
-
-            $variantId = $row['id'] ?? null;
-
-            $rules["variants.$key.sku"] = [
-                'required',
-                'string',
-                'max:100',
-                Rule::unique('variants', 'sku')->ignore($variantId),
-            ];
             $rules["variants.$key.price"] = ['nullable', 'numeric', 'min:0'];
             $rules["variants.$key.stock"] = ['nullable', 'integer', 'min:0'];
             $rules["variants.$key.status"] = ['nullable', 'boolean'];
@@ -712,12 +710,11 @@ class ProductController extends Controller
 
         if (!empty($rules)) {
             Validator::make($request->all(), $rules, [], [
-                'variants.*.sku' => 'SKU de variante',
                 'variants.*.price' => 'precio de variante',
                 'variants.*.stock' => 'stock de variante',
                 'variants.*.status' => 'estado de variante',
-                'variants.*.features' => 'valores de opción de la variante',
-                'variants.*.features.*' => 'valor de opción de la variante',
+                'variants.*.features' => 'valores de opción',
+                'variants.*.features.*' => 'valor de opción',
             ])->validate();
         }
 
@@ -725,40 +722,31 @@ class ProductController extends Controller
         $retainedIds = [];
 
         foreach ($variantsInput as $row) {
-            $sku = $row['sku'] ?? null;
-            if (!$sku) {
-                continue;
-            }
-
             $variantId = isset($row['id']) && $row['id'] !== '' ? (int) $row['id'] : null;
 
             $payload = [
-                'sku' => $sku,
-                'price' => array_key_exists('price', $row) && $row['price'] !== null && $row['price'] !== ''
-                    ? (float) $row['price']
-                    : null,
-                'stock' => array_key_exists('stock', $row) && $row['stock'] !== null && $row['stock'] !== ''
-                    ? (int) $row['stock']
-                    : 0,
-                'status' => array_key_exists('status', $row)
-                    ? (bool) $row['status']
-                    : true,
+                'price' => isset($row['price']) && $row['price'] !== '' ? (float) $row['price'] : null,
+                'stock' => isset($row['stock']) && $row['stock'] !== '' ? (int) $row['stock'] : 0,
+                'status' => array_key_exists('status', $row) ? (bool) $row['status'] : true,
             ];
 
             if ($variantId && $existing->has($variantId)) {
+                // 🔁 Update
                 $variant = $existing->get($variantId);
                 $variant->fill($payload);
                 $variant->updated_by = Auth::id();
                 $variant->save();
             } else {
+                // 🆕 Create
                 $variant = new Variant($payload);
                 $variant->product_id = $product->id;
                 $variant->created_by = Auth::id();
                 $variant->updated_by = Auth::id();
-                $variant->save();
+
+                $variant->save(); // 👈 aquí se dispara el booted() si lo usas
             }
 
-            // Sincronizar features (valores de opciones) con la variante
+            // 🔗 Sync features
             $featureIds = collect($row['features'] ?? [])
                 ->filter(fn ($id) => $id !== null && $id !== '')
                 ->map(fn ($id) => (int) $id)
@@ -767,9 +755,11 @@ class ProductController extends Controller
                 ->all();
 
             $variant->features()->sync($featureIds);
+
             $retainedIds[] = $variant->id;
         }
 
+        // 🧹 Eliminar variantes que ya no existen en el form
         if ($existing->isNotEmpty()) {
             $idsToDelete = $existing->keys()->diff($retainedIds);
             if ($idsToDelete->isNotEmpty()) {
