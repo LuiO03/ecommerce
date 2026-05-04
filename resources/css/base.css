@@ -203,7 +203,7 @@
 
 /* ==== Otros ==== */
 :root {
-    --font-primary: "Lato", sans-serif;
+    --font-primary: "Lexend Deca", sans-serif;
     --font-secondary: "Poppins", sans-serif;
 
     --max-width: 1280px;
@@ -339,6 +339,7 @@
         background-color: var(--color-sidebar-bg);
         color: var(--color-text);
         height: 100dvh;
+        font-family: var(--font-primary);
     }
 
     h1,

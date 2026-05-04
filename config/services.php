@@ -55,7 +55,7 @@ return [
     'culqi' => [
         'public_key' => env('CULQI_PUBLIC_KEY'),
         'secret_key' => env('CULQI_SECRET_KEY'),
-        'base_url' => env('CULQI_BASE_URL'),
+        'base_url' => env('CULQI_BASE_URL', 'https://api.culqi.com'),
         'checkout_url' => env('CULQI_CHECKOUT_URL', 'https://checkout.culqi.com/js/v4'),
         'webhook_secret' => env('CULQI_WEBHOOK_SECRET'),
         'dev_simulation' => env('CULQI_DEV_SIMULATION', false),

@@ -231,6 +231,7 @@
     width: 40px;
     aspect-ratio: 1/1;
     object-fit: contain;
+    transition: width 0.3s ease;
 }
 
 .sidebar-header .sidebar-logo-texto {
@@ -302,14 +303,14 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-.sidebar-link:hover {
-    padding: 8px 8px 8px 18px;
-    background-color: var(--color-hover);
-    color: var(--color-accent);
-    font-weight: bold;
-    border-radius: 0 0 0 0 !important;
-    border-left: 4px solid var(--color-accent);
-}
+    .sidebar-link:hover {
+        padding: 8px 8px 8px 18px;
+        background-color: var(--color-hover);
+        color: var(--color-accent);
+        font-weight: bold;
+        border-radius: 0 0 0 0 !important;
+        border-left: 4px solid var(--color-accent);
+    }
 }
 .sidebar-link.active {
     background-color: var(--color-accent);
@@ -371,6 +372,12 @@
     padding: 8px 8px 8px 28px;
     border-left: 4px solid transparent;
     font-size: var(--font-size-xs);
+    transition:
+        padding 0.3s ease,
+        border-radius 0.1s ease,
+        font-weight 0.2s ease,
+        font-family 0.2s ease,
+        transform 0.2s ease;
 }
 
 .sidebar-sublink:hover {
@@ -385,11 +392,12 @@
     font-size: 20px;
 }
 
-.sidebar-link:hover .sidebar-icon,
-.sidebar-sublink:hover .sidebar-icon {
-    color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+    .sidebar-link:hover .sidebar-icon,
+    .sidebar-sublink:hover .sidebar-icon {
+        color: var(--color-accent);
+    }
 }
-
 .sidebar-badge {
     margin-left: auto;
     padding: 0.1rem 0.5rem;

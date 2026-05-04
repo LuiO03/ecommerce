@@ -34,18 +34,24 @@
                         </div>
                         <div class="social-toggle">
                             <span class="social-toggle-label">Visibilidad</span>
+
                             <div class="binary-switch">
-                                <input type="radio" name="facebook_enabled" id="facebook_enabled_yes" value="1"
-                                    class="switch-input switch-input-on"
-                                    {{ old('facebook_enabled', $setting->facebook_enabled) ? 'checked' : '' }}>
-                                <input type="radio" name="facebook_enabled" id="facebook_enabled_no" value="0"
-                                    class="switch-input switch-input-off"
-                                    {{ old('facebook_enabled', $setting->facebook_enabled) ? '' : 'checked' }}>
+                                <!-- Checkbox real -->
+                                <input type="hidden" name="facebook_enabled" value="0">
+
+                                <input type="checkbox" name="facebook_enabled" id="facebook_enabled" class="switch-input" value="1"
+                                    {{ old('facebook_enabled', $setting->facebook_enabled) == 1 ? 'checked' : '' }} data-validate="required">
+
+                                <!-- Labels visuales -->
+                                <label for="facebook_enabled" class="switch-label switch-label-on">
+                                    <i class="ri-checkbox-circle-line"></i> Mostrar
+                                </label>
+
+                                <label for="facebook_enabled" class="switch-label switch-label-off">
+                                    <i class="ri-close-circle-line"></i> Ocultar
+                                </label>
+
                                 <div class="switch-slider"></div>
-                                <label for="facebook_enabled_yes" class="switch-label switch-label-on"><i
-                                        class="ri-eye-line"></i> Mostrar</label>
-                                <label for="facebook_enabled_no" class="switch-label switch-label-off"><i
-                                        class="ri-eye-off-line"></i> Ocultar</label>
                             </div>
                         </div>
                     </div>
@@ -61,17 +67,22 @@
                         <div class="social-toggle">
                             <span class="social-toggle-label">Visibilidad</span>
                             <div class="binary-switch">
-                                <input type="radio" name="instagram_enabled" id="instagram_enabled_yes" value="1"
-                                    class="switch-input switch-input-on"
-                                    {{ old('instagram_enabled', $setting->instagram_enabled) ? 'checked' : '' }}>
-                                <input type="radio" name="instagram_enabled" id="instagram_enabled_no" value="0"
-                                    class="switch-input switch-input-off"
-                                    {{ old('instagram_enabled', $setting->instagram_enabled) ? '' : 'checked' }}>
+                                <!-- Checkbox real -->
+                                <input type="hidden" name="instagram_enabled" value="0">
+
+                                <input type="checkbox" name="instagram_enabled" id="instagram_enabled" class="switch-input" value="1"
+                                    {{ old('instagram_enabled', $setting->instagram_enabled) == 1 ? 'checked' : '' }} data-validate="required">
+
+                                <!-- Labels visuales -->
+                                <label for="instagram_enabled" class="switch-label switch-label-on">
+                                    <i class="ri-checkbox-circle-line"></i> Mostrar
+                                </label>
+
+                                <label for="instagram_enabled" class="switch-label switch-label-off">
+                                    <i class="ri-close-circle-line"></i> Ocultar
+                                </label>
+
                                 <div class="switch-slider"></div>
-                                <label for="instagram_enabled_yes" class="switch-label switch-label-on"><i
-                                        class="ri-eye-line"></i> Mostrar</label>
-                                <label for="instagram_enabled_no" class="switch-label switch-label-off"><i
-                                        class="ri-eye-off-line"></i> Ocultar</label>
                             </div>
                         </div>
                     </div>
@@ -87,17 +98,22 @@
                         <div class="social-toggle">
                             <span class="social-toggle-label">Visibilidad</span>
                             <div class="binary-switch">
-                                <input type="radio" name="twitter_enabled" id="twitter_enabled_yes" value="1"
-                                    class="switch-input switch-input-on"
-                                    {{ old('twitter_enabled', $setting->twitter_enabled) ? 'checked' : '' }}>
-                                <input type="radio" name="twitter_enabled" id="twitter_enabled_no" value="0"
-                                    class="switch-input switch-input-off"
-                                    {{ old('twitter_enabled', $setting->twitter_enabled) ? '' : 'checked' }}>
+                                <!-- Checkbox real -->
+                                <input type="hidden" name="twitter_enabled" value="0">
+
+                                <input type="checkbox" name="twitter_enabled" id="twitter_enabled" class="switch-input" value="1"
+                                    {{ old('twitter_enabled', $setting->twitter_enabled) == 1 ? 'checked' : '' }} data-validate="required">
+
+                                <!-- Labels visuales -->
+                                <label for="twitter_enabled" class="switch-label switch-label-on">
+                                    <i class="ri-checkbox-circle-line"></i> Mostrar
+                                </label>
+
+                                <label for="twitter_enabled" class="switch-label switch-label-off">
+                                    <i class="ri-close-circle-line"></i> Ocultar
+                                </label>
+
                                 <div class="switch-slider"></div>
-                                <label for="twitter_enabled_yes" class="switch-label switch-label-on"><i
-                                        class="ri-eye-line"></i> Mostrar</label>
-                                <label for="twitter_enabled_no" class="switch-label switch-label-off"><i
-                                        class="ri-eye-off-line"></i> Ocultar</label>
                             </div>
                         </div>
                     </div>
@@ -115,17 +131,22 @@
                         <div class="social-toggle">
                             <span class="social-toggle-label">Visibilidad</span>
                             <div class="binary-switch">
-                                <input type="radio" name="youtube_enabled" id="youtube_enabled_yes" value="1"
-                                    class="switch-input switch-input-on"
-                                    {{ old('youtube_enabled', $setting->youtube_enabled) ? 'checked' : '' }}>
-                                <input type="radio" name="youtube_enabled" id="youtube_enabled_no" value="0"
-                                    class="switch-input switch-input-off"
-                                    {{ old('youtube_enabled', $setting->youtube_enabled) ? '' : 'checked' }}>
+                                <!-- Checkbox real -->
+                                <input type="hidden" name="youtube_enabled" value="0">
+
+                                <input type="checkbox" name="youtube_enabled" id="youtube_enabled" class="switch-input" value="1"
+                                    {{ old('youtube_enabled', $setting->youtube_enabled) == 1 ? 'checked' : '' }} data-validate="required">
+
+                                <!-- Labels visuales -->
+                                <label for="youtube_enabled" class="switch-label switch-label-on">
+                                    <i class="ri-checkbox-circle-line"></i> Mostrar
+                                </label>
+
+                                <label for="youtube_enabled" class="switch-label switch-label-off">
+                                    <i class="ri-close-circle-line"></i> Ocultar
+                                </label>
+
                                 <div class="switch-slider"></div>
-                                <label for="youtube_enabled_yes" class="switch-label switch-label-on"><i
-                                        class="ri-eye-line"></i> Mostrar</label>
-                                <label for="youtube_enabled_no" class="switch-label switch-label-off"><i
-                                        class="ri-eye-off-line"></i> Ocultar</label>
                             </div>
                         </div>
                     </div>
@@ -141,17 +162,22 @@
                         <div class="social-toggle">
                             <span class="social-toggle-label">Visibilidad</span>
                             <div class="binary-switch">
-                                <input type="radio" name="tiktok_enabled" id="tiktok_enabled_yes" value="1"
-                                    class="switch-input switch-input-on"
-                                    {{ old('tiktok_enabled', $setting->tiktok_enabled) ? 'checked' : '' }}>
-                                <input type="radio" name="tiktok_enabled" id="tiktok_enabled_no" value="0"
-                                    class="switch-input switch-input-off"
-                                    {{ old('tiktok_enabled', $setting->tiktok_enabled) ? '' : 'checked' }}>
+                                <!-- Checkbox real -->
+                                <input type="hidden" name="tiktok_enabled" value="0">
+
+                                <input type="checkbox" name="tiktok_enabled" id="tiktok_enabled" class="switch-input" value="1"
+                                    {{ old('tiktok_enabled', $setting->tiktok_enabled) == 1 ? 'checked' : '' }} data-validate="required">
+
+                                <!-- Labels visuales -->
+                                <label for="tiktok_enabled" class="switch-label switch-label-on">
+                                    <i class="ri-checkbox-circle-line"></i> Mostrar
+                                </label>
+
+                                <label for="tiktok_enabled" class="switch-label switch-label-off">
+                                    <i class="ri-close-circle-line"></i> Ocultar
+                                </label>
+
                                 <div class="switch-slider"></div>
-                                <label for="tiktok_enabled_yes" class="switch-label switch-label-on"><i
-                                        class="ri-eye-line"></i> Mostrar</label>
-                                <label for="tiktok_enabled_no" class="switch-label switch-label-off"><i
-                                        class="ri-eye-off-line"></i> Ocultar</label>
                             </div>
                         </div>
                     </div>
@@ -167,17 +193,22 @@
                         <div class="social-toggle">
                             <span class="social-toggle-label">Visibilidad</span>
                             <div class="binary-switch">
-                                <input type="radio" name="linkedin_enabled" id="linkedin_enabled_yes"
-                                    value="1" class="switch-input switch-input-on"
-                                    {{ old('linkedin_enabled', $setting->linkedin_enabled) ? 'checked' : '' }}>
-                                <input type="radio" name="linkedin_enabled" id="linkedin_enabled_no"
-                                    value="0" class="switch-input switch-input-off"
-                                    {{ old('linkedin_enabled', $setting->linkedin_enabled) ? '' : 'checked' }}>
+                                <!-- Checkbox real -->
+                                <input type="hidden" name="linkedin_enabled" value="0">
+
+                                <input type="checkbox" name="linkedin_enabled" id="linkedin_enabled" class="switch-input" value="1"
+                                    {{ old('linkedin_enabled', $setting->linkedin_enabled) == 1 ? 'checked' : '' }} data-validate="required">
+
+                                <!-- Labels visuales -->
+                                <label for="linkedin_enabled" class="switch-label switch-label-on">
+                                    <i class="ri-checkbox-circle-line"></i> Mostrar
+                                </label>
+
+                                <label for="linkedin_enabled" class="switch-label switch-label-off">
+                                    <i class="ri-close-circle-line"></i> Ocultar
+                                </label>
+
                                 <div class="switch-slider"></div>
-                                <label for="linkedin_enabled_yes" class="switch-label switch-label-on"><i
-                                        class="ri-eye-line"></i> Mostrar</label>
-                                <label for="linkedin_enabled_no" class="switch-label switch-label-off"><i
-                                        class="ri-eye-off-line"></i> Ocultar</label>
                             </div>
                         </div>
                     </div>

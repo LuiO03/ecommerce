@@ -3,22 +3,6 @@
    Header, Footer, Grid principal
    ============================================ */
 
-@font-face {
-    font-family: "Gelion";
-    src: url("/fonts/gelion/Gelion-Regular.woff2") format("woff2");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: "Gelion";
-    src: url("/fonts/gelion/Gelion-Bold.woff2") format("woff2");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
 /* Variables del sitio */
 :root {
     --site-nav-height: 4rem;
@@ -27,8 +11,8 @@
     --site-sidebar-width: 300px;
     --site-color-hover: rgba(81, 0, 157, 0.1);
 
-    --font-primary: "Gelion", "Lato", sans-serif;
-    --font-secondary: "Poppins", "Lato", sans-serif;
+    --font-primary: "Lexend Deca", sans-serif;
+    --font-secondary: "Poppins", sans-serif;
 
     --color-site-nav: #51009d;
     --color-site-accent: #d11e4b;
