@@ -58,16 +58,24 @@
                         </a>
 
                         <div class="wishlist-info">
+                            <p class="wishlist-product-category">
+                                {{ $product->brand?->name ?? 'Sin marca' }}
+                            </p>
                             <a href="{{ route('products.show', $product) }}" class="wishlist-product-name">
                                 {{ $product->name }}
                             </a>
-                            <p class="wishlist-product-category">
-                                {{ $product->category?->name ?? 'Sin categoría' }}
-                            </p>
                             <div class="wishlist-price">
-                                <span class="wishlist-price-current">
-                                    S/.{{ number_format($discounted ?? $product->price, 2) }}
-                                </span>
+                                <div class="cart-item-price">
+                                    <span class="price-current">
+                                        S/.{{ number_format($discounted ?? $product->price, 2) }}
+                                    </span>
+
+                                    @if ($hasDiscount)
+                                        <span class="price-old">
+                                            S/.{{ number_format($product->price, 2) }}
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 

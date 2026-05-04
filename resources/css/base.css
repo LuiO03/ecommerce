@@ -266,9 +266,9 @@
     --font-size-h5: clamp(0.95rem, 1.3vw, 1rem);
     --font-size-h6: clamp(0.9rem, 1.2vw, 0.95rem);
     /* Párrafos */
-    --font-size-p: clamp(0.88rem, 1.5vw, 0.89rem);
+    --font-size-p: clamp(0.85rem, 1.5vw, 0.86rem);
     /* Texto secundario (inputs, etc.) */
-    --font-size-sm: clamp(0.85rem, 1.2vw, 0.86rem);
+    --font-size-sm: clamp(0.83rem, 1.2vw, 0.84rem);
     /* Ayuda, tooltips */
     --font-size-xs: clamp(0.75rem, 1vw, 0.82rem);
 }

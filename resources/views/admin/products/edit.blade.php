@@ -254,7 +254,10 @@
             </div>
         </div>
 
-        @include('admin.products.partials.variants-manager')
+        @include('admin.products.partials.variants-manager', [
+            'product' => $product,
+            'options' => $options,
+        ])
 
         <div class="form-footer">
             <a href="{{ url()->previous() }}" class="boton-form boton-volver">

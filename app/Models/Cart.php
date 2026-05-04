@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\Cart\CartService;
+use App\Services\Cart\CartSummary;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,37 +28,24 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
+    /**
+     * Obtiene el precio total del carrito (subtotal).
+     *
+     * @return float
+     * @deprecated Use getSummary()->subtotal instead
+     */
     public function getTotalPriceAttribute(): float
     {
-        $this->loadMissing('items.product', 'items.variant.features.option');
+        return app(CartService::class)->getCartSubtotal($this);
+    }
 
-        $subtotal = 0.0;
-
-        foreach ($this->items as $item) {
-            $product = $item->product;
-            if (!$product) {
-                continue;
-            }
-
-            $variant = $item->variant;
-
-            $discountPercent = !is_null($product->discount)
-                ? min(max((float) $product->discount, 0), 100)
-                : 0.0;
-            $hasDiscount = $discountPercent > 0;
-
-            $basePrice = ($variant && $variant->price && $variant->price > 0)
-                ? (float) $variant->price
-                : (float) $product->price;
-
-            $discounted = $hasDiscount
-                ? max($basePrice * (1 - $discountPercent / 100), 0)
-                : $basePrice;
-
-            $lineTotal = $discounted * (int) $item->quantity;
-            $subtotal += $lineTotal;
-        }
-
-        return $subtotal;
+    /**
+     * Obtiene un resumen completo del carrito.
+     *
+     * @return CartSummary
+     */
+    public function getSummary(): CartSummary
+    {
+        return app(CartService::class)->getCartSummary($this);
     }
 }

@@ -9,33 +9,9 @@
         $hasItems = $items->isNotEmpty();
         $itemsCount = $items->count();
         $itemsQuantity = $items->sum('quantity');
-        $subtotal = 0;
     @endphp
 
     <section class="site-container cart-page">
-        <header class="cart-header">
-            <div class="section-header">
-                <h1 class="section-title">Mi carrito</h1>
-                <p class="section-subtitle">Revisa tus productos antes de confirmar tu compra.</p>
-            </div>
-            @if ($hasItems)
-                <div class="flex gap-1">
-                    <span class="cart-pill">
-                        <i class="ri-shopping-cart-line"></i>
-                        {{ $itemsQuantity }} {{ $itemsQuantity === 1 ? 'unidad' : 'unidades' }}
-                    </span>
-                    <form id="cart-clear-form" method="POST" action="{{ route('carts.destroy') }}">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="cart-pill cart-clear-btn" id="cart-clear-btn">
-                            <i class="ri-close-large-line"></i>
-                            Limpiar Carrito
-                        </button>
-                    </form>
-                </div>
-            @endif
-
-        </header>
 
         @if (!Auth::check())
             <div class="card-empty">
@@ -67,160 +43,166 @@
             </div>
         @else
             <div class="cart-layout">
-                <div class="cart-items">
-                    @foreach ($items as $item)
-                        @php
-                            $product = $item->product;
-                            if (!$product) {
-                                continue;
-                            }
 
-                            $variant = $item->variant;
-                            // Imagen priorizando variante si tiene, luego producto
-                            $image = $variant?->images->first() ?? $product->images->sortBy('order')->first();
+                <div class="cart-container">
+                    <header class="cart-header">
+                        <div class="section-header">
+                            <h1 class="section-title">Mi carrito</h1>
+                            <p class="section-subtitle">Revisa tus productos antes de confirmar tu compra.</p>
+                        </div>
+                        @if ($hasItems)
+                            <div class="flex gap-1">
+                                <span class="cart-pill">
+                                    <i class="ri-shopping-cart-line"></i>
+                                    {{ $itemsQuantity }} {{ $itemsQuantity === 1 ? 'unidad' : 'unidades' }}
+                                </span>
+                                <form id="cart-clear-form" method="POST" action="{{ route('carts.destroy') }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="cart-pill cart-clear-btn" id="cart-clear-btn">
+                                        <i class="ri-close-large-line"></i>
+                                        Limpiar Carrito
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
 
-                            $discountPercent = !is_null($product->discount)
-                                ? min(max((float) $product->discount, 0), 100)
-                                : 0;
-                            $hasDiscount = $discountPercent > 0;
-
-                            $basePrice =
-                                $variant && $variant->price && $variant->price > 0
-                                    ? (float) $variant->price
-                                    : (float) $product->price;
-                            $discounted = $hasDiscount ? max($basePrice * (1 - $discountPercent / 100), 0) : $basePrice;
-
-                            $lineTotal = $discounted * (int) $item->quantity;
-                            $subtotal += $lineTotal;
-
-                            $variantLabels = [];
-                            $colorFeatures = [];
-
-                            // Máxima cantidad permitida en el contador del carrito (por defecto amplio)
-                            $maxQuantity = 999;
-
-                            if ($variant && $variant->features->isNotEmpty()) {
-                                foreach ($variant->features as $feature) {
-                                    $option = $feature->option;
-
-                                    // Opciones de color: se mostrarán como círculos de color
-                                    if ($option && method_exists($option, 'isColor') && $option->isColor()) {
-                                        $colorFeatures[] = $feature;
-                                        continue;
-                                    }
-
-                                    $optionName = $option->name ?? ($option->slug ?? null);
-                                    $label = $optionName ? $optionName . ': ' . $feature->value : $feature->value;
-                                    $variantLabels[] = $label;
+                    </header>
+                    <div class="cart-items">
+                        @foreach ($items as $item)
+                            @php
+                                $product = $item->product;
+                                if (!$product) {
+                                    continue;
                                 }
 
-                                // Si la línea tiene variante con stock positivo, usamos ese stock como máximo
-                                $variantStock = (int) $variant->stock;
-                                if ($variantStock > 0) {
-                                    $maxQuantity = $variantStock;
-                                }
-                            }
-                        @endphp
+                                $image = $item->getImage();
+                                $discountPercent = $item->getDiscountPercent();
+                                $hasDiscount = $item->hasDiscount();
+                                $basePrice = $item->getBasePrice();
+                                $discounted = $item->getDiscountedPrice();
+                                $lineTotal = $item->getLineTotal();
+                                $maxQuantity = $item->getMaxQuantity();
+                                $variantLabels = $item->getVariantLabels();
+                                $colorFeatures = $item->getColorFeatures();
+                            @endphp
 
-                        <article class="cart-item">
-                            <a href="{{ route('products.show', $product) }}" class="cart-item-thumb">
-                                @if ($image)
-                                    <img src="{{ asset('storage/' . $image->path) }}"
-                                        alt="{{ $image->alt ?? $product->name }}" loading="lazy">
-                                @else
-                                    <div class="cart-thumb-fallback">
-                                        <i class="ri-image-fill"></i>
-                                        <span>Imagen no disponible</span>
+                            <article class="cart-item">
+
+                                {{-- Imagen --}}
+                                <a href="{{ route('products.show', $product) }}" class="cart-item-thumb">
+                                    @if ($image)
+                                        <img src="{{ asset('storage/' . $image->path) }}"
+                                            alt="{{ $image->alt ?? $product->name }}" loading="lazy">
+                                    @else
+                                        <div class="cart-thumb-fallback">
+                                            <i class="ri-image-fill"></i>
+                                            <span>Sin imagen</span>
+                                        </div>
+                                    @endif
+                                </a>
+
+                                {{-- Contenido --}}
+                                <div class="cart-item-content">
+
+                                    {{-- TOP: info + precio --}}
+                                    <div class="cart-item-top">
+                                        <div class="cart-item-info">
+                                            <a href="{{ route('products.show', $product) }}" class="cart-item-name">
+                                                {{ $product->name }}
+                                            </a>
+
+                                            <p class="cart-item-brand">
+                                                {{ $product->brand?->name ?? 'Sin marca' }} |
+                                                {{ $product->category?->name ?? 'Sin categoría' }}
+                                            </p>
+                                        </div>
                                     </div>
-                                @endif
-                            </a>
 
-                            <div class="cart-item-main">
-                                <div class="cart-item-header">
-                                    <div class="cart-item-info">
-                                        <a href="{{ route('products.show', $product) }}" class="cart-item-name">
-                                            {{ $product->name }}
-                                        </a>
-                                        <p class="cart-item-category">
-                                            {{ $product->category?->name ?? 'Sin categoría' }}
-                                        </p>
-                                    </div>
-
-                                    <div class="cart-item-price-block">
-                                        <span class="cart-item-price-current">
-                                            S/.{{ number_format($discounted, 2) }}
-                                        </span>
-                                        @if ($hasDiscount)
-                                            <span class="cart-item-price-original">
-                                                S/.{{ number_format($basePrice, 2) }}
-                                            </span>
-                                        @endif
+                                    {{-- Variantes --}}
+                                    <div class="cart-item-center">
                                         @if (!empty($variantLabels) || !empty($colorFeatures))
-                                            <p class="cart-item-variant">
+                                            <div class="cart-item-variants">
+
                                                 @foreach ($colorFeatures as $feature)
                                                     @php
-                                                        $rawHex = (string) ($feature->description ?? '');
-                                                        $normalized = ltrim($rawHex, '#');
-                                                        $displayColor =
-                                                            $normalized !== '' ? '#' . $normalized : '#000000';
-                                                        $colorName = trim((string) ($feature->value ?? ''));
+                                                        $color = '#' . ltrim((string) $feature->description, '#');
+                                                        $name = $feature->value ?? $color;
                                                     @endphp
-                                                    <span class="cart-item-color-pill"
-                                                        title="Color {{ $colorName !== '' ? $colorName : $displayColor }}">
-                                                        <span class="cart-item-color-dot"
-                                                            style="background-color: {{ $displayColor }};"></span>
+
+                                                    <span class="variant-pill" title="{{ $name }}">
+                                                        <span class="dot"
+                                                            style="background: {{ $color }}"></span>
+                                                        {{ $name }}
                                                     </span>
                                                 @endforeach
 
                                                 @foreach ($variantLabels as $label)
-                                                    <span class="cart-item-variant-pill">{{ $label }}</span>
+                                                    <span class="variant-pill">{{ $label }}</span>
                                                 @endforeach
-                                            </p>
-                                        @endif
-                                    </div>
-                                    <form method="POST" action="{{ route('carts.items.update', $item) }}"
-                                        class="cart-item-quantity-form">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="quantity-counter" data-quantity-root
-                                            data-max-quantity="{{ $maxQuantity }}">
-                                            <button class="quantity-btn quantity-btn--minus" type="button"
-                                                data-quantity-decrement aria-label="Disminuir cantidad">
-                                                <i class="ri-subtract-line"></i>
-                                            </button>
-                                            <div class="quantity-value" data-quantity-value>{{ $item->quantity }}
+
                                             </div>
-                                            <button class="quantity-btn quantity-btn--plus" type="button"
-                                                data-quantity-increment aria-label="Aumentar cantidad">
-                                                <i class="ri-add-line"></i>
+                                        @endif
+                                        {{-- Cantidad --}}
+                                        <form method="POST" action="{{ route('carts.items.update', $item) }}"
+                                            class="cart-qty-form">
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <div class="qty-control" data-max="{{ $maxQuantity }}">
+                                                <button type="button" class="qty-btn" data-dec>-</button>
+
+                                                <span class="qty-value" data-value>
+                                                    {{ $item->quantity }}
+                                                </span>
+
+                                                <button type="button" class="qty-btn" data-inc>+</button>
+
+                                                <input type="hidden" name="quantity" value="{{ $item->quantity }}">
+                                            </div>
+                                        </form>
+
+                                        {{-- Eliminar --}}
+                                        <form method="POST" action="{{ route('carts.items.destroy', $item) }}">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="btn-remove" title="Eliminar producto">
+                                                <i class="ri-close-line"></i> Eliminar
                                             </button>
-                                            <input type="hidden" name="quantity" value="{{ $item->quantity }}"
-                                                data-quantity-input>
-                                        </div>
-                                        <button type="submit" class="cart-item-quantity-submit">
-                                            <i class="ri-refresh-line"></i>
-                                            <span>Actualizar</span>
-                                        </button>
-                                        <div class="cart-item-line-total">
-                                            <span class="cart-item-line-label">Subtotal</span>
-                                            <span class="cart-item-line-value">
-                                                S/.{{ number_format($lineTotal, 2) }}
+                                        </form>
+                                    </div>
+
+                                    {{-- ACCIONES --}}
+                                    <div class="cart-item-actions">
+                                        {{-- Precio --}}
+                                        <div class="cart-item-price">
+                                            <span class="price-current">
+                                                S/.{{ number_format($discounted, 2) }}
                                             </span>
+
+                                            @if ($hasDiscount)
+                                                <span class="price-old">
+                                                    S/.{{ number_format($basePrice, 2) }}
+                                                </span>
+                                            @endif
                                         </div>
-                                    </form>
+                                        {{-- Subtotal --}}
+                                        <div class="cart-item-subtotal">
+                                            <span>Subtotal: </span>
+                                            <strong>S/.{{ number_format($lineTotal, 2) }}</strong>
+                                        </div>
+
+
+
+                                    </div>
+
                                 </div>
-                                <form method="POST" action="{{ route('carts.items.destroy', $item) }}"
-                                    class="cart-item-remove-form">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="cart-item-remove-btn" title="Eliminar del carrito"
-                                        aria-label="Eliminar del carrito">
-                                        <i class="ri-close-large-fill"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </article>
-                    @endforeach
+                            </article>
+
+                            <hr class="w-full my-0 border-default">
+                        @endforeach
+                    </div>
                 </div>
 
                 <aside class="cart-summary">

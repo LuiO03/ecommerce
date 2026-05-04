@@ -113,7 +113,6 @@
 
             <div id="variantModalOptions" class="form-row-fill"></div>
             <div class="form-row-fill">
-
                 <div class="input-group">
                     <label for="variantModalPrice" class="label-form">Precio (S/)</label>
                     <div class="input-icon-container">
@@ -122,8 +121,6 @@
                             placeholder="Precio opcional" data-validate="minValue:0">
                     </div>
                 </div>
-            </div>
-            <div class="form-row-fill">
                 <div class="input-group">
                     <label for="variantModalStock" class="label-form">Stock</label>
                     <div class="input-icon-container">
@@ -132,6 +129,9 @@
                             placeholder="0" data-validate="minValue:0">
                     </div>
                 </div>
+            </div>
+            <div class="form-row-fill">
+
 
                 <div class="input-group">
                     <label class="label-form">Estado</label>

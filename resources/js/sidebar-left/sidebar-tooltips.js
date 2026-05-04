@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 // Reiniciar animaciones
-                tooltipEl.classList.remove("fade-out");
+                tooltipEl.classList.remove("slide-out");
                 void tooltipEl.offsetWidth; // fuerza reflow
-                tooltipEl.classList.add("fade-in");
+                tooltipEl.classList.add("slide-in");
 
                 // Contenido dinámico
                 if (link.classList.contains("submenu-btn")) {
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const topPosition = verticalCenter + scrollOffset - tooltipHeight / 2;
 
                 tooltipEl.style.top = `${topPosition}px`;
-                tooltipEl.style.left = `${sidebarWidth + 12}px`;
+                tooltipEl.style.left = `${sidebarWidth + 8}px`;
                 tooltipEl.style.transform = "";
 
                 tooltipEl.classList.add("show");
@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             link.addEventListener("mouseleave", () => {
                 if (tooltipEl) {
-                    tooltipEl.classList.remove("fade-in");
-                    tooltipEl.classList.add("fade-out");
+                    tooltipEl.classList.remove("slide-in");
+                    tooltipEl.classList.add("slide-out");
 
                     hideTimeout = setTimeout(() => {
                         tooltipEl.classList.remove("show");

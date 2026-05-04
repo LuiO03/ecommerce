@@ -631,55 +631,67 @@
     /* === TOOLTIP SIDEBAR === */
     .sidebar-tooltip {
         position: absolute;
-        background-color: var(--color-sidebar-bg);
-        padding: 6px 10px;
-        border-radius: 0.5rem;
+        background-color: var(--color-hover);
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        padding: 0px 10px;
+        width: max-content;
+        height: 40px;
         font-size: var(--font-size-xs);
         white-space: nowrap;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
         z-index: 70;
         opacity: 0;
+        border-radius: var(--radius-element);
         font-family: var(--font-secondary);
         font-weight: bold;
         pointer-events: none;
+        box-shadow: var(--box-shadow-card-hover);
+        border: 1px solid var(--color-accent);
         transform: none;
         transition:
             opacity 0.2s ease,
             transform 0.2s ease;
-        border: 2px solid var(--color-accent);
     }
 
     .sidebar-tooltip.show {
         opacity: 1;
     }
 
-    .fade-in {
-        animation: tooltipIn 0.18s ease forwards;
+    .sidebar-tooltip i{
+        font-size: var(--font-size-h3);
+        line-height: 1;
     }
 
-    .fade-out {
-        animation: tooltipOut 0.18s ease forwards;
+    .slide-in {
+        animation: tooltipSlideIn 0.18s ease forwards;
     }
 
-    @keyframes tooltipIn {
+    .slide-out {
+        animation: tooltipSlideOut 0.18s ease forwards;
+    }
+
+    /* keyframe para que el tooltip aparesca de izquierda a derecha */
+    @keyframes tooltipSlideIn {
         0% {
             opacity: 0;
-            transform: scale(0.9);
+            transform: translateX(-10px);
         }
         100% {
             opacity: 1;
-            transform: scale(1);
+            transform: translateX(0);
         }
     }
 
-    @keyframes tooltipOut {
+     /* keyframe para que el tooltip desapareca de derecha a izquierda */
+     @keyframes tooltipSlideOut {
         0% {
             opacity: 1;
-            transform: scale(1);
+            transform: translateX(0);
         }
         100% {
             opacity: 0;
-            transform: scale(0.9);
+            transform: translateX(-10px);
         }
     }
 }

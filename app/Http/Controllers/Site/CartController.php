@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Services\Cart\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
+    public function __construct(
+        private readonly CartService $cartService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -37,6 +42,9 @@ class CartController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * Recupera el carrito activo del usuario autenticado con todas las relaciones necesarias.
+     * Optimizado con eager loading para evitar N+1 queries.
      */
     public function show()
     {
@@ -46,7 +54,9 @@ class CartController extends Controller
         if ($userId) {
             $cart = Cart::with([
                 'items.product.images',
+                'items.product.brand',
                 'items.product.category',
+                'items.variant.images',
                 'items.variant.features.option',
             ])
                 ->where('user_id', $userId)
@@ -78,7 +88,7 @@ class CartController extends Controller
      */
     public function destroy()
     {
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
@@ -87,13 +97,11 @@ class CartController extends Controller
             ->first();
 
         if ($cart) {
-            // Eliminar todas las líneas del carrito
             $cart->items()->delete();
-
-            // Resetear contadores
-            $cart->items_count = 0;
-            $cart->items_quantity = 0;
-            $cart->save();
+            $cart->update([
+                'items_count' => 0,
+                'items_quantity' => 0,
+            ]);
         }
 
         Session::flash('toast', [
@@ -107,6 +115,11 @@ class CartController extends Controller
 
     /**
      * Actualizar la cantidad de un item del carrito.
+     *
+     * @param Request $request
+     * @param CartItem $cartItem
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function updateItem(Request $request, CartItem $cartItem)
     {
@@ -114,21 +127,11 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1|max:99',
         ]);
 
-        if (!$cartItem->cart || $cartItem->cart->user_id !== Auth::id()) {
-            abort(403);
-        }
+        // Validar propiedad del carrito
+        $this->cartService->validateOwnership($cartItem->cart, Auth::id());
 
         $oldQuantity = (int) $cartItem->quantity;
-        $newQuantity = (int) $request->integer('quantity');
-
-        // Limitar por stock de la variante si aplica
-        $variant = $cartItem->variant;
-        if ($variant) {
-            $stock = (int) $variant->stock;
-            if ($stock > 0 && $newQuantity > $stock) {
-                $newQuantity = $stock;
-            }
-        }
+        $newQuantity = min($request->integer('quantity'), $this->cartService->getItemMaxQuantity($cartItem));
 
         if ($newQuantity === $oldQuantity) {
             return redirect()->route('carts.show');
@@ -136,14 +139,13 @@ class CartController extends Controller
 
         $diff = $newQuantity - $oldQuantity;
 
-        $cartItem->update([
-            'quantity' => $newQuantity,
-        ]);
+        $cartItem->update(['quantity' => $newQuantity]);
 
         $cart = $cartItem->cart;
         if ($cart) {
-            $cart->items_quantity = max(0, (int) $cart->items_quantity + $diff);
-            $cart->save();
+            $cart->update([
+                'items_quantity' => max(0, (int) $cart->items_quantity + $diff),
+            ]);
         }
 
         Session::flash('toast', [
@@ -157,12 +159,15 @@ class CartController extends Controller
 
     /**
      * Eliminar una línea del carrito.
+     *
+     * @param CartItem $cartItem
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroyItem(CartItem $cartItem)
     {
-        if (!$cartItem->cart || $cartItem->cart->user_id !== Auth::id()) {
-            abort(403);
-        }
+        // Validar propiedad del carrito
+        $this->cartService->validateOwnership($cartItem->cart, Auth::id());
 
         $cart = $cartItem->cart;
         $removedQuantity = (int) $cartItem->quantity;
@@ -170,15 +175,10 @@ class CartController extends Controller
         $cartItem->delete();
 
         if ($cart) {
-            $cart->decrement('items_count');
-            $cart->decrement('items_quantity', $removedQuantity);
-
-            if ($cart->items_count < 0 || $cart->items_quantity < 0) {
-                $cart->items_count = max(0, (int) $cart->items_count);
-                $cart->items_quantity = max(0, (int) $cart->items_quantity);
-            }
-
-            $cart->save();
+            $cart->update([
+                'items_count' => max(0, (int) $cart->items_count - 1),
+                'items_quantity' => max(0, (int) $cart->items_quantity - $removedQuantity),
+            ]);
         }
 
         Session::flash('toast', [

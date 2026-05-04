@@ -8,10 +8,15 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\Cart\CartService;
 use Illuminate\Support\Facades\DB;
 
 class OrderPlacementService
 {
+    public function __construct(
+        private readonly CartService $cartService
+    ) {}
+
     public function placePaidOrder(User $user, Cart $cart, array $data): Order
     {
         return DB::transaction(function () use ($user, $cart, $data) {
@@ -20,7 +25,7 @@ class OrderPlacementService
                 ->lockForUpdate()
                 ->first();
 
-            if (! $lockedCart || ! $lockedCart->is_active) {
+            if (!$lockedCart || !$lockedCart->is_active) {
                 throw new \RuntimeException('El carrito ya fue procesado por otra operación.');
             }
 
@@ -69,26 +74,15 @@ class OrderPlacementService
             foreach ($lockedCart->items as $item) {
                 $product = $item->product;
 
-                if (! $product) {
+                if (!$product) {
                     continue;
                 }
 
                 $variant = $item->variant;
 
-                $discountPercent = ! is_null($product->discount)
-                    ? min(max((float) $product->discount, 0), 100)
-                    : 0.0;
-                $hasDiscount = $discountPercent > 0;
-
-                $basePrice = ($variant && $variant->price && $variant->price > 0)
-                    ? (float) $variant->price
-                    : (float) $product->price;
-
-                $unitPrice = $hasDiscount
-                    ? max($basePrice * (1 - $discountPercent / 100), 0)
-                    : $basePrice;
-
-                $lineTotal = $unitPrice * (int) $item->quantity;
+                // Usar CartService para obtener precio unitario consistente
+                $unitPrice = $this->cartService->getItemDiscountedPrice($item);
+                $lineTotal = $this->cartService->getItemLineTotal($item);
 
                 OrderItem::create([
                     'order_id' => $order->id,
