@@ -370,8 +370,5 @@
                 csrfToken: '{{ csrf_token() }}'
             };
         </script>
-
-        <!-- Módulo de jerarquía nativo -->
-        @vite(['resources/js/modules/category-hierarchy.js'])
     @endpush
 </x-admin-layout>
