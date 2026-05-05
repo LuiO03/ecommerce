@@ -150,6 +150,14 @@
     }
 }
 
+/* Icono loader usado en botones pequeños */
+.button-loading-icon {
+    font-size: 0.95rem;
+    vertical-align: middle;
+    margin-right: 0.45rem;
+    animation: products-spin 0.9s linear infinite;
+}
+
 .products-header {
     display: flex;
     justify-content: space-between;
