@@ -26,7 +26,6 @@
 .pagination-btn {
     border: 1px solid transparent;
     background: transparent;
-    color: var(--color-text);
     font-weight: 600;
     font-size: 0.9rem;
     padding: 0.45rem 0.85rem;
@@ -45,14 +44,14 @@
 
 .pagination-page:hover,
 .pagination-btn:hover {
-    border-color: var(--color-site-accent);
-    color: var(--color-site-accent);
+    border-color: var(--color-site-nav);
+    color: var(--color-site-nav);
 }
 
 .pagination-page.is-active {
-    background: var(--color-site-accent);
+    background: var(--color-site-nav);
     color: #fff;
-    border-color: var(--color-site-accent);
+    border-color: var(--color-site-nav);
 }
 
 .pagination-btn[disabled] {

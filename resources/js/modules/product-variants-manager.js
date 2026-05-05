@@ -27,21 +27,6 @@ function escapeHtml(value) {
         .replace(/'/g, '&#039;');
 }
 
-function buildSkuSuggestion(baseSku, labels) {
-    const cleanBase = String(baseSku || '').trim();
-    const basePart = cleanBase || 'VAR';
-
-    if (!labels.length) {
-        return basePart;
-    }
-
-    const segments = labels.map((label) => slugifySegment(label)).filter(Boolean);
-    if (!segments.length) {
-        return basePart;
-    }
-
-    return `${basePart}-${segments.join('-')}`;
-}
 
 function buildOptionsIndex(optionsData) {
     const options = [];
@@ -133,7 +118,6 @@ function normalizeVariant(rawVariant, featureMap) {
 
     return {
         id: rawVariant.id ?? null,
-        sku: String(rawVariant.sku ?? '').trim(),
         price: rawVariant.price === null || rawVariant.price === '' ? '' : String(rawVariant.price),
         stock: rawVariant.stock === null || rawVariant.stock === '' ? '0' : String(rawVariant.stock),
         status: Boolean(rawVariant.status),
@@ -305,7 +289,6 @@ export function initProductVariantsManager({
             valid: true,
             data: {
                 id: editingIndex !== null ? variants[editingIndex].id : null,
-                sku: variants[editingIndex]?.sku || null,
                 price: priceRaw,
                 stock: String(Math.floor(stockNum)),
                 status: statusActiveInput.checked,
@@ -322,12 +305,7 @@ export function initProductVariantsManager({
                 const statusText = variant.status ? 'Activo' : 'Inactivo';
                 const statusClass = variant.status ? 'success' : 'danger';
                 const statusicon = variant.status ? 'ri-checkbox-circle-fill' : 'ri-close-circle-fill';
-                const skuContent = variant.sku
-                ? `${escapeHtml(variant.sku)} ${hiddenSku}`
-                : `<span class="text-muted">SKU por definir</span>`;
-
                 const hiddenId = `<input type="hidden" name="variants[${index}][id]" value="${escapeHtml(variant.id ?? '')}">`;
-                const hiddenSku = `<input type="hidden" name="variants[${index}][sku]" value="${escapeHtml(variant.sku)}">`;
                 const hiddenPrice = `<input type="hidden" name="variants[${index}][price]" value="${escapeHtml(variant.price)}">`;
                 const hiddenStock = `<input type="hidden" name="variants[${index}][stock]" value="${escapeHtml(variant.stock)}">`;
                 const hiddenStatus = `<input type="hidden" name="variants[${index}][status]" value="${variant.status ? '1' : '0'}">`;
@@ -340,9 +318,6 @@ export function initProductVariantsManager({
             <td class="column-name-td">
               <div class="variant-label">${escapeHtml(label)}</div>
               ${hiddenId}${hiddenFeatures}
-            </td>
-            <td class="column-variant-sku">
-            ${skuContent}
             </td>
             <td class="column-variant-price">
               ${escapeHtml(formatPrice(variant.price))}

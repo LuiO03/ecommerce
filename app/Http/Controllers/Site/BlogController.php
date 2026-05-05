@@ -63,12 +63,20 @@ class BlogController extends Controller
             ->limit(5)
             ->get();
 
+        $breadcrumbItems = [
+            [
+                'label' => 'Blogs',
+                'icon' => 'ri-newspaper-fill',
+            ],
+        ];
+
         return view('site.blog.index', compact(
             'posts',
             'featured',
             'allTags',
             'latestPosts',
-            'currentTag'
+            'currentTag',
+            'breadcrumbItems'
         ));
     }
 
@@ -87,9 +95,21 @@ class BlogController extends Controller
             ->limit(3)
             ->get();
 
+        $breadcrumbItems = [
+            [
+                'label' => 'Blog',
+                'url' => route('site.blog.index'),
+                'icon' => 'ri-newspaper-fill',
+            ],
+            [
+                'label' => $post->title,
+            ],
+        ];
+
         return view('site.blog.show', [
             'post' => $post,
             'related' => $related,
+            'breadcrumbItems' => $breadcrumbItems,
         ]);
     }
 }

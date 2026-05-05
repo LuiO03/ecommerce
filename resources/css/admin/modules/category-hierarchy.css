@@ -238,10 +238,11 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.625rem;
+    padding: 6px 4px;
     border: 2px solid transparent;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-element);
     cursor: pointer;
+    flex-wrap: wrap;
     -webkit-user-select: none;
     user-select: none;
     transition: transform 0.2s ease;

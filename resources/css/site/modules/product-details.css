@@ -497,10 +497,10 @@
 }
 
 .variant-value.is-selected {
-    border-color: var(--color-site-accent);
+    border-color: var(--color-site-nav);
     transform: translateY(-1px);
     color: white;
-    background-color: var(--color-site-accent);
+    background-color: var(--color-site-nav);
 }
 
 .variant-value.is-color {

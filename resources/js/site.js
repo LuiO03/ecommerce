@@ -2,7 +2,6 @@
 import './bootstrap';
 import './site-modules/sidebar-manager';
 import './site-modules/user-dropdown';
-import './site-modules/infinite-products';
 import './site-modules/search-autocomplete';
 import './site-modules/search-modal';
 import './site-modules/product-detail';
@@ -41,6 +40,24 @@ document.addEventListener('livewire:init', () => {
 	if (typeof window.Livewire === 'undefined') {
 		return;
 	}
+
+	window.Livewire.on('scrollToTop', () => {
+		const results = document.getElementById('products-results');
+
+		if (results) {
+			results.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			});
+			return;
+		}
+
+		window.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: 'smooth',
+		});
+	});
 
 	window.Livewire.on('toast', (...args) => {
 		if (typeof window.showToast !== 'function' || !args.length) {

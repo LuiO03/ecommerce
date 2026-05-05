@@ -6,7 +6,7 @@
 .product-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: fit-content;
     position: relative;
     background: white;
     border-radius: var(--radius-element);
@@ -120,10 +120,8 @@
 }
 
 .product-card .product-price {
-    font-weight: 700;
-    font-size: var(--font-size-h3);
-    font-family: var(--font-secondary);
-    color: var(--color-accent);
+    font-weight: bold;
+    color: var(--color-site-nav);
 }
 
 .product-card .product-price-info {

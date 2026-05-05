@@ -16,7 +16,7 @@
             <li class="site-breadcrumb-separator" aria-hidden="true">
                 <i class="ri-arrow-right-s-line"></i>
             </li>
-            @if (!empty($item['url']))
+            @if (!$loop->last && !empty($item['url']))
                 <li class="site-breadcrumb-item">
                     <a class="site-breadcrumb-link" href="{{ $item['url'] }}">
                         @if (!empty($item['icon']))

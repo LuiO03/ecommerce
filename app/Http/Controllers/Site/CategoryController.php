@@ -10,7 +10,13 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $family = $category->family;
-        $breadcrumbItems = [];
+        $breadcrumbItems = [
+            [
+                'label' => 'Tienda',
+                'url' => route('site.shop.index'),
+                'icon' => 'ri-store-2-fill',
+            ],
+        ];
 
         if ($family) {
             $breadcrumbItems[] = [

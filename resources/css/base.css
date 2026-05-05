@@ -74,10 +74,6 @@
     --color-bg: #111110;
     --color-sidebar-bg: #18181b;
     --color-main-bg: #0e0e10;
-    /*
-    --color-sidebar-bg: #0F0F0F;
-    --color-main-bg: #000000;
-    */
     --color-card-bg: #1a1a1a;
     --color-sub-menu-bg: #111111;
     --color-sub-menu-button-bg: #212121;
@@ -257,7 +253,7 @@
 
 :root {
     /* Títulos grandes */
-    --font-size-h1: clamp(1.5rem, 2.5vw, 2.4rem);
+    --font-size-h1: clamp(1.5rem, 2.5vw, 2rem);
     /* Títulos secundarios */
     --font-size-h2: clamp(1.25rem, 2vw, 1.625rem);
     /* Subtítulos / paneles */

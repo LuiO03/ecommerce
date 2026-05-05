@@ -14,110 +14,147 @@
                         </button>
                     </div>
 
+                    @php
+                        $hasSubcategories = $subcategories && $subcategories->isNotEmpty();
+                        $hasBrands = $brands && $brands->isNotEmpty();
+                        $hasOptions = $options && $options->isNotEmpty();
+
+                        $hasAnyFilter = $hasSubcategories || $hasBrands || $hasOptions;
+                    @endphp
+
                     <div class="filters-body">
-                        @if ($subcategories && $subcategories->isNotEmpty())
-                            <section class="filters-subcategories" aria-label="Subcategorias">
-                                <span class="filters-subcategories-title">Subcategorias</span>
-                                <div class="filters-subcategories-chips">
-                                    @foreach ($subcategories as $subcategory)
-                                        <a class="filter-chip" href="{{ route('categories.show', $subcategory) }}">
-                                            <span>{{ $subcategory->name }}</span>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </section>
-                        @else
-                            <div class="card-empty">
-                                <div class="card-empty-icon card-warning">
-                                    <i class="ri-price-tag-3-fill"></i>
-                                </div>
-                                <h2 class="card-title">Sin subcategorias</h2>
-                                <span>No hay subcategorias para esta categoria.</span>
-                            </div>
-                        @endif
 
-                        @if ($brands && $brands->isNotEmpty())
-                            <section class="filters-brands" aria-label="Marcas">
-                                <span class="filters-name">Marcas</span>
+                        @if ($hasAnyFilter)
 
-                                <div class="filters-brands-list">
-                                    @foreach ($brands as $brand)
-                                        <label class="filter-item {{ in_array($brand->id, $selectedBrands ?? []) ? 'is-active' : '' }}">
-                                            <input type="checkbox" wire:model.defer="selectedBrands"
-                                                value="{{ $brand->id }}">
+                            {{-- 🔷 Subcategorías --}}
+                            @if ($hasSubcategories)
+                                <section class="filters-subcategories" aria-label="Subcategorías">
+                                    <span class="filters-subcategories-title">Subcategorías</span>
 
-                                            <span class="filter-item-label">
-                                                {{ $brand->name }}
-                                            </span>
+                                    <div class="filters-subcategories-chips">
+                                        @foreach ($subcategories as $subcategory)
+                                            <a class="filter-chip" href="{{ route('categories.show', $subcategory) }}">
+                                                <span>{{ $subcategory->name }}</span>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </section>
+                            @endif
 
-                                            <span class="filters-count">
-                                                {{ $brand->products_count }}
-                                            </span>
-                                        </label>
-                                    @endforeach
-                                </div>
-                            </section>
-                        @endif
 
-                        @forelse ($options as $option)
-                            @php
-                                $selectedCount = $selectedFeaturesByOption[$option->id] ?? 0;
-                                $isColorOption = method_exists($option, 'isColor') && $option->isColor();
-                            @endphp
-                            <details class="filter-group" open>
-                                <summary class="filter-group-title">
-                                    <span class="filters-name">{{ $option->name }}</span>
-                                    @if ($selectedCount > 0)
-                                        <span class="filters-badge">{{ $selectedCount }}</span>
-                                    @endif
-                                    <i class="ri-arrow-down-s-line"></i>
-                                </summary>
-                                <div class="filter-group-content">
-                                    @foreach ($option->features as $feature)
-                                        @php
-                                            // Para color: value = nombre, description = HEX
-                                            $rawHex = $isColorOption
-                                                ? (string) ($feature->description ?? ($feature->value ?? ''))
-                                                : null;
-                                            $normalized = $rawHex !== null ? ltrim($rawHex, '#') : null;
-                                            $displayColor =
-                                                $normalized !== null && $normalized !== '' ? '#' . $normalized : null;
-                                        @endphp
-                                        <label class="filter-item {{ in_array($feature->id, $selectedFeatures ?? []) ? 'is-active' : '' }}">
-                                            <input type="checkbox" wire:model.defer="selectedFeatures"
-                                                value="{{ $feature->id }}">
-                                            @if ($isColorOption && $displayColor)
-                                                <span class="filter-color-dot"
-                                                    style="--filter-color: {{ $displayColor }};"></span>
+                            {{-- 🔷 Marcas --}}
+                            @if ($hasBrands)
+                                <details class="filter-group" aria-label="Marcas" open>
+
+                                    <summary class="filter-group-title">
+                                        <span class="filters-name">Marcas</span>
+
+                                        <i class="ri-arrow-down-s-line"></i>
+                                    </summary>
+
+
+                                    <div class="filters-brands-list">
+                                        @foreach ($brands as $brand)
+                                            <label
+                                                class="filter-item {{ in_array($brand->id, $selectedBrands ?? []) ? 'is-active' : '' }}">
+                                                <input type="checkbox" wire:model.defer="selectedBrands"
+                                                    value="{{ $brand->id }}">
+
+                                                <span class="filter-item-label">
+                                                    {{ $brand->name }}
+                                                </span>
+
+                                                <span class="filters-count">
+                                                    {{ $brand->products_count }}
+                                                </span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </details>
+                            @endif
+
+
+                            {{-- 🔷 Opciones (features) --}}
+                            @if ($hasOptions)
+                                @foreach ($options as $option)
+                                    @php
+                                        $selectedCount = $selectedFeaturesByOption[$option->id] ?? 0;
+                                        $isColorOption = method_exists($option, 'isColor') && $option->isColor();
+                                    @endphp
+
+                                    <details class="filter-group" open>
+                                        <summary class="filter-group-title">
+                                            <span class="filters-name">{{ $option->name }}</span>
+
+                                            @if ($selectedCount > 0)
+                                                <span class="filters-badge">{{ $selectedCount }}</span>
                                             @endif
-                                            <span class="filter-item-label">{{ $feature->value }}</span>
-                                            @if (isset($featureCounts[$feature->id]))
-                                                <span class="filters-count">{{ $featureCounts[$feature->id] }}</span>
-                                            @endif
-                                        </label>
-                                    @endforeach
-                                </div>
-                            </details>
-                        @empty
-                            <div class="card-empty">
-                                <div class="card-empty-icon card-info">
-                                    <i class="ri-checkbox-multiple-blank-fill"></i>
-                                </div>
-                                <h2 class="card-title">Sin opciones</h2>
-                                <span>No hay opciones configuradas para esta categoría.</span>
-                            </div>
-                        @endforelse
+
+                                            <i class="ri-arrow-down-s-line"></i>
+                                        </summary>
+
+                                        <div class="filter-group-content">
+                                            @foreach ($option->features as $feature)
+                                                @php
+                                                    $rawHex = $isColorOption
+                                                        ? (string) ($feature->description ?? ($feature->value ?? ''))
+                                                        : null;
+
+                                                    $normalized = $rawHex !== null ? ltrim($rawHex, '#') : null;
+
+                                                    $displayColor = $normalized ? '#' . $normalized : null;
+                                                @endphp
+
+                                                <label
+                                                    class="filter-item {{ in_array($feature->id, $selectedFeatures ?? []) ? 'is-active' : '' }}">
+                                                    <input type="checkbox" wire:model.defer="selectedFeatures"
+                                                        value="{{ $feature->id }}">
+
+                                                    @if ($isColorOption && $displayColor)
+                                                        <span class="filter-color-dot"
+                                                            style="--filter-color: {{ $displayColor }};"></span>
+                                                    @endif
+
+                                                    <span class="filter-item-label">
+                                                        {{ $feature->value }}
+                                                    </span>
+
+                                                    @if (isset($featureCounts[$feature->id]))
+                                                        <span class="filters-count">
+                                                            {{ $featureCounts[$feature->id] }}
+                                                        </span>
+                                                    @endif
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    </details>
+                                @endforeach
+                            @endif
 
 
-
-                        @if (count($options) > 0 || ($brands && $brands->isNotEmpty()))
+                            {{-- 🔷 Footer (solo si hay filtros) --}}
                             <div class="filters-footer">
                                 <button type="button" class="filters-apply" wire:click="applyFilters">
                                     <i class="ri-check-line"></i>
                                     <span>Aplicar filtros</span>
                                 </button>
                             </div>
+                        @else
+                            {{-- 🔴 Fallback único --}}
+                            <div class="card-empty">
+                                <div class="card-empty-icon card-info">
+                                    <i class="ri-filter-off-line"></i>
+                                </div>
+
+                                <h2 class="card-title">Sin filtros disponibles</h2>
+
+                                <span>
+                                    Esta categoría no tiene filtros configurados actualmente.
+                                </span>
+                            </div>
+
                         @endif
+
                     </div>
                 </section>
             </aside>
@@ -127,17 +164,7 @@
             <div class="products-header">
                 <div>
                     <h1 class="products-title">
-                        @if (!empty($search))
-                            Resultados de búsqueda
-                        @elseif ($category)
-                            {{ $category->name }}
-                        @elseif ($brand)
-                            {{ $brand->name }}
-                        @elseif ($family)
-                            {{ $family->name }}
-                        @else
-                            Todos los productos
-                        @endif
+                        {{ $this->pageTitle }}
                     </h1>
                     <p class="products-count">
                         @if (!empty($search))
@@ -215,71 +242,19 @@
             </div>
 
             @if ($products->isNotEmpty())
-                <div class="products-results" data-infinite-products>
+                <div class="products-results products-results--loading-zone">
+                    <div class="products-loading-overlay"
+                        wire:loading.flex
+                        wire:target="applyFilters,clearFilters,goToPage,nextPage,previousPage,updateSort">
+                        <div class="products-loading-card" role="status" aria-live="polite">
+                            <i class="ri-loader-4-line products-loading-icon"></i>
+                            <span>Cargando productos...</span>
+                        </div>
+                    </div>
+
                     <div class="products-grid">
                         @foreach ($products as $product)
-                            <div class="product-card">
-                                <a href="{{ route('products.show', $product) }}" class="product-image">
-                                    @php
-                                        $image = $product->mainImage?->path ?? $product->image_path;
-                                        $alt = $product->mainImage?->alt ?? $product->name;
-                                    @endphp
-                                    @if ($image)
-                                        <img src="{{ asset('storage/' . $image) }}" alt="{{ $alt }}"
-                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-
-                                        <div class="product-image-fallback" style="display:none;">
-                                            <i class="ri-image-fill"></i>
-                                            <span>Imagen no disponible</span>
-                                        </div>
-                                    @else
-                                        <div class="product-image-fallback">
-                                            <i class="ri-image-fill"></i>
-                                            <span>Imagen no disponible</span>
-                                        </div>
-                                    @endif
-
-                                    @if ($product->discount)
-                                        <span class="product-badge">-{{ number_format($product->discount, 0) }}%
-                                            OFF</span>
-                                    @endif
-                                </a>
-
-                                <div class="product-details">
-                                    <div class="flex justify-between flex-wrap">
-                                        <p class="product-brand">{{ $product->brand?->name ?? 'Sin marca' }}</p>
-                                        <p class="product-rating">
-                                            <i class="ri-star-fill"></i>
-                                            <span>4.5 (128)</span>
-                                        </p>
-                                    </div>
-                                    <h3 class="product-name">{{ $product->name }}</h3>
-                                    <div class="flex w-full flex-col">
-                                        <div class="product-pricing">
-                                            @if (!is_null($product->discount) && (float) $product->discount > 0)
-                                                @php
-                                                    $discountPercent = min(max((float) $product->discount, 0), 100);
-                                                    $discounted = max(
-                                                        (float) $product->price * (1 - $discountPercent / 100),
-                                                        0,
-                                                    );
-                                                @endphp
-                                                <span
-                                                    class="product-price">S/.{{ number_format($discounted, 2) }}</span>
-                                                <span
-                                                    class="product-price-original">S/.{{ number_format($product->price, 2) }}</span>
-                                            @else
-                                                <span
-                                                    class="product-price">S/.{{ number_format($product->price, 2) }}</span>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="product-footer">
-                                        <livewire:site.add-to-wishlist-card :product-id="$product->id" :key="'wishlist-card-' . $product->id" />
-                                    </div>
-                                </div>
-                            </div>
+                            @include('partials.components.product-card', ['product' => $product])
                         @endforeach
                     </div>
 
@@ -329,17 +304,6 @@
                         </nav>
                     @endif
 
-                    @if ($hasMore)
-                        <div class="filters-footer products-infinite">
-                            <button type="button" class="filters-apply" data-load-more-button wire:click="loadMore"
-                                wire:loading.attr="disabled">
-                                <i class="ri-add-line"></i>
-                                <span wire:loading.remove>Cargar más</span>
-                                <span wire:loading>Cargando...</span>
-                            </button>
-                            <div class="products-infinite-sentinel" data-load-more-sentinel aria-hidden="true"></div>
-                        </div>
-                    @endif
                 </div>
             @else
                 <div class="card-empty">

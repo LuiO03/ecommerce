@@ -24,7 +24,6 @@
         ->map(function ($variant) {
             return [
                 'id' => $variant->id,
-                'sku' => $variant->sku,
                 'price' => $variant->price,
                 'stock' => $variant->stock,
                 'status' => (bool) $variant->status,
@@ -65,7 +64,6 @@
                     <thead>
                         <tr>
                             <th class="column-variant-options-th">Variante</th>
-                            <th class="column-variant-sku-th">SKU variante</th>
                             <th class="column-variant-price-th">Precio (S/)</th>
                             <th class="column-variant-stock-th">Stock</th>
                             <th class="column-variant-status-th">Estado</th>
@@ -74,7 +72,7 @@
                     </thead>
                     <tbody data-role="variants-body">
                         <tr id="variantsEmpty" class="variants-empty-row">
-                            <td colspan="6" class="text-muted-td text-center">
+                            <td colspan="5" class="text-muted-td text-center">
                                 <div class="tabla-no-data">
                                     <i class="ri-folder-warning-line"></i>
                                     <span>

@@ -11,6 +11,11 @@ class BrandController extends Controller
     {
         $breadcrumbItems = [
             [
+                'label' => 'Tienda',
+                'url' => route('site.shop.index'),
+                'icon' => 'ri-store-2-fill',
+            ],
+            [
                 'label' => $brand->name,
                 'icon' => 'ri-store-3-fill',
             ]
