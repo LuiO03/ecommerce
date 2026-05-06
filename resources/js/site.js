@@ -10,16 +10,19 @@ import './site-modules/auth-wishlist-modal';
 import './site-modules/wishlist-page';
 import './site-modules/profile-addresses';
 import './site-modules/price-filter-manager';
+import './site-modules/contact-form';
 import './modules/custom-select';
 
 import { initImageUpload } from './utils/image-upload-handler.js';
 import { initFormValidator } from './utils/form-validator.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
+import { initTextareaAutosize } from './utils/textarea-autosize.js';
 
 // Exponer helpers de formularios para vistas públicas (login, etc.)
 window.initImageUpload = initImageUpload;
 window.initFormValidator = initFormValidator;
 window.initSubmitLoader = initSubmitLoader;
+window.initTextareaAutosize = initTextareaAutosize;
 
 // Swiper Slider
 import Swiper from 'swiper';

@@ -79,10 +79,16 @@
                 data-discount="{{ $discountPercent }}" data-has-variants="{{ $hasActiveVariants ? '1' : '0' }}"
                 data-has-available-variants="{{ $hasAvailableVariants ? '1' : '0' }}">
                 <div class="product-summary-header">
-                    <a href="{{ route('brands.show', $product->brand) }}" class="product-brand">
-                        {{ $product->brand?->name ?? 'Sin marca' }}
-                    </a>
-                    <h1 style="line-height: 1;">{{ $product->name }}</h1>
+                    <div class="product-meta-links">
+                        <a href="{{ route('brands.show', $product->brand) }}" class="product-brand">
+                            {{ $product->brand?->name ?? 'Sin marca' }}
+                        </a>
+                        |
+                        <a href="{{ route('categories.show', $product->category) }}" class="product-category">
+                            {{ $product->category->name }}
+                        </a>
+                    </div>
+                    <h1>{{ $product->name }}</h1>
                     <p class="product-sku">SKU: {{ $product->sku }}</p>
                 </div>
                 <div class="product-price">

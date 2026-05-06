@@ -494,10 +494,6 @@
     flex-shrink: 0;
 }
 
-.site-sidebar-cta {
-    white-space: nowrap;
-}
-
 .site-sidebar-nav-btn {
     display: inline-flex;
     align-items: center;

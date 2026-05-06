@@ -41,6 +41,12 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'recaptcha' => [
+        'site_key' => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+        'minimum_score' => env('RECAPTCHA_MIN_SCORE', 0.5),
+    ],
+
     'niubiz' => [
         'merchant_id' => env('NIUBIZ_MERCHANT_ID'),
         'user' => env('NIUBIZ_USER'),

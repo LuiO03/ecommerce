@@ -19,6 +19,7 @@
     use App\Http\Controllers\Site\LegalDocumentationController;
     use App\Http\Controllers\Site\ProfileController as SiteProfileController;
     use App\Http\Controllers\Site\BlogController;
+    use App\Http\Controllers\Site\ContactController;
     use App\Http\Controllers\Site\ShopController;
 
     use App\Http\Controllers\Auth\GoogleController;
@@ -141,7 +142,8 @@
 
     // Páginas informativas
     Route::view('/nosotros', 'site.about.index')->name('about.index');
-    Route::view('/contacto', 'site.contact.index')->name('contact.index');
+    Route::get('/contacto', [ContactController::class, 'show'])->name('contact.index');
+    Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');
 
     // Tienda (filtro global de productos)
     Route::get('/tienda', [ShopController::class, 'index'])->name('site.shop.index');

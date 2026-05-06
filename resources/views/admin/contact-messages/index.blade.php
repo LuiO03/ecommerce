@@ -135,7 +135,34 @@
                             <td class="column-id-td"><span class="id-text">{{ $message->id }}</span></td>
                             <td class="column-name-td">{{ $message->name }}</td>
                             <td class="column-email-td">{{ $message->email }}</td>
-                            <td class="column-name-td">{{ ucfirst($message->topic) }}</td>
+                            <td class="column-name-td">
+                                @if ($message->topic === "order")
+                                    <span class="badge badge-primary">
+                                        <i class="ri-shopping-cart-2-fill"></i>
+                                        Pedido
+                                    </span>
+                                @elseif ($message->topic === "product")
+                                    <span class="badge badge-secondary">
+                                        <i class="ri-store-2-fill"></i>
+                                        Producto
+                                    </span>
+                                @elseif ($message->topic === "account")
+                                    <span class="badge badge-info">
+                                        <i class="ri-user-3-fill"></i>
+                                        Cuenta
+                                    </span>
+                                @elseif ($message->topic === "billing")
+                                    <span class="badge badge-warning">
+                                        <i class="ri-file-text-fill"></i>
+                                        Facturación
+                                    </span>
+                                @elseif ($message->topic === "other")
+                                    <span class="badge badge-light">
+                                        <i class="ri-question-fill"></i>
+                                        Otro
+                                    </span>
+                                @endif
+                            </td>
                             <td class="column-description-td">
                                 <span class="{{ $message->response ? '' : 'text-muted-td' }}">
                                     {{ $message->response ? Str::limit($message->response, 70) : 'Sin respuesta' }}

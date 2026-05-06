@@ -84,16 +84,42 @@
 
 @push('scripts')
     <script>
+        function setLoadingContactMessageFields() {
+            $('#msg-id').html('<div class="shimmer shimmer-cell"></div>');
+            $('#msg-name').html('<div class="shimmer shimmer-cell shimmer-title" style="width:140px;"></div>');
+            $('#msg-email').html('<div class="shimmer shimmer-cell" style="width:160px;"></div>');
+            $('#msg-topic').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#msg-order-number').html('<div class="shimmer shimmer-cell" style="width:100px;"></div>');
+            $('#msg-status').html('<div class="shimmer shimmer-cell" style="width:90px;"></div>');
+            $('#msg-created-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#msg-read-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#msg-replied-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#msg-content').html('<div class="shimmer shimmer-cell" style="width:100%; height:60px;"></div>');
+        }
+
         function openContactMessageModal() {
             $('#modalShowContactMessage').removeClass('hidden');
-            $('#modalShowContactMessage .modal-content').removeClass('animate-out').addClass('animate-in');
+            $('#modalShowContactMessage .modal-content')
+                .removeClass('animate-out')
+                .addClass('animate-in');
+
             $('#modalShowContactMessage').appendTo('body');
+
+            document.addEventListener('keydown', escContactListener);
+            document.addEventListener('mousedown', clickOutsideContactListener);
         }
 
         function closeContactMessageModal() {
-            $('#modalShowContactMessage .modal-content').removeClass('animate-in').addClass('animate-out');
+            $('#modalShowContactMessage .modal-content')
+                .removeClass('animate-in')
+                .addClass('animate-out');
+
             setTimeout(function() {
                 $('#modalShowContactMessage').addClass('hidden');
+                setLoadingContactMessageFields();
+
+                document.removeEventListener('keydown', escContactListener);
+                document.removeEventListener('mousedown', clickOutsideContactListener);
             }, 250);
         }
 
@@ -145,7 +171,21 @@
             });
         }
 
+        function escContactListener(e) {
+            if (e.key === "Escape") {
+                closeContactMessageModal();
+            }
+        }
+
+        function clickOutsideContactListener(e) {
+            const overlay = document.getElementById('modalShowContactMessage');
+            if (e.target === overlay) {
+                closeContactMessageModal();
+            }
+        }
+
         function loadContactMessage(id, focusResponse = false) {
+            setLoadingContactMessageFields();
             openContactMessageModal();
 
             $.ajax({

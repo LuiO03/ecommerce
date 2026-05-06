@@ -97,7 +97,7 @@ class ProductController extends Controller
             'min_stock' => 'nullable|integer|min:0',
             'status' => 'required|boolean',
             'gallery' => 'required|array|min:1',
-            'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:3048',
             'primary_image' => 'nullable|string',
         ]);
 
@@ -265,7 +265,7 @@ class ProductController extends Controller
             'min_stock' => 'nullable|integer|min:0',
             'status' => 'required|boolean',
             'gallery' => 'nullable|array',
-            'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:3048',
             'remove_gallery' => 'sometimes|array',
             'remove_gallery.*' => 'integer|exists:product_images,id',
             'primary_image' => 'nullable|string',

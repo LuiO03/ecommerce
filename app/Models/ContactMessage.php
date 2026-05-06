@@ -12,6 +12,10 @@ class ContactMessage extends Model
         'topic',
         'order_number',
         'message',
+        'idempotency_key',
+        'ip_address',
+        'user_agent',
+        'submitted_at',
         'response',
         'status',
         'read_at',
@@ -19,6 +23,7 @@ class ContactMessage extends Model
     ];
 
     protected $casts = [
+        'submitted_at' => 'datetime',
         'read_at' => 'datetime',
         'replied_at' => 'datetime',
     ];

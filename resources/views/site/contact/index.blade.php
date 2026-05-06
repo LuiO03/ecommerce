@@ -34,21 +34,33 @@
 
     <section class="contact-section">
         <div class="site-container contact-section__container">
-            <form id="contact-form" method="POST" action="" class="form-container" autocomplete="off">
+            <form id="contact-form" method="POST" action="{{ route('contact.store') }}" class="form-container"
+                autocomplete="off" data-recaptcha-site-key="{{ $recaptchaSiteKey ?? '' }}"
+                data-skip-captcha="{{ auth()->check() ? '1' : '0' }}">
+
                 @csrf
-                @if ($errors->hasBag('main') && $errors->main->any())
+
+                @if ($errors->any())
                     <div class="form-error-banner">
                         <i class="ri-error-warning-line form-error-icon"></i>
                         <div>
                             <h4 class="form-error-title">Se encontraron los siguientes errores:</h4>
                             <ul>
-                                @foreach ($errors->main->all() as $error)
+                                @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
                         </div>
                     </div>
                 @endif
+                <input type="hidden" name="idempotency_key"
+                    value="{{ old('idempotency_key', $contactIdempotencyKey ?? (string) Str::uuid()) }}">
+                <input type="hidden" name="recaptcha_token" value="">
+                <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="hidden"
+                    aria-hidden="true">
+
+                <div id="contact-form-status"></div>
+
                 <div class="form-body">
                     <div class="card-header">
                         <h3 class="card-title">Envíanos un mensaje</h3>
@@ -128,9 +140,10 @@
                             Usaremos tu información solo para responder esta consulta. Para más detalles revisa nuestra
                             <a href="{{ route('site.legal.privacy') }}" target="_blank">Política de Privacidad</a>.
                         </p>
-                        <button type="submit" class="boton-form boton-accent" data-submit-loader>
-                            <span class="boton-form-icon"><i class="ri-send-plane-line"></i></span>
-                            <span class="boton-form-text">Enviar mensaje</span>
+                        <button type="submit" class="site-btn site-btn-primary" data-submit-loader
+                            data-default-text="Enviar mensaje" data-loading-text="Enviando...">
+                            <i class="ri-send-plane-line"></i>
+                            Enviar mensaje
                         </button>
                     </div>
                 </div>
@@ -171,22 +184,10 @@
         </div>
     </section>
 
-    @push('js')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (window.initFormValidator) {
-                    window.initFormValidator('#contact-form', {
-                        validateOnBlur: true,
-                        scrollToFirstError: true,
-                    });
-                }
-                if (window.initSubmitLoader) {
-                    window.initSubmitLoader('#contact-form [data-submit-loader]');
-                }
-                if (window.initTextareaAutosize) {
-                    window.initTextareaAutosize('.textarea-autosize');
-                }
-            });
-        </script>
-    @endpush
+    @if (empty($recaptchaSiteKey) || auth()->check())
+    @else
+        @push('js')
+            <script src="https://www.google.com/recaptcha/api.js?render={{ $recaptchaSiteKey }}"></script>
+        @endpush
+    @endif
 </x-app-layout>

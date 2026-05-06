@@ -124,6 +124,7 @@
 .tabla-normal thead th {
     background-color: var(--color-table-header-bg);
     text-align: start;
+    font-size: var(--font-size-p);
 }
 /*
 .tabla-normal tbody tr:nth-child(even) {

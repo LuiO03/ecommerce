@@ -205,7 +205,7 @@
                             {{ $family->name }}
                         </div>
                         <a href="{{ route('families.show', $family) }}"
-                            class="site-btn site-btn-primary site-sidebar-cta" data-sidebar-close>
+                            class="site-btn site-btn-primary" data-sidebar-close>
                             <span class="boton-form-text">Ver todo</span>
                         </a>
                     </div>

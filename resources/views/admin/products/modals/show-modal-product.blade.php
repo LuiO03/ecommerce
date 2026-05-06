@@ -89,10 +89,10 @@
                 </div>
             </div>
             <div class="modal-variants-table" id="product-variants-table-container">
-                <table class="modal-show-table">
+                <table class="tabla-general w-full tabla-normal" id="table">
                     <thead>
                         <tr>
-                            <th>Variante</th>
+                            <th class="column-name-th">Variante</th>
                             <th>SKU</th>
                             <th>Precio</th>
                             <th>Stock</th>
@@ -427,7 +427,7 @@
         function renderProductVariantsTable(variants) {
             const $tbody = $('#product-variants-table-body');
             if (!Array.isArray(variants) || variants.length === 0) {
-                $tbody.html('<tr><td colspan="5" class="text-center text-muted">Sin variantes</td></tr>');
+                $tbody.html('<tr><td colspan="5"><div class="tabla-no-data"><i class="ri-folder-warning-line"></i><span>Sin variantes</span></div></td></tr>');
                 return;
             }
             const rows = variants.map(variant => {
@@ -458,7 +458,7 @@
                     '<span class="badge boton-success"><i class="ri-checkbox-circle-fill"></i> Activo</span>' :
                     '<span class="badge boton-danger"><i class="ri-close-circle-fill"></i> Inactivo</span>';
                 return `<tr>
-                    <td>${optionsLabel}</td>
+                    <td class="column-name-td">${optionsLabel}</td>
                     <td>${sku}</td>
                     <td>S/. ${price}</td>
                     <td>${stock}</td>
@@ -535,7 +535,7 @@
                 }).join('');
                 $('#product-variants').html(`<ul class="modal-list">${variantsList}</ul>`);
             } else {
-                $('#product-variants').html('<span class="text-muted-td">Sin variantes</span>');
+                $('#product-variants').html('<span>Sin variantes</span>');
             }
 
             $('#product-created-by').html(`
