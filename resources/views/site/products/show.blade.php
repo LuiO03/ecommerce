@@ -18,6 +18,7 @@
         <div class="product-detail-hero" data-product-gallery>
             <div class="product-media">
                 <div class="@if ($images->isNotEmpty()) product-gallery @else product-gallery-empty @endif">
+
                     @if ($images->isNotEmpty())
                         <div class="product-gallery-thumbs" role="list">
                             @foreach ($images as $index => $image)
@@ -201,9 +202,9 @@
         @endif
     </section>
     {{-- Similares (en show.blade.php, por ejemplo) --}}
-    <livewire:site.product-list :category-id="$product->category_id" :exclude-id="$product->id" :limit="8" title="Productos similares" :scope="'category_with_children'" :strict="true"
+    <livewire:site.product-list :category-id="$product->category_id" :exclude-id="$product->id" :limit="12" title="Productos similares" :scope="'family_fallback'" :strict="true"
         subtitle="Te pueden interesar estos productos de la misma categoría {{ $product->category->name }}" />
 
-    <livewire:site.product-list :limit="8" order-by="cheap" title="¡Los más baratos!"
+    <livewire:site.product-list :limit="12" order-by="cheap" title="¡Los más baratos!"
         subtitle="Aprovecha los mejores precios" />
 </x-app-layout>

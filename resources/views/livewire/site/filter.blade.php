@@ -7,12 +7,6 @@
                         <div class="filters-title">
                             <span>Filtrar productos</span>
                         </div>
-                        <button type="button" class="filters-clear" aria-label="Limpiar filtros"
-                            wire:click="clearFilters" wire:loading.attr="disabled" wire:target="clearFilters">
-                            <i class="ri-refresh-line" wire:loading.remove wire:target="clearFilters"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="clearFilters" aria-hidden="true"></i>
-                            <span>Limpiar</span>
-                        </button>
                     </div>
 
                     @php
@@ -24,14 +18,13 @@
                     @endphp
 
                     <div class="filters-body">
-
                         @if ($hasAnyFilter)
-
                             {{-- 🔷 Subcategorías --}}
                             @if ($hasSubcategories)
                                 <section class="filters-subcategories" aria-label="Subcategorías">
-                                    <span class="filters-subcategories-title">Subcategorías</span>
-
+                                    <summary class="filter-group-title">
+                                        <span class="filters-name">Subcategorías</span>
+                                    </summary>
                                     <div class="filters-subcategories-chips">
                                         @foreach ($subcategories as $subcategory)
                                             <a class="filter-chip" href="{{ route('categories.show', $subcategory) }}">
@@ -41,8 +34,6 @@
                                     </div>
                                 </section>
                             @endif
-
-
                             {{-- 🔷 Marcas --}}
                             @if ($hasBrands)
                                 <details class="filter-group" aria-label="Marcas" open>
@@ -53,8 +44,7 @@
                                         <i class="ri-arrow-down-s-line"></i>
                                     </summary>
 
-
-                                    <div class="filters-brands-list">
+                                    <div class="filter-group-content">
                                         @foreach ($brands as $brand)
                                             <label
                                                 class="filter-item {{ in_array($brand->id, $selectedBrands ?? []) ? 'is-active' : '' }}">
@@ -73,8 +63,6 @@
                                     </div>
                                 </details>
                             @endif
-
-
                             {{-- 🔷 Opciones (features) --}}
                             @if ($hasOptions)
                                 @foreach ($options as $option)
@@ -132,15 +120,61 @@
                                 @endforeach
                             @endif
 
+                            {{-- 🔷 Precio --}}
+                            <section class="filters-price" aria-label="Filtrar por precio">
+                                <div class="filter-group-title filters-price-title">
+                                    <span class="filters-name">Precio</span>
+                                    <i class="ri-price-tag-3-line"></i>
+                                </div>
 
-                            {{-- 🔷 Footer (solo si hay filtros) --}}
-                            <div class="filters-footer">
-                                <button type="button" class="filters-apply" wire:click="applyFilters" wire:loading.attr="disabled" wire:target="applyFilters">
-                                        <i class="ri-check-line" wire:loading.remove wire:target="applyFilters"></i>
-                                        <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="applyFilters" aria-hidden="true"></i>
-                                        <span>Aplicar filtros</span>
-                                    </button>
-                            </div>
+                                <div class="filters-price-range">
+                                    <label class="filters-price-field">
+                                        <span>Desde</span>
+                                        <input type="number" min="0" step="0.01" inputmode="decimal"
+                                            placeholder="0.00" wire:model.defer="priceMin" data-price-manual>
+                                    </label>
+
+                                    <label class="filters-price-field">
+                                        <span>Hasta</span>
+                                        <input type="number" min="0" step="0.01" inputmode="decimal"
+                                            placeholder="0.00" wire:model.defer="priceMax" data-price-manual>
+                                    </label>
+                                </div>
+
+                                <div class="filters-price-presets" role="radiogroup"
+                                    aria-label="Rangos predefinidos de precio">
+                                    <label
+                                        class="filters-price-preset {{ $selectedPriceRange === '' ? 'is-active' : '' }}">
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="" data-price-preset>
+                                        <span>Todos</span>
+                                    </label>
+                                    <label
+                                        class="filters-price-preset {{ $selectedPriceRange === '50-100' ? 'is-active' : '' }}">
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="50-100" data-price-preset>
+                                        <span>S/. 50 a 100</span>
+                                    </label>
+                                    <label
+                                        class="filters-price-preset {{ $selectedPriceRange === '100-200' ? 'is-active' : '' }}">
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="100-200" data-price-preset>
+                                        <span>S/. 100 a 200</span>
+                                    </label>
+                                    <label
+                                        class="filters-price-preset {{ $selectedPriceRange === '200-500' ? 'is-active' : '' }}">
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="200-500" data-price-preset>
+                                        <span>S/. 200 a 500</span>
+                                    </label>
+                                    <label
+                                        class="filters-price-preset {{ $selectedPriceRange === '500-1000' ? 'is-active' : '' }}">
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="500-1000" data-price-preset>
+                                        <span>S/. 500 a 1000</span>
+                                    </label>
+                                    <label
+                                        class="filters-price-preset {{ $selectedPriceRange === '1000+' ? 'is-active' : '' }}">
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="1000+" data-price-preset>
+                                        <span>S/. 1000 a más</span>
+                                    </label>
+                                </div>
+                            </section>
                         @else
                             {{-- 🔴 Fallback único --}}
                             <div class="card-empty">
@@ -156,7 +190,23 @@
                             </div>
 
                         @endif
-
+                    </div>
+                    {{-- 🔷 Footer (solo si hay filtros) --}}
+                    <div class="filters-footer">
+                        <button type="button" class="site-btn site-btn-outline" aria-label="Limpiar filtros"
+                            wire:click="clearFilters" wire:loading.attr="disabled" wire:target="clearFilters">
+                            <i class="ri-refresh-line" wire:loading.remove wire:target="clearFilters"></i>
+                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="clearFilters"
+                                aria-hidden="true"></i>
+                            <span>Limpiar</span>
+                        </button>
+                        <button type="button" class="site-btn site-btn-primary" wire:click="applyFilters"
+                            wire:loading.attr="disabled" wire:target="applyFilters">
+                            <i class="ri-check-line" wire:loading.remove wire:target="applyFilters"></i>
+                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="applyFilters"
+                                aria-hidden="true"></i>
+                            <span>Aplicar filtros</span>
+                        </button>
                     </div>
                 </section>
             </aside>
@@ -217,31 +267,40 @@
                         <div class="site-select-option {{ $sortBy === 'recent' ? 'active' : '' }}"
                             wire:click="updateSort('recent')" wire:loading.attr="disabled" wire:target="updateSort">
                             <i class="ri-time-line" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort" aria-hidden="true"></i>
+                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                aria-hidden="true"></i>
                             <span>Más recientes</span>
                         </div>
                         <div class="site-select-option {{ $sortBy === 'price-asc' ? 'active' : '' }}"
-                            wire:click="updateSort('price-asc')" wire:loading.attr="disabled" wire:target="updateSort">
+                            wire:click="updateSort('price-asc')" wire:loading.attr="disabled"
+                            wire:target="updateSort">
                             <i class="ri-arrow-up-line" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort" aria-hidden="true"></i>
+                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                aria-hidden="true"></i>
                             <span>Precio: Menor a Mayor</span>
                         </div>
                         <div class="site-select-option {{ $sortBy === 'price-desc' ? 'active' : '' }}"
-                            wire:click="updateSort('price-desc')" wire:loading.attr="disabled" wire:target="updateSort">
+                            wire:click="updateSort('price-desc')" wire:loading.attr="disabled"
+                            wire:target="updateSort">
                             <i class="ri-arrow-down-line" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort" aria-hidden="true"></i>
+                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                aria-hidden="true"></i>
                             <span>Precio: Mayor a Menor</span>
                         </div>
                         <div class="site-select-option {{ $sortBy === 'name-asc' ? 'active' : '' }}"
-                            wire:click="updateSort('name-asc')" wire:loading.attr="disabled" wire:target="updateSort">
+                            wire:click="updateSort('name-asc')" wire:loading.attr="disabled"
+                            wire:target="updateSort">
                             <i class="ri-sort-asc" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort" aria-hidden="true"></i>
+                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                aria-hidden="true"></i>
                             <span>Nombre: A-Z</span>
                         </div>
                         <div class="site-select-option {{ $sortBy === 'name-desc' ? 'active' : '' }}"
-                            wire:click="updateSort('name-desc')" wire:loading.attr="disabled" wire:target="updateSort">
+                            wire:click="updateSort('name-desc')" wire:loading.attr="disabled"
+                            wire:target="updateSort">
                             <i class="ri-sort-desc" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort" aria-hidden="true"></i>
+                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                aria-hidden="true"></i>
                             <span>Nombre: Z-A</span>
                         </div>
                     </div>
@@ -250,8 +309,7 @@
 
             @if ($products->isNotEmpty())
                 <div class="products-results products-results--loading-zone">
-                    <div class="products-loading-overlay"
-                        wire:loading.flex
+                    <div class="products-loading-overlay" wire:loading.flex
                         wire:target="applyFilters,clearFilters,goToPage,nextPage,previousPage,updateSort">
                         <div class="products-loading-card" role="status" aria-live="polite">
                             <i class="ri-loader-4-line products-loading-icon"></i>
@@ -286,9 +344,11 @@
                         @endphp
                         <nav class="site-pagination" aria-label="Paginacion">
                             <button type="button" class="pagination-btn" wire:click="previousPage"
-                                {{ $currentPage === 1 ? 'disabled' : '' }} wire:loading.attr="disabled" wire:target="previousPage">
+                                {{ $currentPage === 1 ? 'disabled' : '' }} wire:loading.attr="disabled"
+                                wire:target="previousPage">
                                 <i class="ri-arrow-left-s-line" wire:loading.remove wire:target="previousPage"></i>
-                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="previousPage" aria-hidden="true"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading
+                                    wire:target="previousPage" aria-hidden="true"></i>
                                 <span>Anterior</span>
                             </button>
                             <div class="pagination-list">
@@ -298,18 +358,23 @@
                                     @else
                                         <button type="button"
                                             class="pagination-page {{ $page === $currentPage ? 'is-active' : '' }}"
-                                            wire:click="goToPage({{ $page }})" wire:loading.attr="disabled" wire:target="goToPage">
-                                            <span wire:loading.remove wire:target="goToPage">{{ $page }}</span>
-                                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="goToPage" aria-hidden="true"></i>
+                                            wire:click="goToPage({{ $page }})" wire:loading.attr="disabled"
+                                            wire:target="goToPage">
+                                            <span wire:loading.remove
+                                                wire:target="goToPage">{{ $page }}</span>
+                                            <i class="ri-loader-4-line button-loading-icon" wire:loading
+                                                wire:target="goToPage" aria-hidden="true"></i>
                                         </button>
                                     @endif
                                 @endforeach
                             </div>
                             <button type="button" class="pagination-btn" wire:click="nextPage"
-                                {{ $currentPage === $totalPages ? 'disabled' : '' }} wire:loading.attr="disabled" wire:target="nextPage">
+                                {{ $currentPage === $totalPages ? 'disabled' : '' }} wire:loading.attr="disabled"
+                                wire:target="nextPage">
                                 <span>Siguiente</span>
                                 <i class="ri-arrow-right-s-line" wire:loading.remove wire:target="nextPage"></i>
-                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="nextPage" aria-hidden="true"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="nextPage"
+                                    aria-hidden="true"></i>
                             </button>
                         </nav>
                     @endif

@@ -99,6 +99,7 @@
 .products-sidebar {
     position: sticky;
     top: calc(var(--site-nav-height) + 1rem);
+    height: calc(100dvh - var(--site-nav-height) - 4rem);
     align-self: start;
 }
 

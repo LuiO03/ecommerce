@@ -9,6 +9,7 @@ import './site-modules/quantity-counter';
 import './site-modules/auth-wishlist-modal';
 import './site-modules/wishlist-page';
 import './site-modules/profile-addresses';
+import './site-modules/price-filter-manager';
 import './modules/custom-select';
 
 import { initImageUpload } from './utils/image-upload-handler.js';
@@ -89,5 +90,20 @@ document.addEventListener('livewire:init', () => {
 
 		window.showToast(options);
 	});
+});
+
+// Ajuste para evitar solapamiento cuando el header es fixed
+document.addEventListener('DOMContentLoaded', () => {
+	try {
+		const header = document.querySelector('.site-section-nav');
+		if (header) {
+			const style = getComputedStyle(header);
+			if (style.position === 'fixed') {
+				document.querySelectorAll('.site-container').forEach(el => el.classList.add('has-fixed-header'));
+			}
+		}
+	} catch (e) {
+		// noop
+	}
 });
 

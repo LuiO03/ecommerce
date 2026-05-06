@@ -58,7 +58,7 @@
     overflow: hidden;
     touch-action: pan-y;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
 }
 
 .product-gallery-main.is-dragging {

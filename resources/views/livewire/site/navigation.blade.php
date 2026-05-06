@@ -127,8 +127,26 @@
             <section class="site-sidebar-page active" data-sidebar-page="root" aria-hidden="false">
                 <!-- Contenido del sidebar -->
                 <div class="site-sidebar-content">
+
+
+                    <!-- Familias → Categorías (navegación por páginas) -->
+                    <nav class="site-nav-menu" aria-label="Categorías">
+                        <div class="site-nav-section-title">Categorías</div>
+                        @foreach ($families as $family)
+                            <button type="button" class="site-sidebar-page-link"
+                                data-sidebar-nav-to="family-{{ $family->id }}"
+                                aria-label="Ver categorías de {{ $family->name }}">
+                                <span class="site-sidebar-page-link-leading">
+                                    <span class="site-sidebar-page-link-text">{{ $family->name }}</span>
+                                </span>
+                                <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+                            </button>
+                        @endforeach
+                    </nav>
+                    <hr class="w-full my-0 border-default">
                     <!-- Navegación principal -->
                     <nav class="site-nav-menu" aria-label="Navegación principal">
+                        <div class="site-nav-section-title">Navegación</div>
                         <a href="{{ route('about.index') }}" class="site-nav-menu-item" data-sidebar-close>
                             <i class="ri-information-line"></i>
                             <span>Nosotros</span>
@@ -142,26 +160,7 @@
                             <span>Contacto</span>
                         </a>
                     </nav>
-
                     <hr class="w-full my-0 border-default">
-
-                    <!-- Familias → Categorías (navegación por páginas) -->
-                    <nav class="site-nav-menu" aria-label="Categorías">
-                        <div class="site-nav-section-title">Categorías</div>
-                        @foreach ($families as $family)
-                            <button type="button" class="site-sidebar-page-link" data-sidebar-nav-to="family-{{ $family->id }}"
-                                aria-label="Ver categorías de {{ $family->name }}">
-                                <span class="site-sidebar-page-link-leading">
-                                    <i class="ri-shopping-basket-2-line" aria-hidden="true"></i>
-                                    <span class="site-sidebar-page-link-text">{{ $family->name }}</span>
-                                </span>
-                                <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
-                            </button>
-                        @endforeach
-                    </nav>
-
-                    <hr class="w-full my-0 border-default">
-
                     <nav class="site-nav-menu" aria-label="Información">
                         <div class="site-nav-section-title">Información</div>
                         <a href="{{ route('site.legal.terms') }}" class="site-nav-menu-item" data-sidebar-close>
@@ -186,37 +185,43 @@
 
             <!-- Páginas por familia -->
             @foreach ($families as $family)
-                <section class="site-sidebar-page" data-sidebar-page="family-{{ $family->id }}" aria-hidden="true">
+                <section class="site-sidebar-page" data-sidebar-page="family-{{ $family->id }}"
+                    aria-hidden="true">
                     <div class="site-sidebar-page-nav" aria-label="Navegación de categorías">
                         <button type="button" class="site-sidebar-nav-btn" data-sidebar-back aria-label="Regresar">
                             <i class="ri-arrow-left-s-line"></i>
                             <span>Regresar</span>
                         </button>
 
-                        <div class="site-sidebar-page-title" title="{{ $family->name }}">{{ $family->name }}</div>
-
-                        <div class="site-sidebar-page-actions">
-                            <a href="{{ route('families.show', $family) }}" class="site-btn site-btn-primary site-sidebar-cta" data-sidebar-close>
-                                <span class="boton-form-text">Ver todo</span>
-                            </a>
-                            <button type="button" class="site-sidebar-nav-btn" data-sidebar-home aria-label="Menú principal">
-                                <i class="ri-home-4-line"></i>
-                                <span>Menú</span>
-                            </button>
-                        </div>
+                        <button type="button" class="site-sidebar-nav-btn" data-sidebar-home
+                            aria-label="Menú principal">
+                            <i class="ri-home-4-line"></i>
+                            <span>Menú</span>
+                        </button>
                     </div>
-
+                    <hr class="w-full my-0 border-default">
+                    <div class="site-sidebar-page-nav">
+                        <div class="site-sidebar-page-title" title="{{ $family->name }}">
+                            {{ $family->name }}
+                        </div>
+                        <a href="{{ route('families.show', $family) }}"
+                            class="site-btn site-btn-primary site-sidebar-cta" data-sidebar-close>
+                            <span class="boton-form-text">Ver todo</span>
+                        </a>
+                    </div>
                     <div class="site-sidebar-content">
                         <nav class="site-nav-menu" aria-label="Categorías de {{ $family->name }}">
                             @forelse ($family->categories as $category)
                                 @if ($category->children->isNotEmpty())
-                                    <button type="button" class="site-sidebar-page-link" data-sidebar-nav-to="category-{{ $category->id }}"
+                                    <button type="button" class="site-sidebar-page-link"
+                                        data-sidebar-nav-to="category-{{ $category->id }}"
                                         aria-label="Ver subcategorías de {{ $category->name }}">
                                         <span class="site-sidebar-page-link-text">{{ $category->name }}</span>
                                         <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
                                     </button>
                                 @else
-                                    <a href="{{ route('categories.show', $category) }}" class="site-sidebar-leaf-link" data-sidebar-close>
+                                    <a href="{{ route('categories.show', $category) }}"
+                                        class="site-sidebar-leaf-link" data-sidebar-close>
                                         <span class="site-sidebar-page-link-text">{{ $category->name }}</span>
                                     </a>
                                 @endif

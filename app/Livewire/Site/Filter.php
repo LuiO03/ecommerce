@@ -54,6 +54,14 @@ class Filter extends Component
     public $selectedFeatures = [];
 
     /**
+     * Filtro de precio manual
+     * Se aplica solo al pulsar "Aplicar filtros"
+     */
+    public $priceMin = '';
+    public $priceMax = '';
+    public $selectedPriceRange = '';
+
+    /**
      * Filtros de marcas
      * ⚠️ NO tiene watcher automático - solo se aplica al hacer clic en "Aplicar filtros"
      * Usa wire:model.defer en el blade para sincronizarse manualmente
@@ -100,13 +108,14 @@ class Filter extends Component
 
     public function applyFilters()
     {
+        $this->normalizePriceFilterState();
         $this->currentPage = 1;
         $this->loadProducts();
     }
 
     public function clearFilters()
     {
-        $this->reset(['selectedFeatures', 'selectedBrands']);
+        $this->reset(['selectedFeatures', 'selectedBrands', 'priceMin', 'priceMax', 'selectedPriceRange']);
         $this->currentPage = 1;
         $this->loadProducts();
     }
@@ -246,6 +255,8 @@ class Filter extends Component
             $query->whereIn('products.brand_id', $this->selectedBrands);
         }
 
+        $this->applyPriceFilterToQuery($query);
+
         if ($this->brand_id) {
             $query->where('products.brand_id', $this->brand_id);
         }
@@ -329,6 +340,8 @@ class Filter extends Component
                     ->whereHas('category', function ($query) use ($categoryIds) {
                         $this->applyCategoryFilter($query, $categoryIds);
                     });
+
+                $this->applyPriceFilterToQuery($query);
             });
     }
 
@@ -381,6 +394,8 @@ class Filter extends Component
             if ($this->brand_id) {
                 $query->where('products.brand_id', $this->brand_id);
             }
+
+            $this->applyPriceFilterToQuery($query);
 
             if (!empty($otherFilters)) {
                 $matchingVariantIds = $this->buildVariantMatchSubquery($otherFilters)
@@ -513,6 +528,82 @@ class Filter extends Component
             $q->whereHas('category', fn($c) =>
                 $c->where('family_id', $this->family_id)
             );
+        }
+
+        $this->applyPriceFilterToQuery($q);
+    }
+
+    /**
+     * Aplicar filtro de precio según rango manual o preset.
+     */
+    protected function applyPriceFilterToQuery($query): void
+    {
+        [$minPrice, $maxPrice] = $this->resolvePriceRange();
+        $effectivePriceExpression = $this->getEffectivePriceExpression();
+
+        if ($minPrice !== null) {
+            $query->whereRaw("{$effectivePriceExpression} >= ?", [$minPrice]);
+        }
+
+        if ($maxPrice !== null) {
+            $query->whereRaw("{$effectivePriceExpression} <= ?", [$maxPrice]);
+        }
+    }
+
+    /**
+     * Expresión SQL del precio que realmente ve el cliente.
+     * Si el producto tiene descuento, aplica el porcentaje al precio base.
+     */
+    protected function getEffectivePriceExpression(): string
+    {
+        return 'CASE
+            WHEN COALESCE(products.discount, 0) > 0 THEN GREATEST(products.price * (1 - (COALESCE(products.discount, 0) / 100)), 0)
+            ELSE products.price
+        END';
+    }
+
+    /**
+     * Resolver el rango de precio activo.
+     */
+    protected function resolvePriceRange(): array
+    {
+        $presets = [
+            '50-100' => [50, 100],
+            '100-200' => [100, 200],
+            '200-500' => [200, 500],
+            '500-1000' => [500, 1000],
+            '1000+' => [1000, null],
+        ];
+
+        if (!empty($this->selectedPriceRange) && isset($presets[$this->selectedPriceRange])) {
+            return $presets[$this->selectedPriceRange];
+        }
+
+        $minPrice = is_numeric($this->priceMin) ? (float) $this->priceMin : null;
+        $maxPrice = is_numeric($this->priceMax) ? (float) $this->priceMax : null;
+
+        if ($minPrice !== null && $maxPrice !== null && $minPrice > $maxPrice) {
+            [$minPrice, $maxPrice] = [$maxPrice, $minPrice];
+        }
+
+        return [$minPrice, $maxPrice];
+    }
+
+    /**
+     * Mantener una sola fuente de verdad para el filtro de precio.
+     * - Si hay preset, limpia el rango manual.
+     * - Si hay rango manual, desmarca el preset.
+     */
+    protected function normalizePriceFilterState(): void
+    {
+        if (!empty($this->selectedPriceRange)) {
+            $this->priceMin = '';
+            $this->priceMax = '';
+            return;
+        }
+
+        if ($this->priceMin !== '' || $this->priceMax !== '') {
+            $this->selectedPriceRange = '';
         }
     }
 

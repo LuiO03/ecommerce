@@ -255,7 +255,7 @@
     /* Títulos grandes */
     --font-size-h1: clamp(1.5rem, 2.5vw, 2rem);
     /* Títulos secundarios */
-    --font-size-h2: clamp(1.25rem, 2vw, 1.625rem);
+    --font-size-h2: clamp(1.25rem, 0.9rem + 0.8vw, 1.5rem);
     /* Subtítulos / paneles */
     --font-size-h3: clamp(1.125rem, 1.7vw, 1.28rem);
     --font-size-h4: clamp(1rem, 1.5vw, 1.125rem);
