@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\AccessLogController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use Illuminate\Support\Facades\Route;
 
 // COMPANY SETTINGS
@@ -316,4 +317,14 @@ Route::controller(PermissionController::class)->group(function () {
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/notifications/{notification}/redirect', 'redirect')->name('admin.notifications.redirect');
     Route::post('/notifications/mark-all-as-read', 'markAllAsRead')->name('admin.notifications.mark-all-as-read');
+});
+
+// CONTACT MESSAGES
+Route::controller(ContactMessageController::class)->group(function () {
+    Route::get('/contact-messages', 'index')->name('admin.contact-messages.index');
+    Route::get('/contact-messages/{contactMessage}/show', 'show')->name('admin.contact-messages.show');
+    Route::patch('/contact-messages/{contactMessage}/response', 'updateResponse')->name('admin.contact-messages.update-response');
+    Route::patch('/contact-messages/{contactMessage}/status', 'updateStatus')->name('admin.contact-messages.update-status');
+    Route::delete('/contact-messages/{contactMessage}', 'destroy')->name('admin.contact-messages.destroy');
+    Route::delete('/contact-messages', 'destroyMultiple')->name('admin.contact-messages.destroy-multiple');
 });

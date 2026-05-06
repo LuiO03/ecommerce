@@ -69,7 +69,8 @@
                     <p class="legal-form__subtitle">Completa los datos solicitados para registrar tu reclamo o queja. Te
                         contactaremos a través de los datos que nos proporciones.</p>
 
-                    <form class="legal-form__grid" action="#" method="POST">
+                    <form id="claims-form" class="legal-form__grid" action="#" method="POST" autocomplete="off">
+                        @csrf
                         <div class="form-row-fit">
                             <!-- === Nombre === -->
                             <div class="input-group">
@@ -145,7 +146,7 @@
                         </div>
 
                         <div class="form-footer-static">
-                            <button class="boton-form boton-dark" type="submit">
+                            <button class="boton-form boton-dark" type="submit" data-submit-loader>
                                 <span class="boton-form-icon">
                                     <i class="ri-send-plane-fill"></i>
                                 </span>
@@ -159,4 +160,21 @@
             </article>
         </div>
     </section>
+
+    @push('js')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.initFormValidator) {
+                    window.initFormValidator('#claims-form', {
+                        validateOnBlur: true,
+                        scrollToFirstError: true,
+                    });
+                }
+
+                if (window.initSubmitLoader) {
+                    window.initSubmitLoader('#claims-form [data-submit-loader]');
+                }
+            });
+        </script>
+    @endpush
 </x-app-layout>

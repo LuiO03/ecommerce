@@ -8,6 +8,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
@@ -44,6 +45,7 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             PostSeeder::class,
             CompanySettingSeeder::class,
+            ContactMessageSeeder::class,
         ]);
 
         Product::factory(100)->create();

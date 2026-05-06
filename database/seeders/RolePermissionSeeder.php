@@ -151,6 +151,14 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'conductores.edit', 'description' => 'Puede editar conductores existentes'],
                 ['name' => 'conductores.delete', 'description' => 'Puede eliminar conductores del sistema'],
             ],
+
+            /// --- Contact Messages ---
+            'contact-messages' => [
+                ['name' => 'contact-messages.index', 'description' => 'Puede ver la lista de mensajes de contacto'],
+                ['name' => 'contact-messages.view', 'description' => 'Puede ver los detalles de un mensaje de contacto'],
+                ['name' => 'contact-messages.reply', 'description' => 'Puede responder a un mensaje de contacto'],
+                ['name' => 'contact-messages.delete', 'description' => 'Puede eliminar mensajes de contacto del sistema'],
+            ],
         ];
 
         // === CREAR PERMISOS ===

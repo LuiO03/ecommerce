@@ -16,7 +16,7 @@ use App\Http\Requests\Admin\UpdateCompanyLegalRequest;
 use App\Http\Requests\Admin\UpdateCompanyGeneralRequest;
 use App\Http\Requests\Admin\UpdateCompanySocialRequest;
 use App\Http\Requests\Admin\UpdateCompanyShippingRequest;
-use \App\Http\Requests\Admin\UpdateCompanyMainRequest;
+use App\Http\Requests\Admin\UpdateCompanyMainRequest;
 
 class CompanySettingController extends Controller
 {

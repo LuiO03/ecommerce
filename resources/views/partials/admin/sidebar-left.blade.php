@@ -165,6 +165,18 @@
                     </a>
                 </li>
             @endcan
+
+            <!-- Contact Messages -->
+            @can('contact-messages.index')
+                <li>
+                    <a href="{{ request()->routeIs('admin.contact-messages.*') ? '#' : route('admin.contact-messages.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}"
+                        data-tooltip="Mensajes de Contacto">
+                        <i class="ri-mail-line sidebar-icon"></i>
+                        <span>Mensajes de Contacto</span>
+                    </a>
+                </li>
+            @endcan
             <!-- Submenú Gestion de Acceso -->
             @canany(['usuarios.index', 'clientes.index', 'roles.index', 'accesos.index', 'auditorias.index'])
                 <li class="submenu-container">
