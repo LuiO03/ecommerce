@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Models\User;
+use App\Notifications\AdminDatabaseNotification;
 
 class ContactController extends Controller
 {
@@ -96,12 +98,56 @@ class ContactController extends Controller
             'submitted_at' => now(),
         ]);
 
+        $this->notifyAdminsAboutNewContactMessage(ContactMessage::query()->where('idempotency_key', $idempotencyKey)->first());
+
         $this->hitRateLimit($ip, Str::lower((string) $request->string('email')));
         $this->registerLastSubmission($ip, Str::lower((string) $request->string('email')));
 
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    private function notifyAdminsAboutNewContactMessage(ContactMessage $message): void
+    {
+        $admins = User::query()
+            ->role(['Administrador', 'Superadministrador'])
+            ->where('status', true)
+            ->get();
+
+        $topicLabels = [
+            'order'   => 'Pedido',
+            'product' => 'Producto',
+            'account' => 'Cuenta',
+            'billing' => 'Facturación',
+            'other'   => 'Otro',
+        ];
+
+        $topicLabel = $topicLabels[$message->topic]
+            ?? ucfirst($message->topic);
+
+        $bodyParts = [
+            "Remitente: {$message->name}",
+            "Correo: {$message->email}",
+            "Tema: {$topicLabel}",
+        ];
+
+        if (!empty($message->order_number)) {
+            $bodyParts[] = "Pedido: {$message->order_number}";
+        }
+
+        foreach ($admins as $admin) {
+
+            $admin->notify(
+                new AdminDatabaseNotification(
+                    title: 'Nuevo mensaje de contacto recibido',
+                    body: implode(' | ', $bodyParts),
+                    url: route('admin.contact-messages.index'),
+                    icon: 'ri-mail-unread-line',
+                    level: 'info',
+                )
+            );
+        }
     }
 
     private function flattenErrors(array $errors): array

@@ -1,6 +1,6 @@
 // Manejo de modal y formulario de direcciones en perfil de usuario
 
-import { initFormValidator } from '../utils/form-validator';
+import { initFormValidator } from '../../utils/form-validator';
 
 // Evitar registrar listeners y validador múltiples veces
 let profileAddressValidator = null;

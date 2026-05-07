@@ -92,27 +92,7 @@ class Audit extends Model
         }
 
         if ($event === 'updated') {
-            $allChanged = array_keys((array) $this->new_values);
-            $ignoredForDescription = [
-                'created_at',
-                'updated_at',
-                'deleted_at',
-                'email_verified_at',
-                'last_login',
-                'last_login_at',
-                'last_password_update',
-                'failed_attempts',
-                'blocked_until',
-                'remember_token',
-                'slug',
-            ];
-
-            $changed = array_values(array_diff($allChanged, $ignoredForDescription));
-            if (empty($changed)) {
-                $changed = $allChanged;
-            }
-
-            $changedLabels = $this->mapFieldLabels($changed);
+            $changedLabels = $this->mapFieldLabels($this->getChangedFieldsForDescription());
             $changedStr = $changedLabels ? implode(', ', $changedLabels) : 'detalles';
 
             if ($this->auditable_type === User::class) {
@@ -213,27 +193,7 @@ class Audit extends Model
         }
 
         if ($event === 'profile_updated') {
-            $allChanged = array_keys((array) $this->new_values);
-            $ignoredForDescription = [
-                'created_at',
-                'updated_at',
-                'deleted_at',
-                'email_verified_at',
-                'last_login',
-                'last_login_at',
-                'last_password_update',
-                'failed_attempts',
-                'blocked_until',
-                'remember_token',
-                'slug',
-            ];
-
-            $changed = array_values(array_diff($allChanged, $ignoredForDescription));
-            if (empty($changed)) {
-                $changed = $allChanged;
-            }
-
-            $changedLabels = $this->mapFieldLabels($changed);
+            $changedLabels = $this->mapFieldLabels($this->getChangedFieldsForDescription());
             $changedStr = $changedLabels ? implode(', ', $changedLabels) : 'detalles';
 
             $isSelfUpdate = $this->auditable_type === User::class
@@ -253,6 +213,15 @@ class Audit extends Model
 
     protected function buildCompanySettingsDescription(string $section): string
     {
+        $changedFields = $this->mapFieldLabels($this->getChangedFieldsForDescription());
+        $changedFields = array_values(array_unique($changedFields));
+        $changedStr = $changedFields ? implode(', ', $changedFields) : 'detalles';
+
+        return "Se actualizó {$section} de la configuración de la empresa (cambios: {$changedStr})";
+    }
+
+    protected function getChangedFieldsForDescription(): array
+    {
         $old = (array) $this->old_values;
         $new = (array) $this->new_values;
 
@@ -271,7 +240,6 @@ class Audit extends Model
         ];
 
         $keys = array_unique(array_merge(array_keys($old), array_keys($new)));
-
         $changedFields = [];
 
         foreach ($keys as $field) {
@@ -282,28 +250,27 @@ class Audit extends Model
             $oldVal = $old[$field] ?? null;
             $newVal = $new[$field] ?? null;
 
-            // Comparar valores; para arrays/objetos usamos JSON para detectar cambios profundos
-            if (is_array($oldVal) || is_array($newVal) || is_object($oldVal) || is_object($newVal)) {
-                if (json_encode($oldVal) === json_encode($newVal)) {
-                    continue;
-                }
-            } else {
-                if ($oldVal === $newVal) {
-                    continue;
-                }
+            if ($this->valuesAreEquivalent($oldVal, $newVal)) {
+                continue;
             }
 
-            $label = $this->mapFieldLabel($field);
-
-            if ($label !== null) {
-                $changedFields[] = $label;
-            }
+            $changedFields[] = $field;
         }
 
-        $changedFields = array_values(array_unique($changedFields));
-        $changedStr = $changedFields ? implode(', ', $changedFields) : 'detalles';
+        return array_values(array_unique($changedFields));
+    }
 
-        return "Se actualizó {$section} de la configuración de la empresa (cambios: {$changedStr})";
+    protected function valuesAreEquivalent(mixed $oldVal, mixed $newVal): bool
+    {
+        if (is_array($oldVal) || is_array($newVal) || is_object($oldVal) || is_object($newVal)) {
+            return json_encode($oldVal) === json_encode($newVal);
+        }
+
+        if ($oldVal === null || $newVal === null) {
+            return $oldVal === $newVal;
+        }
+
+        return $oldVal == $newVal;
     }
 
     protected function mapFieldLabels(array $fields): array

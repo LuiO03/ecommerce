@@ -29,4 +29,19 @@ class Role extends SpatieRole
             'Cliente'
         ]);
     }
+
+    public function canBeEditedBy(User $user): bool
+    {
+        if (!$user->can('roles.edit')) {
+            return false;
+        }
+
+        // Superadmin puede editar todo
+        if ($user->hasRole('Superadministrador')) {
+            return true;
+        }
+
+        // Usuarios normales NO pueden editar roles protegidos
+        return !$this->isProtected();
+    }
 }

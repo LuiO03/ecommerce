@@ -1,28 +1,35 @@
 // site.js - Entry point para el sitio público
 import './bootstrap';
-import './site-modules/sidebar-manager';
-import './site-modules/user-dropdown';
-import './site-modules/search-autocomplete';
-import './site-modules/search-modal';
-import './site-modules/product-detail';
-import './site-modules/quantity-counter';
-import './site-modules/auth-wishlist-modal';
-import './site-modules/wishlist-page';
-import './site-modules/profile-addresses';
-import './site-modules/price-filter-manager';
-import './site-modules/contact-form';
-import './modules/custom-select';
+import './site/modules/sidebar-manager.js';
+import './site/modules/user-dropdown.js';
+import './site/modules/search-autocomplete.js';
+import './site/modules/search-modal.js';
+import './site/modules/product-detail.js';
+import './site/modules/quantity-counter.js';
+import './site/modules/auth-wishlist-modal.js';
+import './site/modules/wishlist-page.js';
+import './site/modules/profile-addresses.js';
+import './site/modules/price-filter-manager.js';
+import './site/modules/contact-form.js';
+import './utils/custom-select';
 
 import { initImageUpload } from './utils/image-upload-handler.js';
 import { initFormValidator } from './utils/form-validator.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initTextareaAutosize } from './utils/textarea-autosize.js';
 
+// Swiper Slider import
+import { initCategoriesSlider } from './site/components/categories-slider';
+
 // Exponer helpers de formularios para vistas públicas (login, etc.)
 window.initImageUpload = initImageUpload;
 window.initFormValidator = initFormValidator;
 window.initSubmitLoader = initSubmitLoader;
 window.initTextareaAutosize = initTextareaAutosize;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initCategoriesSlider();
+});
 
 // Swiper Slider
 import Swiper from 'swiper';
@@ -38,6 +45,8 @@ window.SwiperModules = {
     Autoplay,
     Thumbs,
 };
+
+
 
 // Listener global para toasts disparados desde Livewire
 document.addEventListener('livewire:init', () => {
@@ -95,18 +104,5 @@ document.addEventListener('livewire:init', () => {
 	});
 });
 
-// Ajuste para evitar solapamiento cuando el header es fixed
-document.addEventListener('DOMContentLoaded', () => {
-	try {
-		const header = document.querySelector('.site-section-nav');
-		if (header) {
-			const style = getComputedStyle(header);
-			if (style.position === 'fixed') {
-				document.querySelectorAll('.site-container').forEach(el => el.classList.add('has-fixed-header'));
-			}
-		}
-	} catch (e) {
-		// noop
-	}
-});
+
 

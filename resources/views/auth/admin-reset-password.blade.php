@@ -1,5 +1,9 @@
 <x-app-layout>
     @section('title', 'Restablecer contraseña')
+    @php
+        $token = $request->route('token');
+        $email = old('email', $request->email);
+    @endphp
     <div class="auth-wrapper">
         <div class="auth-logo">
             @include('partials.admin.company-brand')
@@ -8,7 +12,8 @@
             <div class="auth-header">
                 <h2 class="auth-title">Restablecer contraseña</h2>
                 <p class="auth-subtitle">
-                    Crea una nueva contraseña para tu cuenta.
+                    Crea una nueva contraseña para tu cuenta <strong>{{ $email }}</strong>. Asegúrate de que sea segura y fácil
+                    de recordar.
                 </p>
             </div>
 
@@ -28,27 +33,14 @@
                     </div>
                 @endsession
 
-                @php
-                    $token = $request->route('token');
-                    $email = old('email', $request->email);
-                @endphp
+
 
                 <form method="POST" action="{{ route('password.update') }}" id="resetPasswordForm">
                     @csrf
 
                     <input type="hidden" name="token" value="{{ $token }}">
 
-                    <div class="input-group">
-                        <label for="email" class="label-form">
-                            Correo electrónico <i class="ri-asterisk text-accent"></i>
-                        </label>
-                        <div class="input-icon-container">
-                            <i class="ri-mail-line input-icon"></i>
-                            <input type="email" id="email" name="email" class="input-form"
-                                   placeholder="Ingresa tu correo electrónico" value="{{ $email }}"
-                                   required autocomplete="off" data-validate="required|email">
-                        </div>
-                    </div>
+                    <input type="hidden" name="email" value="{{ $email }}">
 
                     <div class="input-group">
                         <label for="password" class="label-form">
@@ -57,9 +49,10 @@
                         <div class="input-icon-container">
                             <i class="ri-lock-password-line input-icon"></i>
                             <input type="password" id="password" name="password" class="input-form password-input"
-                                   placeholder="Ingresa tu nueva contraseña" required autocomplete="off"
-                                   data-validate="required|min:6|password">
-                            <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                                placeholder="Ingresa tu nueva contraseña" required autocomplete="off"
+                                data-validate="required|min:6|password">
+                            <button type="button" class="toggle-password" tabindex="-1"
+                                aria-label="Mostrar contraseña">
                                 <i class="ri-eye-line"></i>
                             </button>
                         </div>
@@ -72,9 +65,10 @@
                         <div class="input-icon-container">
                             <i class="ri-lock-line input-icon"></i>
                             <input type="password" id="password_confirmation" name="password_confirmation"
-                                   class="input-form password-input" placeholder="Repite tu nueva contraseña" required
-                                   autocomplete="off" data-validate="required|confirmed:password">
-                            <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                                class="input-form password-input" placeholder="Repite tu nueva contraseña" required
+                                autocomplete="off" data-validate="required|confirmed:password">
+                            <button type="button" class="toggle-password" tabindex="-1"
+                                aria-label="Mostrar contraseña">
                                 <i class="ri-eye-line"></i>
                             </button>
                         </div>

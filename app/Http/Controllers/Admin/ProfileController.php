@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -93,165 +94,286 @@ class ProfileController extends Controller
     // ======================
     //      ACTUALIZAR PERFIL
     // ======================
+
     public function update(Request $request)
     {
-        $user = User::query()->findOrFail(Auth::id());
+        $user = $request->user();
+        $authId = Auth::id();
 
-        // Si solo se envía imagen (desde la modal)
-        if ($request->has('only_image')) {
-            $request->validate([
+        /*
+        |--------------------------------------------------------------------------
+        | SOLO IMAGEN
+        |--------------------------------------------------------------------------
+        */
+        if ($request->boolean('only_image')) {
+
+            $validated = $request->validate([
                 'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             ]);
-            // Eliminar imagen anterior si existe
-            if ($user->image && Storage::disk('public')->exists($user->image)) {
-                Storage::disk('public')->delete($user->image);
-            }
-            $ext = $request->file('image')->getClientOriginalExtension();
-            $slug = User::generateUniqueSlug($user->name, $user->id);
-            $filename = $slug . '-' . time() . '.' . $ext;
-            $imagePath = 'users/' . $filename;
-            $request->file('image')->storeAs('users', $filename, 'public');
-            $user->update([
-                'image' => $imagePath,
-                'updated_by' => Auth::id(),
-            ]);
+
+            DB::transaction(function () use ($request, $user, $authId, $validated) {
+
+                // Eliminar imagen anterior
+                if ($user->image && Storage::disk('public')->exists($user->image)) {
+                    Storage::disk('public')->delete($user->image);
+                }
+
+                $slug = User::generateUniqueSlug($user->name, $user->id);
+
+                $imagePath = $this->storeProfileImage(
+                    $validated['image'],
+                    $slug
+                );
+
+                $user->update([
+                    'image'      => $imagePath,
+                    'updated_by' => $authId,
+                ]);
+            });
+
             Session::flash('toast', [
-                'type' => 'success',
-                'title' => 'Foto actualizada',
+                'type'    => 'success',
+                'title'   => 'Foto actualizada',
                 'message' => 'La foto de perfil se guardó correctamente.',
             ]);
+
             return redirect()->route('admin.profile.index');
         }
 
-        // Si solo se envía fondo (desde el formulario independiente)
-        if ($request->has('only_background')) {
-            $request->validate([
+        /*
+        |--------------------------------------------------------------------------
+        | SOLO FONDO
+        |--------------------------------------------------------------------------
+        */
+        if ($request->boolean('only_background')) {
+
+            $validated = $request->validate([
                 'background_style' => 'required|string|max:30',
             ]);
+
             $user->update([
-                'background_style' => $request->background_style,
-                'updated_by' => Auth::id(),
+                'background_style' => trim($validated['background_style']),
+                'updated_by'       => $authId,
             ]);
+
             Session::flash('toast', [
-                'type' => 'success',
-                'title' => 'Fondo actualizado',
+                'type'    => 'success',
+                'title'   => 'Fondo actualizado',
                 'message' => 'El fondo de perfil se guardó correctamente.',
             ]);
+
             return redirect()->route('admin.profile.index');
         }
 
-        $request->validate([
-            'name'      => 'required|string|max:255|min:3',
-            'email'     => 'required|email|unique:users,email,' . $user->id,
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDACIÓN GENERAL
+        |--------------------------------------------------------------------------
+        */
+        $validated = $request->validate([
+            'name' => 'required|string|min:3|max:255',
+
             'last_name' => 'nullable|string|max:255',
-            'document_type' => 'nullable|string|in:DNI,RUC,CE,PASAPORTE',
+
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+
+            'document_type' => [
+                'nullable',
+                'string',
+                Rule::in(['DNI', 'RUC', 'CE', 'PASAPORTE']),
+            ],
+
             'document_number' => [
                 'nullable',
                 'string',
                 'max:30',
                 Rule::unique('users', 'document_number')
-                    ->where(fn ($query) => $query->where('document_type', $request->input('document_type')))
+                    ->where(fn($query) => $query->where(
+                        'document_type',
+                        $request->input('document_type')
+                    ))
                     ->ignore($user->id),
             ],
-            'dni'       => 'nullable|string|max:20|unique:users,dni,' . $user->id,
-            'phone'     => 'nullable|string|max:15',
-            'address'   => 'nullable|string|max:255',
-            'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
+            'phone' => [
+                'nullable',
+                'regex:/^[0-9+\-\s()]+$/',
+                'max:20',
+            ],
+
+            'address' => 'nullable|string|max:255',
+
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
             'background_style' => 'nullable|string|max:30',
         ]);
 
-        $name = ucwords(mb_strtolower($request->name));
-        $address = $request->address ? ucfirst(mb_strtolower($request->address)) : null;
+        /*
+        |--------------------------------------------------------------------------
+        | NORMALIZACIÓN
+        |--------------------------------------------------------------------------
+        */
+        $name = ucwords(mb_strtolower(trim($validated['name'])));
+
+        $lastName = !empty($validated['last_name'])
+            ? ucwords(mb_strtolower(trim($validated['last_name'])))
+            : null;
+
+        $email = mb_strtolower(trim($validated['email']));
+
+        $address = !empty($validated['address'])
+            ? ucfirst(mb_strtolower(trim($validated['address'])))
+            : null;
+
+        $phone = !empty($validated['phone'])
+            ? trim($validated['phone'])
+            : null;
+
         $slug = User::generateUniqueSlug($name, $user->id);
+
         $imagePath = $user->image;
 
-        // Guardar valores originales antes de actualizar para la auditoría manual
-        $original = $user->getOriginal();
-
-        // Eliminar imagen
+        /*
+        |--------------------------------------------------------------------------
+        | ELIMINAR IMAGEN
+        |--------------------------------------------------------------------------
+        */
         if ($request->input('remove_image') == '1') {
+
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
+
             $imagePath = null;
         }
-        // Nueva imagen
+
+        /*
+        |--------------------------------------------------------------------------
+        | NUEVA IMAGEN
+        |--------------------------------------------------------------------------
+        */
         elseif ($request->hasFile('image')) {
+
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
-            $ext = $request->file('image')->getClientOriginalExtension();
-            $filename = $slug . '-' . time() . '.' . $ext;
-            $imagePath = 'users/' . $filename;
-            $request->file('image')->storeAs('users', $filename, 'public');
+
+            $imagePath = $this->storeProfileImage(
+                $request->file('image'),
+                $slug
+            );
         }
 
-        // Evitar que el trait Auditable registre un "updated" extra aquí
-        Model::withoutEvents(function () use ($user, $name, $request, $address, $imagePath) {
-            $user->update([
-                'name'        => $name,
-                'last_name'   => $request->last_name,
-                'email'       => $request->email,
-                'address'     => $address,
-                'document_type' => $request->document_type,
-                'document_number' => $request->document_number,
-                'dni'         => $request->dni,
-                'phone'       => $request->phone,
-                'image'       => $imagePath,
-                'background_style' => $request->background_style,
-                'updated_by'  => Auth::id(),
+        /*
+        |--------------------------------------------------------------------------
+        | DATOS NUEVOS
+        |--------------------------------------------------------------------------
+        */
+        $newData = [
+            'name'             => $name,
+            'last_name'        => $lastName,
+            'email'            => $email,
+            'address'          => $address,
+            'document_type'    => $validated['document_type'] ?? null,
+            'document_number'  => $validated['document_number'] ?? null,
+            'phone'            => $phone,
+            'image'            => $imagePath,
+            'background_style' => $validated['background_style'] ?? $user->background_style,
+            'updated_by'       => $authId,
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | AUDITORÍA - ORIGINAL
+        |--------------------------------------------------------------------------
+        */
+        $oldValues = [
+            'name'             => $user->name,
+            'last_name'        => $user->last_name,
+            'email'            => $user->email,
+            'address'          => $user->address,
+            'document_type'    => $user->document_type,
+            'document_number'  => $user->document_number,
+            'phone'            => $user->phone,
+            'image'            => $user->image,
+            'background_style' => $user->background_style,
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | DETECTAR CAMBIOS
+        |--------------------------------------------------------------------------
+        */
+        $hasChanges = collect($newData)
+            ->except('updated_by')
+            ->some(fn($value, $key) => $oldValues[$key] != $value);
+
+        if (!$hasChanges) {
+
+            Session::flash('toast', [
+                'type'    => 'info',
+                'title'   => 'Sin cambios',
+                'message' => 'No se detectaron cambios en el perfil.',
             ]);
-        });
 
-        // Auditoría específica para "Mi perfil"
-        try {
-            $oldValues = [
-                'name'       => $original['name'] ?? null,
-                'last_name'  => $original['last_name'] ?? null,
-                'email'      => $original['email'] ?? null,
-                'address'    => $original['address'] ?? null,
-                'document_type' => $original['document_type'] ?? null,
-                'document_number' => $original['document_number'] ?? null,
-                'dni'        => $original['dni'] ?? null,
-                'phone'      => $original['phone'] ?? null,
-                'image'      => $original['image'] ?? null,
-                'background_style' => $original['background_style'] ?? null,
-            ];
+            return redirect()->route('admin.profile.index');
+        }
 
-            $newValues = [
-                'name'       => $user->name,
-                'last_name'  => $user->last_name,
-                'email'      => $user->email,
-                'address'    => $user->address,
-                'document_type' => $user->document_type,
-                'document_number' => $user->document_number,
-                'dni'        => $user->dni,
-                'phone'      => $user->phone,
-                'image'      => $user->image,
-                'background_style' => $user->background_style,
-            ];
+        /*
+        |--------------------------------------------------------------------------
+        | TRANSACCIÓN
+        |--------------------------------------------------------------------------
+        */
+        DB::transaction(function () use (
+            $user,
+            $newData,
+            $oldValues,
+            $request,
+            $authId
+        ) {
+
+            // Evitar eventos duplicados del trait
+            Model::withoutEvents(function () use ($user, $newData) {
+                $user->update($newData);
+            });
 
             Audit::create([
-                'user_id'        => Auth::id(),
+                'user_id'        => $authId,
                 'event'          => 'profile_updated',
                 'auditable_type' => User::class,
                 'auditable_id'   => $user->id,
                 'old_values'     => $oldValues,
-                'new_values'     => $newValues,
+                'new_values'     => $newData,
                 'ip_address'     => $request->ip(),
                 'user_agent'     => $request->userAgent(),
             ]);
-        } catch (\Throwable $e) {
-            report($e);
-        }
+        });
 
         Session::flash('toast', [
-            'type' => 'success',
-            'title' => 'Perfil actualizado',
-            'message' => "Tu perfil ha sido actualizado correctamente.",
+            'type'    => 'success',
+            'title'   => 'Perfil actualizado',
+            'message' => 'Tu perfil ha sido actualizado correctamente.',
         ]);
 
         return redirect()->route('admin.profile.index');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HELPER: GUARDAR IMAGEN
+    |--------------------------------------------------------------------------
+    */
+    private function storeProfileImage($file, string $slug): string
+    {
+        $filename = $slug . '-' . Str::uuid() . '.' . $file->extension();
+
+        $file->storeAs('users', $filename, 'public');
+
+        return 'users/' . $filename;
     }
 
     public function updatePassword(Request $request)

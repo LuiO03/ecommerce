@@ -26,6 +26,10 @@
     max-width: var(--site-max-width);
 }
 
+.products-slider .swiper-wrapper{
+    display: flex;
+}
+
 .products-slide {
     height: auto;
 }

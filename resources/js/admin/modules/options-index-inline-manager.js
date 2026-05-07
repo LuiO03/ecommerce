@@ -1,6 +1,6 @@
 import { normalizeColorValue } from './options-form-feature-manager.js';
-import FormValidator from '../utils/form-validator.js';
-import { SubmitButtonLoader } from '../utils/submit-button-loader.js';
+import FormValidator from '../../utils/form-validator.js';
+import { SubmitButtonLoader } from '../../utils/submit-button-loader.js';
 
 function getCsrfToken() {
     const meta = document.querySelector('meta[name="csrf-token"]');

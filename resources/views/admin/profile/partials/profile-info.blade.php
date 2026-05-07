@@ -151,87 +151,138 @@
     </div>
 </form>
 
-@push('scripts')
-    <script>
-    function updateProfileTabIcons() {
-        document.querySelectorAll('.profile-tab-btn').forEach(btn => {
-            const icon = btn.querySelector('i[data-icon-line][data-icon-fill]');
-            if (!icon) return;
-
-            const lineClass = icon.getAttribute('data-icon-line');
-            const fillClass = icon.getAttribute('data-icon-fill');
-
-            if (btn.classList.contains('active')) {
-                icon.classList.remove(lineClass);
-                icon.classList.add(fillClass);
-            } else {
-                icon.classList.remove(fillClass);
-                icon.classList.add(lineClass);
-            }
-        });
-    }
-
-    function showTab(tabName) {
-        const tabs = document.querySelectorAll('.profile-tab-content');
-
-        tabs.forEach(tab => {
-            tab.classList.remove('fade-in');
-            tab.classList.add('hidden');
-        });
-
-        const activeTab = document.getElementById('tab-' + tabName);
-        if (!activeTab) return;
-
-        activeTab.classList.remove('hidden');
-
-        // reinicia animación correctamente
-        void activeTab.offsetWidth;
-
-        activeTab.classList.add('fade-in');
-    }
-
-    document.querySelectorAll('.profile-tab-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const tabName = this.dataset.tab;
-
-            showTab(tabName);
-
-            document.querySelectorAll('.profile-tab-btn')
-                .forEach(b => b.classList.remove('active'));
-
-            this.classList.add('active');
-
-            localStorage.setItem('profileActiveTab', tabName);
-
-            updateProfileTabIcons();
+<!-- === FOOTER DE ACCIONES === -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.gallery-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.gallery-option').forEach(b => b.classList.remove(
+                    'selected'));
+                this.classList.add('selected');
+                const bgInput = document.getElementById('background_style');
+                bgInput.value = this.dataset.style;
+                document.querySelectorAll('.gallery-check').forEach(i => i.remove());
+                const check = document.createElement('i');
+                check.className = 'ri-checkbox-circle-fill gallery-check';
+                this.appendChild(check);
+                // Solo activar el botón de fondo
+                if (saveBackgroundBtn) saveBackgroundBtn.disabled = false;
+                if (submitBtn) submitBtn.disabled = true;
+            });
         });
     });
-
-    // Inicialización
-    const savedTab = localStorage.getItem('profileActiveTab');
-
-    let initialTab = savedTab || 'info';
-
-    if (window.location.hash === '#sessions') {
-        initialTab = 'sessions';
-    }
-
-    document.querySelectorAll('.profile-tab-content')
-        .forEach(tab => tab.classList.add('hidden'));
-
-    const initialTabEl = document.getElementById('tab-' + initialTab);
-
-    if (initialTabEl) {
-        initialTabEl.classList.remove('hidden');
-        initialTabEl.classList.add('fade-in');
-    }
-
-    document.querySelectorAll('.profile-tab-btn')
-        .forEach(b => b.classList.remove('active'));
-
-    const activeBtn = document.querySelector('.profile-tab-btn[data-tab="' + initialTab + '"]');
-    if (activeBtn) activeBtn.classList.add('active');
-
-    updateProfileTabIcons();
 </script>
+
+@push('scripts')
+    <script>
+        // ===== MANEJO DE SELECCIÓN DE FONDOS =====
+        document.querySelectorAll('.gallery-option').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const style = this.getAttribute('data-style');
+                const inputField = document.getElementById('background_style');
+
+                // Actualizar el input hidden
+                inputField.value = style;
+
+                // Remover clase 'selected' de todos los botones
+                document.querySelectorAll('.gallery-option').forEach(b => {
+                    b.classList.remove('selected');
+                    b.querySelector('.gallery-check')?.remove();
+                });
+
+                // Agregar clase 'selected' al botón clickeado
+                this.classList.add('selected');
+
+                // Agregar el icono de checkmark
+                const checkIcon = document.createElement('i');
+                checkIcon.className = 'ri-checkbox-circle-fill gallery-check';
+                this.appendChild(checkIcon);
+
+                console.log('Fondo seleccionado:', style);
+            });
+        });
+
+        function updateProfileTabIcons() {
+            document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+                const icon = btn.querySelector('i[data-icon-line][data-icon-fill]');
+                if (!icon) return;
+
+                const lineClass = icon.getAttribute('data-icon-line');
+                const fillClass = icon.getAttribute('data-icon-fill');
+
+                if (btn.classList.contains('active')) {
+                    icon.classList.remove(lineClass);
+                    icon.classList.add(fillClass);
+                } else {
+                    icon.classList.remove(fillClass);
+                    icon.classList.add(lineClass);
+                }
+            });
+        }
+
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.profile-tab-content');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('fade-in');
+                tab.classList.add('hidden');
+            });
+
+            const activeTab = document.getElementById('tab-' + tabName);
+            if (!activeTab) return;
+
+            activeTab.classList.remove('hidden');
+
+            // reinicia animación correctamente
+            void activeTab.offsetWidth;
+
+            activeTab.classList.add('fade-in');
+        }
+
+        document.querySelectorAll('.profile-tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+
+                showTab(tabName);
+
+                document.querySelectorAll('.profile-tab-btn')
+                    .forEach(b => b.classList.remove('active'));
+
+                this.classList.add('active');
+
+                localStorage.setItem('profileActiveTab', tabName);
+
+                updateProfileTabIcons();
+            });
+        });
+
+        // Inicialización
+        const savedTab = localStorage.getItem('profileActiveTab');
+
+        let initialTab = savedTab || 'info';
+
+        if (window.location.hash === '#sessions') {
+            initialTab = 'sessions';
+        }
+
+        document.querySelectorAll('.profile-tab-content')
+            .forEach(tab => tab.classList.add('hidden'));
+
+        const initialTabEl = document.getElementById('tab-' + initialTab);
+
+        if (initialTabEl) {
+            initialTabEl.classList.remove('hidden');
+            initialTabEl.classList.add('fade-in');
+        }
+
+        document.querySelectorAll('.profile-tab-btn')
+            .forEach(b => b.classList.remove('active'));
+
+        const activeBtn = document.querySelector('.profile-tab-btn[data-tab="' + initialTab + '"]');
+        if (activeBtn) activeBtn.classList.add('active');
+
+        updateProfileTabIcons();
+    </script>
 @endpush

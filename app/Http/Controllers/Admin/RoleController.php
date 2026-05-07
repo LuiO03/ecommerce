@@ -208,7 +208,7 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
+        if ($role->isProtected()) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',
@@ -243,7 +243,7 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
+        if ($role->isProtected()) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',
@@ -315,7 +315,7 @@ class RoleController extends Controller
 
     public function permissions(Role $role)
     {
-        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
+        if (!$role->canBeEditedBy(auth()->user())) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',
@@ -356,7 +356,7 @@ class RoleController extends Controller
     // Actualizar los permisos asignados a un rol.
     public function updatePermissions(Request $request, Role $role)
     {
-        if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente'])) {
+        if (!$role->canBeEditedBy(auth()->user())) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',

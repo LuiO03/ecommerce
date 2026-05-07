@@ -11,7 +11,7 @@
                     </div>
 
                     @php
-                        $hasSubcategories = $subcategories && $subcollection->isNotEmpty();
+                        $hasSubcategories = $subcategories && $subcategories->isNotEmpty();
                         $hasBrands = $brands && $brands->isNotEmpty();
                         $hasOptions = $options && $options->isNotEmpty();
 
@@ -26,7 +26,7 @@
                                     <summary class="filter-group-title">
                                         <span class="filters-name">Subcategorías</span>
                                     </summary>
-                                    <div class="filters-subcollection-chips">
+                                    <div class="filters-subcategories-chips">
                                         @foreach ($subcategories as $subcategory)
                                             <a class="filter-chip" href="{{ route('categories.show', $subcategory) }}">
                                                 <span>{{ $subcategory->name }}</span>

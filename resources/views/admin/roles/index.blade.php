@@ -180,7 +180,7 @@
                                         </button>
                                     @endif
                                     {{-- === BOTÓN PERMISOS === --}}
-                                    @if (!$role->isProtected() && auth()->user()->can('roles.edit'))
+                                    @if ($role->canBeEditedBy(auth()->user()))
                                         <a href="{{ route('admin.roles.permissions', $role) }}"
                                             class="boton-sm boton-primary" title="Gestionar permisos">
                                             <i class="ri-key-2-fill"></i>
