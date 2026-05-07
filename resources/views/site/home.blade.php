@@ -54,7 +54,7 @@
     @else
         <section class="no-covers">
             <div class="no-covers-content">
-                <i class="ri-gallery-line"></i>
+                <i class="ri-gallery-fill"></i>
                 <h2>No hay portadas disponibles</h2>
                 <p>Pronto habrá contenido destacado aquí</p>
             </div>
@@ -104,33 +104,7 @@
         </script>
     @endpush
 
-    <!-- Sección de Categorías -->
-    <section class="section-container bg-section">
-        <div class="section-header">
-            <h2 class="section-title">Categorías populares</h2>
-            <p class="section-subtitle">
-                Explora nuestras categorías más populares y encuentra lo que buscas
-            </p>
-        </div>
-        <div class="categories-list">
-            @foreach ($categories as $category)
-                <!-- colocalr imagen css url a la etiqueta "a" y eliminar la etiqueta "img" -->
-                <a href="{{ route('categories.show', $category) }}" class="category-card">
-                    <div class="category-image">
-                        @if ($category->image)
-                            <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}"
-                                alt="{{ $category->name }} imagen"onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="product-image-fallback" style="display: none;">
-                                <i class="ri-image-fill"></i>
-                                <span>Imagen no disponible</span>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="category-name">{{ $category->name }}</div>
-                </a>
-            @endforeach
-        </div>
-    </section>
+    @include('partials.site.category-card')
 
     <!-- Sección de Últimos Productos con Livewire -->
     <livewire:site.product-list :limit="12" title="Últimos Productos"

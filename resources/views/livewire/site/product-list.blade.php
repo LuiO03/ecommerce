@@ -81,7 +81,7 @@
                 <div class="swiper-wrapper">
                     @foreach ($products as $product)
                         <div class="swiper-slide products-slide">
-                            @include('partials.components.product-card', ['product' => $product])
+                            @include('partials.site.product-card', ['product' => $product])
                         </div>
                     @endforeach
                 </div>

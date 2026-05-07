@@ -115,8 +115,8 @@
     @livewireScripts
 
 
-    @include('partials.components.whatsapp-float-btn', ['waMsg' => '¡Hola! Quiero más información.'])
-    @include('partials.components.go-top-float-btn')
+    @include('partials.site.whatsapp-float-btn', ['waMsg' => '¡Hola! Quiero más información.'])
+    @include('partials.site.go-top-float-btn')
 
     @stack('js')
 </body>

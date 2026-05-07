@@ -57,12 +57,73 @@
     padding: 0px;
 }
 
-.categories-list {
+.categories-slider {
     max-width: var(--site-max-width);
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
+    overflow: hidden;
+}
+
+.swiper-slide.categories-slide {
+    height: auto;
+}
+
+/* Paginación */
+.categories-slider .swiper-pagination {
+    position: relative;
+    margin-top: 1rem;
+    overflow: visible;
+}
+
+.categories-slider .swiper-pagination-bullet {
+    width: 12px !important;
+    height: 12px !important;
+    background: var(--color-site-text) !important;
+    opacity: 0.5;
+    border-radius: 6px !important;
+    transition: all 0.3s ease;
+}
+
+.categories-slider .swiper-pagination-bullet-active {
+    background: var(--color-site-text) !important;
+    opacity: 1;
+
+    width: 40px !important;
+}
+
+.categories-slider .swiper-pagination-bullet:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+
+/* Controles de navegación */
+.categories-slider .swiper-button-prev,
+.categories-slider .swiper-button-next {
+    transition: transform 0.3s ease;
+    color: white !important;
+    width: 45px;
+    height: 45px;
+    background-color: rgba(0, 0, 0, 0.521);
+    border-radius: 40px;
+
+}
+
+.categories-slider .swiper-button-prev{
+    padding: 10px 10px 10px 8px !important;
+}
+
+.categories-slider .swiper-button-next{
+    padding: 10px 8px 10px 10px !important;
+}
+
+.categories-slider .swiper-button-prev:after,
+.categories-slider .swiper-button-next:after {
+    content: none;
+}
+
+.categories-slider .swiper-button-prev:hover,
+.categories-slider .swiper-button-next:hover {
+    transform: scale(1.1);
 }
 
 .category-card {
@@ -78,14 +139,13 @@
     border-radius: 250px;
     box-shadow: 0 2px 8px 0 rgba(34,34,59,0.07);
     text-decoration: none;
-    transition: box-shadow 0.2s, transform 0.2s;
+    transition: box-shadow 0.2s;
     position: relative;
     overflow: hidden;
 }
 
 .category-card:hover {
     box-shadow: var(--box-shadow-card-hover);
-    transform: translateY(-2px) scale(1.03);
 }
 
 .category-image {

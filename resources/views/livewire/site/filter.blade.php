@@ -1,4 +1,5 @@
 <div class="site-container">
+
     <div class="products-layout {{ !empty($search) ? 'products-layout--full' : '' }}">
         @if (empty($search))
             <aside class="products-sidebar">
@@ -10,7 +11,7 @@
                     </div>
 
                     @php
-                        $hasSubcategories = $subcategories && $subcategories->isNotEmpty();
+                        $hasSubcategories = $subcategories && $subcollection->isNotEmpty();
                         $hasBrands = $brands && $brands->isNotEmpty();
                         $hasOptions = $options && $options->isNotEmpty();
 
@@ -25,7 +26,7 @@
                                     <summary class="filter-group-title">
                                         <span class="filters-name">Subcategorías</span>
                                     </summary>
-                                    <div class="filters-subcategories-chips">
+                                    <div class="filters-subcollection-chips">
                                         @foreach ($subcategories as $subcategory)
                                             <a class="filter-chip" href="{{ route('categories.show', $subcategory) }}">
                                                 <span>{{ $subcategory->name }}</span>
@@ -145,32 +146,38 @@
                                     aria-label="Rangos predefinidos de precio">
                                     <label
                                         class="filters-price-preset {{ $selectedPriceRange === '' ? 'is-active' : '' }}">
-                                        <input type="radio" wire:model.defer="selectedPriceRange" value="" data-price-preset>
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value=""
+                                            data-price-preset>
                                         <span>Todos</span>
                                     </label>
                                     <label
                                         class="filters-price-preset {{ $selectedPriceRange === '50-100' ? 'is-active' : '' }}">
-                                        <input type="radio" wire:model.defer="selectedPriceRange" value="50-100" data-price-preset>
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="50-100"
+                                            data-price-preset>
                                         <span>S/. 50 a 100</span>
                                     </label>
                                     <label
                                         class="filters-price-preset {{ $selectedPriceRange === '100-200' ? 'is-active' : '' }}">
-                                        <input type="radio" wire:model.defer="selectedPriceRange" value="100-200" data-price-preset>
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="100-200"
+                                            data-price-preset>
                                         <span>S/. 100 a 200</span>
                                     </label>
                                     <label
                                         class="filters-price-preset {{ $selectedPriceRange === '200-500' ? 'is-active' : '' }}">
-                                        <input type="radio" wire:model.defer="selectedPriceRange" value="200-500" data-price-preset>
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="200-500"
+                                            data-price-preset>
                                         <span>S/. 200 a 500</span>
                                     </label>
                                     <label
                                         class="filters-price-preset {{ $selectedPriceRange === '500-1000' ? 'is-active' : '' }}">
-                                        <input type="radio" wire:model.defer="selectedPriceRange" value="500-1000" data-price-preset>
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="500-1000"
+                                            data-price-preset>
                                         <span>S/. 500 a 1000</span>
                                     </label>
                                     <label
                                         class="filters-price-preset {{ $selectedPriceRange === '1000+' ? 'is-active' : '' }}">
-                                        <input type="radio" wire:model.defer="selectedPriceRange" value="1000+" data-price-preset>
+                                        <input type="radio" wire:model.defer="selectedPriceRange" value="1000+"
+                                            data-price-preset>
                                         <span>S/. 1000 a más</span>
                                     </label>
                                 </div>
@@ -319,7 +326,7 @@
 
                     <div class="products-grid">
                         @foreach ($products as $product)
-                            @include('partials.components.product-card', ['product' => $product])
+                            @include('partials.site.product-card', ['product' => $product])
                         @endforeach
                     </div>
 
