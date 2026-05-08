@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CompanySetting;
 use App\Models\Cover;
+use App\Models\Driver;
 use App\Models\Family;
-use App\Models\Order;
 use App\Models\Option;
+use App\Models\Order;
 use App\Models\Post;
 use App\Models\Product;
+use App\Models\Variant;
 use App\Models\User;
-use App\Models\Driver;
-use App\Models\Brand;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Models\Role;
 
@@ -23,50 +24,180 @@ class AdminController extends Controller
     {
         $user = auth()->user();
 
-        // Últimos pedidos (solo si tiene permiso)
+        /*
+        |--------------------------------------------------------------------------
+        | Últimos pedidos
+        |--------------------------------------------------------------------------
+        */
         $orders = $user->can('ordenes.index')
             ? Cache::remember('dashboard_latest_orders', 60, function () {
                 return Order::with('user')
                     ->latest()
-                    ->take(3)
+                    ->take(5)
                     ->get();
             })
             : collect();
 
-        return view('admin.dashboard', [
-            'user' => $user,
-            'orders' => $orders,
+        /*
+        |--------------------------------------------------------------------------
+        | Métricas rápidas
+        |--------------------------------------------------------------------------
+        */
+        $dashboardStats = [
+            'totalSales' => $this->cacheRemember(
+                'dashboard_total_sales',
+                fn () => Order::whereHas('payments', function ($query) {
+                    $query->where('status', 'paid');
+                })->sum('total')
+            ),
 
-            // Métricas
-            'totalCategories' => $this->countIfCan($user, 'categorias.index', 'count_categories', fn() => Category::count()),
-            'totalFamilies'   => $this->countIfCan($user, 'familias.index', 'count_families', fn() => Family::count()),
-            'totalCovers'     => $this->countIfCan($user, 'portadas.index', 'count_covers', fn() => Cover::count()),
-            'totalProducts'   => $this->countIfCan($user, 'productos.index', 'count_products', fn() => Product::count()),
-            'totalUsers'      => $this->countIfCan($user, 'usuarios.index', 'count_users', fn() => User::count()),
-            'totalClients'    => $this->countIfCan($user, 'clientes.index', 'count_clients', fn() => User::role('Cliente')->count()),
-            'totalRoles'      => $this->countIfCan($user, 'roles.index', 'count_roles', fn() => Role::count()),
-            'totalPosts'      => $this->countIfCan($user, 'posts.index', 'count_posts', fn() => Post::count()),
-            'totalOptions'    => $this->countIfCan($user, 'opciones.index', 'count_options', fn() => Option::count()),
-            'totalDrivers'    => $this->countIfCan($user, 'conductores.index', 'count_drivers', fn() => Driver::count()),
-            'totalBrands'     => $this->countIfCan($user, 'marcas.index', 'count_brands', fn() => Brand::count()),
+            'totalOrdersToday' => $this->cacheRemember(
+                'dashboard_orders_today',
+                fn () => Order::whereDate('created_at', now())->count()
+            ),
 
-            // Configuración empresa
-            'companyName' => Cache::remember('company_name', 3600, function () {
-                return optional(CompanySetting::first())->name ?? 'Mi Empresa';
-            }),
-        ]);
+            'totalPendingOrders' => $this->cacheRemember(
+                'dashboard_pending_orders',
+                fn () => Order::where('status', 'pending')->count()
+            ),
+
+            'totalLowStockProducts' => $this->cacheRemember(
+                'dashboard_low_stock_products',
+                fn() => Variant::where('stock', '<=', 5)
+                    ->where('status', true)
+                    ->count()
+            ),
+
+            'newClientsThisMonth' => $this->cacheRemember(
+                'dashboard_new_clients_month',
+                fn () => User::role('Cliente')
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->count()
+            ),
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Conteos principales
+        |--------------------------------------------------------------------------
+        */
+        $metrics = [
+            'totalCategories' => $this->countIfCan(
+                $user,
+                'categorias.index',
+                'count_categories',
+                fn () => Category::count()
+            ),
+
+            'totalFamilies' => $this->countIfCan(
+                $user,
+                'familias.index',
+                'count_families',
+                fn () => Family::count()
+            ),
+
+            'totalCovers' => $this->countIfCan(
+                $user,
+                'portadas.index',
+                'count_covers',
+                fn () => Cover::count()
+            ),
+
+            'totalProducts' => $this->countIfCan(
+                $user,
+                'productos.index',
+                'count_products',
+                fn () => Product::count()
+            ),
+
+            'totalUsers' => $this->countIfCan(
+                $user,
+                'usuarios.index',
+                'count_users',
+                fn () => User::count()
+            ),
+
+            'totalClients' => $this->countIfCan(
+                $user,
+                'clientes.index',
+                'count_clients',
+                fn () => User::role('Cliente')->count()
+            ),
+
+            'totalRoles' => $this->countIfCan(
+                $user,
+                'roles.index',
+                'count_roles',
+                fn () => Role::count()
+            ),
+
+            'totalPosts' => $this->countIfCan(
+                $user,
+                'posts.index',
+                'count_posts',
+                fn () => Post::count()
+            ),
+
+            'totalOptions' => $this->countIfCan(
+                $user,
+                'opciones.index',
+                'count_options',
+                fn () => Option::count()
+            ),
+
+            'totalDrivers' => $this->countIfCan(
+                $user,
+                'conductores.index',
+                'count_drivers',
+                fn () => Driver::count()
+            ),
+
+            'totalBrands' => $this->countIfCan(
+                $user,
+                'marcas.index',
+                'count_brands',
+                fn () => Brand::count()
+            ),
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Empresa
+        |--------------------------------------------------------------------------
+        */
+        $company = Cache::remember('dashboard_company_info', 3600, function () {
+            return CompanySetting::first();
+        });
+
+        return view('admin.dashboard', array_merge(
+            [
+                'user' => $user,
+                'orders' => $orders,
+                'company' => $company,
+            ],
+            $dashboardStats,
+            $metrics
+        ));
     }
 
     /**
-     * Retorna un conteo solo si el usuario tiene permiso.
-     * Usa cache para optimizar rendimiento.
+     * Retorna conteo solo si el usuario tiene permiso.
      */
-    private function countIfCan($user, $permission, $cacheKey, $callback)
+    private function countIfCan($user, string $permission, string $cacheKey, callable $callback)
     {
-        if (!$user->can($permission)) {
+        if (! $user->can($permission)) {
             return null;
         }
 
         return Cache::remember($cacheKey, 60, $callback);
+    }
+
+    /**
+     * Helper simple para cachear datos.
+     */
+    private function cacheRemember(string $key, callable $callback, int $seconds = 60)
+    {
+        return Cache::remember($key, $seconds, $callback);
     }
 }
