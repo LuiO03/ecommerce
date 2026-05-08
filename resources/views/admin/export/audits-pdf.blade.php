@@ -52,11 +52,21 @@
             border-collapse: collapse;
         }
 
-        .left { text-align: left; }
-        .right { text-align: right; }
-        .center { text-align: center; }
+        .left {
+            text-align: left;
+        }
 
-        .muted { color: #6B7280; }
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .muted {
+            color: #6B7280;
+        }
 
         .title {
             font-size: 18px;
@@ -146,10 +156,21 @@
             font-weight: bold;
         }
 
-        .card-blue { border-top: 2px solid #3B82F6; }
-        .card-green { border-top: 2px solid #10B981; }
-        .card-orange { border-top: 2px solid #F59E0B; }
-        .card-red { border-top: 2px solid #EF4444; }
+        .card-blue {
+            border-top: 2px solid #3B82F6;
+        }
+
+        .card-green {
+            border-top: 2px solid #10B981;
+        }
+
+        .card-orange {
+            border-top: 2px solid #F59E0B;
+        }
+
+        .card-red {
+            border-top: 2px solid #EF4444;
+        }
 
         .data {
             table-layout: fixed;
@@ -175,8 +196,13 @@
             background: #FAFAFA;
         }
 
-        .bold { font-weight: bold; }
-        .small { font-size: 8px; }
+        .bold {
+            font-weight: bold;
+        }
+
+        .small {
+            font-size: 8px;
+        }
 
         .success {
             color: #15803D;
@@ -197,214 +223,213 @@
 
 <body>
 
-@php
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Str;
+    @php
+        use Illuminate\Support\Facades\Auth;
+        use Illuminate\Support\Str;
 
-    $items = collect($audits);
+        $items = collect($audits);
 
-    $totalAudits = $items->count();
-    $usersCount = $items->pluck('user_id')->filter()->unique()->count();
+        $totalAudits = $items->count();
+        $usersCount = $items->pluck('user_id')->filter()->unique()->count();
 
-    $createdCount = $items->where('event', 'created')->count();
-    $updatedCount = $items->where('event', 'updated')->count();
-    $deletedCount = $items->where('event', 'deleted')->count();
+        $createdCount = $items->where('event', 'created')->count();
+        $updatedCount = $items->where('event', 'updated')->count();
+        $deletedCount = $items->where('event', 'deleted')->count();
 
-    $generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
-        $pdfLogoUrl = file_exists($fullPath)
-            ? $fullPath
-            : public_path('images/logos/logo-geckommerce.png');
-    } else {
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-    $companyName = !empty($companySettings?->name)
-        ? $companySettings->name
-        : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-    $exportType = $isSelectedExport
-        ? 'Exportación seleccionada'
-        : 'Exportación total';
-@endphp
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
+    @endphp
 
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="52%">
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-
-                        <td>
-                            @if (!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td width="52%">
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
                             @endif
 
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
 
-            <td width="48%" class="right">
-                <div class="title">Reporte de Auditorías</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $userName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">{{ $companyName }}</td>
-            <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
-            <td width="33%" class="right"><span class="page-number"></span></td>
-        </tr>
-    </table>
-</div>
-
-<div>
-
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente registros de auditoría seleccionados.'
-            : 'Este archivo contiene el historial completo de auditorías registradas.' }}
-    </div>
-
-    <div class="summary">
-        <table class="summary-table">
-            <tr>
-                <td>
-                    <div class="card card-blue">
-                        <div class="card-label">Registros</div>
-                        <div class="card-value">{{ $totalAudits }}</div>
-                    </div>
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
 
-                <td>
-                    <div class="card card-green">
-                        <div class="card-label">Creaciones</div>
-                        <div class="card-value">{{ $createdCount }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-orange">
-                        <div class="card-label">Actualizaciones</div>
-                        <div class="card-value">{{ $updatedCount }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-red">
-                        <div class="card-label">Usuarios únicos</div>
-                        <div class="card-value">{{ $usersCount }}</div>
-                    </div>
+                <td width="48%" class="right">
+                    <div class="title">Reporte de Auditorías</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $userName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <table class="data">
-        <colgroup>
-            <col style="width:5%">
-            <col style="width:18%">
-            <col style="width:12%">
-            <col style="width:18%">
-            <col style="width:10%">
-            <col style="width:10%">
-            <col style="width:12%">
-            <col style="width:15%">
-        </colgroup>
-
-        <thead>
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th class="center">ID</th>
-                <th>Usuario</th>
-                <th>Evento</th>
-                <th>Modelo</th>
-                <th>ID Ref.</th>
-                <th>IP</th>
-                <th>Fecha</th>
-                <th>User Agent</th>
+                <td width="33%" class="left">{{ $companyName }}</td>
+                <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
+                <td width="33%" class="right"><span class="page-number"></span></td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($audits as $audit)
+    <div>
+
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente registros de auditoría seleccionados.'
+                : 'Este archivo contiene el historial completo de auditorías registradas.' }}
+        </div>
+
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="center">{{ $audit->id }}</td>
-
                     <td>
-                        <span class="bold">
-                            {{ $audit->user?->name }} {{ $audit->user?->last_name }}
-                        </span><br>
-
-                        <span class="small muted">
-                            {{ $audit->user?->email ?? 'Sistema' }}
-                        </span>
+                        <div class="card card-blue">
+                            <div class="card-label">Registros</div>
+                            <div class="card-value">{{ $totalAudits }}</div>
+                        </div>
                     </td>
 
                     <td>
-                        @if($audit->event === 'created')
-                            <span class="success">Creado</span>
-                        @elseif($audit->event === 'updated')
-                            <span class="warning">Actualizado</span>
-                        @elseif($audit->event === 'deleted')
-                            <span class="danger">Eliminado</span>
-                        @else
-                            {{ ucfirst(str_replace('_', ' ', $audit->event)) }}
-                        @endif
+                        <div class="card card-green">
+                            <div class="card-label">Creaciones</div>
+                            <div class="card-value">{{ $createdCount }}</div>
+                        </div>
                     </td>
 
                     <td>
-                        {{ class_basename($audit->auditable_type) }}
-                    </td>
-
-                    <td class="center">
-                        {{ $audit->auditable_id ?: '—' }}
-                    </td>
-
-                    <td>
-                        {{ $audit->ip_address ?: '—' }}
+                        <div class="card card-orange">
+                            <div class="card-label">Actualizaciones</div>
+                            <div class="card-value">{{ $updatedCount }}</div>
+                        </div>
                     </td>
 
                     <td>
-                        {{ $audit->created_at?->format('d/m/Y') }}<br>
-                        <span class="small muted">
-                            {{ $audit->created_at?->format('H:i') }}
-                        </span>
-                    </td>
-
-                    <td class="small">
-                        {{ Str::limit($audit->user_agent ?: '—', 70) }}
+                        <div class="card card-red">
+                            <div class="card-label">Usuarios únicos</div>
+                            <div class="card-value">{{ $usersCount }}</div>
+                        </div>
                     </td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="8" class="center muted">
-                        No existen auditorías registradas.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </table>
+        </div>
 
-</div>
+        <table class="data">
+            <colgroup>
+                <col style="width:5%">
+                <col style="width:18%">
+                <col style="width:12%">
+                <col style="width:18%">
+                <col style="width:10%">
+                <col style="width:10%">
+                <col style="width:12%">
+                <col style="width:15%">
+            </colgroup>
+
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+                    <th>Usuario</th>
+                    <th>Evento</th>
+                    <th>Modelo</th>
+                    <th>ID Ref.</th>
+                    <th>IP</th>
+                    <th>Fecha</th>
+                    <th>User Agent</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @forelse($audits as $audit)
+                    <tr>
+                        <td class="center">{{ $audit->id }}</td>
+
+                        <td>
+                            <span class="bold">
+                                {{ $audit->user?->name }} {{ $audit->user?->last_name }}
+                            </span><br>
+
+                            <span class="small muted">
+                                {{ $audit->user?->email ?? 'Sistema' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            @if ($audit->event === 'created')
+                                <span class="success">Creado</span>
+                            @elseif($audit->event === 'updated')
+                                <span class="warning">Actualizado</span>
+                            @elseif($audit->event === 'deleted')
+                                <span class="danger">Eliminado</span>
+                            @else
+                                {{ ucfirst(str_replace('_', ' ', $audit->event)) }}
+                            @endif
+                        </td>
+
+                        <td>
+                            {{ class_basename($audit->auditable_type) }}
+                        </td>
+
+                        <td class="center">
+                            {{ $audit->auditable_id ?: '—' }}
+                        </td>
+
+                        <td>
+                            {{ $audit->ip_address ?: '—' }}
+                        </td>
+
+                        <td>
+                            {{ $audit->created_at?->format('d/m/Y') }}<br>
+                            <span class="small muted">
+                                {{ $audit->created_at?->format('H:i') }}
+                            </span>
+                        </td>
+
+                        <td class="small">
+                            {{ Str::limit($audit->user_agent ?: '—', 70) }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="center muted">
+                            No existen auditorías registradas.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+    </div>
 
 </body>
+
 </html>

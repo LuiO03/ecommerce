@@ -20,9 +20,6 @@ class OrderSummary extends Mailable
     public ?array $paymentData;
     public ?string $purchaseNumber;
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct(
         User $user,
         Cart $cart,
@@ -41,13 +38,19 @@ class OrderSummary extends Mailable
         $this->purchaseNumber = $purchaseNumber;
     }
 
-    /**
-     * Build the message.
-     */
     public function build(): static
     {
+        $company = company_setting();
+
         return $this
-            ->subject('Resumen de tu compra en ' . config('app.name'))
+            ->from(
+                config('mail.from.address'),
+                $company?->name ?? config('app.name')
+            )
+            ->subject(
+                'Resumen de tu compra en ' .
+                ($company?->name ?? config('app.name'))
+            )
             ->markdown('site.emails.orders.summary', [
                 'user' => $this->user,
                 'cart' => $this->cart,
@@ -56,6 +59,7 @@ class OrderSummary extends Mailable
                 'amount' => $this->amount,
                 'paymentData' => $this->paymentData,
                 'purchaseNumber' => $this->purchaseNumber,
+                'company' => $company,
             ]);
     }
 }

@@ -1,7 +1,7 @@
 <x-mail::message>
 # ¡Bienvenido/a, {{ $user->name }}!
 
-Gracias por registrarte en **{{ config('app.name') }}**. Solo falta un paso para completar la creación de tu cuenta.
+Gracias por registrarte en **{{ $company?->name ?? config('app.name') }}**. Solo falta un paso para completar la creación de tu cuenta.
 
 ## Confirma tu correo electrónico
 
@@ -28,5 +28,5 @@ Si el botón no funciona, copia y pega este enlace en tu navegador:
 Si tú no creaste esta cuenta, puedes ignorar este mensaje y no se completará la activación.
 
 Gracias,<br>
-{{ config('app.name') }}
+{{ $company?->name ?? config('app.name') }}
 </x-mail::message>

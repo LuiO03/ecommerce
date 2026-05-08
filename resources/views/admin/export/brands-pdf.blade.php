@@ -234,17 +234,20 @@
         <table class="header-table">
             <tr>
                 <td width="52%" class="left">
-
                     <table class="brand-table">
                         <tr>
-                            <td class="logo-cell">
-                                <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                            </td>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
+                            @endif
 
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
                             <td>
                                 @if (!empty($companySettings?->name))
-                                    <div class="company-name">{{ $companyName }}</div>
-                                @else
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
                                     <div class="system-name">Gecko<span>Mmerce</span></div>
                                 @endif
 
@@ -252,7 +255,6 @@
                             </td>
                         </tr>
                     </table>
-
                 </td>
 
                 <td width="48%" class="right">

@@ -164,160 +164,174 @@
 
 <body>
 
-@php
-    $companySettings = $companyInfo ?? null;
+    @php
+        $companySettings = $companyInfo ?? null;
 
-    $pdfLogoUrl = null;
+        $pdfLogoUrl = null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
 
-        if (file_exists($fullPath)) {
-            $pdfLogoUrl = $fullPath;
+            if (file_exists($fullPath)) {
+                $pdfLogoUrl = $fullPath;
+            }
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
         }
-    }else{
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
 
-    $pdfCompanyName = $companySettings->name ?? config('app.name');
-    $pdfAddress = $companySettings->address ?? '-';
-    $pdfEmail = $companySettings->email ?? '-';
-    $pdfPhone = $companySettings->phone ?? '-';
-    $pdfRuc = $companySettings->ruc ?? '-';
-@endphp
+        $pdfCompanyName = $companySettings->name ?? config('app.name');
+        $pdfAddress = $companySettings->address ?? '-';
+        $pdfEmail = $companySettings->email ?? '-';
+        $pdfPhone = $companySettings->phone ?? '-';
+        $pdfRuc = $companySettings->ruc ?? '-';
+    @endphp
 
-<div class="invoice">
-
-    <!-- HEADER -->
-    <table class="header">
-        <tr>
-            <td width="65%">
-                @if($pdfLogoUrl)
-                    <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                @endif
-
-                <div class="company-name">{{ $pdfCompanyName }}</div>
-
-                <div class="company-info">
-                    Dirección: {{ $pdfAddress }}<br>
-                    Email: {{ $pdfEmail }}<br>
-                    Teléfono: {{ $pdfPhone }}
-                </div>
-            </td>
-
-            <td width="35%">
-                <table class="meta-box">
-                    <tr>
-                        <td class="ruc">RUC: {{ $pdfRuc }}</td>
-                    </tr>
-                    <tr>
-                        <td class="doc-type">BOLETA DE VENTA</td>
-                    </tr>
-                    <tr>
-                        <td class="doc-number">{{ $order->order_number }}</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-
-    <!-- CLIENTE -->
-    <table class="section">
-        <tr>
-            <td width="65%" class="box">
-                <div class="box-title">Datos del Cliente</div>
-
-                {{ $order->user->name ?? 'Cliente' }} {{ $order->user->last_name ?? '' }}<br>
-                Email: {{ $order->user->email ?? '-' }}<br>
-                Documento: {{ $order->user->document_type ?? '-' }} -
-                {{ $order->user->document_number ?? '-' }}<br>
-
-                @if(($order->delivery_type ?? 'delivery') === 'pickup')
-                    Entrega: <span class="badge">Recojo en tienda</span><br>
-                    Tienda: {{ $order->pickup_store_code ?? '-' }}
-                @else
-                    Entrega: <span class="badge">Delivery</span><br>
-                    Dirección: {{ $order->shipping_address ?? '-' }}
-                @endif
-            </td>
-
-            <td width="35%" class="box">
-                <div class="box-title">Información de Pago</div>
-
-                Fecha: {{ $order->created_at->format('d/m/Y H:i') }}<br>
-                Método: {{ strtoupper($order->payment_method ?? 'NIUBIZ') }}<br>
-                Estado: {{ ucfirst($order->payment_status ?? 'paid') }}
-            </td>
-        </tr>
-    </table>
-
-    <!-- PRODUCTOS -->
-    <table class="products">
-        <thead>
+    <div class="invoice">
+        <!-- HEADER -->
+        <table class="header">
             <tr>
-                <th width="52%">Descripción</th>
-                <th width="16%">P. Unit</th>
-                <th width="12%">Cant.</th>
-                <th width="20%">Total</th>
+
+                {{-- IZQUIERDA --}}
+                <td width="65%">
+
+                    <div style="text-align:left;">
+
+                        {{-- LOGO --}}
+                        @if (!empty($companySettings?->logo_path))
+                            <img src="{{ $pdfLogoUrl }}" class="company-logo" style="margin-bottom:6px;">
+                        @endif
+
+                        {{-- NOMBRE --}}
+                        <div class="company-name">
+                            {{ $pdfCompanyName }}
+                        </div>
+
+                        <div class="company-info">
+                            Dirección: {{ $pdfAddress }}<br>
+                            Email: {{ $pdfEmail }}<br>
+                            Teléfono: {{ $pdfPhone }}
+                        </div>
+
+                    </div>
+
+                </td>
+
+                {{-- DERECHA --}}
+                <td width="35%">
+                    <table class="meta-box">
+                        <tr>
+                            <td class="ruc">RUC: {{ $pdfRuc }}</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-type">BOLETA DE VENTA</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-number">{{ $order->order_number }}</td>
+                        </tr>
+                    </table>
+                </td>
+
             </tr>
-        </thead>
-        <tbody>
-        @foreach($order->items as $item)
+        </table>
+
+        <!-- CLIENTE -->
+        <table class="section">
             <tr>
-                <td>
-                    {{ $item->product->name ?? 'Producto' }}
+                <td width="65%" class="box">
+                    <div class="box-title">Datos del Cliente</div>
 
-                    @php
-                        $variantLabels = [];
+                    {{ $order->user->name ?? 'Cliente' }} {{ $order->user->last_name ?? '' }}<br>
+                    Email: {{ $order->user->email ?? '-' }}<br>
+                    Documento: {{ $order->user->document_type ?? '-' }} -
+                    {{ $order->user->document_number ?? '-' }}<br>
 
-                        if ($item->variant && $item->variant->features) {
-                            foreach ($item->variant->features as $feature) {
-                                $option = $feature->option;
-                                $name = $option->name ?? '';
-                                $variantLabels[] = $name . ': ' . $feature->value;
-                            }
-                        }
-                    @endphp
-
-                    @if(count($variantLabels))
-                        <br>
-                        <span class="small">{{ implode(' · ', $variantLabels) }}</span>
+                    @if (($order->delivery_type ?? 'delivery') === 'pickup')
+                        Entrega: <span class="badge">Recojo en tienda</span><br>
+                        Tienda: {{ $order->pickup_store_code ?? '-' }}
+                    @else
+                        Entrega: <span class="badge">Delivery</span><br>
+                        Dirección: {{ $order->shipping_address ?? '-' }}
                     @endif
                 </td>
 
-                <td class="text-right">S/ {{ number_format($item->unit_price, 2) }}</td>
-                <td class="text-center">{{ $item->quantity }}</td>
-                <td class="text-right">S/ {{ number_format($item->line_total, 2) }}</td>
+                <td width="35%" class="box">
+                    <div class="box-title">Información de Pago</div>
+
+                    Fecha: {{ $order->created_at->format('d/m/Y H:i') }}<br>
+                    Método: {{ strtoupper($order->payment_method ?? 'NIUBIZ') }}<br>
+                    Estado: {{ ucfirst($order->payment_status ?? 'paid') }}
+                </td>
             </tr>
-        @endforeach
-        </tbody>
-    </table>
+        </table>
 
-    <!-- TOTALES -->
-    <table class="totals">
-        <tr>
-            <td>Subtotal</td>
-            <td class="text-right">S/ {{ number_format($order->subtotal ?? 0, 2) }}</td>
-        </tr>
+        <!-- PRODUCTOS -->
+        <table class="products">
+            <thead>
+                <tr>
+                    <th width="52%">Descripción</th>
+                    <th width="16%">P. Unit</th>
+                    <th width="12%">Cant.</th>
+                    <th width="20%">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($order->items as $item)
+                    <tr>
+                        <td>
+                            {{ $item->product->name ?? 'Producto' }}
 
-        <tr>
-            <td>Envío</td>
-            <td class="text-right">S/ {{ number_format($order->shipping_cost ?? 0, 2) }}</td>
-        </tr>
+                            @php
+                                $variantLabels = [];
 
-        <tr class="grand-total">
-            <td>Total</td>
-            <td class="text-right">S/ {{ number_format($order->total, 2) }}</td>
-        </tr>
-    </table>
+                                if ($item->variant && $item->variant->features) {
+                                    foreach ($item->variant->features as $feature) {
+                                        $option = $feature->option;
+                                        $name = $option->name ?? '';
+                                        $variantLabels[] = $name . ': ' . $feature->value;
+                                    }
+                                }
+                            @endphp
 
-    <!-- FOOTER -->
-    <div class="footer">
-        Gracias por su compra<br>
-        Documento generado automáticamente.
+                            @if (count($variantLabels))
+                                <br>
+                                <span class="small">{{ implode(' · ', $variantLabels) }}</span>
+                            @endif
+                        </td>
+
+                        <td class="text-right">S/ {{ number_format($item->unit_price, 2) }}</td>
+                        <td class="text-center">{{ $item->quantity }}</td>
+                        <td class="text-right">S/ {{ number_format($item->line_total, 2) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <!-- TOTALES -->
+        <table class="totals">
+            <tr>
+                <td>Subtotal</td>
+                <td class="text-right">S/ {{ number_format($order->subtotal ?? 0, 2) }}</td>
+            </tr>
+
+            <tr>
+                <td>Envío</td>
+                <td class="text-right">S/ {{ number_format($order->shipping_cost ?? 0, 2) }}</td>
+            </tr>
+
+            <tr class="grand-total">
+                <td>Total</td>
+                <td class="text-right">S/ {{ number_format($order->total, 2) }}</td>
+            </tr>
+        </table>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            Gracias por su compra<br>
+            Documento generado automáticamente.
+        </div>
+
     </div>
 
-</div>
-
 </body>
+
 </html>

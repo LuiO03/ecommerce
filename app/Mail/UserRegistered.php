@@ -28,7 +28,9 @@ class UserRegistered extends Mailable
      */
     public function build(): static
     {
-        // URL firmada para verificación de correo (flujo público del sitio)
+        $company = company_setting();
+
+        // URL firmada para verificación de correo
         $verificationUrl = URL::temporarySignedRoute(
             'site.verification.verify',
             now()->addMinutes((int) Config::get('auth.admin-verification', 60)),
@@ -39,10 +41,18 @@ class UserRegistered extends Mailable
         );
 
         return $this
-            ->subject('Bienvenido a ' . config('app.name'))
+            ->from(
+                config('mail.from.address'),
+                $company?->name ?? config('app.name')
+            )
+            ->subject(
+                'Bienvenido a ' .
+                ($company?->name ?? config('app.name'))
+            )
             ->markdown('site.emails.users.registered', [
                 'user' => $this->user,
                 'verificationUrl' => $verificationUrl,
+                'company' => $company,
             ]);
     }
 }

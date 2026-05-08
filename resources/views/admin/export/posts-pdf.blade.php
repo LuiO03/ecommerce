@@ -40,11 +40,21 @@
             border-collapse: collapse;
         }
 
-        .left { text-align: left; }
-        .right { text-align: right; }
-        .center { text-align: center; }
+        .left {
+            text-align: left;
+        }
 
-        .muted { color: #6B7280; }
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .muted {
+            color: #6B7280;
+        }
 
         .title {
             font-size: 18px;
@@ -75,7 +85,7 @@
             line-height: 1.1;
         }
 
-        .system-name{
+        .system-name {
             text-transform: uppercase;
         }
 
@@ -145,10 +155,21 @@
             font-weight: bold;
         }
 
-        .blue   { border-top: 2px solid #3B82F6; }
-        .green  { border-top: 2px solid #10B981; }
-        .orange { border-top: 2px solid #F59E0B; }
-        .red    { border-top: 2px solid #EF4444; }
+        .blue {
+            border-top: 2px solid #3B82F6;
+        }
+
+        .green {
+            border-top: 2px solid #10B981;
+        }
+
+        .orange {
+            border-top: 2px solid #F59E0B;
+        }
+
+        .red {
+            border-top: 2px solid #EF4444;
+        }
 
         .data {
             table-layout: fixed;
@@ -173,17 +194,43 @@
             background: #FAFAFA;
         }
 
-        .bold { font-weight: bold; }
+        .bold {
+            font-weight: bold;
+        }
 
-        .small { font-size: 8px; }
+        .small {
+            font-size: 8px;
+        }
 
-        .status-published { color: #15803D; font-weight: bold; }
-        .status-draft { color: #92400E; font-weight: bold; }
-        .status-pending { color: #1D4ED8; font-weight: bold; }
-        .status-rejected { color: #B91C1C; font-weight: bold; }
+        .status-published {
+            color: #15803D;
+            font-weight: bold;
+        }
 
-        .status-private { color: #6B7280; font-weight: bold; }
-        .status-authenticated { color: #2563EB; font-weight: bold; }
+        .status-draft {
+            color: #92400E;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            color: #1D4ED8;
+            font-weight: bold;
+        }
+
+        .status-rejected {
+            color: #B91C1C;
+            font-weight: bold;
+        }
+
+        .status-private {
+            color: #6B7280;
+            font-weight: bold;
+        }
+
+        .status-authenticated {
+            color: #2563EB;
+            font-weight: bold;
+        }
 
         .visibility {
             font-weight: bold;
@@ -193,205 +240,204 @@
 
 <body>
 
-@php
-    use Illuminate\Support\Facades\Auth;
+    @php
+        use Illuminate\Support\Facades\Auth;
 
-    $items = collect($posts);
+        $items = collect($posts);
 
-    $totalPosts = $items->count();
-    $published = $items->where('status', 'published')->count();
-    $drafts = $items->where('status', 'draft')->count();
-    $totalViews = $items->sum('views');
+        $totalPosts = $items->count();
+        $published = $items->where('status', 'published')->count();
+        $drafts = $items->where('status', 'draft')->count();
+        $totalViews = $items->sum('views');
 
-    $generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
-        $pdfLogoUrl = file_exists($fullPath)
-            ? $fullPath
-            : public_path('images/logos/logo-geckommerce.png');
-    } else {
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-    $companyName = !empty($companySettings?->name)
-        ? $companySettings->name
-        : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-    $exportType = $isSelectedExport
-        ? 'Exportación seleccionada'
-        : 'Exportación total';
-@endphp
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
+    @endphp
 
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="50%" class="left">
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-
-                        <td>
-                            @if(!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td width="50%" class="left">
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
                             @endif
 
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
 
-            <td width="50%" class="right">
-                <div class="title">Reporte de Posts</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $userName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">{{ $companyName }}</td>
-            <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
-            <td width="33%" class="right"><span class="page-number"></span></td>
-        </tr>
-    </table>
-</div>
-
-<div>
-
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente posts seleccionados por el usuario.'
-            : 'Este archivo contiene el listado completo de posts registrados.' }}
-    </div>
-
-    <div class="summary">
-        <table class="summary-table">
-            <tr>
-                <td>
-                    <div class="card blue">
-                        <div class="card-label">Posts</div>
-                        <div class="card-value">{{ $totalPosts }}</div>
-                    </div>
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
 
-                <td>
-                    <div class="card green">
-                        <div class="card-label">Publicados</div>
-                        <div class="card-value">{{ $published }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card orange">
-                        <div class="card-label">Borradores</div>
-                        <div class="card-value">{{ $drafts }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card red">
-                        <div class="card-label">Vistas</div>
-                        <div class="card-value">{{ $totalViews }}</div>
-                    </div>
+                <td width="50%" class="right">
+                    <div class="title">Reporte de Posts</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $userName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <table class="data">
-        <colgroup>
-            <col style="width:26%">
-            <col style="width:16%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:10%">
-            <col style="width:8%">
-        </colgroup>
-
-        <thead>
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th>Título</th>
-                <th>Autor</th>
-                <th>Estado</th>
-                <th>Visibilidad</th>
-                <th class="center">Vistas</th>
-                <th class="center">Imgs</th>
-                <th class="center">Publicado</th>
-                <th class="center">Creado</th>
+                <td width="33%" class="left">{{ $companyName }}</td>
+                <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
+                <td width="33%" class="right"><span class="page-number"></span></td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($posts as $post)
+    <div>
+
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente posts seleccionados por el usuario.'
+                : 'Este archivo contiene el listado completo de posts registrados.' }}
+        </div>
+
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="bold">{{ $post->title }}</td>
-
-                    <td class="small">
-                        {{ trim(($post->creator->name ?? '') . ' ' . ($post->creator->last_name ?? '')) ?: '—' }}
+                    <td>
+                        <div class="card blue">
+                            <div class="card-label">Posts</div>
+                            <div class="card-value">{{ $totalPosts }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">
-                        @if($post->status === 'published')
-                            <span class="status-published">Publicado</span>
-                        @elseif($post->status === 'draft')
-                            <span class="status-draft">Borrador</span>
-                        @elseif($post->status === 'pending')
-                            <span class="status-pending">Pendiente</span>
-                        @else
-                            <span class="status-rejected">Rechazado</span>
-                        @endif
+                    <td>
+                        <div class="card green">
+                            <div class="card-label">Publicados</div>
+                            <div class="card-value">{{ $published }}</div>
+                        </div>
                     </td>
 
-                    <td class="center small">
-                        @if($post->visibility === 'public')
-                            <span class="status-published">Público</span>
-                        @elseif($post->visibility === 'private')
-                            <span class="status-private">Privado</span>
-                        @elseif($post->visibility === 'authenticated')
-                            <span class="status-authenticated">Autenticado</span>
-                        @endif
+                    <td>
+                        <div class="card orange">
+                            <div class="card-label">Borradores</div>
+                            <div class="card-value">{{ $drafts }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">{{ $post->views }}</td>
-
-                    <td class="center">{{ $post->images_count }}</td>
-
-                    <td class="center small">
-                        {{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y') : '—' }}
-                    </td>
-
-                    <td class="center small">
-                        {{ $post->created_at ? $post->created_at->format('d/m/Y') : '—' }}
+                    <td>
+                        <div class="card red">
+                            <div class="card-label">Vistas</div>
+                            <div class="card-value">{{ $totalViews }}</div>
+                        </div>
                     </td>
                 </tr>
-            @empty
+            </table>
+        </div>
+
+        <table class="data">
+            <colgroup>
+                <col style="width:26%">
+                <col style="width:16%">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:8%">
+                <col style="width:8%">
+                <col style="width:10%">
+                <col style="width:8%">
+            </colgroup>
+
+            <thead>
                 <tr>
-                    <td colspan="8" class="center muted">
-                        No existen posts registrados.
-                    </td>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Estado</th>
+                    <th>Visibilidad</th>
+                    <th class="center">Vistas</th>
+                    <th class="center">Imgs</th>
+                    <th class="center">Publicado</th>
+                    <th class="center">Creado</th>
                 </tr>
-            @endforelse
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
+                @forelse($posts as $post)
+                    <tr>
+                        <td class="bold">{{ $post->title }}</td>
 
-</div>
+                        <td class="small">
+                            {{ trim(($post->creator->name ?? '') . ' ' . ($post->creator->last_name ?? '')) ?: '—' }}
+                        </td>
+
+                        <td class="center">
+                            @if ($post->status === 'published')
+                                <span class="status-published">Publicado</span>
+                            @elseif($post->status === 'draft')
+                                <span class="status-draft">Borrador</span>
+                            @elseif($post->status === 'pending')
+                                <span class="status-pending">Pendiente</span>
+                            @else
+                                <span class="status-rejected">Rechazado</span>
+                            @endif
+                        </td>
+
+                        <td class="center small">
+                            @if ($post->visibility === 'public')
+                                <span class="status-published">Público</span>
+                            @elseif($post->visibility === 'private')
+                                <span class="status-private">Privado</span>
+                            @elseif($post->visibility === 'authenticated')
+                                <span class="status-authenticated">Autenticado</span>
+                            @endif
+                        </td>
+
+                        <td class="center">{{ $post->views }}</td>
+
+                        <td class="center">{{ $post->images_count }}</td>
+
+                        <td class="center small">
+                            {{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->format('d/m/Y') : '—' }}
+                        </td>
+
+                        <td class="center small">
+                            {{ $post->created_at ? $post->created_at->format('d/m/Y') : '—' }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="center muted">
+                            No existen posts registrados.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+
+    </div>
 
 </body>
+
 </html>

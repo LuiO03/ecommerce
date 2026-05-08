@@ -48,8 +48,8 @@ Ver más productos
 
 Si tienes alguna duda sobre tu compra, solo responde a este correo y nuestro equipo de soporte te ayudará.
 
-Gracias por comprar en {{ config('app.name') }},
+Gracias por comprar en {{ $company?->name ?? config('app.name') }}, esperamos verte pronto de nuevo.
 <br>
-El equipo de {{ config('app.name') }}
+El equipo de {{ $company?->name ?? config('app.name') }}
 
 </x-mail::message>

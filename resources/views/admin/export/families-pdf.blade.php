@@ -85,14 +85,15 @@
             height: 34px;
         }
 
-        .company-name, .system-name {
+        .company-name,
+        .system-name {
             font-size: 18px;
             font-weight: bold;
             color: #111827;
             line-height: 1.1;
         }
 
-        .system-name{
+        .system-name {
             text-transform: uppercase
         }
 
@@ -202,7 +203,8 @@
             background: #FAFAFA;
         }
 
-        th.center, td.center {
+        th.center,
+        td.center {
             text-align: center;
         }
 
@@ -234,209 +236,204 @@
             margin-bottom: 12px;
             font-size: 9px;
         }
-
-
     </style>
 </head>
 
 <body>
 
-@php
-    use Illuminate\Support\Facades\Auth;
+    @php
+        use Illuminate\Support\Facades\Auth;
 
-    $items = collect($families);
+        $items = collect($families);
 
-    $totalFamilies   = $items->count();
-    $totalCategories = $items->sum('categories_count');
-    $totalProducts   = $items->sum('products_count');
+        $totalFamilies = $items->count();
+        $totalCategories = $items->sum('categories_count');
+        $totalProducts = $items->sum('products_count');
 
-    $generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
-        $pdfLogoUrl = file_exists($fullPath)
-            ? $fullPath
-            : public_path('images/logos/logo-geckommerce.png');
-    } else {
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-    $companyName = !empty($companySettings?->name)
-        ? $companySettings->name
-        : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-    $exportType = $isSelectedExport
-        ? 'Exportación seleccionada'
-        : 'Exportación total';
-@endphp
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
+    @endphp
 
-<!-- =======================================
-HEADER
-======================================= -->
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="52%" class="left">
-
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-
-                        <td class="text-cell">
-                            @if (!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
-                            @endif
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-
-            </td>
-
-            <td width="48%" class="right">
-                <div class="title">Reporte de Familias</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $userName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- =======================================
-FOOTER
-======================================= -->
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">
-                {{ $companyName }}
-            </td>
-
-            <td width="34%" class="center seal">
-                DOCUMENTO INTERNO
-            </td>
-
-            <td width="33%" class="right">
-                <span class="page-number"></span>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- =======================================
-CONTENT
-======================================= -->
-<div>
-
-    <!-- NOTICE -->
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente familias seleccionadas por el usuario.'
-            : 'Este archivo contiene el listado completo de familias registradas.' }}
-    </div>
-
-    <!-- SUMMARY -->
-    <div class="summary">
-        <table class="summary-table">
+    <div class="header">
+        <table class="header-table">
             <tr>
-                <td>
-                    <div class="card card-blue">
-                        <div class="card-label">
-                            {{ $isSelectedExport ? 'Seleccionadas' : 'Total familias' }}
-                        </div>
-                        <div class="card-value">{{ $totalFamilies }}</div>
-                    </div>
+                <td width="52%" class="left">
+
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
+                            @endif
+
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
+
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
+
                 </td>
 
-                <td>
-                    <div class="card card-green">
-                        <div class="card-label">Categorías</div>
-                        <div class="card-value">{{ $totalCategories }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-orange">
-                        <div class="card-label">Productos</div>
-                        <div class="card-value">{{ $totalProducts }}</div>
-                    </div>
+                <td width="48%" class="right">
+                    <div class="title">Reporte de Familias</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $userName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <!-- TABLE -->
-    <table class="data">
-        <colgroup>
-            <col style="width:34px">
-            <col style="width:30%">
-            <col style="width:24%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:12%">
-        </colgroup>
-
-        <thead>
+    <!-- =======================================
+FOOTER
+======================================= -->
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th class="center">ID</th>
-                <th>Familia</th>
-                <th>Slug</th>
-                <th class="center">Categorías</th>
-                <th class="center">Productos</th>
-                <th class="center">Estado</th>
+                <td width="33%" class="left">
+                    {{ $companyName }}
+                </td>
+
+                <td width="34%" class="center seal">
+                    DOCUMENTO INTERNO
+                </td>
+
+                <td width="33%" class="right">
+                    <span class="page-number"></span>
+                </td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($families as $family)
+    <!-- =======================================
+CONTENT
+======================================= -->
+    <div>
+
+        <!-- NOTICE -->
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente familias seleccionadas por el usuario.'
+                : 'Este archivo contiene el listado completo de familias registradas.' }}
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="center">{{ $family->id }}</td>
-
-                    <td class="bold">
-                        {{ $family->name }}
+                    <td>
+                        <div class="card card-blue">
+                            <div class="card-label">
+                                {{ $isSelectedExport ? 'Seleccionadas' : 'Total familias' }}
+                            </div>
+                            <div class="card-value">{{ $totalFamilies }}</div>
+                        </div>
                     </td>
 
-                    <td class="small">
-                        {{ $family->slug ?: '—' }}
+                    <td>
+                        <div class="card card-green">
+                            <div class="card-label">Categorías</div>
+                            <div class="card-value">{{ $totalCategories }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">
-                        {{ $family->categories_count }}
-                    </td>
-
-                    <td class="center">
-                        {{ $family->products_count }}
-                    </td>
-
-                    <td class="center">
-                        @if($family->status)
-                            <span class="active">Activo</span>
-                        @else
-                            <span class="inactive">Inactivo</span>
-                        @endif
+                    <td>
+                        <div class="card card-orange">
+                            <div class="card-label">Productos</div>
+                            <div class="card-value">{{ $totalProducts }}</div>
+                        </div>
                     </td>
                 </tr>
-            @empty
+            </table>
+        </div>
+
+        <!-- TABLE -->
+        <table class="data">
+            <colgroup>
+                <col style="width:34px">
+                <col style="width:30%">
+                <col style="width:24%">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:12%">
+            </colgroup>
+
+            <thead>
                 <tr>
-                    <td colspan="6" class="center muted">
-                        No existen familias registradas.
-                    </td>
+                    <th class="center">ID</th>
+                    <th>Familia</th>
+                    <th>Slug</th>
+                    <th class="center">Categorías</th>
+                    <th class="center">Productos</th>
+                    <th class="center">Estado</th>
                 </tr>
-            @endforelse
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
+                @forelse($families as $family)
+                    <tr>
+                        <td class="center">{{ $family->id }}</td>
 
-</div>
+                        <td class="bold">
+                            {{ $family->name }}
+                        </td>
+
+                        <td class="small">
+                            {{ $family->slug ?: '—' }}
+                        </td>
+
+                        <td class="center">
+                            {{ $family->categories_count }}
+                        </td>
+
+                        <td class="center">
+                            {{ $family->products_count }}
+                        </td>
+
+                        <td class="center">
+                            @if ($family->status)
+                                <span class="active">Activo</span>
+                            @else
+                                <span class="inactive">Inactivo</span>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="center muted">
+                            No existen familias registradas.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+
+    </div>
 
 </body>
+
 </html>

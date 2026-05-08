@@ -112,14 +112,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => (function() {
-            $name = env('MAIL_FROM_NAME', '');
-            // Detecta interpolaciones fallidas (${...}) o valores vacíos
-            if (empty($name) || strpos($name, '${') !== false) {
-                return config('app.name');
-            }
-            return $name;
-        })(),
+        'name' => env('MAIL_FROM_NAME') ?: config('app.name'),
     ],
 
 ];

@@ -52,11 +52,21 @@
             border-collapse: collapse;
         }
 
-        .left { text-align: left; }
-        .center { text-align: center; }
-        .right { text-align: right; }
+        .left {
+            text-align: left;
+        }
 
-        .muted { color: #6B7280; }
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .muted {
+            color: #6B7280;
+        }
 
         .title {
             font-size: 18px;
@@ -150,10 +160,21 @@
             font-weight: bold;
         }
 
-        .card-blue { border-top: 2px solid #3B82F6; }
-        .card-green { border-top: 2px solid #10B981; }
-        .card-orange { border-top: 2px solid #F59E0B; }
-        .card-red { border-top: 2px solid #EF4444; }
+        .card-blue {
+            border-top: 2px solid #3B82F6;
+        }
+
+        .card-green {
+            border-top: 2px solid #10B981;
+        }
+
+        .card-orange {
+            border-top: 2px solid #F59E0B;
+        }
+
+        .card-red {
+            border-top: 2px solid #EF4444;
+        }
 
         .data {
             table-layout: fixed;
@@ -186,10 +207,25 @@
             font-size: 8px;
         }
 
-        .success { color: #15803D; font-weight: bold; }
-        .warning { color: #B45309; font-weight: bold; }
-        .danger  { color: #B91C1C; font-weight: bold; }
-        .info    { color: #1D4ED8; font-weight: bold; }
+        .success {
+            color: #15803D;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: #B45309;
+            font-weight: bold;
+        }
+
+        .danger {
+            color: #B91C1C;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #1D4ED8;
+            font-weight: bold;
+        }
 
         .money {
             font-weight: bold;
@@ -200,262 +236,261 @@
 
 <body>
 
-@php
-    use Illuminate\Support\Facades\Auth;
+    @php
+        use Illuminate\Support\Facades\Auth;
 
-    $items = collect($orders);
+        $items = collect($orders);
 
-    $totalOrders = $items->count();
-    $totalRevenue = $items->sum('total');
-    $delivered = $items->where('status', 'delivered')->count();
-    $pending = $items->where('status', 'pending')->count();
+        $totalOrders = $items->count();
+        $totalRevenue = $items->sum('total');
+        $delivered = $items->where('status', 'delivered')->count();
+        $pending = $items->where('status', 'pending')->count();
 
-    $generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
 
-        $pdfLogoUrl = file_exists($fullPath)
-            ? $fullPath
-            : public_path('images/logos/logo-geckommerce.png');
-    } else {
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-    $companyName = !empty($companySettings?->name)
-        ? $companySettings->name
-        : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-    $exportType = $isSelectedExport
-        ? 'Exportación seleccionada'
-        : 'Exportación total';
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
 
-    function orderStatusLabel($status)
-    {
-        return match($status) {
-            'pending'    => 'Pendiente',
-            'paid'       => 'Pagado',
-            'processing' => 'Procesando',
-            'shipped'    => 'Enviado',
-            'delivered'  => 'Entregado',
-            'cancelled'  => 'Cancelado',
-            default      => ucfirst($status),
-        };
-    }
+        function orderStatusLabel($status)
+        {
+            return match ($status) {
+                'pending' => 'Pendiente',
+                'paid' => 'Pagado',
+                'processing' => 'Procesando',
+                'shipped' => 'Enviado',
+                'delivered' => 'Entregado',
+                'cancelled' => 'Cancelado',
+                default => ucfirst($status),
+            };
+        }
 
-    function orderStatusClass($status)
-    {
-        return match($status) {
-            'pending'    => 'warning',
-            'paid'       => 'info',
-            'processing' => 'info',
-            'shipped'    => 'info',
-            'delivered'  => 'success',
-            'cancelled'  => 'danger',
-            default      => '',
-        };
-    }
+        function orderStatusClass($status)
+        {
+            return match ($status) {
+                'pending' => 'warning',
+                'paid' => 'info',
+                'processing' => 'info',
+                'shipped' => 'info',
+                'delivered' => 'success',
+                'cancelled' => 'danger',
+                default => '',
+            };
+        }
 
-    function deliveryLabel($type)
-    {
-        return match($type) {
-            'delivery' => 'Delivery',
-            'pickup'   => 'Recojo',
-            default    => '—',
-        };
-    }
-@endphp
+        function deliveryLabel($type)
+        {
+            return match ($type) {
+                'delivery' => 'Delivery',
+                'pickup' => 'Recojo',
+                default => '—',
+            };
+        }
+    @endphp
 
-<!-- HEADER -->
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="52%" class="left">
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-
-                        <td class="text-cell">
-                            @if (!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
+    <!-- HEADER -->
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td width="52%" class="left">
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
                             @endif
 
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
 
-            <td width="48%" class="right">
-                <div class="title">Reporte de Órdenes</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $userName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">{{ $companyName }}</td>
-            <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
-            <td width="33%" class="right"><span class="page-number"></span></td>
-        </tr>
-    </table>
-</div>
-
-<!-- CONTENT -->
-<div>
-
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente órdenes seleccionadas por el usuario.'
-            : 'Este archivo contiene el listado completo de órdenes registradas.' }}
-    </div>
-
-    <!-- RESUMEN -->
-    <div class="summary">
-        <table class="summary-table">
-            <tr>
-                <td>
-                    <div class="card card-blue">
-                        <div class="card-label">Órdenes</div>
-                        <div class="card-value">{{ $totalOrders }}</div>
-                    </div>
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
 
-                <td>
-                    <div class="card card-green">
-                        <div class="card-label">Ingresos</div>
-                        <div class="card-value">S/ {{ number_format($totalRevenue, 2) }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-orange">
-                        <div class="card-label">Pendientes</div>
-                        <div class="card-value">{{ $pending }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-red">
-                        <div class="card-label">Entregadas</div>
-                        <div class="card-value">{{ $delivered }}</div>
-                    </div>
+                <td width="48%" class="right">
+                    <div class="title">Reporte de Órdenes</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $userName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <!-- TABLA -->
-    <table class="data">
-        <colgroup>
-            <col style="width:5%">
-            <col style="width:14%">
-            <col style="width:22%">
-            <col style="width:11%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:12%">
-        </colgroup>
-
-        <thead>
+    <!-- FOOTER -->
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th class="center">ID</th>
-                <th>N° Orden</th>
-                <th>Cliente</th>
-                <th>Entrega</th>
-                <th class="center">Total</th>
-                <th class="center">Estado</th>
-                <th>Pago</th>
-                <th>Fecha</th>
+                <td width="33%" class="left">{{ $companyName }}</td>
+                <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
+                <td width="33%" class="right"><span class="page-number"></span></td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($orders as $order)
+    <!-- CONTENT -->
+    <div>
+
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente órdenes seleccionadas por el usuario.'
+                : 'Este archivo contiene el listado completo de órdenes registradas.' }}
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="center">{{ $order->id }}</td>
-
-                    <td class="bold">
-                        {{ $order->order_number }}
+                    <td>
+                        <div class="card card-blue">
+                            <div class="card-label">Órdenes</div>
+                            <div class="card-value">{{ $totalOrders }}</div>
+                        </div>
                     </td>
 
                     <td>
-                        <span class="bold">
-                            {{ $order->user?->name }} {{ $order->user?->last_name }}
-                        </span>
-                        <br>
-                        <span class="small muted">
-                            {{ $order->user?->email ?? 'Cliente no disponible' }}
-                        </span>
+                        <div class="card card-green">
+                            <div class="card-label">Ingresos</div>
+                            <div class="card-value">S/ {{ number_format($totalRevenue, 2) }}</div>
+                        </div>
                     </td>
 
                     <td>
-                        {{ deliveryLabel($order->delivery_type) }}
-
-                        @if($order->pickup_store_code)
-                            <br>
-                            <span class="small muted">
-                                {{ $order->pickup_store_code }}
-                            </span>
-                        @endif
-                    </td>
-
-                    <td class="center money">
-                        S/ {{ number_format($order->total, 2) }}
-                    </td>
-
-                    <td class="center">
-                        <span class="{{ orderStatusClass($order->status) }}">
-                            {{ orderStatusLabel($order->status) }}
-                        </span>
+                        <div class="card card-orange">
+                            <div class="card-label">Pendientes</div>
+                            <div class="card-value">{{ $pending }}</div>
+                        </div>
                     </td>
 
                     <td>
-                        {{ $order->latestPayment?->method ?? '—' }}
-
-                        @if($order->latestPayment?->status)
-                            <br>
-                            <span class="small muted">
-                                {{ ucfirst($order->latestPayment->status) }}
-                            </span>
-                        @endif
-                    </td>
-
-                    <td>
-                        {{ $order->created_at?->format('d/m/Y') }}
-                        <br>
-                        <span class="small muted">
-                            {{ $order->created_at?->format('H:i') }}
-                        </span>
+                        <div class="card card-red">
+                            <div class="card-label">Entregadas</div>
+                            <div class="card-value">{{ $delivered }}</div>
+                        </div>
                     </td>
                 </tr>
-            @empty
+            </table>
+        </div>
+
+        <!-- TABLA -->
+        <table class="data">
+            <colgroup>
+                <col style="width:5%">
+                <col style="width:14%">
+                <col style="width:22%">
+                <col style="width:11%">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:12%">
+            </colgroup>
+
+            <thead>
                 <tr>
-                    <td colspan="8" class="center muted">
-                        No existen órdenes registradas.
-                    </td>
+                    <th class="center">ID</th>
+                    <th>N° Orden</th>
+                    <th>Cliente</th>
+                    <th>Entrega</th>
+                    <th class="center">Total</th>
+                    <th class="center">Estado</th>
+                    <th>Pago</th>
+                    <th>Fecha</th>
                 </tr>
-            @endforelse
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
+                @forelse($orders as $order)
+                    <tr>
+                        <td class="center">{{ $order->id }}</td>
 
-</div>
+                        <td class="bold">
+                            {{ $order->order_number }}
+                        </td>
+
+                        <td>
+                            <span class="bold">
+                                {{ $order->user?->name }} {{ $order->user?->last_name }}
+                            </span>
+                            <br>
+                            <span class="small muted">
+                                {{ $order->user?->email ?? 'Cliente no disponible' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ deliveryLabel($order->delivery_type) }}
+
+                            @if ($order->pickup_store_code)
+                                <br>
+                                <span class="small muted">
+                                    {{ $order->pickup_store_code }}
+                                </span>
+                            @endif
+                        </td>
+
+                        <td class="center money">
+                            S/ {{ number_format($order->total, 2) }}
+                        </td>
+
+                        <td class="center">
+                            <span class="{{ orderStatusClass($order->status) }}">
+                                {{ orderStatusLabel($order->status) }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ $order->latestPayment?->method ?? '—' }}
+
+                            @if ($order->latestPayment?->status)
+                                <br>
+                                <span class="small muted">
+                                    {{ ucfirst($order->latestPayment->status) }}
+                                </span>
+                            @endif
+                        </td>
+
+                        <td>
+                            {{ $order->created_at?->format('d/m/Y') }}
+                            <br>
+                            <span class="small muted">
+                                {{ $order->created_at?->format('H:i') }}
+                            </span>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="center muted">
+                            No existen órdenes registradas.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+
+    </div>
 
 </body>
+
 </html>

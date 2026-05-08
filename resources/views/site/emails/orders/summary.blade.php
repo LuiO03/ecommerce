@@ -51,5 +51,5 @@ Ir a la tienda
 Si tienes alguna duda sobre tu compra, solo responde a este correo y nuestro equipo de soporte te ayudará.
 
 Gracias por confiar en nosotros,<br>
-{{ config('app.name') }}
+{{ $company?->name ?? config('app.name') }}
 </x-mail::message>

@@ -40,11 +40,21 @@
             border-collapse: collapse;
         }
 
-        .left { text-align: left; }
-        .right { text-align: right; }
-        .center { text-align: center; }
+        .left {
+            text-align: left;
+        }
 
-        .muted { color: #6B7280; }
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .muted {
+            color: #6B7280;
+        }
 
         .title {
             font-size: 18px;
@@ -145,10 +155,21 @@
             font-weight: bold;
         }
 
-        .blue   { border-top: 2px solid #3B82F6; }
-        .green  { border-top: 2px solid #10B981; }
-        .orange { border-top: 2px solid #F59E0B; }
-        .red    { border-top: 2px solid #EF4444; }
+        .blue {
+            border-top: 2px solid #3B82F6;
+        }
+
+        .green {
+            border-top: 2px solid #10B981;
+        }
+
+        .orange {
+            border-top: 2px solid #F59E0B;
+        }
+
+        .red {
+            border-top: 2px solid #EF4444;
+        }
 
         .data {
             table-layout: fixed;
@@ -173,9 +194,13 @@
             background: #FAFAFA;
         }
 
-        .bold { font-weight: bold; }
+        .bold {
+            font-weight: bold;
+        }
 
-        .small { font-size: 8px; }
+        .small {
+            font-size: 8px;
+        }
 
         .active {
             color: #15803D;
@@ -200,211 +225,210 @@
 
 <body>
 
-@php
-    use Illuminate\Support\Facades\Auth;
+    @php
+        use Illuminate\Support\Facades\Auth;
 
-    $items = collect($products);
+        $items = collect($products);
 
-    $totalProducts   = $items->count();
-    $activeProducts  = $items->where('status', true)->count();
-    $totalStock      = $items->sum('variants_stock_sum');
-    $avgPrice        = $items->avg('price');
+        $totalProducts = $items->count();
+        $activeProducts = $items->where('status', true)->count();
+        $totalStock = $items->sum('variants_stock_sum');
+        $avgPrice = $items->avg('price');
 
-    $generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
-        $pdfLogoUrl = file_exists($fullPath)
-            ? $fullPath
-            : public_path('images/logos/logo-geckommerce.png');
-    } else {
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-    $companyName = !empty($companySettings?->name)
-        ? $companySettings->name
-        : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-    $exportType = $isSelectedExport
-        ? 'Exportación seleccionada'
-        : 'Exportación total';
-@endphp
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
+    @endphp
 
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="50%" class="left">
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-
-                        <td>
-                            @if(!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td width="50%" class="left">
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
                             @endif
 
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
 
-            <td width="50%" class="right">
-                <div class="title">Reporte de Productos</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $userName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">{{ $companyName }}</td>
-            <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
-            <td width="33%" class="right"><span class="page-number"></span></td>
-        </tr>
-    </table>
-</div>
-
-<div>
-
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente productos seleccionados por el usuario.'
-            : 'Este archivo contiene el listado completo de productos registrados.' }}
-    </div>
-
-    <div class="summary">
-        <table class="summary-table">
-            <tr>
-                <td>
-                    <div class="card blue">
-                        <div class="card-label">Productos</div>
-                        <div class="card-value">{{ $totalProducts }}</div>
-                    </div>
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
 
-                <td>
-                    <div class="card green">
-                        <div class="card-label">Activos</div>
-                        <div class="card-value">{{ $activeProducts }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card orange">
-                        <div class="card-label">Stock total</div>
-                        <div class="card-value">{{ $totalStock }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card red">
-                        <div class="card-label">Precio prom.</div>
-                        <div class="card-value">S/ {{ number_format($avgPrice ?? 0, 2) }}</div>
-                    </div>
+                <td width="50%" class="right">
+                    <div class="title">Reporte de Productos</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $userName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <table class="data">
-        <colgroup>
-            <col style="width:18%">
-            <col style="width:10%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:9%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:7%">
-            <col style="width:8%">
-        </colgroup>
-
-        <thead>
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th>Producto</th>
-                <th>SKU</th>
-                <th>Categoría</th>
-                <th>Marca</th>
-                <th class="center">Precio</th>
-                <th class="center">Desc.</th>
-                <th class="center">Stock</th>
-                <th class="center">Vars.</th>
-                <th class="center">Imgs</th>
-                <th class="center">Estado</th>
+                <td width="33%" class="left">{{ $companyName }}</td>
+                <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
+                <td width="33%" class="right"><span class="page-number"></span></td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($products as $product)
-                @php
-                    $stock = (int) ($product->variants_stock_sum ?? 0);
-                    $minStock = (int) ($product->min_stock ?? 0);
-                @endphp
+    <div>
 
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente productos seleccionados por el usuario.'
+                : 'Este archivo contiene el listado completo de productos registrados.' }}
+        </div>
+
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="bold">{{ $product->name }}</td>
-
-                    <td class="small">{{ $product->sku }}</td>
-
-                    <td class="small">{{ $product->category->name ?? '—' }}</td>
-
-                    <td class="small">{{ $product->brand->name ?? '—' }}</td>
-
-                    <td class="center money">
-                        S/ {{ number_format($product->price, 2) }}
+                    <td>
+                        <div class="card blue">
+                            <div class="card-label">Productos</div>
+                            <div class="card-value">{{ $totalProducts }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">
-                        {{ $product->discount ? $product->discount.'%' : '—' }}
+                    <td>
+                        <div class="card green">
+                            <div class="card-label">Activos</div>
+                            <div class="card-value">{{ $activeProducts }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">
-                        @if($minStock > 0 && $stock <= $minStock)
-                            <span class="warning">{{ $stock }}</span>
-                        @else
-                            {{ $stock }}
-                        @endif
+                    <td>
+                        <div class="card orange">
+                            <div class="card-label">Stock total</div>
+                            <div class="card-value">{{ $totalStock }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">{{ $product->variants_count }}</td>
-
-                    <td class="center">{{ $product->images_count }}</td>
-
-                    <td class="center">
-                        @if($product->status)
-                            <span class="active">Activo</span>
-                        @else
-                            <span class="inactive">Inactivo</span>
-                        @endif
+                    <td>
+                        <div class="card red">
+                            <div class="card-label">Precio prom.</div>
+                            <div class="card-value">S/ {{ number_format($avgPrice ?? 0, 2) }}</div>
+                        </div>
                     </td>
                 </tr>
+            </table>
+        </div>
 
-            @empty
+        <table class="data">
+            <colgroup>
+                <col style="width:18%">
+                <col style="width:10%">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:9%">
+                <col style="width:8%">
+                <col style="width:8%">
+                <col style="width:8%">
+                <col style="width:7%">
+                <col style="width:8%">
+            </colgroup>
+
+            <thead>
                 <tr>
-                    <td colspan="10" class="center muted">
-                        No existen productos registrados.
-                    </td>
+                    <th>Producto</th>
+                    <th>SKU</th>
+                    <th>Categoría</th>
+                    <th>Marca</th>
+                    <th class="center">Precio</th>
+                    <th class="center">Desc.</th>
+                    <th class="center">Stock</th>
+                    <th class="center">Vars.</th>
+                    <th class="center">Imgs</th>
+                    <th class="center">Estado</th>
                 </tr>
-            @endforelse
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
+                @forelse($products as $product)
+                    @php
+                        $stock = (int) ($product->variants_stock_sum ?? 0);
+                        $minStock = (int) ($product->min_stock ?? 0);
+                    @endphp
 
-</div>
+                    <tr>
+                        <td class="bold">{{ $product->name }}</td>
+
+                        <td class="small">{{ $product->sku }}</td>
+
+                        <td class="small">{{ $product->category->name ?? '—' }}</td>
+
+                        <td class="small">{{ $product->brand->name ?? '—' }}</td>
+
+                        <td class="center money">
+                            S/ {{ number_format($product->price, 2) }}
+                        </td>
+
+                        <td class="center">
+                            {{ $product->discount ? $product->discount . '%' : '—' }}
+                        </td>
+
+                        <td class="center">
+                            @if ($minStock > 0 && $stock <= $minStock)
+                                <span class="warning">{{ $stock }}</span>
+                            @else
+                                {{ $stock }}
+                            @endif
+                        </td>
+
+                        <td class="center">{{ $product->variants_count }}</td>
+
+                        <td class="center">{{ $product->images_count }}</td>
+
+                        <td class="center">
+                            @if ($product->status)
+                                <span class="active">Activo</span>
+                            @else
+                                <span class="inactive">Inactivo</span>
+                            @endif
+                        </td>
+                    </tr>
+
+                @empty
+                    <tr>
+                        <td colspan="10" class="center muted">
+                            No existen productos registrados.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+
+    </div>
 
 </body>
+
 </html>

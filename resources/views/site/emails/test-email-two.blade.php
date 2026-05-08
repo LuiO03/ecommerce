@@ -1,7 +1,7 @@
 <x-mail::message>
 # ¡Bienvenido/a, Juan Pérez!
 
-Gracias por registrarte en **Geckommerce**. Solo falta un paso para completar la creación de tu cuenta.
+Gracias por registrarte en **{{ $company?->name ?? config('app.name') }}**. Solo falta un paso para completar la creación de tu cuenta.
 
 ## Confirma tu correo electrónico
 
@@ -23,5 +23,5 @@ http://ecommerce.com/preview-email
 Si tú no creaste esta cuenta, puedes ignorar este mensaje y no se completará la activación.
 
 Gracias,<br>
-Geckommerce
+{{ $company?->name ?? config('app.name') }}
 </x-mail::message>

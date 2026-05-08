@@ -1,5 +1,7 @@
 @php
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+    $companySettings = function_exists('company_setting')
+        ? company_setting()
+        : null;
 
     $brandLogoUrl = null;
 
@@ -17,18 +19,34 @@
 @endphp
 
 @if ($brandLogoUrl || $brandName)
+
+    {{-- Logo personalizado --}}
     @if ($brandLogoUrl)
-        <img src="{{ $brandLogoUrl }}" alt="{{ $brandName ?? 'Logo' }}" class="sidebar-logo">
-    @else
-        <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo">
+        <img
+            src="{{ $brandLogoUrl }}"
+            alt="{{ $brandName ?? 'Logo' }}"
+            class="sidebar-logo"
+        >
     @endif
 
+    {{-- Nombre personalizado --}}
     @if ($brandName)
-        <div class="sidebar-logo-texto tracking-wide">{{ $brandName }}</div>
-    @else
-        <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
+        <div class="sidebar-logo-texto tracking-wide">
+            {{ $brandName }}
+        </div>
     @endif
+
 @else
-    <img src="{{ asset('images/logos/logo-geckommerce.png') }}" alt="Logo" class="sidebar-logo">
-    <div class="sidebar-logo-texto uppercase">Gecko<span>mmerce</span></div>
+
+    {{-- Fallback completo del sistema --}}
+    <img
+        src="{{ asset('images/logos/logo-geckommerce.png') }}"
+        alt="Geckommerce Logo"
+        class="sidebar-logo"
+    >
+
+    <div class="sidebar-logo-texto uppercase">
+        Gecko<span>mmerce</span>
+    </div>
+
 @endif

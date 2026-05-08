@@ -28,11 +28,21 @@ class UserPasswordReset extends Mailable
      */
     public function build(): static
     {
+        $company = company_setting();
+
         return $this
-            ->subject('Restablecer tu contraseña en ' . config('app.name'))
+            ->from(
+                config('mail.from.address'),
+                $company?->name ?? config('app.name')
+            )
+            ->subject(
+                'Restablecer tu contraseña en ' .
+                ($company?->name ?? config('app.name'))
+            )
             ->markdown('site.emails.users.password-reset', [
                 'user' => $this->user,
                 'resetUrl' => $this->resetUrl,
+                'company' => $company,
             ]);
     }
 }

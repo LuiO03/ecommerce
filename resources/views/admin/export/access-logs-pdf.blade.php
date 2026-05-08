@@ -52,11 +52,21 @@
             border-collapse: collapse;
         }
 
-        .left { text-align: left; }
-        .center { text-align: center; }
-        .right { text-align: right; }
+        .left {
+            text-align: left;
+        }
 
-        .muted { color: #6B7280; }
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .muted {
+            color: #6B7280;
+        }
 
         .title {
             font-size: 18px;
@@ -87,7 +97,7 @@
             line-height: 1.1;
         }
 
-        .system-name{
+        .system-name {
             text-transform: uppercase
         }
 
@@ -146,10 +156,21 @@
             font-weight: bold;
         }
 
-        .card-blue { border-top: 2px solid #3B82F6; }
-        .card-green { border-top: 2px solid #10B981; }
-        .card-red { border-top: 2px solid #EF4444; }
-        .card-orange { border-top: 2px solid #F59E0B; }
+        .card-blue {
+            border-top: 2px solid #3B82F6;
+        }
+
+        .card-green {
+            border-top: 2px solid #10B981;
+        }
+
+        .card-red {
+            border-top: 2px solid #EF4444;
+        }
+
+        .card-orange {
+            border-top: 2px solid #F59E0B;
+        }
 
         .data {
             table-layout: fixed;
@@ -197,214 +218,230 @@
 
 <body>
 
-@php
-    use Illuminate\Support\Facades\Auth;
+    @php
+        use Illuminate\Support\Facades\Auth;
 
-    $items = collect($logs);
+        $items = collect($logs);
 
-    $totalLogs = $items->count();
-    $successCount = $items->where('status', 'success')->count();
-    $failedCount = $items->where('status', 'failed')->count();
-    $usersCount = $items->pluck('user_id')->filter()->unique()->count();
+        $totalLogs = $items->count();
+        $successCount = $items->where('status', 'success')->count();
+        $failedCount = $items->where('status', 'failed')->count();
+        $usersCount = $items->pluck('user_id')->filter()->unique()->count();
 
-    $generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
-        $pdfLogoUrl = file_exists($fullPath)
-            ? $fullPath
-            : public_path('images/logos/logo-geckommerce.png');
-    } else {
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-    $companyName = !empty($companySettings?->name)
-        ? $companySettings->name
-        : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-    $exportType = $isSelectedExport
-        ? 'Exportación seleccionada'
-        : 'Exportación total';
-@endphp
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
+    @endphp
 
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="52%">
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-                        <td>
-                            @if (!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
-                            @endif
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-
-            <td width="48%" class="right">
-                <div class="title">Reporte de Accesos</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $userName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">{{ $companyName }}</td>
-            <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
-            <td width="33%" class="right"><span class="page-number"></span></td>
-        </tr>
-    </table>
-</div>
-
-<div>
-
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente registros de acceso seleccionados.'
-            : 'Este archivo contiene el historial completo de accesos registrados.' }}
-    </div>
-
-    <div class="summary">
-        <table class="summary-table">
+    <div class="header">
+        <table class="header-table">
             <tr>
-                <td>
-                    <div class="card card-blue">
-                        <div class="card-label">Registros</div>
-                        <div class="card-value">{{ $totalLogs }}</div>
-                    </div>
+                <td width="52%">
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
+                            @endif
+
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
+
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
 
-                <td>
-                    <div class="card card-green">
-                        <div class="card-label">Exitosos</div>
-                        <div class="card-value">{{ $successCount }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-red">
-                        <div class="card-label">Fallidos</div>
-                        <div class="card-value">{{ $failedCount }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-orange">
-                        <div class="card-label">Usuarios únicos</div>
-                        <div class="card-value">{{ $usersCount }}</div>
-                    </div>
+                <td width="48%" class="right">
+                    <div class="title">Reporte de Accesos</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $userName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <table class="data">
-        <colgroup>
-            <col style="width:5%">
-            <col style="width:18%">
-            <col style="width:13%">
-            <col style="width:10%">
-            <col style="width:11%">
-            <col style="width:15%">
-            <col style="width:28%">
-        </colgroup>
-
-        <thead>
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th class="center">ID</th>
-                <th>Usuario</th>
-                <th>Acción</th>
-                <th class="center">Estado</th>
-                <th>IP</th>
-                <th>Fecha</th>
-                <th>User Agent</th>
+                <td width="33%" class="left">{{ $companyName }}</td>
+                <td width="34%" class="center seal">DOCUMENTO INTERNO</td>
+                <td width="33%" class="right"><span class="page-number"></span></td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($logs as $log)
+    <div>
+
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente registros de acceso seleccionados.'
+                : 'Este archivo contiene el historial completo de accesos registrados.' }}
+        </div>
+
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="center">{{ $log->id }}</td>
+                    <td>
+                        <div class="card card-blue">
+                            <div class="card-label">Registros</div>
+                            <div class="card-value">{{ $totalLogs }}</div>
+                        </div>
+                    </td>
 
                     <td>
-                        <span class="bold">
-                            {{ $log->user?->name }} {{ $log->user?->last_name }}
-                        </span>
-                        <br>
-                        <span class="small muted">
-                            {{ $log->user?->email ?? 'Sistema' }}
-                        </span>
+                        <div class="card card-green">
+                            <div class="card-label">Exitosos</div>
+                            <div class="card-value">{{ $successCount }}</div>
+                        </div>
                     </td>
-
-                    <td>{{ ucfirst($log->action) }}</td>
-
-                    <td class="center">
-                        @if($log->status === 'success')
-                            <span class="success">Exitoso</span>
-                        @else
-                            <span class="danger">Fallido</span>
-                        @endif
-                    </td>
-
-                    <td>{{ $log->ip_address }}</td>
 
                     <td>
-                        {{ $log->created_at?->format('d/m/Y') }}<br>
-                        <span class="small muted">
-                            {{ $log->created_at?->format('H:i') }}
-                        </span>
+                        <div class="card card-red">
+                            <div class="card-label">Fallidos</div>
+                            <div class="card-value">{{ $failedCount }}</div>
+                        </div>
                     </td>
 
-                    <td class="small">
-                        @php
-                            $ua = $log->user_agent ?? '';
-
-                            $browser = 'Desconocido';
-                            $os = 'Desconocido';
-
-                            if (str_contains($ua, 'Chrome')) $browser = 'Chrome';
-                            if (str_contains($ua, 'Edg')) $browser = 'Edge';
-                            if (str_contains($ua, 'Firefox')) $browser = 'Firefox';
-                            if (str_contains($ua, 'Safari') && !str_contains($ua, 'Chrome')) $browser = 'Safari';
-
-                            if (str_contains($ua, 'Windows NT 10')) $os = 'Windows 10';
-                            elseif (str_contains($ua, 'Windows')) $os = 'Windows';
-                            elseif (str_contains($ua, 'Android')) $os = 'Android';
-                            elseif (str_contains($ua, 'iPhone')) $os = 'iPhone';
-                            elseif (str_contains($ua, 'Mac OS')) $os = 'Mac';
-                            elseif (str_contains($ua, 'Linux')) $os = 'Linux';
-                        @endphp
-
-                        {{ $browser }} / {{ $os }}
+                    <td>
+                        <div class="card card-orange">
+                            <div class="card-label">Usuarios únicos</div>
+                            <div class="card-value">{{ $usersCount }}</div>
+                        </div>
                     </td>
                 </tr>
-            @empty
+            </table>
+        </div>
+
+        <table class="data">
+            <colgroup>
+                <col style="width:5%">
+                <col style="width:18%">
+                <col style="width:13%">
+                <col style="width:10%">
+                <col style="width:11%">
+                <col style="width:15%">
+                <col style="width:28%">
+            </colgroup>
+
+            <thead>
                 <tr>
-                    <td colspan="7" class="center muted">
-                        No existen registros disponibles.
-                    </td>
+                    <th class="center">ID</th>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th class="center">Estado</th>
+                    <th>IP</th>
+                    <th>Fecha</th>
+                    <th>User Agent</th>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
 
-</div>
+            <tbody>
+                @forelse($logs as $log)
+                    <tr>
+                        <td class="center">{{ $log->id }}</td>
+
+                        <td>
+                            <span class="bold">
+                                {{ $log->user?->name }} {{ $log->user?->last_name }}
+                            </span>
+                            <br>
+                            <span class="small muted">
+                                {{ $log->user?->email ?? 'Sistema' }}
+                            </span>
+                        </td>
+
+                        <td>{{ ucfirst($log->action) }}</td>
+
+                        <td class="center">
+                            @if ($log->status === 'success')
+                                <span class="success">Exitoso</span>
+                            @else
+                                <span class="danger">Fallido</span>
+                            @endif
+                        </td>
+
+                        <td>{{ $log->ip_address }}</td>
+
+                        <td>
+                            {{ $log->created_at?->format('d/m/Y') }}<br>
+                            <span class="small muted">
+                                {{ $log->created_at?->format('H:i') }}
+                            </span>
+                        </td>
+
+                        <td class="small">
+                            @php
+                                $ua = $log->user_agent ?? '';
+
+                                $browser = 'Desconocido';
+                                $os = 'Desconocido';
+
+                                if (str_contains($ua, 'Chrome')) {
+                                    $browser = 'Chrome';
+                                }
+                                if (str_contains($ua, 'Edg')) {
+                                    $browser = 'Edge';
+                                }
+                                if (str_contains($ua, 'Firefox')) {
+                                    $browser = 'Firefox';
+                                }
+                                if (str_contains($ua, 'Safari') && !str_contains($ua, 'Chrome')) {
+                                    $browser = 'Safari';
+                                }
+
+                                if (str_contains($ua, 'Windows NT 10')) {
+                                    $os = 'Windows 10';
+                                } elseif (str_contains($ua, 'Windows')) {
+                                    $os = 'Windows';
+                                } elseif (str_contains($ua, 'Android')) {
+                                    $os = 'Android';
+                                } elseif (str_contains($ua, 'iPhone')) {
+                                    $os = 'iPhone';
+                                } elseif (str_contains($ua, 'Mac OS')) {
+                                    $os = 'Mac';
+                                } elseif (str_contains($ua, 'Linux')) {
+                                    $os = 'Linux';
+                                }
+                            @endphp
+
+                            {{ $browser }} / {{ $os }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="center muted">
+                            No existen registros disponibles.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+    </div>
 
 </body>
+
 </html>

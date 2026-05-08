@@ -40,11 +40,21 @@
             border-collapse: collapse;
         }
 
-        .left { text-align: left; }
-        .right { text-align: right; }
-        .center { text-align: center; }
+        .left {
+            text-align: left;
+        }
 
-        .muted { color: #6B7280; }
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .muted {
+            color: #6B7280;
+        }
 
         .title {
             font-size: 18px;
@@ -144,10 +154,21 @@
             color: #111827;
         }
 
-        .card-blue   { border-top: 2px solid #3B82F6; }
-        .card-green  { border-top: 2px solid #10B981; }
-        .card-orange { border-top: 2px solid #F59E0B; }
-        .card-red    { border-top: 2px solid #EF4444; }
+        .card-blue {
+            border-top: 2px solid #3B82F6;
+        }
+
+        .card-green {
+            border-top: 2px solid #10B981;
+        }
+
+        .card-orange {
+            border-top: 2px solid #F59E0B;
+        }
+
+        .card-red {
+            border-top: 2px solid #EF4444;
+        }
 
         .data {
             table-layout: fixed;
@@ -172,8 +193,13 @@
             background: #FAFAFA;
         }
 
-        .bold { font-weight: bold; }
-        .small { font-size: 8.5px; }
+        .bold {
+            font-weight: bold;
+        }
+
+        .small {
+            font-size: 8.5px;
+        }
 
         .system-role {
             color: #1D4ED8;
@@ -197,206 +223,203 @@
 
 <body>
 
-@php
-    use Illuminate\Support\Facades\Auth;
+    @php
+        use Illuminate\Support\Facades\Auth;
 
-    $items = collect($roles);
+        $items = collect($roles);
 
-    $totalRoles       = $items->count();
-    $totalUsers       = $items->sum('users_count');
-    $totalPermissions = $items->sum('permissions_count');
+        $totalRoles = $items->count();
+        $totalUsers = $items->sum('users_count');
+        $totalPermissions = $items->sum('permissions_count');
 
-    $systemRoles = $items->filter(function($role){
-        return in_array($role->name, [
-            'Administrador',
-            'Superadministrador',
-            'Cliente'
-        ]);
-    })->count();
+        $systemRoles = $items
+            ->filter(function ($role) {
+                return in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']);
+            })
+            ->count();
 
-    $generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-    $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $userName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-    if ($companySettings && $companySettings->logo_path) {
-        $fullPath = public_path('storage/' . $companySettings->logo_path);
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
 
-        $pdfLogoUrl = file_exists($fullPath)
-            ? $fullPath
-            : public_path('images/logos/logo-geckommerce.png');
-    } else {
-        $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-    }
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-    $companyName = !empty($companySettings?->name)
-        ? $companySettings->name
-        : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-    $exportType = $isSelectedExport
-        ? 'Exportación seleccionada'
-        : 'Exportación total';
-@endphp
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
+    @endphp
 
-<!-- HEADER -->
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="52%" class="left">
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-
-                        <td class="text-cell">
-                            @if (!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
+    <!-- HEADER -->
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td width="52%" class="left">
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
                             @endif
 
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
 
-            <td width="48%" class="right">
-                <div class="title">Reporte de Roles</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $userName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">
-                {{ $companyName }}
-            </td>
-
-            <td width="34%" class="center seal">
-                DOCUMENTO INTERNO
-            </td>
-
-            <td width="33%" class="right">
-                <span class="page-number"></span>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- CONTENT -->
-<div>
-
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente roles seleccionados por el usuario.'
-            : 'Este archivo contiene el listado completo de roles registrados.' }}
-    </div>
-
-    <div class="summary">
-        <table class="summary-table">
-            <tr>
-                <td>
-                    <div class="card card-blue">
-                        <div class="card-label">Roles</div>
-                        <div class="card-value">{{ $totalRoles }}</div>
-                    </div>
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
 
-                <td>
-                    <div class="card card-green">
-                        <div class="card-label">Usuarios asignados</div>
-                        <div class="card-value">{{ $totalUsers }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-orange">
-                        <div class="card-label">Permisos</div>
-                        <div class="card-value">{{ $totalPermissions }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-red">
-                        <div class="card-label">Roles sistema</div>
-                        <div class="card-value">{{ $systemRoles }}</div>
-                    </div>
+                <td width="48%" class="right">
+                    <div class="title">Reporte de Roles</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $userName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <table class="data">
-        <colgroup>
-            <col style="width:6%">
-            <col style="width:24%">
-            <col style="width:32%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:14%">
-        </colgroup>
-
-        <thead>
+    <!-- FOOTER -->
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th class="center">ID</th>
-                <th>Rol</th>
-                <th>Descripción</th>
-                <th class="center">Usuarios</th>
-                <th class="center">Permisos</th>
-                <th class="center">Tipo</th>
+                <td width="33%" class="left">
+                    {{ $companyName }}
+                </td>
+
+                <td width="34%" class="center seal">
+                    DOCUMENTO INTERNO
+                </td>
+
+                <td width="33%" class="right">
+                    <span class="page-number"></span>
+                </td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($roles as $role)
+    <!-- CONTENT -->
+    <div>
+
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente roles seleccionados por el usuario.'
+                : 'Este archivo contiene el listado completo de roles registrados.' }}
+        </div>
+
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="center">{{ $role->id }}</td>
-
-                    <td class="bold">
-                        {{ $role->name }}
+                    <td>
+                        <div class="card card-blue">
+                            <div class="card-label">Roles</div>
+                            <div class="card-value">{{ $totalRoles }}</div>
+                        </div>
                     </td>
 
-                    <td class="small">
-                        {{ $role->description ?: '—' }}
+                    <td>
+                        <div class="card card-green">
+                            <div class="card-label">Usuarios asignados</div>
+                            <div class="card-value">{{ $totalUsers }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">
-                        {{ $role->users_count }}
+                    <td>
+                        <div class="card card-orange">
+                            <div class="card-label">Permisos</div>
+                            <div class="card-value">{{ $totalPermissions }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">
-                        {{ $role->permissions_count }}
-                    </td>
-
-                    <td class="center">
-                        @if(in_array($role->name, ['Administrador','Superadministrador','Cliente']))
-                            <span class="system-role">Sistema</span>
-                        @else
-                            <span class="custom-role">Personalizado</span>
-                        @endif
+                    <td>
+                        <div class="card card-red">
+                            <div class="card-label">Roles sistema</div>
+                            <div class="card-value">{{ $systemRoles }}</div>
+                        </div>
                     </td>
                 </tr>
-            @empty
+            </table>
+        </div>
+
+        <table class="data">
+            <colgroup>
+                <col style="width:6%">
+                <col style="width:24%">
+                <col style="width:32%">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:14%">
+            </colgroup>
+
+            <thead>
                 <tr>
-                    <td colspan="6" class="center muted">
-                        No existen roles registrados.
-                    </td>
+                    <th class="center">ID</th>
+                    <th>Rol</th>
+                    <th>Descripción</th>
+                    <th class="center">Usuarios</th>
+                    <th class="center">Permisos</th>
+                    <th class="center">Tipo</th>
                 </tr>
-            @endforelse
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
+                @forelse($roles as $role)
+                    <tr>
+                        <td class="center">{{ $role->id }}</td>
 
-</div>
+                        <td class="bold">
+                            {{ $role->name }}
+                        </td>
+
+                        <td class="small">
+                            {{ $role->description ?: '—' }}
+                        </td>
+
+                        <td class="center">
+                            {{ $role->users_count }}
+                        </td>
+
+                        <td class="center">
+                            {{ $role->permissions_count }}
+                        </td>
+
+                        <td class="center">
+                            @if (in_array($role->name, ['Administrador', 'Superadministrador', 'Cliente']))
+                                <span class="system-role">Sistema</span>
+                            @else
+                                <span class="custom-role">Personalizado</span>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="center muted">
+                            No existen roles registrados.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+
+    </div>
 
 </body>
+
 </html>

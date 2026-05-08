@@ -99,7 +99,7 @@
             line-height: 1.1;
         }
 
-        .system-name{
+        .system-name {
             text-transform: uppercase
         }
 
@@ -231,216 +231,212 @@
 
 <body>
 
-@php
-use Illuminate\Support\Facades\Auth;
+    @php
+        use Illuminate\Support\Facades\Auth;
 
-$items = collect($clients);
+        $items = collect($clients);
 
-$totalClients = $items->count();
-$totalActive = $items->where('status', true)->count();
-$totalInactive = $items->where('status', false)->count();
-$totalVerified = $items->whereNotNull('email_verified_at')->count();
+        $totalClients = $items->count();
+        $totalActive = $items->where('status', true)->count();
+        $totalInactive = $items->where('status', false)->count();
+        $totalVerified = $items->whereNotNull('email_verified_at')->count();
 
-$generatedAt = now()->format('d/m/Y H:i');
+        $generatedAt = now()->format('d/m/Y H:i');
 
-$clientName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
+        $clientName = $exportedBy ?? (Auth::user()->name ?? 'Administrador');
 
-$companySettings = function_exists('company_setting') ? company_setting() : null;
+        $companySettings = function_exists('company_setting') ? company_setting() : null;
 
-if ($companySettings && $companySettings->logo_path) {
-    $fullPath = public_path('storage/' . $companySettings->logo_path);
+        if ($companySettings && $companySettings->logo_path) {
+            $fullPath = public_path('storage/' . $companySettings->logo_path);
 
-    $pdfLogoUrl = file_exists($fullPath)
-        ? $fullPath
-        : public_path('images/logos/logo-geckommerce.png');
-} else {
-    $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
-}
+            $pdfLogoUrl = file_exists($fullPath) ? $fullPath : public_path('images/logos/logo-geckommerce.png');
+        } else {
+            $pdfLogoUrl = public_path('images/logos/logo-geckommerce.png');
+        }
 
-$companyName = !empty($companySettings?->name)
-    ? $companySettings->name
-    : config('app.name');
+        $companyName = !empty($companySettings?->name) ? $companySettings->name : config('app.name');
 
-$exportType = $isSelectedExport
-    ? 'Exportación seleccionada'
-    : 'Exportación total';
-@endphp
+        $exportType = $isSelectedExport ? 'Exportación seleccionada' : 'Exportación total';
+    @endphp
 
-<!-- HEADER -->
-<div class="header">
-    <table class="header-table">
-        <tr>
-            <td width="52%" class="left">
-                <table class="brand-table">
-                    <tr>
-                        <td class="logo-cell">
-                            <img src="{{ $pdfLogoUrl }}" class="company-logo">
-                        </td>
-
-                        <td>
-                            @if (!empty($companySettings?->name))
-                                <div class="company-name">{{ $companyName }}</div>
-                            @else
-                                <div class="system-name">Gecko<span>Mmerce</span></div>
+    <!-- HEADER -->
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td width="52%" class="left">
+                    <table class="brand-table">
+                        <tr>
+                            {{-- LOGO (solo si existe) --}}
+                            @if (!empty($companySettings?->logo_path))
+                                <td class="logo-cell">
+                                    <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
+                                </td>
                             @endif
 
-                            <div class="company-mini">Panel administrativo</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                            {{-- TEXTO (ocupa todo si no hay logo) --}}
+                            <td>
+                                @if (!empty($companySettings?->name))
+                                    <div class="company-name">{{ $companySettings->name }}</div>
+                                @elseif(empty($companySettings?->logo_path))
+                                    <div class="system-name">Gecko<span>Mmerce</span></div>
+                                @endif
 
-            <td width="48%" class="right">
-                <div class="title">Reporte de Clientes</div>
-                <div class="subtitle">{{ $exportType }}</div>
-                <div class="subtitle">Emitido: {{ $generatedAt }}</div>
-                <div class="subtitle">Usuario: {{ $clientName }}</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-    <table class="footer-table">
-        <tr>
-            <td width="33%" class="left">{{ $companyName }}</td>
-
-            <td width="34%" class="center seal">
-                DOCUMENTO INTERNO
-            </td>
-
-            <td width="33%" class="right">
-                <span class="page-number"></span>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- CONTENT -->
-<div>
-
-    <div class="notice">
-        {{ $isSelectedExport
-            ? 'Este archivo contiene únicamente clientes seleccionados por el usuario.'
-            : 'Este archivo contiene el listado completo de clientes registrados.' }}
-    </div>
-
-    <!-- SUMMARY -->
-    <div class="summary">
-        <table class="summary-table">
-            <tr>
-                <td>
-                    <div class="card card-blue">
-                        <div class="card-label">
-                            {{ $isSelectedExport ? 'Seleccionados' : 'Total clientes' }}
-                        </div>
-                        <div class="card-value">{{ $totalClients }}</div>
-                    </div>
+                                <div class="company-mini">Panel administrativo</div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
 
-                <td>
-                    <div class="card card-green">
-                        <div class="card-label">Activos</div>
-                        <div class="card-value">{{ $totalActive }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-orange">
-                        <div class="card-label">Inactivos</div>
-                        <div class="card-value">{{ $totalInactive }}</div>
-                    </div>
-                </td>
-
-                <td>
-                    <div class="card card-purple">
-                        <div class="card-label">Emails verificados</div>
-                        <div class="card-value">{{ $totalVerified }}</div>
-                    </div>
+                <td width="48%" class="right">
+                    <div class="title">Reporte de Clientes</div>
+                    <div class="subtitle">{{ $exportType }}</div>
+                    <div class="subtitle">Emitido: {{ $generatedAt }}</div>
+                    <div class="subtitle">Usuario: {{ $clientName }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <!-- TABLE -->
-    <table class="data">
-        <colgroup>
-            <col style="width:34px">
-            <col style="width:19%">
-            <col style="width:22%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:10%">
-            <col style="width:12%">
-            <col style="width:13%">
-        </colgroup>
-
-        <thead>
+    <!-- FOOTER -->
+    <div class="footer">
+        <table class="footer-table">
             <tr>
-                <th class="center">ID</th>
-                <th>Cliente</th>
-                <th>Email</th>
-                <th>DNI</th>
-                <th>Teléfono</th>
-                <th class="center">Estado</th>
-                <th class="center">Email</th>
-                <th>Registro</th>
+                <td width="33%" class="left">{{ $companyName }}</td>
+
+                <td width="34%" class="center seal">
+                    DOCUMENTO INTERNO
+                </td>
+
+                <td width="33%" class="right">
+                    <span class="page-number"></span>
+                </td>
             </tr>
-        </thead>
+        </table>
+    </div>
 
-        <tbody>
-            @forelse($clients as $client)
+    <!-- CONTENT -->
+    <div>
 
-                @php
-                    $fullName = trim(($client->name ?? '') . ' ' . ($client->last_name ?? ''));
-                    $registeredAt = $client->created_at
-                        ? $client->created_at->format('d/m/Y')
-                        : '—';
-                @endphp
+        <div class="notice">
+            {{ $isSelectedExport
+                ? 'Este archivo contiene únicamente clientes seleccionados por el usuario.'
+                : 'Este archivo contiene el listado completo de clientes registrados.' }}
+        </div>
 
+        <!-- SUMMARY -->
+        <div class="summary">
+            <table class="summary-table">
                 <tr>
-                    <td class="center">{{ $client->id }}</td>
-
-                    <td class="bold">{{ $fullName ?: '—' }}</td>
-
-                    <td class="small">{{ $client->email ?: '—' }}</td>
-
-                    <td class="center">{{ $client->dni ?: 'No registrado' }}</td>
-
-                    <td class="center">{{ $client->phone ?: 'No registrado' }}</td>
-
-                    <td class="center">
-                        @if($client->status)
-                            <span class="active">Activo</span>
-                        @else
-                            <span class="inactive">Inactivo</span>
-                        @endif
+                    <td>
+                        <div class="card card-blue">
+                            <div class="card-label">
+                                {{ $isSelectedExport ? 'Seleccionados' : 'Total clientes' }}
+                            </div>
+                            <div class="card-value">{{ $totalClients }}</div>
+                        </div>
                     </td>
 
-                    <td class="center">
-                        @if($client->email_verified_at)
-                            <span class="verified">Verificado</span>
-                        @else
-                            <span class="pending">Pendiente</span>
-                        @endif
+                    <td>
+                        <div class="card card-green">
+                            <div class="card-label">Activos</div>
+                            <div class="card-value">{{ $totalActive }}</div>
+                        </div>
                     </td>
 
-                    <td class="small">{{ $registeredAt }}</td>
-                </tr>
+                    <td>
+                        <div class="card card-orange">
+                            <div class="card-label">Inactivos</div>
+                            <div class="card-value">{{ $totalInactive }}</div>
+                        </div>
+                    </td>
 
-            @empty
-                <tr>
-                    <td colspan="8" class="center muted">
-                        No existen clientes registrados.
+                    <td>
+                        <div class="card card-purple">
+                            <div class="card-label">Emails verificados</div>
+                            <div class="card-value">{{ $totalVerified }}</div>
+                        </div>
                     </td>
                 </tr>
-            @endforelse
-        </tbody>
+            </table>
+        </div>
 
-    </table>
+        <!-- TABLE -->
+        <table class="data">
+            <colgroup>
+                <col style="width:34px">
+                <col style="width:19%">
+                <col style="width:22%">
+                <col style="width:12%">
+                <col style="width:12%">
+                <col style="width:10%">
+                <col style="width:12%">
+                <col style="width:13%">
+            </colgroup>
 
-</div>
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+                    <th>Cliente</th>
+                    <th>Email</th>
+                    <th>DNI</th>
+                    <th>Teléfono</th>
+                    <th class="center">Estado</th>
+                    <th class="center">Email</th>
+                    <th>Registro</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @forelse($clients as $client)
+                    @php
+                        $fullName = trim(($client->name ?? '') . ' ' . ($client->last_name ?? ''));
+                        $registeredAt = $client->created_at ? $client->created_at->format('d/m/Y') : '—';
+                    @endphp
+
+                    <tr>
+                        <td class="center">{{ $client->id }}</td>
+
+                        <td class="bold">{{ $fullName ?: '—' }}</td>
+
+                        <td class="small">{{ $client->email ?: '—' }}</td>
+
+                        <td class="center">{{ $client->dni ?: 'No registrado' }}</td>
+
+                        <td class="center">{{ $client->phone ?: 'No registrado' }}</td>
+
+                        <td class="center">
+                            @if ($client->status)
+                                <span class="active">Activo</span>
+                            @else
+                                <span class="inactive">Inactivo</span>
+                            @endif
+                        </td>
+
+                        <td class="center">
+                            @if ($client->email_verified_at)
+                                <span class="verified">Verificado</span>
+                            @else
+                                <span class="pending">Pendiente</span>
+                            @endif
+                        </td>
+
+                        <td class="small">{{ $registeredAt }}</td>
+                    </tr>
+
+                @empty
+                    <tr>
+                        <td colspan="8" class="center muted">
+                            No existen clientes registrados.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+
+    </div>
 
 </body>
+
 </html>

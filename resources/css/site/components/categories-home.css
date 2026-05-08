@@ -148,7 +148,6 @@
     align-items: center;
     justify-content: end;
     width: 100%;
-    min-width: 150px;
     aspect-ratio: 1 / 1;
     /* acomodar bien la imagen de fondo */
     background-size: cover;

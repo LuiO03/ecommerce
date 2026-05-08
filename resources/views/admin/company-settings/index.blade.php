@@ -5,7 +5,7 @@
 <x-admin-layout :useSlotContainer="false">
     <x-slot name="title">
         <div class="page-icon card-purple"><i class="ri-building-4-line"></i></div>
-        Configuración de la empresa
+        Configuración del negocio
     </x-slot>
 
     <div class="form-container" autocomplete="off" id="companySettingsForm">
@@ -30,24 +30,24 @@
                     <i class="ri-building-4-line"></i>
                     <span>Datos generales</span>
                 </button>
-                <button type="button" class="settings-tab-button" data-target="shipping" id="tab-shipping"
-                    role="tab" aria-controls="companySettingsSectionShipping">
-                    <i class="ri-truck-fill"></i>
-                    <span>Envío</span>
-                </button>
                 <button type="button" class="settings-tab-button" data-target="boleta" id="tab-boleta"
                     role="tab" aria-controls="companySettingsSectionBoleta">
                     <i class="ri-file-pdf-2-line"></i>
                     <span>Boleta PDF</span>
                 </button>
+                <button type="button" class="settings-tab-button" data-target="shipping" id="tab-shipping"
+                    role="tab" aria-controls="companySettingsSectionShipping">
+                    <i class="ri-truck-line"></i>
+                    <span>Ecommerce</span>
+                </button>
                 <button type="button" class="settings-tab-button" data-target="social" id="tab-social" role="tab"
                     aria-controls="companySettingsSectionSocial">
-                    <i class="ri-share-forward-fill"></i>
+                    <i class="ri-share-forward-line"></i>
                     <span>Redes sociales</span>
                 </button>
                 <button type="button" class="settings-tab-button" data-target="legal" id="tab-legal" role="tab"
                     aria-controls="companySettingsSectionLegal">
-                    <i class="ri-file-shield-fill"></i>
+                    <i class="ri-file-shield-line"></i>
                     <span>Documentación legal</span>
                 </button>
             </div>
@@ -56,12 +56,6 @@
 
                 <div id="tab-main">
                     @include('admin.company-settings.partials.main')
-                </div>
-                <div id="tab-shipping">
-                    @include('admin.company-settings.partials.shipping')
-                </div>
-                <div id="tab-social">
-                    @include('admin.company-settings.partials.social')
                 </div>
                 <div id="tab-boleta">
                     <div class="form-body">
@@ -76,6 +70,13 @@
                         </div>
                     </div>
                 </div>
+                <div id="tab-shipping">
+                    @include('admin.company-settings.partials.ecommerce')
+                </div>
+                <div id="tab-social">
+                    @include('admin.company-settings.partials.social')
+                </div>
+
                 <!-- Sección de identidad visual fusionada en main -->
                 <div id="tab-legal">
                     @include('admin.company-settings.partials.legal')

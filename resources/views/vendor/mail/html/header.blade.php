@@ -27,22 +27,32 @@
                     <a href="{{ $url }}" style="display: inline-block;">
                         @if (trim($slot) === 'Geckommerce')
                             <div class="logo-container">
+
                                 @if ($mailLogoUrl || $companyDisplayName)
+
+                                    {{-- Logo personalizado --}}
                                     @if ($mailLogoUrl)
-                                        <img src="{{ $mailLogoUrl }}" class="logo" alt="{{ $companyDisplayName ?? 'Logo' }}">
-                                    @else
-                                        <img src="https://luio03.github.io/muniyauyos.github.io/imagen/logo-geckommerce.png" class="logo" alt="Geckommerce Logo">
+                                        <img src="{{ $mailLogoUrl }}" class="logo"
+                                            alt="{{ $companyDisplayName ?? 'Logo' }}">
                                     @endif
 
+                                    {{-- Nombre personalizado --}}
                                     @if ($companyDisplayName)
-                                        <div class="logo-texto">{{ $companyDisplayName }}</div>
-                                    @else
-                                        <div class="logo-texto"><strong>Gecko</strong><span>mmerce</span></div>
+                                        <div class="logo-texto">
+                                            {{ $companyDisplayName }}
+                                        </div>
                                     @endif
                                 @else
-                                    <img src="https://luio03.github.io/muniyauyos.github.io/imagen/logo-geckommerce.png" class="logo" alt="Geckommerce Logo">
-                                    <div class="logo-texto"><strong>Gecko</strong><span>mmerce</span></div>
+                                    {{-- Fallback completo del sistema --}}
+                                    <img src="https://luio03.github.io/muniyauyos.github.io/imagen/logo-geckommerce.png"
+                                        class="logo" alt="Geckommerce Logo">
+
+                                    <div class="logo-texto">
+                                        <strong>Gecko</strong><span>mmerce</span>
+                                    </div>
+
                                 @endif
+
                             </div>
                         @else
                             {!! $slot !!}
