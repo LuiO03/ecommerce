@@ -14,7 +14,6 @@ class CategoryController extends Controller
             [
                 'label' => 'Tienda',
                 'url' => route('site.shop.index'),
-                'icon' => 'ri-store-2-fill',
             ],
         ];
 
@@ -41,7 +40,6 @@ class CategoryController extends Controller
 
         $breadcrumbItems[] = [
             'label' => $category->name,
-            'icon' => 'ri-price-tag-3-fill',
         ];
 
         return view('site.categories.show', compact('category', 'family', 'breadcrumbItems'));
