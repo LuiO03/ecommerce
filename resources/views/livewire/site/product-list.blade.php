@@ -69,11 +69,17 @@
             </script>
         @endpush
 
-        <div class="section-header">
-            <h2 class="section-title">{{ $title }}</h2>
-            <p class="section-subtitle">
-                {{ $subtitle }}
-            </p>
+        <div class="section-conteiner">
+            <div class="section-header">
+                <h2 class="section-title">{{ $title }}</h2>
+                <p class="section-subtitle">
+                    {{ $subtitle }}
+                </p>
+            </div>
+            <a href="{{ route('site.shop.index') }}" class="site-btn site-btn-outline">
+                <i class="ri-arrow-right-line site-btn-icon"></i>
+                Ver todo
+            </a>
         </div>
 
         @if ($products->isNotEmpty())

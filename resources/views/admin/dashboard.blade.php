@@ -97,7 +97,7 @@
                                         {{ trim(($order->user->name ?? '') . ' ' . ($order->user->last_name ?? '')) ?: '—' }}
                                     </td>
 
-                                    <td class="text-center">
+                                    <td>
 
                                         @switch($order->status)
 

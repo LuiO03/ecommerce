@@ -108,7 +108,7 @@
 
     <!-- Sección de Últimos Productos con Livewire -->
     <livewire:site.product-list :limit="12" title="Últimos Productos"
-        subtitle="Descubre nuestras incorporaciones más recientes" />
+        subtitle="Descubre nuestras novedades" />
     <!-- Sección de Ofertas -->
     <livewire:site.product-list title="Ofertas" subtitle="Aprovecha descuentos" :limit="12" :onSale="true"
         :strict="false" />
