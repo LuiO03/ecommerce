@@ -23,6 +23,16 @@ class Driver extends Model
         'deleted_by',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'vehicle_type' => 'string',
+            'vehicle_plate' => 'string',
+            'phone' => 'string',
+            'status' => 'boolean',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

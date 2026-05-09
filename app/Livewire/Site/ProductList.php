@@ -134,9 +134,19 @@ class ProductList extends Component
     private function applyOrder($query)
     {
         return match ($this->orderBy) {
-            'oldest' => $query->oldest('created_at'),
-            'cheap' => $query->orderBy('price', 'asc'),
-            'expensive' => $query->orderBy('price', 'desc'),
+
+            'oldest' => $query->oldest('created_at'),// oldest porque el default es latest, entonces si piden oldest, se invierte el orden
+
+            'cheap' => $query->orderBy('price', 'asc'),// cheap porque el default es latest, entonces si piden cheap, se ordena por precio ascendente
+
+            'expensive' => $query->orderBy('price', 'desc'),// expensive porque el default es latest, entonces si piden expensive, se ordena por precio descendente
+
+            'best_selling' => $query->orderBy('sales_count', 'desc'),// best_selling porque se ordena por cantidad de ventas descendente
+
+            'featured' => $query
+                ->where('featured', true)
+                ->latest('created_at'),
+
             default => $query->latest('created_at'),
         };
     }

@@ -18,6 +18,15 @@ class Cart extends Model
         'is_active',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'items_count' => 'integer',
+            'items_quantity' => 'integer',
+            'is_active' => 'boolean',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

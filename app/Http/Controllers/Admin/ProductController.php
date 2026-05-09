@@ -96,6 +96,7 @@ class ProductController extends Controller
             'discount' => 'nullable|integer|min:0|max:100',
             'min_stock' => 'nullable|integer|min:0',
             'status' => 'required|boolean',
+            'featured' => 'nullable|boolean',
             'gallery' => 'required|array|min:1',
             'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:3048',
             'primary_image' => 'nullable|string',
@@ -113,6 +114,7 @@ class ProductController extends Controller
             'discount' => $validated['discount'] ?? null,
             'min_stock' => array_key_exists('min_stock', $validated) ? $validated['min_stock'] : null,
             'status' => (bool) $validated['status'],
+            'featured' => $validated['featured'] ?? false,
             'created_by' => Auth::id(),
             'updated_by' => Auth::id(),
         ]);
@@ -210,6 +212,10 @@ class ProductController extends Controller
                 ];
             }),
             'images' => $gallery,
+            'featured' => (bool) $product->featured,
+            'views_count' => $product->views_count,
+            'sales_count' => $product->sales_count,
+            'rating_avg' => $product->rating_avg,
             'created_by_name' => $product->creator
                 ? trim($product->creator->name . ' ' . ($product->creator->last_name ?? ''))
                 : 'Sistema',
@@ -264,6 +270,7 @@ class ProductController extends Controller
             'discount' => 'nullable|integer|min:0|max:100',
             'min_stock' => 'nullable|integer|min:0',
             'status' => 'required|boolean',
+            'featured' => 'nullable|boolean',
             'gallery' => 'nullable|array',
             'gallery.*' => 'image|mimes:jpg,jpeg,png,webp|max:3048',
             'remove_gallery' => 'sometimes|array',
@@ -283,6 +290,7 @@ class ProductController extends Controller
             'discount' => $validated['discount'] ?? null,
             'min_stock' => array_key_exists('min_stock', $validated) ? $validated['min_stock'] : null,
             'status' => (bool) $validated['status'],
+            'featured' => $validated['featured'] ?? false,
             'updated_by' => Auth::id(),
         ]);
 

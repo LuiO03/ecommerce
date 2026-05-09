@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Site\CheckoutPaidRequest;
 use App\Models\Cart;
+use App\Models\Product;
 use App\Models\Addresses;
 use App\Models\CompanySetting;
 use App\Models\PaymentAttempt;
@@ -377,7 +378,8 @@ class CheckoutController extends Controller
                     // 1) REGISTRO DEL PEDIDO + ÍTEMS EN BASE DE DATOS
                     // -----------------------------------------------------------------
                     try {
-                        $order = $this->orderPlacementService->placePaidOrder($user, $cart, [
+                        $order = $this->orderPlacementService->placePaidOrder(
+                            $user, $cart, [
                             'purchase_number' => $request->purchaseNumber,
                             'total' => $amount,
                             'subtotal' => $subtotal,
@@ -392,6 +394,18 @@ class CheckoutController extends Controller
                             'payment_id' => $paymentId,
                             'payment_response' => $response,
                         ]);
+
+                        // Incrementar productos vendidos
+                        foreach ($cart->items as $item) {
+
+                            if ($item->product) {
+
+                                Product::whereKey($item->product_id)
+                                ->increment('sales_count', $item->quantity);
+
+                            }
+                        }
+
                     } catch (\RuntimeException $e) {
                         $attempt->update([
                             'status' => 'conflict',
@@ -477,6 +491,8 @@ class CheckoutController extends Controller
                     } catch (\Throwable $e) {
                         report($e); // Si falla el envío del correo, no se interrumpe el flujo de compra
                     }
+
+                    // 4)
                 }
             }
 

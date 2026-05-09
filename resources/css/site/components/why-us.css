@@ -3,17 +3,18 @@
 .why-us-features {
     max-width: var(--site-max-width);
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .why-us-feature {
-    background: #fff;
-    border-radius: 1rem;
+    flex: 1 1 200px;
+    border-radius: var(--radius-card);
     padding: 2rem 1.5rem 1.5rem 1.5rem;
     display: flex;
     flex-direction: column;
+    background-color: var(--color-card-bg);
     align-items: center;
     text-align: center;
     transition: box-shadow 0.25s, transform 0.25s;
@@ -36,8 +37,13 @@
     color: #555;
 }
 @media (max-width: 900px) {
-    .why-us-feature {
-        width: 100%;
-        max-width: 350px;
+    .why-us-features{
+        gap: 8px;
+    }
+}
+
+@media (max-width: 500px) {
+    .why-us-features{
+        gap: 3px;
     }
 }

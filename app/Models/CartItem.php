@@ -20,6 +20,13 @@ class CartItem extends Model
         'notes',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'quantity' => 'integer',
+        ];
+    }
+
     public function cart()
     {
         return $this->belongsTo(Cart::class);

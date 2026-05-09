@@ -32,6 +32,32 @@ return new class extends Migration
                 ->constrained('categories')
                 ->onDelete('restrict');
 
+            // Relación con marca
+            $table->foreignId('brand_id')
+                ->nullable()
+                ->constrained('brands')
+                ->onDelete('restrict');
+
+            // Producto destacado manualmente
+            $table->boolean('featured')
+                ->default(false)
+                ->index();
+
+            // Cantidad total vendida
+            $table->unsignedInteger('sales_count')
+                ->default(0)
+                ->index();
+
+            // Cantidad de vistas
+            $table->unsignedInteger('views_count')
+                ->default(0)
+                ->index();
+
+            // Promedio de calificaciones
+            $table->decimal('rating_avg', 3, 2)
+                ->default(0)
+                ->index();
+
             // Auditoría
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

@@ -18,6 +18,13 @@ class WishlistItem extends Model
         'notes',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'quantity' => 'integer',
+        ];
+    }
+
     public function wishlist()
     {
         return $this->belongsTo(Wishlist::class);

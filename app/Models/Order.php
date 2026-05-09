@@ -26,6 +26,19 @@ class Order extends Model
         'shipping_phone',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'total' => 'float',
+            'subtotal' => 'float',
+            'shipping_cost' => 'float',
+            'status' => 'string',
+            'shipping_address' => 'string',
+            'shipping_city' => 'string',
+            'shipping_phone' => 'string',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

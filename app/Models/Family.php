@@ -25,6 +25,13 @@ class Family extends Model
         'deleted_by',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'status' => 'boolean',
+        ];
+    }
+
     public function scopeForSelect($query)
     {
         return $query->select('id', 'name')->orderBy('name');

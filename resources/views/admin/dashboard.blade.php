@@ -191,7 +191,7 @@
         {{-- Pedidos hoy --}}
         @can('ordenes.index')
             <div class="dashboard-card ripple-card">
-                <div class="card-icon card-info">
+                <div class="card-icon card-orange">
                     <i class="ri-shopping-bag-3-line"></i>
                 </div>
 
@@ -207,7 +207,9 @@
             </div>
         @endcan
 
+
         {{-- Pedidos pendientes --}}
+        {{--
         @can('ordenes.index')
             <div class="dashboard-card ripple-card">
                 <div class="card-icon card-warning">
@@ -225,8 +227,9 @@
                 </div>
             </div>
         @endcan
-
+        --}}
         {{-- Stock bajo --}}
+        {{--
         @can('productos.index')
             <div class="dashboard-card ripple-card">
                 <div class="card-icon card-danger">
@@ -244,8 +247,9 @@
                 </div>
             </div>
         @endcan
-
+        --}}
         {{-- Nuevos clientes --}}
+        {{--
         @can('clientes.index')
             <div class="dashboard-card ripple-card">
                 <div class="card-icon card-primary">
@@ -263,7 +267,7 @@
                 </div>
             </div>
         @endcan
-
+        --}}
 
 
         {{-- Productos --}}

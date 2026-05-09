@@ -11,6 +11,14 @@ class ProductImage extends Model
 
     protected $fillable = ['product_id', 'variant_id', 'path', 'alt', 'is_main', 'order'];
 
+    protected function casts(): array
+    {
+        return [
+            'is_main' => 'boolean',
+            'order' => 'integer',
+        ];
+    }
+
     // 🔹 Relación inversa con producto
     public function product()
     {

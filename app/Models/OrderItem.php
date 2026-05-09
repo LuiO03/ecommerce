@@ -19,6 +19,15 @@ class OrderItem extends Model
         'line_total',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'quantity' => 'integer',
+            'unit_price' => 'float',
+            'line_total' => 'float',
+        ];
+    }
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);

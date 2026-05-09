@@ -599,27 +599,25 @@ input[type="checkbox"]:focus {
     font-size: var(--font-size-xs);
     cursor: pointer;
     padding-inline: 15px;
-    transition: color 0.3s ease;
 }
 
 /* slider */
 .binary-switch .switch-slider {
     position: absolute;
-    top: 0;
-    left: 50%; /* default = NO */
+    top: 2px;
+    left: calc(50% - 2px);
     width: 50%;
-    height: 100%;
+    height: calc(100% - 4px);
+    border-radius: 50px;
     transition: left 0.3s ease;
     z-index: 1;
     background-color: var(--color-danger);
-    border-left: 1px solid var(--color-input-border);
 }
 
 /* cuando está activo (Sí) */
 .binary-switch .switch-input:checked ~ .switch-slider {
-    left: 0;
+    left: 2px;
     background-color: var(--color-success);
-    border-right: 1px solid var(--color-input-border);
 }
 
 /* colores de texto */

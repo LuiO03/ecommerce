@@ -26,7 +26,7 @@
             </p>
             <p class="product-rating">
                 <i class="ri-star-fill"></i>
-                <span>4.5 (128)</span>
+                <span>{{ number_format($product->rating_avg, 1) }}</span>
             </p>
         </div>
         <h3 class="product-name">{{ $product->name }}</h3>

@@ -86,6 +86,24 @@
                             </button>
                         </form>
                     </div>
+                    <table class="modal-show-table">
+                        <tr>
+                            <th>Destacado</th>
+                            <td id="product-featured">—</td>
+                        </tr>
+                        <tr>
+                            <th>Vistas</th>
+                            <td id="product-views">—</td>
+                        </tr>
+                        <tr>
+                            <th>Ventas</th>
+                            <td id="product-sales">—</td>
+                        </tr>
+                        <tr>
+                            <th>Valoración</th>
+                            <td id="product-rating">—</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div class="modal-variants-table" id="product-variants-table-container">
@@ -212,6 +230,10 @@
             $('#product-description').html('<div class="shimmer shimmer-cell" style="width: 240px;"></div>');
             $('#product-gallery').html('<div class="shimmer shimmer-img" style="width:100%;height:120px;"></div>');
             $('#product-image-placeholder').removeClass('hidden').html('<div class="shimmer shimmer-img"></div>');
+            $('#product-featured').html('<div class="shimmer shimmer-cell" style="width: 80px;"></div>');
+            $('#product-views').html('<div class="shimmer shimmer-cell" style="width: 60px;"></div>');
+            $('#product-sales').html('<div class="shimmer shimmer-cell" style="width: 60px;"></div>');
+            $('#product-rating').html('<div class="shimmer shimmer-cell" style="width: 60px;"></div>');
         }
 
         function loadValidImages(images) {
@@ -427,7 +449,9 @@
         function renderProductVariantsTable(variants) {
             const $tbody = $('#product-variants-table-body');
             if (!Array.isArray(variants) || variants.length === 0) {
-                $tbody.html('<tr><td colspan="5"><div class="tabla-no-data"><i class="ri-folder-warning-line"></i><span>Sin variantes</span></div></td></tr>');
+                $tbody.html(
+                    '<tr><td colspan="5"><div class="tabla-no-data"><i class="ri-folder-warning-line"></i><span>Sin variantes</span></div></td></tr>'
+                    );
                 return;
             }
             const rows = variants.map(variant => {
@@ -511,6 +535,18 @@
             $('#product-status').html(data.status ?
                 '<span class="badge boton-success"><i class="ri-checkbox-circle-fill"></i> Activo</span>' :
                 '<span class="badge boton-danger"><i class="ri-close-circle-fill"></i> Inactivo</span>'
+            );
+
+            $('#product-featured').html(data.featured ?
+                '<span class="badge badge-primary"><i class="ri-star-fill"></i> Sí</span>' :
+                '<span class="badge badge-secondary"><i class="ri-star-line"></i> No</span>'
+            );
+
+            $('#product-views').html(`<span class="badge badge-info">${Number(data.views_count ?? 0).toLocaleString()}</span>`);
+            $('#product-sales').html(`<span class="badge badge-info">${Number(data.sales_count ?? 0).toLocaleString()}</span>`);
+            $('#product-rating').html(data.rating_avg ?
+                `<span class="badge badge-warning"><i class="ri-star-fill"></i> ${Number(data.rating_avg).toFixed(1)}</span>` :
+                '<span class="text-muted-td">Sin valoraciones</span>'
             );
 
             const variantsCount = Array.isArray(data.variants) ? data.variants.length : 0;

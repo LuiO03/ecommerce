@@ -36,6 +36,11 @@ class ProductFactory extends Factory
             'status' => $this->faker->boolean(80), // 80% de probabilidad de ser true
             'category_id' => $this->faker->numberBetween(1, 10), // Asumiendo que hay al menos 10 categorías
             'brand_id' => $brandId,
+            'featured' => $this->faker->boolean(20), // 20% de probabilidad de ser destacado
+            'sales_count' => $this->faker->numberBetween(0, 100),// Cantidad total vendida
+            'views_count' => $this->faker->numberBetween(0, 50),// Cantidad de vistas
+            'rating_avg' => $this->faker->randomFloat(2, 0, 5),// Promedio de calificaciones
+            'min_stock' => $this->faker->optional()->numberBetween(1, 10), // Stock mínimo opcional
         ];
     }
 

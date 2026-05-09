@@ -21,6 +21,15 @@ class Variant extends Model
         'deleted_by',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2',
+            'stock' => 'integer',
+            'status' => 'boolean',
+        ];
+    }
+
     // 🔹 Relación inversa con producto
     public function product()
     {

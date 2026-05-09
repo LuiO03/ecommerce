@@ -163,6 +163,32 @@
                             data-validate="minValue:0">
                     </div>
                 </div>
+                <div class="input-group">
+                    <label class="label-form">
+                        ¿Producto destacado?
+                    </label>
+                    <div class="binary-switch">
+                        <!-- Checkbox real -->
+                        <input type="hidden" name="featured" value="0">
+
+                        <input type="checkbox" name="featured" id="featured" class="switch-input" value="1"
+                            {{ old('featured', $product->featured) == 1 ? 'checked' : '' }}>
+
+                        <!-- Labels visuales -->
+                        <label for="featured" class="switch-label switch-label-on">
+                            <i class="ri-star-fill"></i> Si
+                        </label>
+
+                        <label for="featured" class="switch-label switch-label-off">
+                            <i class="ri-star-line"></i> No
+                        </label>
+
+                        <div class="switch-slider"></div>
+                    </div>
+                    <p class="input-help-text">
+                        Este producto aparecerá en secciones destacadas de la tienda.
+                    </p>
+                </div>
             </div>
             <div class="form-row-fit">
                 <div class="input-group">

@@ -24,7 +24,19 @@ class Product extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'featured',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2',
+            'discount' => 'integer',
+            'min_stock' => 'integer',
+            'status' => 'boolean',
+            'featured' => 'boolean',
+        ];
+    }
     /**
      * Devuelve el stock mínimo para alerta (campo o config)
      */
