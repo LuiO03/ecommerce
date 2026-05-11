@@ -209,7 +209,11 @@
     font-size: 1rem;
 }
 
-
+.product-card-variant-group{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 .product-card-variant-values{
     display: grid;
@@ -234,7 +238,7 @@
 }
 
 .product-card-variant-value.is-color .variant-swatch {
-    width: 100%;
+    min-width: 25px;
     min-height: 25px;
     border-radius: 50%;
     border: 1px solid var(--color-border);
