@@ -125,7 +125,7 @@ class ClaimsController extends Controller
                 new AdminDatabaseNotification(
                     title: 'Nuevo registro en Libro de Reclamaciones',
                     body: implode(' | ', $bodyParts),
-                    url: route('site.legal.claims'),
+                    url: route('admin.claim-messages.index', $message->id),
                     icon: 'ri-file-damage-line',
                     level: 'info',
                 )
