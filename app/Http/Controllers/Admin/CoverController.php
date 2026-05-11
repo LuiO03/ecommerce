@@ -29,7 +29,9 @@ class CoverController extends Controller
 
     public function create()
     {
-        return view('admin.covers.create');
+        return view('admin.covers.create', [
+    'defaultTextColor' => '#FFFFFF'
+]);
     }
 
     public function store(Request $request)

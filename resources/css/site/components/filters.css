@@ -2,6 +2,12 @@
    FILTERS - Filtros de productos
    ============================================ */
 
+.site-filter{
+    max-width: var(--site-max-width);
+    width: 100%;
+    margin: 0 auto;
+}
+
 .filters {
    display: flex;
    flex-direction: column;
@@ -34,6 +40,13 @@
    height: 100%;
    overflow-y: scroll;
    overflow-x: hidden;
+}
+
+
+.filters-body input[type="checkbox"]:checked {
+    color: var(--color-site-nav);
+    border-color: var(--color-site-nav);
+    box-shadow: var(--shadow-material);
 }
 
 /* === Scrollbars === */
@@ -144,12 +157,69 @@
    flex: 1;
 }
 
-/* Variante para opciones de color (ej. Color) */
-.filter-item.is-active{
-    border-color: var(--color-site-nav);
-    background: rgba(0,0,0,.03);
+.filter-pills {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.5rem;
+   margin: 0.25rem 0 0.75rem;
 }
 
+.filter-pill {
+   display: inline-flex;
+   align-items: center;
+   gap: 0.5rem;
+   padding: 0.45rem 0.7rem;
+   border-radius: 999px;
+   border: 1px solid var(--select-border);
+   background: var(--color-card-bg);
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+   font-size: 0.8rem;
+   line-height: 1;
+}
+
+.filter-pill-text {
+   display: inline-flex;
+   align-items: center;
+   gap: 0.35rem;
+   flex-wrap: wrap;
+}
+
+.filter-pill-meta {
+   font-weight: 700;
+   color: var(--btn-primary);
+}
+
+.filter-pill-label {
+   color: var(--color-text);
+}
+
+.filter-pill-swatch {
+   width: 0.9rem;
+   height: 0.9rem;
+   border-radius: 999px;
+   background: var(--filter-color, #e5e7eb);
+   border: 1px solid var(--color-border);
+   flex-shrink: 0;
+}
+
+.filter-pill-remove {
+   width: 1.35rem;
+   height: 1.35rem;
+   border: none;
+   border-radius: 999px;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   background: rgba(0, 0, 0, 0.05);
+   color: var(--color-text);
+   cursor: pointer;
+   transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.filter-pill-remove:hover:not(:disabled) {
+   background: var(--btn-hover);
+   transform: translateY(-1px);
+}
 .filter-color-dot {
    width: 1.25rem;
    height: 1.25rem;
@@ -251,6 +321,10 @@
 @media (max-width: 768px) {
    .filters {
       padding: 1rem;
+   }
+
+   .filter-pills {
+      margin-top: 0.5rem;
    }
 
    .filters-header {

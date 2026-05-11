@@ -4,8 +4,10 @@
         'items' => $breadcrumbItems,
     ])
 
+
     @livewire('site.filter', [
         'category_id' => $category->id,
     ])
 
+    @include('partials.site.why-us')
 </x-app-layout>

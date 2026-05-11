@@ -20,7 +20,6 @@ class WellcomeController extends Controller
             })
             ->get();
 
-
         $lastProducts = Product::with('category', 'images')
             ->where('status', true)
             ->whereHas('variants', function ($query) {

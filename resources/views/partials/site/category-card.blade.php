@@ -1,5 +1,5 @@
 <!-- Sección de Categorías -->
-<section class="section-container bg-section pb-0">
+
     <div class="section-header">
         <h2 class="section-title">Categorías populares</h2>
         <p class="section-subtitle">
@@ -17,7 +17,7 @@
                                 <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}"
                                     alt="{{ $category->name }} imagen"
                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="product-image-fallback" style="display: none;">
+                                <div class="product-card-image-fallback" style="display: none;">
                                     <i class="ri-image-fill"></i>
                                     <span>Imagen no disponible</span>
                                 </div>
@@ -33,5 +33,5 @@
         <div class="swiper-button-next"></div>
         <div class="swiper-pagination"></div>
     </div>
-</section>
+
 

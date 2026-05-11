@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BrandController extends Controller
@@ -34,6 +35,7 @@ class BrandController extends Controller
             'slug',
             'description',
             'status',
+            'image',
             'created_at',
         ])
             ->withCount('products')
@@ -179,17 +181,28 @@ class BrandController extends Controller
             'name' => 'required|string|max:255|min:2|unique:brands,name|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
 
         $slug = Brand::generateUniqueSlug($request->name);
 
+        // Manejo de imagen
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = $slug . '-' . time() . '.' . $extension;
+            $imagePath = 'brands/' . $filename;
+            $request->file('image')->storeAs('brands', $filename, 'public');
+        }
+
         $brand = Brand::create([
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
             'status' => (bool) $request->status,
+            'image' => $imagePath,
             'created_by' => Auth::id(),
             'updated_by' => Auth::id(),
         ]);
@@ -216,17 +229,42 @@ class BrandController extends Controller
             'name' => 'required|string|max:255|min:2|unique:brands,name,'.$brand->id.'|regex:/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.regex' => 'El nombre debe contener al menos una letra.',
         ]);
 
         $slug = Brand::generateUniqueSlug($request->name, $brand->id);
 
+        $imagePath = $brand->image;
+
+        // Si marca para eliminar imagen
+        if ($request->input('remove_image') == '1') {
+            if ($brand->image && Storage::disk('public')->exists($brand->image)) {
+                Storage::disk('public')->delete($brand->image);
+            }
+            $imagePath = null;
+        }
+        // Si sube una nueva imagen
+        elseif ($request->hasFile('image')) {
+            // Eliminar imagen anterior si existe
+            if ($brand->image && Storage::disk('public')->exists($brand->image)) {
+                Storage::disk('public')->delete($brand->image);
+            }
+
+            // Subir nueva imagen
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $filename = $slug . '-' . time() . '.' . $extension;
+            $imagePath = 'brands/' . $filename;
+            $request->file('image')->storeAs('brands', $filename, 'public');
+        }
+
         $brand->update([
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
             'status' => (bool) $request->status,
+            'image' => $imagePath,
             'updated_by' => Auth::id(),
         ]);
 
@@ -358,6 +396,7 @@ class BrandController extends Controller
             'name' => $brand->name,
             'description' => $brand->description,
             'status' => $brand->status,
+            'image' => $brand->image,
             'products_count' => $brand->products_count,
             'created_by_name' => $createdBy ? trim($createdBy->name.' '.$createdBy->last_name) : 'Sistema',
             'updated_by_name' => $updatedBy ? trim($updatedBy->name.' '.$updatedBy->last_name) : '—',

@@ -251,7 +251,7 @@
                         <div class="input-icon-container">
                             <i class="ri-palette-line input-icon"></i>
                             <input type="text" id="text_color" data-role="text-color" placeholder="#RRGGBB"
-                                style="cursor: pointer" autocomplete="off" data-validate="required|colorCss|requiredWith:overlay_text"
+                                style="cursor: pointer" autocomplete="off" data-validate="colorCss|requiredWith:overlay_text"
                                 value="{{ old('text_color', $cover->text_color ?? '#FFFFFF') }}" data-coloris>
                         </div>
                     </div>

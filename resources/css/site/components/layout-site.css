@@ -3,6 +3,7 @@
     position: sticky;
     top: 0;
     z-index: 200;
+    background-color: green;
 }
 .site-nav-container {
     background: var(--color-site-nav);

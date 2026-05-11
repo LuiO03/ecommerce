@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\AccessLogController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\ClaimMessageController;
 use Illuminate\Support\Facades\Route;
 
 // COMPANY SETTINGS
@@ -327,4 +328,14 @@ Route::controller(ContactMessageController::class)->group(function () {
     Route::patch('/contact-messages/{contactMessage}/status', 'updateStatus')->name('admin.contact-messages.update-status');
     Route::delete('/contact-messages/{contactMessage}', 'destroy')->name('admin.contact-messages.destroy');
     Route::delete('/contact-messages', 'destroyMultiple')->name('admin.contact-messages.destroy-multiple');
+});
+
+// CLAIM MESSAGES
+Route::controller(ClaimMessageController::class)->group(function () {
+    Route::get('/claim-messages', 'index')->name('admin.claim-messages.index');
+    Route::get('/claim-messages/{claimMessage}/show', 'show')->name('admin.claim-messages.show');
+    Route::patch('/claim-messages/{claimMessage}/response', 'updateResponse')->name('admin.claim-messages.update-response');
+    Route::patch('/claim-messages/{claimMessage}/status', 'updateStatus')->name('admin.claim-messages.update-status');
+    Route::delete('/claim-messages/{claimMessage}', 'destroy')->name('admin.claim-messages.destroy');
+    Route::delete('/claim-messages', 'destroyMultiple')->name('admin.claim-messages.destroy-multiple');
 });

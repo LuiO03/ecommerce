@@ -159,6 +159,14 @@ class RolePermissionSeeder extends Seeder
                 ['name' => 'contact-messages.reply', 'description' => 'Puede responder a un mensaje de contacto'],
                 ['name' => 'contact-messages.delete', 'description' => 'Puede eliminar mensajes de contacto del sistema'],
             ],
+
+            /// --- Claim Messages ---
+            'claim-messages' => [
+                ['name' => 'claim-messages.index', 'description' => 'Puede ver la lista de mensajes de reclamos'],
+                ['name' => 'claim-messages.view', 'description' => 'Puede ver los detalles de un mensaje de reclamo'],
+                ['name' => 'claim-messages.reply', 'description' => 'Puede responder a un mensaje de reclamo'],
+                ['name' => 'claim-messages.delete', 'description' => 'Puede eliminar mensajes de reclamos del sistema'],
+            ],
         ];
 
         // === CREAR PERMISOS ===

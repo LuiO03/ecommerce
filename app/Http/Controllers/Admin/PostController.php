@@ -515,6 +515,19 @@ class PostController extends Controller
             'images' => fn ($query) => $query->orderByDesc('is_main')->orderBy('order'),
         ])->where('slug', $slug)->firstOrFail();
 
+        // Mapear imágenes con URLs explícitas
+        $images = $post->images->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'post_id' => $image->post_id,
+                'path' => $image->path,
+                'alt' => $image->alt ?? '',
+                'description' => $image->description ?? '',
+                'is_main' => (bool) $image->is_main,
+                'order' => (int) $image->order,
+                'url' => $image->url, // Genera URL usando el accessor
+            ];
+        })->values();
 
         return response()->json([
             'id' => '#'.$post->id,
@@ -529,7 +542,7 @@ class PostController extends Controller
             'image' => $post->main_image_path,
             'main_image' => $post->main_image_path,
             'tags' => $post->tags->pluck('name'),
-            'images' => $post->images,
+            'images' => $images,
             'created_by_name' => $post->creator ? $post->creator->name.' '.$post->creator->last_name : 'Sistema',
             'updated_by_name' => $post->updater ? $post->updater->name.' '.$post->updater->last_name : '—',
             'reviewed_by_name' => $post->reviewer ? $post->reviewer->name.' '.$post->reviewer->last_name : 'Sin revisión',

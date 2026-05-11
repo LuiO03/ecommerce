@@ -16,6 +16,7 @@ class Brand extends Model
         'slug',
         'description',
         'status',
+        'image',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -80,5 +81,19 @@ class Brand extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image) {
+            return asset('images/no-image.png');
+        }
+
+        $path = 'storage/' . $this->image;
+        if (file_exists(public_path($path))) {
+            return asset($path);
+        }
+
+        return asset('images/no-image.png');
     }
 }

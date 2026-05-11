@@ -20,6 +20,7 @@
     use App\Http\Controllers\Site\ProfileController as SiteProfileController;
     use App\Http\Controllers\Site\BlogController;
     use App\Http\Controllers\Site\ContactController;
+    use App\Http\Controllers\Site\ClaimsController;
     use App\Http\Controllers\Site\ShopController;
 
     use App\Http\Controllers\Auth\GoogleController;
@@ -139,6 +140,7 @@
     Route::get('/terminos-y-condiciones', [LegalDocumentationController::class, 'terms'])->name('site.legal.terms');
     Route::get('/politica-de-privacidad', [LegalDocumentationController::class, 'privacy'])->name('site.legal.privacy');
     Route::get('/libro-de-reclamaciones', [LegalDocumentationController::class, 'claims'])->name('site.legal.claims');
+    Route::post('/libro-de-reclamaciones', [ClaimsController::class, 'store'])->name('site.legal.claims.store');
 
     // Páginas informativas
     Route::view('/nosotros', 'site.about.index')->name('about.index');

@@ -12,6 +12,7 @@
                                 window.SwiperModules.Pagination,
                                 window.SwiperModules.Autoplay,
                             ],
+                            centerInsufficientSlides: true,
                             loop: true,
                             autoplay: {
                                 delay: 6000,

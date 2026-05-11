@@ -69,8 +69,20 @@
                     <p class="legal-form__subtitle">Completa los datos solicitados para registrar tu reclamo o queja. Te
                         contactaremos a través de los datos que nos proporciones.</p>
 
-                    <form id="claims-form" class="legal-form__grid" action="#" method="POST" autocomplete="off">
+                    <form id="claims-form" class="legal-form__grid" action="{{ route('site.legal.claims.store') }}"
+                        method="POST" autocomplete="off"
+                        data-recaptcha-site-key="{{ $recaptchaSiteKey ?? '' }}"
+                        data-skip-captcha="{{ auth()->check() ? '1' : '0' }}">
                         @csrf
+
+                        <input type="hidden" name="idempotency_key"
+                            value="{{ old('idempotency_key', $claimIdempotencyKey ?? (string) Str::uuid()) }}">
+                        <input type="hidden" name="recaptcha_token" value="">
+                        <input type="text" name="website" value="" tabindex="-1" autocomplete="off"
+                            class="hidden" aria-hidden="true">
+
+                        <div id="claims-form-status"></div>
+
                         <div class="form-row-fit">
                             <!-- === Nombre === -->
                             <div class="input-group">
@@ -81,7 +93,7 @@
                                     <i class="ri-user-line input-icon"></i>
                                     <input id="claim-name" type="text" name="name" class="input-form"
                                         placeholder="Tu nombre y apellidos" autocomplete="off"
-                                        data-validate="required|alpha|min:3|max:50" required>
+                                        data-validate="required|min:3|max:120" value="{{ old('name') }}">
                                 </div>
                             </div>
                             <!-- === Correo === -->
@@ -92,8 +104,8 @@
                                 <div class="input-icon-container">
                                     <i class="ri-mail-line input-icon"></i>
                                     <input type="email" id="email" name="email" class="input-form"
-                                        placeholder="Ingresa tu correo electrónico"
-                                        required autocomplete="off" data-validate="required|email">
+                                        placeholder="Ingresa tu correo electrónico" autocomplete="off"
+                                        data-validate="required|email" value="{{ old('email') }}">
                                 </div>
                             </div>
                         </div>
@@ -105,7 +117,8 @@
                                 <div class="input-icon-container">
                                     <i class="ri-phone-line input-icon"></i>
                                     <input type="text" name="phone" id="claim-phone" class="input-form"
-                                        placeholder="Número de contacto" data-validate="phone">
+                                        placeholder="Número de contacto" data-validate="phone"
+                                        value="{{ old('phone') }}">
                                 </div>
                             </div>
                             <!-- === Tipo de reclamo o queja === -->
@@ -118,11 +131,11 @@
                                     <select id="claim-type" name="claim_type" class="select-form"
                                         data-validate="required|selected">
                                         <option value="">Selecciona una opción</option>
-                                        <option value="reclamo">
+                                        <option value="reclamo" @selected(old('claim_type') === 'reclamo')>
                                             Reclamo (disconformidad relacionada al producto o
                                             servicio)
                                         </option>
-                                        <option value="queja">
+                                        <option value="queja" @selected(old('claim_type') === 'queja')>
                                             Queja (malestar o descontento no relacionado al producto o servicio)
                                         </option>
                                     </select>
@@ -137,8 +150,9 @@
                                 </label>
 
                                 <div class="input-icon-container">
-                                    <textarea name="claim-detail" id="claim-detail" class="textarea-form"
-                                        placeholder="Describe lo ocurrido de la forma más clara posible" rows="4" data-validate="min:10|max:250"></textarea>
+                                    <textarea name="claim_detail" id="claim-detail" class="textarea-form"
+                                        placeholder="Describe lo ocurrido de la forma más clara posible" rows="4"
+                                        data-validate="required|min:10|max:3000">{{ old('claim_detail') }}</textarea>
 
                                     <i class="ri-file-text-line input-icon"></i>
                                 </div>
@@ -146,7 +160,8 @@
                         </div>
 
                         <div class="form-footer-static">
-                            <button class="boton-form boton-dark" type="submit" data-submit-loader>
+                            <button class="boton-form boton-dark" type="submit" data-submit-loader
+                                data-default-text="Enviar registro" data-loading-text="Enviando...">
                                 <span class="boton-form-icon">
                                     <i class="ri-send-plane-fill"></i>
                                 </span>
@@ -161,20 +176,10 @@
         </div>
     </section>
 
-    @push('js')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (window.initFormValidator) {
-                    window.initFormValidator('#claims-form', {
-                        validateOnBlur: true,
-                        scrollToFirstError: true,
-                    });
-                }
-
-                if (window.initSubmitLoader) {
-                    window.initSubmitLoader('#claims-form [data-submit-loader]');
-                }
-            });
-        </script>
-    @endpush
+    @if (empty($recaptchaSiteKey) || auth()->check())
+    @else
+        @push('js')
+            <script src="https://www.google.com/recaptcha/api.js?render={{ $recaptchaSiteKey }}"></script>
+        @endpush
+    @endif
 </x-app-layout>

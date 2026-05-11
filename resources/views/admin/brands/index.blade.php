@@ -171,6 +171,7 @@
                         @endcanany
 
                         <th class="column-id-th">ID</th>
+                        <th class="column-images-th">Imagen</th>
                         <th class="column-name-th">Nombre</th>
                         <th class="column-description-th">Descripción</th>
                         <th class="column-products-th">Productos</th>
@@ -194,6 +195,20 @@
                             @endcanany
 
                             <td class="column-id-td">{{ $brand->id }}</td>
+
+                            <td class="column-images-td">
+                                <div class="thumbnail-container">
+                                    @php $mainImagePath = $brand->image; @endphp
+                                    @if ($mainImagePath && Storage::disk('public')->exists($mainImagePath))
+                                        <img src="{{ asset('storage/' . $mainImagePath) }}" alt="Imagen de la marca"
+                                            class="table-thumbnail">
+                                    @else
+                                        <div class="table-no-thumbnail" title="Sin imagen">
+                                            <i class="ri-file-close-fill"></i>
+                                        </div>
+                                    @endif
+                                </div>
+                            </td>
 
                             <td class="column-name-td">
                                 {{ $brand->name }}

@@ -218,10 +218,9 @@
                         <label for="text_color" class="label-form">Color del texto</label>
                         <div class="input-icon-container">
                             <i class="ri-palette-line input-icon"></i>
-                            <input type="text" id="text_color" data-role="text-color" placeholder="#RRGGBB"
-                                style="cursor: pointer" autocomplete="off"
-                                data-validate="required|colorCss|requiredWith:overlay_text"
-                                value="{{ old('text_color', '#FFFFFF') }}" data-coloris>
+                            <input type="text" id="text_color"
+    value="{{ old('text_color', $defaultTextColor) }}"
+    data-coloris>
                         </div>
                     </div>
                     <div class="input-group">

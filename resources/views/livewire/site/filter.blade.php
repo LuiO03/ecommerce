@@ -1,4 +1,4 @@
-<div class="site-container">
+<div class="site-filter">
 
     <div class="products-layout {{ !empty($search) ? 'products-layout--full' : '' }}">
         @if (empty($search))
@@ -75,17 +75,18 @@
                                     <details class="filter-group" open>
                                         <summary class="filter-group-title">
                                             <span class="filters-name">{{ $option->name }}</span>
-
-                                            @if ($selectedCount > 0)
-                                                <span class="filters-badge">{{ $selectedCount }}</span>
-                                            @endif
-
                                             <i class="ri-arrow-down-s-line"></i>
                                         </summary>
 
                                         <div class="filter-group-content">
                                             @foreach ($option->features as $feature)
                                                 @php
+                                                    $count = $featureCounts[$feature->id] ?? 0;
+
+                                                    $selected = in_array($feature->id, $selectedFeatures ?? []);
+
+                                                    $disabled = $count <= 0 && !$selected;
+
                                                     $rawHex = $isColorOption
                                                         ? (string) ($feature->description ?? ($feature->value ?? ''))
                                                         : null;
@@ -96,9 +97,12 @@
                                                 @endphp
 
                                                 <label
-                                                    class="filter-item {{ in_array($feature->id, $selectedFeatures ?? []) ? 'is-active' : '' }}">
+                                                    class="filter-item
+                                                        {{ $selected ? 'is-active' : '' }}
+                                                        {{ $disabled ? 'is-disabled' : '' }}">
+
                                                     <input type="checkbox" wire:model.defer="selectedFeatures"
-                                                        value="{{ $feature->id }}">
+                                                        value="{{ $feature->id }}" @disabled($disabled)>
 
                                                     @if ($isColorOption && $displayColor)
                                                         <span class="filter-color-dot"
@@ -109,11 +113,10 @@
                                                         {{ $feature->value }}
                                                     </span>
 
-                                                    @if (isset($featureCounts[$feature->id]))
-                                                        <span class="filters-count">
-                                                            {{ $featureCounts[$feature->id] }}
-                                                        </span>
-                                                    @endif
+                                                    <span class="filters-count">
+                                                        {{ $count }}
+                                                    </span>
+
                                                 </label>
                                             @endforeach
                                         </div>
@@ -125,7 +128,6 @@
                             <section class="filters-price" aria-label="Filtrar por precio">
                                 <div class="filter-group-title filters-price-title">
                                     <span class="filters-name">Precio</span>
-                                    <i class="ri-price-tag-3-line"></i>
                                 </div>
 
                                 <div class="filters-price-range">
@@ -225,22 +227,7 @@
                     <h1 class="products-title">
                         {{ $this->pageTitle }}
                     </h1>
-                    <p class="products-count">
-                        @if (!empty($search))
-                            @if ($totalProducts > 0)
-                                {{ $totalProducts }}
-                                {{ Str::plural('producto', $totalProducts) }}
-                                encontrado{{ $totalProducts === 1 ? '' : 's' }} para
-                                "{{ $search }}"
-                            @else
-                                No se encontraron productos para "{{ $search }}"
-                            @endif
-                        @else
-                            {{ $totalProducts }}
-                            {{ Str::plural('producto', $totalProducts) }}
-                            encontrado{{ $totalProducts === 1 ? '' : 's' }}
-                        @endif
-                    </p>
+
                 </div>
 
                 <div class="site-select">
@@ -313,24 +300,62 @@
                     </div>
                 </div>
             </div>
+            <div>
+                <p class="products-count">
+                        @if (!empty($search))
+                            @if ($totalProducts > 0)
+                                {{ $totalProducts }}
+                                {{ Str::plural('producto', $totalProducts) }}
+                                encontrado{{ $totalProducts === 1 ? '' : 's' }} para
+                                "{{ $search }}"
+                            @else
+                                No se encontraron productos para "{{ $search }}"
+                            @endif
+                        @else
+                            {{ $totalProducts }}
+                            {{ Str::plural('producto', $totalProducts) }}
+                            encontrado{{ $totalProducts === 1 ? '' : 's' }}
+                        @endif
+                    </p>
+            </div>
+
+            @if (!empty($activeFilterPills))
+                <div class="filter-pills" aria-label="Filtros aplicados">
+                    @foreach ($activeFilterPills as $pill)
+                        <div class="filter-pill filter-pill--{{ $pill['type'] }}"
+                            wire:key="filter-pill-{{ $pill['type'] }}-{{ $pill['id'] }}">
+                            @if (!empty($pill['swatch']))
+                                <span class="filter-pill-swatch"
+                                    style="--filter-color: {{ $pill['swatch'] }};"></span>
+                            @endif
+
+                            <span class="filter-pill-text">
+                                <span class="filter-pill-meta">{{ $pill['meta'] }}</span>
+                                <span class="filter-pill-label">{{ $pill['label'] }}</span>
+                            </span>
+
+                            <button type="button" class="filter-pill-remove" aria-label="Quitar {{ $pill['meta'] }} {{ $pill['label'] }}"
+                                wire:click="{{ $pill['removeAction'] }}" wire:loading.attr="disabled"
+                                wire:target="{{ $pill['removeTarget'] }}">
+                                <i class="ri-close-line" wire:loading.remove
+                                    wire:target="{{ $pill['removeTarget'] }}"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading
+                                    wire:target="{{ $pill['removeTarget'] }}" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
 
             @if ($products->isNotEmpty())
                 <div class="products-results products-results--loading-zone">
-                    <div class="products-loading-overlay" wire:loading.flex
-                        wire:target="applyFilters,clearFilters,goToPage,nextPage,previousPage,updateSort">
-                        <div class="products-loading-card" role="status" aria-live="polite">
-                            <i class="ri-loader-4-line products-loading-icon"></i>
-                            <span>Cargando productos...</span>
-                        </div>
-                    </div>
-
                     <div class="products-grid">
                         @foreach ($products as $product)
                             @include('partials.site.product-card', ['product' => $product])
                         @endforeach
                     </div>
 
-                    @if ($totalPages > 1)
+                    @if ($totalProducts > 0)
                         @php
                             $pages = [];
                             $pages[] = 1;

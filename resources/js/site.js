@@ -11,6 +11,7 @@ import './site/modules/wishlist-page.js';
 import './site/modules/profile-addresses.js';
 import './site/modules/price-filter-manager.js';
 import './site/modules/contact-form.js';
+import './site/modules/claims-form.js';
 import './utils/custom-select';
 
 import { initImageUpload } from './utils/image-upload-handler.js';

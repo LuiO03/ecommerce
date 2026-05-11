@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory, Auditable;
+    use Auditable, HasFactory;
 
     protected $fillable = [
         'sku',
@@ -37,6 +37,7 @@ class Product extends Model
             'featured' => 'boolean',
         ];
     }
+
     /**
      * Devuelve el stock mínimo para alerta (campo o config)
      */
@@ -69,7 +70,8 @@ class Product extends Model
     }
 
     // relacion muchos a muchos con opciones
-    public function options(){
+    public function options()
+    {
         return $this->belongsToMany(Option::class)->withPivot('value')->withTimestamps();
     }
 
@@ -88,6 +90,42 @@ class Product extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
+    public function getVariantOptionsAttribute()
+    {
+        $variants = $this->variants()
+            ->where('status', true)
+            ->where('stock', '>', 0)
+            ->with('features.option')
+            ->get();
+
+        return $variants
+            ->flatMap(fn ($variant) => $variant->features)
+            ->groupBy('option_id')
+            ->map(function ($features) {
+
+                $option = $features->first()?->option;
+
+                return (object) [
+                    'option_id' => $option?->id,
+                    'name' => $option?->name ?? 'Opción',
+                    'slug' => $option?->slug,
+
+                    'is_color' => $option?->slug === Option::COLOR_SLUG,
+
+                    'features' => $features
+                        ->unique('id')
+                        ->values()
+                        ->map(fn ($feature) => (object) [
+                            'id' => $feature->id,
+                            'value' => $feature->value,
+                            'description' => $feature->description,
+                        ])
+                        ->all(),
+                ];
+            })
+            ->values();
+    }
+
     public static function generateUniqueSlug(string $name, ?int $id = null): string
     {
         $slug = \Illuminate\Support\Str::slug($name);
@@ -97,7 +135,7 @@ class Product extends Model
         while (self::where('slug', $slug)
             ->when($id, fn ($query) => $query->where('id', '!=', $id))
             ->exists()) {
-            $slug = $original . '-' . $counter;
+            $slug = $original.'-'.$counter;
             $counter++;
         }
 

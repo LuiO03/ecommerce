@@ -23,6 +23,7 @@ return new class extends Migration
 
             // Campos adicionales
             $table->text('description')->nullable();
+            $table->string('image')->nullable();    // opcional
 
             // Estado (activo/inactivo)
             $table->boolean('status')->default(true)->index();

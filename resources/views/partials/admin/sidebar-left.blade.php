@@ -177,6 +177,18 @@
                     </a>
                 </li>
             @endcan
+
+            @can('claim-messages.index')
+                <li>
+                    <a href="{{ request()->routeIs('admin.claim-messages.*') ? '#' : route('admin.claim-messages.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.claim-messages.*') ? 'active' : '' }}"
+                        data-tooltip="Mensajes de Reclamos">
+                        <i class="ri-flag-line sidebar-icon"></i>
+                        <span>Mensajes de Reclamos</span>
+                    </a>
+                </li>
+            @endcan
+
             <!-- Submenú Gestion de Acceso -->
             @canany(['usuarios.index', 'clientes.index', 'roles.index', 'accesos.index', 'auditorias.index'])
                 <li class="submenu-container">

@@ -12,7 +12,9 @@ export function initCategoriesSlider() {
             window.SwiperModules.Autoplay,
         ],
 
-        loop: true,
+        centerInsufficientSlides: true,
+
+        loop: false,
 
         autoplay: {
             delay: 5500,

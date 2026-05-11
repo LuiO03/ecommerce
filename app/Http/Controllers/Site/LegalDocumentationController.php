@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\CompanySetting;
+use Illuminate\Support\Str;
 
 class LegalDocumentationController extends Controller
 {
@@ -53,6 +54,8 @@ class LegalDocumentationController extends Controller
         return view('site.legal.claims', [
             'companySettings' => $settings,
             'content' => $settings->claims_book_information,
+            'claimIdempotencyKey' => (string) Str::uuid(),
+            'recaptchaSiteKey' => (string) config('services.recaptcha.site_key', ''),
         ]);
     }
 }

@@ -46,6 +46,7 @@ class Filter extends Component
     public $brands = [];
     public $options = [];
     public $selectedFeaturesByOption = [];
+    public $activeFilterPills = [];
     /**
      * Filtros de características (features)
      * ⚠️ NO tiene watcher automático - solo se aplica al hacer clic en "Aplicar filtros"
@@ -78,6 +79,48 @@ class Filter extends Component
     public $perPage = 24;
     public $perPageStep = 24;
     public $hasMore = false;
+
+    protected $queryString = [
+        'selectedBrands' => [
+            'as' => 'brands',
+            'except' => [],
+        ],
+
+        'selectedFeatures' => [
+            'as' => 'features',
+            'except' => [],
+        ],
+
+        'priceMin' => [
+            'as' => 'min',
+            'except' => '',
+        ],
+
+        'priceMax' => [
+            'as' => 'max',
+            'except' => '',
+        ],
+
+        'selectedPriceRange' => [
+            'as' => 'price',
+            'except' => '',
+        ],
+
+        'sortBy' => [
+            'as' => 'sort',
+            'except' => 'recent',
+        ],
+
+        'search' => [
+            'as' => 'q',
+            'except' => '',
+        ],
+
+        'currentPage' => [
+            'as' => 'page',
+            'except' => 1,
+        ],
+    ];
 
     // Constants
     private const MIN_STOCK = 1;
@@ -116,6 +159,38 @@ class Filter extends Component
     public function clearFilters()
     {
         $this->reset(['selectedFeatures', 'selectedBrands', 'priceMin', 'priceMax', 'selectedPriceRange']);
+        $this->activeFilterPills = [];
+        $this->currentPage = 1;
+        $this->loadProducts();
+    }
+
+    public function removeSelectedBrand(int|string $brandId): void
+    {
+        $this->selectedBrands = collect($this->selectedBrands)
+            ->reject(fn ($selectedBrandId) => (string) $selectedBrandId === (string) $brandId)
+            ->values()
+            ->all();
+
+        $this->currentPage = 1;
+        $this->loadProducts();
+    }
+
+    public function removeSelectedFeature(int|string $featureId): void
+    {
+        $this->selectedFeatures = collect($this->selectedFeatures)
+            ->reject(fn ($selectedFeatureId) => (string) $selectedFeatureId === (string) $featureId)
+            ->values()
+            ->all();
+
+        $this->currentPage = 1;
+        $this->loadProducts();
+    }
+
+    public function clearPriceFilter(): void
+    {
+        $this->priceMin = '';
+        $this->priceMax = '';
+        $this->selectedPriceRange = '';
         $this->currentPage = 1;
         $this->loadProducts();
     }
@@ -209,7 +284,7 @@ class Filter extends Component
         $offset = ($this->currentPage - 1) * $this->perPageStep;
 
         // Obtener productos con ordenamiento
-        $query = Product::with(['category', 'images', 'brand'])
+        $query = Product::with(['category', 'images', 'brand', 'variants'])
             ->whereIn('products.id', $baseProductQuery)
             ->orderBy(...$this->getSortingOrder());
 
@@ -229,7 +304,7 @@ class Filter extends Component
         // Cargar datos de filtros
         $this->loadFacetCounts($featuresByOption, $categoryIds);
         $this->loadBrands();
-        $this->filterOptionsByCounts();
+        $this->syncActiveFilterPills();
     }
 
     /**
@@ -610,5 +685,131 @@ class Filter extends Component
     public function render()
     {
         return view('livewire.site.filter');
+    }
+
+    protected function syncActiveFilterPills(): void
+    {
+        $pills = [];
+
+        $selectedBrands = collect($this->selectedBrands)
+            ->filter(fn ($brandId) => $brandId !== null && $brandId !== '')
+            ->values();
+
+        if ($selectedBrands->isNotEmpty()) {
+            $brandsById = Brand::query()
+                ->whereIn('id', $selectedBrands->all())
+                ->get(['id', 'name'])
+                ->keyBy('id');
+
+            foreach ($selectedBrands as $brandId) {
+                $brand = $brandsById->get((int) $brandId);
+
+                if (!$brand) {
+                    continue;
+                }
+
+                $pills[] = [
+                    'type' => 'brand',
+                    'id' => $brand->id,
+                    'label' => $brand->name,
+                    'meta' => 'Marca',
+                    'removeAction' => 'removeSelectedBrand(' . $brand->id . ')',
+                    'removeTarget' => 'removeSelectedBrand',
+                    'swatch' => null,
+                ];
+            }
+        }
+
+        $selectedFeatures = collect($this->selectedFeatures)
+            ->filter(fn ($featureId) => $featureId !== null && $featureId !== '')
+            ->values();
+
+        if ($selectedFeatures->isNotEmpty()) {
+            $featuresById = Feature::query()
+                ->with('option:id,name')
+                ->whereIn('id', $selectedFeatures->all())
+                ->get(['id', 'option_id', 'value', 'description'])
+                ->keyBy('id');
+
+            foreach ($selectedFeatures as $featureId) {
+                $feature = $featuresById->get((int) $featureId);
+
+                if (!$feature) {
+                    continue;
+                }
+
+                $isColorOption = $feature->option && method_exists($feature->option, 'isColor') && $feature->option->isColor();
+                $rawHex = $isColorOption ? (string) ($feature->description ?? ($feature->value ?? '')) : null;
+                $normalized = $rawHex !== null ? ltrim($rawHex, '#') : null;
+                $displayColor = $normalized ? '#' . $normalized : null;
+
+                $pills[] = [
+                    'type' => 'feature',
+                    'id' => $feature->id,
+                    'label' => $feature->value,
+                    'meta' => $feature->option?->name ?? 'Filtro',
+                    'removeAction' => 'removeSelectedFeature(' . $feature->id . ')',
+                    'removeTarget' => 'removeSelectedFeature',
+                    'swatch' => $displayColor,
+                ];
+            }
+        }
+
+        $priceLabel = $this->getActivePriceFilterLabel();
+
+        if ($priceLabel) {
+            $pills[] = [
+                'type' => 'price',
+                'id' => 'price',
+                'label' => $priceLabel,
+                'meta' => 'Precio',
+                'removeAction' => 'clearPriceFilter',
+                'removeTarget' => 'clearPriceFilter',
+                'swatch' => null,
+            ];
+        }
+
+        $this->activeFilterPills = $pills;
+    }
+
+    protected function getActivePriceFilterLabel(): ?string
+    {
+        $presets = [
+            '50-100' => 'S/. 50 a 100',
+            '100-200' => 'S/. 100 a 200',
+            '200-500' => 'S/. 200 a 500',
+            '500-1000' => 'S/. 500 a 1000',
+            '1000+' => 'S/. 1000 a más',
+        ];
+
+        if (!empty($this->selectedPriceRange) && isset($presets[$this->selectedPriceRange])) {
+            return $presets[$this->selectedPriceRange];
+        }
+
+        $minPrice = is_numeric($this->priceMin) ? (float) $this->priceMin : null;
+        $maxPrice = is_numeric($this->priceMax) ? (float) $this->priceMax : null;
+
+        if ($minPrice === null && $maxPrice === null) {
+            return null;
+        }
+
+        if ($minPrice !== null && $maxPrice !== null) {
+            if ($minPrice > $maxPrice) {
+                [$minPrice, $maxPrice] = [$maxPrice, $minPrice];
+            }
+
+            return 'S/. ' . $this->formatPriceValue($minPrice) . ' a ' . $this->formatPriceValue($maxPrice);
+        }
+
+        if ($minPrice !== null) {
+            return 'Desde S/. ' . $this->formatPriceValue($minPrice);
+        }
+
+        return 'Hasta S/. ' . $this->formatPriceValue($maxPrice);
+    }
+
+    protected function formatPriceValue(float $value): string
+    {
+        return number_format($value, 2, '.', '');
     }
 }

@@ -25,11 +25,26 @@ class PostImage extends Model
         'order' => 'integer',
     ];
 
+    protected $appends = ['url'];
+
+    protected $visible = ['id', 'post_id', 'path', 'alt', 'description', 'is_main', 'order', 'url', 'created_at', 'updated_at'];
+
     /**
      * Relación: cada imagen pertenece a un post
      */
     public function post()
     {
         return $this->belongsTo(Post::class);
+    }
+
+    /**
+     * Accessor: genera URL pública desde el campo path
+     */
+    public function getUrlAttribute()
+    {
+        if (!$this->path) {
+            return null;
+        }
+        return asset('storage/' . $this->path);
     }
 }
