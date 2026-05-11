@@ -221,8 +221,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: red;
-
     padding: 4px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-element);
@@ -237,7 +235,7 @@
 
 .product-card-variant-value.is-color .variant-swatch {
     width: 100%;
-
+    min-height: 25px;
     border-radius: 50%;
     border: 1px solid var(--color-border);
 }
