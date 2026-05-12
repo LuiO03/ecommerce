@@ -1,83 +1,101 @@
 <!-- Sección de Categorías -->
 @php $categoriesListId = 'categories-' . uniqid(); @endphp
 <section class="categories-section is-loading" data-categories-list data-categories-list-id="{{ $categoriesListId }}">
-@push('js')
-    <script>
-        (() => {
-            const categoriesListId = @js($categoriesListId);
+    @push('js')
+        <script>
+            (() => {
+                const categoriesListId = @js($categoriesListId);
 
-            const initCategoriesSlider = () => {
-                const categoriesListRoot = document.querySelector(`[data-categories-list-id="${categoriesListId}"]`);
+                const initCategoriesSlider = () => {
+                    const categoriesListRoot = document.querySelector(
+                    `[data-categories-list-id="${categoriesListId}"]`);
 
-                if (!categoriesListRoot || categoriesListRoot.dataset.categoriesInitialized === 'true') {
-                    return;
-                }
+                    if (!categoriesListRoot || categoriesListRoot.dataset.categoriesInitialized === 'true') {
+                        return;
+                    }
 
-                categoriesListRoot.dataset.categoriesInitialized = 'true';
+                    categoriesListRoot.dataset.categoriesInitialized = 'true';
 
-                const sliderEl = categoriesListRoot.querySelector('.categories-slider');
-                const loadingStartedAt = Date.now();
-                const minimumLoadingTime = 600;
+                    const sliderEl = categoriesListRoot.querySelector('.categories-slider');
+                    const loadingStartedAt = Date.now();
+                    const minimumLoadingTime = 600;
 
-                const markReady = () => {
-                    const elapsed = Date.now() - loadingStartedAt;
-                    const remaining = Math.max(minimumLoadingTime - elapsed, 0);
+                    const markReady = () => {
+                        const elapsed = Date.now() - loadingStartedAt;
+                        const remaining = Math.max(minimumLoadingTime - elapsed, 0);
 
-                    window.setTimeout(() => {
-                        categoriesListRoot.classList.remove('is-loading');
-                        categoriesListRoot.classList.add('is-ready');
-                    }, remaining);
+                        window.setTimeout(() => {
+                            categoriesListRoot.classList.remove('is-loading');
+                            categoriesListRoot.classList.add('is-ready');
+                        }, remaining);
+                    };
+
+                    if (sliderEl) {
+                        new Swiper(sliderEl, {
+                            modules: [
+                                window.SwiperModules.Navigation,
+                                window.SwiperModules.Pagination,
+                                window.SwiperModules.Autoplay,
+                            ],
+                            centerInsufficientSlides: true,
+                            loop: false,
+                            autoplay: {
+                                delay: 5500,
+                            },
+                            navigation: {
+                                nextEl: categoriesListRoot.querySelector('.swiper-button-next'),
+                                prevEl: categoriesListRoot.querySelector('.swiper-button-prev'),
+                            },
+                            pagination: {
+                                el: categoriesListRoot.querySelector('.swiper-pagination'),
+                                clickable: true,
+                            },
+                            breakpoints: {
+                                320: {
+                                    slidesPerView: 3,
+                                    spaceBetween: 3
+                                },
+                                640: {
+                                    slidesPerView: 4,
+                                    spaceBetween: 5
+                                },
+                                800: {
+                                    slidesPerView: 5,
+                                    spaceBetween: 8
+                                },
+                                1024: {
+                                    slidesPerView: 6,
+                                    spaceBetween: 16
+                                },
+                                1280: {
+                                    slidesPerView: 8,
+                                    spaceBetween: 16
+                                },
+                            },
+                            on: {
+                                init() {
+                                    markReady();
+                                },
+                                imagesReady() {
+                                    markReady();
+                                },
+                            },
+                        });
+                    } else {
+                        markReady();
+                    }
                 };
 
-                if (sliderEl) {
-                    new Swiper(sliderEl, {
-                        modules: [
-                            window.SwiperModules.Navigation,
-                            window.SwiperModules.Pagination,
-                            window.SwiperModules.Autoplay,
-                        ],
-                        centerInsufficientSlides: true,
-                        loop: false,
-                        autoplay: {
-                            delay: 5500,
-                        },
-                        navigation: {
-                            nextEl: categoriesListRoot.querySelector('.swiper-button-next'),
-                            prevEl: categoriesListRoot.querySelector('.swiper-button-prev'),
-                        },
-                        pagination: {
-                            el: categoriesListRoot.querySelector('.swiper-pagination'),
-                            clickable: true,
-                        },
-                        breakpoints: {
-                            320: { slidesPerView: 3, spaceBetween: 3 },
-                            640: { slidesPerView: 4, spaceBetween: 5 },
-                            800: { slidesPerView: 5, spaceBetween: 8 },
-                            1024: { slidesPerView: 6, spaceBetween: 16 },
-                            1280: { slidesPerView: 8, spaceBetween: 16 },
-                        },
-                        on: {
-                            init() {
-                                markReady();
-                            },
-                            imagesReady() {
-                                markReady();
-                            },
-                        },
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initCategoriesSlider, {
+                        once: true
                     });
                 } else {
-                    markReady();
+                    initCategoriesSlider();
                 }
-            };
-
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initCategoriesSlider, { once: true });
-            } else {
-                initCategoriesSlider();
-            }
-        })();
-    </script>
-@endpush
+            })();
+        </script>
+    @endpush
 
     <div class="section-header">
         <h2 class="section-title">Categorías populares</h2>
@@ -119,5 +137,5 @@
         <div class="swiper-button-next"></div>
         <div class="swiper-pagination"></div>
     </div>
-</div>
+    </div>
 </section>

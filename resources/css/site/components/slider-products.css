@@ -8,17 +8,52 @@
     display: none;
 }
 
-.section-header{
+
+.section-header {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    line-height: 1;
+    width: 100%;
+    align-items: center;
+    gap: 5px;
+    max-width: var(--site-max-width);
+    margin: 0 auto;
     justify-content: start;
-    line-height: 1.1;
 }
 
-.section-title{
+.section-title {
+    width: 100%;
     text-align: start;
+    font-weight: bold;
 }
+
+.section-subtitle {
+    width: 100%;
+    display: flex;
+    text-align: start;
+    font-size: var(--font-size-h5);
+    font-weight: 400;
+}
+
+/* typo original corregido: section-conteiner -> section-container */
+.section-container-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--site-max-width);
+    margin: 0 auto;
+}
+
+.section-container-group .section-header {
+    max-width: none;
+    width: fit-content;
+    margin: 0;
+    padding: 0;
+}
+
 
 /* Slider */
 .products-slider {
