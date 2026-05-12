@@ -62,9 +62,6 @@
     position: relative;
 }
 
-.products-slider .swiper-wrapper{
-    display: flex;
-}
 
 .products-slide {
     height: auto;

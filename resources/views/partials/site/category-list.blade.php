@@ -8,7 +8,7 @@
 
                 const initCategoriesSlider = () => {
                     const categoriesListRoot = document.querySelector(
-                    `[data-categories-list-id="${categoriesListId}"]`);
+                        `[data-categories-list-id="${categoriesListId}"]`);
 
                     if (!categoriesListRoot || categoriesListRoot.dataset.categoriesInitialized === 'true') {
                         return;
@@ -39,9 +39,7 @@
                             ],
                             centerInsufficientSlides: true,
                             loop: false,
-                            autoplay: {
-                                delay: 5500,
-                            },
+                            speed: 1400,
                             navigation: {
                                 nextEl: categoriesListRoot.querySelector('.swiper-button-next'),
                                 prevEl: categoriesListRoot.querySelector('.swiper-button-prev'),
@@ -104,7 +102,8 @@
         </p>
     </div>
 
-    <div class="categories-slider swiper">
+    <div class="categories-slider-wrapper">
+
         <div class="categories-slider-skeleton" aria-hidden="true" data-skeleton-container>
             @for ($i = 0; $i < 8; $i++)
                 <div class="category-card category-card-skeleton">
@@ -112,30 +111,31 @@
                 </div>
             @endfor
         </div>
-        <div class="swiper-wrapper">
-            @foreach ($categories as $category)
-                <div class="swiper-slide categories-slide">
-                    <a href="{{ route('categories.show', $category) }}" class="category-card">
-                        <div class="category-image">
-                            @if ($category->image)
-                                <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}"
-                                    alt="{{ $category->name }} imagen"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="product-card-image-fallback" style="display: none;">
-                                    <i class="ri-image-fill"></i>
-                                    <span>Imagen no disponible</span>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="category-name">{{ $category->name }}</div>
-                    </a>
-                </div>
-            @endforeach
-        </div>
+        <div class="categories-slider swiper">
+            <div class="swiper-wrapper">
+                @foreach ($categories as $category)
+                    <div class="swiper-slide categories-slide">
+                        <a href="{{ route('categories.show', $category) }}" class="category-card">
+                            <div class="category-image">
+                                @if ($category->image)
+                                    <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/default-category.png') }}"
+                                        alt="{{ $category->name }} imagen"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="product-card-image-fallback" style="display: none;">
+                                        <i class="ri-image-fill"></i>
+                                        <span>Imagen no disponible</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="category-name">{{ $category->name }}</div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
 
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-pagination"></div>
-    </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
+        </div>
     </div>
 </section>
