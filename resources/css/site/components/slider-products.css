@@ -47,13 +47,6 @@
     margin: 0 auto;
 }
 
-.section-container-group .section-header {
-    max-width: none;
-    width: fit-content;
-    margin: 0;
-    padding: 0;
-}
-
 
 /* Slider */
 .products-slider {
@@ -73,7 +66,6 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-width: var(--site-max-width);
     margin: 0 auto;
     padding: 1rem 1rem 0px 1rem;
     width: 100%;

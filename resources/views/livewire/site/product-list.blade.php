@@ -109,7 +109,7 @@
         </script>
     @endpush
 
-    <div class="section-container-group">
+    <div class="section-conteiner">
         <div class="section-header">
             <h2 class="section-title">{{ $title }}</h2>
             <p class="section-subtitle">
