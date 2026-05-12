@@ -89,7 +89,7 @@
     grid-template-columns: minmax(0, var(--site-sidebar-width)) minmax(0, 1fr);
     gap: 2rem;
     align-items: start;
-    padding-bottom: 2rem;
+    padding: 1rem 1rem 2rem 1rem;
 }
 
 /* Layout de resultados de búsqueda sin sidebar: una sola columna */

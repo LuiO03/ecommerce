@@ -19,18 +19,11 @@ import { initFormValidator } from './utils/form-validator.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initTextareaAutosize } from './utils/textarea-autosize.js';
 
-// Swiper Slider import
-import { initCategoriesSlider } from './site/components/categories-slider';
-
 // Exponer helpers de formularios para vistas públicas (login, etc.)
 window.initImageUpload = initImageUpload;
 window.initFormValidator = initFormValidator;
 window.initSubmitLoader = initSubmitLoader;
 window.initTextareaAutosize = initTextareaAutosize;
-
-document.addEventListener('DOMContentLoaded', () => {
-    initCategoriesSlider();
-});
 
 // Swiper Slider
 import Swiper from 'swiper';

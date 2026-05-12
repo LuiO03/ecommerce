@@ -103,9 +103,9 @@
             });
         </script>
     @endpush
-    <section class="section-container bg-section pb-0">
-        @include('partials.site.category-card')
-    </section>
+
+        @include('partials.site.category-list')
+
     <!-- Sección de Últimos Productos con Livewire -->
     <livewire:site.product-list :limit="12" title="Últimos Productos" subtitle="Descubre nuestras novedades" />
     <!-- Sección de Ofertas -->
