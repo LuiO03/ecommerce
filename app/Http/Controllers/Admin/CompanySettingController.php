@@ -218,10 +218,8 @@ class CompanySettingController extends Controller
         ] : null;
         $data = collect($request->validated());
         $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
-        $socialLinks = [];
         foreach ($platforms as $platform) {
             $url = $data->get("{$platform}_url");
-            $socialLinks[$platform] = $url;
             // Guardar el campo *_url en el modelo
             $setting->setAttribute("{$platform}_url", $url);
             // Si la URL está vacía, forzar el enabled a false

@@ -241,29 +241,6 @@
                     </div>
                 </div>
 
-                <!-- Comentarios -->
-                <div class="input-group">
-                    <label class="label-form">Permitir comentarios</label>
-                    <div class="binary-switch">
-                        <!-- Checkbox real -->
-                        <input type="hidden" name="allow_comments" value="0">
-
-                        <input type="checkbox" name="allow_comments" id="allow_comments" class="switch-input" value="1"
-                            {{ old('allow_comments', $post->allow_comments) == 1 ? 'checked' : '' }} data-validate="required">
-
-                        <!-- Labels visuales -->
-                        <label for="allow_comments" class="switch-label switch-label-on">
-                            <i class="ri-checkbox-circle-line"></i> Si
-                        </label>
-
-                        <label for="allow_comments" class="switch-label switch-label-off">
-                            <i class="ri-close-circle-line"></i> No
-                        </label>
-
-                        <div class="switch-slider"></div>
-                    </div>
-
-                </div>
             </div>
 
             <!-- ================= CONTENIDO ================= -->

@@ -180,7 +180,6 @@
                 views: 'Vistas',
                 published_at: 'Fecha de publicación',
                 visibility: 'Visibilidad',
-                allow_comments: 'Permitir comentarios',
                 reviewed_by: 'Revisado por',
                 reviewed_at: 'Fecha de revisión',
 
@@ -207,7 +206,6 @@
                 support_email: 'Correo de soporte',
                 support_phone: 'Teléfono de soporte',
                 website: 'Sitio web',
-                social_links: 'Redes sociales',
                 facebook_enabled: 'Facebook habilitado',
                 instagram_enabled: 'Instagram habilitado',
                 twitter_enabled: 'Twitter habilitado',
@@ -473,8 +471,8 @@
                             return '<div class="permissions-badge-list">' + badges + '</div>';
                         }
 
-                        // Booleans tipo *_enabled, allow_comments, toggles varios
-                        if (lowerKey.endsWith('_enabled') || lowerKey === 'allow_comments') {
+                        // Booleans tipo *_enabled, toggles varios
+                        if (lowerKey.endsWith('_enabled')) {
                             const truthy = val === true || val === 1 || val === '1' || val === 'true';
 
                             // Para flags *_enabled (ej. Facebook habilitado): Activo / Inactivo
@@ -483,14 +481,6 @@
                                     return '<span class="badge boton-success"><i class="ri-check-line"></i> Activo</span>';
                                 }
                                 return '<span class="badge boton-danger"><i class="ri-close-line"></i> Inactivo</span>';
-                            }
-
-                            // Para allow_comments: Permitidos / No permitidos
-                            if (lowerKey === 'allow_comments') {
-                                if (truthy) {
-                                    return '<span class="badge boton-success"><i class="ri-check-line"></i> Permitidos</span>';
-                                }
-                                return '<span class="badge boton-danger"><i class="ri-close-line"></i> No permitidos</span>';
                             }
                         }
 
@@ -544,40 +534,6 @@
                         keys.forEach(function(key) {
                             const oldVal = oldValues[key];
                             const newVal = newValues[key];
-
-                            // Caso especial: redes sociales de la empresa
-                            if (eventType === 'company_social_updated' && key === 'social_links') {
-                                const oldLinks = oldVal || {};
-                                const newLinks = newVal || {};
-                                const platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
-
-                                const formatLink = function(url) {
-                                    if (!url) return '—';
-                                    const safe = String(url).replace(/"/g, '&quot;');
-                                    return `<a href="${safe}" target="_blank" rel="noopener noreferrer">${safe}</a>`;
-                                };
-
-                                platforms.forEach(function(platform) {
-                                    const prevUrl = oldLinks[platform] || '';
-                                    const nextUrl = newLinks[platform] || '';
-
-                                    if (prevUrl === nextUrl) {
-                                        return;
-                                    }
-
-                                    const label = 'Red social: ' + platform.charAt(0).toUpperCase() + platform.slice(1);
-
-                                    rowsHtml += `
-                                        <tr>
-                                            <td><code>${label}</code></td>
-                                            <td>${formatLink(prevUrl)}</td>
-                                            <td>${formatLink(nextUrl)}</td>
-                                        </tr>
-                                    `;
-                                });
-
-                                return;
-                            }
 
                             // Saltar campos cuyo valor no cambió
                             try {

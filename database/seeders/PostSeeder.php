@@ -26,7 +26,6 @@ class PostSeeder extends Seeder
                 'content'        => $faker->paragraphs(5, true),
                 'status'         => $faker->randomElement(['draft','pending','published','rejected']),
                 'visibility'     => $faker->randomElement(['public','private','authenticated']),
-                'allow_comments' => $faker->boolean(80),
                 'views'          => $faker->numberBetween(0, 500),
                 'published_at'   => $faker->optional()->dateTimeBetween('-1 year', 'now'),
                 'created_by'     => $userId,

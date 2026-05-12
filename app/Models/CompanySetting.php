@@ -24,7 +24,6 @@ class CompanySetting extends Model
         'phone',
         'address',
         'website',
-        'social_links',
         'logo_path',
         'about',
         'support_email',
@@ -52,7 +51,6 @@ class CompanySetting extends Model
     ];
 
     protected $casts = [
-        'social_links' => 'array',
         'facebook_enabled' => 'boolean',
         'instagram_enabled' => 'boolean',
         'twitter_enabled' => 'boolean',
@@ -64,9 +62,6 @@ class CompanySetting extends Model
 
     protected static function booted(): void
     {
-        static::retrieved(function (self $model): void {
-            $model->mergeSocialLinks();
-        });
 
         static::creating(function (self $model): void {
             if (Auth::check()) {
@@ -89,7 +84,6 @@ class CompanySetting extends Model
         });
 
         static::saved(function (self $model): void {
-            $model->mergeSocialLinks();
             Cache::forget('company_settings');
         });
 
@@ -111,24 +105,6 @@ class CompanySetting extends Model
         return Storage::disk('public')->url($this->logo_path);
     }
 
-    protected function mergeSocialLinks(): void
-    {
-        $links = $this->social_links ?? [];
-
-        $platforms = ['facebook', 'instagram', 'twitter', 'youtube', 'tiktok', 'linkedin'];
-
-        foreach ($platforms as $platform) {
-            $urlKey = sprintf('%s_url', $platform);
-            $existing = $links[$platform] ?? null;
-            $attributeValue = $this->getAttribute($urlKey);
-
-            if ($attributeValue && $attributeValue !== $existing) {
-                $links[$platform] = $attributeValue;
-            }
-        }
-
-        $this->social_links = $links;
-    }
 
     public function creator()
     {
@@ -153,7 +129,7 @@ class CompanySetting extends Model
             return $default;
         }
 
-        $links = $this->social_links ?? [];
-        return $links[$key] ?? $default;
+        $urlKey = sprintf('%s_url', $key);
+        return $this->getAttribute($urlKey) ?: $default;
     }
 }

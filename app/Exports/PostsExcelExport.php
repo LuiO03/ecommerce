@@ -26,7 +26,7 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
 
     public function array(): array
     {
-        $query = Post::select('id', 'title', 'status', 'visibility', 'views', 'allow_comments', 'created_at');
+        $query = Post::select('id', 'title', 'status', 'visibility', 'views', 'created_at');
 
         if (!empty($this->ids)) {
             $query->whereIn('id', $this->ids);
@@ -50,7 +50,6 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
                     default => ucfirst($post->visibility),
                 },
                 $post->views,
-                $post->allow_comments ? 'Sí' : 'No',
                 $post->created_at ? $post->created_at->format('d/m/Y H:i') : '—',
             ];
         })->toArray();
@@ -60,8 +59,8 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
         $title = empty($this->ids) ? 'LISTA COMPLETA DE POSTS' : 'POSTS SELECCIONADOS';
 
         $result = [
-            [$title, '', '', '', '', '', ''],
-            ['ID', 'Título', 'Estado', 'Visibilidad', 'Vistas', 'Comentarios', 'Creado'],
+            [$title, '', '', '', '', ''],
+            ['ID', 'Título', 'Estado', 'Visibilidad', 'Vistas', 'Creado'],
         ];
 
         foreach ($posts as $postRow) {
@@ -73,7 +72,7 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A1:F1');
         $sheet->getStyle('A1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 16, 'color' => ['argb' => 'FF2563EB']],
             'alignment' => [
@@ -83,7 +82,7 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
         ]);
         $sheet->getRowDimension(1)->setRowHeight(30);
 
-        $sheet->getStyle('A2:G2')->applyFromArray([
+        $sheet->getStyle('A2:F2')->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -105,8 +104,7 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
             'C' => 18,
             'D' => 18,
             'E' => 12,
-            'F' => 16,
-            'G' => 20,
+            'F' => 20,
         ];
     }
 
@@ -121,21 +119,21 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
                 $summaryRow = $dataEndRow + 1;
 
                 $sheet->setCellValue("A{$summaryRow}", "Total de registros: {$this->dataCount}");
-                $sheet->mergeCells("A{$summaryRow}:G{$summaryRow}");
+                $sheet->mergeCells("A{$summaryRow}:F{$summaryRow}");
                 $sheet->getStyle("A{$summaryRow}")->applyFromArray([
                     'font' => ['italic' => true, 'bold' => true, 'color' => ['argb' => 'FF374151']],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_RIGHT],
                 ]);
 
                 if ($dataEndRow >= $dataStartRow) {
-                    $sheet->getStyle("A2:G{$dataEndRow}")
+                    $sheet->getStyle("A2:F{$dataEndRow}")
                         ->getBorders()
                         ->getAllBorders()
                         ->setBorderStyle(Border::BORDER_THIN)
                         ->setColor(new Color('FFCBD5E1'));
                 }
 
-                foreach (['A','B','C','D','E','F','G'] as $col) {
+                foreach (['A','B','C','D','E','F'] as $col) {
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                     $width = $sheet->getColumnDimension($col)->getWidth();
                     if ($width > 50) {
@@ -145,7 +143,7 @@ class PostsExcelExport implements FromArray, WithStyles, WithColumnWidths, WithE
 
                 for ($row = $dataStartRow; $row <= $dataEndRow; $row++) {
                     if (($row - $dataStartRow) % 2 == 1) {
-                        $sheet->getStyle("A{$row}:G{$row}")->applyFromArray([
+                        $sheet->getStyle("A{$row}:F{$row}")->applyFromArray([
                             'fill' => [
                                 'fillType' => Fill::FILL_SOLID,
                                 'startColor' => ['argb' => 'FFF9FAFB'],

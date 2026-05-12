@@ -38,8 +38,6 @@ return new class extends Migration
             $table->enum('visibility', ['public','private','authenticated'])
                   ->default('public');
 
-            $table->boolean('allow_comments')->default(true);
-
             // Review info
             $table->unsignedBigInteger('reviewed_by')->nullable();
             $table->timestamp('reviewed_at')->nullable();

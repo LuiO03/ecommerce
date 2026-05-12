@@ -52,7 +52,6 @@ class PostController extends Controller
             'content' => 'required|string|min:10',
             'status' => 'required|string|'.$statusRule,
             'visibility' => 'required|string|in:public,private,authenticated',
-            'allow_comments' => 'sometimes|boolean',
             'published_at' => 'nullable|date',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
@@ -76,7 +75,6 @@ class PostController extends Controller
             'content' => $request->content,
             'status' => $status,
             'visibility' => $request->visibility,
-            'allow_comments' => $request->boolean('allow_comments'),
             'published_at' => null,
             'created_by' => Auth::id(),
             'updated_by' => Auth::id(),
@@ -140,7 +138,7 @@ class PostController extends Controller
 
         $query = Post::select([
             'id','title','slug','status','visibility',
-            'views','allow_comments','created_by','created_at'
+            'views','created_by','created_at'
         ])
         ->withCount('images')
         ->with([
@@ -200,7 +198,6 @@ class PostController extends Controller
             'content' => 'required|string|min:10',
             'status' => 'required|string|'.$statusRule,
             'visibility' => 'required|string|in:public,private,authenticated',
-            'allow_comments' => 'sometimes|boolean',
             'published_at' => 'nullable|date',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
@@ -224,7 +221,6 @@ class PostController extends Controller
             'content' => $request->content,
             'status' => $status,
             'visibility' => $request->visibility,
-            'allow_comments' => $request->boolean('allow_comments'),
             'published_at' => $request->published_at ?? $post->published_at,
             'updated_by' => Auth::id(),
         ]);
@@ -537,7 +533,6 @@ class PostController extends Controller
             'status' => $post->status,
             'visibility' => $post->visibility,
             'views' => $post->views,
-            'allow_comments' => $post->allow_comments,
             'published_at' => $post->published_at?->format('d/m/Y H:i') ?? '—',
             'image' => $post->main_image_path,
             'main_image' => $post->main_image_path,
@@ -616,7 +611,6 @@ class PostController extends Controller
                 'status',
                 'visibility',
                 'views',
-                'allow_comments',
                 'created_by',
                 'created_at',
                 'published_at',

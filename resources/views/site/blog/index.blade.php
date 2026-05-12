@@ -88,7 +88,7 @@
 
                 <section class="blog-list" id="blog-list">
                     @if (request('search'))
-                        <div class="section-conteiner">
+                        <div class="section-header-conteiner">
                             <div class="section-header">
                                 <h2 class="section-title">Resultados de búsqueda</h2>
                                 <p class="section-subtitle">
@@ -103,7 +103,7 @@
                             </a>
                         </div>
                     @elseif (request('tag'))
-                        <div class="section-conteiner">
+                        <div class="section-header-conteiner">
                             <div class="section-header">
                                 <h2 class="section-title">
                                     Artículos con el tag #{{ $currentTag->name ?? request('tag') }}

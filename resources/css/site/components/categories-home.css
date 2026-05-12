@@ -44,21 +44,19 @@
     font-weight: 400;
 }
 
-.section-conteiner {
+.section-header-conteiner {
     width: 100%;
     max-width: var(--site-max-width);
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     flex-wrap: wrap;
     gap: 1rem;
 }
 
-.section-conteiner .section-header {
+.section-header-conteiner .section-header {
+    width: fit-content;
     max-width: none;
-
     margin: 0;
     padding: 0;
 }
@@ -202,7 +200,7 @@
 
     border-radius: 999px;
 
-    background: #e5e5e5;
+    background: var(--shimmer-bg);
 
     position: relative;
     overflow: hidden;
@@ -220,9 +218,9 @@
 
     background: linear-gradient(
         90deg,
-        transparent,
-        rgba(255,255,255,.5),
-        transparent
+        var(--shimmer-bg) 0%,
+        var(--shimmer-gradient) 50%,
+        var(--shimmer-highlight) 100%
     );
 
     animation: shimmer 1.3s infinite;

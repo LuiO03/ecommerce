@@ -25,7 +25,6 @@ class Post extends Model
         'views',
         'published_at',
         'visibility',
-        'allow_comments',
         'reviewed_by',
         'reviewed_at',
         'created_by',
@@ -43,7 +42,6 @@ class Post extends Model
     protected $casts = [
         'published_at' => 'datetime',
         'reviewed_at'  => 'datetime',
-        'allow_comments' => 'boolean',
         'views' => 'integer',
     ];
 

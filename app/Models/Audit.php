@@ -361,7 +361,6 @@ class Audit extends Model
             'views'             => 'Vistas',
             'published_at'      => 'Fecha de publicación',
             'visibility'        => 'Visibilidad',
-            'allow_comments'    => 'Permitir comentarios',
             'reviewed_by'       => 'Revisado por',
             'reviewed_at'       => 'Fecha de revisión',
 
@@ -387,7 +386,6 @@ class Audit extends Model
             'support_email'     => 'Correo de soporte',
             'support_phone'     => 'Teléfono de soporte',
             'website'           => 'Sitio web',
-            'social_links'      => 'Redes sociales',
             'facebook_enabled'  => 'Facebook habilitado',
             'instagram_enabled' => 'Instagram habilitado',
             'twitter_enabled'   => 'Twitter habilitado',

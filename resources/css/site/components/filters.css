@@ -16,6 +16,7 @@
    gap: 5px;
 }
 
+
 .filters-header {
    display: flex;
    align-items: center;
@@ -319,9 +320,6 @@
 }
 
 @media (max-width: 768px) {
-   .filters {
-      padding: 1rem;
-   }
 
    .filter-pills {
       margin-top: 0.5rem;

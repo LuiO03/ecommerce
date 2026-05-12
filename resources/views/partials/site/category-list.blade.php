@@ -75,10 +75,8 @@
         });
     </script>
 @endpush
-
-
 <div class="section-container pb-0">
-    <div class="section-conteiner">
+    <div class="section-header-conteiner">
         <div class="section-header">
             <h2 class="section-title">Categorías populares</h2>
             <p class="section-subtitle">

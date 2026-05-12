@@ -1,117 +1,104 @@
-<section class="{{ $products->isEmpty() ? 'swiper-products-empty' : 'swiper-products-section is-loading' }}" data-products-list data-products-list-id="{{ $this->getId() }}">
-    @push('js')
-        <script>
-            (() => {
-                const productsListId = @js($this->getId());
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-                const initializeProductsList = () => {
-                    const productsListRoot = document.querySelector(`[data-products-list-id="${productsListId}"]`);
+            const productsSliders = document.querySelectorAll('.products-slider');
 
-                    if (!productsListRoot || productsListRoot.dataset.productsListInitialized === 'true') {
-                        return;
+            if (!productsSliders.length) return;
+
+            productsSliders.forEach((sliderEl) => {
+
+                const swiper = new Swiper(sliderEl, {
+
+                    modules: [
+                        window.SwiperModules.Navigation,
+                        window.SwiperModules.Pagination,
+                        window.SwiperModules.Autoplay,
+                    ],
+
+                    loop: true,
+
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: true,
+                        pauseOnMouseEnter: true,
+                    },
+
+                    speed: 400,
+
+                    navigation: {
+                        nextEl: sliderEl.querySelector('.swiper-button-next'),
+                        prevEl: sliderEl.querySelector('.swiper-button-prev'),
+                    },
+
+                    pagination: {
+                        el: sliderEl.querySelector('.swiper-pagination'),
+                        clickable: true,
+                        dynamicBullets: false,
+                        dynamicMainBullets: 3,
+                    },
+
+                    breakpoints: {
+                        320: {
+                            slidesPerView: 2,
+                            slidesPerGroup: 2,
+                            spaceBetween: 3,
+                        },
+
+                        640: {
+                            slidesPerView: 3,
+                            slidesPerGroup: 3,
+                            spaceBetween: 5,
+                        },
+
+                        800: {
+                            slidesPerView: 4,
+                            slidesPerGroup: 4,
+                            spaceBetween: 8,
+                        },
+
+                        1024: {
+                            slidesPerView: 5,
+                            slidesPerGroup: 5,
+                            spaceBetween: 16,
+                        },
+
+                        1280: {
+                            slidesPerView: 6,
+                            slidesPerGroup: 6,
+                            spaceBetween: 16,
+                        },
+                    },
+
+                    keyboard: {
+                        enabled: true,
+                    },
+
+                    a11y: {
+                        prevSlideMessage: 'Producto anterior',
+                        nextSlideMessage: 'Siguiente producto',
+                    },
+
+                    on: {
+                        init() {
+                            sliderEl.classList.remove('is-loading');
+                        }
                     }
+                });
 
-                    productsListRoot.dataset.productsListInitialized = 'true';
+                swiper.init();
 
-                    const productsSliderEl = productsListRoot.querySelector('.products-slider');
-                    const loadingStartedAt = Date.now();
-                    const minimumLoadingTime = 800;
+            });
 
-                    const markReady = () => {
-                        const elapsed = Date.now() - loadingStartedAt;
-                        const remaining = Math.max(minimumLoadingTime - elapsed, 0);
+        });
+    </script>
+@endpush
 
-                        window.setTimeout(() => {
-                            productsListRoot.classList.remove('is-loading');
-                            productsListRoot.classList.add('is-ready');
-                        }, remaining);
-                    };
-
-                    if (productsSliderEl) {
-                        new Swiper(productsSliderEl, {
-                            modules: [
-                                window.SwiperModules.Navigation,
-                                window.SwiperModules.Pagination,
-                                window.SwiperModules.Autoplay,
-                            ],
-                            centerInsufficientSlides: true,
-                            loop: true,
-                            autoplay: {
-                                delay: 6000,
-                                disableOnInteraction: true,
-                                pauseOnMouseEnter: true,
-                            },
-                            speed: 400,
-                            navigation: {
-                                nextEl: productsListRoot.querySelector('.swiper-button-next'),
-                                prevEl: productsListRoot.querySelector('.swiper-button-prev'),
-                            },
-                            pagination: {
-                                el: productsListRoot.querySelector('.swiper-pagination'),
-                                clickable: true,
-                                dynamicBullets: false,
-                                dynamicMainBullets: 3,
-                            },
-                            breakpoints: {
-                                320: {
-                                    slidesPerView: 2,
-                                    slidesPerGroup: 2,
-                                    spaceBetween: 3,
-                                },
-                                640: {
-                                    slidesPerView: 3,
-                                    slidesPerGroup: 3,
-                                    spaceBetween: 5,
-                                },
-                                800: {
-                                    slidesPerView: 4,
-                                    slidesPerGroup: 4,
-                                    spaceBetween: 8,
-                                },
-                                1024: {
-                                    slidesPerView: 5,
-                                    slidesPerGroup: 5,
-                                    spaceBetween: 16,
-                                },
-                                1280: {
-                                    slidesPerView: 6,
-                                    slidesPerGroup: 6,
-                                    spaceBetween: 16,
-                                },
-                            },
-                            keyboard: {
-                                enabled: true,
-                            },
-                            a11y: {
-                                prevSlideMessage: 'Producto anterior',
-                                nextSlideMessage: 'Siguiente producto',
-                            },
-                            on: {
-                                init() {
-                                    markReady();
-                                },
-                                imagesReady() {
-                                    markReady();
-                                },
-                            },
-                        });
-                    } else {
-                        markReady();
-                    }
-                };
-
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', initializeProductsList, { once: true });
-                } else {
-                    initializeProductsList();
-                }
-            })();
-        </script>
-    @endpush
-
-    <div class="section-conteiner">
+<section class="section-container pb-0">
+    <div class="section-header-conteiner">
         <div class="section-header">
             <h2 class="section-title">{{ $title }}</h2>
+
             <p class="section-subtitle">
                 {{ $subtitle }}
             </p>
@@ -121,27 +108,31 @@
             Ver todo
         </a>
     </div>
-
     @if ($products->isNotEmpty())
-        <div class="swiper products-slider">
-            <div class="products-slider-skeleton" aria-hidden="true" data-skeleton-container>
+        <div class="swiper products-slider is-loading">
+            <!-- Skeleton -->
+            <div class="products-skeleton">
                 @for ($i = 0; $i < 6; $i++)
-                    <article class="product-card product-card-skeleton">
-                        <div class="product-image skeleton-block shimmer"></div>
-                        <div class="product-card-details">
-                            <div class="skeleton-row">
-                                <span class="skeleton-chip shimmer"></span>
-                                <span class="skeleton-chip shimmer"></span>
+                    <div class="product-skeleton-item ">
+                        <div class="product-skeleton-image"></div>
+                        <div class="product-skeleton-content">
+                            <div class="flex justify-between">
+                                <div class="product-skeleton-line sm"></div>
+                                <div class="product-skeleton-line xs"></div>
                             </div>
-                            <div class="skeleton-line shimmer"></div>
-                            <div class="skeleton-line skeleton-line-sm shimmer"></div>
-                            <div class="product-card-pricing skeleton-pricing">
-                                <span class="skeleton-price shimmer"></span>
-                                <span class="skeleton-price skeleton-price-sm shimmer"></span>
+                            <div class="flex gap-2">
+                                <div class="product-skeleton-line circle"></div>
+                                <div class="product-skeleton-line circle"></div>
+                                <div class="product-skeleton-line circle"></div>
                             </div>
-                            <div class="skeleton-button shimmer"></div>
+
+                            <div class="product-skeleton-line"></div>
+                            <div class="flex justify-between">
+                                <div class="product-skeleton-line price"></div>
+                                <div class="product-skeleton-line sm"></div>
+                            </div>
                         </div>
-                    </article>
+                    </div>
                 @endfor
             </div>
             <div class="swiper-wrapper">

@@ -4,8 +4,6 @@
     @include('partials.site.breadcrumb', [
         'items' => [['label' => 'Tienda']],
     ])
-    <section class="section-container pb-0">
-        @include('partials.site.category-card')
-    </section>
+    @include('partials.site.category-list')
     @livewire('site.filter')
 </x-app-layout>

@@ -17,12 +17,12 @@ class PostsCsvExport implements FromArray, WithHeadings
 
     public function headings(): array
     {
-        return ['ID', 'Título', 'Estado', 'Visibilidad', 'Vistas', 'Comentarios', 'Creado'];
+        return ['ID', 'Título', 'Estado', 'Visibilidad', 'Vistas', 'Creado'];
     }
 
     public function array(): array
     {
-        $query = Post::select('id', 'title', 'status', 'visibility', 'views', 'allow_comments', 'created_at');
+        $query = Post::select('id', 'title', 'status', 'visibility', 'views', 'created_at');
 
         if (!empty($this->ids)) {
             $query->whereIn('id', $this->ids);
@@ -46,7 +46,6 @@ class PostsCsvExport implements FromArray, WithHeadings
                     default => ucfirst($post->visibility),
                 },
                 $post->views,
-                $post->allow_comments ? 'Sí' : 'No',
                 optional($post->created_at)?->format('d/m/Y H:i') ?? '—',
             ];
         })->toArray();

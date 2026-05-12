@@ -201,7 +201,6 @@
                             <th class="column-author-th">Autor</th>
                         @endcan
                         <th class="column-views-th">Vistas</th>
-                        <th class="column-allow-comments-th">Coment.</th>
                         <th class="column-status-post-th">Estado</th>
                         <th class="column-visibility-th">Visibilidad</th>
                         <th class="column-created-th">Creado</th>
@@ -242,13 +241,6 @@
                                 </td>
                             @endcan
                             <td class="column-views-td">{{ $post->views }}</td>
-                            <td class="column-allow-comments-td">
-                                @if ($post->allow_comments)
-                                    <span>Sí</span>
-                                @else
-                                    <span>No</span>
-                                @endif
-                            </td>
                             <td class="column-status-post-td">
                                 @php
                                     $statusText = match ($post->status) {

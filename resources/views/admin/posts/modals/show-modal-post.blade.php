@@ -72,10 +72,6 @@
                         <td id="post-views">—</td>
                     </tr>
                     <tr>
-                        <th>Comentarios Permitidos</th>
-                        <td id="post-allow-comments">—</td>
-                    </tr>
-                    <tr>
                         <th>Publicado</th>
                         <td id="post-published-at">—</td>
                     </tr>
@@ -208,7 +204,6 @@
             $('#post-status').html('<div class="shimmer shimmer-cell" style="width: 150px;"></div>');
             $('#post-visibility').html('<div class="shimmer shimmer-cell" style="width: 120px;"></div>');
             $('#post-views').html('<div class="shimmer shimmer-cell" style="width: 80px;"></div>');
-            $('#post-allow-comments').html('<div class="shimmer shimmer-cell" style="width: 110px;"></div>');
             $('#post-published-at').html('<div class="shimmer shimmer-cell" style="width: 140px;"></div>');
             $('#post-tags').html('<div class="shimmer shimmer-cell" style="width: 220px;"></div>');
             $('#post-created-by').html('<div class="shimmer shimmer-cell" style="width: 220px;"></div>');
@@ -483,11 +478,6 @@
             $('#post-status').html(statusBadge(data.status));
             $('#post-visibility').text(data.visibility ?? '—');
             $('#post-views').text(data.views ?? '0');
-
-            $('#post-allow-comments').html(data.allow_comments
-                ? '<span class="badge boton-success"><i class="ri-checkbox-circle-line"></i> Sí</span>'
-                : '<span class="badge boton-danger"><i class="ri-close-circle-line"></i> No</span>'
-            );
 
             $('#post-published-at').text(data.published_at ?? '—');
 
