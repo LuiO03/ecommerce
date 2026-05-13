@@ -33,7 +33,7 @@ class ProductController extends Controller
 
         if (!session()->has($sessionKey)) {
 
-            $product->increment('views_count');
+            $product->incrementQuietly('views_count');
 
             session()->put($sessionKey, true);
         }

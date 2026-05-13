@@ -40,11 +40,14 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                initOptionFeatureForm({
-                    containerId: 'featureList',
+                initOptionFeaturesModal({
+                    containerId: 'optionFeaturesBody',
+                    emptyStateId: 'optionFeaturesEmpty',
                     addButtonId: 'addFeatureBtn',
-                    templateId: 'featureRowTemplate',
-                    nameInputId: 'name'
+                    modalId: 'optionFeatureModal',
+                    inputsContainerId: 'optionFeaturesInputs',
+                    nameInputId: 'name',
+                    descriptionHeaderId: 'optionFeaturesHeaderDescription'
                 });
 
                 initSubmitLoader({

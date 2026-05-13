@@ -133,7 +133,7 @@
                                 Sesión actual
                             </span>
                         @else
-                            <form method="POST" action="{{ route('admin.profile.logout-session') }}"
+                            <form method="POST" action="{{ route('site.profile.logout-session') }}"
                                 style="display:inline;" class="logout-session-form">
                                 @csrf
                                 <input type="hidden" name="session_id" value="{{ $session->id }}">
@@ -143,22 +143,23 @@
                                     <span class="boton-form-text">Cerrar Sesión</span>
                                 </button>
                             </form>
-                            @push('scripts')
+                            @push('js')
                                 <script>
-                                    document.querySelectorAll('.logout-session-btn').forEach(function(btn) {
-                                        btn.addEventListener('click', function(e) {
-                                            e.preventDefault();
-                                            const form = this.closest('form.logout-session-form');
-                                            window.showConfirm({
-                                                type: 'danger',
-                                                title: '¿Cerrar esta sesión?',
-                                                message: '¿Seguro que deseas cerrar la sesión de este dispositivo? Esta acción no se puede deshacer.',
-                                                confirmText: 'Cerrar sesión',
-                                                cancelText: 'Cancelar',
-                                                onConfirm: function() {
-                                                    // Enviar el formulario
-                                                    form.submit();
-                                                }
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        document.querySelectorAll('.logout-session-btn').forEach(function(btn) {
+                                            btn.addEventListener('click', function(e) {
+                                                e.preventDefault();
+                                                const form = this.closest('form.logout-session-form');
+                                                window.showConfirm({
+                                                    type: 'danger',
+                                                    title: '¿Cerrar esta sesión?',
+                                                    message: '¿Seguro que deseas cerrar la sesión de este dispositivo? Esta acción no se puede deshacer.',
+                                                    confirmText: 'Cerrar sesión',
+                                                    cancelText: 'Cancelar',
+                                                    onConfirm: function() {
+                                                        form.submit();
+                                                    }
+                                                });
                                             });
                                         });
                                     });
@@ -182,7 +183,7 @@
         <p class="card-description">Elige una contraseña segura que solo tú conozcas.</p>
     </div>
     <form method="POST" action="{{ route('site.profile.details.password') }}" class="form-container"
-        autocomplete="off">
+        autocomplete="off" id="sitePasswordForm">
         @csrf
         @method('PUT')
 
@@ -194,8 +195,12 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-line input-icon"></i>
-                    <input type="password" name="current_password" id="current_password" class="input-form"
-                        placeholder="Ingresa tu contraseña actual" data-validate="required">
+                    <input type="password" name="current_password" id="current_password"
+                        class="input-form password-input" placeholder="Ingresa tu contraseña actual" required
+                        data-validate="required">
+                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="ri-eye-line"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -208,8 +213,11 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-password-line input-icon"></i>
-                    <input type="password" name="password" id="password" class="input-form"
-                        placeholder="Ingresa la nueva contraseña" data-validate="required|min:8">
+                    <input type="password" name="password" id="password" class="input-form password-input"
+                        placeholder="Ingresa la nueva contraseña" required data-validate="required|min:6">
+                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="ri-eye-line"></i>
+                    </button>
                 </div>
             </div>
 
@@ -220,17 +228,58 @@
                 </label>
                 <div class="input-icon-container">
                     <i class="ri-lock-password-line input-icon"></i>
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="input-form"
-                        placeholder="Repite la nueva contraseña" data-validate="required|confirmed:password">
+                    <input type="password" name="password_confirmation" id="password_confirmation"
+                        class="input-form password-input" placeholder="Repite la nueva contraseña" required
+                        data-validate="required|confirmed:password">
+                    <button type="button" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                        <i class="ri-eye-line"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="form-footer-static">
-            <button class="boton-form boton-danger" type="submit">
+            <button class="boton-form boton-danger" type="submit" id="sitePasswordSubmitBtn">
                 <span class="boton-form-icon"><i class="ri-lock-2-fill"></i></span>
                 <span class="boton-form-text">Actualizar contraseña</span>
             </button>
         </div>
     </form>
 </div>
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initSubmitLoader({
+                formId: 'sitePasswordForm',
+                buttonId: 'sitePasswordSubmitBtn',
+                loadingText: 'Actualizando...'
+            });
+
+            initFormValidator('#sitePasswordForm', {
+                validateOnBlur: true,
+                validateOnInput: false,
+                scrollToFirstError: true
+            });
+
+            document.querySelectorAll('.toggle-password').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.password-input');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.querySelector('i').classList.remove('ri-eye-line');
+                        this.querySelector('i').classList.add('ri-eye-off-line');
+                        this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                    } else {
+                        input.type = 'password';
+                        this.querySelector('i').classList.remove('ri-eye-off-line');
+                        this.querySelector('i').classList.add('ri-eye-line');
+                        this.querySelector('i').style.animation = 'eyeBlink 0.3s';
+                    }
+                    setTimeout(() => {
+                        this.querySelector('i').style.animation = '';
+                    }, 300);
+                });
+            });
+        });
+    </script>
+@endpush

@@ -30,27 +30,23 @@
             </p>
         </div>
 
-        @foreach ($product->variantOptions as $option)
-            <div class="product-card-variant-group" data-option-id="{{ $option->option_id }}"
-                data-option-slug="{{ $option->slug }}">
-                <div class="product-card-variant-values">
-                    @foreach ($option->features as $feature)
-                        @if ($option->is_color)
-                            <span class="product-card-variant-value {{ $option->is_color ? 'is-color' : 'is-size' }}"
-                                title="{{ $feature->value }}">
-                                <span class="variant-swatch"
-                                    style="background-color: {{ $feature->description }}"></span>
-                            </span>
-                        @else
-                            <span class="product-card-variant-value {{ $option->is_color ? 'is-color' : 'is-size' }}"
-                                title="{{ $feature->description ?? $feature->value }}">
-                                <span class="variant-size">{{ $feature->value }}</span>
-                            </span>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        @endforeach
+        @foreach ($product->variantOptions->where('is_color', true) as $option)
+    <div class="product-card-variant-group"
+        data-option-id="{{ $option->option_id }}"
+        data-option-slug="{{ $option->slug }}">
+
+        <div class="product-card-variant-values">
+            @foreach ($option->features as $feature)
+                <span class="product-card-variant-value is-color"
+                    title="{{ $feature->value }}">
+                    <span class="variant-swatch"
+                        style="background-color: {{ $feature->description }}"></span>
+                </span>
+            @endforeach
+        </div>
+
+    </div>
+@endforeach
 
         <h3 class="product-card-name">{{ $product->name }}</h3>
         <div class="flex w-full flex-col">

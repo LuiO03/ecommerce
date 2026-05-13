@@ -269,6 +269,45 @@ class ProfileController extends Controller
         return redirect()->route('site.profile.index', ['section' => 'addresses']);
     }
 
+    public function updatePassword(Request $request)
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        if (! Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'La contraseña actual es incorrecta.'
+            ]);
+        }
+
+        if (Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'La nueva contraseña no puede ser igual a la actual.'
+            ]);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+            'updated_by' => $user->id,
+        ]);
+
+        Session::flash('toast', [
+            'type' => 'success',
+            'title' => 'Contraseña actualizada',
+            'message' => 'Tu contraseña se ha cambiado correctamente.',
+        ]);
+
+        return redirect()->route('site.profile.index', ['section' => 'security']);
+    }
+
     public function security()
     {
         if (! Auth::check()) {
@@ -396,33 +435,5 @@ class ProfileController extends Controller
         ]);
 
         return redirect()->route('site.profile.index', ['section' => 'details']);
-    }
-
-    public function updatePassword(Request $request)
-    {
-        if (! Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        $user = Auth::user();
-
-        $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user->forceFill([
-            'password'             => Hash::make($request->password),
-            'last_password_update' => now(),
-            'updated_by'           => $user->id,
-        ])->save();
-
-        Session::flash('toast', [
-            'type' => 'success',
-            'title' => 'Contraseña actualizada',
-            'message' => 'Tu contraseña se ha cambiado correctamente.',
-        ]);
-
-        return redirect()->to(route('site.profile.index', ['section' => 'security']) . '#password-section');
     }
 }

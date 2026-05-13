@@ -18,7 +18,7 @@ import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initFormValidator } from './utils/form-validator.js';
 import { initTextareaAutosize } from './utils/textarea-autosize.js';
 import { initConnectionStatusBar } from './admin/utils/connection-status.js';
-import { initOptionFeatureForm } from './admin/modules/options-form-feature-manager.js';
+import { initOptionFeaturesModal } from './admin/modules/options-features-modal-manager.js';
 import { initOptionInlineManager } from './admin/modules/options-index-inline-manager.js';
 import { initProductVariantsManager } from './admin/modules/product-variants-manager.js';
 import {
@@ -36,7 +36,7 @@ import { initMobileActionsMenu } from './admin/utils/mobile-actions-menu.js';
 window.initImageUpload = initImageUpload;
 window.initSubmitLoader = initSubmitLoader;
 window.initFormValidator = initFormValidator;
-window.initOptionFeatureForm = initOptionFeatureForm;
+window.initOptionFeaturesModal = initOptionFeaturesModal;
 window.initOptionInlineManager = initOptionInlineManager;
 window.initPostGalleryCreate = initPostGalleryCreate;
 window.initPostGalleryEdit = initPostGalleryEdit;

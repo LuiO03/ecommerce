@@ -13,6 +13,7 @@ import './site/modules/price-filter-manager.js';
 import './site/modules/contact-form.js';
 import './site/modules/claims-form.js';
 import './utils/custom-select';
+import './modals/modal-confirm.js';
 
 import { initImageUpload } from './utils/image-upload-handler.js';
 import { initFormValidator } from './utils/form-validator.js';
@@ -39,8 +40,6 @@ window.SwiperModules = {
     Autoplay,
     Thumbs,
 };
-
-
 
 // Listener global para toasts disparados desde Livewire
 document.addEventListener('livewire:init', () => {
