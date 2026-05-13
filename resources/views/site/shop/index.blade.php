@@ -4,6 +4,9 @@
     @include('partials.site.breadcrumb', [
         'items' => [['label' => 'Tienda']],
     ])
-    @include('partials.site.category-list')
+    <livewire:site.category-list
+        section-title="Categorias populares"
+        section-subtitle="Explora nuestras categorias mas populares y encuentra lo que buscas"
+    />
     @livewire('site.filter')
 </x-app-layout>

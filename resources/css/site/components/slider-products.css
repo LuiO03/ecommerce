@@ -80,13 +80,18 @@
 .products-slider .swiper-button-next {
     transition: transform 0.3s ease;
     color: var(--color-site-nav)!important;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     background: var(--color-card-bg);
     border: 1px solid var(--select-border);
     transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 40px;
     box-shadow: var(--box-shadow-card);
+}
+
+.products-slider .swiper-button-prev,
+.products-slider .swiper-button-next {
+    top: calc(50% - 40px) !important;
 }
 
 .products-slider .swiper-button-prev{
@@ -102,11 +107,10 @@
     content: none;
 }
 
-.products-slider .swiper-button-prev:hover,
-.products-slider .swiper-button-next:hover {
+.products-slider .swiper-button-prev:active,
+.products-slider .swiper-button-next:active {
     transform: scale(1.1);
     background-color: var(--color-site-hover);
-    box-shadow: var(--box-shadow-card-hover);
 }
 
 /* Responsive */

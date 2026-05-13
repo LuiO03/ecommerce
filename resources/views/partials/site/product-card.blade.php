@@ -31,7 +31,8 @@
         </div>
 
         @foreach ($product->variantOptions as $option)
-            <div class="product-card-variant-group" data-option-id="{{ $option->option_id }}" data-option-slug="{{ $option->slug }}">
+            <div class="product-card-variant-group" data-option-id="{{ $option->option_id }}"
+                data-option-slug="{{ $option->slug }}">
                 <div class="product-card-variant-values">
                     @foreach ($option->features as $feature)
                         @if ($option->is_color)

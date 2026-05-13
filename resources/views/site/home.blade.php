@@ -2,7 +2,14 @@
     @section('title', 'Inicio')
     @if ($covers->isNotEmpty())
         <section class="covers-section">
-            <div class="swiper covers-slider">
+            <div class="covers-slider swiper is-loading">
+
+                <!-- Skeleton -->
+                <div class="covers-skeleton">
+                    @for ($i = 0; $i < 1; $i++)
+                        <div class="cover-skeleton shimmer"></div>
+                    @endfor
+                </div>
                 <div class="swiper-wrapper">
                     @foreach ($covers as $cover)
                         <div class="swiper-slide">
@@ -65,46 +72,52 @@
             document.addEventListener('DOMContentLoaded', () => {
                 // Slider de portadas
                 const coversSliderEl = document.querySelector('.covers-slider');
-                if (coversSliderEl) {
-                    new Swiper('.covers-slider', {
-                        modules: [
-                            window.SwiperModules.Navigation,
-                            window.SwiperModules.Pagination,
-                            window.SwiperModules.Autoplay,
-                        ],
-                        effect: 'slide',
-                        loop: true,
-                        autoplay: {
-                            delay: 5000,
-                            disableOnInteraction: false,
-                            pauseOnMouseEnter: true,
-                        },
-                        speed: 400,
-                        navigation: {
-                            nextEl: '.covers-slider .swiper-button-next',
-                            prevEl: '.covers-slider .swiper-button-prev',
-                        },
-                        pagination: {
-                            el: '.covers-slider .swiper-pagination',
-                            clickable: true,
-                            dynamicBullets: true,
-                        },
-                        keyboard: {
-                            enabled: true,
-                        },
-                        a11y: {
-                            prevSlideMessage: 'Portada anterior',
-                            nextSlideMessage: 'Siguiente portada',
-                            firstSlideMessage: 'Esta es la primera portada',
-                            lastSlideMessage: 'Esta es la última portada',
-                        },
-                    });
-                }
+                if (!coversSliderEl) return;
+                const swiper = new Swiper('.covers-slider', {
+                    modules: [
+                        window.SwiperModules.Navigation,
+                        window.SwiperModules.Pagination,
+                        window.SwiperModules.Autoplay,
+                    ],
+                    effect: 'slide',
+                    loop: true,
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true,
+                    },
+                    speed: 400,
+                    navigation: {
+                        nextEl: '.covers-slider .swiper-button-next',
+                        prevEl: '.covers-slider .swiper-button-prev',
+                    },
+                    pagination: {
+                        el: '.covers-slider .swiper-pagination',
+                        clickable: true,
+                        dynamicBullets: true,
+                    },
+                    keyboard: {
+                        enabled: true,
+                    },
+                    a11y: {
+                        prevSlideMessage: 'Portada anterior',
+                        nextSlideMessage: 'Siguiente portada',
+                        firstSlideMessage: 'Esta es la primera portada',
+                        lastSlideMessage: 'Esta es la última portada',
+                    },
+                    on: {
+                        init() {
+                            coversSliderEl.classList.remove('is-loading');
+                        }
+                    }
+                });
+                swiper.init();
             });
         </script>
     @endpush
 
-        @include('partials.site.category-list')
+    <livewire:site.category-list section-title="Categorias populares"
+        section-subtitle="Explora nuestras categorias mas populares y encuentra lo que buscas" :limit="12" />
 
     <!-- Sección de Últimos Productos con Livewire -->
     <livewire:site.product-list :limit="12" title="Últimos Productos" subtitle="Descubre nuestras novedades" />

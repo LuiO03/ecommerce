@@ -91,6 +91,7 @@
     flex-direction: column;
     background-color: var(--color-card-bg);
     padding: 8px;
+    gap: 5px;
     z-index: 199;
 }
 
@@ -212,7 +213,6 @@
 .product-card-variant-group{
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
 .product-card-variant-values{
@@ -220,6 +220,7 @@
     grid-template-columns: repeat(auto-fill, minmax(25px, 1fr));
     gap: 5px;
 }
+
 
 .product-card-variant-value{
     display: flex;
@@ -241,5 +242,4 @@
     min-width: 25px;
     min-height: 25px;
     border-radius: 50%;
-    border: 1px solid var(--color-border);
 }

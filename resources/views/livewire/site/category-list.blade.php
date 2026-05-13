@@ -1,41 +1,30 @@
-<!-- Sección de Categorías -->
+<!-- Seccion de Categorias -->
 @push('js')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
             const categoriesSliderEl = document.querySelector('.categories-slider');
-
             if (!categoriesSliderEl) return;
-
             const swiper = new Swiper(categoriesSliderEl, {
                 modules: [
                     window.SwiperModules.Navigation,
                     window.SwiperModules.Pagination,
                     window.SwiperModules.Autoplay,
                 ],
-
                 speed: 400,
-
+                centerInsufficientSlides: true,
                 grabCursor: true,
-
                 watchOverflow: true,
-
                 centeredSlides: false,
-
                 loop: false,
-
                 autoplay: false,
-
                 navigation: {
                     nextEl: '.categories-slider .swiper-button-next',
                     prevEl: '.categories-slider .swiper-button-prev',
                 },
-
                 pagination: {
                     el: '.categories-slider .swiper-pagination',
                     clickable: true,
                 },
-
                 breakpoints: {
                     320: {
                         slidesPerView: 3,
@@ -78,9 +67,9 @@
 <div class="section-container pb-0">
     <div class="section-header-conteiner">
         <div class="section-header">
-            <h2 class="section-title">Categorías populares</h2>
+            <h2 class="section-title">{{ $sectionTitle }}</h2>
             <p class="section-subtitle">
-                Explora nuestras categorías más populares y encuentra lo que buscas
+                {{ $sectionSubtitle }}
             </p>
         </div>
     </div>
@@ -113,8 +102,8 @@
             @endforeach
         </div>
 
+        <div class="swiper-pagination"></div>
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
-        <div class="swiper-pagination"></div>
     </div>
 </div>

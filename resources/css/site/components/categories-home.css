@@ -2,44 +2,33 @@
 
 .section-container {
     width: 100%;
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     gap: 1rem;
-
     padding: 2rem 1rem;
 }
 
 .section-header {
     width: 100%;
     max-width: var(--site-max-width);
-
     display: flex;
     flex-direction: column;
-
     gap: 5px;
-
     margin: 0 auto;
-
     line-height: 1;
 }
 
 .section-title {
     width: 100%;
-
     font-weight: bold;
     text-align: start;
 }
 
 .section-subtitle {
     width: 100%;
-
     display: flex;
-
     text-align: start;
-
     font-size: var(--font-size-h5);
     font-weight: 400;
 }
@@ -66,11 +55,9 @@
 .categories-slider {
     width: 100%;
     max-width: var(--site-max-width);
-
     position: relative;
-
-    overflow: hidden;
 }
+
 
 .categories-slider .swiper-wrapper {
     display: flex;
@@ -78,7 +65,6 @@
 
 .categories-slide {
     height: auto;
-
     display: flex;
 }
 
@@ -271,21 +257,20 @@
 .categories-slider .swiper-button-next {
     width: 45px;
     height: 45px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 999px;
-
     background: rgba(0,0,0,.52);
-
     color: white !important;
-
     transition: transform .3s ease;
-
-    z-index: 20;
 }
+
+.categories-slider .swiper-button-prev,
+.categories-slider .swiper-button-next {
+    top: 42% !important;
+}
+
 
 .categories-slider .swiper-button-prev {
     padding: 10px 10px 10px 8px !important;
@@ -295,8 +280,8 @@
     padding: 10px 8px 10px 10px !important;
 }
 
-.categories-slider .swiper-button-prev:hover,
-.categories-slider .swiper-button-next:hover {
+.categories-slider .swiper-button-prev:active,
+.categories-slider .swiper-button-next:active {
     transform: scale(1.1);
 }
 
