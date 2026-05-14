@@ -25,6 +25,7 @@ class CompanySetting extends Model
         'address',
         'website',
         'logo_path',
+        'branding_mode',
         'about',
         'support_email',
         'support_phone',
@@ -58,6 +59,7 @@ class CompanySetting extends Model
         'tiktok_enabled' => 'boolean',
         'linkedin_enabled' => 'boolean',
         'shipping_cost_delivery' => 'float',
+        'branding_mode' => 'string',
     ];
 
     protected static function booted(): void

@@ -19,8 +19,7 @@ return new class extends Migration
             | Información general
             |--------------------------------------------------------------------------
             */
-            $table->string('name');
-            $table->boolean('show_company_name_in_ui')->default(true);
+            $table->string('name')->nullable();
 
             $table->string('legal_name')->nullable();
             $table->string('ruc', 11)->nullable();
@@ -34,7 +33,11 @@ return new class extends Migration
             |--------------------------------------------------------------------------
             */
             $table->string('logo_path')->nullable();
-
+            $table->enum('branding_mode', [
+                'logo_only',
+                'name_only',
+                'logo_and_name',
+            ])->default('logo_and_name');
             /*
             |--------------------------------------------------------------------------
             | Contacto

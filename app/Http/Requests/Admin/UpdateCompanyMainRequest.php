@@ -19,6 +19,7 @@ class UpdateCompanyMainRequest extends FormRequest
             'legal_name' => ['nullable', 'string', 'max:255'],
             'ruc' => ['nullable', 'regex:/^\d{11}$/'],
             'slogan' => ['nullable', 'string', 'max:255'],
+            'branding_mode' => ['required', 'in:logo_only,name_only,logo_and_name'],
             'about' => ['nullable', 'string', 'max:1500'],
             // Contacto
             'email' => ['nullable', 'email', 'max:255'],

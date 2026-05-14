@@ -29,7 +29,7 @@
             @endif
 
             <div class="checkout-payment-actions">
-                <a href="{{ route('checkout.index') }}" class="boton-form boton-purple py-3">
+                <a href="{{ route('checkout.index') }}" class="site-btn site-btn-outline">
                     <span class="boton-form-icon">
                         <i class="ri-arrow-go-back-line"></i>
                     </span>
@@ -37,7 +37,7 @@
                         <span>Volver al pago</span>
                     </span>
                 </a>
-                <a href="{{ route('carts.show') }}" class="boton-form boton-danger py-3">
+                <a href="{{ route('carts.show') }}" class="site-btn boton-danger">
                     <span class="boton-form-icon">
                         <i class="ri-shopping-cart-line"></i>
                     </span>

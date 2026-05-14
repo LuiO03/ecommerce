@@ -123,6 +123,6 @@
 }
 
 .checkout-payment-actions .site-btn {
-    min-width: 180px;
+    flex: 1 1 120px;
 }
 

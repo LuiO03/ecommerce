@@ -81,8 +81,7 @@
         }
 
         .company-logo {
-            width: 34px;
-            height: 34px;
+            max-height: 34px;
         }
 
         .company-name,
@@ -272,6 +271,10 @@
         $exportType = $isSelectedExport
             ? 'Exportación seleccionada'
             : 'Exportación total';
+        $brandingMode = $companySettings?->branding_mode ?? 'logo_and_name';
+
+        $showLogo = in_array($brandingMode, ['logo_only', 'logo_and_name']);
+        $showName = in_array($brandingMode, ['name_only', 'logo_and_name']);
     @endphp
 
     <!-- =======================================
@@ -284,17 +287,16 @@
                     <table class="brand-table">
                         <tr>
                             {{-- LOGO (solo si existe) --}}
-                            @if (!empty($companySettings?->logo_path))
+                            @if ($showLogo && !empty($companySettings?->logo_path))
                                 <td class="logo-cell">
                                     <img src="{{ $pdfLogoUrl }}" class="company-logo" alt="Logo">
                                 </td>
                             @endif
 
-                            {{-- TEXTO (ocupa todo si no hay logo) --}}
                             <td>
-                                @if (!empty($companySettings?->name))
+                                @if ($showName && !empty($companySettings?->name))
                                     <div class="company-name">{{ $companySettings->name }}</div>
-                                @elseif(empty($companySettings?->logo_path))
+                                @elseif(!$companySettings?->logo_path && !$companySettings?->name)
                                     <div class="system-name">Gecko<span>Mmerce</span></div>
                                 @endif
 

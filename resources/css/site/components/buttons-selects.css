@@ -17,6 +17,7 @@
     border: none;
     text-decoration: none;
     transition: box-shadow 0.3s ease;
+    min-height: 40px;
 }
 
 .site-btn:active {

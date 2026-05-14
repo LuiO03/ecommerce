@@ -210,35 +210,113 @@
                 </div>
             </div>
         </div>
-        <div class="form-body">
+        <div class="form-columns-row">
+            <div class="form-body">
 
-            <div class="card-header">
-                <span class="card-title">Vista previa de Google Maps</span>
-                <p class="card-description">
-                    Si has ingresado una URL válida de Google Maps, aquí podrás ver una vista previa de cómo se
+                <div class="input-group">
+                    <label for="google_maps_url" class="label-form">URL de Google Maps</label>
+                    <div class="input-icon-container">
+                        <i class="ri-map-pin-2-line input-icon"></i>
+                        <input type="url" name="google_maps_url" id="google_maps_url" class="input-form"
+                            value="{{ old('google_maps_url', $setting->google_maps_url) }}"
+                            placeholder="https://maps.google.com/..." data-validate="url|max:500">
+                    </div>
+                </div>
+                @if ($isValidMapsUrl)
+                    <div class="input-group">
+                        <div class="map-preview-container">
+                            <iframe src="{{ $mapsUrl }}" width="100%" height="220" allowfullscreen
+                                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                @endif
+                <small class="input-help-text">
+                    aquí podrás ver una vista previa de cómo se
                     mostrará el mapa en tu sitio web. Asegúrate de que la URL comience con
                     "https://www.google.com/maps" o "https://maps.google.com" para que la vista previa funcione
                     correctamente.
-                </p>
+                </small>
             </div>
-
-            <div class="input-group">
-                <label for="google_maps_url" class="label-form">URL de Google Maps</label>
-                <div class="input-icon-container">
-                    <i class="ri-map-pin-2-line input-icon"></i>
-                    <input type="url" name="google_maps_url" id="google_maps_url" class="input-form"
-                        value="{{ old('google_maps_url', $setting->google_maps_url) }}"
-                        placeholder="https://maps.google.com/..." data-validate="url|max:500">
-                </div>
-            </div>
-            @if ($isValidMapsUrl)
+            <div class="form-body">
                 <div class="input-group">
-                    <div class="map-preview-container">
-                        <iframe src="{{ $mapsUrl }}" width="100%" height="220" allowfullscreen loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <label class="label-form">
+                        Modo de branding
+                    </label>
+
+                    <div class="input-icon-container">
+                        <i class="ri-id-card-line input-icon"></i>
+                        <select name="branding_mode" id="branding_mode" class="select-form">
+                            <option value="">Seleccione una opción</option>
+                            <option value="logo_only"
+                                {{ old('branding_mode', $setting->branding_mode) == 'logo_only' ? 'selected' : '' }}>
+                                Solo logo
+                            </option>
+                            <option value="name_only"
+                                {{ old('branding_mode', $setting->branding_mode) == 'name_only' ? 'selected' : '' }}>
+                                Solo nombre
+                            </option>
+                            <option value="logo_and_name"
+                                {{ old('branding_mode', $setting->branding_mode) == 'logo_and_name' ? 'selected' : '' }}>
+                                Logo y nombre
+                            </option>
+                        </select>
+                        <i class="ri-arrow-down-s-line select-arrow"></i>
+
+                    </div>
+                    <small class="input-help-text">
+                        Esta opción controla cómo se muestra la identidad de tu empresa en el sitio web y en los
+                        documentos oficiales.
+                    </small>
+                </div>
+                <div class="input-group">
+                    <label class="label-form">
+                        Vista previa
+                    </label>
+
+                    <div class="branding-preview-box">
+                        <img src="{{ $hasLogo ? asset('storage/' . $setting->logo_path) : asset('images/logos/logo-geckommerce.png') }}"
+                            alt="Logo" class="branding-preview-logo">
+
+                        <span class="branding-preview-name" id="brandingPreviewName">
+                            {{ old('name', $setting->name ?: 'Nombre del negocio') }}
+                        </span>
                     </div>
                 </div>
-            @endif
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const select = document.getElementById('branding_mode');
+                        const previewName = document.getElementById('brandingPreviewName');
+                        const previewBox = document.querySelector('.branding-preview-box');
+                        const previewLogo = previewBox.querySelector('img');
+
+                        if (!select || !previewName || !previewLogo) return;
+
+                        function updatePreview() {
+                            const mode = select.value;
+
+                            // reset total (clave del fix)
+                            previewLogo.style.display = 'inline-block';
+                            previewName.style.display = 'inline-flex';
+
+                            if (mode === 'logo_only') {
+                                previewName.style.display = 'none';
+                            }
+
+                            if (mode === 'name_only') {
+                                previewLogo.style.display = 'none';
+                            }
+
+                            if (mode === 'logo_and_name') {
+                                previewLogo.style.display = 'inline-block';
+                                previewName.style.display = 'inline-flex';
+                            }
+                        }
+
+                        select.addEventListener('change', updatePreview);
+                        updatePreview();
+                    });
+                </script>
+            </div>
         </div>
         <div class="form-footer-static">
             <a href="{{ route('admin.dashboard') }}" class="boton-form boton-volver">

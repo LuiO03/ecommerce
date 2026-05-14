@@ -1,12 +1,16 @@
 @props(['url'])
 
 @php
-    // Usar configuración de empresa si existe (helper company_setting) para logo/nombre en correos
-    $companySettings = function_exists('company_setting') ? company_setting() : null;
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Str;
+
+    $companySettings = function_exists('company_setting')
+        ? company_setting()
+        : null;
 
     $mailLogoUrl = null;
 
-    if ($companySettings && $companySettings->logo_path) {
+    if ($companySettings && filled($companySettings->logo_path)) {
         $path = ltrim($companySettings->logo_path, '/');
 
         if (Str::startsWith($path, ['http://', 'https://'])) {
@@ -16,7 +20,14 @@
         }
     }
 
-    $companyDisplayName = $companySettings->name ?? null;
+    $companyDisplayName = filled($companySettings?->name)
+        ? $companySettings->name
+        : null;
+
+    $brandingMode = $companySettings?->branding_mode ?? 'logo_and_name';
+
+    $showLogo = in_array($brandingMode, ['logo_only', 'logo_and_name']);
+    $showName = in_array($brandingMode, ['name_only', 'logo_and_name']);
 @endphp
 
 <tr>
@@ -24,39 +35,45 @@
         <table class="header" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
                 <td align="center">
-                    <a href="{{ $url }}" style="display: inline-block;">
+                    <a href="{{ $url }}" style="display: inline-block; text-decoration: none;">
+
                         @if (trim($slot) === 'Geckommerce')
                             <div class="logo-container">
 
-                                @if ($mailLogoUrl || $companyDisplayName)
+                                {{-- LOGO --}}
+                                @if ($showLogo && $mailLogoUrl)
+                                    <img
+                                        src="{{ $mailLogoUrl }}"
+                                        class="logo"
+                                        alt="{{ $companyDisplayName ?? 'Logo' }}"
+                                    >
+                                @endif
 
-                                    {{-- Logo personalizado --}}
-                                    @if ($mailLogoUrl)
-                                        <img src="{{ $mailLogoUrl }}" class="logo"
-                                            alt="{{ $companyDisplayName ?? 'Logo' }}">
-                                    @endif
+                                {{-- NOMBRE --}}
+                                @if ($showName && $companyDisplayName)
+                                    <div class="logo-texto">
+                                        {{ $companyDisplayName }}
+                                    </div>
+                                @endif
 
-                                    {{-- Nombre personalizado --}}
-                                    @if ($companyDisplayName)
-                                        <div class="logo-texto">
-                                            {{ $companyDisplayName }}
-                                        </div>
-                                    @endif
-                                @else
-                                    {{-- Fallback completo del sistema --}}
-                                    <img src="https://luio03.github.io/muniyauyos.github.io/imagen/logo-geckommerce.png"
-                                        class="logo" alt="Geckommerce Logo">
+                                {{-- FALLBACK SISTEMA --}}
+                                @if (!$mailLogoUrl && !$companyDisplayName)
+                                    <img
+                                        src="https://luio03.github.io/muniyauyos.github.io/imagen/logo-geckommerce.png"
+                                        class="logo"
+                                        alt="Geckommerce Logo"
+                                    >
 
                                     <div class="logo-texto">
                                         <strong>Gecko</strong><span>mmerce</span>
                                     </div>
-
                                 @endif
 
                             </div>
                         @else
                             {!! $slot !!}
                         @endif
+
                     </a>
                 </td>
             </tr>

@@ -64,7 +64,7 @@
         });
     </script>
 @endpush
-<div class="section-container pb-0">
+<div class="section-container pb-0 {{ $customClass }}">
     <div class="section-header-conteiner">
         <div class="section-header">
             <h2 class="section-title">{{ $sectionTitle }}</h2>

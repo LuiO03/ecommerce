@@ -19,6 +19,7 @@ class ProductList extends Component
     public $scope = 'strict_category';
     public $onSale = false;
     public $brandId = null;
+    public string $customClass = '';
     // opciones:
     // strict_category
     // category_with_children

@@ -1,11 +1,16 @@
 @php
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Str;
+
     $companySettings = function_exists('company_setting')
         ? company_setting()
         : null;
 
+    $brandingMode = $companySettings?->branding_mode ?? 'logo_and_name';
+
     $brandLogoUrl = null;
 
-    if ($companySettings && $companySettings->logo_path) {
+    if ($companySettings && filled($companySettings->logo_path)) {
         $path = ltrim($companySettings->logo_path, '/');
 
         if (Str::startsWith($path, ['http://', 'https://'])) {
@@ -15,13 +20,18 @@
         }
     }
 
-    $brandName = $companySettings->name ?? null;
+    $brandName = filled($companySettings?->name)
+        ? $companySettings->name
+        : null;
+
+    $showLogo = in_array($brandingMode, ['logo_only', 'logo_and_name']);
+    $showName = in_array($brandingMode, ['name_only', 'logo_and_name']);
 @endphp
 
 @if ($brandLogoUrl || $brandName)
 
-    {{-- Logo personalizado --}}
-    @if ($brandLogoUrl)
+    {{-- Logo --}}
+    @if ($showLogo && $brandLogoUrl)
         <img
             src="{{ $brandLogoUrl }}"
             alt="{{ $brandName ?? 'Logo' }}"
@@ -29,8 +39,8 @@
         >
     @endif
 
-    {{-- Nombre personalizado --}}
-    @if ($brandName)
+    {{-- Nombre --}}
+    @if ($showName && $brandName)
         <div class="sidebar-logo-texto tracking-wide">
             {{ $brandName }}
         </div>
@@ -38,7 +48,7 @@
 
 @else
 
-    {{-- Fallback completo del sistema --}}
+    {{-- Fallback completo --}}
     <img
         src="{{ asset('images/logos/logo-geckommerce.png') }}"
         alt="Geckommerce Logo"

@@ -41,10 +41,6 @@ class UserRegistered extends Mailable
         );
 
         return $this
-            ->from(
-                config('mail.from.address'),
-                $company?->name ?? config('app.name')
-            )
             ->subject(
                 'Bienvenido a ' .
                 ($company?->name ?? config('app.name'))

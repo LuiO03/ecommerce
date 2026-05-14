@@ -116,19 +116,19 @@
         </script>
     @endpush
 
-    <livewire:site.category-list section-title="Categorias populares"
+    <livewire:site.category-list custom-class="bg-section" section-title="Categorias populares"
         section-subtitle="Explora nuestras categorias mas populares y encuentra lo que buscas" :limit="12" />
 
     <!-- Sección de Últimos Productos con Livewire -->
     <livewire:site.product-list :limit="12" title="Últimos Productos" subtitle="Descubre nuestras novedades" />
     <!-- Sección de Ofertas -->
-    <livewire:site.product-list title="Ofertas" subtitle="Aprovecha descuentos" :limit="12" :onSale="true"
+    <livewire:site.product-list custom-class="bg-section" title="Ofertas" subtitle="Aprovecha descuentos" :limit="12" :onSale="true"
         :strict="false" />
 
     <livewire:site.product-list title="Los más vendidos" subtitle="Los productos más comprados" :limit="12"
         orderBy="best_selling" />
 
-    <livewire:site.product-list title="Productos destacados" subtitle="Nuestros productos recomendados"
+    <livewire:site.product-list custom-class="bg-section" title="Productos destacados" subtitle="Nuestros productos recomendados"
         :limit="12" orderBy="featured" />
 
     <!-- Sección de Productos más baratos -->

@@ -11,6 +11,7 @@ class CategoryList extends Component
     public string $sectionSubtitle = 'Explora nuestras categorias mas populares y encuentra lo que buscas';
     public ?int $familyId = null;
     public ?int $limit = null;
+    public string $customClass = '';
 
     public function render()
     {

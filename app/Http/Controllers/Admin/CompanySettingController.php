@@ -65,6 +65,7 @@ class CompanySettingController extends Controller
         $setting->legal_name = $data->get('legal_name');
         $setting->ruc = $data->get('ruc');
         $setting->slogan = $data->get('slogan');
+        $setting->branding_mode = $data->get('branding_mode', 'logo_and_name');
         $setting->about = $data->get('about');
 
         // Contacto
@@ -106,6 +107,7 @@ class CompanySettingController extends Controller
             'legal_name' => $setting->legal_name,
             'ruc' => $setting->ruc,
             'slogan' => $setting->slogan,
+            'branding_mode' => $setting->branding_mode,
             'about' => $setting->about,
             'email' => $setting->email,
             'support_email' => $setting->support_email,

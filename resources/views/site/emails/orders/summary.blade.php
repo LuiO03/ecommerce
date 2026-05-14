@@ -1,5 +1,5 @@
 <x-mail::message>
-# Resumen de tu compra
+## Resumen de tu compra
 
 Hola {{ $user->name }}, gracias por tu pedido.
 
@@ -11,8 +11,8 @@ Hemos recibido tu orden y la estamos procesando. A continuación encontrarás un
 
 @if($items->isNotEmpty())
 <x-mail::table>
-| Producto                                                 | Cant. | Precio U. | Importe   |
-|----------------------------------------------------------|:-----:|-------------:|----------:|
+| Producto                                                 | Cant. | P.U. | Importe   |
+|:----------------------------------------------------------|:-----:|:----:|:----------:|
 @foreach($items as $item)
 @php
   $productName = $item->product?->name ?? 'Producto eliminado';
@@ -21,17 +21,52 @@ Hemos recibido tu orden y la estamos procesando. A continuación encontrarás un
   $unitPrice = (float) $basePrice;
   $lineTotal = $unitPrice * (int) $item->quantity;
 @endphp
-| {{ $productName }} {{ $variantName ? ' · ' . $variantName : '' }} |  {{ $item->quantity }}  | S/ {{ number_format($unitPrice, 2) }} | S/ {{ number_format($lineTotal, 2) }} |
+| {{ $productName }} {{ $variantName ? ' · ' . $variantName : '' }} | {{ $item->quantity }} | S/ {{ number_format($unitPrice, 2) }} | S/ {{ number_format($lineTotal, 2) }} |
 @endforeach
 </x-mail::table>
 @endif
 
-**Subtotal productos:** S/ {{ number_format($subtotal, 2) }}<br>
-**Envío:** S/ {{ number_format($shipping, 2) }}<br>
-**Total pagado:** **S/ {{ number_format($amount, 2) }}**
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:20px;">
+<tr>
+<td>
+    <strong>Subtotal productos:</strong>
+</td>
+
+<td align="right">
+    S/ {{ number_format($subtotal, 2) }}
+</td>
+</tr>
+
+<tr>
+<td style="padding-top:8px;">
+    <strong>Envío:</strong>
+</td>
+
+<td align="right" style="padding-top:8px;">
+    S/ {{ number_format($shipping, 2) }}
+</td>
+</tr>
+
+<tr>
+<td style="padding-top:12px;">
+    <strong>Total pagado:</strong>
+</td>
+
+<td align="right" style="padding-top:12px;">
+    <strong>S/ {{ number_format($amount, 2) }}</strong>
+</td>
+</tr>
 
 @if(!empty($purchaseNumber))
-Número de pedido: **{{ $purchaseNumber }}**<br>
+<tr>
+<td style="padding-top:18px;">
+    <strong>Número de pedido:</strong>
+</td>
+
+<td align="right" style="padding-top:18px;">
+    {{ $purchaseNumber }}
+</td>
+</tr>
 @endif
 
 @php
@@ -41,10 +76,19 @@ Número de pedido: **{{ $purchaseNumber }}**<br>
 @endphp
 
 @if(!empty($brand))
-Método de pago: Tarjeta de crédito **{{ $brand }}**
-@endif
+<tr>
+<td style="padding-top:8px;">
+    <strong>Método de pago:</strong>
+</td>
 
-<x-mail::button :url="url('/')">
+<td align="right" style="padding-top:8px;">
+    Tarjeta de crédito {{ $brand }}
+</td>
+</tr>
+@endif
+</table>
+
+<x-mail::button :url="url('/')" color="primary">
 Ir a la tienda
 </x-mail::button>
 

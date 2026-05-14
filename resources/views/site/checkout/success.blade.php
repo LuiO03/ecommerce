@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="checkout-payment-actions">
-                    <a href="{{ route('site.home') }}" class="boton-form boton-success py-3">
+                    <a href="{{ route('site.home') }}" class="site-btn boton-success">
                         <span class="boton-form-icon">
                             <i class="ri-store-2-fill"></i>
                         </span>
@@ -107,7 +107,7 @@
                             <span>Volver a la tienda</span>
                         </span>
                     </a>
-                    <a href="{{ route('carts.show') }}" class="boton-form boton-info py-3">
+                    <a href="{{ route('carts.show') }}" class="site-btn boton-info">
                         <span class="boton-form-icon">
                             <i class="ri-shopping-bag-3-line"></i>
                         </span>
@@ -132,7 +132,7 @@
                 </p>
 
                 <div class="checkout-payment-actions">
-                    <a href="{{ route('site.home') }}" class="boton-form boton-success py-3">
+                    <a href="{{ route('site.home') }}" class="site-btn site-btn-outline">
                         <span class="boton-form-icon">
                             <i class="ri-store-2-fill"></i>
                         </span>
@@ -140,7 +140,7 @@
                             <span>Volver a la tienda</span>
                         </span>
                     </a>
-                    <a href="" class="boton-form boton-danger py-3">
+                    <a href="" class="site-btn boton-danger">
                         <span class="boton-form-icon">
                             <i class="ri-mail-send-fill"></i>
                         </span>

@@ -168,6 +168,9 @@ input[type="checkbox"]:focus {
 
 .card-header {
     margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .card-title {
@@ -200,6 +203,30 @@ input[type="checkbox"]:focus {
     max-width: 100%;
     border-radius: var(--radius-card);
     overflow: hidden;
+}
+
+.branding-preview-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 60px;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+}
+
+.branding-preview-box:hover{
+    background-color: var(--color-hover);
+}
+
+.branding-preview-box img {
+    max-height: 40px;
+    border-radius: var(--radius-card);
+}
+
+.branding-preview-name{
+    font-size: var(--font-size-h4);
 }
 
 .map-preview-container iframe {

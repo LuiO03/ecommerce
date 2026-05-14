@@ -1,5 +1,5 @@
 <x-mail::message>
-# Resumen de tu compra
+## Resumen de tu compra
 
 Hola {{ $user->name ?? 'Cliente' }}, gracias por tu pedido.
 
@@ -28,21 +28,38 @@ Hemos recibido tu orden y la estamos procesando. A continuación encontrarás un
 @endphp
 
 <x-mail::table>
-| Producto                                                 | Cant. |  Precio U. | Importe   |
-|----------------------------------------------------------|:-----:|-------------:|----------:|
+| Producto                                                 | Cant. |  P.U. | Importe   |
+|:----------------------------------------------------------|:-----:|:-------------:|:----------:|
 @foreach($fakeItems as $item)
 | {{ $item->productName }} {{ $item->variantName }} |  {{ $item->quantity }}  | S/ {{ number_format($item->unitPrice, 2) }} | S/ {{ number_format($item->unitPrice * $item->quantity, 2) }} |
 @endforeach
 </x-mail::table>
 
-**Subtotal productos:** S/ {{ number_format($fakeSubtotal, 2) }}<br>
-**Envío:** S/ {{ number_format($fakeShipping, 2) }}<br>
-**Total pagado:** **S/ {{ number_format($fakeTotal, 2) }}**
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:20px;">
+<tr>
+<td><strong>Subtotal productos:</strong></td>
+<td align="right">S/ {{ number_format($fakeSubtotal, 2) }}</td>
+</tr>
 
-Número de pedido: **#GC-000123**<br>
-Método de pago: **Tarjeta de crédito (VISA)**
+<tr>
+<td style="padding-top:8px;"><strong>Envío:</strong></td>
+<td align="right" style="padding-top:8px;">
+    S/ {{ number_format($fakeShipping, 2) }}
+</td>
+</tr>
 
-<x-mail::button :url="url('/')">
+<tr>
+<td style="padding-top:12px;">
+    <strong>Total pagado:</strong>
+</td>
+
+<td align="right" style="padding-top:12px;">
+    <strong>S/ {{ number_format($fakeTotal, 2) }}</strong>
+</td>
+</tr>
+</table>
+
+<x-mail::button :url="url('/')" color="primary">
 Ver más productos
 </x-mail::button>
 

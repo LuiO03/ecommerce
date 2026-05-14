@@ -234,15 +234,15 @@
 }
 
 .sidebar-header .sidebar-logo {
-    width: 40px;
-    aspect-ratio: 1/1;
+    max-height: 40px;
     object-fit: contain;
-    transition: width 0.3s ease;
+    transition: max-height 0.3s ease;
 }
 
 .sidebar-header .sidebar-logo-texto {
     font-size: 19px;
     font-weight: bolder;
+    font-family: var(--font-secondary);
 }
 
 .sidebar-header .sidebar-logo-texto span {
@@ -321,6 +321,7 @@
 
 .sidebar-link:active {
     background-color: var(--color-hover);
+    border-radius: var(--radius-input);
     transform: scale(0.95);
 }
 
@@ -403,6 +404,7 @@
 
 .sidebar-sublink:active {
     background-color: var(--color-hover);
+    border-radius: var(--radius-input);
     transform: scale(0.95);
 }
 

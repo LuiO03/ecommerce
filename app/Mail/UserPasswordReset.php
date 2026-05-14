@@ -31,10 +31,6 @@ class UserPasswordReset extends Mailable
         $company = company_setting();
 
         return $this
-            ->from(
-                config('mail.from.address'),
-                $company?->name ?? config('app.name')
-            )
             ->subject(
                 'Restablecer tu contraseña en ' .
                 ($company?->name ?? config('app.name'))

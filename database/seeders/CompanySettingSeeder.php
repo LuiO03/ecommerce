@@ -20,7 +20,7 @@ class CompanySettingSeeder extends Seeder
         Cache::forget('company_settings');
 
         CompanySetting::create([
-            'name' => '',
+            'name' => null,
             'legal_name' => 'Geckommercce S.A.C.',
             'ruc' => '12345678901',
             'slogan' => 'Tu ecommerce inteligente',

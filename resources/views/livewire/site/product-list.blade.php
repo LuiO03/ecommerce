@@ -94,7 +94,7 @@
     </script>
 @endpush
 
-<section class="section-container pb-0">
+<section class="section-container pb-0 {{ $customClass }}">
     <div class="section-header-conteiner">
         <div class="section-header">
             <h2 class="section-title">{{ $title }}</h2>
