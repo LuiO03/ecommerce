@@ -109,9 +109,11 @@
 
             <div class="profile-address-footer">
                 <button type="button" class="site-btn site-btn-outline" data-profile-address-close>
+                    <i class="ri-close-line boton-form-icon"></i>
                     Cancelar
                 </button>
-                <button type="submit" class="site-btn site-btn-primary" id="profileAddressSubmitBtn">
+                <button type="submit" class="site-btn boton-success" id="profileAddressSubmitBtn">
+                    <i class="ri-save-line"></i>
                     Guardar dirección
                 </button>
             </div>

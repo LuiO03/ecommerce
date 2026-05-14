@@ -75,11 +75,11 @@
                     </div>
                     <hr class="w-full my-0 border-default">
                     <div class="auth-form-footer">
-                        <button class="boton-form boton-success" type="submit" id="resetPasswordBtn">
+                        <button class="site-btn boton-success" type="submit" id="resetPasswordBtn">
                             <span class="boton-form-icon"> <i class="ri-shield-keyhole-line"></i> </span>
                             <span class="boton-form-text">Restablecer contraseña</span>
                         </button>
-                        <a href="{{ route('login') }}" class="boton-form boton-volver">
+                        <a href="{{ route('login') }}" class="site-btn site-btn-outline">
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>

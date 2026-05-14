@@ -8,7 +8,8 @@
             <div class="auth-header">
                 <h2 class="auth-title">¿Olvidaste tu contraseña?</h2>
                 <p class="auth-subtitle">
-                    Por favor, introduce tu correo electrónico. Recibirás un enlace para crear una contraseña nueva por correo electrónico.
+                    Por favor, introduce tu correo electrónico. Recibirás un enlace para crear una contraseña nueva por
+                    correo electrónico.
                 </p>
             </div>
 
@@ -44,15 +45,12 @@
                     </div>
                     <hr class="w-full my-0 border-default">
                     <div class="auth-form-footer">
-                        <button class="boton-form boton-success w-full py-3" type="submit" id="forgotPasswordBtn">
+                        <button class="site-btn boton-success" type="submit" id="forgotPasswordBtn">
                             <span class="boton-form-icon"> <i class="ri-mail-send-fill"></i> </span>
                             <span class="boton-form-text">Enviar enlace</span>
                         </button>
-                        <a href="{{ route('login') }}" class="boton-form boton-volver py-3">
-                            <span class="boton-form-icon">
-                                <i class="ri-arrow-left-circle-fill"></i>
-                            </span>
-                            <span class="boton-form-text">Volver al inicio de sesión</span>
+                        <a href="{{ route('login') }}" class="site-btn site-btn-outline">
+                            <i class="ri-arrow-left-circle-fill"></i>Volver al inicio de sesión
                         </a>
                     </div>
                 </form>

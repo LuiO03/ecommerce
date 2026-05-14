@@ -27,18 +27,13 @@
                 <hr class="w-full my-6 border-default">
 
                 <div class="auth-form-footer">
-                    <a href="{{ route('password.request') }}" class="boton-form boton-success py-3">
-                        <span class="boton-form-icon">
-                            <i class="ri-refresh-line"></i>
-                        </span>
-                        <span class="boton-form-text">Intentarlo de nuevo</span>
+                    <a href="{{ route('password.request') }}" class="site-btn boton-info">
+                        <i class="ri-refresh-line"></i>Intentarlo de nuevo
                     </a>
 
-                    <a href="{{ route('login') }}" class="boton-form boton-volver py-3">
-                        <span class="boton-form-icon">
-                            <i class="ri-arrow-left-circle-fill"></i>
-                        </span>
-                        <span class="boton-form-text">Volver al inicio de sesión</span>
+                    <a href="{{ route('login') }}" class="site-btn site-btn-outline">
+                        <i class="ri-arrow-left-circle-fill"></i>
+                        Volver al inicio de sesión
                     </a>
                 </div>
             </div>

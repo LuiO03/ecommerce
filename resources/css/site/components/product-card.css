@@ -92,7 +92,7 @@
     background-color: var(--color-card-bg);
     padding: 8px;
     gap: 5px;
-    z-index: 199;
+    z-index: 99;
 }
 
 .product-card-name {

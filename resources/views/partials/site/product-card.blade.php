@@ -31,22 +31,19 @@
         </div>
 
         @foreach ($product->variantOptions->where('is_color', true) as $option)
-    <div class="product-card-variant-group"
-        data-option-id="{{ $option->option_id }}"
-        data-option-slug="{{ $option->slug }}">
+            <div class="product-card-variant-group" data-option-id="{{ $option->option_id }}"
+                data-option-slug="{{ $option->slug }}">
 
-        <div class="product-card-variant-values">
-            @foreach ($option->features as $feature)
-                <span class="product-card-variant-value is-color"
-                    title="{{ $feature->value }}">
-                    <span class="variant-swatch"
-                        style="background-color: {{ $feature->description }}"></span>
-                </span>
-            @endforeach
-        </div>
+                <div class="product-card-variant-values">
+                    @foreach ($option->features as $feature)
+                        <span class="product-card-variant-value is-color" title="{{ $feature->value }}">
+                            <span class="variant-swatch" style="background-color: {{ $feature->description }}"></span>
+                        </span>
+                    @endforeach
+                </div>
 
-    </div>
-@endforeach
+            </div>
+        @endforeach
 
         <h3 class="product-card-name">{{ $product->name }}</h3>
         <div class="flex w-full flex-col">

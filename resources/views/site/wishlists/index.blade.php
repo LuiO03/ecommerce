@@ -42,8 +42,7 @@
                 <p>
                     Inicia sesión para guardar tus productos favoritos y acceder a ellos en cualquier momento.
                 </p>
-                <a href="{{ route('login') }}" class="boton-form boton-success py-3 px-5">
-                    <span class="boton-form-icon"><i class="ri-login-box-line"></i></span>
+                <a href="{{ route('login') }}" class="site-btn site-btn-primary">
                     <span class="boton-form-text">Iniciar sesión</span>
                 </a>
             </div>
@@ -54,7 +53,7 @@
                 </div>
                 <h2 class="card-title">No tienes productos en tu lista de deseos</h2>
                 <p>Explora el catálogo y guarda tus productos favoritos para verlos aquí.</p>
-                <a href="{{ route('site.home') }}" class="boton-form boton-success py-3 px-5">
+                <a href="{{ route('site.home') }}" class="site-btn bg-success">
                     <span class="boton-form-icon"><i class="ri-store-2-fill"></i></span>
                     <span class="boton-form-text">Ir a la tienda</span>
                 </a>

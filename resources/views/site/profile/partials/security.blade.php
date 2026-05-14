@@ -137,7 +137,7 @@
                                 style="display:inline;" class="logout-session-form">
                                 @csrf
                                 <input type="hidden" name="session_id" value="{{ $session->id }}">
-                                <button type="button" class="boton-form boton-danger logout-session-btn"
+                                <button type="button" class="site-btn site-btn-danger logout-session-btn"
                                     title="Cerrar sesión">
                                     <span class="boton-form-icon"><i class="ri-git-repository-private-fill"></i></span>
                                     <span class="boton-form-text">Cerrar Sesión</span>
@@ -239,7 +239,7 @@
         </div>
 
         <div class="form-footer-static">
-            <button class="boton-form boton-danger" type="submit" id="sitePasswordSubmitBtn">
+            <button class="site-btn boton-danger" type="submit" id="sitePasswordSubmitBtn">
                 <span class="boton-form-icon"><i class="ri-lock-2-fill"></i></span>
                 <span class="boton-form-text">Actualizar contraseña</span>
             </button>

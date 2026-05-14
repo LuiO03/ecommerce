@@ -13,7 +13,7 @@
             </div>
             <h3 class="card-title">Aún no tienes pedidos</h3>
             <p>Explora la tienda y realiza tu primera compra.</p>
-            <a href="{{ route('site.home') }}" class="boton-form boton-success py-3 px-5">
+            <a href="{{ route('site.home') }}" class="site-btn boton-success">
                 <span class="boton-form-icon"><i class="ri-store-2-fill"></i></span>
                 <span class="boton-form-text">Ir a la tienda</span>
             </a>

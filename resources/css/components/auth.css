@@ -133,7 +133,7 @@
 }
 
 .auth-link-accent {
-    color: var(--color-accent);
+    color: var(--color-site-nav);
     font-weight: bold;
     cursor: pointer;
     font-family: var(--font-secondary);

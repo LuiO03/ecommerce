@@ -589,10 +589,9 @@
                     </div>
 
                     <div class="checkout-summary-actions">
-                        <button type="button" id="payButton" class="boton-form boton-primary w-full py-3" disabled>
-                            <span class="boton-form-icon"><i class="ri-wallet-3-fill"></i>
-                            </span>
-                            <span class="boton-form-text">Pagar ahora</span>
+                        <button type="button" id="payButton" class="site-btn site-btn-primary" disabled>
+                            <i class="ri-wallet-3-fill"></i>
+                            Pagar ahora
                         </button>
                         <div class="{{ $checkoutFallbackMessage ? '' : 'is-hidden' }}" data-niubiz-fallback>
                             <x-note-alert type="warning" :message="$checkoutFallbackMessage" :dismissible="true" />
@@ -918,7 +917,7 @@
                         badgeWrapper = document.createElement('div');
                         badgeWrapper.className = 'store-badge';
                         badgeWrapper.innerHTML =
-                            '<span class="badge bg-success"><i class="ri-checkbox-circle-fill"></i> Seleccionado</span>';
+                            '<span class="badge boton-success"><i class="ri-checkbox-circle-fill"></i> Seleccionado</span>';
                         label.appendChild(badgeWrapper);
                     }
                 }

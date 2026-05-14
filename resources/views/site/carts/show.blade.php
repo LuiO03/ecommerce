@@ -22,8 +22,7 @@
                 <p>
                     Para guardar y recuperar tus productos en el carrito, inicia sesión con tu cuenta.
                 </p>
-                <a href="{{ route('login') }}" class="boton-form boton-success py-3 px-5">
-                    <span class="boton-form-icon"><i class="ri-login-box-line"></i></span>
+                <a href="{{ route('login') }}" class="site-btn site-btn-primary">
                     <span class="boton-form-text">Iniciar sesión</span>
                 </a>
             </div>
@@ -36,7 +35,7 @@
                 <p>
                     Aún no has agregado productos. Explora nuestro catálogo y empieza tu compra.
                 </p>
-                <a href="{{ route('site.home') }}" class="boton-form boton-success py-3 px-5">
+                <a href="{{ route('site.home') }}" class="site-btn bg-success">
                     <span class="boton-form-icon"><i class="ri-store-2-fill"></i></span>
                     <span class="boton-form-text">Ir a la tienda</span>
                 </a>

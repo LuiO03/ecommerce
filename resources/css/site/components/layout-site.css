@@ -142,7 +142,15 @@
 
     color: var(--color-normal);
     padding: 0.5rem;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-icon:hover {
+    color: var(--color-primary-pastel);
+}
+
+.nav-icon:active {
+    transform: scale(0.95);
 }
 
 .nav-icon i{
@@ -163,10 +171,6 @@
     .header-actions {
         gap: 0.3rem;
     }
-}
-
-.nav-icon:hover {
-    color: var(--color-primary-pastel);
 }
 
 .nav-login-button {

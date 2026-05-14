@@ -165,7 +165,7 @@
         </div>
 
         <div class="form-footer-static">
-            <button class="boton-form boton-accent" type="submit" id="saveProfileDetailsBtn">
+            <button class="site-btn boton-success" type="submit" id="saveProfileDetailsBtn">
                 <span class="boton-form-icon"><i class="ri-save-fill"></i></span>
                 <span class="boton-form-text">Guardar cambios</span>
             </button>

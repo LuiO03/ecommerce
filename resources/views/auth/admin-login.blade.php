@@ -80,11 +80,11 @@
                     <div class="auth-form-footer">
 
                         <!-- Botón de login -->
-                        <button class="boton-form boton-success py-3" type="submit" id="loginBtn">
+                        <button class="site-btn site-btn-primary" type="submit" id="loginBtn">
                             <span class="boton-form-icon"> <i class="ri-login-box-line"></i> </span>
                             <span class="boton-form-text">Iniciar Sesión</span>
                         </button>
-                        <a href="{{ route('site.home') }}" class="boton-form boton-volver py-3">
+                        <a href="{{ route('site.home') }}" class="site-btn site-btn-outline">
                             <span class="boton-form-icon">
                                 <i class="ri-arrow-left-circle-fill"></i>
                             </span>

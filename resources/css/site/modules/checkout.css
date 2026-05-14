@@ -407,6 +407,8 @@
 
 .checkout-summary-actions {
     margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 1024px) {

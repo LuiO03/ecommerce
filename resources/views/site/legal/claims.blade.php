@@ -160,7 +160,7 @@
                         </div>
 
                         <div class="form-footer-static">
-                            <button class="boton-form boton-dark" type="submit" data-submit-loader
+                            <button class="site-btn boton-dark" type="submit" data-submit-loader
                                 data-default-text="Enviar registro" data-loading-text="Enviando...">
                                 <span class="boton-form-icon">
                                     <i class="ri-send-plane-fill"></i>

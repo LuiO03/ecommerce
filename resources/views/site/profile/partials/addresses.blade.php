@@ -6,8 +6,8 @@
             <p class="card-description">Gestiona tus direcciones de envío favoritas.</p>
         </div>
         <div class="card-header-actions">
-            <button type="button" class="boton-form boton-success" data-address-modal-open="create">
-                <span class="boton-form-icon"><i class="ri-map-pin-2-fill"></i></span>
+            <button type="button" class="site-btn site-btn-outline" data-address-modal-open="create">
+                <span class="boton-form-icon"><i class="ri-map-pin-2-line"></i></span>
                 <span class="boton-form-text">Agregar dirección</span>
             </button>
         </div>

@@ -59,6 +59,11 @@
     border: none;
     font-weight: lighter;
     cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.topbar-icon-btn:active {
+    transform: scale(0.95);
 }
 
 @media (max-width: 640px) {
@@ -71,11 +76,12 @@
     }
 }
 
-.topbar-icon-btn:hover {
-    background-color: var(--color-hover);
-    color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+    .topbar-icon-btn:hover {
+        background-color: var(--color-hover);
+        color: var(--color-accent);
+    }
 }
-
 .notification-badge {
     position: absolute;
     top: 3px;
@@ -312,6 +318,12 @@
         border-left: 4px solid var(--color-accent);
     }
 }
+
+.sidebar-link:active {
+    background-color: var(--color-hover);
+    transform: scale(0.95);
+}
+
 .sidebar-link.active {
     background-color: var(--color-accent);
     font-weight: bold;
@@ -380,11 +392,18 @@
         transform 0.2s ease;
 }
 
-.sidebar-sublink:hover {
-    background-color: var(--color-sidebar-bg);
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-    font-weight: bold;
+@media (hover: hover) and (pointer: fine) {
+    .sidebar-sublink:hover {
+        background-color: var(--color-sidebar-bg);
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+        font-weight: bold;
+    }
+}
+
+.sidebar-sublink:active {
+    background-color: var(--color-hover);
+    transform: scale(0.95);
 }
 
 /* === Íconos y badges === */
@@ -658,7 +677,7 @@
         opacity: 1;
     }
 
-    .sidebar-tooltip i{
+    .sidebar-tooltip i {
         font-size: var(--font-size-h3);
         line-height: 1;
     }
@@ -683,8 +702,8 @@
         }
     }
 
-     /* keyframe para que el tooltip desapareca de derecha a izquierda */
-     @keyframes tooltipSlideOut {
+    /* keyframe para que el tooltip desapareca de derecha a izquierda */
+    @keyframes tooltipSlideOut {
         0% {
             opacity: 1;
             transform: translateX(0);

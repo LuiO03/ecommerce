@@ -16,7 +16,8 @@
             </p>
 
             <p class="checkout-payment-message mt-2">
-                Si aún no has verificado tu cuenta, puedes solicitar un nuevo correo de verificación ingresando el correo con el que te registraste.
+                Si aún no has verificado tu cuenta, puedes solicitar un nuevo correo de verificación ingresando el
+                correo con el que te registraste.
             </p>
 
             <form method="POST" action="{{ route('site.verification.resend') }}" class="mt-4 space-y-3 max-w-md w-full">
@@ -25,15 +26,8 @@
                     <label for="email" class="label-form">Correo electrónico</label>
                     <div class="input-icon-container">
                         <i class="ri-mail-line input-icon"></i>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="input-form"
-                            placeholder="Ingresa tu correo registrado"
-                            required
-                            autocomplete="email"
-                        >
+                        <input type="email" id="email" name="email" class="input-form"
+                            placeholder="Ingresa tu correo registrado" required autocomplete="email">
                     </div>
                 </div>
 
@@ -53,22 +47,12 @@
             </form>
 
             <div class="checkout-payment-actions">
-                <a href="{{ route('site.home') }}" class="boton-form boton-success py-3">
-                    <span class="boton-form-icon">
-                        <i class="ri-store-2-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        <span>Volver a la tienda</span>
-                    </span>
+                <a href="{{ route('site.home') }}" class="site-btn site-btn-outline">
+                    <i class="ri-store-2-fill"></i>Volver a la tienda
                 </a>
 
-                <a href="{{ route('login') }}" class="boton-form boton-info py-3">
-                    <span class="boton-form-icon">
-                        <i class="ri-login-box-line"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        <span>Iniciar sesión</span>
-                    </span>
+                <a href="{{ route('login') }}" class="site-btn site-btn-primary">
+                    Iniciar sesión
                 </a>
             </div>
         </div>

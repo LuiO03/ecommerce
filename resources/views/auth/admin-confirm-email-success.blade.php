@@ -23,22 +23,14 @@
             </div>
 
             <div class="checkout-payment-actions">
-                <a href="{{ route('site.home') }}" class="boton-form boton-success py-3">
-                    <span class="boton-form-icon">
-                        <i class="ri-store-2-fill"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        <span>Ir a la tienda</span>
-                    </span>
+                <a href="{{ route('site.home') }}" class="site-btn site-btn-outline">
+                    <i class="ri-store-2-fill"></i>
+                    Ir a la tienda
                 </a>
 
-                <a href="{{ route('login') }}" class="boton-form boton-info py-3">
-                    <span class="boton-form-icon">
-                        <i class="ri-login-box-line"></i>
-                    </span>
-                    <span class="boton-form-text">
-                        <span>Iniciar sesión</span>
-                    </span>
+                <a href="{{ route('login') }}" class="site-btn site-btn-primary">
+
+                    <i class="ri-login-box-line"></i>Iniciar sesión
                 </a>
             </div>
         </div>

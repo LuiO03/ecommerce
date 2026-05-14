@@ -37,7 +37,7 @@
 
                 <div class="flex flex-col gap-3">
                     @isset($verificationUrl)
-                        <a href="{{ $verificationUrl }}" class="boton-form boton-success py-3 text-center">
+                        <a href="{{ $verificationUrl }}" class="site-btn boton-success">
                             <span class="boton-form-icon">
                                 <i class="ri-mail-check-line"></i>
                             </span>
@@ -45,7 +45,7 @@
                         </a>
                     @endisset
 
-                    <a href="{{ route('login') }}" class="boton-form boton-volver py-3 text-center">
+                    <a href="{{ route('login') }}" class="site-btn site-btn-outline">
                         <span class="boton-form-icon">
                             <i class="ri-arrow-left-circle-fill"></i>
                         </span>
