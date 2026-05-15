@@ -67,9 +67,14 @@
     @else
         <section class="no-covers">
             <div class="no-covers-content">
-                <i class="ri-gallery-fill"></i>
+                <i class="ri-gallery-fill no-covers-icon"></i>
                 <h2>No hay portadas disponibles</h2>
                 <p>Pronto habrá contenido destacado aquí</p>
+                @can('portadas.create')
+                    <a href="{{ route('admin.covers.create') }}" class="site-select-trigger filter-toggle-btn">
+                        <i class="ri-add-line"></i>Crear Portada
+                    </a>
+                @endcan
             </div>
         </section>
     @endif

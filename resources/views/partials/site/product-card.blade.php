@@ -58,10 +58,17 @@
                 @else
                     <span class="product-card-price">S/.{{ number_format($product->price, 2) }}</span>
                 @endif
+                @can('productos.edit')
+                    <a href="{{ route('admin.products.edit', $product) }}" title="Editar producto"
+                        class="admin-btn" target="_blank">
+                        <i class="ri-pencil-fill"></i>
+                    </a>
+                @endcan
             </div>
         </div>
     </div>
     <livewire:site.add-to-wishlist-card :product-id="$product->id" :key="'wishlist-card-' . $product->id" />
+
     @if ($product->discount)
         <span class="product-card-badge">-{{ number_format($product->discount, 0) }}%
             OFF</span>

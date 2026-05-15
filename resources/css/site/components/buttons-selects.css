@@ -83,6 +83,8 @@
 
 .site-select-trigger i {
     transition: transform 0.2s ease;
+    font-size: var(--font-size-p);
+    line-height: 1;
 }
 
 .site-select.active .site-select-trigger i {

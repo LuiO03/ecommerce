@@ -178,6 +178,24 @@
         color 0.3s ease;
 }
 
+.admin-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    background: var(--select-bg);
+    border: 1px solid var(--select-border);
+    border-radius: var(--radius-input);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    font-size: 0.9rem;
+    justify-content: center;
+}
+
+.admin-btn:hover {
+    border-color: var(--color-site-nav);
+}
+
 .wishlist-btn i {
     line-height: 1;
     font-size: var(--font-size-h4);
