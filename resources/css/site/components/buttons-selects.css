@@ -52,7 +52,6 @@
 .site-btn-outline {
     background: transparent;
     border: 2px solid var(--btn-primary);
-    color: var(--btn-primary);
 }
 
 
@@ -75,7 +74,7 @@
     font-size: 0.9rem;
 
     min-width: 180px;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .site-select-trigger:hover {

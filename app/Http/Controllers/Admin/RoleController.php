@@ -315,7 +315,7 @@ class RoleController extends Controller
 
     public function permissions(Role $role)
     {
-        if (!$role->canBeEditedBy(auth()->user())) {
+        if (!$role->canBeAssignPermissions(auth()->user())) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',
@@ -356,7 +356,7 @@ class RoleController extends Controller
     // Actualizar los permisos asignados a un rol.
     public function updatePermissions(Request $request, Role $role)
     {
-        if (!$role->canBeEditedBy(auth()->user())) {
+        if (!$role->canBeAssignPermissions(auth()->user())) {
             Session::flash('info', [
                 'type' => 'warning',
                 'header' => 'Protegido',

@@ -2,12 +2,15 @@
 
     <div class="products-layout {{ !empty($search) ? 'products-layout--full' : '' }}">
         @if (empty($search))
-            <aside class="products-sidebar">
+            <aside class="filter-sidebar">
                 <section class="filters" aria-label="Filtros de productos">
                     <div class="filters-header">
                         <div class="filters-title">
                             <span>Filtrar productos</span>
                         </div>
+                        <button type="button" class="filters-close">
+                            <i class="ri-close-line"></i>
+                        </button>
                     </div>
 
                     @php
@@ -218,7 +221,9 @@
                         </button>
                     </div>
                 </section>
+
             </aside>
+
         @endif
 
         <main class="products-main">
@@ -227,9 +232,30 @@
                     <h1 class="products-title">
                         {{ $this->pageTitle }}
                     </h1>
-
+                    <p class="products-count">
+                        @if (!empty($search))
+                            @if ($totalProducts > 0)
+                                {{ $totalProducts }}
+                                {{ Str::plural('producto', $totalProducts) }}
+                                encontrado{{ $totalProducts === 1 ? '' : 's' }} para
+                                "{{ $search }}"
+                            @else
+                                No se encontraron productos para "{{ $search }}"
+                            @endif
+                        @else
+                            {{ $totalProducts }}
+                            {{ Str::plural('producto', $totalProducts) }}
+                            encontrado{{ $totalProducts === 1 ? '' : 's' }}
+                        @endif
+                    </p>
                 </div>
+            </div>
 
+            <div class="flex justify-between">
+                <div class="site-select-trigger filter-toggle-btn sm:hidden">
+                    <i class="ri-filter-line"></i>
+                    Filtrar
+                </div>
                 <div class="site-select">
                     <div class="site-select-trigger">
                         <i class="ri-sort-asc site-select-icon"></i>
@@ -300,24 +326,6 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <p class="products-count">
-                        @if (!empty($search))
-                            @if ($totalProducts > 0)
-                                {{ $totalProducts }}
-                                {{ Str::plural('producto', $totalProducts) }}
-                                encontrado{{ $totalProducts === 1 ? '' : 's' }} para
-                                "{{ $search }}"
-                            @else
-                                No se encontraron productos para "{{ $search }}"
-                            @endif
-                        @else
-                            {{ $totalProducts }}
-                            {{ Str::plural('producto', $totalProducts) }}
-                            encontrado{{ $totalProducts === 1 ? '' : 's' }}
-                        @endif
-                    </p>
-            </div>
 
             @if (!empty($activeFilterPills))
                 <div class="filter-pills" aria-label="Filtros aplicados">
@@ -334,7 +342,8 @@
                                 <span class="filter-pill-label">{{ $pill['label'] }}</span>
                             </span>
 
-                            <button type="button" class="filter-pill-remove" aria-label="Quitar {{ $pill['meta'] }} {{ $pill['label'] }}"
+                            <button type="button" class="filter-pill-remove"
+                                aria-label="Quitar {{ $pill['meta'] }} {{ $pill['label'] }}"
                                 wire:click="{{ $pill['removeAction'] }}" wire:loading.attr="disabled"
                                 wire:target="{{ $pill['removeTarget'] }}">
                                 <i class="ri-close-line" wire:loading.remove
@@ -344,6 +353,16 @@
                             </button>
                         </div>
                     @endforeach
+
+                    <!-- filter pill para limpiar todos los filtros -->
+                    <button type="button" class="filter-pill filter-pill--clear-all"
+                        aria-label="Limpiar todos los filtros" wire:click="clearFilters" wire:loading.attr="disabled"
+                        wire:target="clearFilters">
+                        <i class="ri-refresh-line" wire:loading.remove wire:target="clearFilters"></i>
+                        <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="clearFilters"
+                            aria-hidden="true"></i>
+                        <span class="filter-pill-text">Limpiar todos los filtros</span>
+                    </button>
                 </div>
             @endif
 
@@ -428,4 +447,40 @@
             @endif
         </main>
     </div>
+    <div class="filter-overlay"></div>
 </div>
+<script>
+    const filterSidebar = document.querySelector('.filter-sidebar');
+    const filterOverlay = document.querySelector('.filter-overlay');
+    const filterToggleBtn = document.querySelector('.filter-toggle-btn');
+
+    function openFilters() {
+        filterSidebar?.classList.add('active');
+        filterOverlay?.classList.add('active');
+        document.body.classList.add('filters-open');
+    }
+
+    function closeFilters() {
+        filterSidebar?.classList.remove('active');
+        filterOverlay?.classList.remove('active');
+        document.body.classList.remove('filters-open');
+    }
+
+    filterToggleBtn?.addEventListener('click', openFilters);
+
+    filterOverlay?.addEventListener('click', closeFilters);
+
+    // Cerrar con ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeFilters();
+        }
+    });
+
+    document.querySelector('.filters-close')
+        ?.addEventListener('click', closeFilters);
+    document.querySelector('.site-btn-outline')
+        ?.addEventListener('click', closeFilters);
+    document.querySelector('.site-btn-primary')
+        ?.addEventListener('click', closeFilters);
+</script>

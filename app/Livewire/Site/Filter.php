@@ -237,9 +237,13 @@ class Filter extends Component
         if ($this->brand) {
             return $this->brand->name;
         }
-
+        /*
         if ($this->family) {
             return $this->family->name;
+        }*/
+        /* si es familia no mostrar el nombre de la familia pues hay un slider con su titulo arriba, mejor nomostrar nada*/
+        if ($this->family) {
+            return '';
         }
 
         return 'Tienda';

@@ -44,4 +44,19 @@ class Role extends SpatieRole
         // Usuarios normales NO pueden editar roles protegidos
         return !$this->isProtected();
     }
+
+    public function canBeAssignPermissions(User $user): bool
+    {
+        if (!$user->can('roles.assign-permissions')) {
+            return false;
+        }
+
+        // Superadmin puede asignar todo
+        if ($user->hasRole('Superadministrador')) {
+            return true;
+        }
+
+        // Usuarios normales NO pueden asignar roles protegidos
+        return !$this->isProtected();
+    }
 }

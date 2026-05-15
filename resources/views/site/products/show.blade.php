@@ -79,14 +79,21 @@
                 data-discount="{{ $discountPercent }}" data-has-variants="{{ $hasActiveVariants ? '1' : '0' }}"
                 data-has-available-variants="{{ $hasAvailableVariants ? '1' : '0' }}">
                 <div class="product-summary-header">
-                    <div class="product-meta-links">
-                        <a href="{{ route('brands.show', $product->brand) }}" class="product-brand">
-                            {{ $product->brand?->name ?? 'Sin marca' }}
-                        </a>
-                        |
-                        <a href="{{ route('categories.show', $product->category) }}" class="product-category">
-                            {{ $product->category->name }}
-                        </a>
+                    <div class="flex justify-between">
+                        <div class="product-meta-links">
+                            <a href="{{ route('brands.show', $product->brand) }}" class="product-brand">
+                                {{ $product->brand?->name ?? 'Sin marca' }}
+                            </a>
+                            |
+                            <a href="{{ route('categories.show', $product->category) }}" class="product-category">
+                                {{ $product->category->name }}
+                            </a>
+                        </div>
+                        @can('productos.edit')
+                            <a href="{{ route('admin.products.edit', $product) }}" class="site-select-trigger filter-toggle-btn" target="_blank">
+                                <i class="ri-pencil-fill"></i>Editar Producto
+                            </a>
+                        @endcan
                     </div>
                     <h1>{{ $product->name }}</h1>
                     <p class="product-sku">SKU: {{ $product->sku }}</p>
@@ -208,7 +215,8 @@
         @endif
     </section>
     {{-- Similares (en show.blade.php, por ejemplo) --}}
-    <livewire:site.product-list :category-id="$product->category_id" :exclude-id="$product->id" :limit="12" title="Productos similares" :scope="'family_fallback'" :strict="true"
+    <livewire:site.product-list :category-id="$product->category_id" :exclude-id="$product->id" :limit="12" title="Productos similares"
+        :scope="'family_fallback'" :strict="true"
         subtitle="Te pueden interesar estos productos de la misma categoría {{ $product->category->name }}" />
 
     <livewire:site.product-list :limit="12" order-by="cheap" title="¡Los más baratos!"

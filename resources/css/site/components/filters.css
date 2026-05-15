@@ -1,6 +1,56 @@
 /* ============================================
    FILTERS - Filtros de productos
    ============================================ */
+.filter-sidebar {
+    position: sticky;
+    top: calc(var(--site-nav-height) + 0.5rem);
+    height: calc(100dvh - var(--site-nav-height) - 1rem);
+    align-self: start;
+}
+
+@media (max-width: 1024px) {
+    .filter-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .filter-sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        z-index: 300;
+        width: min(85vw, 320px);
+        background-color: #FFFFFF;
+        height: 100dvh;
+        transition: left 0.3s ease;
+        overflow: hidden;
+    }
+
+    .filter-sidebar.active {
+        left: 0;
+    }
+
+    .filter-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 250;
+
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            opacity 0.3s ease,
+            visibility 0.3s ease;
+    }
+
+    .filter-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+}
 
 .site-filter{
     max-width: var(--site-max-width);
@@ -23,6 +73,11 @@
    justify-content: space-between;
    gap: 1rem;
    padding: 5px 10px;
+}
+
+.filters-close i{
+    font-size: var(--font-size-h3);
+    line-height: 1;
 }
 
 .filters-title {
@@ -214,12 +269,11 @@
    background: rgba(0, 0, 0, 0.05);
    color: var(--color-text);
    cursor: pointer;
-   transition: background 0.2s ease, transform 0.2s ease;
+   transition: background 0.2s ease;
 }
 
 .filter-pill-remove:hover:not(:disabled) {
    background: var(--btn-hover);
-   transform: translateY(-1px);
 }
 .filter-color-dot {
    width: 1.25rem;

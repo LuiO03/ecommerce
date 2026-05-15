@@ -254,7 +254,7 @@
                     <i class="ri-arrow-down-s-line submenu-arrow transition-transform duration-300"></i>
                 </button>
 
-                <ul id="dropdown-tienda" class="sidebar-submenu space-y-1">
+                <ul id="dropdown-finanzas" class="sidebar-submenu space-y-1">
                     <li>
                         <a href="{{ request()->routeIs('admin.payments.*') ? '#' : route('admin.payments.index') }}"
                             class="sidebar-sublink {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}"

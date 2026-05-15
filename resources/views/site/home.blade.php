@@ -41,6 +41,12 @@
                                                 {{ $cover->button_text }}
                                             </a>
                                         @endif
+                                        @can('portadas.edit')
+                                            <a href="{{ route('admin.covers.edit', $cover) }}"
+                                                class="site-select-trigger filter-toggle-btn" target="_blank">
+                                                <i class="ri-pencil-fill"></i>Editar Portada
+                                            </a>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>
@@ -78,40 +84,53 @@
                         window.SwiperModules.Navigation,
                         window.SwiperModules.Pagination,
                         window.SwiperModules.Autoplay,
+                        window.SwiperModules.EffectFade,
                     ],
-                    effect: 'slide',
+
+                    effect: 'fade',
+
+                    fadeEffect: {
+                        crossFade: true,
+                    },
+
                     loop: true,
+
+                    speed: 350,
+
+                    preventInteractionOnTransition: false,
+
+                    grabCursor: true,
+
+                    simulateTouch: true,
+                    followFinger: true,
+
                     autoplay: {
                         delay: 5000,
                         disableOnInteraction: false,
                         pauseOnMouseEnter: true,
                     },
-                    speed: 400,
+
                     navigation: {
                         nextEl: '.covers-slider .swiper-button-next',
                         prevEl: '.covers-slider .swiper-button-prev',
                     },
+
                     pagination: {
                         el: '.covers-slider .swiper-pagination',
                         clickable: true,
                         dynamicBullets: true,
                     },
+
                     keyboard: {
                         enabled: true,
                     },
-                    a11y: {
-                        prevSlideMessage: 'Portada anterior',
-                        nextSlideMessage: 'Siguiente portada',
-                        firstSlideMessage: 'Esta es la primera portada',
-                        lastSlideMessage: 'Esta es la última portada',
-                    },
+
                     on: {
                         init() {
                             coversSliderEl.classList.remove('is-loading');
                         }
                     }
                 });
-                swiper.init();
             });
         </script>
     @endpush
@@ -122,14 +141,14 @@
     <!-- Sección de Últimos Productos con Livewire -->
     <livewire:site.product-list :limit="12" title="Últimos Productos" subtitle="Descubre nuestras novedades" />
     <!-- Sección de Ofertas -->
-    <livewire:site.product-list custom-class="bg-section" title="Ofertas" subtitle="Aprovecha descuentos" :limit="12" :onSale="true"
-        :strict="false" />
+    <livewire:site.product-list custom-class="bg-section" title="Ofertas" subtitle="Aprovecha descuentos"
+        :limit="12" :onSale="true" :strict="false" />
 
     <livewire:site.product-list title="Los más vendidos" subtitle="Los productos más comprados" :limit="12"
         orderBy="best_selling" />
 
-    <livewire:site.product-list custom-class="bg-section" title="Productos destacados" subtitle="Nuestros productos recomendados"
-        :limit="12" orderBy="featured" />
+    <livewire:site.product-list custom-class="bg-section" title="Productos destacados"
+        subtitle="Nuestros productos recomendados" :limit="12" orderBy="featured" />
 
     <!-- Sección de Productos más baratos -->
     <livewire:site.product-list :limit="12" order-by="cheap" title="¡Los más baratos!"

@@ -17,10 +17,12 @@
 .products-slider {
     width: 100%;
     max-width: var(--site-max-width);
+    padding-inline: 1px !important;
 }
 
 .products-slider .swiper-wrapper{
     display: flex;
+
 }
 
 .products-slide {
@@ -31,8 +33,11 @@
 /* Paginación */
 .products-slider .swiper-pagination {
     position: relative;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 1rem;
-    overflow: visible;
 }
 
 .products-slider .swiper-pagination-bullet {
@@ -154,12 +159,10 @@
 
 .products-skeleton {
     width: 100%;
-
     display: grid;
-
     grid-template-columns: repeat(2, minmax(0, 1fr));
-
     gap: 3px;
+    padding-bottom: 2.5rem;
 }
 .products-skeleton .product-skeleton-item {
     display: block;
