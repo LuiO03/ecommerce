@@ -249,79 +249,79 @@
                         @endif
                     </p>
                 </div>
-            </div>
-
-            <div class="flex justify-between">
-                <div class="site-select-trigger filter-toggle-btn sm:hidden">
-                    <i class="ri-filter-line"></i>
-                    Filtrar
-                </div>
-                <div class="site-select">
-                    <div class="site-select-trigger">
-                        <i class="ri-sort-asc site-select-icon"></i>
-                        <span>
-                            @switch($sortBy)
-                                @case('price-asc')
-                                    Precio: Menor a Mayor
-                                @break
-
-                                @case('price-desc')
-                                    Precio: Mayor a Menor
-                                @break
-
-                                @case('name-asc')
-                                    Nombre: A-Z
-                                @break
-
-                                @case('name-desc')
-                                    Nombre: Z-A
-                                @break
-
-                                @default
-                                    Más recientes
-                            @endswitch
-                        </span>
-                        <i class="ri-arrow-down-s-line"></i>
+                <div class="flex justify-between gap-2">
+                    <div class="site-select-trigger filter-toggle-btn sm:hidden">
+                        <i class="ri-filter-line"></i>
+                        Filtrar
                     </div>
-                    <div class="site-select-dropdown">
-                        <div class="site-select-option {{ $sortBy === 'recent' ? 'active' : '' }}"
-                            wire:click="updateSort('recent')" wire:loading.attr="disabled" wire:target="updateSort">
-                            <i class="ri-time-line" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
-                                aria-hidden="true"></i>
-                            <span>Más recientes</span>
+                    <div class="site-select">
+                        <div class="site-select-trigger">
+                            <i class="ri-sort-asc site-select-icon"></i>
+                            <span>
+                                @switch($sortBy)
+                                    @case('price-asc')
+                                        Precio: Menor a Mayor
+                                    @break
+
+                                    @case('price-desc')
+                                        Precio: Mayor a Menor
+                                    @break
+
+                                    @case('name-asc')
+                                        Nombre: A-Z
+                                    @break
+
+                                    @case('name-desc')
+                                        Nombre: Z-A
+                                    @break
+
+                                    @default
+                                        Más recientes
+                                @endswitch
+                            </span>
+                            <i class="ri-arrow-down-s-line"></i>
                         </div>
-                        <div class="site-select-option {{ $sortBy === 'price-asc' ? 'active' : '' }}"
-                            wire:click="updateSort('price-asc')" wire:loading.attr="disabled"
-                            wire:target="updateSort">
-                            <i class="ri-arrow-up-line" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
-                                aria-hidden="true"></i>
-                            <span>Precio: Menor a Mayor</span>
-                        </div>
-                        <div class="site-select-option {{ $sortBy === 'price-desc' ? 'active' : '' }}"
-                            wire:click="updateSort('price-desc')" wire:loading.attr="disabled"
-                            wire:target="updateSort">
-                            <i class="ri-arrow-down-line" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
-                                aria-hidden="true"></i>
-                            <span>Precio: Mayor a Menor</span>
-                        </div>
-                        <div class="site-select-option {{ $sortBy === 'name-asc' ? 'active' : '' }}"
-                            wire:click="updateSort('name-asc')" wire:loading.attr="disabled"
-                            wire:target="updateSort">
-                            <i class="ri-sort-asc" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
-                                aria-hidden="true"></i>
-                            <span>Nombre: A-Z</span>
-                        </div>
-                        <div class="site-select-option {{ $sortBy === 'name-desc' ? 'active' : '' }}"
-                            wire:click="updateSort('name-desc')" wire:loading.attr="disabled"
-                            wire:target="updateSort">
-                            <i class="ri-sort-desc" wire:loading.remove wire:target="updateSort"></i>
-                            <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
-                                aria-hidden="true"></i>
-                            <span>Nombre: Z-A</span>
+                        <div class="site-select-dropdown">
+                            <div class="site-select-option {{ $sortBy === 'recent' ? 'active' : '' }}"
+                                wire:click="updateSort('recent')" wire:loading.attr="disabled"
+                                wire:target="updateSort">
+                                <i class="ri-time-line" wire:loading.remove wire:target="updateSort"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                    aria-hidden="true"></i>
+                                <span>Más recientes</span>
+                            </div>
+                            <div class="site-select-option {{ $sortBy === 'price-asc' ? 'active' : '' }}"
+                                wire:click="updateSort('price-asc')" wire:loading.attr="disabled"
+                                wire:target="updateSort">
+                                <i class="ri-arrow-up-line" wire:loading.remove wire:target="updateSort"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                    aria-hidden="true"></i>
+                                <span>Precio: Menor a Mayor</span>
+                            </div>
+                            <div class="site-select-option {{ $sortBy === 'price-desc' ? 'active' : '' }}"
+                                wire:click="updateSort('price-desc')" wire:loading.attr="disabled"
+                                wire:target="updateSort">
+                                <i class="ri-arrow-down-line" wire:loading.remove wire:target="updateSort"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                    aria-hidden="true"></i>
+                                <span>Precio: Mayor a Menor</span>
+                            </div>
+                            <div class="site-select-option {{ $sortBy === 'name-asc' ? 'active' : '' }}"
+                                wire:click="updateSort('name-asc')" wire:loading.attr="disabled"
+                                wire:target="updateSort">
+                                <i class="ri-sort-asc" wire:loading.remove wire:target="updateSort"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                    aria-hidden="true"></i>
+                                <span>Nombre: A-Z</span>
+                            </div>
+                            <div class="site-select-option {{ $sortBy === 'name-desc' ? 'active' : '' }}"
+                                wire:click="updateSort('name-desc')" wire:loading.attr="disabled"
+                                wire:target="updateSort">
+                                <i class="ri-sort-desc" wire:loading.remove wire:target="updateSort"></i>
+                                <i class="ri-loader-4-line button-loading-icon" wire:loading wire:target="updateSort"
+                                    aria-hidden="true"></i>
+                                <span>Nombre: Z-A</span>
+                            </div>
                         </div>
                     </div>
                 </div>
