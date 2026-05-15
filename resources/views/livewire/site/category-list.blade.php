@@ -95,8 +95,16 @@
                                     <span>Imagen no disponible</span>
                                 </div>
                             @endif
+                            <div class="category-name">
+                                {{ $category->name }}
+                            </div>
                         </div>
-                        <div class="category-name">{{ $category->name }}</div>
+                        @can('categorias.edit')
+                            <a href="{{ route('admin.categories.edit', $category) }}" title="Editar categoría"
+                                class="admin-btn" target="_blank">
+                                <i class="ri-pencil-fill"></i>
+                            </a>
+                        @endcan
                     </a>
                 </div>
             @endforeach

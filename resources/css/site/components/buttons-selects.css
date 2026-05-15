@@ -65,16 +65,14 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 0.4rem;
     background: var(--select-bg);
     border: 1px solid var(--select-border);
     border-radius: var(--radius-input);
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-
-    min-width: 180px;
+    transition: border-color 0.2s ease;
     justify-content: center;
+    width: fit-content;
 }
 
 .site-select-trigger:hover {

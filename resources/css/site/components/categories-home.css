@@ -29,7 +29,6 @@
     width: 100%;
     display: flex;
     text-align: start;
-    font-size: var(--font-size-h5);
     font-weight: 400;
 }
 
@@ -298,6 +297,7 @@
 .category-card {
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: end;
     justify-content: center;
     aspect-ratio: 1 / 1;
@@ -338,26 +338,24 @@
 .category-name {
     position: absolute;
     inset: auto 0 0 0;
-
     width: 100%;
     height: 100%;
-
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    padding: 10px;
-
+    padding: 5px;
     text-align: center;
-
     color: white;
-
     font-size: var(--font-size-h4);
     font-weight: bold;
-
     text-transform: uppercase;
-
     background: var(--color-bg-transparent);
-
     font-family: var(--font-secondary);
+    transition: background-color 0.3s ease;
 }
+
+.category-name:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+

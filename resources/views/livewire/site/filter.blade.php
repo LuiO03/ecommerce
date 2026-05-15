@@ -251,7 +251,7 @@
                 </div>
                 <div class="flex justify-between gap-2">
                     <div class="site-select-trigger filter-toggle-btn sm:hidden">
-                        <i class="ri-filter-line"></i>
+                        <i class="ri-equalizer-2-fill"></i>
                         Filtrar
                     </div>
                     <div class="site-select">
