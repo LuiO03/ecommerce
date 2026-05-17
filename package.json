@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "flowbite": "^3.1.2",
+        "photoswipe": "^5.4.4",
         "sortablejs": "^1.15.6",
         "swiper": "^12.1.0"
     }

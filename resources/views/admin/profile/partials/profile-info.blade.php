@@ -175,6 +175,22 @@
 
 @push('scripts')
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 1. Inicializar submit loader PRIMERO
+            const submitLoader = initSubmitLoader({
+                formId: 'profileForm',
+                buttonId: 'submitBtn',
+                loadingText: 'Actualizando...'
+            });
+
+            // 2. Inicializar validación de formulario DESPUÉS
+            const formValidator = initFormValidator('#profileForm', {
+                validateOnBlur: true,
+                validateOnInput: false,
+                scrollToFirstError: true
+            });
+        });
         // ===== MANEJO DE SELECCIÓN DE FONDOS =====
         document.querySelectorAll('.gallery-option').forEach(btn => {
             btn.addEventListener('click', function(e) {

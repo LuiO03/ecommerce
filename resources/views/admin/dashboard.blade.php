@@ -12,20 +12,17 @@
                     $dashboardUser = auth()->user();
 
                     $dashboardHasImage =
-                        $dashboardUser->image &&
-                        Storage::disk('public')->exists($dashboardUser->image);
+                        $dashboardUser->image && Storage::disk('public')->exists($dashboardUser->image);
 
                     $role = $dashboardUser->roles->first();
                 @endphp
 
                 @if ($dashboardHasImage)
-                    <img
-                        src="{{ asset('storage/' . $dashboardUser->image) }}"
-                        alt="{{ $dashboardUser->name }}"
-                        class="dashboard-user-avatar">
+                    <x-image-viewer :src="asset('storage/' . $dashboardUser->image)" gallery="profile" alt="Avatar de {{ $dashboardUser->name }}"
+                        class="dashboard-user-avatar" title="{{ $dashboardUser->name }}"
+                        description="Foto de perfil de {{ $dashboardUser->name }}" />
                 @else
-                    <div
-                        class="dashboard-user-avatar"
+                    <div class="dashboard-user-avatar"
                         style="
                             background-color: {{ $dashboardUser->avatar_colors['background'] ?? '#cccccc' }};
                             color: {{ $dashboardUser->avatar_colors['color'] ?? '#333333' }};
@@ -59,10 +56,7 @@
                             Últimos pedidos
                         </span>
 
-                        <a
-                            href="{{ route('admin.orders.index') }}"
-                            class="boton-single"
-                            title="Ver todos los pedidos">
+                        <a href="{{ route('admin.orders.index') }}" class="boton-single" title="Ver todos los pedidos">
 
                             <span class="boton-single-text">
                                 Ver todos
@@ -87,7 +81,6 @@
                         <tbody>
 
                             @forelse ($orders as $order)
-
                                 <tr>
                                     <td class="text-center">
                                         {{ $order->id }}
@@ -100,7 +93,6 @@
                                     <td>
 
                                         @switch($order->status)
-
                                             @case('pending')
                                                 <span class="badge badge-warning">
                                                     <i class="ri-time-line"></i>
@@ -151,65 +143,64 @@
 
                                 @empty
 
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">
-                                        <div class="tabla-no-data">
-                                            <i class="ri-shopping-cart-line"></i>
-                                            <span>No hay pedidos disponibles</span>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">
+                                            <div class="tabla-no-data">
+                                                <i class="ri-shopping-cart-line"></i>
+                                                <span>No hay pedidos disponibles</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
 
-                            @endforelse
+                            </tbody>
+                        </table>
 
-                        </tbody>
-                    </table>
-
+                    </div>
                 </div>
-            </div>
-        @endcan
+            @endcan
 
-        {{-- Ventas --}}
-        @can('ordenes.index')
-            <div class="dashboard-card ripple-card">
-                <div class="card-icon card-success">
-                    <i class="ri-money-dollar-circle-line"></i>
+            {{-- Ventas --}}
+            @can('ordenes.index')
+                <div class="dashboard-card ripple-card">
+                    <div class="card-icon card-success">
+                        <i class="ri-money-dollar-circle-line"></i>
+                    </div>
+
+                    <div class="card-content">
+                        <h1 class="card-count">
+                            S/. {{ number_format($totalSales, 2) }}
+                        </h1>
+
+                        <p class="card-label">
+                            Ventas Totales
+                        </p>
+                    </div>
                 </div>
+            @endcan
 
-                <div class="card-content">
-                    <h1 class="card-count">
-                        S/. {{ number_format($totalSales, 2) }}
-                    </h1>
+            {{-- Pedidos hoy --}}
+            @can('ordenes.index')
+                <div class="dashboard-card ripple-card">
+                    <div class="card-icon card-orange">
+                        <i class="ri-shopping-bag-3-line"></i>
+                    </div>
 
-                    <p class="card-label">
-                        Ventas Totales
-                    </p>
+                    <div class="card-content">
+                        <h1 class="card-count">
+                            {{ $totalOrdersToday }}
+                        </h1>
+
+                        <p class="card-label">
+                            Pedidos Hoy
+                        </p>
+                    </div>
                 </div>
-            </div>
-        @endcan
-
-        {{-- Pedidos hoy --}}
-        @can('ordenes.index')
-            <div class="dashboard-card ripple-card">
-                <div class="card-icon card-orange">
-                    <i class="ri-shopping-bag-3-line"></i>
-                </div>
-
-                <div class="card-content">
-                    <h1 class="card-count">
-                        {{ $totalOrdersToday }}
-                    </h1>
-
-                    <p class="card-label">
-                        Pedidos Hoy
-                    </p>
-                </div>
-            </div>
-        @endcan
+            @endcan
 
 
-        {{-- Pedidos pendientes --}}
-        {{--
+            {{-- Pedidos pendientes --}}
+            {{--
         @can('ordenes.index')
             <div class="dashboard-card ripple-card">
                 <div class="card-icon card-warning">
@@ -228,8 +219,8 @@
             </div>
         @endcan
         --}}
-        {{-- Stock bajo --}}
-        {{--
+            {{-- Stock bajo --}}
+            {{--
         @can('productos.index')
             <div class="dashboard-card ripple-card">
                 <div class="card-icon card-danger">
@@ -248,8 +239,8 @@
             </div>
         @endcan
         --}}
-        {{-- Nuevos clientes --}}
-        {{--
+            {{-- Nuevos clientes --}}
+            {{--
         @can('clientes.index')
             <div class="dashboard-card ripple-card">
                 <div class="card-icon card-primary">
@@ -270,89 +261,89 @@
         --}}
 
 
-        {{-- Productos --}}
-        @can('productos.index')
-            <a href="{{ route('admin.products.index') }}" class="dashboard-card ripple-card">
-                <div class="card-icon card-danger">
-                    <i class="ri-box-3-line"></i>
-                </div>
+            {{-- Productos --}}
+            @can('productos.index')
+                <a href="{{ route('admin.products.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-danger">
+                        <i class="ri-box-3-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">{{ $totalProducts }}</h1>
-                    <p class="card-label">Productos</p>
-                </div>
-            </a>
-        @endcan
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalProducts }}</h1>
+                        <p class="card-label">Productos</p>
+                    </div>
+                </a>
+            @endcan
 
-        {{-- Categorías --}}
-        @can('categorias.index')
-            <a href="{{ route('admin.categories.index') }}" class="dashboard-card ripple-card">
-                <div class="card-icon card-info">
-                    <i class="ri-price-tag-3-line"></i>
-                </div>
+            {{-- Categorías --}}
+            @can('categorias.index')
+                <a href="{{ route('admin.categories.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-info">
+                        <i class="ri-price-tag-3-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">{{ $totalCategories }}</h1>
-                    <p class="card-label">Categorías</p>
-                </div>
-            </a>
-        @endcan
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalCategories }}</h1>
+                        <p class="card-label">Categorías</p>
+                    </div>
+                </a>
+            @endcan
 
-        {{-- Familias --}}
-        @can('familias.index')
-            <a href="{{ route('admin.families.index') }}" class="dashboard-card ripple-card">
-                <div class="card-icon card-success">
-                    <i class="ri-apps-line"></i>
-                </div>
+            {{-- Familias --}}
+            @can('familias.index')
+                <a href="{{ route('admin.families.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-success">
+                        <i class="ri-apps-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">{{ $totalFamilies }}</h1>
-                    <p class="card-label">Familias</p>
-                </div>
-            </a>
-        @endcan
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalFamilies }}</h1>
+                        <p class="card-label">Familias</p>
+                    </div>
+                </a>
+            @endcan
 
-        {{-- Marcas --}}
-        @can('marcas.index')
-            <a href="{{ route('admin.brands.index') }}" class="dashboard-card ripple-card">
-                <div class="card-icon card-warning">
-                    <i class="ri-award-line"></i>
-                </div>
+            {{-- Marcas --}}
+            @can('marcas.index')
+                <a href="{{ route('admin.brands.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-warning">
+                        <i class="ri-award-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">{{ $totalBrands }}</h1>
-                    <p class="card-label">Marcas</p>
-                </div>
-            </a>
-        @endcan
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalBrands }}</h1>
+                        <p class="card-label">Marcas</p>
+                    </div>
+                </a>
+            @endcan
 
-        {{-- Usuarios --}}
-        @can('usuarios.index')
-            <a href="{{ route('admin.users.index') }}" class="dashboard-card ripple-card">
-                <div class="card-icon card-purple">
-                    <i class="ri-admin-line"></i>
-                </div>
+            {{-- Usuarios --}}
+            @can('usuarios.index')
+                <a href="{{ route('admin.users.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-purple">
+                        <i class="ri-admin-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">{{ $totalUsers }}</h1>
-                    <p class="card-label">Usuarios</p>
-                </div>
-            </a>
-        @endcan
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalUsers }}</h1>
+                        <p class="card-label">Usuarios</p>
+                    </div>
+                </a>
+            @endcan
 
-        {{-- Clientes --}}
-        @can('clientes.index')
-            <a href="{{ route('admin.clients.index') }}" class="dashboard-card ripple-card">
-                <div class="card-icon card-secondary">
-                    <i class="ri-user-5-line"></i>
-                </div>
+            {{-- Clientes --}}
+            @can('clientes.index')
+                <a href="{{ route('admin.clients.index') }}" class="dashboard-card ripple-card">
+                    <div class="card-icon card-secondary">
+                        <i class="ri-user-5-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">{{ $totalClients }}</h1>
-                    <p class="card-label">Clientes</p>
-                </div>
-            </a>
-        @endcan
+                    <div class="card-content">
+                        <h1 class="card-count">{{ $totalClients }}</h1>
+                        <p class="card-label">Clientes</p>
+                    </div>
+                </a>
+            @endcan
 
-    </div>
-</x-admin-layout>
+        </div>
+    </x-admin-layout>

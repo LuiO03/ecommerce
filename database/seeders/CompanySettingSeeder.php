@@ -28,6 +28,7 @@ class CompanySettingSeeder extends Seeder
             'support_email' => 'soporte@geckomercce.com',
             'phone' => '999888777',
             'support_phone' => '977888111',
+            'whatsapp_number' => '922616232',
             'address' => 'Av. Principal 123, Lima, Perú',
             'website' => 'https://www.geckomercce.com',
             'facebook_url' => 'https://facebook.com/geckomercce',

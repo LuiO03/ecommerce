@@ -246,7 +246,6 @@
     -webkit-user-select: none;
     user-select: none;
     transition: transform 0.2s ease;
-    position: relative;
 }
 
 /* Categoría padre (con hijos) */

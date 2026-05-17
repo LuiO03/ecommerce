@@ -15,7 +15,7 @@
                 grabCursor: true,
                 watchOverflow: true,
                 centeredSlides: false,
-                loop: false,
+                loop: true,
                 autoplay: false,
                 navigation: {
                     nextEl: '.categories-slider .swiper-button-next',
@@ -83,7 +83,6 @@
         <div class="swiper-wrapper">
             @foreach ($categories as $category)
                 <div class="swiper-slide categories-slide">
-                    <!-- colocalr imagen css url a la etiqueta "a" y eliminar la etiqueta "img" -->
                     <a href="{{ route('categories.show', $category) }}" class="category-card">
                         <div class="category-image">
                             @if ($category->image)

@@ -12,8 +12,9 @@
                         $profileHasImage = $user->image && Storage::disk('public')->exists($user->image);
                     @endphp
                     @if ($profileHasImage)
-                        <img src="{{ asset('storage/' . $user->image) }}" alt="Foto de perfil"
-                            class="profile-avatar-circle">
+                        <x-image-viewer :src="asset('storage/' . $user->image)" gallery="profile" alt="Avatar de {{ $user->name }}"
+                            class="profile-avatar-circle" title="{{ $user->name }}"
+                            description="Foto de perfil de {{ $user->name }}" />
                     @else
                         <div class="profile-avatar-circle"
                             style="background-color: {{ $user->avatar_colors['background'] }};
@@ -44,31 +45,36 @@
                     <a href="{{ route('site.profile.index', ['section' => 'details']) }}"
                         class="profile-nav-item {{ $activeSection === 'details' ? 'is-active' : '' }}"
                         data-section="details">
-                        <i class="ri-id-card-line" data-icon-line="ri-id-card-line" data-icon-fill="ri-id-card-fill"></i>
+                        <i class="ri-id-card-line" data-icon-line="ri-id-card-line"
+                            data-icon-fill="ri-id-card-fill"></i>
                         <span>Detalles de la cuenta</span>
                     </a>
                     <a href="{{ route('site.profile.index', ['section' => 'orders']) }}"
                         class="profile-nav-item {{ $activeSection === 'orders' ? 'is-active' : '' }}"
                         data-section="orders">
-                        <i class="ri-shopping-bag-3-line" data-icon-line="ri-shopping-bag-3-line" data-icon-fill="ri-shopping-bag-3-fill"></i>
+                        <i class="ri-shopping-bag-3-line" data-icon-line="ri-shopping-bag-3-line"
+                            data-icon-fill="ri-shopping-bag-3-fill"></i>
                         <span>Mis pedidos</span>
                     </a>
                     <a href="{{ route('site.profile.index', ['section' => 'wishlist']) }}"
                         class="profile-nav-item {{ $activeSection === 'wishlist' ? 'is-active' : '' }}"
                         data-section="wishlist">
-                        <i class="ri-heart-3-line" data-icon-line="ri-heart-3-line" data-icon-fill="ri-heart-3-fill"></i>
+                        <i class="ri-heart-3-line" data-icon-line="ri-heart-3-line"
+                            data-icon-fill="ri-heart-3-fill"></i>
                         <span>Mis favoritos</span>
                     </a>
                     <a href="{{ route('site.profile.index', ['section' => 'addresses']) }}"
                         class="profile-nav-item {{ $activeSection === 'addresses' ? 'is-active' : '' }}"
                         data-section="addresses">
-                        <i class="ri-map-pin-line" data-icon-line="ri-map-pin-line" data-icon-fill="ri-map-pin-fill"></i>
+                        <i class="ri-map-pin-line" data-icon-line="ri-map-pin-line"
+                            data-icon-fill="ri-map-pin-fill"></i>
                         <span>Direcciones</span>
                     </a>
                     <a href="{{ route('site.profile.index', ['section' => 'security']) }}"
                         class="profile-nav-item {{ $activeSection === 'security' ? 'is-active' : '' }}"
                         data-section="security">
-                        <i class="ri-shield-keyhole-line" data-icon-line="ri-shield-keyhole-line" data-icon-fill="ri-shield-keyhole-fill"></i>
+                        <i class="ri-shield-keyhole-line" data-icon-line="ri-shield-keyhole-line"
+                            data-icon-fill="ri-shield-keyhole-fill"></i>
                         <span>Seguridad</span>
                     </a>
                 </nav>

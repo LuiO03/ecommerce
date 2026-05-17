@@ -28,11 +28,13 @@
     min-width: 130px;
     max-width: 130px;
     height: 100%;
+    min-height: 130px;
     border-radius: var(--radius-card);
     object-fit: cover;
     color: white;
     display: flex;
     justify-content: center;
+    object-fit: cover;
     align-items: center;
     font-family: var(--font-secondary);
     font-size: 70px;

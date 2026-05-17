@@ -14,7 +14,7 @@
                     $profileHasImage = $user->image && Storage::disk('public')->exists($user->image);
                 @endphp
                 @if ($profileHasImage)
-                    <img src="{{ asset('storage/' . $user->image) }}" alt="Foto de perfil" class="profile-avatar">
+                    <x-image-viewer :src="asset('storage/' . $user->image)" gallery="profile" alt="Avatar de {{ $user->name }}" class="profile-avatar" title="{{ $user->name }}" description="Foto de perfil de {{ $user->name }}" />
                 @else
                     <div class="profile-avatar"
                         style="background-color: {{ $user->avatar_colors['background'] }}; color: {{ $user->avatar_colors['color'] }}; border-color: {{ $user->avatar_colors['color'] }}">
@@ -76,7 +76,6 @@
     @include('admin.profile.partials.profile-avatar')
 
     <script>
-
         function updateProfileTabIcons() {
             document.querySelectorAll('.profile-tab-btn').forEach(btn => {
                 const icon = btn.querySelector('i[data-icon-line][data-icon-fill]');

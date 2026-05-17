@@ -223,7 +223,6 @@
                 </section>
 
             </aside>
-
         @endif
 
         <main class="products-main">
@@ -249,7 +248,7 @@
                         @endif
                     </p>
                 </div>
-                <div class="flex justify-between gap-2">
+                <div class="products-header-actions">
                     <div class="site-select-trigger filter-toggle-btn sm:hidden">
                         <i class="ri-equalizer-2-fill"></i>
                         Filtrar

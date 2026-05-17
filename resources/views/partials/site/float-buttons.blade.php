@@ -1,14 +1,16 @@
-<button
-    type="button"
-    class="go-top-float-btn"
-    id="goTopFloatBtn"
-    title="Ir arriba"
-    aria-label="Ir arriba">
+<div class="float-buttons-container">
+    <button
+        type="button"
+        class="go-top-float-btn"
+        id="goTopFloatBtn"
+        title="Ir arriba"
+        aria-label="Ir arriba">
 
-    <i class="ri-arrow-up-s-line"></i>
-    <span class="btn-label">Ir arriba</span>
-</button>
-
+        <i class="ri-arrow-up-s-line"></i>
+        <span class="btn-label">Ir arriba</span>
+    </button>
+    <x-site.whatsapp-float-button />
+</div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const btn = document.getElementById('goTopFloatBtn');

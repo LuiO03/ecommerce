@@ -1,36 +1,33 @@
-.go-top-float-btn {
+.float-buttons-container{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
     position: fixed;
-    right: 28px;
-    bottom: 100px;
+    right: 25px;
+    bottom: 10px;
     z-index: 200;
+}
 
+.go-top-float-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
-
     min-height: 52px;
     padding: 8px 14px;
-
     border: none;
     cursor: pointer;
     outline: none;
-
     border-radius: 50px;
-
     background: var(--color-site-nav);
     color: #fff;
-
     font-family: var(--font-secondary);
     font-weight: 700;
-
     box-shadow: var(--box-shadow-card);
-
     opacity: 0;
     pointer-events: none;
-
     transform: translateY(18px) scale(0.94);
-
     transition:
         opacity 0.25s ease,
         transform 0.25s ease,
@@ -83,10 +80,6 @@
     BOTÓN FLOTANTE WHATSAPP
 ========================================== */
 .whatsapp-float-btn {
-    position: fixed;
-    right: 28px; /* o left */
-    bottom: 28px;
-    z-index: 100;
     background: #25d366;
     color: #fff;
     border-radius: 50%;

@@ -22,15 +22,20 @@ import { initOptionFeaturesModal } from './admin/modules/options-features-modal-
 import { initOptionInlineManager } from './admin/modules/options-index-inline-manager.js';
 import { initProductVariantsManager } from './admin/modules/product-variants-manager.js';
 import {
-  initPostGalleryCreate,
-  initPostGalleryEdit,
-  initProductGalleryCreate,
-  initProductGalleryEdit,
-  initGalleryCreateWithConfig,
-  initGalleryEditWithConfig
+    initPostGalleryCreate,
+    initPostGalleryEdit,
+    initProductGalleryCreate,
+    initProductGalleryEdit,
+    initGalleryCreateWithConfig,
+    initGalleryEditWithConfig
 } from './utils/gallery-manager.js';
 import { initMobileFiltersPanel } from './admin/utils/mobile-filters-panel.js';
 import { initMobileActionsMenu } from './admin/utils/mobile-actions-menu.js';
+
+// === Librería Swiper para sliders/carousels ===
+import './libs/swiper';
+// === Librería lightbox para galerías de imágenes ===
+import { initPhotoSwipe } from './libs/photoswipe';
 
 // Exportar para uso global
 window.initImageUpload = initImageUpload;
@@ -49,9 +54,10 @@ window.initProductVariantsManager = initProductVariantsManager;
 
 // Si tienes funciones o inicializaciones globales
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Dashboard JS inicializado ✅');
-  initTextareaAutosize();
-  initConnectionStatusBar();
-  initMobileFiltersPanel();
-  initMobileActionsMenu();
+    console.log('Dashboard JS inicializado ✅');
+    initPhotoSwipe();
+    initTextareaAutosize();
+    initConnectionStatusBar();
+    initMobileFiltersPanel();
+    initMobileActionsMenu();
 });

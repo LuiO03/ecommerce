@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainEl = galleryRoot.querySelector('.product-gallery-main');
         const nextEl = galleryRoot.querySelector('.gallery-next');
         const prevEl = galleryRoot.querySelector('.gallery-prev');
-        const expandEl = galleryRoot.querySelector('[data-gallery-expand]');
 
         if (mainEl) {
             const slides = Array.from(mainEl.querySelectorAll('.product-gallery-slide'));
@@ -111,35 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            if (expandEl) {
-                expandEl.addEventListener('click', async () => {
-                    if (document.fullscreenElement === mainEl) {
-                        await document.exitFullscreen();
-                        return;
-                    }
-
-                    if (mainEl.requestFullscreen) {
-                        await mainEl.requestFullscreen();
-                        return;
-                    }
-
-                    const activeImage = mainEl.querySelector('.product-gallery-slide.is-active img');
-                    const imageSrc = activeImage ? activeImage.getAttribute('src') : null;
-                    if (imageSrc) {
-                        window.open(imageSrc, '_blank', 'noopener,noreferrer');
-                    }
-                });
-
-                document.addEventListener('fullscreenchange', () => {
-                    const isFull = document.fullscreenElement === mainEl;
-                    const icon = expandEl.querySelector('i');
-                    if (icon) {
-                        icon.className = isFull ? 'ri-fullscreen-exit-line' : 'ri-fullscreen-line';
-                    }
-                    expandEl.setAttribute('aria-label', isFull ? 'Salir de pantalla completa' : 'Agrandar imagen');
-                    expandEl.setAttribute('title', isFull ? 'Salir de pantalla completa' : 'Agrandar imagen');
-                });
-            }
 
             mainEl.addEventListener('pointerdown', (event) => {
                 if (event.pointerType === 'mouse' && event.button !== 0) {

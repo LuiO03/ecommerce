@@ -32,40 +32,53 @@
                     @endif
 
                     <div class="product-gallery-main">
-                        <div class="product-gallery-track">
-                            @forelse ($images as $image)
-                                <div class="product-gallery-slide">
-                                    <img src="{{ asset('storage/' . $image->path) }}"
-                                        alt="{{ $image->alt ?? $product->name }}"
-                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="product-media-fallback" style="display: none;">
-                                        <i class="ri-image-fill"></i>
-                                        <span>Imagen no disponible</span>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="product-gallery-slide product-media-fallback">
+                        @forelse ($images as $image)
+                            <div class="product-gallery-slide">
+                                <img src="{{ asset('storage/' . $image->path) }}"
+                                    alt="{{ $image->alt ?? $product->name }}"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="product-media-fallback" style="display: none;">
                                     <i class="ri-image-fill"></i>
                                     <span>Imagen no disponible</span>
                                 </div>
-                            @endforelse
-                        </div>
+                            </div>
+                        @empty
+                            <div class="product-gallery-slide product-media-fallback">
+                                <i class="ri-image-fill"></i>
+                                <span>Imagen no disponible</span>
+                            </div>
+                        @endforelse
+                    </div>
 
+                    <div class="pswp-gallery" hidden>
+                        @foreach ($images as $image)
+                            <a href="{{ asset('storage/' . $image->path) }}" data-title="{{ $image->alt ?? $product->name }}"
+                                data-description="{{ $product->description ?? '' }}">
+
+                                <img src="{{ asset('storage/' . $image->path) }}">
+                            </a>
+                        @endforeach
                     </div>
 
                     @if ($images->isNotEmpty())
                         <div class="product-gallery-controls" aria-label="Controles de galeria">
-                            <button class="gallery-action gallery-expand" type="button" aria-label="Agrandar imagen"
-                                title="Agrandar imagen" data-gallery-expand>
-                                <i class="ri-fullscreen-line"></i>
-                            </button>
+                            <div class="gallery-nav-stack">
+                                <button class="gallery-action open-product-gallery" type="button" title="Agrandar imagen"
+                                    aria-label="Agrandar imagen">
+                                    <i class="ri-fullscreen-line"></i>
+                                </button>
+
+                                @livewire('site.add-to-wishlist', [
+                                    'productId' => $product->id,
+                                ])
+                            </div>
 
                             @if ($images->count() > 1)
                                 <div class="gallery-nav-stack">
-                                    <button class="gallery-nav gallery-prev" type="button" aria-label="Anterior">
+                                    <button class="gallery-action gallery-prev" type="button" aria-label="Anterior">
                                         <i class="ri-arrow-left-s-line"></i>
                                     </button>
-                                    <button class="gallery-nav gallery-next" type="button" aria-label="Siguiente">
+                                    <button class="gallery-action gallery-next" type="button" aria-label="Siguiente">
                                         <i class="ri-arrow-right-s-line"></i>
                                     </button>
                                 </div>
@@ -90,7 +103,8 @@
                             </a>
                         </div>
                         @can('productos.edit')
-                            <a href="{{ route('admin.products.edit', $product) }}" class="site-select-trigger filter-toggle-btn" target="_blank">
+                            <a href="{{ route('admin.products.edit', $product) }}"
+                                class="site-select-trigger filter-toggle-btn" target="_blank">
                                 <i class="ri-pencil-fill"></i>Editar Producto
                             </a>
                         @endcan
@@ -167,8 +181,6 @@
                         @endforeach
                     </div>
                 @endif
-
-
                 <div class="product-actions">
                     <div class="quantity-counter" data-quantity-root>
                         <button class="quantity-btn quantity-btn--minus" type="button" data-quantity-decrement
@@ -185,14 +197,9 @@
                         @livewire('site.add-to-cart', [
                             'productId' => $product->id,
                         ])
-
-                        @livewire('site.add-to-wishlist', [
-                            'productId' => $product->id,
-                        ])
+                        <x-site.whatsapp-product-button :product="$product" />
                     </div>
                 </div>
-
-
 
                 <div class="product-description">
                     <h3 class="subtitle-variant-product">Descripción</h3>

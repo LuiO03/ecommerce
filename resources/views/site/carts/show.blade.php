@@ -35,7 +35,7 @@
                 <p>
                     Aún no has agregado productos. Explora nuestro catálogo y empieza tu compra.
                 </p>
-                <a href="{{ route('site.home') }}" class="site-btn bg-success">
+                <a href="{{ route('site.home') }}" class="site-btn boton-success">
                     <span class="boton-form-icon"><i class="ri-store-2-fill"></i></span>
                     <span class="boton-form-text">Ir a la tienda</span>
                 </a>

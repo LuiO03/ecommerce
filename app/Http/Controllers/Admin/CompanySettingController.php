@@ -73,6 +73,7 @@ class CompanySettingController extends Controller
         $setting->support_email = $data->get('support_email');
         $setting->phone = $data->get('phone');
         $setting->support_phone = $data->get('support_phone');
+        $setting->whatsapp_number = $data->get('whatsapp_number');
         $setting->address = $data->get('address');
         $setting->website = $data->get('website');
         $setting->google_maps_url = $data->get('google_maps_url');
@@ -113,6 +114,7 @@ class CompanySettingController extends Controller
             'support_email' => $setting->support_email,
             'phone' => $setting->phone,
             'support_phone' => $setting->support_phone,
+            'whatsapp_number' => $setting->whatsapp_number,
             'address' => $setting->address,
             'website' => $setting->website,
             'google_maps_url' => $setting->google_maps_url,

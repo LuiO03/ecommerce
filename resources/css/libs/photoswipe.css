@@ -1,0 +1,25 @@
+.pswp-custom-caption {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+
+    width: min(90%, 700px);
+
+    padding: 14px 18px;
+    border-radius: 16px;
+
+    color: white;
+    text-align: center;
+
+    z-index: 1000;
+}
+
+.pswp-custom-caption h4 {
+    font-weight: bold;
+    font-family: var(--font-secondary);
+}
+
+.pswp-custom-caption p {
+    color: var(--color-muted);
+}

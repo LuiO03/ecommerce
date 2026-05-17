@@ -20,30 +20,19 @@ import { initFormValidator } from './utils/form-validator.js';
 import { initSubmitLoader } from './utils/submit-button-loader.js';
 import { initTextareaAutosize } from './utils/textarea-autosize.js';
 
-// Exponer helpers de formularios para vistas públicas (login, etc.)
+// === Exponer helpers de formularios para vistas públicas (login, etc.) ===
 window.initImageUpload = initImageUpload;
 window.initFormValidator = initFormValidator;
 window.initSubmitLoader = initSubmitLoader;
 window.initTextareaAutosize = initTextareaAutosize;
 
-// Swiper Slider
-import Swiper from 'swiper';
-import { Navigation, Pagination, Autoplay, Thumbs, EffectFade } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+// === Librería Swiper para sliders/carousels ===
+import './libs/swiper';
 
-window.Swiper = Swiper;
-window.SwiperModules = {
-    Navigation,
-    Pagination,
-    Autoplay,
-    Thumbs,
-    EffectFade,
-};
+// === Librería lightbox para galerías de imágenes ===
+import { initPhotoSwipe } from './libs/photoswipe';
 
-// Listener global para toasts disparados desde Livewire
+// === Listener global para toasts disparados desde Livewire ===
 document.addEventListener('livewire:init', () => {
 	if (typeof window.Livewire === 'undefined') {
 		return;
@@ -99,5 +88,9 @@ document.addEventListener('livewire:init', () => {
 	});
 });
 
-
+// Si tienes funciones o inicializaciones globales
+document.addEventListener('DOMContentLoaded', () => {
+    initPhotoSwipe();
+    initTextareaAutosize();
+});
 

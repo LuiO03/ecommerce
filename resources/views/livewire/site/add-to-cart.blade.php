@@ -1,5 +1,5 @@
 <div class="add-to-cart-wrapper">
-    <button wire:click="addToCart" wire:loading.attr="disabled" wire:loading.class="is-loading" wire:target="addToCart" class="product-action-cart" type="button" data-add-to-cart
+    <button wire:click="addToCart" wire:loading.attr="disabled" wire:loading.class="is-loading" wire:target="addToCart" class="product-action-cart boton-danger" type="button" data-add-to-cart
         data-default-text="Agregar al carrito" data-prompt-text="Selecciona tus opciones"
         data-out-of-stock-text="Agregar al carrito">
         <i class="ri-shopping-cart-line"></i>

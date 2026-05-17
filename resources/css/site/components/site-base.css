@@ -97,13 +97,11 @@
     grid-template-columns: minmax(0, 1fr);
 }
 
-
-
 .products-main {
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: 1rem;
+    gap: 8px;
 }
 
 .products-results--loading-zone {
@@ -169,12 +167,10 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
-
     width: 100%;
 }
 
 .products-header-info{
-
     display: flex;
     flex-direction: column;
 }
@@ -182,6 +178,13 @@
 .products-count {
     font-family: var(--font-secondary);
     font-weight: bold;
+}
+
+.products-header-actions{
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
 }
 
 /* Grid de productos */
@@ -199,6 +202,10 @@
 }
 
 @media (max-width: 768px) {
+    .products-header-actions{
+        width: 100%;
+        justify-content: space-between;
+    }
 
     .filters-footer{
         padding: 8px;

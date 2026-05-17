@@ -64,8 +64,9 @@
 .site-select-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 0.4rem;
+    gap: 5px;
+    padding: 0.6rem 1rem;
+    font-size: var(--font-size-p);
     background: var(--select-bg);
     border: 1px solid var(--select-border);
     border-radius: var(--radius-input);
@@ -81,7 +82,7 @@
 
 .site-select-trigger i {
     transition: transform 0.2s ease;
-    font-size: var(--font-size-p);
+    font-size: var(--font-size-h4);
     line-height: 1;
 }
 

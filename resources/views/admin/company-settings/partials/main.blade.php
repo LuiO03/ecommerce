@@ -176,8 +176,7 @@
                         <div class="input-icon-container">
                             <i class="ri-phone-line input-icon"></i>
                             <input type="text" name="phone" id="phone" class="input-form"
-                                value="{{ old('phone', $setting->phone) }}" placeholder="+51 999 888 777"
-                                data-validate="max:25|phone|min:9">
+                                value="{{ old('phone', $setting->phone) }}" placeholder="Ingrese el número de teléfono principal" data-validate="max:25|phone|min:9">
                         </div>
                     </div>
                     <div class="input-group">
@@ -186,7 +185,16 @@
                             <i class="ri-headphone-line input-icon"></i>
                             <input type="text" name="support_phone" id="support_phone" class="input-form"
                                 value="{{ old('support_phone', $setting->support_phone) }}"
-                                placeholder="+51 977 888 111" data-validate="max:25|phone|min:7">
+                                placeholder="Ingrese el número de teléfono de soporte" data-validate="max:25|phone|min:7">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="whatsapp_number" class="label-form">Número de WhatsApp</label>
+                        <div class="input-icon-container">
+                            <i class="ri-whatsapp-line input-icon"></i>
+                            <input type="text" name="whatsapp_number" id="whatsapp_number" class="input-form"
+                                value="{{ old('whatsapp_number', $setting->whatsapp_number) }}"
+                                placeholder="Ingrese el número de WhatsApp" data-validate="max:25|phone|min:7">
                         </div>
                     </div>
                     <div class="input-group">

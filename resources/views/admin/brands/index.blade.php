@@ -115,21 +115,24 @@
             <div class="selection-bar" id="selectionBar">
                 @can('marcas.export')
                     <div class="selection-actions">
-                        <button id="exportSelectedExcel" class="boton-selection boton-success" title="Exportar registros seleccionados a Excel">
+                        <button id="exportSelectedExcel" class="boton-selection boton-success"
+                            title="Exportar registros seleccionados a Excel">
                             <span class="boton-selection-icon"><i class="ri-file-excel-2-fill"></i></span>
                             <span class="boton-selection-text">Excel</span>
                             <span class="boton-selection-dot">•</span>
                             <span class="selection-badge" id="excelBadge">0</span>
                         </button>
 
-                        <button id="exportSelectedPdf" class="boton-selection boton-danger" title="Exportar registros seleccionados a PDF">
+                        <button id="exportSelectedPdf" class="boton-selection boton-danger"
+                            title="Exportar registros seleccionados a PDF">
                             <span class="boton-selection-icon"><i class="ri-file-pdf-2-fill"></i></span>
                             <span class="boton-selection-text">PDF</span>
                             <span class="boton-selection-dot">•</span>
                             <span class="selection-badge" id="pdfBadge">0</span>
                         </button>
 
-                        <button id="exportSelectedCsv" class="boton-selection boton-orange" title="Exportar registros seleccionados a CSV">
+                        <button id="exportSelectedCsv" class="boton-selection boton-orange"
+                            title="Exportar registros seleccionados a CSV">
 
                             <span class="boton-selection-icon"><i class="ri-file-text-fill"></i></span>
                             <span class="boton-selection-text">CSV</span>
@@ -141,7 +144,8 @@
                 @endcan
 
                 @can('marcas.delete')
-                    <button id="deleteSelected" class="boton-selection boton-danger" title="Eliminar registros seleccionados">
+                    <button id="deleteSelected" class="boton-selection boton-danger"
+                        title="Eliminar registros seleccionados">
                         <span class="boton-selection-icon"><i class="ri-delete-bin-fill"></i></span>
                         <span class="boton-selection-text">Eliminar</span>
                         <span class="boton-selection-dot">•</span>
@@ -200,8 +204,11 @@
                                 <div class="thumbnail-container">
                                     @php $mainImagePath = $brand->image; @endphp
                                     @if ($mainImagePath && Storage::disk('public')->exists($mainImagePath))
-                                        <img src="{{ asset('storage/' . $mainImagePath) }}" alt="Imagen de la marca"
-                                            class="table-thumbnail">
+
+                                        <x-image-viewer :src="asset('storage/' . $mainImagePath)" gallery="brand"
+                                            alt="Imagen de la marca" class="table-thumbnail"
+                                            title="{{ $brand->name }}"
+                                            description="{{ $brand->description ?? 'Sin descripción' }}" />
                                     @else
                                         <div class="table-no-thumbnail" title="Sin imagen">
                                             <i class="ri-file-close-fill"></i>
@@ -222,7 +229,8 @@
 
                             <td class="column-products-td">
                                 @if ($brand->products_count > 0)
-                                    <span class="badge badge-primary" title="{{ $brand->products_count }} {{ Str::plural('producto', $brand->products_count) }}">
+                                    <span class="badge badge-primary"
+                                        title="{{ $brand->products_count }} {{ Str::plural('producto', $brand->products_count) }}">
                                         <i class="ri-box-3-fill"></i>
                                         {{ $brand->products_count }}
                                     </span>
@@ -237,7 +245,8 @@
                             <td class="column-status-td" data-status="{{ $brand->status ? 1 : 0 }}">
                                 @can('marcas.update-status')
                                     <label class="switch-tabla">
-                                        <input type="checkbox" class="switch-status" data-id="{{ $brand->id }}" {{ $brand->status ? 'checked' : '' }}>
+                                        <input type="checkbox" class="switch-status" data-id="{{ $brand->id }}"
+                                            {{ $brand->status ? 'checked' : '' }}>
                                         <span class="slider"></span>
                                     </label>
                                 @else
@@ -267,20 +276,23 @@
                                 </button>
 
                                 <div class="tabla-botones">
-                                    <button type="button" class="boton-sm boton-info btn-ver-marca" data-slug="{{ $brand->slug }}">
+                                    <button type="button" class="boton-sm boton-info btn-ver-marca"
+                                        data-slug="{{ $brand->slug }}">
                                         <i class="ri-eye-2-fill"></i>
                                         <span class="boton-sm-text">Ver</span>
                                     </button>
 
                                     @can('marcas.edit')
-                                        <a href="{{ route('admin.brands.edit', $brand) }}" class="boton-sm boton-warning">
+                                        <a href="{{ route('admin.brands.edit', $brand) }}"
+                                            class="boton-sm boton-warning">
                                             <i class="ri-edit-circle-fill"></i>
                                             <span class="boton-sm-text">Editar</span>
                                         </a>
                                     @endcan
 
                                     @can('marcas.delete')
-                                        <form action="{{ route('admin.brands.destroy', $brand) }}" method="POST" class="delete-form" data-entity="marca">
+                                        <form action="{{ route('admin.brands.destroy', $brand) }}" method="POST"
+                                            class="delete-form" data-entity="marca">
                                             @csrf
                                             @method('DELETE')
 
@@ -346,12 +358,13 @@
 
                 @if (Session::has('highlightRow'))
                     (function() {
-                        const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-                            ? performance.getEntriesByType('navigation')
-                            : [];
-                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-                            ? performance.navigation.type
-                            : null;
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') :
+                            [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
                         const navType = navEntries.length ? navEntries[0].type : legacyNav;
                         const isBackNavigation = navType === 'back_forward' || navType === 2;
 

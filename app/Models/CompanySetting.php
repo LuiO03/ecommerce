@@ -22,6 +22,8 @@ class CompanySetting extends Model
         'slogan',
         'email',
         'phone',
+        'support_phone',
+        'whatsapp_number',
         'address',
         'website',
         'logo_path',
