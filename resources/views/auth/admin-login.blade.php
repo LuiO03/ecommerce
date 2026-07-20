@@ -43,7 +43,7 @@
                         <div class="input-icon-container">
                             <i class="ri-mail-line input-icon"></i>
                             <input type="email" id="email" name="email" class="input-form"
-                                placeholder="Ingresa tu correo electrónico" value="70098517@institutocajas.info"
+                                placeholder="Ingresa tu correo electrónico" value="antagonist_fenixand.7777@outlook.com"
                                 required autofocus autocomplete="off" data-validate="required|email">
                         </div>
                     </div>
