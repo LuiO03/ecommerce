@@ -25,17 +25,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Dashboard') | {{ $brandName ?: config('app.name') }}</title>
-
-    <!-- Optimización Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <!-- Logo de la empresa en la pestaña -->
     @if ($brandLogoUrl)
         <link rel="icon" href="{{ $brandLogoUrl }}" type="image/png">
     @else
         <link rel="icon" href="{{ asset('images/logos/logo-geckommerce.png') }}" type="image/png">
     @endif
+
+    <!-- Optimización Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Lato + Poppins + Montserrat -->
     <link

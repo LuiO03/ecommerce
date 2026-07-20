@@ -78,6 +78,12 @@
                                                 Leer artículo
                                                 <i class="ri-arrow-right-up-line"></i>
                                             </a>
+                                            @can('posts.edit')
+                                                <a href="{{ route('admin.posts.edit', $post) }}"
+                                                    class="site-select-trigger filter-toggle-btn" target="_blank">
+                                                    <i class="ri-pencil-fill"></i>Editar Post
+                                                </a>
+                                            @endcan
                                         </div>
                                     </div>
                                 </article>
@@ -186,11 +192,18 @@
                                                 </div>
                                             @endif
                                         </div>
+
                                         <div class="blog-card-link-container">
                                             <a href="{{ route('site.blog.show', $post) }}" class="blog-card-link">
                                                 Leer artículo
                                                 <i class="ri-arrow-right-up-line"></i>
                                             </a>
+                                            @can('posts.edit')
+                                                <a href="{{ route('admin.posts.edit', $post) }}"
+                                                    class="site-select-trigger filter-toggle-btn" target="_blank">
+                                                    <i class="ri-pencil-fill"></i>Editar Post
+                                                </a>
+                                            @endcan
                                         </div>
                                     </div>
                                 </article>

@@ -17,6 +17,48 @@
         </button>
     </x-slot>
 
+    <div class="kpis-cards">
+        <article class="kpi-card">
+            <div class="kpi-icon card-primary">
+                <i class="ri-file-list-3-fill"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">Total</span>
+                <div class="kpi-value">{{ $kpis['total'] ?? 0 }}</div>
+            </div>
+        </article>
+
+        <article class="kpi-card">
+            <div class="kpi-icon card-warning">
+                <i class="ri-alert-line"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">Abiertos</span>
+                <div class="kpi-value">{{ $kpis['open'] ?? 0 }}</div>
+            </div>
+        </article>
+
+        <article class="kpi-card">
+            <div class="kpi-icon card-info">
+                <i class="ri-time-line"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">En proceso</span>
+                <div class="kpi-value">{{ $kpis['in_progress'] ?? 0 }}</div>
+            </div>
+        </article>
+
+        <article class="kpi-card">
+            <div class="kpi-icon card-success">
+                <i class="ri-checkbox-circle-line"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">Cerrados</span>
+                <div class="kpi-value">{{ $kpis['closed'] ?? 0 }}</div>
+            </div>
+        </article>
+    </div>
+
     <div class="actions-container">
         <aside class="tabla-filtros">
             <span class="tabla-filtros-title">Buscar</span>
@@ -179,11 +221,13 @@
                                     @endcan
 
                                     @can('claim-messages.reply')
-                                        <button type="button" class="boton-sm boton-success btn-reply-claim-message"
-                                            data-id="{{ $claim->id }}" title="Responder reclamo">
-                                            <i class="ri-reply-fill"></i>
-                                            <span class="boton-sm-text">Responder</span>
-                                        </button>
+                                        @if (!$claim->replied_at && $claim->status !== 'replied' && empty($claim->response))
+                                            <button type="button" class="boton-sm boton-success btn-reply-claim-message"
+                                                data-id="{{ $claim->id }}" title="Responder reclamo">
+                                                <i class="ri-reply-fill"></i>
+                                                <span class="boton-sm-text">Responder</span>
+                                            </button>
+                                        @endif
                                     @endcan
 
                                     @can('claim-messages.delete')
@@ -212,6 +256,7 @@
     </div>
 
     @include('admin.claim-messages.modals.show-modal-claim-message')
+    @include('admin.claim-messages.modals.reply-modal-claim-message')
 
     @push('scripts')
         <script>
@@ -233,6 +278,13 @@
                         customPagination: true
                     }
                 });
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const status = urlParams.get('status');
+                if (status) {
+                    $('#statusFilter').val(status);
+                    $('#applyFiltersBtn').trigger('click');
+                }
 
             });
         </script>

@@ -337,6 +337,7 @@
     font-weight: bolder;
     display: block;
     margin-bottom: 8px;
+    font-size: var(--font-size-sm);
 }
 
 /* Estilos seguros y bonitos para contenido HTML */

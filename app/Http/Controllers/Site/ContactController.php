@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ContactMessage as ContactMessageMail;
 use App\Models\ContactMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Notifications\AdminDatabaseNotification;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -85,7 +87,7 @@ class ContactController extends Controller
             ]);
         }
 
-        ContactMessage::create([
+        $message = ContactMessage::create([
             'name' => (string) $request->string('name'),
             'email' => Str::lower((string) $request->string('email')),
             'topic' => (string) $request->string('topic'),
@@ -98,7 +100,43 @@ class ContactController extends Controller
             'submitted_at' => now(),
         ]);
 
-        $this->notifyAdminsAboutNewContactMessage(ContactMessage::query()->where('idempotency_key', $idempotencyKey)->first());
+        /* Enviamos el email al correo de soporte del modelo company */
+        $company = company_setting();
+        $supportEmail = (string) ($company?->support_email ?? '');
+
+        $topicLabels = [
+            'order'   => 'Pedido',
+            'product' => 'Producto',
+            'account' => 'Cuenta',
+            'billing' => 'Facturación',
+            'other'   => 'Otro',
+        ];
+
+        $topicLabel = $topicLabels[$message->topic]
+            ?? ucfirst((string) $message->topic);
+
+        $mailData = [
+            'id' => $message->id,
+            'name' => $message->name,
+            'email' => $message->email,
+            'topic' => $message->topic,
+            'topic_label' => $topicLabel,
+            'order_number' => $message->order_number,
+            'message' => $message->message,
+            'ip_address' => $message->ip_address,
+            'user_agent' => $message->user_agent,
+            'submitted_at' => $message->submitted_at?->format('d/m/Y H:i') ?? now()->format('d/m/Y H:i'),
+        ];
+
+        if ($supportEmail !== '') {
+            try {
+                Mail::to($supportEmail)->send(new ContactMessageMail($mailData));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
+        $this->notifyAdminsAboutNewContactMessage($message);
 
         $this->hitRateLimit($ip, Str::lower((string) $request->string('email')));
         $this->registerLastSubmission($ip, Str::lower((string) $request->string('email')));

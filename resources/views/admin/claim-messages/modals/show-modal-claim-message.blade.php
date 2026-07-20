@@ -46,18 +46,9 @@
                     <td id="claim-content">-</td>
                 </tr>
                 <tr>
-                    <th>Respuesta</th>
+                    <th>Respuesta guardada</th>
                     <td>
-                        <div class="input-group">
-                            <label for="description" class="label-form label-textarea">
-                                Respuesta al cliente
-                            </label>
-                            <div class="input-icon-container">
-                                <textarea name="claim-response" id="claim-response" class="textarea-form" placeholder="Escribe aquí la respuesta al cliente"
-                                    rows="4" data-validate="min:10|max:500">{{ old('description') }}</textarea>
-                                <i class="ri-file-text-line input-icon"></i>
-                            </div>
-                        </div>
+                        <div id="claim-response-view" class="post-content">Sin respuesta</div>
                     </td>
                 </tr>
             </table>
@@ -65,10 +56,6 @@
                 <button type="button" id="markReadBtn" class="boton boton-info" title="Marcar como leído">
                     <span class="boton-icon"><i class="ri-eye-fill"></i></span>
                     <span class="boton-text">Marcar leído</span>
-                </button>
-                <button type="button" id="saveResponseBtn" class="boton boton-success" title="Guardar respuesta">
-                    <span class="boton-icon"><i class="ri-mail-send-fill"></i></span>
-                    <span class="boton-text">Guardar respuesta</span>
                 </button>
             </div>
         </div>
@@ -95,27 +82,37 @@
             $('#claim-read-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#claim-replied-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#claim-content').html('<div class="shimmer shimmer-cell" style="width:100%; height:60px;"></div>');
+            $('#claim-response-view').html('<div class="shimmer shimmer-cell" style="width:100%; height:60px;"></div>');
+
+            $('#reply-claim-id').html('<div class="shimmer shimmer-cell"></div>');
+            $('#reply-claim-name').html('<div class="shimmer shimmer-cell shimmer-title" style="width:140px;"></div>');
+            $('#reply-claim-email').html('<div class="shimmer shimmer-cell" style="width:160px;"></div>');
+            $('#reply-claim-phone').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#reply-claim-type').html('<div class="shimmer shimmer-cell" style="width:100px;"></div>');
+            $('#reply-claim-created-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#reply-claim-content').html('<div class="shimmer shimmer-cell" style="width:100%; height:60px;"></div>');
+            $('#reply-claim-response').val('');
         }
 
-        function openClaimMessageModal() {
-            $('#modalShowClaimMessage').removeClass('hidden');
-            $('#modalShowClaimMessage .modal-content')
+        function openModal(selector) {
+            $(selector).removeClass('hidden');
+            $(selector + ' .modal-content')
                 .removeClass('animate-out')
                 .addClass('animate-in');
 
-            $('#modalShowClaimMessage').appendTo('body');
+            $(selector).appendTo('body');
 
             document.addEventListener('keydown', escClaimListener);
             document.addEventListener('mousedown', clickOutsideClaimListener);
         }
 
-        function closeClaimMessageModal() {
-            $('#modalShowClaimMessage .modal-content')
+        function closeModal(selector) {
+            $(selector + ' .modal-content')
                 .removeClass('animate-in')
                 .addClass('animate-out');
 
             setTimeout(function() {
-                $('#modalShowClaimMessage').addClass('hidden');
+                $(selector).addClass('hidden');
                 setLoadingClaimMessageFields();
 
                 document.removeEventListener('keydown', escClaimListener);
@@ -180,68 +177,118 @@
 
         function escClaimListener(e) {
             if (e.key === "Escape") {
-                closeClaimMessageModal();
+                closeModal('#modalShowClaimMessage');
+                closeModal('#modalReplyClaimMessage');
             }
         }
 
         function clickOutsideClaimListener(e) {
             const overlay = document.getElementById('modalShowClaimMessage');
             if (e.target === overlay) {
-                closeClaimMessageModal();
+                closeModal('#modalShowClaimMessage');
+            }
+
+            const replyOverlay = document.getElementById('modalReplyClaimMessage');
+            if (e.target === replyOverlay) {
+                closeModal('#modalReplyClaimMessage');
             }
         }
 
-        function loadClaimMessage(id, focusResponse = false) {
+        function isReplyLocked(data) {
+            return !!(data?.replied_at || data?.status === 'replied' || (data?.response && String(data.response).trim() !== ''));
+        }
+
+        function loadClaimMessage(id, mode = 'show') {
             setLoadingClaimMessageFields();
-            openClaimMessageModal();
+            openModal(mode === 'reply' ? '#modalReplyClaimMessage' : '#modalShowClaimMessage');
 
             $.ajax({
                 url: `/admin/claim-messages/${id}/show`,
                 method: 'GET',
                 success: function(data) {
-                    $('#claim-id').text(data.id ?? '-');
-                    $('#claim-name').text(data.name ?? '-');
-                    $('#claim-email').text(data.email ?? '-');
-                    $('#claim-phone').text(data.phone ?? 'No especificado');
-                    $('#claim-type').html(renderClaimTypeBadge(data.claim_type));
-                    $('#claim-status').html(renderClaimStatusBadge(data.status));
-                    $('#claim-created-at').text(data.created_at ?? '-');
-                    $('#claim-read-at').text(data.read_at ?? 'Pendiente');
-                    $('#claim-replied-at').text(data.replied_at ?? 'Pendiente');
-                    $('#claim-content').text(data.message ?? '-');
-                    $('#claim-response').val(data.response ?? '');
+                    if (mode === 'show') {
+                        $('#claim-id').text(data.id ?? '-');
+                        $('#claim-name').text(data.name ?? '-');
+                        $('#claim-email').text(data.email ?? '-');
+                        $('#claim-phone').text(data.phone ?? 'No especificado');
+                        $('#claim-type').html(renderClaimTypeBadge(data.claim_type));
+                        $('#claim-status').html(renderClaimStatusBadge(data.status));
+                        $('#claim-created-at').text(data.created_at ?? '-');
+                        $('#claim-read-at').text(data.read_at ?? 'Pendiente');
+                        $('#claim-replied-at').text(data.replied_at ?? 'Pendiente');
+                        $('#claim-content').text(data.message ?? '-');
+                        $('#claim-response-view').text(data.response ?? 'Sin respuesta');
 
-                    $('#markReadBtn').off('click').on('click', function() {
-                        updateClaimStatus(data.id, 'read');
-                    });
-
-                    $('#saveResponseBtn').off('click').on('click', function() {
-                        saveClaimResponse(data.id, $('#claim-response').val());
-                    });
-
-                    if (focusResponse) {
-                        setTimeout(function() {
-                            $('#claim-response').trigger('focus');
-                        }, 100);
+                        $('#markReadBtn').off('click').on('click', function() {
+                            updateClaimStatus(data.id, 'read');
+                        });
+                        return;
                     }
+
+                    // mode === 'reply'
+                    $('#reply-claim-id').text(data.id ?? '-');
+                    $('#reply-claim-name').text(data.name ?? '-');
+                    $('#reply-claim-email').text(data.email ?? '-');
+                    $('#reply-claim-phone').text(data.phone ?? 'No especificado');
+                    $('#reply-claim-type').html(renderClaimTypeBadge(data.claim_type));
+                    $('#reply-claim-created-at').text(data.created_at ?? '-');
+                    $('#reply-claim-content').text(data.message ?? '-');
+                    $('#reply-claim-response').val('');
+
+                    const locked = isReplyLocked(data);
+                    $('#reply-claim-response').prop('disabled', locked);
+                    $('#saveReplyClaimResponseBtn').prop('disabled', locked);
+
+                    if (locked) {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast({
+                                type: 'warning',
+                                title: 'No disponible',
+                                message: 'Este reclamo ya fue respondido.'
+                            });
+                        }
+                    }
+
+                    $('#saveReplyClaimResponseBtn').off('click').on('click', function() {
+                        if (locked) return;
+                        saveClaimResponse(data.id, $('#reply-claim-response').val());
+                    });
+
+                    setTimeout(function() {
+                        $('#reply-claim-response').trigger('focus');
+                    }, 100);
                 },
                 error: function() {
                     $('#claim-id').text('Error');
                     $('#claim-name').text('Error al cargar');
-                    $('#claim-response').val('');
+                    $('#claim-response-view').text('');
+                    $('#reply-claim-id').text('Error');
+                    $('#reply-claim-name').text('Error al cargar');
+                    $('#reply-claim-response').val('');
                 }
             });
         }
 
         $(document).on('click', '.btn-ver-claim-message', function() {
-            loadClaimMessage($(this).data('id'), false);
+            loadClaimMessage($(this).data('id'), 'show');
         });
 
         $(document).on('click', '.btn-reply-claim-message', function() {
-            loadClaimMessage($(this).data('id'), true);
+            loadClaimMessage($(this).data('id'), 'reply');
         });
 
-        $('#cancelButtonClaimMessage').on('click', closeClaimMessageModal);
-        $('#closeModalClaimMessage').on('click', closeClaimMessageModal);
+        $('#cancelButtonClaimMessage').on('click', function() {
+            closeModal('#modalShowClaimMessage');
+        });
+        $('#closeModalClaimMessage').on('click', function() {
+            closeModal('#modalShowClaimMessage');
+        });
+
+        $('#cancelButtonReplyClaimMessage').on('click', function() {
+            closeModal('#modalReplyClaimMessage');
+        });
+        $('#closeModalReplyClaimMessage').on('click', function() {
+            closeModal('#modalReplyClaimMessage');
+        });
     </script>
 @endpush

@@ -17,6 +17,48 @@
         </button>
     </x-slot>
 
+    <div class="kpis-cards">
+        <div class="kpi-card">
+            <div class="kpi-icon card-primary">
+                <i class="ri-file-list-3-fill"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">Total</span>
+                <div class="kpi-value">{{ $kpis['total'] ?? 0 }}</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon card-warning">
+                <i class="ri-alert-line"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">Nuevos</span>
+                <div class="kpi-value">{{ $kpis['new'] ?? 0 }}</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon card-info">
+                <i class="ri-eye-line"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">Leídos</span>
+                <div class="kpi-value">{{ $kpis['read'] ?? 0 }}</div>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon card-success">
+                <i class="ri-checkbox-circle-line"></i>
+            </div>
+            <div class="kpi-info">
+                <span class="kpi-title">Respondidos</span>
+                <div class="kpi-value">{{ $kpis['replied'] ?? 0 }}</div>
+            </div>
+        </div>
+    </div>
+
     <div class="actions-container">
         <aside class="tabla-filtros">
             <span class="tabla-filtros-title">Buscar</span>
@@ -114,7 +156,6 @@
                         <th class="column-name-th">Nombre</th>
                         <th class="column-email-th">Correo</th>
                         <th class="column-name-th">Tema</th>
-                        <th class="column-description-th">Respuesta</th>
                         <th class="column-status-th">Estado</th>
                         <th class="column-date-th">Creado</th>
                         <th class="column-actions-th column-not-order">Acciones</th>
@@ -163,11 +204,6 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="column-description-td">
-                                <span class="{{ $message->response ? '' : 'text-muted-td' }}">
-                                    {{ $message->response ? Str::limit($message->response, 70) : 'Sin respuesta' }}
-                                </span>
-                            </td>
                             <td class="column-status-td" data-status="{{ $message->status }}">
                                 @if ($message->status === 'new')
                                     <span class="badge badge-warning"><i class="ri-error-warning-fill"></i> Nuevo</span>
@@ -192,11 +228,13 @@
                                     @endcan
 
                                     @can('contact-messages.reply')
-                                        <button type="button" class="boton-sm boton-success btn-reply-contact-message"
-                                            data-id="{{ $message->id }}" title="Responder mensaje">
-                                            <i class="ri-reply-fill"></i>
-                                            <span class="boton-sm-text">Responder</span>
-                                        </button>
+                                        @if (!$message->replied_at && $message->status !== 'replied' && empty($message->response))
+                                            <button type="button" class="boton-sm boton-success btn-reply-contact-message"
+                                                data-id="{{ $message->id }}" title="Responder mensaje">
+                                                <i class="ri-reply-fill"></i>
+                                                <span class="boton-sm-text">Responder</span>
+                                            </button>
+                                        @endif
                                     @endcan
 
                                     @can('contact-messages.delete')
@@ -225,6 +263,7 @@
     </div>
 
     @include('admin.contact-messages.modals.show-modal-contact-message')
+    @include('admin.contact-messages.modals.reply-modal-contact-message')
 
     @push('scripts')
         <script>
@@ -246,6 +285,13 @@
                         customPagination: true
                     }
                 });
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const status = urlParams.get('status');
+                if (status) {
+                    $('#statusFilter').val(status);
+                    $('#applyFiltersBtn').trigger('click');
+                }
 
             });
         </script>

@@ -324,14 +324,14 @@
 
                                 <div class="tabla-botones">
                                     <button type="button" class="boton-sm boton-info btn-ver-categoria"
-                                        data-slug="{{ $cat->slug }}">
+                                        data-slug="{{ $cat->slug }}" title="Ver detalles de la categoría">
                                         <i class="ri-eye-2-fill"></i>
                                         <span class="boton-sm-text">Ver</span>
                                     </button>
 
                                     @can('categorias.edit')
                                         <a href="{{ route('admin.categories.edit', $cat) }}"
-                                            class="boton-sm boton-warning">
+                                            class="boton-sm boton-warning" title="Editar categoría">
                                             <i class="ri-edit-circle-fill"></i>
                                             <span class="boton-sm-text">Editar</span>
                                         </a>
@@ -343,13 +343,21 @@
                                             @csrf
                                             @method('DELETE')
 
-                                            <button type="submit" class="boton-sm boton-danger">
+                                            <button type="submit" class="boton-sm boton-danger" title="Eliminar categoría">
                                                 <i class="ri-delete-bin-2-fill"></i>
                                                 <span class="boton-sm-text">Eliminar</span>
                                             </button>
                                         </form>
                                     @endcan
-
+                                    <!-- Botón para ver productos relacionados -->
+                                    @if ($cat->products_count > 0)
+                                        @can('productos.index')
+                                            <a href="{{ route('admin.products.index', ['category' => $cat->id]) }}" class="boton-sm boton-success" title="Ver productos de esta categoría">
+                                                <i class="ri-box-3-fill"></i>
+                                                <span class="boton-sm-text">Productos</span>
+                                            </a>
+                                        @endcan
+                                    @endif
                                 </div>
                             </td>
                         </tr>

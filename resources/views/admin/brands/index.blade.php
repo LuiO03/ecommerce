@@ -204,7 +204,6 @@
                                 <div class="thumbnail-container">
                                     @php $mainImagePath = $brand->image; @endphp
                                     @if ($mainImagePath && Storage::disk('public')->exists($mainImagePath))
-
                                         <x-image-viewer :src="asset('storage/' . $mainImagePath)" gallery="brand"
                                             alt="Imagen de la marca" class="table-thumbnail"
                                             title="{{ $brand->name }}"

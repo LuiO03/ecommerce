@@ -227,6 +227,8 @@
 .blog-card-link-container {
     margin-top: auto;
     display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
     justify-content: flex-end;
 }
 
@@ -237,7 +239,11 @@
     display: inline-flex;
     align-items: center;
     padding: 8px 12px;
+    font-weight: bold;
+    border-radius: var(--radius-input);
     gap: 5px;
+    font-size: var(--font-size-xs);
+    font-family: var(--font-secondary);
     text-decoration: none;
 }
 

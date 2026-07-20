@@ -52,8 +52,9 @@
 
                     <div class="pswp-gallery" hidden>
                         @foreach ($images as $image)
-                            <a href="{{ asset('storage/' . $image->path) }}" data-title="{{ $image->alt ?? $product->name }}"
-                                data-description="{{ $product->description ?? '' }}">
+                            <a href="{{ asset('storage/' . $image->path) }}"
+                                data-title="{{ $image->alt ?? $product->name }}"
+                                data-description="{{ $product->brand?->name ?? ('' . ' - ' . $product->category?->name ?? '') }}">
 
                                 <img src="{{ asset('storage/' . $image->path) }}">
                             </a>
@@ -63,9 +64,9 @@
                     @if ($images->isNotEmpty())
                         <div class="product-gallery-controls" aria-label="Controles de galeria">
                             <div class="gallery-nav-stack">
-                                <button class="gallery-action open-product-gallery" type="button" title="Agrandar imagen"
-                                    aria-label="Agrandar imagen">
-                                    <i class="ri-fullscreen-line"></i>
+                                <button class="gallery-action open-product-gallery" type="button"
+                                    title="Agrandar imagen" aria-label="Agrandar imagen">
+                                    <i class="ri-expand-diagonal-s-line"></i>
                                 </button>
 
                                 @livewire('site.add-to-wishlist', [
@@ -151,10 +152,12 @@
                         @foreach ($variantOptions as $option)
                             <div class="variant-group" data-option-id="{{ $option->option_id }}"
                                 data-option-slug="{{ $option->slug }}">
-                                <h4 class="subtitle-variant-product">
-                                    {{ $option->name }}:
-                                    <span class="subtitle-variant-selected"></span>
-                                </h4>
+                                <div class="subtitle-variant-container">
+                                    <h4 class="subtitle-variant-product">
+                                        {{ $option->name }}:
+                                    </h4>
+                                    <p class="subtitle-variant-selected"></p>
+                                </div>
                                 <div class="variant-values">
                                     @foreach ($option->features as $feature)
                                         @if ($option->is_color)
@@ -202,7 +205,7 @@
                 </div>
 
                 <div class="product-description">
-                    <h3 class="subtitle-variant-product">Descripción</h3>
+                    <h4 class="subtitle-variant-product">Descripción</h4>
                     <p>{{ $product->description ?? 'Este producto no tiene descripcion adicional.' }}</p>
                 </div>
             </div>

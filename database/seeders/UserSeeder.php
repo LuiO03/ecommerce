@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
             'name'      => 'Luis',
             'last_name' => 'Osorio',
             'image'     => 'pikachu.jpg',
-            'email'     => '70098517@institutocajas.info',
+            'email'     => 'antagonist_fenixand.7777@gmail.com',
         ];
 
         // Antes de crear, agrega un slug si no existe

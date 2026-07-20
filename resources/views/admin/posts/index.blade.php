@@ -142,7 +142,8 @@
         <div class="selection-bar" id="selectionBar">
             <div class="selection-actions">
                 @can('posts.export')
-                    <button id="exportSelectedExcel" class="boton-selection bg-success" title="Exportar posts seleccionados a Excel">
+                    <button id="exportSelectedExcel" class="boton-selection bg-success"
+                        title="Exportar posts seleccionados a Excel">
                         <span class="boton-selection-icon">
                             <i class="ri-file-excel-2-fill"></i>
                         </span>
@@ -150,7 +151,8 @@
                         <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="excelBadge">0</span>
                     </button>
-                    <button id="exportSelectedPdf" class="boton-selection bg-danger" title="Exportar posts seleccionados a PDF">
+                    <button id="exportSelectedPdf" class="boton-selection bg-danger"
+                        title="Exportar posts seleccionados a PDF">
                         <span class="boton-selection-icon">
                             <i class="ri-file-pdf-2-fill"></i>
                         </span>
@@ -158,7 +160,8 @@
                         <span class="boton-selection-dot">•</span>
                         <span class="selection-badge" id="pdfBadge">0</span>
                     </button>
-                    <button id="exportSelectedCsv" class="boton-selection bg-orange" title="Exportar posts seleccionados a CSV">
+                    <button id="exportSelectedCsv" class="boton-selection bg-orange"
+                        title="Exportar posts seleccionados a CSV">
                         <span class="boton-selection-icon">
                             <i class="ri-file-text-fill"></i>
                         </span>
@@ -221,8 +224,9 @@
                                 <div class="thumbnail-container">
                                     @php $mainImagePath = $post->main_image_path; @endphp
                                     @if ($mainImagePath && Storage::disk('public')->exists($mainImagePath))
-                                        <img src="{{ asset('storage/' . $mainImagePath) }}" alt="Imagen del post"
-                                            class="table-thumbnail">
+                                        <x-image-viewer :src="asset('storage/' . $mainImagePath)" gallery="post" alt="Imagen del post"
+                                            class="table-thumbnail" title="{{ $post->title }}"
+                                            description="{{ $post->author ?? 'Sin autor' }}" />
                                     @else
                                         <div class="table-no-thumbnail" title="Sin imagen">
                                             <i class="ri-file-close-fill"></i>

@@ -41,38 +41,24 @@
                     <th>Respondido</th>
                     <td id="msg-replied-at">-</td>
                 </tr>
-                <tr>
-                    <th>Mensaje</th>
-                    <td id="msg-content">-</td>
-                </tr>
-                <tr>
-                    <th>Respuesta</th>
-                    <td>
-                        <div class="input-group">
-                            <label for="description" class="label-form label-textarea">
-                                Respuesta al cliente
-                            </label>
-                            <div class="input-icon-container">
-                                <textarea name="msg-response" id="msg-response" class="textarea-form" placeholder="Escribe aquí la respuesta al cliente"
-                                    rows="4" data-validate="min:10|max:500">{{ old('description') }}</textarea>
-                                <i class="ri-file-text-line input-icon"></i>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
             </table>
+            <div class="modal-content-section">
+                <span class="modal-content-title">Mensaje del cliente:</span>
+                <div id="msg-content" class="post-content">Sin contenido</div>
+            </div>
+            <div class="modal-content-section">
+                <span class="modal-content-title">Respuesta:</span>
+                <div id="msg-response-view" class="post-content">Pendiente</div>
+            </div>
             <div class="modal-show-actions">
                 <button type="button" id="markReadBtn" class="boton boton-info" title="Marcar como leido">
                     <span class="boton-icon"><i class="ri-eye-fill"></i></span>
                     <span class="boton-text">Marcar leido</span>
                 </button>
-                <button type="button" id="saveResponseBtn" class="boton boton-success" title="Guardar respuesta">
-                    <span class="boton-icon"><i class="ri-mail-send-fill"></i></span>
-                    <span class="boton-text">Guardar respuesta</span>
-                </button>
             </div>
         </div>
         <div class="modal-show-footer">
+
             <button type="button" class="boton boton-modal-close" id="cancelButtonContactMessage"
                 title="Cerrar Ventana">
                 <span class="boton-icon text-base"><i class="ri-close-line"></i></span>
@@ -95,27 +81,37 @@
             $('#msg-read-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#msg-replied-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
             $('#msg-content').html('<div class="shimmer shimmer-cell" style="width:100%; height:60px;"></div>');
+            $('#msg-response-view').html('<div class="shimmer shimmer-cell" style="width:100%; height:60px;"></div>');
+
+            $('#reply-msg-id').html('<div class="shimmer shimmer-cell"></div>');
+            $('#reply-msg-name').html('<div class="shimmer shimmer-cell shimmer-title" style="width:140px;"></div>');
+            $('#reply-msg-email').html('<div class="shimmer shimmer-cell" style="width:160px;"></div>');
+            $('#reply-msg-topic').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#reply-msg-order-number').html('<div class="shimmer shimmer-cell" style="width:100px;"></div>');
+            $('#reply-msg-created-at').html('<div class="shimmer shimmer-cell" style="width:120px;"></div>');
+            $('#reply-msg-content').html('<div class="shimmer shimmer-cell" style="width:100%; height:60px;"></div>');
+            $('#reply-msg-response').val('');
         }
 
-        function openContactMessageModal() {
-            $('#modalShowContactMessage').removeClass('hidden');
-            $('#modalShowContactMessage .modal-content')
+        function openModal(selector) {
+            $(selector).removeClass('hidden');
+            $(selector + ' .modal-content')
                 .removeClass('animate-out')
                 .addClass('animate-in');
 
-            $('#modalShowContactMessage').appendTo('body');
+            $(selector).appendTo('body');
 
             document.addEventListener('keydown', escContactListener);
             document.addEventListener('mousedown', clickOutsideContactListener);
         }
 
-        function closeContactMessageModal() {
-            $('#modalShowContactMessage .modal-content')
+        function closeModal(selector) {
+            $(selector + ' .modal-content')
                 .removeClass('animate-in')
                 .addClass('animate-out');
 
             setTimeout(function() {
-                $('#modalShowContactMessage').addClass('hidden');
+                $(selector).addClass('hidden');
                 setLoadingContactMessageFields();
 
                 document.removeEventListener('keydown', escContactListener);
@@ -173,68 +169,118 @@
 
         function escContactListener(e) {
             if (e.key === "Escape") {
-                closeContactMessageModal();
+                closeModal('#modalShowContactMessage');
+                closeModal('#modalReplyContactMessage');
             }
         }
 
         function clickOutsideContactListener(e) {
-            const overlay = document.getElementById('modalShowContactMessage');
-            if (e.target === overlay) {
-                closeContactMessageModal();
+            const showOverlay = document.getElementById('modalShowContactMessage');
+            if (e.target === showOverlay) {
+                closeModal('#modalShowContactMessage');
+            }
+
+            const replyOverlay = document.getElementById('modalReplyContactMessage');
+            if (e.target === replyOverlay) {
+                closeModal('#modalReplyContactMessage');
             }
         }
 
-        function loadContactMessage(id, focusResponse = false) {
+        function isReplyLocked(data) {
+            return !!(data?.replied_at || data?.status === 'replied' || (data?.response && String(data.response).trim() !== ''));
+        }
+
+        function loadContactMessage(id, mode = 'show') {
             setLoadingContactMessageFields();
-            openContactMessageModal();
+            openModal(mode === 'reply' ? '#modalReplyContactMessage' : '#modalShowContactMessage');
 
             $.ajax({
                 url: `/admin/contact-messages/${id}/show`,
                 method: 'GET',
                 success: function(data) {
-                    $('#msg-id').text(data.id ?? '-');
-                    $('#msg-name').text(data.name ?? '-');
-                    $('#msg-email').text(data.email ?? '-');
-                    $('#msg-topic').text(data.topic ?? '-');
-                    $('#msg-order-number').text(data.order_number ?? 'No aplica');
-                    $('#msg-status').html(renderStatusBadge(data.status));
-                    $('#msg-created-at').text(data.created_at ?? '-');
-                    $('#msg-read-at').text(data.read_at ?? 'Pendiente');
-                    $('#msg-replied-at').text(data.replied_at ?? 'Pendiente');
-                    $('#msg-content').text(data.message ?? '-');
-                    $('#msg-response').val(data.response ?? '');
+                    if (mode === 'show') {
+                        $('#msg-id').text(data.id ?? '-');
+                        $('#msg-name').text(data.name ?? '-');
+                        $('#msg-email').text(data.email ?? '-');
+                        $('#msg-topic').text(data.topic ?? '-');
+                        $('#msg-order-number').text(data.order_number ?? 'No aplica');
+                        $('#msg-status').html(renderStatusBadge(data.status));
+                        $('#msg-created-at').text(data.created_at ?? '-');
+                        $('#msg-read-at').text(data.read_at ?? 'Pendiente');
+                        $('#msg-replied-at').text(data.replied_at ?? 'Pendiente');
+                        $('#msg-content').text(data.message ?? '-');
+                        $('#msg-response-view').text(data.response ?? 'Sin respuesta');
 
-                    $('#markReadBtn').off('click').on('click', function() {
-                        updateMessageStatus(data.id, 'read');
-                    });
-
-                    $('#saveResponseBtn').off('click').on('click', function() {
-                        saveMessageResponse(data.id, $('#msg-response').val());
-                    });
-
-                    if (focusResponse) {
-                        setTimeout(function() {
-                            $('#msg-response').trigger('focus');
-                        }, 100);
+                        $('#markReadBtn').off('click').on('click', function() {
+                            updateMessageStatus(data.id, 'read');
+                        });
+                        return;
                     }
+
+                    // mode === 'reply'
+                    $('#reply-msg-id').text(data.id ?? '-');
+                    $('#reply-msg-name').text(data.name ?? '-');
+                    $('#reply-msg-email').text(data.email ?? '-');
+                    $('#reply-msg-topic').text(data.topic ?? '-');
+                    $('#reply-msg-order-number').text(data.order_number ?? 'No aplica');
+                    $('#reply-msg-created-at').text(data.created_at ?? '-');
+                    $('#reply-msg-content').text(data.message ?? '-');
+                    $('#reply-msg-response').val('');
+
+                    const locked = isReplyLocked(data);
+                    $('#reply-msg-response').prop('disabled', locked);
+                    $('#saveReplyResponseBtn').prop('disabled', locked);
+
+                    if (locked) {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast({
+                                type: 'warning',
+                                title: 'No disponible',
+                                message: 'Este mensaje ya fue respondido.'
+                            });
+                        }
+                    }
+
+                    $('#saveReplyResponseBtn').off('click').on('click', function() {
+                        if (locked) return;
+                        saveMessageResponse(data.id, $('#reply-msg-response').val());
+                    });
+
+                    setTimeout(function() {
+                        $('#reply-msg-response').trigger('focus');
+                    }, 100);
                 },
                 error: function() {
                     $('#msg-id').text('Error');
                     $('#msg-name').text('Error al cargar');
-                    $('#msg-response').val('');
+                    $('#msg-response-view').text('');
+                    $('#reply-msg-id').text('Error');
+                    $('#reply-msg-name').text('Error al cargar');
+                    $('#reply-msg-response').val('');
                 }
             });
         }
 
         $(document).on('click', '.btn-ver-contact-message', function() {
-            loadContactMessage($(this).data('id'), false);
+            loadContactMessage($(this).data('id'), 'show');
         });
 
         $(document).on('click', '.btn-reply-contact-message', function() {
-            loadContactMessage($(this).data('id'), true);
+            loadContactMessage($(this).data('id'), 'reply');
         });
 
-        $('#cancelButtonContactMessage').on('click', closeContactMessageModal);
-        $('#closeModalContactMessage').on('click', closeContactMessageModal);
+        $('#cancelButtonContactMessage').on('click', function() {
+            closeModal('#modalShowContactMessage');
+        });
+        $('#closeModalContactMessage').on('click', function() {
+            closeModal('#modalShowContactMessage');
+        });
+
+        $('#cancelButtonReplyContactMessage').on('click', function() {
+            closeModal('#modalReplyContactMessage');
+        });
+        $('#closeModalReplyContactMessage').on('click', function() {
+            closeModal('#modalReplyContactMessage');
+        });
     </script>
 @endpush

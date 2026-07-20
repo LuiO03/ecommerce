@@ -19,6 +19,20 @@ class ClaimMessageController extends Controller
 
     public function index()
     {
+        $rows = ClaimMessage::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->all();
+
+        $kpis = [
+            'total' => (int) array_sum($rows),
+            // Mapeo: new=open, read=in_progress, replied=closed
+            'open' => (int) ($rows['new'] ?? 0),
+            'in_progress' => (int) ($rows['read'] ?? 0),
+            'closed' => (int) ($rows['replied'] ?? 0),
+        ];
+
         $claims = ClaimMessage::query()
             ->select([
                 'id',
@@ -35,11 +49,13 @@ class ClaimMessageController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        return view('admin.claim-messages.index', compact('claims'));
+        return view('admin.claim-messages.index', compact('claims', 'kpis'));
     }
 
     public function show(ClaimMessage $claimMessage)
     {
+        $isReplied = (bool) ($claimMessage->replied_at || ($claimMessage->response && trim((string) $claimMessage->response) !== '') || $claimMessage->status === 'replied');
+
         return response()->json([
             'id' => $claimMessage->id,
             'name' => $claimMessage->name,
@@ -53,11 +69,19 @@ class ClaimMessageController extends Controller
             'read_at' => $claimMessage->read_at?->format('d/m/Y H:i'),
             'replied_at' => $claimMessage->replied_at?->format('d/m/Y H:i'),
             'created_at' => $claimMessage->created_at?->format('d/m/Y H:i'),
+            'can_reply' => ! $isReplied,
         ]);
     }
 
     public function updateResponse(Request $request, ClaimMessage $claimMessage)
     {
+        if ($claimMessage->replied_at || $claimMessage->status === 'replied' || ($claimMessage->response && trim((string) $claimMessage->response) !== '')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este reclamo ya fue respondido y no puede volver a responderse.',
+            ], 422);
+        }
+
         $validated = $request->validate([
             'response' => 'required|string|min:3|max:8000',
         ]);

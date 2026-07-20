@@ -19,6 +19,19 @@ class ContactMessageController extends Controller
 
     public function index()
     {
+        $rows = ContactMessage::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->all();
+
+        $kpis = [
+            'total' => (int) array_sum($rows),
+            'new' => (int) ($rows['new'] ?? 0),
+            'read' => (int) ($rows['read'] ?? 0),
+            'replied' => (int) ($rows['replied'] ?? 0),
+        ];
+
         $messages = ContactMessage::query()
             ->select([
                 'id',
@@ -35,11 +48,13 @@ class ContactMessageController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        return view('admin.contact-messages.index', compact('messages'));
+        return view('admin.contact-messages.index', compact('messages', 'kpis'));
     }
 
     public function show(ContactMessage $contactMessage)
     {
+        $isReplied = (bool) ($contactMessage->replied_at || ($contactMessage->response && trim((string) $contactMessage->response) !== '') || $contactMessage->status === 'replied');
+
         return response()->json([
             'id' => $contactMessage->id,
             'name' => $contactMessage->name,
@@ -52,11 +67,19 @@ class ContactMessageController extends Controller
             'read_at' => $contactMessage->read_at?->format('d/m/Y H:i'),
             'replied_at' => $contactMessage->replied_at?->format('d/m/Y H:i'),
             'created_at' => $contactMessage->created_at?->format('d/m/Y H:i'),
+            'can_reply' => ! $isReplied,
         ]);
     }
 
     public function updateResponse(Request $request, ContactMessage $contactMessage)
     {
+        if ($contactMessage->replied_at || $contactMessage->status === 'replied' || ($contactMessage->response && trim((string) $contactMessage->response) !== '')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este mensaje ya fue respondido y no puede volver a responderse.',
+            ], 422);
+        }
+
         $validated = $request->validate([
             'response' => 'required|string|min:3|max:8000',
         ]);

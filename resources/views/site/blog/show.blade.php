@@ -13,22 +13,28 @@
             <article class="blog-article">
                 <header class="blog-article-header">
                     <h1 class="blog-title">{{ $post->title }}</h1>
-
-                    <div class="blog-card-meta">
-                        @if ($post->published_at)
+                    <div class="flex justify-between flex-wrap gap-2">
+                        <div class="blog-card-meta">
+                            @if ($post->published_at)
+                                <div class="blog-card-data">
+                                    <i class="ri-calendar-line"></i>
+                                    <span>{{ $post->published_at->format('d M Y') }}</span>
+                                </div>
+                            @endif
                             <div class="blog-card-data">
-                                <i class="ri-calendar-line"></i>
-                                <span>{{ $post->published_at->format('d M Y') }}</span>
+                                <i class="ri-user-line"></i>
+                                <span>
+                                    {{ $post->creator?->name ?? 'Autor desconocido' }}
+                                </span>
                             </div>
-                        @endif
-                        <div class="blog-card-data">
-                            <i class="ri-user-line"></i>
-                            <span>
-                                {{ $post->creator?->name ?? 'Autor desconocido' }}
-                            </span>
                         </div>
+                        @can('posts.edit')
+                            <a href="{{ route('admin.posts.edit', $post) }}" class="site-select-trigger filter-toggle-btn"
+                                target="_blank">
+                                <i class="ri-pencil-fill"></i>Editar Post
+                            </a>
+                        @endcan
                     </div>
-
                     @if ($post->tags && $post->tags->isNotEmpty())
                         <div class="blog-card-tags" style="margin-bottom: 1.2rem;">
                             @foreach ($post->tags as $tag)

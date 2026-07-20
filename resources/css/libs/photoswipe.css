@@ -23,3 +23,8 @@
 .pswp-custom-caption p {
     color: var(--color-muted);
 }
+
+.pswp__zoom-wrap img{
+    border-radius: var(--radius-card);
+    transition: transform 0.3s ease, border-radius 0.3s ease;
+}

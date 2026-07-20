@@ -16,15 +16,7 @@
                         window.SwiperModules.Autoplay,
                     ],
 
-                    loop: true,
 
-                    autoplay: {
-                        delay: 6000,
-                        disableOnInteraction: true,
-                        pauseOnMouseEnter: true,
-                    },
-
-                    speed: 400,
 
                     navigation: {
                         nextEl: sliderEl.querySelector('.swiper-button-next'),

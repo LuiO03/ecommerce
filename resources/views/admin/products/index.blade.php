@@ -1,7 +1,8 @@
-	@section('title', 'Productos')
+@section('title', 'Productos')
 
-	<x-admin-layout :showMobileFab="true">
-	<x-slot name="title">
+<x-admin-layout :showMobileFab="true">
+
+<x-slot name="title">
 		<div class="page-icon card-danger">
 			<i class="ri-box-3-line"></i>
 		</div>
@@ -320,12 +321,12 @@
                                     <i class="ri-more-fill"></i>
                                 </button>
 								<div class="tabla-botones">
-									<button class="boton-sm boton-info btn-ver-producto" data-slug="{{ $product->slug }}">
+									<button class="boton-sm boton-info btn-ver-producto" data-slug="{{ $product->slug }}" title="Ver detalles del producto">
 										<i class="ri-eye-2-fill"></i>
                                         <span class="boton-sm-text">Ver Producto</span>
 									</button>
 									@can('productos.edit')
-									<a href="{{ route('admin.products.edit', $product) }}" class="boton-sm boton-warning">
+									<a href="{{ route('admin.products.edit', $product) }}" class="boton-sm boton-warning" title="Editar producto">
 										<i class="ri-edit-circle-fill"></i>
 										<span class="boton-sm-text">Editar Producto</span>
 									</a>
@@ -334,7 +335,7 @@
 									<form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="delete-form" data-entity="producto">
 										@csrf
 										@method('DELETE')
-										<button type="submit" class="boton-sm boton-danger">
+										<button type="submit" class="boton-sm boton-danger" title="Eliminar producto">
 											<i class="ri-delete-bin-2-fill"></i>
 											<span class="boton-sm-text">Eliminar Producto</span>
 										</button>
@@ -353,142 +354,152 @@
 			<div id="tablePagination" class="tabla-paginacion"></div>
 		</div>
 	</div>
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                const tableManager = new DataTableManager('#tabla', {
+                    moduleName: 'products',
+                    entityNameSingular: 'producto',
+                    entityNamePlural: 'productos',
+                    deleteRoute: '/admin/products',
+                    statusRoute: '/admin/products/{id}/status',
+                    exportRoutes: {
+                        excel: '/admin/products/export/excel',
+                        csv: '/admin/products/export/csv',
+                        pdf: '/admin/products/export/pdf'
+                    },
+                    csrfToken: '{{ csrf_token() }}',
+                    pageLength: 10,
+                    lengthMenu: [5, 10, 25, 50],
+                    callbacks: {
+                        onDraw: () => {
+                            console.log('🔄 Tabla de productos redibujada');
+                        },
+                        onStatusChange: (id, status) => {
+                            console.log(`✅ Producto ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
+                        },
+                        onDelete: () => {
+                            console.log('🗑️ Productos eliminados');
+                        },
+                        onExport: (type, format, count) => {
+                            console.log(`📤 Exportación de ${type} en ${format} (${count || 'todos'})`);
+                        }
+                    }
+                });
 
-	@push('scripts')
-		<script>
-			$(document).ready(function() {
-				const tableManager = new DataTableManager('#tabla', {
-					moduleName: 'products',
-					entityNameSingular: 'producto',
-					entityNamePlural: 'productos',
-					deleteRoute: '/admin/products',
-					statusRoute: '/admin/products/{id}/status',
-					exportRoutes: {
-						excel: '/admin/products/export/excel',
-						csv: '/admin/products/export/csv',
-						pdf: '/admin/products/export/pdf'
-					},
-					csrfToken: '{{ csrf_token() }}',
-					pageLength: 10,
-					lengthMenu: [5, 10, 25, 50],
-					callbacks: {
-						onDraw: () => {
-							console.log('🔄 Tabla de productos redibujada');
-						},
-						onStatusChange: (id, status) => {
-							console.log(`✅ Producto ${id} -> ${status ? 'Activo' : 'Inactivo'}`);
-						},
-						onDelete: () => {
-							console.log('🗑️ Productos eliminados');
-						},
-						onExport: (type, format, count) => {
-							console.log(`📤 Exportación de ${type} en ${format} (${count || 'todos'})`);
-						}
-					}
-				});
+                // Deep-link: permitir abrir productos ya filtrados por categoría/marca/estado
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryFromUrl = urlParams.get('category') || urlParams.get('category_id');
+                if (categoryFromUrl) {
+                    const hasOption = $('#categoryFilter option[value="' + categoryFromUrl + '"]').length > 0;
+                    if (hasOption) {
+                        $('#categoryFilter').val(categoryFromUrl).trigger('change');
+                    }
+                }
 
-								let currentCategoryFilter = '';
-								let currentBrandFilter = '';
+                let currentCategoryFilter = '';
+                let currentBrandFilter = '';
 
 
-				let minStockFilterActive = false;
+                let minStockFilterActive = false;
 
-				$.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-					if (settings.nTable.id !== 'tabla') return true;
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    if (settings.nTable.id !== 'tabla') return true;
 
-					// Filtro por categoría
-					if (currentCategoryFilter) {
-						const row = tableManager.table.row(dataIndex).node();
-						const rowCategoryId = $(row).find('.column-category-td').attr('data-category-id') || '';
-						if (rowCategoryId !== currentCategoryFilter) {
-							return false;
-						}
-					}
+                    // Filtro por categoría
+                    if (currentCategoryFilter) {
+                        const row = tableManager.table.row(dataIndex).node();
+                        const rowCategoryId = $(row).find('.column-category-td').attr('data-category-id') || '';
+                        if (rowCategoryId !== currentCategoryFilter) {
+                            return false;
+                        }
+                    }
 
-									// Filtro por marca
-									if (currentBrandFilter) {
-										const row = tableManager.table.row(dataIndex).node();
-										const rowBrandId = $(row).find('.column-brand-td').attr('data-brand-id') || '';
-										if (rowBrandId !== currentBrandFilter) {
-											return false;
-										}
-									}
+                    // Filtro por marca
+                    if (currentBrandFilter) {
+                        const row = tableManager.table.row(dataIndex).node();
+                        const rowBrandId = $(row).find('.column-brand-td').attr('data-brand-id') || '';
+                        if (rowBrandId !== currentBrandFilter) {
+                            return false;
+                        }
+                    }
 
-					// Filtro por stock bajo mínimo
-					if (minStockFilterActive) {
-						const row = tableManager.table.row(dataIndex).node();
-						const badge = $(row).find('.column-stock-td .badge');
-						// badge-danger indica stock bajo mínimo
-						if (!badge.hasClass('badge-danger')) {
-							return false;
-						}
-					}
+                    // Filtro por stock bajo mínimo
+                    if (minStockFilterActive) {
+                        const row = tableManager.table.row(dataIndex).node();
+                        const badge = $(row).find('.column-stock-td .badge');
+                        // badge-danger indica stock bajo mínimo
+                        if (!badge.hasClass('badge-danger')) {
+                            return false;
+                        }
+                    }
 
-					return true;
-				});
+                    return true;
+                });
 
-				$('#categoryFilter').on('change', function() {
-					currentCategoryFilter = this.value;
-					tableManager.table.draw();
-					tableManager.checkFiltersActive();
-					console.log(`🔍 Filtro categoría: ${currentCategoryFilter || 'Todas'}`);
-				});
+                $('#categoryFilter').on('change', function() {
+                    currentCategoryFilter = this.value;
+                    tableManager.table.draw();
+                    tableManager.checkFiltersActive();
+                    console.log(`🔍 Filtro categoría: ${currentCategoryFilter || 'Todas'}`);
+                });
 
-								$('#brandFilter').on('change', function() {
-									currentBrandFilter = this.value;
-									tableManager.table.draw();
-									tableManager.checkFiltersActive();
-									console.log(`🔍 Filtro marca: ${currentBrandFilter || 'Todas'}`);
-								});
+                $('#brandFilter').on('change', function() {
+                    currentBrandFilter = this.value;
+                    tableManager.table.draw();
+                    tableManager.checkFiltersActive();
+                    console.log(`🔍 Filtro marca: ${currentBrandFilter || 'Todas'}`);
+                });
 
-				// Botón visual para stock bajo mínimo
-				$('#minStockFilterBtn').on('click', function() {
-					minStockFilterActive = !minStockFilterActive;
-					$('#minStockFilterWrapper').toggleClass('filter-active', minStockFilterActive);
-					tableManager.table.draw();
-					tableManager.checkFiltersActive();
-					if (minStockFilterActive) {
-						$(this).attr('title', 'Ver todos los productos');
-					} else {
-						$(this).attr('title', 'Mostrar solo productos con stock bajo el mínimo');
-					}
-				});
+                // Botón visual para stock bajo mínimo
+                $('#minStockFilterBtn').on('click', function() {
+                    minStockFilterActive = !minStockFilterActive;
+                    $('#minStockFilterWrapper').toggleClass('filter-active', minStockFilterActive);
+                    tableManager.table.draw();
+                    tableManager.checkFiltersActive();
+                    if (minStockFilterActive) {
+                        $(this).attr('title', 'Ver todos los productos');
+                    } else {
+                        $(this).attr('title', 'Mostrar solo productos con stock bajo el mínimo');
+                    }
+                });
 
-				@if (Session::has('highlightRow'))
-					(function() {
-						const navEntries = (typeof performance !== 'undefined' && typeof performance.getEntriesByType === 'function')
-							? performance.getEntriesByType('navigation')
-							: [];
-						const legacyNav = (typeof performance !== 'undefined' && performance.navigation)
-							? performance.navigation.type
-							: null;
-						const navType = navEntries.length ? navEntries[0].type : legacyNav;
-						const isBackNavigation = navType === 'back_forward' || navType === 2;
+                @if (Session::has('highlightRow'))
+                    (function() {
+                        const navEntries = (typeof performance !== 'undefined' && typeof performance
+                                .getEntriesByType === 'function') ?
+                            performance.getEntriesByType('navigation') :
+                            [];
+                        const legacyNav = (typeof performance !== 'undefined' && performance.navigation) ?
+                            performance.navigation.type :
+                            null;
+                        const navType = navEntries.length ? navEntries[0].type : legacyNav;
+                        const isBackNavigation = navType === 'back_forward' || navType === 2;
 
-						if (isBackNavigation) {
-							return;
-						}
+                        if (isBackNavigation) {
+                            return;
+                        }
 
-						const highlightId = {{ Session::get('highlightRow') }};
-						setTimeout(() => {
-							const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
-							if (row.length) {
-								row.addClass('row-highlight');
-								row[0].scrollIntoView({
-									behavior: 'smooth',
-									block: 'center'
-								});
+                        const highlightId = {{ Session::get('highlightRow') }};
+                        setTimeout(() => {
+                            const row = $(`#tabla tbody tr[data-id="${highlightId}"]`);
+                            if (row.length) {
+                                row.addClass('row-highlight');
+                                row[0].scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                });
 
-								setTimeout(() => {
-									row.removeClass('row-highlight');
-								}, 3000);
-							}
-						}, 150);
-					})();
-				@endif
-			});
-		</script>
-	@endpush
+                                setTimeout(() => {
+                                    row.removeClass('row-highlight');
+                                }, 3000);
+                            }
+                        }, 150);
+                    })();
+                @endif
+            });
+        </script>
+    @endpush
 
-	@include('admin.products.modals.show-modal-product')
+    @include('admin.products.modals.show-modal-product')
 </x-admin-layout>

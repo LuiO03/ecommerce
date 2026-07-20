@@ -339,3 +339,4 @@ Route::controller(ClaimMessageController::class)->group(function () {
     Route::delete('/claim-messages/{claimMessage}', 'destroy')->name('admin.claim-messages.destroy');
     Route::delete('/claim-messages', 'destroyMultiple')->name('admin.claim-messages.destroy-multiple');
 });
+
