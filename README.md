@@ -38,91 +38,91 @@ Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseña
 
 ### **Sistema de Catálogo Jerárquico**
 
-- ✅ **Familias** → **Categorías** → **Productos** → **Variantes**
-- ✅ Categorías con soporte para anidación (subcategorías ilimitadas)
-- ✅ Slugs únicos auto-incrementales para SEO
-- ✅ Gestión avanzada de **Options** (opciones de producto) y **Features** (características de variante)
-- ✅ Soporte para múltiples imágenes por producto con reorder y crop
+- **Familias** → **Categorías** → **Productos** → **Variantes**
+- Categorías con soporte para anidación (subcategorías ilimitadas)
+- Slugs únicos auto-incrementales para SEO
+- Gestión avanzada de **Options** (opciones de producto) y **Features** (características de variante)
+- Soporte para múltiples imágenes por producto con reorder y crop
 
 ### **Panel de Administración Moderno**
 
-- ✅ Interfaz responsive con sidebar colapsable
-- ✅ Tema claro/oscuro con persistencia en localStorage
-- ✅ DataTables con búsqueda, ordenamiento y filtros personalizados
-- ✅ Indicadores de carga tipo shimmer (skeleton) para mejorar la UX
-- ✅ Toggle de estado instantáneo (sin modales ni reload)
-- ✅ Eliminación múltiple con confirmación inteligente
-- ✅ Exportación a Excel, CSV y PDF con auditoria
+- Interfaz responsive con sidebar colapsable
+- Tema claro/oscuro con persistencia en localStorage
+- DataTables con búsqueda, ordenamiento y filtros personalizados
+- Indicadores de carga tipo shimmer (skeleton) para mejorar la UX
+- Toggle de estado instantáneo (sin modales ni reload)
+- Eliminación múltiple con confirmación inteligente
+- Exportación a Excel, CSV y PDF con auditoria
 
-### 📰 **Módulo de Blog/Posts**
+### **Módulo de Blog/Posts**
 
-- ✅ Sistema de posts con estados (draft, pending, published, rejected)
-- ✅ Flujo de revisión: creador → revisor → publicación
-- ✅ Notificaciones en tiempo real a revisores y autores
-- ✅ Soporte para tags e imágenes destacadas
-- ✅ Contador de vistas y permitir/denegar comentarios
-- ✅ Soft deletes para recuperación
+- Sistema de posts con estados (draft, pending, published, rejected)
+- Flujo de revisión: creador → revisor → publicación
+- Notificaciones en tiempo real a revisores y autores
+- Soporte para tags e imágenes destacadas
+- Contador de vistas y permitir/denegar comentarios
+- Soft deletes para recuperación
 
-### 🎪 **Módulo de Portadas (Covers)**
+### **Módulo de Portadas (Covers)**
 
-- ✅ Slider de portadas con imagen, texto y botón CTA
-- ✅ Posicionamiento de texto flexible (9 posiciones: top/center/bottom + left/center/right)
-- ✅ Overlay personalizable (color, opacidad, fondo)
-- ✅ Fechas de vigencia (start_at, end_at)
-- ✅ Reorder de portadas por posición
-- ✅ Status toggle rápido
+- Slider de portadas con imagen, texto y botón CTA
+- Posicionamiento de texto flexible (9 posiciones: top/center/bottom + left/center/right)
+- Overlay personalizable (color, opacidad, fondo)
+- Fechas de vigencia (start_at, end_at)
+- Reorder de portadas por posición
+- Status toggle rápido
 
 ### **Seguridad y Auditoría**
 
-- ✅ Autenticación completa con Laravel Jetstream
-- ✅ Sistema de roles y permisos (Spatie Permission)
-- ✅ **Auditoría automática:** created_by, updated_by, deleted_by en todos los modelos
-- ✅ **Tabla `audits`:** registra todos los cambios (old_values, new_values, evento, IP, user_agent)
-- ✅ Soft Deletes en Post, Cover y modelos principales
-- ✅ Protección CSRF en todas las operaciones
-- ✅ **Logs de Acceso:** tabla `access_logs` registra login, logout, fallos de autenticación
-- ✅ **Visor de Auditorías:** panel admin con detalles completos de cambios
+- Autenticación completa con Laravel Jetstream
+- Sistema de roles y permisos (Spatie Permission)
+- **Auditoría automática:** created_by, updated_by, deleted_by en todos los modelos
+- **Tabla `audits`:** registra todos los cambios (old_values, new_values, evento, IP, user_agent)
+- Soft Deletes en Post, Cover y modelos principales
+- Protección CSRF en todas las operaciones
+- **Logs de Acceso:** tabla `access_logs` registra login, logout, fallos de autenticación
+- **Visor de Auditorías:** panel admin con detalles completos de cambios
 
 ### **Notificaciones en Tiempo Real**
 
-- ✅ Sistema de notificaciones en BD (tabla `notifications`)
-- ✅ Notificaciones para: aprobación de posts, rechazo de posts, cambios de permisos
-- ✅ Badge de notificaciones no leídas en topbar
-- ✅ Panel de notificaciones con historial
+- Sistema de notificaciones en BD (tabla `notifications`)
+- Notificaciones para: aprobación de posts, rechazo de posts, cambios de permisos
+- Badge de notificaciones no leídas en topbar
+- Panel de notificaciones con historial
 
 ### **Exportación de Datos**
 
-- ✅ Excel con estilos profesionales y auto-ajuste de columnas
-- ✅ CSV con delimitadores correctos
-- ✅ PDF con Spatie Laravel PDF (tablas formateadas)
-- ✅ Auditoría de exportaciones (qué datos, cuándo, por quién)
+- Excel con estilos profesionales y auto-ajuste de columnas
+- CSV con delimitadores correctos
+- PDF con Spatie Laravel PDF (tablas formateadas)
+- Auditoría de exportaciones (qué datos, cuándo, por quién)
 
 ### **Gestión de Usuarios y Roles**
 
-- ✅ CRUD de usuarios con roles dinámicos
-- ✅ Creación y asignación de roles personalizados
-- ✅ Gestión granular de permisos por módulo
-- ✅ Roles predefinidos: Administrador, Superadministrador, Editor, Revisor
-- ✅ Segmentación entre usuarios internos del panel y clientes (rol "Cliente")
-- ✅ Módulo dedicado de clientes con filtros avanzados y exportación (Excel/CSV/PDF)
-- ✅ Foto de perfil con actualización en tiempo real
+- CRUD de usuarios con roles dinámicos
+- Creación y asignación de roles personalizados
+- Gestión granular de permisos por módulo
+- Roles predefinidos: Administrador, Superadministrador, Editor, Revisor
+- Segmentación entre usuarios internos del panel y clientes (rol "Cliente")
+- Módulo dedicado de clientes con filtros avanzados y exportación (Excel/CSV/PDF)
+- Foto de perfil con actualización en tiempo real
 
 ### **Configuración de Empresa**
 
-- ✅ Datos generales: nombre, eslogan, ruc, etc.
-- ✅ Identidad visual: logo, colores primarios/secundarios
-- ✅ Datos de contacto: email, teléfono, ubicación
-- ✅ Redes sociales: Facebook, Instagram, Twitter, LinkedIn
-- ✅ Contenido legal: privacidad, términos, sobre nosotros
+- Datos generales: nombre, eslogan, ruc, etc.
+- Identidad visual: logo, colores primarios/secundarios
+- Datos de contacto: email, teléfono, ubicación
+- Redes sociales: Facebook, Instagram, Twitter, LinkedIn
+- Contenido legal: privacidad, términos, sobre nosotros
 
 ### **Pagos y Conciliación Financiera**
 
-- ✅ Módulos admin dedicados de **Pagos** y **Transacciones**
-- ✅ Relación completa: Orden → Pago → Movimientos (transactions)
-- ✅ Resumen financiero: bruto, comisión, neto y % de comisión
-- ✅ Ranking de comisiones por pasarela en admin
-- ✅ Integración de pasarelas: **Niubiz, Culqi y Mercado Pago**
-- ✅ Control de idempotencia con `payment_attempts` para evitar reprocesos
+- Módulos admin dedicados de **Pagos** y **Transacciones**
+- Relación completa: Orden → Pago → Movimientos (transactions)
+- Resumen financiero: bruto, comisión, neto y % de comisión
+- Ranking de comisiones por pasarela en admin
+- Integración de pasarelas: **Niubiz, Culqi y Mercado Pago**
+- Control de idempotencia con `payment_attempts` para evitar reprocesos
 
 ---
 
@@ -143,7 +143,7 @@ php-mysql, php-mbstring, php-xml, php-curl, php-zip, php-gd
 
 ---
 
-## 🔧 Instalación y Setup
+## Instalación y Setup
 
 ### Método 1: Setup Automático (Recomendado)
 
