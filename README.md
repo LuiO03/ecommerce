@@ -14,13 +14,13 @@
   <img src="https://img.shields.io/badge/Estado-En%20Desarrollo-yellow" alt="Estado del proyecto">
 </p>
 
-# 🛍️ GECKOMERCE - Ecommerce Laravel
+# GECKOMERCE - Ecommerce Laravel
 
 Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseñada para ofrecer una experiencia de comercio electrónico completa con panel de administración moderno, sistema de catálogo jerárquico y herramientas avanzadas de gestión.
 
 ---
 
-## 🎯 Stack Tecnológico
+## Stack Tecnológico
 
 - **Backend:** Laravel 12 + PHP 8.2 + MySQL
 - **Frontend:** Blade + Livewire 3 + TailwindCSS 3 + Flowbite + Vite 7
@@ -34,97 +34,109 @@ Plataforma de **Ecommerce** profesional desarrollada con **Laravel 12**, diseña
 
 ---
 
-## 🚀 Características Principales
+## Características Principales
 
-### 📦 **Sistema de Catálogo Jerárquico**
-* ✅ **Familias** → **Categorías** → **Productos** → **Variantes**
-* ✅ Categorías con soporte para anidación (subcategorías ilimitadas)
-* ✅ Slugs únicos auto-incrementales para SEO
-* ✅ Gestión avanzada de **Options** (opciones de producto) y **Features** (características de variante)
-* ✅ Soporte para múltiples imágenes por producto con reorder y crop
+### **Sistema de Catálogo Jerárquico**
 
-### 🎨 **Panel de Administración Moderno**
-* ✅ Interfaz responsive con sidebar colapsable
-* ✅ Tema claro/oscuro con persistencia en localStorage
-* ✅ DataTables con búsqueda, ordenamiento y filtros personalizados
-* ✅ Indicadores de carga tipo shimmer (skeleton) para mejorar la UX
-* ✅ Toggle de estado instantáneo (sin modales ni reload)
-* ✅ Eliminación múltiple con confirmación inteligente
-* ✅ Exportación a Excel, CSV y PDF con auditoria
+- ✅ **Familias** → **Categorías** → **Productos** → **Variantes**
+- ✅ Categorías con soporte para anidación (subcategorías ilimitadas)
+- ✅ Slugs únicos auto-incrementales para SEO
+- ✅ Gestión avanzada de **Options** (opciones de producto) y **Features** (características de variante)
+- ✅ Soporte para múltiples imágenes por producto con reorder y crop
+
+### **Panel de Administración Moderno**
+
+- ✅ Interfaz responsive con sidebar colapsable
+- ✅ Tema claro/oscuro con persistencia en localStorage
+- ✅ DataTables con búsqueda, ordenamiento y filtros personalizados
+- ✅ Indicadores de carga tipo shimmer (skeleton) para mejorar la UX
+- ✅ Toggle de estado instantáneo (sin modales ni reload)
+- ✅ Eliminación múltiple con confirmación inteligente
+- ✅ Exportación a Excel, CSV y PDF con auditoria
 
 ### 📰 **Módulo de Blog/Posts**
-* ✅ Sistema de posts con estados (draft, pending, published, rejected)
-* ✅ Flujo de revisión: creador → revisor → publicación
-* ✅ Notificaciones en tiempo real a revisores y autores
-* ✅ Soporte para tags e imágenes destacadas
-* ✅ Contador de vistas y permitir/denegar comentarios
-* ✅ Soft deletes para recuperación
+
+- ✅ Sistema de posts con estados (draft, pending, published, rejected)
+- ✅ Flujo de revisión: creador → revisor → publicación
+- ✅ Notificaciones en tiempo real a revisores y autores
+- ✅ Soporte para tags e imágenes destacadas
+- ✅ Contador de vistas y permitir/denegar comentarios
+- ✅ Soft deletes para recuperación
 
 ### 🎪 **Módulo de Portadas (Covers)**
-* ✅ Slider de portadas con imagen, texto y botón CTA
-* ✅ Posicionamiento de texto flexible (9 posiciones: top/center/bottom + left/center/right)
-* ✅ Overlay personalizable (color, opacidad, fondo)
-* ✅ Fechas de vigencia (start_at, end_at)
-* ✅ Reorder de portadas por posición
-* ✅ Status toggle rápido
 
-### 🔐 **Seguridad y Auditoría**
-* ✅ Autenticación completa con Laravel Jetstream
-* ✅ Sistema de roles y permisos (Spatie Permission)
-* ✅ **Auditoría automática:** created_by, updated_by, deleted_by en todos los modelos
-* ✅ **Tabla `audits`:** registra todos los cambios (old_values, new_values, evento, IP, user_agent)
-* ✅ Soft Deletes en Post, Cover y modelos principales
-* ✅ Protección CSRF en todas las operaciones
-* ✅ **Logs de Acceso:** tabla `access_logs` registra login, logout, fallos de autenticación
-* ✅ **Visor de Auditorías:** panel admin con detalles completos de cambios
+- ✅ Slider de portadas con imagen, texto y botón CTA
+- ✅ Posicionamiento de texto flexible (9 posiciones: top/center/bottom + left/center/right)
+- ✅ Overlay personalizable (color, opacidad, fondo)
+- ✅ Fechas de vigencia (start_at, end_at)
+- ✅ Reorder de portadas por posición
+- ✅ Status toggle rápido
 
-### 🔔 **Notificaciones en Tiempo Real**
-* ✅ Sistema de notificaciones en BD (tabla `notifications`)
-* ✅ Notificaciones para: aprobación de posts, rechazo de posts, cambios de permisos
-* ✅ Badge de notificaciones no leídas en topbar
-* ✅ Panel de notificaciones con historial
+### **Seguridad y Auditoría**
 
-### 📊 **Exportación de Datos**
-* ✅ Excel con estilos profesionales y auto-ajuste de columnas
-* ✅ CSV con delimitadores correctos
-* ✅ PDF con Spatie Laravel PDF (tablas formateadas)
-* ✅ Auditoría de exportaciones (qué datos, cuándo, por quién)
+- ✅ Autenticación completa con Laravel Jetstream
+- ✅ Sistema de roles y permisos (Spatie Permission)
+- ✅ **Auditoría automática:** created_by, updated_by, deleted_by en todos los modelos
+- ✅ **Tabla `audits`:** registra todos los cambios (old_values, new_values, evento, IP, user_agent)
+- ✅ Soft Deletes en Post, Cover y modelos principales
+- ✅ Protección CSRF en todas las operaciones
+- ✅ **Logs de Acceso:** tabla `access_logs` registra login, logout, fallos de autenticación
+- ✅ **Visor de Auditorías:** panel admin con detalles completos de cambios
 
-### 👥 **Gestión de Usuarios y Roles**
-* ✅ CRUD de usuarios con roles dinámicos
-* ✅ Creación y asignación de roles personalizados
-* ✅ Gestión granular de permisos por módulo
-* ✅ Roles predefinidos: Administrador, Superadministrador, Editor, Revisor
-* ✅ Segmentación entre usuarios internos del panel y clientes (rol "Cliente")
-* ✅ Módulo dedicado de clientes con filtros avanzados y exportación (Excel/CSV/PDF)
-* ✅ Foto de perfil con actualización en tiempo real
+### **Notificaciones en Tiempo Real**
 
-### ⚙️ **Configuración de Empresa**
-* ✅ Datos generales: nombre, eslogan, ruc, etc.
-* ✅ Identidad visual: logo, colores primarios/secundarios
-* ✅ Datos de contacto: email, teléfono, ubicación
-* ✅ Redes sociales: Facebook, Instagram, Twitter, LinkedIn
-* ✅ Contenido legal: privacidad, términos, sobre nosotros
+- ✅ Sistema de notificaciones en BD (tabla `notifications`)
+- ✅ Notificaciones para: aprobación de posts, rechazo de posts, cambios de permisos
+- ✅ Badge de notificaciones no leídas en topbar
+- ✅ Panel de notificaciones con historial
 
-### 💳 **Pagos y Conciliación Financiera**
-* ✅ Módulos admin dedicados de **Pagos** y **Transacciones**
-* ✅ Relación completa: Orden → Pago → Movimientos (transactions)
-* ✅ Resumen financiero: bruto, comisión, neto y % de comisión
-* ✅ Ranking de comisiones por pasarela en admin
-* ✅ Integración de pasarelas: **Niubiz, Culqi y Mercado Pago**
-* ✅ Control de idempotencia con `payment_attempts` para evitar reprocesos
+### **Exportación de Datos**
+
+- ✅ Excel con estilos profesionales y auto-ajuste de columnas
+- ✅ CSV con delimitadores correctos
+- ✅ PDF con Spatie Laravel PDF (tablas formateadas)
+- ✅ Auditoría de exportaciones (qué datos, cuándo, por quién)
+
+### **Gestión de Usuarios y Roles**
+
+- ✅ CRUD de usuarios con roles dinámicos
+- ✅ Creación y asignación de roles personalizados
+- ✅ Gestión granular de permisos por módulo
+- ✅ Roles predefinidos: Administrador, Superadministrador, Editor, Revisor
+- ✅ Segmentación entre usuarios internos del panel y clientes (rol "Cliente")
+- ✅ Módulo dedicado de clientes con filtros avanzados y exportación (Excel/CSV/PDF)
+- ✅ Foto de perfil con actualización en tiempo real
+
+### **Configuración de Empresa**
+
+- ✅ Datos generales: nombre, eslogan, ruc, etc.
+- ✅ Identidad visual: logo, colores primarios/secundarios
+- ✅ Datos de contacto: email, teléfono, ubicación
+- ✅ Redes sociales: Facebook, Instagram, Twitter, LinkedIn
+- ✅ Contenido legal: privacidad, términos, sobre nosotros
+
+### **Pagos y Conciliación Financiera**
+
+- ✅ Módulos admin dedicados de **Pagos** y **Transacciones**
+- ✅ Relación completa: Orden → Pago → Movimientos (transactions)
+- ✅ Resumen financiero: bruto, comisión, neto y % de comisión
+- ✅ Ranking de comisiones por pasarela en admin
+- ✅ Integración de pasarelas: **Niubiz, Culqi y Mercado Pago**
+- ✅ Control de idempotencia con `payment_attempts` para evitar reprocesos
 
 ---
 
-## 📋 Requisitos Previos
+## Requisitos Previos
 
 ### Requerimientos mínimos:
+
 - **[PHP ^8.2](https://www.php.net/)** - Motor del backend
 - **[Composer](https://getcomposer.org/)** - Gestor de dependencias PHP
 - **[Node.js](https://nodejs.org/)** (v18+) - Build tool frontend
 - **[MySQL](https://www.mysql.com/)** 5.7+ o MariaDB 10.2+
 
 ### Extensiones PHP requeridas:
+
 ```
 php-mysql, php-mbstring, php-xml, php-curl, php-zip, php-gd
 ```
@@ -136,50 +148,51 @@ php-mysql, php-mbstring, php-xml, php-curl, php-zip, php-gd
 ### Método 1: Setup Automático (Recomendado)
 
 ```bash
-# 1️⃣ Clonar el repositorio
+# 1️. Clonar el repositorio
 git clone https://github.com/LuiO03/ecommerce.git
 cd ecommerce
 
-# 2️⃣ Ejecutar setup completo (instala dependencias, crea BD, migraciones, seeders)
+# 2️. Ejecutar setup completo (instala dependencias, crea BD, migraciones, seeders)
 composer setup
 
-# 3️⃣ (Opcional) Configurar variables de entorno en .env
+# 3️. (Opcional) Configurar variables de entorno en .env
 # Por defecto usa: MySQL local, root sin contraseña, DB "ecommerce"
 # Edita .env si necesitas cambiar configuración
 
-# 4️⃣ Iniciar servidor de desarrollo
+# 4️.Iniciar servidor de desarrollo
 composer dev
 ```
 
 El comando `composer dev` inicia simultáneamente (con concurrently):
-- ✅ Servidor PHP (puerto 8000)
-- ✅ Queue listener (trabajos en segundo plano)
-- ✅ Pail (logs en tiempo real)
-- ✅ Vite (hot reload para assets CSS/JS)
+
+- Servidor PHP (puerto 8000)
+- Queue listener (trabajos en segundo plano)
+- Pail (logs en tiempo real)
+- Vite (hot reload para assets CSS/JS)
 
 ### Método 2: Instalación Manual
 
 ```bash
-# 1️⃣ Clonar repositorio
+# 1️. Clonar repositorio
 git clone https://github.com/LuiO03/ecommerce.git
 cd ecommerce
 
-# 2️⃣ Instalar dependencias PHP y Node
+# 2️. Instalar dependencias PHP y Node
 composer install
 npm install
 
-# 3️⃣ Configurar entorno
+# 3️. Configurar entorno
 cp .env.example .env
 php artisan key:generate
 
-# 4️⃣ Crear base de datos y ejecutar migraciones
+# 4️. Crear base de datos y ejecutar migraciones
 php artisan db:create ecommerce
 php artisan migrate:fresh --seed
 
-# 5️⃣ Compilar assets
+# 5️. Compilar assets
 npm run build
 
-# 6️⃣ Iniciar servidor (en terminales separadas)
+# 6️. Iniciar servidor (en terminales separadas)
 php artisan serve              # Terminal 1: http://localhost:8000
 npm run dev                    # Terminal 2: Vite hot reload
 php artisan queue:listen       # Terminal 3: Queue worker
@@ -188,21 +201,22 @@ php artisan pail               # Terminal 4: Logs en tiempo real
 
 ---
 
-## 🚀 Acceso a la Aplicación
+## Acceso a la Aplicación
 
 **Frontend Público:**  
-👉 http://localhost:8000
+http://localhost:8000
 
 **Panel de Administración:**  
-👉 http://localhost:8000/admin
+http://localhost:8000/admin
 
 ### Credenciales por defecto (del Seeder):
+
 ```
 Admin:        admin@ecommerce.com / password
 User estándar: user@ecommerce.com / password
 ```
 
-> ⚠️ Cambia estas credenciales en producción o modifica [database/seeders/UserSeeder.php](database/seeders/UserSeeder.php)
+> Cambia estas credenciales en producción o modifica [database/seeders/UserSeeder.php](database/seeders/UserSeeder.php)
 
 ---
 
@@ -211,6 +225,7 @@ User estándar: user@ecommerce.com / password
 El proyecto incluye documentación detallada en [docs/](docs/):
 
 ### Módulos Principales:
+
 - **[admin-modules-overview.md](docs/admin-modules-overview.md)** - Visión general de todos los módulos admin
 - **[payments-transactions-gateways.md](docs/payments-transactions-gateways.md)** - Arquitectura de pagos/transacciones, pasarelas y flujo de checkout
 - **[auditoria.md](docs/auditoria.md)** - Sistema de auditoría automática
@@ -219,12 +234,13 @@ El proyecto incluye documentación detallada en [docs/](docs/):
 - **[product-variants-manager.md](docs/product-variants-manager.md)** - Gestión de variantes y opciones
 - **[gallery-manager.md](docs/gallery-manager.md)** - Upload, reorder y crop de imágenes
 - **[clients-module.md](docs/clients-module.md)** - Gestión de clientes (usuarios con rol Cliente)
- - **[google-authentication.md](docs/google-authentication.md)** - Autenticación y registro con Google (Socialite)
- - **[mail-system.md](docs/mail-system.md)** - Sistema de correos (registro, verificación, reset)
- - **[profile-addresses.md](docs/profile-addresses.md)** - Direcciones de envío desde el perfil del cliente (Mi cuenta)
- - **[niubiz-sandbox-checklist.md](docs/niubiz-sandbox-checklist.md)** - Checklist rápido de diagnóstico para sandbox Niubiz
+- **[google-authentication.md](docs/google-authentication.md)** - Autenticación y registro con Google (Socialite)
+- **[mail-system.md](docs/mail-system.md)** - Sistema de correos (registro, verificación, reset)
+- **[profile-addresses.md](docs/profile-addresses.md)** - Direcciones de envío desde el perfil del cliente (Mi cuenta)
+- **[niubiz-sandbox-checklist.md](docs/niubiz-sandbox-checklist.md)** - Checklist rápido de diagnóstico para sandbox Niubiz
 
 ### Frontend y UI:
+
 - **[datatable-manager-usage.md](docs/datatable-manager-usage.md)** - Sistema modular de tablas DataTables
 - **[form-validator-usage.md](docs/form-validator-usage.md)** - Validación de formularios en cliente
 - **[status-toggle-handler.md](docs/status-toggle-handler.md)** - Toggle de estado sin reload
@@ -233,6 +249,7 @@ El proyecto incluye documentación detallada en [docs/](docs/):
 - **[shimmer-loader.md](docs/shimmer-loader.md)** - Loader shimmer / skeleton para estados de carga
 
 ### Patrones y Convenciones:
+
 - **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Guía para agentes IA
 
 ---
@@ -253,37 +270,43 @@ El proyecto incluye documentación detallada en [docs/](docs/):
 ### Componentes Clave:
 
 **Family (Familia):**
+
 - Agrupa categorías relacionadas (ej: "Electrónica", "Ropa")
 - Puede tener imagen, slug, descripción
 
 **Category (Categoría):**
+
 - Anidable: una categoría puede tener subcategorías
 - Relacionada a una familia
 - Gestiona productos
 
 **Product (Producto):**
+
 - Pertenece a una categoría
 - Puede tener múltiples imágenes (ProductImage)
 - Puede tener múltiples opciones (Option)
 
 **Variant (Variante):**
+
 - Combinación específica de características de un producto
 - Ej: "Camiseta azul talla M" es una variante de "Camiseta"
 - Cada variante tiene Features (talla: M, color: azul)
 - Stock individual por variante
 
 **Option (Opción):**
+
 - Define qué se puede personalizar (talla, color, etc.)
 - Asociada a productos, no a categorías
 - Puede tener múltiples valores
 
 **Feature (Característica):**
+
 - Valor específico de una opción para una variante
 - Ej: Feature "talla: M" asociada a Option "talla"
 
 ---
 
-## 🗂️ Estructura de Directorios
+## Estructura de Directorios
 
 ```
 ecommerce/
@@ -396,9 +419,10 @@ ecommerce/
 
 ---
 
-## 🔧 Comandos de Desarrollo
+## Comandos de Desarrollo
 
 ### Base de Datos
+
 ```bash
 # Crear base de datos (si no existe)
 php artisan db:create ecommerce
@@ -417,6 +441,7 @@ php artisan db:seed --class=RolePermissionSeeder
 ```
 
 ### Desarrollo
+
 ```bash
 # Servidor completo (RECOMENDADO - inicia todo con concurrently)
 composer dev
@@ -429,6 +454,7 @@ php artisan pail --timeout=0        # Log viewer en tiempo real
 ```
 
 ### Testing
+
 ```bash
 # Ejecutar todos los tests
 composer test
@@ -441,6 +467,7 @@ php artisan test tests/Feature/ProductTest.php
 ```
 
 ### Code Quality
+
 ```bash
 # Validar y formatear código PSR-12
 ./vendor/bin/pint
@@ -455,15 +482,17 @@ php artisan view:clear
 ```
 
 ### Build para Producción
+
 ```bash
 npm run build    # Minifica y optimiza assets
 ```
 
 ---
 
-## 🎨 Patrones y Convenciones
+## Patrones y Convenciones
 
 ### Auditoría Automática
+
 Todos los modelos principales usan el trait `Auditable`:
 
 ```php
@@ -481,6 +510,7 @@ class Product extends Model {
 ```
 
 ### Slugs Únicos
+
 ```php
 // Genera slug único automáticamente, con contador si hay duplicados
 public static function generateUniqueSlug($name, $id = null) {
@@ -500,6 +530,7 @@ public function getRouteKeyName() {
 ```
 
 ### Permisos en Controladores
+
 ```php
 // NO usar middleware en rutas, usar __construct del controlador
 public function __construct() {
@@ -511,9 +542,10 @@ public function __construct() {
 ```
 
 ### DataTables
+
 ```blade
 <!-- Configuración en HTML con data-* -->
-<table id="tabla" class="tabla-general" 
+<table id="tabla" class="tabla-general"
        data-route="{{ route('admin.families.index') }}"
        data-delete-route="{{ route('admin.families.destroy-multiple') }}"
        data-status-route="{{ route('admin.families.update-status') }}">
@@ -522,7 +554,7 @@ public function __construct() {
 ```javascript
 // Inicialización en JS
 const table = new DataTableManager({
-    tableId: 'tabla',
+    tableId: "tabla",
     // opciones...
 });
 ```
@@ -531,42 +563,42 @@ const table = new DataTableManager({
 
 ## 📱 Módulos Administrativos Disponibles
 
-| Módulo | URL | Características |
-|--------|-----|-----------------|
-| **Familias** | `/admin/families` | CRUD, exportación, status toggle |
-| **Categorías** | `/admin/categories` | CRUD jerárquico, árbol visual, drag & drop |
-| **Productos** | `/admin/products` | CRUD completo, variantes, opciones, imágenes |
-| **Variantes** | `/admin/products/{id}/variants` | CRUD de variantes con features |
-| **Posts** | `/admin/posts` | CRUD, flujo de revisión, notificaciones |
-| **Portadas** | `/admin/covers` | CRUD, slider, overlay, fechas vigencia |
-| **Opciones** | `/admin/options` | CRUD de opciones y sus valores (features) |
-| **Usuarios** | `/admin/users` | CRUD, asignación de roles, foto de perfil |
-| **Clientes** | `/admin/clients` | Listado de clientes (rol Cliente), filtros y exportación |
-| **Roles** | `/admin/roles` | CRUD, asignación de permisos granular |
-| **Permisos** | `/admin/permissions` | CRUD de permisos por módulo |
-| **Auditorías** | `/admin/audits` | Visor de cambios, exportación |
-| **Logs de Acceso** | `/admin/access-logs` | Registro de login/logout/fallos |
-| **Notificaciones** | Panel topbar | Centro de notificaciones |
-| **Configuración** | `/admin/company-settings` | Datos empresa, identidad visual, redes sociales |
+| Módulo             | URL                             | Características                                          |
+| ------------------ | ------------------------------- | -------------------------------------------------------- |
+| **Familias**       | `/admin/families`               | CRUD, exportación, status toggle                         |
+| **Categorías**     | `/admin/categories`             | CRUD jerárquico, árbol visual, drag & drop               |
+| **Productos**      | `/admin/products`               | CRUD completo, variantes, opciones, imágenes             |
+| **Variantes**      | `/admin/products/{id}/variants` | CRUD de variantes con features                           |
+| **Posts**          | `/admin/posts`                  | CRUD, flujo de revisión, notificaciones                  |
+| **Portadas**       | `/admin/covers`                 | CRUD, slider, overlay, fechas vigencia                   |
+| **Opciones**       | `/admin/options`                | CRUD de opciones y sus valores (features)                |
+| **Usuarios**       | `/admin/users`                  | CRUD, asignación de roles, foto de perfil                |
+| **Clientes**       | `/admin/clients`                | Listado de clientes (rol Cliente), filtros y exportación |
+| **Roles**          | `/admin/roles`                  | CRUD, asignación de permisos granular                    |
+| **Permisos**       | `/admin/permissions`            | CRUD de permisos por módulo                              |
+| **Auditorías**     | `/admin/audits`                 | Visor de cambios, exportación                            |
+| **Logs de Acceso** | `/admin/access-logs`            | Registro de login/logout/fallos                          |
+| **Notificaciones** | Panel topbar                    | Centro de notificaciones                                 |
+| **Configuración**  | `/admin/company-settings`       | Datos empresa, identidad visual, redes sociales          |
 
 ---
 
-## 🚀 Características Próximas
+## Características Próximas
 
-- 🛒 **Carrito de compras** con sesiones persistentes
-- 💳 **Pasarelas de pago** (Stripe, PayPal, MercadoPago)
-- 📦 **Gestión de inventario** con alertas de stock bajo
-- 📈 **Dashboard analítico** con gráficos (Chart.js)
-- 🌐 **Multi-idioma** con Laravel Localization
-- 📧 **Email Marketing** con Laravel Mailables
-- 📱 **API REST** completa con Laravel Sanctum
-- ⭐ **Sistema de reviews y ratings**
-- 🎁 **Promociones y descuentos**
-- 👥 Historial de compras para clientes (integrado al módulo Clientes)
+- **Carrito de compras** con sesiones persistentes
+- **Pasarelas de pago** (Stripe, PayPal, MercadoPago)
+- **Gestión de inventario** con alertas de stock bajo
+- **Dashboard analítico** con gráficos (Chart.js)
+- **Multi-idioma** con Laravel Localization
+- **Email Marketing** con Laravel Mailables
+- **API REST** completa con Laravel Sanctum
+- **Sistema de reviews y ratings**
+- **Promociones y descuentos**
+- Historial de compras para clientes (integrado al módulo Clientes)
 
 ---
 
-## 🤝 Contribuciones
+## Contribuciones
 
 Las contribuciones son bienvenidas. Por favor:
 
@@ -577,6 +609,7 @@ Las contribuciones son bienvenidas. Por favor:
 5. Abre un Pull Request
 
 ### Estándares de código:
+
 - Seguir **PSR-12** (ejecuta `./vendor/bin/pint` antes de commit)
 - Comentar métodos complejos
 - Mantener los patrones existentes (slugs, auditoría, query scopes)
@@ -584,16 +617,16 @@ Las contribuciones son bienvenidas. Por favor:
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
 **Luis Alberto Quispe O.**  
-💼 Diseñador y programador web  
-📧 [70098517@institutocajas.info](mailto:70098517@institutocajas.info)  
-🌐 [github.com/LuiO03](https://github.com/LuiO03)
+Diseñador y programador web  
+[70098517@institutocajas.info](mailto:70098517@institutocajas.info)  
+[github.com/LuiO03](https://github.com/LuiO03)
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto se distribuye bajo la licencia **MIT**.  
 Eres libre de usarlo, modificarlo y distribuirlo con fines educativos o comerciales.
@@ -602,7 +635,7 @@ Ver [LICENSE](LICENSE) para más información.
 
 ---
 
-## 🙏 Agradecimientos
+## Agradecimientos
 
 - **Laravel Team** - Framework extraordinario
 - **Livewire** - Reactividad sin escribir JavaScript

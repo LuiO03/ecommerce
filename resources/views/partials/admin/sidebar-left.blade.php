@@ -93,7 +93,7 @@
                                 <a href="{{ request()->routeIs('admin.brands.*') ? '#' : route('admin.brands.index') }}"
                                     class="sidebar-sublink {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}"
                                     data-tooltip="Marcas">
-                                    <i class="ri-bookmark-3-line sidebar-icon"></i>
+                                    <i class="ri-award-line sidebar-icon"></i>
                                     <span>Marcas</span>
                                 </a>
                             </li>
@@ -217,7 +217,7 @@
                                 <a href="{{ request()->routeIs('admin.roles.*') ? '#' : route('admin.roles.index') }}"
                                     class="sidebar-sublink {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}"
                                     data-tooltip="Roles y Permisos">
-                                    <i class="ri-shield-user-line sidebar-icon"></i>
+                                    <i class="ri-git-repository-line sidebar-icon"></i>
                                     <span>Roles y Permisos</span>
                                 </a>
                             </li>

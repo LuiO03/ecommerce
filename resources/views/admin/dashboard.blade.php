@@ -160,7 +160,9 @@
                 </div>
             @endcan
 
+
             {{-- Ventas --}}
+            {{--
             @can('ordenes.index')
                 <div class="dashboard-card ripple-card">
                     <div class="card-icon card-success">
@@ -180,6 +182,7 @@
             @endcan
 
             {{-- Pedidos hoy --}}
+            {{--
             @can('ordenes.index')
                 <div class="dashboard-card ripple-card">
                     <div class="card-icon card-orange">
@@ -198,68 +201,66 @@
                 </div>
             @endcan
 
-
             {{-- Pedidos pendientes --}}
             {{--
-        @can('ordenes.index')
-            <div class="dashboard-card ripple-card">
-                <div class="card-icon card-warning">
-                    <i class="ri-loader-2-line"></i>
-                </div>
+            @can('ordenes.index')
+                <div class="dashboard-card ripple-card">
+                    <div class="card-icon card-warning">
+                        <i class="ri-loader-2-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">
-                        {{ $totalPendingOrders }}
-                    </h1>
+                    <div class="card-content">
+                        <h1 class="card-count">
+                            {{ $totalPendingOrders }}
+                        </h1>
 
-                    <p class="card-label">
-                        Pendientes
-                    </p>
+                        <p class="card-label">
+                            Pendientes
+                        </p>
+                    </div>
                 </div>
-            </div>
-        @endcan
-        --}}
+            @endcan
+            --}}
             {{-- Stock bajo --}}
             {{--
-        @can('productos.index')
-            <div class="dashboard-card ripple-card">
-                <div class="card-icon card-danger">
-                    <i class="ri-alert-line"></i>
-                </div>
+            @can('productos.index')
+                <div class="dashboard-card ripple-card">
+                    <div class="card-icon card-danger">
+                        <i class="ri-alert-line"></i>
+                    </div>
 
-                <div class="card-content">
-                    <h1 class="card-count">
-                        {{ $totalLowStockProducts }}
-                    </h1>
+                    <div class="card-content">
+                        <h1 class="card-count">
+                            {{ $totalLowStockProducts }}
+                        </h1>
 
-                    <p class="card-label">
-                        Stock Bajo
-                    </p>
+                        <p class="card-label">
+                            Stock Bajo
+                        </p>
+                    </div>
                 </div>
-            </div>
-        @endcan
-        --}}
+            @endcan
+            --}}
             {{-- Nuevos clientes --}}
             {{--
-        @can('clientes.index')
-            <div class="dashboard-card ripple-card">
-                <div class="card-icon card-primary">
-                    <i class="ri-user-add-line"></i>
+            @can('clientes.index')
+                <div class="dashboard-card ripple-card">
+                    <div class="card-icon card-primary">
+                        <i class="ri-user-add-line"></i>
+                    </div>
+
+                    <div class="card-content">
+                        <h1 class="card-count">
+                            {{ $newClientsThisMonth }}
+                        </h1>
+
+                        <p class="card-label">
+                            Nuevos Clientes
+                        </p>
+                    </div>
                 </div>
-
-                <div class="card-content">
-                    <h1 class="card-count">
-                        {{ $newClientsThisMonth }}
-                    </h1>
-
-                    <p class="card-label">
-                        Nuevos Clientes
-                    </p>
-                </div>
-            </div>
-        @endcan
-        --}}
-
+            @endcan
+            --}}
 
             {{-- Productos --}}
             @can('productos.index')
