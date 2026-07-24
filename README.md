@@ -220,7 +220,7 @@ User estándar: user@ecommerce.com / password
 
 ---
 
-## 📚 Documentación Técnica
+## Documentación Técnica
 
 El proyecto incluye documentación detallada en [docs/](docs/):
 
@@ -254,7 +254,7 @@ El proyecto incluye documentación detallada en [docs/](docs/):
 
 ---
 
-## 🏗️ Arquitectura del Catálogo
+## Arquitectura del Catálogo
 
 ```
 ┌─────────────┐      ┌─────────────┐      ┌─────────────┐      ┌──────────────┐
@@ -561,7 +561,7 @@ const table = new DataTableManager({
 
 ---
 
-## 📱 Módulos Administrativos Disponibles
+## Módulos Administrativos Disponibles
 
 | Módulo             | URL                             | Características                                          |
 | ------------------ | ------------------------------- | -------------------------------------------------------- |
